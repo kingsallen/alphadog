@@ -43,8 +43,11 @@ public class TalentpoolSearchengine {
         TransportClient client= searchUtil.getEsClient();
         QueryBuilder query=this.query(params);
         SearchRequestBuilder builder=client.prepareSearch("users").setTypes("user").setQuery(query);
-        Map<String,Object> aggInfo=this.getUserAnalysisIndex(params,client);
-        if(aggInfo==null){
+        Map<String,Object> aggInfo=new HashMap<>();
+        if(this.validateEmptyParams(params)){
+            aggInfo=this.getUserAnalysisIndex(params,client);
+
+        }else{
             builder.addAggregation(this.handleAllApplicationCountAgg(params))
                     .addAggregation(this.handleAllcountAgg(params))
                     .addAggregation(this.handleEntryCountAgg(params))
@@ -70,9 +73,9 @@ public class TalentpoolSearchengine {
         {
             builder.addSort(this.handlerScoreOrderScript(publisherIds));
             if (publisherIdList.size() > 1) {
-                builder.addSort("user.hr_all_" + hrId + "__last_submit_time", SortOrder.DESC);
+                builder.addSort("user.hr_all_" + hrId + "_last_submit_time", SortOrder.DESC);
             }else{
-                builder.addSort("user.hr_" + hrId + "__last_submit_time", SortOrder.DESC);
+                builder.addSort("user.hr_" + hrId + "_last_submit_time", SortOrder.DESC);
             }
         }else{
             if (publisherIdList.size() > 1) {
@@ -398,8 +401,12 @@ public class TalentpoolSearchengine {
     /*
       构建简历来源的查询语句
      */
-    private void queryByOrigin(String condition1,String condition2,QueryBuilder queryBuilder){
-
+    private void queryByOrigin(String condition,QueryBuilder queryBuilder){
+        List<String> list=new ArrayList<>();
+        list.add("user.application.origin");
+        list.add("user.profiles.basic.origin");
+        list.add("user.talent_pool.upload");
+        searchUtil.handleShouldMatchFilter(Integer.parseInt(condition),queryBuilder,list);
     }
     /*
       构建通过职位来查询的语句
@@ -407,8 +414,6 @@ public class TalentpoolSearchengine {
     private void queryByPositionId(String positionIds,QueryBuilder queryBuilder ){
         searchUtil.handleTerms(positionIds,queryBuilder,"user.applications.position_id");
     }
-
-    /*
 
     /*
       构建是否公开的查询语句,注意这个位置要做成nest的查询
@@ -426,7 +431,7 @@ public class TalentpoolSearchengine {
       构建按招标签的查询语句
      */
     private void queryByTagId(String tagIds,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(tagIds,queryBuilder,"user.talent_pool.tag.tag_id");
+        searchUtil.handleTerms(tagIds,queryBuilder,"user.talent_pool.tags.tag_id");
     }
     /*
       构建按照期望城市名称的查询语句
@@ -534,7 +539,7 @@ public class TalentpoolSearchengine {
      根据hr的标签查询
      */
     private void queryHrTagId(String hrIds,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(hrIds,queryBuilder,"user.talent_pool.hr_id");
+        searchUtil.handleTerms(hrIds,queryBuilder,"user.talent_pool.tags.hr_id");
     }
     /*
         组装全文检索查询的条件
@@ -696,7 +701,7 @@ public class TalentpoolSearchengine {
         if(type==0){
             sb.append("break;");
         }
-        sb.append(";};_agg['transactions'].add(i)");
+        sb.append("}};_agg['transactions'].add(i)");
         return sb.toString();
     }
     /*
@@ -725,6 +730,18 @@ public class TalentpoolSearchengine {
         sb.append("profit = 0; for (t in _agg.transactions) { profit += t }; return profit");
         return sb.toString();
     }
-
+    /*
+     判断所传参数除了hr_account_id和publisher之外全部为空
+     */
+    private boolean validateEmptyParams(Map<String,String> params){
+        if(params!=null&&!params.isEmpty()){
+            for(String key:params.keySet()){
+                if(!"publisher_ids".equals(key)&&!"hr_account_id".equals(key)&&params.get(key)!=null){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
 }

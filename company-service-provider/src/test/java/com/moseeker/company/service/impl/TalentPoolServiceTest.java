@@ -184,7 +184,7 @@ public class TalentPoolServiceTest {
     @Test
     public void getAllComment(){
         int userId=2191508;
-        int hrId=82752;
+        int hrId=91337;
         int companyId=39978;
         Response res=talentPoolService.getAllTalentComment(hrId,companyId,userId,1,10);
         System.out.println(res);

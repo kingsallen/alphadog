@@ -116,10 +116,24 @@ public class SearchUtil {
         QueryBuilder cityfilter = QueryBuilders.matchQuery(conditionField, conditions);
         ((BoolQueryBuilder) query).must(cityfilter);
     }
-
+    /*
+     处理match的filter查询
+     */
     public void handleMatchFilter(int conditions,QueryBuilder query,String conditionField ){
         QueryBuilder cityfilter = QueryBuilders.matchQuery(conditionField, conditions);
         ((BoolQueryBuilder) query).filter(cityfilter);
+    }
+    /*
+     处理match的should查询
+     */
+    public void handleShouldMatchFilter(int conditions,QueryBuilder query,List<String> conditionFieldList ){
+        QueryBuilder keyand = QueryBuilders.boolQuery();
+        for(String field:conditionFieldList){
+            QueryBuilder fullf = QueryBuilders.matchQuery(field, conditions);
+            ((BoolQueryBuilder) keyand).should(fullf);
+        }
+        ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+        ((BoolQueryBuilder) query).filter(keyand);
     }
     public void hanleRange(int conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
