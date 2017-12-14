@@ -1913,6 +1913,7 @@ public class PositionService {
             default:
                 return null;
         }
+        logger.info("query:{}",query);
 
         Query queryShowInQxCompany = new Query.QueryBuilder().select("company_id").where("show_in_qx", 1).buildQuery();
 
@@ -1924,6 +1925,10 @@ public class PositionService {
                 companylist.add(companyconf.getCompanyId());
             }
         }
+
+        logger.info("queryShowInQxCompany:{}",queryShowInQxCompany);
+
+        logger.info("companylist:{}",companylist);
 
         List<JobPositionDO> jobPositionList = jobPositionDao.getPositions(query);
         logger.info("jobPositionList:{}",jobPositionList);
