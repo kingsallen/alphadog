@@ -65,7 +65,7 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,I
     public JSONArray moseekerRegin(){
         JSONArray moseekerReginArray=new JSONArray();
 
-        Map<Integer,DictCityDO> allCity = cityDao.getFullCity().stream().collect(Collectors.toMap(c->c.getCode(), c->c));
+        Map<Integer,DictCityDO> allCity = cityDao.getFullCity().stream().filter(c->c.getLevel()!=0).collect(Collectors.toMap(c->c.getCode(), c->c));
 
         for(DictCityDO c:cityDao.getFullCity()){
             JSONObject moseekerRegin=new JSONObject();

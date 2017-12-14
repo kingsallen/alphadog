@@ -68,8 +68,8 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
 
         if (moseekerCodes.size() > 0) {
             Query channelCityQuery = new Query.QueryBuilder()
-                    .where(new Condition("CODE", moseekerCodes, ValueOp.IN))
-                    .and("channel", channelType.getValue())
+                    .where(new Condition(DictCityMap.DICT_CITY_MAP.CODE.getName(), moseekerCodes, ValueOp.IN))
+                    .and(DictCityMap.DICT_CITY_MAP.CHANNEL.getName(), channelType.getValue())
                     .buildQuery();
             List<DictCityMapDO> dictCityMapDOS = getDatas(channelCityQuery);
 
