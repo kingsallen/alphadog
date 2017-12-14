@@ -1896,17 +1896,17 @@ public class PositionService {
         Query query;
         switch (type) {
             case 0: //创建or更新
-                query = new Query.QueryBuilder().select("id").where("status", 0)
+                query = new Query.QueryBuilder().select("id").select("company_id").where("status", 0)
                         .and(new Condition("update_time", start_time, ValueOp.GE))
                         .and(new Condition("update_time", end_time, ValueOp.LT)).buildQuery();
                 break;
             case 1: //刷新
-                query = new Query.QueryBuilder().select("id").where("status", 0)
+                query = new Query.QueryBuilder().select("id").select("company_id").where("status", 0)
                         .and(new Condition("update_time", start_time, ValueOp.GE))
                         .and(new Condition("update_time", end_time, ValueOp.LT)).buildQuery();
                 break;
             case 2:
-                query = new Query.QueryBuilder().select("id").where(new Condition("status", 0, ValueOp.NEQ))
+                query = new Query.QueryBuilder().select("id").select("company_id").where(new Condition("status", 0, ValueOp.NEQ))
                         .and(new Condition("update_time", start_time, ValueOp.GE))
                         .and(new Condition("update_time", end_time, ValueOp.LT)).buildQuery();
                 break;
