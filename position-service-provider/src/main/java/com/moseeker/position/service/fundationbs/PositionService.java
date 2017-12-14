@@ -10,7 +10,6 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
-import com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
@@ -59,7 +58,6 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import org.apache.log4j.spi.LoggerRepository;
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -1928,6 +1926,9 @@ public class PositionService {
         }
 
         List<JobPositionDO> jobPositionList = jobPositionDao.getPositions(query);
+        logger.info("jobPositionList:{}",jobPositionList);
+
+
         List<Integer> positionlist = null;
         if (jobPositionList != null) {
             positionlist = new ArrayList<>(jobPositionList.size());
