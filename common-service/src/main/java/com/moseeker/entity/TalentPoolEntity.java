@@ -96,15 +96,18 @@ public class TalentPoolEntity {
      验证是否能够添加或者删除备注
      */
     public int validateComment(int hrId,int companyId,int userId){
+        //获取是不是主账号
         int count=this.valiadteMainAccount(hrId,companyId);
         if(count>0){
-            return this.valicateCompanyApplication(userId,companyId);
+            int result=this.valicateCompanyApplication(userId,companyId);
+            if(result==0){
+                return this.isUpLoad(companyId,userId);
+            }
         }
-
         Set<Integer> userIdSet=new HashSet<>();
         userIdSet.add(userId);
         List<JobApplicationRecord> applist=this.getJobApplicationByPublisherAndApplierId(userIdSet,hrId);
-        if(StringUtils.isEmptyList(applist)){
+        if(!StringUtils.isEmptyList(applist)){
             return applist.size();
         }
         List<TalentpoolTalentRecord> list=getTalentpoolTalentByCompanyId(companyId);
@@ -115,6 +118,16 @@ public class TalentPoolEntity {
             }
         }
         return 0;
+    }
+
+    /*
+     判断user_id是否是上传的
+     */
+
+    private int isUpLoad(int companyId,int userId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).buildQuery();
+        int count=talentpoolTalentDao.getCount(query);
+        return count;
     }
     /*
       获取这个备注是否属于这个hr
