@@ -44,7 +44,7 @@ public class DictJob1001OccupationDao extends AbstractDictOccupationDao<DictJob1
 
     @Override
     protected boolean isTopOccupation(DictJob1001OccupationDO dictJob1001OccupationDO) {
-        return dictJob1001OccupationDO!=null && dictJob1001OccupationDO.getParentId()>0;
+        return dictJob1001OccupationDO!=null && dictJob1001OccupationDO.getParentId()==0;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class DictJob1001OccupationDao extends AbstractDictOccupationDao<DictJob1
 
     @Override
     protected String otherCodeName() {
-        return DictJob1001Occupation.DICT_JOB1001_OCCUPATION.CODE.getName();
+        return DictJob1001Occupation.DICT_JOB1001_OCCUPATION.CODE_OTHER.getName();
     }
 
     public int deleteAll(){

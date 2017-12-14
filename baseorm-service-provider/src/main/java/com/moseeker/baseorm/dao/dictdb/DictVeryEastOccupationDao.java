@@ -44,7 +44,7 @@ public class DictVeryEastOccupationDao extends AbstractDictOccupationDao<DictVer
 
     @Override
     protected boolean isTopOccupation(DictVeryEastOccupationDO dictVeryEastOccupationDO) {
-        return dictVeryEastOccupationDO!=null && dictVeryEastOccupationDO.getParentId()>0;
+        return dictVeryEastOccupationDO!=null && dictVeryEastOccupationDO.getParentId()==0;
     }
 
     @Override
