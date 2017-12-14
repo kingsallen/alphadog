@@ -132,12 +132,4 @@ public class HrGroupCompany extends TableImpl<HrGroupCompanyRecord> {
     public HrGroupCompany as(String alias) {
         return new HrGroupCompany(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrGroupCompany rename(String name) {
-        return new HrGroupCompany(name, null);
-    }
 }

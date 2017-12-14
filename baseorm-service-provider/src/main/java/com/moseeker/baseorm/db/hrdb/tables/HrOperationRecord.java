@@ -147,12 +147,4 @@ public class HrOperationRecord extends TableImpl<HrOperationRecordRecord> {
     public HrOperationRecord as(String alias) {
         return new HrOperationRecord(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrOperationRecord rename(String name) {
-        return new HrOperationRecord(name, null);
-    }
 }

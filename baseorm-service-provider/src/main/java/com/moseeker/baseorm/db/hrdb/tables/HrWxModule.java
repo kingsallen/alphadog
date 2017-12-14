@@ -201,12 +201,4 @@ public class HrWxModule extends TableImpl<HrWxModuleRecord> {
     public HrWxModule as(String alias) {
         return new HrWxModule(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrWxModule rename(String name) {
-        return new HrWxModule(name, null);
-    }
 }

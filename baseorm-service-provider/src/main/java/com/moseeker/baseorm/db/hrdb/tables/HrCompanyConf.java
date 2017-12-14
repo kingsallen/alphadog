@@ -213,12 +213,4 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public HrCompanyConf as(String alias) {
         return new HrCompanyConf(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrCompanyConf rename(String name) {
-        return new HrCompanyConf(name, null);
-    }
 }

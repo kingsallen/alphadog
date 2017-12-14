@@ -192,12 +192,4 @@ public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> 
     public HrReferralStatistics as(String alias) {
         return new HrReferralStatistics(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrReferralStatistics rename(String name) {
-        return new HrReferralStatistics(name, null);
-    }
 }

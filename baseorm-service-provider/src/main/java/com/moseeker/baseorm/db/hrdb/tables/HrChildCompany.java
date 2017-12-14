@@ -191,12 +191,4 @@ public class HrChildCompany extends TableImpl<HrChildCompanyRecord> {
     public HrChildCompany as(String alias) {
         return new HrChildCompany(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrChildCompany rename(String name) {
-        return new HrChildCompany(name, null);
-    }
 }

@@ -222,12 +222,4 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
     public HrCompany as(String alias) {
         return new HrCompany(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrCompany rename(String name) {
-        return new HrCompany(name, null);
-    }
 }

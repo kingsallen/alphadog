@@ -116,12 +116,4 @@ public class HrMediaBackupChendi extends TableImpl<HrMediaBackupChendiRecord> {
     public HrMediaBackupChendi as(String alias) {
         return new HrMediaBackupChendi(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrMediaBackupChendi rename(String name) {
-        return new HrMediaBackupChendi(name, null);
-    }
 }

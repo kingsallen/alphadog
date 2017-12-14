@@ -138,12 +138,4 @@ public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
     public HrChatUnreadCount as(String alias) {
         return new HrChatUnreadCount(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrChatUnreadCount rename(String name) {
-        return new HrChatUnreadCount(name, null);
-    }
 }

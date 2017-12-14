@@ -182,12 +182,4 @@ public class HrEmployeeCertConf extends TableImpl<HrEmployeeCertConfRecord> {
     public HrEmployeeCertConf as(String alias) {
         return new HrEmployeeCertConf(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrEmployeeCertConf rename(String name) {
-        return new HrEmployeeCertConf(name, null);
-    }
 }

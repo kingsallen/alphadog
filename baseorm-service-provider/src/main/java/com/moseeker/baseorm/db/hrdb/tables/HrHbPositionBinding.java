@@ -153,12 +153,4 @@ public class HrHbPositionBinding extends TableImpl<HrHbPositionBindingRecord> {
     public HrHbPositionBinding as(String alias) {
         return new HrHbPositionBinding(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrHbPositionBinding rename(String name) {
-        return new HrHbPositionBinding(name, null);
-    }
 }

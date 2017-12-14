@@ -157,12 +157,4 @@ public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
     public HrWxHrChatList as(String alias) {
         return new HrWxHrChatList(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrWxHrChatList rename(String name) {
-        return new HrWxHrChatList(name, null);
-    }
 }

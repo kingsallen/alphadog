@@ -177,12 +177,4 @@ public class HrCmsMedia extends TableImpl<HrCmsMediaRecord> {
     public HrCmsMedia as(String alias) {
         return new HrCmsMedia(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrCmsMedia rename(String name) {
-        return new HrCmsMedia(name, null);
-    }
 }

@@ -222,12 +222,4 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public HrSearchCondition as(String alias) {
         return new HrSearchCondition(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrSearchCondition rename(String name) {
-        return new HrSearchCondition(name, null);
-    }
 }

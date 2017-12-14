@@ -113,12 +113,4 @@ public class HrdbHrHtml5UniqueStatistics extends TableImpl<HrdbHrHtml5UniqueStat
     public HrdbHrHtml5UniqueStatistics as(String alias) {
         return new HrdbHrHtml5UniqueStatistics(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrdbHrHtml5UniqueStatistics rename(String name) {
-        return new HrdbHrHtml5UniqueStatistics(name, null);
-    }
 }

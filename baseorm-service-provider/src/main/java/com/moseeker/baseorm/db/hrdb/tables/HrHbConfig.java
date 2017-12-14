@@ -222,12 +222,4 @@ public class HrHbConfig extends TableImpl<HrHbConfigRecord> {
     public HrHbConfig as(String alias) {
         return new HrHbConfig(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrHbConfig rename(String name) {
-        return new HrHbConfig(name, null);
-    }
 }

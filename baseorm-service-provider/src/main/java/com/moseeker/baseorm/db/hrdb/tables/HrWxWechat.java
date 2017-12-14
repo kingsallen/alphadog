@@ -252,12 +252,4 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
     public HrWxWechat as(String alias) {
         return new HrWxWechat(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrWxWechat rename(String name) {
-        return new HrWxWechat(name, null);
-    }
 }

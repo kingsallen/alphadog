@@ -166,12 +166,4 @@ public class HrWxTemplateMessage extends TableImpl<HrWxTemplateMessageRecord> {
     public HrWxTemplateMessage as(String alias) {
         return new HrWxTemplateMessage(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrWxTemplateMessage rename(String name) {
-        return new HrWxTemplateMessage(name, null);
-    }
 }

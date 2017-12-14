@@ -151,12 +151,4 @@ public class HrWxNewsReply extends TableImpl<HrWxNewsReplyRecord> {
     public HrWxNewsReply as(String alias) {
         return new HrWxNewsReply(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrWxNewsReply rename(String name) {
-        return new HrWxNewsReply(name, null);
-    }
 }

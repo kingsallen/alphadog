@@ -101,12 +101,4 @@ public class HrResourceOnline extends TableImpl<HrResourceOnlineRecord> {
     public HrResourceOnline as(String alias) {
         return new HrResourceOnline(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrResourceOnline rename(String name) {
-        return new HrResourceOnline(name, null);
-    }
 }

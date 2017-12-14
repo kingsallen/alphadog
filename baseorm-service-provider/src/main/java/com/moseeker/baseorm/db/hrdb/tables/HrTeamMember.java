@@ -162,12 +162,4 @@ public class HrTeamMember extends TableImpl<HrTeamMemberRecord> {
     public HrTeamMember as(String alias) {
         return new HrTeamMember(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrTeamMember rename(String name) {
-        return new HrTeamMember(name, null);
-    }
 }

@@ -162,12 +162,4 @@ public class HrResource extends TableImpl<HrResourceRecord> {
     public HrResource as(String alias) {
         return new HrResource(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrResource rename(String name) {
-        return new HrResource(name, null);
-    }
 }

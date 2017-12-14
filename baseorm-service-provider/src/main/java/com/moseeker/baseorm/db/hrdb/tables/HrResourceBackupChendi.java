@@ -116,12 +116,4 @@ public class HrResourceBackupChendi extends TableImpl<HrResourceBackupChendiReco
     public HrResourceBackupChendi as(String alias) {
         return new HrResourceBackupChendi(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrResourceBackupChendi rename(String name) {
-        return new HrResourceBackupChendi(name, null);
-    }
 }

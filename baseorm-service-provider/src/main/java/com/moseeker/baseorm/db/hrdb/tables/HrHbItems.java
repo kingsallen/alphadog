@@ -168,12 +168,4 @@ public class HrHbItems extends TableImpl<HrHbItemsRecord> {
     public HrHbItems as(String alias) {
         return new HrHbItems(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public HrHbItems rename(String name) {
-        return new HrHbItems(name, null);
-    }
 }
