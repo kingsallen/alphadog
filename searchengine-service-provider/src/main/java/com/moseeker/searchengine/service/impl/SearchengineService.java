@@ -98,16 +98,16 @@ public class SearchengineService {
         if (page_size == 0) {
             page_size = 20;
         }
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
+//        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+//        try {
+//            propertiesReader.loadResource("es.properties");
+//        } catch (Exception e1) {
+//            // TODO Auto-generated catch block
+//            e1.printStackTrace();
+//        }
+//        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
+//        String es_connection = propertiesReader.get("es.connection", String.class);
+//        Integer es_port = propertiesReader.get("es.port", Integer.class);
 
         TransportClient client = null;
         try {
