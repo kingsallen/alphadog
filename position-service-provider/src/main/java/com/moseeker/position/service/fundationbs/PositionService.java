@@ -1926,9 +1926,9 @@ public class PositionService {
             }
         }
 
-        logger.info("queryShowInQxCompany:{}",queryShowInQxCompany);
+       // logger.info("queryShowInQxCompany:{}",queryShowInQxCompany);
 
-        logger.info("companylist:{}",companylist);
+       // logger.info("companylist:{}",companylist);
 
         List<JobPositionDO> jobPositionList = jobPositionDao.getPositions(query);
         logger.info("jobPositionList:{}",jobPositionList);
