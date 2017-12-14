@@ -73,7 +73,7 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
         positionInfo.setQuantity(getQuantity(0,(int)positionDB.getCount()));
         positionInfo.setExperience(experienceToInt(positionDB.getExperience()));
         positionInfo.setEmail(getEmail(positionDB));
-        positionInfo.setRegion(getCities(positionDB));
+        positionInfo.setRegions(getCities(positionDB));
 
         positionInfo.setDegree(TransferStrategy.Job1001Degree.moseekerToJob1001((int)positionDB.getDegree()));
         positionInfo.setTarget(TransferStrategy.Target.moseekerToJob1001((int)positionDB.getCandidateSource()));
