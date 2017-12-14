@@ -5,6 +5,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.lucene.queryparser.xml.builders.FilteredQueryBuilder;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.ToXContent;
@@ -37,8 +38,31 @@ public class TalentpoolSearchengine {
 
     public Map<String,Object>  talentSearch(Map<String,String> params){
         TransportClient client= searchUtil.getEsClient();
+        QueryBuilder query=this.query(params);
+        SearchRequestBuilder builder=client.prepareSearch("users").setTypes("user");
+        Map<String,Object> aggInfo=this.getUserAnalysisIndex(params,client);
+        if(aggInfo==null){
+            builder.addAggregation(this.handleAllApplicationCountAgg(params))
+                    .addAggregation(this.handleAllcountAgg(params))
+                    .addAggregation(this.handleEntryCountAgg(params))
+                    .addAggregation(this.handleFirstTrialOkCountAgg(params))
+                    .addAggregation(this.handleInterviewOkCountAgg(params))
+                    .addAggregation(this.handleIsViewedCountAgg(params))
+                    .addAggregation(this.handleNotViewedCountAgg(params));
+        }
+        String publisherIds=params.get("publisher_ids");
+        List<Integer> publisherIdList=convertStringToList(publisherIds);
+        String hrId=params.get("hr_id");
+        if(publisherIdList.size()>1){
+            builder.addSort("hr_all_"+hrId+"__last_submit_time",SortOrder.DESC);
+        }else{
+            builder.addSort("hr_"+hrId+"__last_submit_time",SortOrder.DESC);
+        }
         String pageNum=params.get("page_number");
         String pageSize=params.get("page_size");
+        if(false){
+
+        }
         return null;
     }
     /*
@@ -267,11 +291,21 @@ public class TalentpoolSearchengine {
     /*
       查询该hr是否在索引当中
      */
-
+    private Map<String,Object> getUserAnalysisIndex(Map<String,String> params,TransportClient client){
+        SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
+                .setQuery(this.queryAggIndex(params));
+        SearchResponse response = responseBuilder.execute().actionGet();
+        long hitNum=response.getHits().getTotalHits();
+        if(hitNum==0){
+            return null;
+        }
+        Map<String,Object> result=searchUtil.handleData(response,"agg");
+        return result;
+    }
     /*
      获取主账号查询所有的统计
      */
-    private QueryBuilder getAggIndex(Map<String,String> params){
+    private QueryBuilder queryAggIndex(Map<String,String> params){
         String hrId=params.get("hr_id");
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
