@@ -264,6 +264,21 @@ public class TalentpoolSearchengine {
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         return script;
     }
+    /*
+      查询该hr是否在索引当中
+     */
+
+    /*
+     获取主账号查询所有的统计
+     */
+    private QueryBuilder getAggIndex(Map<String,String> params){
+        String hrId=params.get("hr_id");
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        searchUtil.handleMatch(Integer.parseInt(hrId),query,"account_id");
+        return query;
+    }
+
 
     private List<Integer> convertStringToList(String params){
         if(StringUtils.isNullOrEmpty(params)){
@@ -641,5 +656,6 @@ public class TalentpoolSearchengine {
         sb.append("profit = 0; for (t in _agg.transactions) { profit += t }; return profit");
         return sb.toString();
     }
+
 
 }
