@@ -10,6 +10,7 @@ import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
@@ -63,6 +64,7 @@ public class ProfileBS {
         if (positionId == 0 || StringUtils.isNullOrEmpty(profile)) {
             return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
         }
+        profile = EmojiFilter.filterEmoji1(profile);
         Query qu = new Query.QueryBuilder().where("id", positionId).buildQuery();
         Position position;
         try {
