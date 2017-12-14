@@ -16,7 +16,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
   private static final org.apache.thrift.protocol.TField CREATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("create_time", org.apache.thrift.protocol.TType.STRING, (short)3);
   private static final org.apache.thrift.protocol.TField SPEAKER_FIELD_DESC = new org.apache.thrift.protocol.TField("speaker", org.apache.thrift.protocol.TType.BYTE, (short)4);
   private static final org.apache.thrift.protocol.TField ORIGIN_FIELD_DESC = new org.apache.thrift.protocol.TField("origin", org.apache.thrift.protocol.TType.BYTE, (short)5);
-  private static final org.apache.thrift.protocol.TField ORIGIN_STR_FIELD_DESC = new org.apache.thrift.protocol.TField("originStr", org.apache.thrift.protocol.TType.STRING, (short)6);
+  private static final org.apache.thrift.protocol.TField ORIGIN_STR_FIELD_DESC = new org.apache.thrift.protocol.TField("origin_str", org.apache.thrift.protocol.TType.STRING, (short)6);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new ChatVOStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ChatVOTupleSchemeFactory();
@@ -26,7 +26,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
   public java.lang.String create_time; // optional
   public byte speaker; // optional
   public byte origin; // optional
-  public java.lang.String originStr; // optional
+  public java.lang.String origin_str; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -35,7 +35,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
     CREATE_TIME((short)3, "create_time"),
     SPEAKER((short)4, "speaker"),
     ORIGIN((short)5, "origin"),
-    ORIGIN_STR((short)6, "originStr");
+    ORIGIN_STR((short)6, "origin_str");
 
     private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -120,7 +120,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     tmpMap.put(_Fields.ORIGIN, new org.apache.thrift.meta_data.FieldMetaData("origin", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
-    tmpMap.put(_Fields.ORIGIN_STR, new org.apache.thrift.meta_data.FieldMetaData("originStr", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.ORIGIN_STR, new org.apache.thrift.meta_data.FieldMetaData("origin_str", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ChatVO.class, metaDataMap);
@@ -143,8 +143,8 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
     }
     this.speaker = other.speaker;
     this.origin = other.origin;
-    if (other.isSetOriginStr()) {
-      this.originStr = other.originStr;
+    if (other.isSetOrigin_str()) {
+      this.origin_str = other.origin_str;
     }
   }
 
@@ -162,7 +162,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
     this.speaker = 0;
     setOriginIsSet(false);
     this.origin = 0;
-    this.originStr = null;
+    this.origin_str = null;
   }
 
   public int getId() {
@@ -282,27 +282,27 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ORIGIN_ISSET_ID, value);
   }
 
-  public java.lang.String getOriginStr() {
-    return this.originStr;
+  public java.lang.String getOrigin_str() {
+    return this.origin_str;
   }
 
-  public ChatVO setOriginStr(java.lang.String originStr) {
-    this.originStr = originStr;
+  public ChatVO setOrigin_str(java.lang.String origin_str) {
+    this.origin_str = origin_str;
     return this;
   }
 
-  public void unsetOriginStr() {
-    this.originStr = null;
+  public void unsetOrigin_str() {
+    this.origin_str = null;
   }
 
-  /** Returns true if field originStr is set (has been assigned a value) and false otherwise */
-  public boolean isSetOriginStr() {
-    return this.originStr != null;
+  /** Returns true if field origin_str is set (has been assigned a value) and false otherwise */
+  public boolean isSetOrigin_str() {
+    return this.origin_str != null;
   }
 
-  public void setOriginStrIsSet(boolean value) {
+  public void setOrigin_strIsSet(boolean value) {
     if (!value) {
-      this.originStr = null;
+      this.origin_str = null;
     }
   }
 
@@ -350,9 +350,9 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
 
     case ORIGIN_STR:
       if (value == null) {
-        unsetOriginStr();
+        unsetOrigin_str();
       } else {
-        setOriginStr((java.lang.String)value);
+        setOrigin_str((java.lang.String)value);
       }
       break;
 
@@ -377,7 +377,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
       return getOrigin();
 
     case ORIGIN_STR:
-      return getOriginStr();
+      return getOrigin_str();
 
     }
     throw new java.lang.IllegalStateException();
@@ -401,7 +401,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
     case ORIGIN:
       return isSetOrigin();
     case ORIGIN_STR:
-      return isSetOriginStr();
+      return isSetOrigin_str();
     }
     throw new java.lang.IllegalStateException();
   }
@@ -466,12 +466,12 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
         return false;
     }
 
-    boolean this_present_originStr = true && this.isSetOriginStr();
-    boolean that_present_originStr = true && that.isSetOriginStr();
-    if (this_present_originStr || that_present_originStr) {
-      if (!(this_present_originStr && that_present_originStr))
+    boolean this_present_origin_str = true && this.isSetOrigin_str();
+    boolean that_present_origin_str = true && that.isSetOrigin_str();
+    if (this_present_origin_str || that_present_origin_str) {
+      if (!(this_present_origin_str && that_present_origin_str))
         return false;
-      if (!this.originStr.equals(that.originStr))
+      if (!this.origin_str.equals(that.origin_str))
         return false;
     }
 
@@ -502,9 +502,9 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
     if (isSetOrigin())
       hashCode = hashCode * 8191 + (int) (origin);
 
-    hashCode = hashCode * 8191 + ((isSetOriginStr()) ? 131071 : 524287);
-    if (isSetOriginStr())
-      hashCode = hashCode * 8191 + originStr.hashCode();
+    hashCode = hashCode * 8191 + ((isSetOrigin_str()) ? 131071 : 524287);
+    if (isSetOrigin_str())
+      hashCode = hashCode * 8191 + origin_str.hashCode();
 
     return hashCode;
   }
@@ -567,12 +567,12 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetOriginStr()).compareTo(other.isSetOriginStr());
+    lastComparison = java.lang.Boolean.valueOf(isSetOrigin_str()).compareTo(other.isSetOrigin_str());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetOriginStr()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.originStr, other.originStr);
+    if (isSetOrigin_str()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.origin_str, other.origin_str);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -634,13 +634,13 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
       sb.append(this.origin);
       first = false;
     }
-    if (isSetOriginStr()) {
+    if (isSetOrigin_str()) {
       if (!first) sb.append(", ");
-      sb.append("originStr:");
-      if (this.originStr == null) {
+      sb.append("origin_str:");
+      if (this.origin_str == null) {
         sb.append("null");
       } else {
-        sb.append(this.originStr);
+        sb.append(this.origin_str);
       }
       first = false;
     }
@@ -731,8 +731,8 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
             break;
           case 6: // ORIGIN_STR
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.originStr = iprot.readString();
-              struct.setOriginStrIsSet(true);
+              struct.origin_str = iprot.readString();
+              struct.setOrigin_strIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -781,10 +781,10 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
         oprot.writeByte(struct.origin);
         oprot.writeFieldEnd();
       }
-      if (struct.originStr != null) {
-        if (struct.isSetOriginStr()) {
+      if (struct.origin_str != null) {
+        if (struct.isSetOrigin_str()) {
           oprot.writeFieldBegin(ORIGIN_STR_FIELD_DESC);
-          oprot.writeString(struct.originStr);
+          oprot.writeString(struct.origin_str);
           oprot.writeFieldEnd();
         }
       }
@@ -821,7 +821,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
       if (struct.isSetOrigin()) {
         optionals.set(4);
       }
-      if (struct.isSetOriginStr()) {
+      if (struct.isSetOrigin_str()) {
         optionals.set(5);
       }
       oprot.writeBitSet(optionals, 6);
@@ -840,8 +840,8 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
       if (struct.isSetOrigin()) {
         oprot.writeByte(struct.origin);
       }
-      if (struct.isSetOriginStr()) {
-        oprot.writeString(struct.originStr);
+      if (struct.isSetOrigin_str()) {
+        oprot.writeString(struct.origin_str);
       }
     }
 
@@ -870,8 +870,8 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
         struct.setOriginIsSet(true);
       }
       if (incoming.get(5)) {
-        struct.originStr = iprot.readString();
-        struct.setOriginStrIsSet(true);
+        struct.origin_str = iprot.readString();
+        struct.setOrigin_strIsSet(true);
       }
     }
   }

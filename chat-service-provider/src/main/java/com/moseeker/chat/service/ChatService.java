@@ -276,10 +276,10 @@ public class ChatService {
                     Optional<ChatOrigin> chatOriginOptional = ChatOrigin.instanceFromValue(chatDO.getOrigin());
                     if (chatOriginOptional.isPresent()) {
                         chatVO.setOrigin(chatOriginOptional.get().getValue());
-                        chatVO.setOriginStr(chatOriginOptional.get().getName());
+                        chatVO.setOrigin_str(chatOriginOptional.get().getName());
                     } else {
                         chatVO.setOrigin(ChatOrigin.Human.getValue());
-                        chatVO.setOriginStr(ChatOrigin.Human.getName());
+                        chatVO.setOrigin_str(ChatOrigin.Human.getName());
                     }
 
                     chatVOList.add(chatVO);

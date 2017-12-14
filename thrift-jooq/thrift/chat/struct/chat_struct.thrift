@@ -46,7 +46,7 @@ struct ChatVO {
     3:  optional string create_time,        //创建时间
     4:  optional i8 speaker,                //0：求职者，1：HR
     5:  optional i8 origin,                 // 0 人工输入，1 欢迎语，2 AI输入
-    6:  optional string originStr           // 0 人工输入，1 欢迎语，2 AI输入
+    6:  optional string origin_str          // 0 人工输入，1 欢迎语，2 AI输入
 }
 
 struct ChatsVO {
