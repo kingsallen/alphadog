@@ -1,10 +1,13 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.searchengine.util.SearchUtil;
+import org.apache.log4j.Logger;
 import org.apache.lucene.queryparser.xml.builders.FilteredQueryBuilder;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.ToXContent;
@@ -31,15 +34,71 @@ import java.util.*;
  */
 @Service
 public class TalentpoolSearchengine {
-
+    private  Logger logger=Logger.getLogger(this.getClass());
     @Autowired
     private SearchUtil searchUtil;
 
+    @CounterIface
     public Map<String,Object>  talentSearch(Map<String,String> params){
         TransportClient client= searchUtil.getEsClient();
+        QueryBuilder query=this.query(params);
+        SearchRequestBuilder builder=client.prepareSearch("users").setTypes("user").setQuery(query);
+        Map<String,Object> aggInfo=this.getUserAnalysisIndex(params,client);
+        if(aggInfo==null){
+            builder.addAggregation(this.handleAllApplicationCountAgg(params))
+                    .addAggregation(this.handleAllcountAgg(params))
+                    .addAggregation(this.handleEntryCountAgg(params))
+                    .addAggregation(this.handleFirstTrialOkCountAgg(params))
+                    .addAggregation(this.handleInterviewOkCountAgg(params))
+                    .addAggregation(this.handleIsViewedCountAgg(params))
+                    .addAggregation(this.handleNotViewedCountAgg(params));
+        }
+        String publisherIds=params.get("publisher_ids");
+        List<Integer> publisherIdList=convertStringToList(publisherIds);
+        String hrId=params.get("hr_account_id");
+        String keyword=params.get("keyword");
+        String lastCompany=params.get("in_last_job_company");
+        String lastPosition=params.get("in_last_job_position");
+        String cityName=params.get("city_name");
+        String companyName=params.get("company_name");
+        String pastPosition=params.get("past_position");
+        String intentionCity=params.get("intention_city_name");
+        if(StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(keyword)||
+           StringUtils.isNotNullOrEmpty(lastCompany)||StringUtils.isNotNullOrEmpty(lastPosition)||StringUtils.isNotNullOrEmpty(cityName)||
+           StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition)||StringUtils.isNotNullOrEmpty(intentionCity)
+           )
+        {
+            builder.addSort(this.handlerScoreOrderScript(publisherIds));
+            if (publisherIdList.size() > 1) {
+                builder.addSort("user.hr_all_" + hrId + "__last_submit_time", SortOrder.DESC);
+            }else{
+                builder.addSort("user.hr_" + hrId + "__last_submit_time", SortOrder.DESC);
+            }
+        }else{
+            if (publisherIdList.size() > 1) {
+                builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+            }else{
+                builder.addSort("user.field_order.hr_"+hrId+"_order", SortOrder.DESC);
+            }
+        }
+
         String pageNum=params.get("page_number");
         String pageSize=params.get("page_size");
-        return null;
+        if(StringUtils.isNullOrEmpty(pageNum)){
+            pageNum="0";
+        }
+        if(StringUtils.isNullOrEmpty(pageSize)){
+            pageSize="15";
+        }
+        builder.setFrom(Integer.parseInt(pageNum)*Integer.parseInt(pageSize));
+        builder.setSize(Integer.parseInt(pageSize));
+        logger.info(builder.toString());
+        SearchResponse response = builder.execute().actionGet();
+        Map<String,Object>result=searchUtil.handleData(response,"users");
+        if(aggInfo!=null&&!aggInfo.isEmpty()){
+            result.put("agg",aggInfo);
+        }
+        return result;
     }
     /*
      组装查询语句
@@ -267,12 +326,22 @@ public class TalentpoolSearchengine {
     /*
       查询该hr是否在索引当中
      */
-
+    private Map<String,Object> getUserAnalysisIndex(Map<String,String> params,TransportClient client){
+        SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
+                .setQuery(this.queryAggIndex(params));
+        SearchResponse response = responseBuilder.execute().actionGet();
+        long hitNum=response.getHits().getTotalHits();
+        if(hitNum==0){
+            return null;
+        }
+        Map<String,Object> result=searchUtil.handleData(response,"agg");
+        return result;
+    }
     /*
      获取主账号查询所有的统计
      */
-    private QueryBuilder getAggIndex(Map<String,String> params){
-        String hrId=params.get("hr_id");
+    private QueryBuilder queryAggIndex(Map<String,String> params){
+        String hrId=params.get("hr_account_id");
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleMatch(Integer.parseInt(hrId),query,"account_id");
@@ -515,7 +584,7 @@ public class TalentpoolSearchengine {
         StringBuffer sb=new StringBuffer();
         sb.append("double score = _score;int values=1;");
         sb.append("for (val in _source.user.applications){");
-        sb.append("if((val.publisher in "+publisherIdList.toArray()+") && val.not_suitable==0){values=0;break;}};");
+        sb.append("if((val.publisher in "+publisherIdList.toString()+") && val.not_suitable==0){values=0;break;}};");
         sb.append("if(values==1){score=score/10};return score;");
         Script script=new Script(sb.toString());
         SortBuilder builder=new ScriptSortBuilder(script,"number");
@@ -619,7 +688,7 @@ public class TalentpoolSearchengine {
         }
         if(StringUtils.isNotNullOrEmpty(positionIds)){
             List<Integer> positionIdList=this.convertStringToList(positionIds);
-            sb.append("val.position_id in"+positionIdList.toArray()+"&&");
+            sb.append("val.position_id in"+positionIdList.toString()+"&&");
         }
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));

@@ -47,6 +47,7 @@ public class TalentPoolSearchTest {
     public void testQuery(){
         Map<String,String> map=new HashMap<>();
         map.put("publisher_ids","1,2,3,4");
+        map.put("hr_account_id","82752");
         map.put("candidate_source","0");
         map.put("only_recommend","1");
         map.put("origins","2");
@@ -61,5 +62,26 @@ public class TalentPoolSearchTest {
         map.put("past_position","xxxxx");
         QueryBuilder builder= talentpoolSearchengine.query(map);
         System.out.println(builder.toString());
+    }
+
+    @Test
+    public void testalentSearch(){
+        Map<String,String> map=new HashMap<>();
+        map.put("publisher_ids","82752,87757,90915,91318,91337,91342,9134");
+        map.put("hr_account_id","82752");
+        map.put("candidate_source","0");
+        map.put("only_recommend","1");
+        map.put("origins","2");
+        map.put("progress_status","1");
+        map.put("tag_ids","1,2,3,4");
+        map.put("hr_ids","1,2,3,4");
+        map.put("keyword","111,222,333");
+        map.put("in_last_job_company","xxxxx");
+        map.put("in_last_job_position","111,222,333");
+        map.put("city_name","xxxxx");
+        map.put("company_name","111,222,333");
+        map.put("past_position","xxxxx");
+        Map<String,Object> result= talentpoolSearchengine.talentSearch(map);
+        System.out.println(result);
     }
 }
