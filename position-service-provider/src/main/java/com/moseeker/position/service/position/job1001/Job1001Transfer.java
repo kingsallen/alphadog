@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictJob1001OccupationDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.base.sync.PositionTransfer;
 import com.moseeker.position.service.position.job1001.pojo.PositionJob1001;
 import com.moseeker.position.service.position.job1001.pojo.PositionJob1001Form;
@@ -120,7 +121,9 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
             data.setOccupation(p.getOccupation().get(p.getOccupation().size() - 1));
         }
         data.setCompanyName(position.getCompanyName());
-        data.setCompanyId(Integer.parseInt(position.getCompanyId()));
+        if(!StringUtils.isNullOrEmpty(position.getCompanyId())) {
+            data.setCompanyId(Integer.parseInt(position.getCompanyId()));
+        }
         data.setSalaryBottom(position.getSalaryBottom());
         data.setSalaryTop(position.getSalaryTop());
 

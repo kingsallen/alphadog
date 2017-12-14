@@ -18,14 +18,14 @@ public class RefresherFactory {
     private List<AbstractRabbitMQParamRefresher> refreshList=new ArrayList<>();
 
 
-    public AbstractRabbitMQParamRefresher getRabbitMQParamRefresher(int channel){
-        ChannelType channelType=ChannelType.instaceFromInteger(channel);
-        if(channelType==null){
-            return null;
+    public boolean hasRabbitMQParamRefresher(ChannelType channelType){
+        for(AbstractRabbitMQParamRefresher refresher:refreshList){
+            if(refresher.getChannelType()==channelType){
+                return true;
+            }
         }
-        return getRabbitMQParamRefresher(channelType);
+        return false;
     }
-
 
     public AbstractRabbitMQParamRefresher getRabbitMQParamRefresher(ChannelType channelType){
         for(AbstractRabbitMQParamRefresher refresher:refreshList){
@@ -33,7 +33,7 @@ public class RefresherFactory {
                 return refresher;
             }
         }
-        return null;
+        throw new RuntimeException("no matched RabbitMQParamRefresher");
     }
 
 }

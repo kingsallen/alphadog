@@ -65,7 +65,7 @@ public class LiepinPositionTransfer extends PositionTransfer<ThirdPartyPosition,
         positionLiepin.setCities(getCities(positionDB));
         positionLiepin.setAddress(positionForm.getAddressName());
         setOccupation(positionForm,positionLiepin);
-        setDepartment(positionForm,positionLiepin);
+        positionLiepin.setDepartment(positionForm.getDepartmentName());
         positionLiepin.setSalary_low(positionForm.getSalaryBottom()+"");
         positionLiepin.setSalary_high(positionForm.getSalaryTop()+"");
         positionLiepin.setSalary_discuss(positionForm.isSalaryDiscuss() ? "1" : "0");
@@ -95,10 +95,6 @@ public class LiepinPositionTransfer extends PositionTransfer<ThirdPartyPosition,
         return positionLiepin;
     }
 
-
-    protected void setDepartment(ThirdPartyPosition form, PositionLiepin position) {
-        position.setDepartment(form.getDepartmentName());
-    }
 
     public void setOccupation(ThirdPartyPosition positionForm, PositionLiepin position) {
         List<String> occupations=positionForm.getOccupation();

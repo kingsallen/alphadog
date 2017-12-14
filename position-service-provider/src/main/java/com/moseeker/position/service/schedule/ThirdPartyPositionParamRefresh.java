@@ -85,14 +85,19 @@ public class ThirdPartyPositionParamRefresh {
                 return;
             }
             int channel=obj.getJSONObject("data").getIntValue("channel");
-
-            refresher=refresherFactory.getRabbitMQParamRefresher(channel);
-
-            if(refresher==null){
-                logger.error("no refresher to handle result {}",channel);
-            }else{
-                refresher.receiveAndHandle(json);
+            ChannelType channelType=ChannelType.instaceFromInteger(channel);
+            if(channelType==null){
+                throw new RuntimeException("no matched ChannelType when refresh "+channel);
             }
+
+
+            if(refresherFactory.hasRabbitMQParamRefresher(channelType)){
+                refresher=refresherFactory.getRabbitMQParamRefresher(channelType);
+                refresher.receiveAndHandle(json);
+            }else{
+                logger.error("no refresher to handle result {}",channel);
+            }
+
         }catch (Exception e){
             logger.error("handle refresh result Error : {}, message :{}",e.getMessage(),json);
             emailNotification.sendRefreshFailureMail(json,refresher,e);
