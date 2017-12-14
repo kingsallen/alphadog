@@ -100,8 +100,11 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
     }
 
     public void generateNewCode(List<Occupation> occupationList){
+        generateNewCode(occupationList,1000);
+    }
+
+    public void generateNewCode(List<Occupation> occupationList,int seed){
         Map<Integer,Map<List<String>,String>> allLevelOccupation=new HashMap<>();
-        int count=1000;
         for(int i=0;i<occupationList.size();i++) {
             Occupation o=occupationList.get(i);
 
@@ -112,10 +115,10 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
                 List<String> occupationText = texts.subList(0,j);
                 Map<List<String>,String> oneLevelOccupation = getOrInitIfNotExist(allLevelOccupation, j);
                 if (!oneLevelOccupation.containsKey(occupationText)) {
-                    oneLevelOccupation.put(occupationText, count + "");
+                    oneLevelOccupation.put(occupationText, seed + "");
                 }
                 codes.add(oneLevelOccupation.get(occupationText).toString());
-                count++;
+                seed++;
             }
         }
     }

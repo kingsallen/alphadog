@@ -38,15 +38,8 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
 
     @Override
     protected Map<Integer, Integer> generateNewKey(List<Integer> otherCodes,JSONObject msg) {
-        int DEFAULT_KEY_SEED=100000;
         String subsite=msg.getString("subsite");
-        if(subsite.equals(job1001ParamRefresher.getSubSite())){
-            DEFAULT_KEY_SEED=100000;
-        } else if(subsite.equals(jljob88ParamRefresher.getSubSite())){
-            DEFAULT_KEY_SEED=200000;
-        } else if(subsite.equals(tmljob88ParamRefresher.getSubSite())){
-            DEFAULT_KEY_SEED=300000;
-        }
+        int DEFAULT_KEY_SEED=getSeed(subsite);
         return PositionRefreshUtils.generateNewKey(otherCodes.iterator(),DEFAULT_KEY_SEED,otherCodes.size());
     }
 
@@ -98,9 +91,22 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
             result.add(occupation);
         }
 
-        generateNewCode(result);
+        String subsite=msg.getString("subsite");
+        generateNewCode(result,getSeed(subsite));
 
         return result;
 
+    }
+
+    private int getSeed(String subsite){
+        int DEFAULT_KEY_SEED=0;
+        if(subsite.equals(job1001ParamRefresher.getSubSite())){
+            DEFAULT_KEY_SEED=100000;
+        } else if(subsite.equals(jljob88ParamRefresher.getSubSite())){
+            DEFAULT_KEY_SEED=200000;
+        } else if(subsite.equals(tmljob88ParamRefresher.getSubSite())){
+            DEFAULT_KEY_SEED=300000;
+        }
+        return DEFAULT_KEY_SEED;
     }
 }
