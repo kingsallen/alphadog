@@ -1236,8 +1236,6 @@ public class TalentPoolService {
         Map<String,Object> validateMap=talentPoolEntity.handlerApplierId(hrId,userIdList,companyId);
         Set<Integer> unUseList= (Set<Integer>) validateMap.get("unuse");
         Set<Integer> useIdList= (Set<Integer>) validateMap.get("use");
-
-
         //获取已经收藏的简历
         List<Map<String,Object>> talentList=this.getTalentpoolHrTalentByIdList(hrId,useIdList);
         //获取被收藏的user_id
