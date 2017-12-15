@@ -21,6 +21,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
@@ -351,7 +352,7 @@ public class UserCenterService {
         return recommendationForm;
     }
 
-    public ApplicationDetailVO getApplicationDetail(int userId, int appId) {
+    public ApplicationDetailVO getApplicationDetail(int userId, int appId) throws CommonException {
         logger.info("--------getApplicationDetail---------");
         logger.info("params   userId:{}, appId:{}", userId, appId);
         ApplicationDetailVO applicationDetailVO = new ApplicationDetailVO();
@@ -359,6 +360,9 @@ public class UserCenterService {
         if(userId > 0 && appId > 0) {
             try {
                 JobApplicationDO applicationDO = bizTools.getApplication(appId);
+                if (applicationDO.getApplierId() != userId) {
+                    throw UserAccountException.NO_PERMISSION_EXCEPTION;
+                }
                 logger.info("applicationDO:{}",applicationDO);
                 if(applicationDO != null && applicationDO.getId() > 0) {
                     applicationDetailVO.setPid(applicationDO.getPositionId());

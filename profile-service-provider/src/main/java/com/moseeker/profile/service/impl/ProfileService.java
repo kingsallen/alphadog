@@ -32,6 +32,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.pojo.profile.*;
+import com.moseeker.entity.pojo.profile.User;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
@@ -43,6 +44,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import java.text.ParseException;
@@ -57,6 +59,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static com.moseeker.baseorm.util.BeanUtils.jooqMapfilter;
+import static com.moseeker.baseorm.util.BeanUtils.profilter;
 
 @Service
 @CounterIface
@@ -220,6 +224,174 @@ public class ProfileService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
 
     }
+    /*
+      整体处理数据
+     */
+    private List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> handlerApplicationData(List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> datas){
+        if(StringUtils.isEmptyList(datas)){
+            return null;
+        }
+        Map<String,Object> paramData=this.getUserPositionData(datas);
+        if(paramData==null||paramData.isEmpty()){
+            return null;
+        }
+        //获取投递人的id
+        List<Integer> userIdList= (List<Integer>) paramData.get("userIdList");
+        //获取职位和投递人之间的关系
+        Map<Integer,Set<Integer>> pidUserIdMap= (Map<Integer, Set<Integer>>) paramData.get("pidUserIdMap");
+        if(StringUtils.isEmptyList(userIdList)||pidUserIdMap==null||pidUserIdMap.isEmpty()){
+            return null;
+        }
+        //获取投递人的具体信息
+        List<UserUserDO> userList=this.getUserUserByIdList(userIdList);
+        if(StringUtils.isEmptyList(userList)){
+            return null;
+        }
+        Map<Integer,Set<Integer>> userPositionData=this.handleUserPosition(userList,pidUserIdMap);
+        if(userPositionData==null||userPositionData.isEmpty()){
+            return null;
+        }
+        List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> result=this.filteroriginData(datas,userPositionData);
+        return result;
+    }
+    /*
+      根据数据获取userId的集合和pid和userid的map
+     */
+    private Map<String,Object> getUserPositionData(List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> datas){
+
+        if(StringUtils.isEmptyList(datas)){
+            return null;
+        }
+        Map<Integer,Set<Integer>> pidUserIdMap=new HashMap<>();
+        List<Integer> userIdList=new ArrayList<>();
+        List<Integer> userIds=new ArrayList<>();
+        //遍历查询得到的data数据
+        //获取用户的集合和<positionid,投递此position的人>的集合
+        for (AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>> entry : datas) {
+            int userId=(int)entry.getValue().get("applier_id");
+            int positionId=(int)entry.getKey().get("id");
+            userIdList.add(userId);
+            Set<Integer> userIdSet=pidUserIdMap.get(positionId);
+            if(userIdSet==null||userIdSet.size()==0){
+                userIdSet=new HashSet<>();
+            }
+            userIdSet.add(userId);
+            pidUserIdMap.put(positionId,userIdSet);
+        }
+        if(StringUtils.isEmptyList(userIdList)||pidUserIdMap==null||pidUserIdMap.isEmpty()){
+            return null;
+        }
+        //加入到自定义的map中，返回
+
+        Map<String,Object> result=new HashMap<>();
+        result.put("userIdList",userIdList);
+        result.put("pidUserIdMap",pidUserIdMap);
+        return result;
+    }
+    /*
+      根据userid的集合获取userid的数据
+     */
+    private List<UserUserDO> getUserUserByIdList(List<Integer> userIdList){
+        com.moseeker.common.util.query.Query query=new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("id",userIdList.toArray(),ValueOp.IN))
+                .buildQuery();
+        List<UserUserDO> list=userDao.getDatas(query);
+        return list;
+    }
+
+    /*
+     处理每个position的申请中user的mobile有重复的数据
+     */
+    private Map<Integer,Set<Integer>> handleUserPosition(List<UserUserDO> list,Map<Integer,Set<Integer>> datas){
+        Map<Integer,Set<Integer>> result=new HashMap<>();
+        for(Integer key:datas.keySet()){
+            //获取投递该职位的人的id
+            Set<Integer> userIdSet=datas.get(key);
+            //创建set存放处理后的结果
+            Set<Integer> userList=new HashSet<>();
+            Map<Long,UserUserDO> map=new HashMap<>();
+            for(Integer userId:userIdSet){
+                for(UserUserDO userDO:list){
+                    if(userDO.getId()!=userId){
+                        continue;
+                    }
+                    long mobile=userDO.getMobile();
+                    //将userId为空的直接存放
+                    if(mobile==0L){
+                        userList.add(userId);
+                        break;
+                    }
+                    //如果mobile没有，那么直接存放
+                    if(map.get(mobile)==null){
+                        map.put(mobile,userDO);
+                    }else{
+                        //如果存在，那么选出有username的
+                        String userName=userDO.getUsername();
+                        UserUserDO DO=map.get(mobile);
+                        String nowUserName=DO.getUsername();
+                        if(StringUtils.isNotNullOrEmpty(userName)){
+                            if(userName.equals(String.valueOf(mobile))){
+                                if(StringUtils.isNotNullOrEmpty(nowUserName)){
+                                    if(!nowUserName.equals(String.valueOf(mobile))){
+                                        map.put(mobile,userDO);
+                                    }
+                                }else{
+                                    //如果现在存储的user的username为空，那么替换成最新的
+                                    map.put(mobile,userDO);
+                                }
+                            }else{
+                                if(StringUtils.isNullOrEmpty(nowUserName)){
+                                    //如果现存的userDo中username为空，那么替换
+                                    map.put(mobile,userDO);
+                                }
+                            }
+                        }
+                        break;
+
+                    }
+
+                }
+            }
+            if(map!=null&&!map.isEmpty()){
+                for(Long key1:map.keySet()){
+                    UserUserDO userUserDO=map.get(key1);
+                    int userId=userUserDO.getId();
+                    userList.add(userId);
+                }
+            }
+            if(userList!=null&&userList.size()>0){
+                result.put(key,userList);
+            }
+
+
+        }
+        return result;
+    }
+    //过滤数据
+    private List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>>  filteroriginData(List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> datas,
+                                  Map<Integer,Set<Integer>> map){
+        //根据先前的获得的职位和员工的对应关系，过滤掉老数据中无用的数据
+        List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> result=new ArrayList<>();
+        for(AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>> entry : datas){
+            int positionId=(int)entry.getKey().get("id");
+            int applierId=(int)entry.getValue().get("applier_id");
+            for(Integer key:map.keySet()){
+                if(key==positionId){
+                    Set<Integer> userIdSet=map.get(key);
+                    if(userIdSet!=null&&!userIdSet.isEmpty()){
+                        if(userIdSet.contains(applierId)){
+                            AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>> data=
+                                    new AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>(entry.getKey(),entry.getValue());
+                            result.add(data);
+
+                        }
+                    }
+                }
+            }
+
+        }
+        return result;
+
+    }
 
     public Response getProfileByApplication(ProfileApplicationForm profileApplicationForm) throws TException {
         ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
@@ -231,7 +403,14 @@ public class ProfileService {
         String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
         String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
         logger.info("profilesByApplication:{}", JSON.toJSONString(profileApplicationForm));
-        return dao.getResourceByApplication(downloadUrl, password, profileApplicationForm);
+        List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>>   positionApplications = dao.getResourceByApplication(downloadUrl, password, profileApplicationForm);
+        logger.info("原始数据=======================================");
+        logger.info(JSON.toJSONString(positionApplications));
+        logger.info("处理后的数据=======================================");
+        positionApplications=handlerApplicationData(positionApplications);
+        logger.info("=================================================");
+        List<Map<String, Object>> datas =dao.getRelatedDataByJobApplication( positionApplications, downloadUrl, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
+        return dao.handleResponse(datas);
     }
 
     /**
@@ -618,18 +797,19 @@ public class ProfileService {
                         String[] mappingStr = mappingFiled.split("\\.", 2);
                         customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
                     } else {
-                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
+                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
                 } else {
                     // 普通字段校验
-                    if (profileOtherJson.containsKey(appCvConfig.getString("field_name"))) {
+                    customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
+                    if (!StringUtils.isJsonNullOrEmpty(customResult)) {
                         customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
                     } else {
-                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
+                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
                 }
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
-                    return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"校验失败");}});
+                    return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "校验失败");}});
                 }
             }
         }
