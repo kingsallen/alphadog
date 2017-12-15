@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-    private static final long serialVersionUID = -1078478232;
+    private static final long serialVersionUID = 1390435110;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -70,11 +70,6 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
      * The column <code>hrdb.hr_third_party_account.password</code>. 密码
      */
     public final TableField<HrThirdPartyAccountRecord, String> PASSWORD = createField("password", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "密码");
-
-    /**
-     * The column <code>hrdb.hr_third_party_account.membername</code>. 会员名称
-     */
-    public final TableField<HrThirdPartyAccountRecord, String> MEMBERNAME = createField("membername", org.jooq.impl.SQLDataType.VARCHAR.length(60).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员名称");
 
     /**
      * The column <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定,2=绑定中，3=绑定失败

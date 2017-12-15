@@ -49,7 +49,7 @@ public class ThridPartyAcountEntity {
     ThirdpartyAccountCompanyAddressDao accountCompanyAddressDao;
 
     @Autowired
-    ThirdPartyAccountSubsiteDao subsiteDao;
+    ThirdPartyAccountJob1001SubsiteDao subsiteDao;
 
     @Autowired
     DictCityMapDao cityMapDao;
@@ -182,13 +182,13 @@ public class ThridPartyAcountEntity {
         }
 
         if(data.getSubsites() != null && !data.getSubsites().isEmpty()){
-            Condition deleteCondition = new Condition(ThirdpartyAccountSubsite.THIRDPARTY_ACCOUNT_SUBSITE.ACCOUNT_ID.getName(), data.getAccountId());
+            Condition deleteCondition = new Condition(ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE.ACCOUNT_ID.getName(), data.getAccountId());
             subsiteDao.delete(deleteCondition);
 
-            List<ThirdpartyAccountSubsiteDO> subsiteDOList= data.getSubsites()
+            List<ThirdpartyAccountJob1001SubsiteDO> subsiteDOList= data.getSubsites()
                     .stream()
                     .map(subsite -> {
-                        ThirdpartyAccountSubsiteDO subsiteDO=new ThirdpartyAccountSubsiteDO();
+                        ThirdpartyAccountJob1001SubsiteDO subsiteDO=new ThirdpartyAccountJob1001SubsiteDO();
                         subsiteDO.setAccountId(data.getAccountId());
                         subsiteDO.setSite(subsite);
                         subsiteDO.setText(subsite);

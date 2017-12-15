@@ -86,7 +86,7 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         logger.info("HRThirdPartyAccountDao upsertResource channel:{}, company_id:{}", record.getChannel(), record.getCompanyId());
         logger.info("HRThirdPartyAccountDao upsertResource record:{}", record);
         int count = create.execute(UPSERT_SQL, record.getChannel(), record.getUsername(), record.getPassword(),
-                record.getMembername(), record.getBinding(), record.getCompanyId().intValue(),
+                record.getBinding(), record.getCompanyId().intValue(),
                 record.getRemainNum().intValue(), record.getSyncTime(), record.getChannel(),
                 record.getCompanyId().intValue());
         logger.info("HRThirdPartyAccountDao count:{}", count);
@@ -98,7 +98,6 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
                     .fetchOne();
             dbrecord.setUsername(record.getUsername());
             dbrecord.setPassword(record.getPassword());
-            dbrecord.setMembername(record.getMembername());
             dbrecord.setBinding(record.getBinding());
             dbrecord.setRemainNum(record.getRemainNum());
             dbrecord.setSyncTime(record.getSyncTime());
@@ -117,7 +116,6 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
             record.setCompanyId(account.getCompanyId());
             Timestamp now = new Timestamp(System.currentTimeMillis());
             record.setCreateTime(now);
-            record.setMembername(account.getMembername());
             record.setPassword(account.getPassword());
             record.setRemainNum((int) (account.getRemainNum()));
             record.setSyncTime(now);

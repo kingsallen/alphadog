@@ -2,7 +2,7 @@ namespace java com.moseeker.thrift.gen.dao.struct.thirdpartydb
 namespace py thrift_gen.gen.dao.struct.thirdpartydb
 
 
-struct ThirdpartyAccountSubsiteDO {
+struct ThirdpartyAccountJob1001SubsiteDO {
 
 	1: optional i32 id,	//主键
 	2: optional i32 accountId,	//第三方渠道账号的编号
