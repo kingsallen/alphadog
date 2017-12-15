@@ -9,5 +9,5 @@ package com.moseeker.position.service.position.base.refresh;
  * @author pyb
  */
 public interface ParamRefresher {
-    public void refresh();
+    void refresh();
 }

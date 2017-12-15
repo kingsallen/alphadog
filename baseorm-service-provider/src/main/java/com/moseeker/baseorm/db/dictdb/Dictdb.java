@@ -46,7 +46,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1954481174;
+    private static final long serialVersionUID = -1786983547;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -129,7 +129,7 @@ public class Dictdb extends SchemaImpl {
     public final DictPosition DICT_POSITION = com.moseeker.baseorm.db.dictdb.tables.DictPosition.DICT_POSITION;
 
     /**
-     * 最佳东方的职位表
+     * 最佳东方的职位职能表
      */
     public final DictVeryeastOccupation DICT_VERYEAST_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION;
 

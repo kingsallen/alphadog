@@ -46,7 +46,13 @@ public class ThirdPartyAccountInfoService {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"The Channel does not has the InfoProvider");
         }
 
-        String json=providers.get(channel).provide(param);
+        AbstractThirdInfoProvider provider=providers.get(channel);
+        if(provider==null){
+            logger.error("no third info provider");
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"no third info provider");
+        }
+
+        String json=provider.provide(param);
 
         info.setJson(json);
 

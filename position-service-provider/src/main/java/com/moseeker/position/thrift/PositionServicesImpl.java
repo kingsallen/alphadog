@@ -190,7 +190,7 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public List<Map<String,String>> getThirdPartyPositions(CommonQuery query) throws TException {
+    public List<String> getThirdPartyPositions(CommonQuery query) throws TException {
         try {
             return service.getThirdPartyPositions(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {

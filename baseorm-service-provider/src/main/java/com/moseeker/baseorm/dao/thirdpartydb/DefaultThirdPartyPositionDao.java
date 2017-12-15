@@ -48,4 +48,9 @@ public class DefaultThirdPartyPositionDao implements IThirdPartyPositionDao<Empt
         Arrays.fill(result,1);
         return result;
     }
+
+    @Override
+    public EmptyExtThirdPartyPosition setId(HrThirdPartyPositionDO thirdPartyPositionDO, EmptyExtThirdPartyPosition emptyExtThirdPartyPosition) {
+        return emptyExtThirdPartyPosition;
+    }
 }

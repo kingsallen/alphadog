@@ -69,9 +69,7 @@ public class Keys {
     public static final Identity<DictCityPostcodeRecord, Integer> IDENTITY_DICT_CITY_POSTCODE = Identities0.IDENTITY_DICT_CITY_POSTCODE;
     public static final Identity<DictConstantRecord, Integer> IDENTITY_DICT_CONSTANT = Identities0.IDENTITY_DICT_CONSTANT;
     public static final Identity<DictCountryRecord, Integer> IDENTITY_DICT_COUNTRY = Identities0.IDENTITY_DICT_COUNTRY;
-    public static final Identity<DictJob1001OccupationRecord, Integer> IDENTITY_DICT_JOB1001_OCCUPATION = Identities0.IDENTITY_DICT_JOB1001_OCCUPATION;
     public static final Identity<DictLiepinOccupationRecord, Integer> IDENTITY_DICT_LIEPIN_OCCUPATION = Identities0.IDENTITY_DICT_LIEPIN_OCCUPATION;
-    public static final Identity<DictVeryeastOccupationRecord, Integer> IDENTITY_DICT_VERYEAST_OCCUPATION = Identities0.IDENTITY_DICT_VERYEAST_OCCUPATION;
     public static final Identity<DictZhilianOccupationRecord, Integer> IDENTITY_DICT_ZHILIAN_OCCUPATION = Identities0.IDENTITY_DICT_ZHILIAN_OCCUPATION;
 
     // -------------------------------------------------------------------------
@@ -113,9 +111,7 @@ public class Keys {
         public static Identity<DictCityPostcodeRecord, Integer> IDENTITY_DICT_CITY_POSTCODE = createIdentity(DictCityPostcode.DICT_CITY_POSTCODE, DictCityPostcode.DICT_CITY_POSTCODE.ID);
         public static Identity<DictConstantRecord, Integer> IDENTITY_DICT_CONSTANT = createIdentity(DictConstant.DICT_CONSTANT, DictConstant.DICT_CONSTANT.ID);
         public static Identity<DictCountryRecord, Integer> IDENTITY_DICT_COUNTRY = createIdentity(DictCountry.DICT_COUNTRY, DictCountry.DICT_COUNTRY.ID);
-        public static Identity<DictJob1001OccupationRecord, Integer> IDENTITY_DICT_JOB1001_OCCUPATION = createIdentity(DictJob1001Occupation.DICT_JOB1001_OCCUPATION, DictJob1001Occupation.DICT_JOB1001_OCCUPATION.CODE);
         public static Identity<DictLiepinOccupationRecord, Integer> IDENTITY_DICT_LIEPIN_OCCUPATION = createIdentity(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION, DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.ID);
-        public static Identity<DictVeryeastOccupationRecord, Integer> IDENTITY_DICT_VERYEAST_OCCUPATION = createIdentity(DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION, DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION.CODE);
         public static Identity<DictZhilianOccupationRecord, Integer> IDENTITY_DICT_ZHILIAN_OCCUPATION = createIdentity(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION, DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE);
     }
 

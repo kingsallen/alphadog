@@ -15,7 +15,6 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
-import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -36,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictJob1001Occupation extends TableImpl<DictJob1001OccupationRecord> {
 
-    private static final long serialVersionUID = 34569608;
+    private static final long serialVersionUID = 651941050;
 
     /**
      * The reference instance of <code>dictdb.dict_job1001_occupation</code>
@@ -82,9 +81,9 @@ public class DictJob1001Occupation extends TableImpl<DictJob1001OccupationRecord
     public final TableField<DictJob1001OccupationRecord, Short> STATUS = createField("status", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "只能状态 0 是有效 1是无效");
 
     /**
-     * The column <code>dictdb.dict_job1001_occupation.createTime</code>. 创建时间
+     * The column <code>dictdb.dict_job1001_occupation.create_time</code>. 创建时间
      */
-    public final TableField<DictJob1001OccupationRecord, Timestamp> CREATETIME = createField("createTime", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+    public final TableField<DictJob1001OccupationRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
      * The column <code>dictdb.dict_job1001_occupation.subsite</code>. 所属发布网站
@@ -119,14 +118,6 @@ public class DictJob1001Occupation extends TableImpl<DictJob1001OccupationRecord
     @Override
     public Schema getSchema() {
         return Dictdb.DICTDB;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Identity<DictJob1001OccupationRecord, Integer> getIdentity() {
-        return Keys.IDENTITY_DICT_JOB1001_OCCUPATION;
     }
 
     /**

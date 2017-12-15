@@ -12,6 +12,8 @@ public interface IThirdPartyPositionDao<P> {
     int updateData(P p);
     int[] updateDatas(List<P> list);
 
+    P setId(HrThirdPartyPositionDO thirdPartyPositionDO,P p);
+
     default boolean isEmptyPosition(HrThirdPartyPositionDO thirdPartyPositionDO){
         return thirdPartyPositionDO==null || thirdPartyPositionDO.getId()==0;
     }

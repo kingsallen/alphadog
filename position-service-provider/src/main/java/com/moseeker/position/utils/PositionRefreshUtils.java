@@ -11,16 +11,16 @@ import java.util.Map;
 public class PositionRefreshUtils {
     private static Logger logger= LoggerFactory.getLogger(PositionRefreshUtils.class);
 
-    private static int defaultKeySeed=100000;
-    private static int defaultKeySize=16;
+    private static final int DEFAULT_KEY_SEED=100000;
+    private static final int DEFAULT_KEY_SIZE=16;
 
     private PositionRefreshUtils(){}
 
     public static <K> Map<K,Integer> generateNewKey(Iterator<K> it){
-        return generateNewKey(it,defaultKeySeed,defaultKeySize);
+        return generateNewKey(it,DEFAULT_KEY_SEED,DEFAULT_KEY_SIZE);
     }
     public static <K> Map<K,Integer> generateNewKey(Iterator<K> it,int size){
-        return generateNewKey(it,defaultKeySeed,size);
+        return generateNewKey(it,DEFAULT_KEY_SEED,size);
     }
     /**
      * 生成自己的key
@@ -89,7 +89,13 @@ public class PositionRefreshUtils {
      * @param list2
      * @return
      */
-    public static boolean notEmptyAndSizeMatch(List list1,List list2){
-        return list1==null || list2==null || list1.isEmpty() || list2.isEmpty() || list1.size() != list2.size();
+    public static boolean notEmptyAndSizeMatch(List<?> list1,List<?> list2){
+        return isNullOrEmpty(list1)|| isNullOrEmpty(list2) || list1.size() != list2.size();
     }
+
+    public static boolean isNullOrEmpty(List<?> list){
+        return list==null || list.isEmpty();
+    }
+
+
 }

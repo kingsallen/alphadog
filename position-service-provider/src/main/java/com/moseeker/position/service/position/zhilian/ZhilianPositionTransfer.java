@@ -150,7 +150,6 @@ public class ZhilianPositionTransfer extends PositionTransfer<ThirdPartyPosition
         data.setThirdPartyAccountId(Integer.parseInt(pwa.getAccount_id()));
         data.setSalaryBottom(Integer.parseInt(p.getSalary_low()));
         data.setSalaryTop(Integer.parseInt(p.getSalary_high()));
-        data.setSalaryMonth(Integer.parseInt(p.getSalary_month()));
 
         data.setCompanyId(form.getCompanyId());
         data.setCompanyName(form.getCompanyName());
@@ -171,39 +170,5 @@ public class ZhilianPositionTransfer extends PositionTransfer<ThirdPartyPosition
     public EmptyExtThirdPartyPosition toExtThirdPartyPosition(Map<String, String> data) {
         return EmptyExtThirdPartyPosition.EMPTY;
     }
-
-    @Override
-    public JobPositionDO toWriteBackPosition(ThirdPartyPosition position, JobPositionDO positionDB, PositionZhilianWithAccount positionZhilianWithAccount) {
-        if(positionDB==null || positionDB.getId()==0){
-            return null;
-        }
-        JobPositionDO updateData=new JobPositionDO();
-        PositionZhilian p=positionZhilianWithAccount.getPosition_info();
-
-        boolean needWriteBackToPositin = false;
-        int salay_top=Integer.parseInt(p.getSalary_high());
-        int salary_bottom=Integer.parseInt(p.getSalary_low());
-        int count=Integer.parseInt(p.getCount());
-
-        if (salay_top > 0 && salay_top != positionDB.getSalaryTop() * 1000) {
-            updateData.setSalaryTop(salay_top / 1000);
-            needWriteBackToPositin = true;
-        }
-        if (salary_bottom > 0 && salary_bottom != positionDB.getSalaryBottom() * 1000) {
-            updateData.setSalaryBottom(salary_bottom / 1000);
-            needWriteBackToPositin = true;
-        }
-        if (count != positionDB.getCount()) {
-            updateData.setCount(Integer.valueOf(count));
-            needWriteBackToPositin = true;
-        }
-        if (needWriteBackToPositin) {
-            logger.info("needWriteBackToPositin : {} " ,updateData);
-            return updateData;
-        }
-
-        return null;
-    }
-
 
 }

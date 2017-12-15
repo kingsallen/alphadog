@@ -36,10 +36,6 @@ public class AppConfig {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        logger.info("rabbitmq.host:{}, rabbitmq.port:{}, rabbitmq.username:{}, rabbitmq.password:{}",
-                env.getProperty("rabbitmq.host"), env.getProperty("rabbitmq.port"), env.getProperty("rabbitmq.username"),
-                env.getProperty("rabbitmq.password"));
-        logger.info("------------------------");
         ConnectionFactory cf = new ConnectionFactory();
         cf.setHost(env.getProperty("rabbitmq.host").trim());
         cf.setPort(Integer.valueOf(env.getProperty("rabbitmq.port").trim()));
@@ -50,7 +46,6 @@ public class AppConfig {
 
     @Bean
     public RabbitTemplate rabbitTemplate() {
-        logger.info("-----------before rabbitTemplate()-------------");
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory());
         RetryTemplate retryTemplate = new RetryTemplate();
         // 重试机制
@@ -60,7 +55,6 @@ public class AppConfig {
         backOffPolicy.setMaxInterval(10000);
         retryTemplate.setBackOffPolicy(backOffPolicy);
         rabbitTemplate.setRetryTemplate(retryTemplate);
-        logger.info("-----------end rabbitTemplate()-------------");
         return rabbitTemplate;
     }
 
@@ -83,12 +77,10 @@ public class AppConfig {
      */
     @Bean("rabbitListenerContainerFactory")
     public RabbitListenerContainerFactory rabbitListenerContainerFactory() {
-        logger.info("-----------before rabbitListenerContainerFactory()-------------");
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
         // 设置手动 ACK
         listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
-        logger.info("-----------end rabbitListenerContainerFactory()-------------");
         return listenerContainerFactory;
     }
 
@@ -98,13 +90,11 @@ public class AppConfig {
      */
     @Bean
     public RabbitListenerContainerFactory rabbitListenerContainerFactoryAutoAck() {
-        logger.info("-----------before rabbitListenerContainerFactory()-------------");
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
 
         // 设置自动 ACK
         listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.AUTO);
-        logger.info("-----------end rabbitListenerContainerFactory()-------------");
         return listenerContainerFactory;
     }
 
@@ -128,16 +118,18 @@ public class AppConfig {
     }
 
     @Bean
+    public TopicExchange webPresetExchange() {
+        TopicExchange topicExchange = new TopicExchange("chaos", true, false);
+        return topicExchange;
+    }
+
+    @Bean
     public Queue presetQueue() {
         Queue queue = new Queue("chaos.preset.response", true, false, false);
         return queue;
     }
 
-    @Bean
-    public TopicExchange webPresetExchange() {
-        TopicExchange topicExchange = new TopicExchange("chaos", true, false);
-        return topicExchange;
-    }
+
 
     @Bean
     public List<Binding> webBindingPreset() {

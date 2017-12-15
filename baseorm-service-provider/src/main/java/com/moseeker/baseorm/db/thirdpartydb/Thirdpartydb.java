@@ -8,7 +8,7 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCity;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompany;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountSubsite;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
 
@@ -36,7 +36,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Thirdpartydb extends SchemaImpl {
 
-    private static final long serialVersionUID = 370899336;
+    private static final long serialVersionUID = 1479652420;
 
     /**
      * The reference instance of <code>thirdpartydb</code>
@@ -66,7 +66,7 @@ public class Thirdpartydb extends SchemaImpl {
     /**
      * 一览人才的第三方发布网站表
      */
-    public final ThirdpartyAccountSubsite THIRDPARTY_ACCOUNT_SUBSITE = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountSubsite.THIRDPARTY_ACCOUNT_SUBSITE;
+    public final ThirdpartyAccountJob1001Subsite THIRDPARTY_ACCOUNT_JOB1001_SUBSITE = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE;
 
     /**
      * 一览人才的第三方职位子表
@@ -74,7 +74,7 @@ public class Thirdpartydb extends SchemaImpl {
     public final ThirdpartyJob1001Position THIRDPARTY_JOB1001_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION;
 
     /**
-     * 的第三方职位子表
+     * 最佳东方的第三方职位子表
      */
     public final ThirdpartyVeryeastPosition THIRDPARTY_VERYEAST_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION;
 
@@ -107,7 +107,7 @@ public class Thirdpartydb extends SchemaImpl {
             ThirdpartyAccountCompany.THIRDPARTY_ACCOUNT_COMPANY,
             ThirdpartyAccountCompanyAddress.THIRDPARTY_ACCOUNT_COMPANY_ADDRESS,
             ThirdpartyAccountDepartment.THIRDPARTY_ACCOUNT_DEPARTMENT,
-            ThirdpartyAccountSubsite.THIRDPARTY_ACCOUNT_SUBSITE,
+            ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE,
             ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION,
             ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION);
     }

@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,IChannelType {
     Logger logger= LoggerFactory.getLogger(AbstractRabbitMQParamRefresher.class);
 
+
+
     @Autowired
     DictCityDao cityDao;
 
@@ -35,11 +37,13 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,I
     public abstract void receiveAndHandle(String json);
     public abstract void addUserParam(JSONObject jsonSend);
 
+    private static int account_id=1;
+
     @Override
     public void refresh() {
         JSONObject jsonSend=new JSONObject();
 
-        jsonSend.put("account_id",1);
+        jsonSend.put("account_id",account_id++);
         jsonSend.put("channel",getChannelType().getValue());
         jsonSend.put("moseeker_region",moseekerRegin());
 
@@ -47,14 +51,10 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,I
         addSendParam(jsonSend);
 
         String json=jsonSend.toJSONString();
-        logger.info("refresh param send RabbitMQ channel : {}",getChannelType().getValue());
+        logger.info("refresh param send RabbitMQ channel : {} json: {}",getChannelType().getValue(),json);
 
-        amqpTemplate.send(exchange(),routingKey(), createMsg(json));
+        amqpTemplate.convertAndSend(exchange(),routingKey(), json);
         logger.info("send RabbitMQ success");
-    }
-
-    public Message createMsg(String str){
-        return MessageBuilder.withBody(str.getBytes()).build();
     }
 
     /**
@@ -65,9 +65,11 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,I
     public JSONArray moseekerRegin(){
         JSONArray moseekerReginArray=new JSONArray();
 
-        Map<Integer,DictCityDO> allCity = cityDao.getFullCity().stream().collect(Collectors.toMap(c->c.getCode(), c->c));
+        List<DictCityDO> fullCity=cityDao.getFullCity().stream().filter(c->c.getLevel()!=0).collect(Collectors.toList());
 
-        for(DictCityDO c:cityDao.getFullCity()){
+        Map<Integer,DictCityDO> allCity = fullCity.stream().collect(Collectors.toMap(c->c.getCode(), c->c));
+
+        for(DictCityDO c:fullCity){
             JSONObject moseekerRegin=new JSONObject();
 
             List<String> chain=cityDao.getMoseekerLevels(c,allCity).stream().map(d->d.getName()).collect(Collectors.toList());

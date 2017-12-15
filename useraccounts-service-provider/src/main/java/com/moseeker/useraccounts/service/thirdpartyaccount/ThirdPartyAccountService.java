@@ -305,7 +305,6 @@ public class ThirdPartyAccountService {
         accountInfo.setId(thirdPartyAccount.getId());
         accountInfo.setChannel(thirdPartyAccount.getChannel());
         accountInfo.setBound(thirdPartyAccount.getBinding());
-        accountInfo.setMembername(thirdPartyAccount.getMembername());
         accountInfo.setUsername(thirdPartyAccount.getUsername());
         accountInfo.setCompany_id(thirdPartyAccount.getCompanyId());
         accountInfo.setSync_time(thirdPartyAccount.getSyncTime());

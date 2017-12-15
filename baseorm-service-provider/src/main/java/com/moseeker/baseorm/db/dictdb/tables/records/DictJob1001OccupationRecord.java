@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictJob1001OccupationRecord extends UpdatableRecordImpl<DictJob1001OccupationRecord> implements Record8<Integer, Integer, String, Integer, Short, Short, Timestamp, String> {
 
-    private static final long serialVersionUID = 168259073;
+    private static final long serialVersionUID = 430036432;
 
     /**
      * Setter for <code>dictdb.dict_job1001_occupation.code</code>. 职能id
@@ -117,16 +117,16 @@ public class DictJob1001OccupationRecord extends UpdatableRecordImpl<DictJob1001
     }
 
     /**
-     * Setter for <code>dictdb.dict_job1001_occupation.createTime</code>. 创建时间
+     * Setter for <code>dictdb.dict_job1001_occupation.create_time</code>. 创建时间
      */
-    public void setCreatetime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_job1001_occupation.createTime</code>. 创建时间
+     * Getter for <code>dictdb.dict_job1001_occupation.create_time</code>. 创建时间
      */
-    public Timestamp getCreatetime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(6);
     }
 
@@ -229,7 +229,7 @@ public class DictJob1001OccupationRecord extends UpdatableRecordImpl<DictJob1001
      */
     @Override
     public Field<Timestamp> field7() {
-        return DictJob1001Occupation.DICT_JOB1001_OCCUPATION.CREATETIME;
+        return DictJob1001Occupation.DICT_JOB1001_OCCUPATION.CREATE_TIME;
     }
 
     /**
@@ -293,7 +293,7 @@ public class DictJob1001OccupationRecord extends UpdatableRecordImpl<DictJob1001
      */
     @Override
     public Timestamp value7() {
-        return getCreatetime();
+        return getCreateTime();
     }
 
     /**
@@ -363,7 +363,7 @@ public class DictJob1001OccupationRecord extends UpdatableRecordImpl<DictJob1001
      */
     @Override
     public DictJob1001OccupationRecord value7(Timestamp value) {
-        setCreatetime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -406,7 +406,7 @@ public class DictJob1001OccupationRecord extends UpdatableRecordImpl<DictJob1001
     /**
      * Create a detached, initialised DictJob1001OccupationRecord
      */
-    public DictJob1001OccupationRecord(Integer code, Integer parentId, String name, Integer codeOther, Short level, Short status, Timestamp createtime, String subsite) {
+    public DictJob1001OccupationRecord(Integer code, Integer parentId, String name, Integer codeOther, Short level, Short status, Timestamp createTime, String subsite) {
         super(DictJob1001Occupation.DICT_JOB1001_OCCUPATION);
 
         set(0, code);
@@ -415,7 +415,7 @@ public class DictJob1001OccupationRecord extends UpdatableRecordImpl<DictJob1001
         set(3, codeOther);
         set(4, level);
         set(5, status);
-        set(6, createtime);
+        set(6, createTime);
         set(7, subsite);
     }
 }

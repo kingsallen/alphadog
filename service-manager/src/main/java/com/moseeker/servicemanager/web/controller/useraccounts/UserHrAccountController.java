@@ -213,7 +213,6 @@ public class UserHrAccountController {
         resultMap.put("channel", struct.getChannel());
         resultMap.put("username", struct.getUsername());
         resultMap.put("company_id", struct.getCompanyId());
-        resultMap.put("member_name", struct.getMembername());
         resultMap.put("bound", struct.getBinding());
         resultMap.put("create_time", struct.getCreateTime());
         resultMap.put("update_time", struct.getCreateTime());

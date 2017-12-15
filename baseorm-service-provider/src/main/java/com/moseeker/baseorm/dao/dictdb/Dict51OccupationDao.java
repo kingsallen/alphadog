@@ -42,7 +42,7 @@ public class Dict51OccupationDao extends AbstractDictOccupationDao<Dict51jobOccu
 
     @Override
     protected boolean isTopOccupation(Dict51jobOccupationDO dict51jobOccupationDO) {
-        return dict51jobOccupationDO!=null && dict51jobOccupationDO.getParentId()>0;
+        return dict51jobOccupationDO!=null && dict51jobOccupationDO.getParentId()==0;
     }
 
     @Override

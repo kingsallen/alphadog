@@ -14,7 +14,7 @@ public abstract class AbstractJsonResultHandler implements JsonResultHandler {
             JSONObject obj=JSONObject.parseObject(json);
             handle(obj.getJSONObject("data"));
         }catch (Exception e){
-            logger.info("VeryEast parse json exception : data:{},exception：{}",json,e);
+            logger.info("parse json exception : data:{},exception：{}",json,e);
             throw e;
         }
     }
