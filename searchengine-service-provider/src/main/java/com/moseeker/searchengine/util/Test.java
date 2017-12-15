@@ -1,4 +1,4 @@
-package com.moseeker.common.util;
+package com.moseeker.searchengine.util;
 
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.email.config.EmailContent;
@@ -6,23 +6,23 @@ import com.moseeker.common.email.config.EmailSessionConfig;
 import com.moseeker.common.email.mail.Mail;
 import com.moseeker.common.email.mail.Message;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.EsClientInstance;
+import com.moseeker.common.util.StringUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
-import javax.mail.MessagingException;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by zztaiwll on 17/12/5.
+ * Created by zztaiwll on 17/12/15.
  */
-public class EsClientInstance {
+public class Test {
     private static Logger logger=Logger.getLogger(EsClientInstance.class);
-    //
     private static Integer SLEEP_TIME=0;
     private static Integer CONNECTION_NUM=0;
     private static TransportClient client=null;
@@ -32,8 +32,8 @@ public class EsClientInstance {
         try{
             ConfigPropertiesUtil property = ConfigPropertiesUtil.getInstance();
             property.loadResource("common.properties");
-            SLEEP_TIME=property.get("sleep_time",Integer.class);
-            CONNECTION_NUM=property.get("connection_num",Integer.class);;
+            SLEEP_TIME=0;//property.get("sleep_time",Integer.class);
+            CONNECTION_NUM=0;//property.get("connection_num",Integer.class);;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,6 +142,7 @@ public class EsClientInstance {
         message.setEmailContent(mailContent);
         Mail mail = mailBuilder.buildSessionConfig(sessionConfig).build(message.getEmailContent());
         mail.send();
+
     }
     private static List<String> StringConvertList(String params,String separate){
         if(StringUtils.isNullOrEmpty(params)){
@@ -154,5 +155,7 @@ public class EsClientInstance {
         }
         return list;
     }
-
+    public static void main(String[] args) {
+        Test.getClient();
+    }
 }
