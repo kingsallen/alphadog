@@ -13,7 +13,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.ExperienceChangeUtil;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
-import com.moseeker.position.service.position.base.sync.PositionTransfer;
+import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.job51.pojo.Position51;
 import com.moseeker.position.service.position.job51.pojo.Position51WithAccount;
 import com.moseeker.position.service.position.qianxun.Degree;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class Job51PositionTransfer extends PositionTransfer<ThirdPartyPosition,Position51WithAccount,Position51,EmptyExtThirdPartyPosition>{
+public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPosition,Position51WithAccount,Position51,EmptyExtThirdPartyPosition> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired

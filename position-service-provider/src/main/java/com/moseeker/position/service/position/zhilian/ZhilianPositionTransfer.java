@@ -7,7 +7,7 @@ import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.ExperienceChangeUtil;
-import com.moseeker.position.service.position.base.sync.PositionTransfer;
+import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.zhilian.pojo.PositionZhilian;
 import com.moseeker.position.service.position.zhilian.pojo.PositionZhilianWithAccount;
 import com.moseeker.position.service.position.qianxun.Degree;
@@ -25,7 +25,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
-public class ZhilianPositionTransfer extends PositionTransfer<ThirdPartyPosition,PositionZhilianWithAccount,PositionZhilian,EmptyExtThirdPartyPosition> {
+public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdPartyPosition,PositionZhilianWithAccount,PositionZhilian,EmptyExtThirdPartyPosition> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
