@@ -19,6 +19,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.EsClientInstance;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -29,6 +30,8 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import java.net.UnknownHostException;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -84,36 +87,8 @@ public class SearchengineEntity {
      *
      * @return
      */
-    public TransportClient getTransportClient() {
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            logger.error(e1.getMessage());
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        logger.info(cluster_name);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                .build();
-        TransportClient client = null;
-        try {
-            client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("es2-t.dqprism.com"), es_port))
-            ;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            try {
-                if (client != null) {
-                    client.close();
-                }
-            } catch (Exception e1) {
-                logger.error(e1.getMessage(), e1);
-            }
-        }
-        return client;
+    private TransportClient getTransportClient() {
+        return EsClientInstance.getClient();
     }
 
 
@@ -127,18 +102,6 @@ public class SearchengineEntity {
      */
     public Response updateEmployeeDOAwards(List<UserEmployeeDO> userEmployeeDOList) throws CommonException {
         logger.info("----开始更新员工积分信息-------");
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            logger.error(e1.getMessage());
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        logger.info(cluster_name);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                .build();
         TransportClient client = null;
         BulkRequestBuilder bulkRequest = null;
         if (userEmployeeDOList != null && userEmployeeDOList.size() > 0) {
@@ -164,8 +127,7 @@ public class SearchengineEntity {
             userUerMap.putAll(userUserDOS.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity())));
             try {
                 // 连接ES
-                client = TransportClient.builder().settings(settings).build()
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+                client =this.getTransportClient();
                 bulkRequest = client.prepareBulk();
                 // 更新数据
                 for (UserEmployeeDO userEmployeeDO : userEmployeeDOList) {
@@ -260,7 +222,7 @@ public class SearchengineEntity {
                 if (bulkResponse.buildFailureMessage() != null) {
                     return ResponseUtils.fail(9999, bulkResponse.buildFailureMessage());
                 }
-            } catch (UnknownHostException e) {
+            } catch (Exception e) {
                 logger.error("error in update", e);
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             } catch (Error error) {
@@ -283,7 +245,7 @@ public class SearchengineEntity {
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws CommonException {
         logger.info("----开始全量更新员工积分-------");
         // 连接ES
-        TransportClient client = getTransportClient();
+        TransportClient client = this.getTransportClient();
         if (client == null) {
             return ResponseUtils.fail(9999, "ES 连接失败！");
         }
@@ -432,7 +394,7 @@ public class SearchengineEntity {
     public Response updateEmployeeAwards(Integer userEmployeeId, Integer employeeRecordId) {
         logger.info("----开始增量更新员工积分信息-------");
         // 连接ES
-        TransportClient client = getTransportClient();
+        TransportClient client =this.getTransportClient();
         if (client == null) {
             return ResponseUtils.fail(9999, "ES连接失败！");
         }
@@ -522,7 +484,7 @@ public class SearchengineEntity {
     public Response deleteEmployeeDO(List<Integer> employeeIds) throws CommonException {
         logger.info("----删除员工积分索引信息开始，员工ID:{}-------", employeeIds.toString());
         // 连接ES
-        TransportClient client = getTransportClient();
+        TransportClient client =this.getTransportClient();
         if (client == null) {
             return ResponseUtils.fail(9999, "ES 连接失败！");
         }

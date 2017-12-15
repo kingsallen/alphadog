@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.searchengine.util.EsClientInstace;
+import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -38,8 +38,7 @@ public class PositionSearchEngine {
         Map<String,Object> map=new HashMap<String,Object>();
         TransportClient client=null;
         try{
-//          client=searchUtil.getEsClient();
-            client= EsClientInstace.getClient();
+            client=searchUtil.getEsClient();
             if(!StringUtils.isEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
                 cityCode=cityCode+",111111";
             }
@@ -59,12 +58,11 @@ public class PositionSearchEngine {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            EsClientInstace.closeEsClient();
-        } finally{
-//            if(client!=null){
-//                client.close();
-//                client=null;
-//            }
+            if(client!=null){
+                client.close();
+                client=null;
+            }
+            EsClientInstance.closeEsClient();
         }
         return new HashMap<String,Object>();
     }
