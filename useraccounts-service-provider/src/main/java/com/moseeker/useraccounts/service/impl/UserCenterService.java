@@ -16,6 +16,7 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
@@ -80,9 +81,12 @@ public class UserCenterService {
                 Query.QueryBuilder findWechatQuery = new Query.QueryBuilder();
                 findWechatQuery.select(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName()).select(HrWxWechat.HR_WX_WECHAT.ID.getName()).select(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName())
                         .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN));
-                Map<Integer, String> signatureMap = wechatDao.getDatas(
-                        findWechatQuery.buildQuery()).stream()
-                        .collect(Collectors.toMap(k -> k.getCompanyId(), v -> v.getSignature()));
+                List<HrWxWechatDO> wechatDOList = wechatDao.getDatas(
+                        findWechatQuery.buildQuery());
+                Map<Integer, String> signatureMap = new HashMap<>();
+                if (wechatDOList != null && wechatDOList.size() > 0) {
+                    wechatDOList.forEach(hrWxWechatDO -> signatureMap.put(hrWxWechatDO.getCompanyId(), hrWxWechatDO.getSignature()));
+                }
                 //List<ConfigSysPointConfTplDO> tpls = bizTools.getAwardConfigTpls();
 
                 applications = apps.stream().map(app -> {
