@@ -408,6 +408,9 @@ public class ProfileService {
         logger.info(JSON.toJSONString(positionApplications));
         logger.info("处理后的数据=======================================");
         positionApplications=handlerApplicationData(positionApplications);
+        if(StringUtils.isEmptyList(positionApplications)){
+            return ResponseUtils.success("");
+        }
         logger.info("=================================================");
         List<Map<String, Object>> datas =dao.getRelatedDataByJobApplication( positionApplications, downloadUrl, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
         return dao.handleResponse(datas);
