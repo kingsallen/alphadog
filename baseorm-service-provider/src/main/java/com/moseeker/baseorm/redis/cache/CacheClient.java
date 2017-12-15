@@ -1,21 +1,18 @@
 package com.moseeker.baseorm.redis.cache;
 
-import com.moseeker.baseorm.dao.configdb.ConfigCacheconfigRediskeyDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
-import java.util.HashSet;
-import java.util.Set;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
+
+import javax.annotation.PostConstruct;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 
