@@ -8,7 +8,7 @@ import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
-import com.moseeker.position.service.position.base.sync.PositionTransfer;
+import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.liepin.pojo.PositionLiepin;
 import com.moseeker.position.service.position.liepin.pojo.PositionLiepinWithAccount;
 import com.moseeker.position.service.position.qianxun.Degree;
@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class LiepinPositionTransfer extends PositionTransfer<ThirdPartyPosition,PositionLiepinWithAccount,PositionLiepin,EmptyExtThirdPartyPosition> {
+public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyPosition,PositionLiepinWithAccount,PositionLiepin,EmptyExtThirdPartyPosition> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired

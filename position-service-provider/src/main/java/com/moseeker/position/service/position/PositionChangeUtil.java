@@ -2,13 +2,12 @@ package com.moseeker.position.service.position;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.JsonToMap;
 import com.moseeker.common.util.StructSerializer;
-import com.moseeker.position.service.position.base.sync.PositionTransfer;
+import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -32,7 +31,7 @@ public class PositionChangeUtil {
     private static Logger logger = LoggerFactory.getLogger(PositionChangeUtil.class);
 
     @Autowired
-    List<PositionTransfer> transferList;
+    List<AbstractPositionTransfer> transferList;
 
     /**
      * 将仟寻职位转成第卅方职位
@@ -42,7 +41,7 @@ public class PositionChangeUtil {
      * @param account
      * @return
      */
-    public PositionTransfer.TransferResult changeToThirdPartyPosition(JSONObject jsonForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
+    public AbstractPositionTransfer.TransferResult changeToThirdPartyPosition(JSONObject jsonForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
         logger.info("changeToThirdPartyPosition---------------------jsonForm : {},positionDB : {}, account : {}",jsonForm,positionDB,account);
 
         int channel=jsonForm.getIntValue("channel");
@@ -53,9 +52,9 @@ public class PositionChangeUtil {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"change To ThirdPartyPosition no matched channelType");
         }
 
-        PositionTransfer transfer=transferSimpleFactory(channelType);
+        AbstractPositionTransfer transfer=transferSimpleFactory(channelType);
 
-        PositionTransfer.TransferResult result=transfer.changeToThirdPartyPosition(jsonForm,positionDB,account);
+        AbstractPositionTransfer.TransferResult result=transfer.changeToThirdPartyPosition(jsonForm,positionDB,account);
         logger.info("changeToThirdPartyPosition result:{}",result);
 
         return result;
@@ -68,7 +67,7 @@ public class PositionChangeUtil {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"change To ThirdPartyPosition no matched channelType");
         }
 
-        PositionTransfer transfer=transferSimpleFactory(channelType);
+        AbstractPositionTransfer transfer=transferSimpleFactory(channelType);
 
         try {
             Object ThirdParty=transfer.toExtThirdPartyPosition(data);
@@ -79,14 +78,14 @@ public class PositionChangeUtil {
         }
     }
 
-    public PositionTransfer transferSimpleFactory(ChannelType channelType) throws BIZException {
-        for(PositionTransfer transfer:transferList){
+    public AbstractPositionTransfer transferSimpleFactory(ChannelType channelType) throws BIZException {
+        for(AbstractPositionTransfer transfer:transferList){
             if(channelType==transfer.getChannel()){
                 return transfer;
             }
         }
-        logger.error("no matched PositionTransfer {}",channelType);
-        throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"no matched PositionTransfer");
+        logger.error("no matched AbstractPositionTransfer {}",channelType);
+        throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"no matched AbstractPositionTransfer");
     }
 
     public static Map<String,Object> objectToMap(Object object){

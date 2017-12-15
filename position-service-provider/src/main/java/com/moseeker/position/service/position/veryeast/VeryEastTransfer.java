@@ -3,7 +3,7 @@ package com.moseeker.position.service.position.veryeast;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
-import com.moseeker.position.service.position.base.sync.PositionTransfer;
+import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.veryeast.pojo.PositionVeryEast;
 import com.moseeker.position.service.position.veryeast.pojo.PositionVeryEastForm;
 import com.moseeker.position.service.position.veryeast.pojo.PositionVeryEastWithAccount;
@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Component
-public class VeryEastTransfer extends PositionTransfer<PositionVeryEastForm,PositionVeryEastWithAccount,PositionVeryEast,ThirdpartyVeryEastPositionDO> {
+public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastForm,PositionVeryEastWithAccount,PositionVeryEast,ThirdpartyVeryEastPositionDO> {
     Logger logger= LoggerFactory.getLogger(VeryEastTransfer.class);
 
     @Override
