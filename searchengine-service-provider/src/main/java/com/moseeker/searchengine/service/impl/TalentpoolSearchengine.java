@@ -170,23 +170,21 @@ public class TalentpoolSearchengine {
         String degree=params.get("degree");
         String intentionSalaryCode=params.get("intention_salary_code");
         String sex=params.get("sex");
-        String workYears=params.get("work_years");
-        String ages=params.get("work_years");
-        String updateTime=params.get("ages");
+        String workYears=params.get("work_year");
+        String ages=params.get("age");
+        String updateTime=params.get("update_time");
+        String isFreshGraduate=params.get("is_fresh_graduates");
         if(
-            StringUtils.isNotNullOrEmpty(degree)||
-            StringUtils.isNotNullOrEmpty(intentionSalaryCode)||
-            StringUtils.isNotNullOrEmpty(sex)||
-            StringUtils.isNotNullOrEmpty(workYears)||
-            StringUtils.isNotNullOrEmpty(ages)||
-            StringUtils.isNotNullOrEmpty(updateTime)
+            StringUtils.isNotNullOrEmpty(degree)||StringUtils.isNotNullOrEmpty(intentionSalaryCode)||StringUtils.isNotNullOrEmpty(sex)||
+            StringUtils.isNotNullOrEmpty(workYears)||StringUtils.isNotNullOrEmpty(ages)||
+            StringUtils.isNotNullOrEmpty(updateTime)|| StringUtils.isNotNullOrEmpty(isFreshGraduate)
            )
         {
             if(StringUtils.isNotNullOrEmpty(degree)){
                 this.QueryByDegree(degree,query);
             }
             if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
-                this.queryByIntentionSalaryCode(intentionSalaryCode,query);
+                this.queryBySlalryCode(intentionSalaryCode,query);
             }
             if(StringUtils.isNotNullOrEmpty(sex)){
                 this.queryByGender(sex,query);
@@ -199,6 +197,9 @@ public class TalentpoolSearchengine {
             }
             if(StringUtils.isNotNullOrEmpty(ages)){
                 this.queryByAge(ages,query);
+            }
+            if(StringUtils.isNotNullOrEmpty(isFreshGraduate)){
+                this.queryByIsFreshGraduate(Integer.parseInt(isFreshGraduate),query);
             }
         }
 
@@ -213,6 +214,7 @@ public class TalentpoolSearchengine {
         String origins=params.get("origins");
         String submitTime=params.get("submit_time");
         String progressStatus=params.get("progress_status");
+        String positionIds=params.get("position_ids");
         if(
             StringUtils.isNotNullOrEmpty(publisherIds)||
             StringUtils.isNotNullOrEmpty(candidateSource)||
@@ -238,7 +240,10 @@ public class TalentpoolSearchengine {
                 this.queryByProgress(Integer.parseInt(progressStatus),query);
             }
             if(StringUtils.isNotNullOrEmpty(origins)){
-
+                this.queryByOrigin(origins,query);
+            }
+            if(StringUtils.isNotNullOrEmpty(positionIds)){
+                this.queryByPositionId(positionIds,query);
             }
         }
 
@@ -431,25 +436,25 @@ public class TalentpoolSearchengine {
       构建按招标签的查询语句
      */
     private void queryByTagId(String tagIds,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(tagIds,queryBuilder,"user.talent_pool.tags.tag_id");
+        searchUtil.handleTerms(tagIds,queryBuilder,"user.talent_pool.tags.id");
     }
     /*
       构建按照期望城市名称的查询语句
      */
     private void queryByIntentionCity(String cityNames,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(cityNames,queryBuilder,"user.profiles.intentions.city");
+        searchUtil.handleTerms(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
     }
     /*
       按照公司名称查询
      */
-    private void queryByIntentionSalaryCode(String salaryCodes,QueryBuilder queryBuilder){
-        searchUtil.handleTermsFilter(salaryCodes,queryBuilder,"user.profiles.intentions.city");
+    private void queryByComapnyName(String salaryCodes,QueryBuilder queryBuilder){
+        searchUtil.handleTermsFilter(salaryCodes,queryBuilder,"user.applications.company_name");
     }
     /*
       按照学历查询
      */
     private void QueryByDegree(String degrees,QueryBuilder queryBuilder){
-        searchUtil.handleTermsFilter(degrees,queryBuilder,"user.profiles.basic.gender");
+        searchUtil.handleTermsFilter(degrees,queryBuilder,"user.profiles.basic.highest_degree");
     }
     /*
       按照最后工作的公司查询
@@ -527,7 +532,7 @@ public class TalentpoolSearchengine {
      */
     private void queryByWorkYear(String workYears,QueryBuilder queryBuilder){
         List<Map<String,Integer>> list=this.convertParams(workYears);
-        searchUtil.shoudRangeAgeOrDegreeListFilter(list,queryBuilder,"user.workyear");
+        searchUtil.shoudRangeAgeOrDegreeListFilter(list,queryBuilder,"user.work_year");
     }
     /*
       按照招聘进度查询
@@ -540,6 +545,13 @@ public class TalentpoolSearchengine {
      */
     private void queryHrTagId(String hrIds,QueryBuilder queryBuilder){
         searchUtil.handleTerms(hrIds,queryBuilder,"user.talent_pool.tags.hr_id");
+    }
+
+    /*
+     根据是否是刚毕业查询
+     */
+    private void queryByIsFreshGraduate(int isFreshGraduate,QueryBuilder queryBuilder){
+        searchUtil.handleMatchFilter(isFreshGraduate,queryBuilder,"user.is_fresh_graduates");
     }
     /*
         组装全文检索查询的条件
