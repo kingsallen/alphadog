@@ -20,7 +20,7 @@ import java.util.concurrent.SynchronousQueue;
 public class EsClientInstace {
 
     private static TransportClient client=null;
-    public  static  TransportClient getClient() throws Exception {
+    public  static  TransportClient getClient(){
         if(client!=null){
             return client;
         }else{
