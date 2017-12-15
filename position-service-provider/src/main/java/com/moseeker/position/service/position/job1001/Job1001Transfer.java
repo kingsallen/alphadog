@@ -1,12 +1,11 @@
 package com.moseeker.position.service.position.job1001;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictJob1001OccupationDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.position.service.position.base.sync.PositionTransfer;
+import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.job1001.pojo.PositionJob1001;
 import com.moseeker.position.service.position.job1001.pojo.PositionJob1001Form;
 import com.moseeker.position.service.position.job1001.pojo.PositionJob1001WithAccount;
@@ -21,15 +20,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,PositionJob1001WithAccount,PositionJob1001,ThirdpartyJob1001PositionDO>{
+public class Job1001Transfer extends AbstractPositionTransfer<PositionJob1001Form,PositionJob1001WithAccount,PositionJob1001,ThirdpartyJob1001PositionDO> {
     Logger logger= LoggerFactory.getLogger(Job1001Transfer.class);
 
     @Autowired

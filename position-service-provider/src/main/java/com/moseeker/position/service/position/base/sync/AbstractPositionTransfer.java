@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public abstract class PositionTransfer<Form,R,Info,ExtP> {
+public abstract class AbstractPositionTransfer<Form,R,Info,ExtP> {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
     protected FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
