@@ -65,7 +65,7 @@ public class LiepinPositionTransfer extends PositionTransfer<ThirdPartyPosition,
         positionLiepin.setCities(getCities(positionDB));
         positionLiepin.setAddress(positionForm.getAddressName());
         setOccupation(positionForm,positionLiepin);
-        setDepartment(positionForm,positionLiepin);
+        positionLiepin.setDepartment(positionForm.getDepartmentName());
         positionLiepin.setSalary_low(positionForm.getSalaryBottom()+"");
         positionLiepin.setSalary_high(positionForm.getSalaryTop()+"");
         positionLiepin.setSalary_discuss(positionForm.isSalaryDiscuss() ? "1" : "0");
@@ -95,10 +95,6 @@ public class LiepinPositionTransfer extends PositionTransfer<ThirdPartyPosition,
         return positionLiepin;
     }
 
-
-    protected void setDepartment(ThirdPartyPosition form, PositionLiepin position) {
-        position.setDepartment(form.getDepartmentName());
-    }
 
     public void setOccupation(ThirdPartyPosition positionForm, PositionLiepin position) {
         List<String> occupations=positionForm.getOccupation();
@@ -189,38 +185,5 @@ public class LiepinPositionTransfer extends PositionTransfer<ThirdPartyPosition,
     @Override
     public EmptyExtThirdPartyPosition toExtThirdPartyPosition(Map<String, String> data) {
         return EmptyExtThirdPartyPosition.EMPTY;
-    }
-
-    @Override
-    public JobPositionDO toWriteBackPosition(ThirdPartyPosition position, JobPositionDO positionDB, PositionLiepinWithAccount positionLiepinWithAccount) {
-        if(positionDB==null || positionDB.getId()==0){
-            return null;
-        }
-        //假如是同步到猎聘并且是面议那么不回写到数据库
-        if(position.isSalaryDiscuss()){
-            return null;
-        }
-
-        JobPositionDO updateData=new JobPositionDO();
-        PositionLiepin p=positionLiepinWithAccount.getPosition_info();
-
-        boolean needWriteBackToPositin = false;
-        int salay_top=Integer.parseInt(p.getSalary_high());
-        int salary_bottom=Integer.parseInt(p.getSalary_low());
-
-        if (salay_top > 0 && salay_top != positionDB.getSalaryTop() * 1000) {
-            updateData.setSalaryTop(salay_top / 1000);
-            needWriteBackToPositin = true;
-        }
-        if (salary_bottom > 0 && salary_bottom != positionDB.getSalaryBottom() * 1000) {
-            updateData.setSalaryBottom(salary_bottom / 1000);
-            needWriteBackToPositin = true;
-        }
-        if (needWriteBackToPositin) {
-            logger.info("needWriteBackToPositin : {} " ,updateData);
-            return updateData;
-        }
-
-        return null;
     }
 }

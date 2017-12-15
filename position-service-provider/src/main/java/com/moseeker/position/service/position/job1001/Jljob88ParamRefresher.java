@@ -11,6 +11,12 @@ public class Jljob88ParamRefresher extends YLParamRefresher{
         jsonSend.put("user_name",getConfig("jljob88.username"));
         jsonSend.put("password",getConfig("jljob88.password"));
         jsonSend.put("safe_code",getConfig("jljob88.safecode"));
-        jsonSend.put("subsite",getConfig("jljob88.subsite"));
+        jsonSend.put("subsite",getSubSite());
+    }
+
+
+    @Override
+    public String getSubSite() {
+        return getConfig("jljob88.subsite");
     }
 }

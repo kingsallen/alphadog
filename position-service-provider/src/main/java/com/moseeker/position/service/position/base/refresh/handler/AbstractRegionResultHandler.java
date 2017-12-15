@@ -63,7 +63,7 @@ public abstract class AbstractRegionResultHandler extends AbstractJsonResultHand
                 cityMapList.add(cityMap);
             }
 
-            logger.info("region for insert : {}",cityMapList);
+            logger.info("region for insert : {}", JSON.toJSONString(cityMapList));
 
             int delCount=cityMapDao.delete(new Condition("channel",channelValue));
             logger.info("channel {} delete old region ",channelValue,delCount);

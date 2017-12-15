@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 的第三方职位子表
+ * 最佳东方的第三方职位子表
  */
 @Generated(
     value = {
@@ -23,22 +23,23 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ThirdpartyVeryeastPosition implements Serializable {
 
-    private static final long serialVersionUID = 72184569;
+    private static final long serialVersionUID = -1533423729;
 
     private Integer   id;
     private Integer   pid;
     private Integer   accommodation;
     private Integer   ageTop;
     private Integer   ageBottom;
-    private Integer   languagetype1;
-    private Integer   languagelevel1;
-    private Integer   languagetype2;
-    private Integer   languagelevel2;
-    private Integer   languagetype3;
-    private Integer   languagelevel3;
-    private Integer   computerlevel;
+    private Integer   languageType1;
+    private Integer   languageLevel1;
+    private Integer   languageType2;
+    private Integer   languageLevel2;
+    private Integer   languageType3;
+    private Integer   languageLevel3;
+    private Integer   computerLevel;
     private Integer   indate;
-    private Timestamp createtime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
     private Short     status;
 
     public ThirdpartyVeryeastPosition() {}
@@ -49,15 +50,16 @@ public class ThirdpartyVeryeastPosition implements Serializable {
         this.accommodation = value.accommodation;
         this.ageTop = value.ageTop;
         this.ageBottom = value.ageBottom;
-        this.languagetype1 = value.languagetype1;
-        this.languagelevel1 = value.languagelevel1;
-        this.languagetype2 = value.languagetype2;
-        this.languagelevel2 = value.languagelevel2;
-        this.languagetype3 = value.languagetype3;
-        this.languagelevel3 = value.languagelevel3;
-        this.computerlevel = value.computerlevel;
+        this.languageType1 = value.languageType1;
+        this.languageLevel1 = value.languageLevel1;
+        this.languageType2 = value.languageType2;
+        this.languageLevel2 = value.languageLevel2;
+        this.languageType3 = value.languageType3;
+        this.languageLevel3 = value.languageLevel3;
+        this.computerLevel = value.computerLevel;
         this.indate = value.indate;
-        this.createtime = value.createtime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.status = value.status;
     }
 
@@ -67,15 +69,16 @@ public class ThirdpartyVeryeastPosition implements Serializable {
         Integer   accommodation,
         Integer   ageTop,
         Integer   ageBottom,
-        Integer   languagetype1,
-        Integer   languagelevel1,
-        Integer   languagetype2,
-        Integer   languagelevel2,
-        Integer   languagetype3,
-        Integer   languagelevel3,
-        Integer   computerlevel,
+        Integer   languageType1,
+        Integer   languageLevel1,
+        Integer   languageType2,
+        Integer   languageLevel2,
+        Integer   languageType3,
+        Integer   languageLevel3,
+        Integer   computerLevel,
         Integer   indate,
-        Timestamp createtime,
+        Timestamp createTime,
+        Timestamp updateTime,
         Short     status
     ) {
         this.id = id;
@@ -83,15 +86,16 @@ public class ThirdpartyVeryeastPosition implements Serializable {
         this.accommodation = accommodation;
         this.ageTop = ageTop;
         this.ageBottom = ageBottom;
-        this.languagetype1 = languagetype1;
-        this.languagelevel1 = languagelevel1;
-        this.languagetype2 = languagetype2;
-        this.languagelevel2 = languagelevel2;
-        this.languagetype3 = languagetype3;
-        this.languagelevel3 = languagelevel3;
-        this.computerlevel = computerlevel;
+        this.languageType1 = languageType1;
+        this.languageLevel1 = languageLevel1;
+        this.languageType2 = languageType2;
+        this.languageLevel2 = languageLevel2;
+        this.languageType3 = languageType3;
+        this.languageLevel3 = languageLevel3;
+        this.computerLevel = computerLevel;
         this.indate = indate;
-        this.createtime = createtime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.status = status;
     }
 
@@ -135,60 +139,60 @@ public class ThirdpartyVeryeastPosition implements Serializable {
         this.ageBottom = ageBottom;
     }
 
-    public Integer getLanguagetype1() {
-        return this.languagetype1;
+    public Integer getLanguageType1() {
+        return this.languageType1;
     }
 
-    public void setLanguagetype1(Integer languagetype1) {
-        this.languagetype1 = languagetype1;
+    public void setLanguageType1(Integer languageType1) {
+        this.languageType1 = languageType1;
     }
 
-    public Integer getLanguagelevel1() {
-        return this.languagelevel1;
+    public Integer getLanguageLevel1() {
+        return this.languageLevel1;
     }
 
-    public void setLanguagelevel1(Integer languagelevel1) {
-        this.languagelevel1 = languagelevel1;
+    public void setLanguageLevel1(Integer languageLevel1) {
+        this.languageLevel1 = languageLevel1;
     }
 
-    public Integer getLanguagetype2() {
-        return this.languagetype2;
+    public Integer getLanguageType2() {
+        return this.languageType2;
     }
 
-    public void setLanguagetype2(Integer languagetype2) {
-        this.languagetype2 = languagetype2;
+    public void setLanguageType2(Integer languageType2) {
+        this.languageType2 = languageType2;
     }
 
-    public Integer getLanguagelevel2() {
-        return this.languagelevel2;
+    public Integer getLanguageLevel2() {
+        return this.languageLevel2;
     }
 
-    public void setLanguagelevel2(Integer languagelevel2) {
-        this.languagelevel2 = languagelevel2;
+    public void setLanguageLevel2(Integer languageLevel2) {
+        this.languageLevel2 = languageLevel2;
     }
 
-    public Integer getLanguagetype3() {
-        return this.languagetype3;
+    public Integer getLanguageType3() {
+        return this.languageType3;
     }
 
-    public void setLanguagetype3(Integer languagetype3) {
-        this.languagetype3 = languagetype3;
+    public void setLanguageType3(Integer languageType3) {
+        this.languageType3 = languageType3;
     }
 
-    public Integer getLanguagelevel3() {
-        return this.languagelevel3;
+    public Integer getLanguageLevel3() {
+        return this.languageLevel3;
     }
 
-    public void setLanguagelevel3(Integer languagelevel3) {
-        this.languagelevel3 = languagelevel3;
+    public void setLanguageLevel3(Integer languageLevel3) {
+        this.languageLevel3 = languageLevel3;
     }
 
-    public Integer getComputerlevel() {
-        return this.computerlevel;
+    public Integer getComputerLevel() {
+        return this.computerLevel;
     }
 
-    public void setComputerlevel(Integer computerlevel) {
-        this.computerlevel = computerlevel;
+    public void setComputerLevel(Integer computerLevel) {
+        this.computerLevel = computerLevel;
     }
 
     public Integer getIndate() {
@@ -199,12 +203,20 @@ public class ThirdpartyVeryeastPosition implements Serializable {
         this.indate = indate;
     }
 
-    public Timestamp getCreatetime() {
-        return this.createtime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setCreatetime(Timestamp createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Short getStatus() {
@@ -224,15 +236,16 @@ public class ThirdpartyVeryeastPosition implements Serializable {
         sb.append(", ").append(accommodation);
         sb.append(", ").append(ageTop);
         sb.append(", ").append(ageBottom);
-        sb.append(", ").append(languagetype1);
-        sb.append(", ").append(languagelevel1);
-        sb.append(", ").append(languagetype2);
-        sb.append(", ").append(languagelevel2);
-        sb.append(", ").append(languagetype3);
-        sb.append(", ").append(languagelevel3);
-        sb.append(", ").append(computerlevel);
+        sb.append(", ").append(languageType1);
+        sb.append(", ").append(languageLevel1);
+        sb.append(", ").append(languageType2);
+        sb.append(", ").append(languageLevel2);
+        sb.append(", ").append(languageType3);
+        sb.append(", ").append(languageLevel3);
+        sb.append(", ").append(computerLevel);
         sb.append(", ").append(indate);
-        sb.append(", ").append(createtime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(status);
 
         sb.append(")");

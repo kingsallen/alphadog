@@ -23,12 +23,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ThirdpartyJob1001Position implements Serializable {
 
-    private static final long serialVersionUID = -727905725;
+    private static final long serialVersionUID = 1835736555;
 
     private Integer   id;
     private Integer   pid;
     private String    subsite;
-    private Timestamp createtime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
     private Short     status;
 
     public ThirdpartyJob1001Position() {}
@@ -37,7 +38,8 @@ public class ThirdpartyJob1001Position implements Serializable {
         this.id = value.id;
         this.pid = value.pid;
         this.subsite = value.subsite;
-        this.createtime = value.createtime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.status = value.status;
     }
 
@@ -45,13 +47,15 @@ public class ThirdpartyJob1001Position implements Serializable {
         Integer   id,
         Integer   pid,
         String    subsite,
-        Timestamp createtime,
+        Timestamp createTime,
+        Timestamp updateTime,
         Short     status
     ) {
         this.id = id;
         this.pid = pid;
         this.subsite = subsite;
-        this.createtime = createtime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.status = status;
     }
 
@@ -79,12 +83,20 @@ public class ThirdpartyJob1001Position implements Serializable {
         this.subsite = subsite;
     }
 
-    public Timestamp getCreatetime() {
-        return this.createtime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setCreatetime(Timestamp createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Short getStatus() {
@@ -102,7 +114,8 @@ public class ThirdpartyJob1001Position implements Serializable {
         sb.append(id);
         sb.append(", ").append(pid);
         sb.append(", ").append(subsite);
-        sb.append(", ").append(createtime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(status);
 
         sb.append(")");

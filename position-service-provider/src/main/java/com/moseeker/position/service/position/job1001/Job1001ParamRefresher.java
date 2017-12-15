@@ -11,6 +11,11 @@ public class Job1001ParamRefresher extends YLParamRefresher{
         jsonSend.put("user_name",getConfig("job1001.username"));
         jsonSend.put("password",getConfig("job1001.password"));
         jsonSend.put("safe_code",getConfig("job1001.safecode"));
-        jsonSend.put("subsite",getConfig("job1001.subsite"));
+        jsonSend.put("subsite",getSubSite());
+    }
+
+    @Override
+    public String getSubSite() {
+        return getConfig("job1001.subsite");
     }
 }

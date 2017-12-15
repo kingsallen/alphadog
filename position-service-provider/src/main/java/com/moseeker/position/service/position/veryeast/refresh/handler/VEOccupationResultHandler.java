@@ -49,4 +49,9 @@ public class VEOccupationResultHandler extends AbstractOccupationResultHandler<D
         return "occupation";
     }
 
+    @Override
+    protected List<Occupation> toList(JSONObject msg) {
+        return msg.getJSONArray(occupationKey()).toJavaList(Occupation.class);
+    }
+
 }

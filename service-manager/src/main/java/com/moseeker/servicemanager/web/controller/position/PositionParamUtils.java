@@ -27,12 +27,12 @@ public class PositionParamUtils extends ParamUtils {
             HashMap<String, Object> data = parseRequestParam(request);
             form.setAppid((Integer) data.get("appid"));
             form.setPositionId((Integer) data.get("positionId"));
-            List<Map<String,String>> cs = new ArrayList<>();
+            List<String> cs = new ArrayList<>();
             List<HashMap<String, Object>> channels = (List<HashMap<String, Object>>) data.get("channels");
             if (channels != null) {
                 channels.forEach(channel -> {
                     try {
-                        cs.add(toExtThirdPartyPosition(channel));
+                        cs.add(JSON.toJSONString(channel));
                     } catch (Exception e) {
                         e.printStackTrace();
                         LoggerFactory.getLogger(PositionParamUtils.class).error(e.getMessage(), e);
@@ -154,4 +154,5 @@ public class PositionParamUtils extends ParamUtils {
 
         return result;
     }
+
 }

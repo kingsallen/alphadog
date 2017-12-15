@@ -241,7 +241,7 @@ public class ThirdPositionService {
             }
 
             data.setThirdPosition(thirdPosition);
-            data.setExtThirdPosition(PositionChangeUtil.objectToMap(p.getR2()));
+            data.setExtThirdPosition(PositionChangeUtil.objectToStr(p.getR2()));
             data.setThirdAccount(thirdAccount);
             data.setPosition(position);
             data.setHr(hr);

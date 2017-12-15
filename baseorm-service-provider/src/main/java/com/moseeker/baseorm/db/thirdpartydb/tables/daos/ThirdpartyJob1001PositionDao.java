@@ -80,10 +80,17 @@ public class ThirdpartyJob1001PositionDao extends DAOImpl<ThirdpartyJob1001Posit
     }
 
     /**
-     * Fetch records that have <code>createTime IN (values)</code>
+     * Fetch records that have <code>create_time IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJob1001Position> fetchByCreatetime(Timestamp... values) {
-        return fetch(ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION.CREATETIME, values);
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJob1001Position> fetchByCreateTime(Timestamp... values) {
+        return fetch(ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION.CREATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>update_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJob1001Position> fetchByUpdateTime(Timestamp... values) {
+        return fetch(ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION.UPDATE_TIME, values);
     }
 
     /**

@@ -17,7 +17,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * 的第三方职位子表
+ * 最佳东方的第三方职位子表
  */
 @Generated(
     value = {
@@ -94,52 +94,52 @@ public class ThirdpartyVeryeastPositionDao extends DAOImpl<ThirdpartyVeryeastPos
     }
 
     /**
-     * Fetch records that have <code>languageType1 IN (values)</code>
+     * Fetch records that have <code>language_type1 IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguagetype1(Integer... values) {
-        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGETYPE1, values);
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguageType1(Integer... values) {
+        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGE_TYPE1, values);
     }
 
     /**
-     * Fetch records that have <code>languageLevel1 IN (values)</code>
+     * Fetch records that have <code>language_level1 IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguagelevel1(Integer... values) {
-        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGELEVEL1, values);
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguageLevel1(Integer... values) {
+        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGE_LEVEL1, values);
     }
 
     /**
-     * Fetch records that have <code>languageType2 IN (values)</code>
+     * Fetch records that have <code>language_type2 IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguagetype2(Integer... values) {
-        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGETYPE2, values);
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguageType2(Integer... values) {
+        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGE_TYPE2, values);
     }
 
     /**
-     * Fetch records that have <code>languageLevel2 IN (values)</code>
+     * Fetch records that have <code>language_level2 IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguagelevel2(Integer... values) {
-        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGELEVEL2, values);
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguageLevel2(Integer... values) {
+        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGE_LEVEL2, values);
     }
 
     /**
-     * Fetch records that have <code>languageType3 IN (values)</code>
+     * Fetch records that have <code>language_type3 IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguagetype3(Integer... values) {
-        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGETYPE3, values);
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguageType3(Integer... values) {
+        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGE_TYPE3, values);
     }
 
     /**
-     * Fetch records that have <code>languageLevel3 IN (values)</code>
+     * Fetch records that have <code>language_level3 IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguagelevel3(Integer... values) {
-        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGELEVEL3, values);
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByLanguageLevel3(Integer... values) {
+        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.LANGUAGE_LEVEL3, values);
     }
 
     /**
-     * Fetch records that have <code>computerLevel IN (values)</code>
+     * Fetch records that have <code>computer_level IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByComputerlevel(Integer... values) {
-        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.COMPUTERLEVEL, values);
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByComputerLevel(Integer... values) {
+        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.COMPUTER_LEVEL, values);
     }
 
     /**
@@ -150,10 +150,17 @@ public class ThirdpartyVeryeastPositionDao extends DAOImpl<ThirdpartyVeryeastPos
     }
 
     /**
-     * Fetch records that have <code>createTime IN (values)</code>
+     * Fetch records that have <code>create_time IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByCreatetime(Timestamp... values) {
-        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.CREATETIME, values);
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByCreateTime(Timestamp... values) {
+        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.CREATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>update_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyVeryeastPosition> fetchByUpdateTime(Timestamp... values) {
+        return fetch(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.UPDATE_TIME, values);
     }
 
     /**

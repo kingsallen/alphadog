@@ -1,10 +1,12 @@
 package com.moseeker.servicemanager.web.controller.position;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -25,7 +27,6 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
-import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,6 +195,28 @@ public class PositionController {
         }
     }
 
+    @RequestMapping(value = "/position/refreshThirdPartyParam", method = RequestMethod.GET)
+    @ResponseBody
+    public String refreshThirdPartyParam(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            if(!"moseeker.com".equals(map.get("refreshKey"))){
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"wrong request param!");
+            }
+            logger.info("-----------refresh Third Party Param start------------");
+            Response result = positionBS.refreshThirdPartyParam();
+            logger.info("result:" + JSON.toJSONString(result));
+            logger.info("-----------refresh Third Party Param end------------");
+            return ResponseLogNotification.success(request, result);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     @RequestMapping(value = "/position/sync", method = RequestMethod.POST)
     @ResponseBody
     public String synchronizePosition(HttpServletRequest request, HttpServletResponse response) {
@@ -243,16 +266,19 @@ public class PositionController {
     public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
         try {
             CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
-            List<Map<String,String>> datas = positonServices.getThirdPartyPositions(qu);
+            List<String> datas = positonServices.getThirdPartyPositions(qu);
 
             if (datas == null) datas = new ArrayList<>();
 
-            for (Map<String,String> positionDO : datas) {
+            List<Map<String,Object>> mapResult=new ArrayList<>();
+            for (String json : datas) {
+                Map<String,Object> positionDO=JSON.parseObject(json);
                 positionDO.put("position_id",positionDO.get("positionId"));
                 positionDO.put("accountId",positionDO.get("thirdPartyAccountId"));
+                mapResult.add(positionDO);
             }
 
-            Response result = ResponseUtils.success(datas);
+            Response result = ResponseUtils.success(mapResult);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

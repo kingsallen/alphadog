@@ -23,7 +23,7 @@ service PositionServices {
     common_struct.Response CustomField(1:string param);    
     //是否可以刷新
     bool ifAllowRefresh(1:i32 positionId, 2: i32 account_id);
-    list<map<string,string>> getThirdPartyPositions(1: common_struct.CommonQuery query);
+    list<string> getThirdPartyPositions(1: common_struct.CommonQuery query);
 
     // 批量修改职位
     common_struct.Response batchHandlerJobPostion(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);

@@ -1,8 +1,14 @@
 package com.moseeker.position.service.position.job1001.refresh.handler;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.DictJob1001OccupationDao;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
+import com.moseeker.position.service.position.job1001.Jljob88ParamRefresher;
+import com.moseeker.position.service.position.job1001.Job1001ParamRefresher;
+import com.moseeker.position.service.position.job1001.Tmljob88ParamRefresher;
 import com.moseeker.position.service.position.veryeast.refresh.handler.VEResultHandlerAdapter;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictJob1001OccupationDO;
@@ -12,8 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class YLOccupationResultHandler extends AbstractOccupationResultHandler<DictJob1001OccupationDO> implements YLResultHandlerAdapter {
@@ -21,6 +26,22 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
 
     @Autowired
     private DictJob1001OccupationDao occupationDao;
+
+    @Autowired
+    Jljob88ParamRefresher jljob88ParamRefresher;
+
+    @Autowired
+    Job1001ParamRefresher job1001ParamRefresher;
+
+    @Autowired
+    Tmljob88ParamRefresher tmljob88ParamRefresher;
+
+    @Override
+    protected Map<Integer, Integer> generateNewKey(List<Integer> otherCodes,JSONObject msg) {
+        String subsite=msg.getString("subsite");
+        int DEFAULT_KEY_SEED=getSeed(subsite);
+        return PositionRefreshUtils.generateNewKey(otherCodes.iterator(),DEFAULT_KEY_SEED,otherCodes.size());
+    }
 
     @Override
     public DictJob1001OccupationDO buildOccupation(List<String> texts,List<String> codes,Map<Integer, Integer> newCode,JSONObject msg) {
@@ -46,8 +67,8 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
         }
         int delCount=occupationDao.deleteAllBySubsite(data.get(0).getSubsite());
         logger.info("job1001 delete old Occupation "+delCount);
-        occupationDao.addAllData(data);
-        logger.info("job1001 insert success");
+        List<DictJob1001OccupationDO> insertData=occupationDao.addAllData(data);
+        logger.info("job1001 insert success size: {}",insertData.size());
     }
 
     @Override
@@ -55,4 +76,37 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
         return "occupation";
     }
 
+    @Override
+    protected List<Occupation> toList(JSONObject msg) {
+        TypeReference<List<List<String>>> typeRef
+                = new TypeReference<List<List<String>>>() {};
+
+        List<List<String>> occupations=JSON.parseObject(msg.getString(occupationKey()),typeRef);
+
+        List<Occupation> result=new ArrayList<>();
+        for(List<String> text:occupations){
+            Occupation occupation=new Occupation();
+            occupation.setText(text);
+            occupation.setCode(new ArrayList<>());
+            result.add(occupation);
+        }
+
+        String subsite=msg.getString("subsite");
+        generateNewCode(result,getSeed(subsite));
+
+        return result;
+
+    }
+
+    private int getSeed(String subsite){
+        int DEFAULT_KEY_SEED=0;
+        if(subsite.equals(job1001ParamRefresher.getSubSite())){
+            DEFAULT_KEY_SEED=100000;
+        } else if(subsite.equals(jljob88ParamRefresher.getSubSite())){
+            DEFAULT_KEY_SEED=200000;
+        } else if(subsite.equals(tmljob88ParamRefresher.getSubSite())){
+            DEFAULT_KEY_SEED=300000;
+        }
+        return DEFAULT_KEY_SEED;
+    }
 }

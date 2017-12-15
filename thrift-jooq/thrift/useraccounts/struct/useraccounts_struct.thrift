@@ -463,7 +463,7 @@ struct ThirdPartyAccountInfo{
     2: optional i32 bound,
     3: optional i32 channel,
     4: optional string username,
-    5: optional string membername,
+    5: optional string ext,
     6: optional i32 remain_profile_num,
     7: optional i32 remain_num,
     8: optional string sync_time,

@@ -67,7 +67,7 @@ public class VeryEastTransfer extends PositionTransfer<PositionVeryEastForm,Posi
         positionInfo.setEmail(getEmail(positionDB));
         positionInfo.setWork_mode(VeryEastTransferStrategy.WorkMode.moseekerToOther((int)positionDB.getEmploymentType()));
 
-        return null;
+        return positionInfo;
     }
 
     @Override
@@ -124,17 +124,12 @@ public class VeryEastTransfer extends PositionTransfer<PositionVeryEastForm,Posi
         veryEast.setStatus((byte) 0);
         veryEast.setCreateTime(sdf.format(new Date()));
 
-        return null;
+        return veryEast;
     }
 
     @Override
     public ThirdpartyVeryEastPositionDO toExtThirdPartyPosition(Map<String, String> data) {
         ThirdpartyVeryEastPositionDO result= JSON.parseObject(JSON.toJSONString(data),ThirdpartyVeryEastPositionDO.class);
         return result;
-    }
-
-    @Override
-    public JobPositionDO toWriteBackPosition(PositionVeryEastForm positionVeryEastForm, JobPositionDO positionDB, PositionVeryEastWithAccount positionVeryEastWithAccount) {
-        return null;
     }
 }

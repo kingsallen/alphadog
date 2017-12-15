@@ -51,7 +51,7 @@ public class DictZhilianOccupationDao extends AbstractDictOccupationDao<DictZhil
 
     @Override
     protected boolean isTopOccupation(DictZhilianOccupationDO dictZhilianOccupationDO) {
-        return dictZhilianOccupationDO!=null && dictZhilianOccupationDO.getParentId()>0;
+        return dictZhilianOccupationDO!=null && dictZhilianOccupationDO.getParentId()==0;
     }
 
     @Override

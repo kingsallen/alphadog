@@ -6,7 +6,7 @@ public class PositionJob1001 {
     private int target;
     private String company;
     private String title;
-    private List<List<String>> region;
+    private List<List<String>> regions;
     private int quantity;
     private String department;
     private int min_salary;
@@ -44,12 +44,12 @@ public class PositionJob1001 {
         this.title = title;
     }
 
-    public List<List<String>> getRegion() {
-        return region;
+    public List<List<String>> getRegions() {
+        return regions;
     }
 
-    public void setRegion(List<List<String>> region) {
-        this.region = region;
+    public void setRegions(List<List<String>> regions) {
+        this.regions = regions;
     }
 
     public int getQuantity() {

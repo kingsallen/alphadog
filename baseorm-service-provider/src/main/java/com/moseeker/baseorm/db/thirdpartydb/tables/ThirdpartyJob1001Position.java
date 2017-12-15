@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ThirdpartyJob1001Position extends TableImpl<ThirdpartyJob1001PositionRecord> {
 
-    private static final long serialVersionUID = -587689050;
+    private static final long serialVersionUID = -959067518;
 
     /**
      * The reference instance of <code>thirdpartydb.thirdparty_job1001_position</code>
@@ -62,14 +62,19 @@ public class ThirdpartyJob1001Position extends TableImpl<ThirdpartyJob1001Positi
     public final TableField<ThirdpartyJob1001PositionRecord, Integer> PID = createField("pid", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "关联职位");
 
     /**
-     * The column <code>thirdpartydb.thirdparty_job1001_position.subsite</code>. 第三方账号对应的发布网站
+     * The column <code>thirdpartydb.thirdparty_job1001_position.subsite</code>. 第三方账号对应的发布网站名称
      */
-    public final TableField<ThirdpartyJob1001PositionRecord, String> SUBSITE = createField("subsite", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "第三方账号对应的发布网站");
+    public final TableField<ThirdpartyJob1001PositionRecord, String> SUBSITE = createField("subsite", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "第三方账号对应的发布网站名称");
 
     /**
-     * The column <code>thirdpartydb.thirdparty_job1001_position.createTime</code>. 创建时间
+     * The column <code>thirdpartydb.thirdparty_job1001_position.create_time</code>. 创建时间
      */
-    public final TableField<ThirdpartyJob1001PositionRecord, Timestamp> CREATETIME = createField("createTime", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+    public final TableField<ThirdpartyJob1001PositionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+
+    /**
+     * The column <code>thirdpartydb.thirdparty_job1001_position.update_time</code>. 更新时间
+     */
+    public final TableField<ThirdpartyJob1001PositionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * The column <code>thirdpartydb.thirdparty_job1001_position.status</code>. 只能状态 0 是有效 1是无效
