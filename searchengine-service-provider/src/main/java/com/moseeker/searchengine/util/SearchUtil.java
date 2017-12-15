@@ -1,16 +1,15 @@
 package com.moseeker.searchengine.util;
 
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -35,7 +34,7 @@ public class SearchUtil {
     //启动es客户端
     public  TransportClient getEsClient() {
 
-            return EsClientInstace.getClient();
+            return EsClientInstance.getClient();
     }
     /*
      * 拼接city
