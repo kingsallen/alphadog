@@ -386,8 +386,14 @@ public class SearchengineEntity {
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
+                if(client!=null){
+                    client.close();
+                }
+                client=null;
+                EsClientInstance.closeEsClient();
+
             } finally {
-                client.close();
+
             }
         }
         return ResponseUtils.success("");
