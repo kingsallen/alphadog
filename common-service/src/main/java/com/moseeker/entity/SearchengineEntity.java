@@ -224,11 +224,21 @@ public class SearchengineEntity {
                 }
             } catch (Exception e) {
                 logger.error("error in update", e);
+                if(client!=null){
+                    client.close();
+                }
+                client=null;
+                EsClientInstance.closeEsClient();
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             } catch (Error error) {
+                if(client!=null){
+                    client.close();
+                }
+                client=null;
+                EsClientInstance.closeEsClient();
                 logger.error(error.getMessage());
             } finally {
-                client.close();
+
             }
         }
         return ResponseUtils.success("");
@@ -466,8 +476,13 @@ public class SearchengineEntity {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
+            if(client!=null){
+                client.close();
+            }
+            client=null;
+            EsClientInstance.closeEsClient();
         } finally {
-            client.close();
+//            client.close();
         }
         logger.info("------增量更新员工积分信息结束-------");
         return ResponseUtils.success("");
@@ -503,8 +518,13 @@ public class SearchengineEntity {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            if(client!=null){
+                client.close();
+            }
+            client=null;
+            EsClientInstance.closeEsClient();
         } finally {
-            client.close();
+//            client.close();
         }
         logger.info("----删除员工积分索引信息结束-------");
         return ResponseUtils.success("");
