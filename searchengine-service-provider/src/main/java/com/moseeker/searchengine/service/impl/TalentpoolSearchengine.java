@@ -216,12 +216,9 @@ public class TalentpoolSearchengine {
         String progressStatus=params.get("progress_status");
         String positionIds=params.get("position_ids");
         if(
-            StringUtils.isNotNullOrEmpty(publisherIds)||
-            StringUtils.isNotNullOrEmpty(candidateSource)||
-            StringUtils.isNotNullOrEmpty(recommend)||
-            StringUtils.isNotNullOrEmpty(origins)||
-            StringUtils.isNotNullOrEmpty(submitTime)||
-            StringUtils.isNotNullOrEmpty(progressStatus)
+            StringUtils.isNotNullOrEmpty(publisherIds)||StringUtils.isNotNullOrEmpty(candidateSource)||StringUtils.isNotNullOrEmpty(recommend)||
+            StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||
+            StringUtils.isNotNullOrEmpty(progressStatus)||StringUtils.isNotNullOrEmpty(positionIds)
          )
         {
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
