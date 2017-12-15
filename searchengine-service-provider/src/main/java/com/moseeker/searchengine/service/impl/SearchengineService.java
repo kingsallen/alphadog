@@ -98,32 +98,9 @@ public class SearchengineService {
         if (page_size == 0) {
             page_size = 20;
         }
-//        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-//        try {
-//            propertiesReader.loadResource("es.properties");
-//        } catch (Exception e1) {
-//            // TODO Auto-generated catch block
-//            e1.printStackTrace();
-//        }
-//        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-//        String es_connection = propertiesReader.get("es.connection", String.class);
-//        Integer es_port = propertiesReader.get("es.port", Integer.class);
 
         TransportClient client = null;
         try {
-
-//            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-//                    .put("client.transport.sniff", true)
-//                    .build();
-//            String es_alternate = null;//propertiesReader.get("es.alternate", String.class);
-//            if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate)){
-//                client = TransportClient.builder().settings(settings).build()
-//                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
-//                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate), es_port));
-//            }else{
-//                client = TransportClient.builder().settings(settings).build()
-//                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-//            }
             client=EsClientInstance.getClient();
             QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
@@ -316,7 +293,9 @@ public class SearchengineService {
 
         } catch (Exception e) {
             logger.error("error in search", e);
-            client.close();
+            if(client!=null){
+                client.close();
+            }
             client=null;
             EsClientInstance.closeEsClient();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -377,8 +356,8 @@ public class SearchengineService {
             logger.error(error.getMessage());
             if(client!=null){
                 client.close();
-                client=null;
             }
+            client=null;
             EsClientInstance.closeEsClient();
         } finally {
 
@@ -513,16 +492,16 @@ public class SearchengineService {
                 logger.error("error in update", e);
                 if(client!=null){
                     client.close();
-                    client=null;
                 }
+                client=null;
                 EsClientInstance.closeEsClient();
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             } catch (Error error) {
                 logger.error(error.getMessage());
                 if(client!=null){
                     client.close();
-                    client=null;
                 }
+                client=null;
                 EsClientInstance.closeEsClient();
             }
         }
@@ -557,8 +536,8 @@ public class SearchengineService {
             logger.error(e.getMessage(), e);
             if(client!=null){
                 client.close();
-                client=null;
             }
+            client=null;
             EsClientInstance.closeEsClient();
         }
 
@@ -711,8 +690,8 @@ public class SearchengineService {
             logger.error(e.getMessage(), e);
             if(searchClient!=null){
                 searchClient.close();
-                searchClient=null;
             }
+            searchClient=null;
             EsClientInstance.closeEsClient();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -780,8 +759,8 @@ public class SearchengineService {
             logger.error(e.getMessage(), e);
             if(searchClient!=null){
                 searchClient.close();
-                searchClient=null;
             }
+            searchClient=null;
             EsClientInstance.closeEsClient();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }

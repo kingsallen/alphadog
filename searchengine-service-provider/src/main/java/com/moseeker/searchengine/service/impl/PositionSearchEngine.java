@@ -60,8 +60,8 @@ public class PositionSearchEngine {
             e.printStackTrace();
             if(client!=null){
                 client.close();
-                client=null;
             }
+            client=null;
             EsClientInstance.closeEsClient();
         }
         return new HashMap<String,Object>();
