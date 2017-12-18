@@ -572,32 +572,6 @@ public class UserHrAccountService {
         List<Map<String, Object>> list;
         try {
             list = hrSearchConditionDao.getMaps(query.buildQuery());
-//            logger.info("UserHrAccountService - getSearchCondition  list:{}", list);
-//            list.forEach(sc -> {
-//                Map<String, Object> map = new HashMap<>();
-//                map.put("id", sc.getId());
-//                map.put("name", org.apache.commons.lang.StringUtils.defaultString(sc.getName()));
-//                map.put("publisher", sc.getPublisher());
-//                map.put("position_id", sc.getPosition_id());
-//                map.put("keyword", org.apache.commons.lang.StringUtils.defaultString(sc.getKeyword()));
-//                map.put("submit_time", org.apache.commons.lang.StringUtils.defaultString(sc.getSubmit_time()));
-//                map.put("work_years", sc.getWork_years());
-//                map.put("city_name", org.apache.commons.lang.StringUtils.defaultString(sc.getCity_name()));
-//                map.put("degree", org.apache.commons.lang.StringUtils.defaultString(sc.getDegree()));
-//                map.put("past_position", org.apache.commons.lang.StringUtils.defaultString(sc.getPast_position()));
-//                map.put("in_last_job_search_position", sc.getIn_last_job_search_position());
-//                map.put("min_age", sc.getMin_age());
-//                map.put("max_age", sc.getMax_age());
-//                map.put("intention_city_name", org.apache.commons.lang.StringUtils.defaultString(sc.getIntention_city_name()));
-//                map.put("sex", sc.getSex());
-//                map.put("intention_salary_code", org.apache.commons.lang.StringUtils.defaultString(sc.getIntention_salary_code()));
-//                map.put("company_name", org.apache.commons.lang.StringUtils.defaultString(sc.getCompany_name()));
-//                map.put("in_last_job_search_company", sc.getIn_last_job_search_company());
-//                map.put("hr_account_id", sc.getHr_account_id());
-//                map.put("update_time", sc.getUpdate_time());
-//                map.put("type", sc.getType());
-//                result.add(map);
-//            });
             logger.info("UserHrAccountService - getSearchCondition  result:{}", list);
             if(StringUtils.isEmptyList(list)){
                 return ResponseUtils.success("");
