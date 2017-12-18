@@ -59,6 +59,8 @@ public class ThirdPartyPositionParamRefresh {
         }
         redisClient.expire(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(), "", RefreshConstant.REFRESH_THIRD_PARTY_PARAM_TIMEOUT);
 
+        logger.info("refresh strategy {}",refreshList);
+
         refreshList.forEach(r->{
             try {
                 r.refresh();
