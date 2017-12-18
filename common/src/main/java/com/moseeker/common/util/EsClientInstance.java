@@ -22,7 +22,6 @@ import java.util.List;
  */
 public class EsClientInstance {
     private static Logger logger=Logger.getLogger(EsClientInstance.class);
-    //
     private static Integer SLEEP_TIME=0;
     private static Integer CONNECTION_NUM=0;
     private static TransportClient client=null;
@@ -55,6 +54,9 @@ public class EsClientInstance {
 
                         try {
                             failNum=failNum+1;
+                            if(CONNECTION_NUM==null||CONNECTION_NUM==0){
+                                CONNECTION_NUM=20;
+                            }
                             if(failNum>CONNECTION_NUM){
                                 failNum=0;
                                 sendEmail();
@@ -65,7 +67,6 @@ public class EsClientInstance {
                             }else{
                                 Thread.sleep(1500);
                             }
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -91,10 +92,26 @@ public class EsClientInstance {
                     .put("client.transport.sniff", true)
                     .build();
             String es_alternate = propertiesReader.get("es.alternate", String.class);
-            if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate)){
-                client = TransportClient.builder().settings(settings).build()
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate), es_port));
+            String es_alternate1 = propertiesReader.get("es.alternate1", String.class);
+            if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate)||org.apache.commons.lang.StringUtils.isNotBlank(es_alternate1)){
+                if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate)&&org.apache.commons.lang.StringUtils.isNotBlank(es_alternate1)){
+                    client = TransportClient.builder().settings(settings).build()
+                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
+                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate), es_port))
+                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate1), es_port));
+                }else{
+                    if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate)){
+                        client = TransportClient.builder().settings(settings).build()
+                                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
+                                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate), es_port));
+                    }
+                    if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate1)){
+                        client = TransportClient.builder().settings(settings).build()
+                                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
+                                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate1), es_port));
+                    }
+                }
+
             }else{
                 client = TransportClient.builder().settings(settings).build()
                         .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
