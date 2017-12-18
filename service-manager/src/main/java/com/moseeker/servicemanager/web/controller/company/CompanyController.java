@@ -600,29 +600,4 @@ public class CompanyController {
         }
     }
 
-     /*
-       添加收藏
-   */
-    @RequestMapping(value = "/api/talentpool/talent", method = RequestMethod.POST)
-    @ResponseBody
-    public String CollectTalent(HttpServletRequest request) throws Exception {
-        try {
-            Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            String hrId=String.valueOf(data.get("hr_id"));
-            String userId=String.valueOf(data.get("user_id"));
-            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
-                return ResponseLogNotification.fail(request,"hr_id不能为空或者为0");
-            }
-            if(StringUtils.isNullOrEmpty(userId)||"0".equals(userId)){
-                return ResponseLogNotification.fail(request,"user_id不能为空或者为0");
-            }
-            Response result =null;
-//            Response result = companyServices.updateHrCompanyConf(companyConf);
-            return ResponseLogNotification.success(request, result);
-        }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
-
 }

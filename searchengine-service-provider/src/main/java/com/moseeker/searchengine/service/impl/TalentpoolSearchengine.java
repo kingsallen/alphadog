@@ -1,9 +1,12 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.log4j.Logger;
 import org.apache.lucene.queryparser.xml.builders.FilteredQueryBuilder;
@@ -37,6 +40,8 @@ public class TalentpoolSearchengine {
     private  Logger logger=Logger.getLogger(this.getClass());
     @Autowired
     private SearchUtil searchUtil;
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     @CounterIface
     public Map<String,Object>  talentSearch(Map<String,String> params){
@@ -60,28 +65,34 @@ public class TalentpoolSearchengine {
         List<Integer> publisherIdList=convertStringToList(publisherIds);
         String hrId=params.get("hr_account_id");
         String keyword=params.get("keyword");
-        String lastCompany=params.get("in_last_job_company");
-        String lastPosition=params.get("in_last_job_position");
         String cityName=params.get("city_name");
         String companyName=params.get("company_name");
         String pastPosition=params.get("past_position");
         String intentionCity=params.get("intention_city_name");
-        if(StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(keyword)||
-           StringUtils.isNotNullOrEmpty(lastCompany)||StringUtils.isNotNullOrEmpty(lastPosition)||StringUtils.isNotNullOrEmpty(cityName)||
-           StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition)||StringUtils.isNotNullOrEmpty(intentionCity)
+        if(StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(cityName)||
+           StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition) ||StringUtils.isNotNullOrEmpty(intentionCity)
            )
         {
             builder.addSort(this.handlerScoreOrderScript(publisherIds));
             if (publisherIdList.size() > 1) {
                 builder.addSort("user.hr_all_" + hrId + "_last_submit_time", SortOrder.DESC);
             }else{
-                builder.addSort("user.hr_" + hrId + "_last_submit_time", SortOrder.DESC);
+                if(this.isMianHr(Integer.parseInt(hrId))){
+                    builder.addSort("user.hr_" + publisherIdList.get(0) + "_last_submit_time", SortOrder.DESC);
+                }else{
+                    builder.addSort("user.hr_" + hrId + "_last_submit_time", SortOrder.DESC);
+                }
             }
         }else{
+            //如果查询多个。注解按照hr_all_+主账号_last_submit_time
             if (publisherIdList.size() > 1) {
                 builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
             }else{
-                builder.addSort("user.field_order.hr_"+hrId+"_order", SortOrder.DESC);
+                if(this.isMianHr(Integer.parseInt(hrId))){
+                    builder.addSort("user.hr_" + publisherIdList.get(0) + "_last_submit_time", SortOrder.DESC);
+                }else{
+                    builder.addSort("user.hr_" + hrId + "_last_submit_time", SortOrder.DESC);
+                }
             }
         }
 
@@ -123,8 +134,6 @@ public class TalentpoolSearchengine {
      */
     private void queryCommons(Map<String,String> params,QueryBuilder query){
         String keyword=params.get("keyword");
-        String lastCompany=params.get("in_last_job_company");
-        String lastPosition=params.get("in_last_job_position");
         String cityName=params.get("city_name");
         String companyName=params.get("company_name");
         String pastPosition=params.get("past_position");
@@ -132,8 +141,6 @@ public class TalentpoolSearchengine {
         if(
             StringUtils.isNotNullOrEmpty(keyword)||
             StringUtils.isNotNullOrEmpty(keyword)||
-            StringUtils.isNotNullOrEmpty(lastCompany)||
-            StringUtils.isNotNullOrEmpty(lastPosition)||
             StringUtils.isNotNullOrEmpty(cityName)||
             StringUtils.isNotNullOrEmpty(companyName)||
             StringUtils.isNotNullOrEmpty(pastPosition)||
@@ -149,16 +156,20 @@ public class TalentpoolSearchengine {
                 this.queryByHome(cityName,query);
             }
             if(StringUtils.isNotNullOrEmpty(companyName)){
-                this.queryByCompany(companyName,query);
-            }
-            if(StringUtils.isNotNullOrEmpty(lastCompany)){
-                this.queryByLastCompany(lastCompany,query);
-            }
-            if(StringUtils.isNotNullOrEmpty(lastPosition)){
-                this.queryByLastPositions(lastPosition,query);
+                String lastCompany=params.get("in_last_job_search_company");
+                if(StringUtils.isNotNullOrEmpty(lastCompany)&&"1".equals(lastCompany)){
+                    this.queryByLastCompany(companyName,query);
+                }else {
+                    this.queryByCompany(companyName, query);
+                }
             }
             if(StringUtils.isNotNullOrEmpty(pastPosition)){
-                this.queryByWorkJob(pastPosition,query);
+                String lastPosition=params.get("in_last_job_search_position");
+                if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
+                    this.queryByLastPositions(lastPosition,query);
+                }else{
+                    this.queryByWorkJob(pastPosition,query);
+                }
             }
         }
 
@@ -170,14 +181,15 @@ public class TalentpoolSearchengine {
         String degree=params.get("degree");
         String intentionSalaryCode=params.get("intention_salary_code");
         String sex=params.get("sex");
-        String workYears=params.get("work_year");
-        String ages=params.get("age");
+        String workYears=params.get("work_years");
+        String minAge=params.get("min_age");
+        String maxAge=params.get("max_age");
         String updateTime=params.get("update_time");
         String isFreshGraduate=params.get("is_fresh_graduates");
         if(
             StringUtils.isNotNullOrEmpty(degree)||StringUtils.isNotNullOrEmpty(intentionSalaryCode)||StringUtils.isNotNullOrEmpty(sex)||
-            StringUtils.isNotNullOrEmpty(workYears)||StringUtils.isNotNullOrEmpty(ages)||
-            StringUtils.isNotNullOrEmpty(updateTime)|| StringUtils.isNotNullOrEmpty(isFreshGraduate)
+            StringUtils.isNotNullOrEmpty(workYears)||StringUtils.isNotNullOrEmpty(updateTime)|| StringUtils.isNotNullOrEmpty(isFreshGraduate)||
+            ((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge)))
            )
         {
             if(StringUtils.isNotNullOrEmpty(degree)){
@@ -195,7 +207,15 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(updateTime)){
                 this.queryByProfileUpDateTime(updateTime,query);
             }
-            if(StringUtils.isNotNullOrEmpty(ages)){
+            if(((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge)))){
+                List<Map<String,Integer>> ages=new ArrayList<>();
+                Map<String,Integer> age=new HashMap<>();
+                if(StringUtils.isNotNullOrEmpty(minAge)){
+                    age.put("min",Integer.parseInt(minAge));
+                }
+                if(StringUtils.isNotNullOrEmpty(maxAge)){
+                    age.put("max",Integer.parseInt(maxAge));
+                }
                 this.queryByAge(ages,query);
             }
             if(StringUtils.isNotNullOrEmpty(isFreshGraduate)){
@@ -208,13 +228,13 @@ public class TalentpoolSearchengine {
 
     private void queryApplications(Map<String,String> params,QueryBuilder query){
 
-        String publisherIds=params.get("publisher_ids");
+        String publisherIds=params.get("publisher");
         String candidateSource=params.get("candidate_source");
-        String recommend=params.get("only_recommend");
+        String recommend=params.get("is_recommend");
         String origins=params.get("origins");
         String submitTime=params.get("submit_time");
         String progressStatus=params.get("progress_status");
-        String positionIds=params.get("position_ids");
+        String positionIds=params.get("position_id");
         if(
             StringUtils.isNotNullOrEmpty(publisherIds)||StringUtils.isNotNullOrEmpty(candidateSource)||StringUtils.isNotNullOrEmpty(recommend)||
             StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||
@@ -252,9 +272,9 @@ public class TalentpoolSearchengine {
     public QueryBuilder queryNest(Map<String,String> params){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-        String tagIds=params.get("tag_ids");
+        String tagIds=params.get("tag_id");
         String favoriteHrs=params.get("favorite_hrs");
-        String isPublic=params.get("public");
+        String isPublic=params.get("is_public");
         if(
                 StringUtils.isNullOrEmpty(tagIds)&&
                 StringUtils.isNullOrEmpty(favoriteHrs)&&
@@ -281,18 +301,21 @@ public class TalentpoolSearchengine {
      */
 
     public ScriptQueryBuilder queryScript(Map<String,String> params){
-        String publisherIds=params.get("publisher_ids");
+        String publisherIds=params.get("publisher");
         String candidateSource=params.get("candidate_source");
         String recommend=params.get("only_recommend");
         String origins=params.get("origins");
         String submitTime=params.get("submit_time");
         String progressStatus=params.get("progress_status");
+        String positionId=params.get("position_id");
         if( StringUtils.isNullOrEmpty(publisherIds)
             &&StringUtils.isNullOrEmpty(progressStatus)
             &&StringUtils.isNullOrEmpty(candidateSource)
             &&StringUtils.isNullOrEmpty(recommend)
             &&StringUtils.isNullOrEmpty(origins)
             &&StringUtils.isNullOrEmpty(submitTime)
+            &&StringUtils.isNullOrEmpty(positionId)
+
           )
         {
             return null;
@@ -321,6 +344,10 @@ public class TalentpoolSearchengine {
         }
         if(StringUtils.isNotNullOrEmpty(progressStatus)){
             sb.append(" val.progress_status=="+progressStatus+"&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(positionId)){
+            List<Integer> positionIdList=this.convertStringToList(positionId);
+            sb.append(" val.position_id in "+positionId.toLowerCase()+"&&");
         }
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
@@ -481,9 +508,8 @@ public class TalentpoolSearchengine {
     /*
       按照年龄查询
      */
-    private void queryByAge(String ages,QueryBuilder queryBuilder){
-        List<Map<String,Integer>> list=this.convertParams(ages);
-        searchUtil.shoudRangeAgeOrDegreeListFilter(list,queryBuilder,"user.age");
+    private void queryByAge(List<Map<String,Integer>> ages,QueryBuilder queryBuilder){
+        searchUtil.shoudRangeAgeOrDegreeListFilter(ages,queryBuilder,"user.age");
     }
     /*
      将字符串转换成SON
@@ -687,7 +713,7 @@ public class TalentpoolSearchengine {
      根据不同的条件组装聚合语句
      */
     private String getAggMapScript(Map<String,String> params,String progressStatus,int type){
-        String publishIds=params.get("publisher_ids");
+        String publishIds=params.get("publisher");
         String submitTime=params.get("submit_time");
         String positionIds=params.get("position_id");
         List<Integer> publisherIdList=this.convertStringToList(publishIds);
@@ -751,6 +777,18 @@ public class TalentpoolSearchengine {
             }
         }
         return true;
+    }
+    /*
+     判断当前操作人是否是主账号
+     */
+    private Boolean isMianHr(int hrId){
+        Query query=new Query.QueryBuilder().where("id",hrId).and(new Condition("account_type",1, ValueOp.NEQ))
+                .and("activation",1).and("disable",1).buildQuery();
+        int count=userHrAccountDao.getCount(query);
+        if(count>0){
+            return true;
+        }
+        return false;
     }
 
 }
