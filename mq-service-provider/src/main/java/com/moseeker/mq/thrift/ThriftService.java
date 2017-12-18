@@ -106,4 +106,9 @@ public class ThriftService implements Iface {
 			Map<String, String> data, String sys, String ip) throws TException {
 		return smsService.sendSMS(smsType, mobile, data, sys, ip);
 	}
+
+    @Override
+    public Response sendMessageAndEmail(int application_id) throws TException {
+        return null;
+    }
 }
