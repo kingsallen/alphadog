@@ -69,7 +69,7 @@ ServiceManager为了让用户更方便地开发功能，对获取RPC服务做了
     * 启动数据库
 5. 修改服务配置
     * /src/main/resources/common.properties
-        * redis..host reids 集群地址-IP地址
+        * redis.*.host reids 集群地址-IP地址
         * redis..port reids 集群地址-端口号
         * redis.elk.host log4j日志（不必要）
         * rabbitmq. rebbitmq地址（部分服务需要）
