@@ -64,8 +64,8 @@ public class CompanySearchengine {
 			logger.info(e.getMessage(),e);
 			if(client!=null){
 				client.close();
-				client=null;
 			}
+			client=null;
 			EsClientInstance.closeEsClient();
 		}
 
