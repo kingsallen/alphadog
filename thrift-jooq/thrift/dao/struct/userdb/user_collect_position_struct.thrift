@@ -9,6 +9,6 @@ struct UserCollectPositionDO {
 	3: optional i32 positionId,	//职位id
 	4: optional i32 status,	//0:收藏, 1:取消收藏
 	5: optional string createTime,	//创建时间
-	6: optional string updateTime	//修改时间
-
+	6: optional string updateTime,	//修改时间
+	7: optional string signature    //职位所属公司的公众号
 }

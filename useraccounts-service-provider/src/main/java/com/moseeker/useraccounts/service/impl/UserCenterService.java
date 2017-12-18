@@ -1,16 +1,22 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RecruitmentScheduleLastStepNotExistException;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
@@ -19,7 +25,6 @@ import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,14 +49,17 @@ public class UserCenterService {
     @Autowired
     private UserCenterBizTools bizTools;
 
+    @Autowired
+    private HrWxWechatDao wechatDao;
+
     /**
      * 查询申请记录
      *
      * @param userId 用户编号
      * @return 申请记录
-     * @throws TException
+     * @throws CommonException
      */
-    public List<ApplicationRecordsForm> getApplication(int userId) throws TException {
+    public List<ApplicationRecordsForm> getApplication(int userId) throws CommonException {
         logger.info("UserCenterService getApplication userId:{}", userId);
         List<ApplicationRecordsForm> applications = new ArrayList<>();
 
@@ -63,10 +71,22 @@ public class UserCenterService {
                 //查询申请记录对应的职位数据
                 List<JobPositionDO> positions = bizTools.getPositions(apps.stream().map(app -> Integer.valueOf(app.getPositionId())).collect(Collectors.toList()));
                 logger.info("UserCenterService getApplication positions:{}", positions);
-                List<Hrcompany> companies = bizTools.getCompanies(apps.stream().map(app -> Integer.valueOf(app.getCompanyId())).collect(Collectors.toList()));
+                List<Integer> companyIdList = apps.stream().map(app -> Integer.valueOf(app.getCompanyId())).collect(Collectors.toList());
+                List<Hrcompany> companies = bizTools.getCompanies(companyIdList);
                 logger.info("UserCenterService getApplication companies:{}", companies);
                 List<HrOperationRecordDO> operationRecordDOList = bizTools.listLastHrOperationRecordPassedReject(apps.stream().map(app -> app.getAppTplId()).collect(Collectors.toSet()));
                 logger.info("UserCenterService getApplication operationRecordDOList:{}", operationRecordDOList);
+
+                //查找signature
+                Query.QueryBuilder findWechatQuery = new Query.QueryBuilder();
+                findWechatQuery.select(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName()).select(HrWxWechat.HR_WX_WECHAT.ID.getName()).select(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName())
+                        .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN));
+                List<HrWxWechatDO> wechatDOList = wechatDao.getDatas(
+                        findWechatQuery.buildQuery());
+                Map<Integer, String> signatureMap = new HashMap<>();
+                if (wechatDOList != null && wechatDOList.size() > 0) {
+                    wechatDOList.forEach(hrWxWechatDO -> signatureMap.put(hrWxWechatDO.getCompanyId(), hrWxWechatDO.getSignature()));
+                }
                 //List<ConfigSysPointConfTplDO> tpls = bizTools.getAwardConfigTpls();
 
                 applications = apps.stream().map(app -> {
@@ -97,6 +117,9 @@ public class UserCenterService {
                             preID = operationRecordDOOptional.get().getOperateTplId();
                         }
                     }
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(signatureMap.get(app.getCompanyId()))) {
+                        ar.setSignature(signatureMap.get(app.getCompanyId()));
+                    }
                     logger.info("UserCenterService getApplication recruitmentScheduleEnum:{}", recruitmentScheduleEnum);
                     ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription((byte)app.getApplyType(), (byte)app.getEmailStatus(), preID));
                     return ar;
@@ -120,9 +143,9 @@ public class UserCenterService {
      *
      * @param userId 用户编号
      * @return 收藏的职位集合
-     * @throws TException
+     * @throws CommonException
      */
-    public List<FavPositionForm> getFavPositions(int userId) throws TException {
+    public List<FavPositionForm> getFavPositions(int userId) throws CommonException {
         List<FavPositionForm> favPositions = new ArrayList<>();
         //参数校验
         if (userId > 0) {
@@ -173,10 +196,10 @@ public class UserCenterService {
      *
      * @param userId 用户编号
      * @return 历史推荐记录
-     * @throws TException thrift异常类
+     * @throws CommonException thrift异常类
      */
     @SuppressWarnings("unchecked")
-    public RecommendationVO getRecommendations(int userId, byte type, int pageNo, int pageSize) throws TException {
+    public RecommendationVO getRecommendations(int userId, byte type, int pageNo, int pageSize) throws CommonException {
         RecommendationVO recommendationForm = new RecommendationVO();
         try {
 
@@ -323,7 +346,7 @@ public class UserCenterService {
             } else {
                 recommendationForm.setHasRecommends(false);
             }
-        } catch (TException e) {
+        } catch (CommonException e) {
             logger.error(e.getMessage(), e);
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
@@ -452,7 +475,7 @@ public class UserCenterService {
                     }
 
                 }
-            } catch (TException e) {
+            } catch (CommonException e) {
                 logger.error(e.getMessage(), e);
             }
         }
@@ -465,9 +488,9 @@ public class UserCenterService {
      *
      * @param userId
      * @return
-     * @throws TException
+     * @throws CommonException
      */
-    public List<AwardRecordForm> getAwardRecords(int userId) throws TException {
+    public List<AwardRecordForm> getAwardRecords(int userId) throws CommonException {
         List<AwardRecordForm> awards = new ArrayList<>();
 
         //参数校验
@@ -484,7 +507,7 @@ public class UserCenterService {
     }
 
 
-    public boolean isEmployee(int userId) throws TException {
+    public boolean isEmployee(int userId) throws CommonException {
         boolean flag = false;
 
         return flag;
