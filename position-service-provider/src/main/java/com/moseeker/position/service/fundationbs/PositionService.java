@@ -10,7 +10,6 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
-import com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
@@ -59,7 +58,6 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import org.apache.log4j.spi.LoggerRepository;
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -249,7 +247,7 @@ public class PositionService {
                     jobPositionPojo.custom = jobCustomRecord.getName();
                 }
             }
-            if (jobPositionExtRecord.getJobCustomId() > 0) {
+            if (jobPositionExtRecord.getJobOccupationId() > 0) {
                 JobOccupationRecord jobOccupationRecord =
                         jobOccupationDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobOccupationId()).buildQuery());
                 if (jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
@@ -1898,17 +1896,17 @@ public class PositionService {
         Query query;
         switch (type) {
             case 0: //创建or更新
-                query = new Query.QueryBuilder().select("id").where("status", 0)
+                query = new Query.QueryBuilder().select("id").select("company_id").where("status", 0)
                         .and(new Condition("update_time", start_time, ValueOp.GE))
                         .and(new Condition("update_time", end_time, ValueOp.LT)).buildQuery();
                 break;
             case 1: //刷新
-                query = new Query.QueryBuilder().select("id").where("status", 0)
+                query = new Query.QueryBuilder().select("id").select("company_id").where("status", 0)
                         .and(new Condition("update_time", start_time, ValueOp.GE))
                         .and(new Condition("update_time", end_time, ValueOp.LT)).buildQuery();
                 break;
             case 2:
-                query = new Query.QueryBuilder().select("id").where(new Condition("status", 0, ValueOp.NEQ))
+                query = new Query.QueryBuilder().select("id").select("company_id").where(new Condition("status", 0, ValueOp.NEQ))
                         .and(new Condition("update_time", start_time, ValueOp.GE))
                         .and(new Condition("update_time", end_time, ValueOp.LT)).buildQuery();
                 break;
@@ -1927,7 +1925,9 @@ public class PositionService {
             }
         }
 
+
         List<JobPositionDO> jobPositionList = jobPositionDao.getPositions(query);
+
         List<Integer> positionlist = null;
         if (jobPositionList != null) {
             positionlist = new ArrayList<>(jobPositionList.size());
