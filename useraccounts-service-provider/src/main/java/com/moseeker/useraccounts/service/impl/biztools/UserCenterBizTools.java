@@ -8,9 +8,9 @@ import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserCollectPositionDao;
-import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
@@ -24,9 +24,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserFavPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,9 +74,9 @@ public class UserCenterBizTools {
      * 查找用户的申请记录
      * @param userId 用户编号
      * @return 申请记录集合
-     * @throws TException thrift异常
+     * @throws CommonException 业务异常异常
      */
-    public List<JobApplicationDO> getAppsForUser(int userId) throws TException {
+    public List<JobApplicationDO> getAppsForUser(int userId) throws CommonException {
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.where("applier_id", String.valueOf(userId)).and("disable", AbleFlag.OLDENABLE.getValueStr()).and("email_status", AbleFlag.OLDENABLE.getValueStr());
         qu.orderBy("submit_time", Order.DESC);
@@ -93,9 +91,9 @@ public class UserCenterBizTools {
      * 查找职位信息
      * @param ids 职位编号数组
      * @return 职位数据集合
-     * @throws TException thrift异常信息
+     * @throws CommonException 业务异常
      */
-    public List<JobPositionDO> getPositions(Collection ids) throws TException {
+    public List<JobPositionDO> getPositions(Collection ids) throws CommonException {
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.where(new Condition("id", ids, ValueOp.IN));
         return positionDao.getDatas(qu.buildQuery(), JobPositionDO.class);
@@ -105,9 +103,9 @@ public class UserCenterBizTools {
      * 查找公司信息
      * @param ids 公司信息编号
      * @return 公司信息集合
-     * @throws TException thrift异常信息
+     * @throws CommonException 业务异常
      */
-    public List<Hrcompany> getCompanies(Collection ids) throws TException {
+    public List<Hrcompany> getCompanies(Collection ids) throws CommonException {
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.where(new Condition("id", ids, ValueOp.IN));
         return companyDao.getCompanies(qu.buildQuery());
@@ -117,9 +115,9 @@ public class UserCenterBizTools {
      * 查找招聘进度积分配置模板
      * (todo 可以走缓存)
      * @return 聘进度积分配置模板集合
-     * @throws TException
+     * @throws CommonException
      */
-    public List<ConfigSysPointsConfTplDO> getAwardConfigTpls() throws TException {
+    public List<ConfigSysPointsConfTplDO> getAwardConfigTpls() throws CommonException {
         return awardConfigTplDao.getAwardConfigTpls(new Query.QueryBuilder().buildQuery());
     }
 
@@ -127,9 +125,9 @@ public class UserCenterBizTools {
      * 查找职位搜藏
      * @param userId 用户编号
      * @return 感兴趣职位集合
-     * @throws TException thrift异常信息
+     * @throws CommonException 业务异常
      */
-    public List<UserCollectPositionDO> getFavPositions(int userId) throws TException {
+    public List<UserCollectPositionDO> getFavPositions(int userId) throws CommonException {
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.where("user_id", String.valueOf(userId));
         qu.and("status", String.valueOf("0"));
@@ -145,9 +143,9 @@ public class UserCenterBizTools {
      * @param positionIdList 职位编号
      *@param pageNo 页码
      * @param pageSize 每页显示的数量   @return 转发浏览记录集合
-     * @throws TException
+     * @throws CommonException
      */
-    public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, int type, List<Integer> positionIdList, int pageNo, int pageSize) throws TException {
+    public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, int type, List<Integer> positionIdList, int pageNo, int pageSize) throws CommonException {
         List<CandidateRecomRecordDO> recomRecordDOList = new ArrayList<>();
         switch (type) {
             case 1:			//查找所有相关的职位转发记录
@@ -390,9 +388,9 @@ public class UserCenterBizTools {
      * 查找申请记录集合信息
      * @param appId 申请记录编号
      * @return 申请记录集合
-     * @throws TException thrift异常
+     * @throws CommonException thrift异常
      */
-    public JobApplicationDO getApplication(int appId) throws TException {
+    public JobApplicationDO getApplication(int appId) throws CommonException {
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.select("id").select("applier_id").select("email_status")
                 .select("apply_type").select("app_tpl_id").select("position_id")
