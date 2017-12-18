@@ -61,7 +61,7 @@ public class TalentpoolSearchengine {
                     .addAggregation(this.handleIsViewedCountAgg(params))
                     .addAggregation(this.handleNotViewedCountAgg(params));
         }
-        String publisherIds=params.get("publisher_ids");
+        String publisherIds=params.get("publisher");
         List<Integer> publisherIdList=convertStringToList(publisherIds);
         String hrId=params.get("hr_account_id");
         String keyword=params.get("keyword");
@@ -257,7 +257,8 @@ public class TalentpoolSearchengine {
                 this.queryByProgress(Integer.parseInt(progressStatus),query);
             }
             if(StringUtils.isNotNullOrEmpty(origins)){
-                this.queryByOrigin(origins,query);
+                String companyId=params.get("company_id");
+                this.queryByOrigin(origins,companyId,query);
             }
             if(StringUtils.isNotNullOrEmpty(positionIds)){
                 this.queryByPositionId(positionIds,query);
@@ -430,12 +431,8 @@ public class TalentpoolSearchengine {
     /*
       构建简历来源的查询语句
      */
-    private void queryByOrigin(String condition,QueryBuilder queryBuilder){
-        List<String> list=new ArrayList<>();
-        list.add("user.application.origin");
-        list.add("user.profiles.basic.origin");
-        list.add("user.talent_pool.upload");
-        searchUtil.handleShouldMatchFilter(Integer.parseInt(condition),queryBuilder,list);
+    private void queryByOrigin(String condition,String companyId,QueryBuilder queryBuilder){
+        searchUtil.handleOrigins(condition,companyId,queryBuilder);
     }
     /*
       构建通过职位来查询的语句

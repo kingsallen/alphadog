@@ -393,7 +393,7 @@ public class SearchUtil {
     }
 
     //将xx,xx,xx格式的字符串转化为list
-    private List<String> stringConvertList(String keyWords) {
+    public List<String> stringConvertList(String keyWords) {
         if (StringUtils.isNotEmpty(keyWords)) {
             String[] array = keyWords.split(",");
             List<String> list = new ArrayList<String>();
@@ -419,6 +419,33 @@ public class SearchUtil {
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).filter(keyand);
         }
+    }
+    /*
+    专门处理来源的问题
+     */
+    public void handleOrigins(String conditions,String companyId,QueryBuilder builder){
+        List<String> list=this.stringConvertList(conditions);
+        QueryBuilder keyand = QueryBuilders.boolQuery();
+        for(String condition:list){
+            QueryBuilder keyand1 = QueryBuilders.boolQuery();
+            if("1".equals(condition)){
+                QueryBuilder query0=QueryBuilders.matchQuery("user.talent_pool.upload",1);
+                ((BoolQueryBuilder) keyand1).must(query0);
+                QueryBuilder query1=QueryBuilders.matchQuery("user.talent_pool.company_id",companyId);
+                ((BoolQueryBuilder) keyand1).must(query1);
+                QueryBuilder query=QueryBuilders.nestedQuery("user.talent_pool",keyand1);
+                ((BoolQueryBuilder) keyand).should(query);
+            }else{
+                if(condition.length()>8){
+                    QueryBuilder query0=QueryBuilders.matchQuery("user.profiles.origin",condition);
+                    ((BoolQueryBuilder) keyand).should(query0);
+                }else{
+                    QueryBuilder query0=QueryBuilders.matchQuery("user.applications.origin",condition);
+                    ((BoolQueryBuilder) keyand).should(query0);
+                }
+            }
+        }
+        System.out.println(keyand.toString());
     }
 
 }
