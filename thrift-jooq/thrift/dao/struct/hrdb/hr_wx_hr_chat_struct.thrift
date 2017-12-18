@@ -10,6 +10,7 @@ struct HrWxHrChatDO {
 	4: optional i32 pid,	//hr_position.id
 	5: optional i8 speaker,	//状态，0：求职者，1：HR
 	6: optional i8 status,	//状态，0：有效，1：无效
-	7: optional string createTime	//创建时间
+	7: optional string createTime,	//创建时间
+	8: optional i8 origin   // 来源 0 用户输入， 1 系统自动生成：欢迎语， 2 AI输入
 
 }

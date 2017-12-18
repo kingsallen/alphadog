@@ -224,7 +224,7 @@ public class UserHrAccountService {
         userHrAccountRecord.setLastLoginTime(now);
         userHrAccountRecord.setDownloadToken(null);
         userHrAccountRecord.setLastLoginIp(null);
-        if (org.apache.commons.lang.StringUtils.isNotBlank(userHrAccountRecord.getPassword())) {
+        if (userHrAccountRecord.getPassword() == null) {
             userHrAccountRecord.setPassword("");
         }
 
