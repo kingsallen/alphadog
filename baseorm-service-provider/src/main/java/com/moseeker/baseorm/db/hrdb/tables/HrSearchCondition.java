@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 403275523;
+    private static final long serialVersionUID = 1454741244;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
@@ -64,12 +64,12 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     /**
      * The column <code>hrdb.hr_search_condition.publisher</code>. 发布人id(user_hr_account.id)
      */
-    public final TableField<HrSearchConditionRecord, Integer> PUBLISHER = createField("publisher", org.jooq.impl.SQLDataType.INTEGER, this, "发布人id(user_hr_account.id)");
+    public final TableField<HrSearchConditionRecord, String> PUBLISHER = createField("publisher", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "发布人id(user_hr_account.id)");
 
     /**
      * The column <code>hrdb.hr_search_condition.position_id</code>. 职位id
      */
-    public final TableField<HrSearchConditionRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER, this, "职位id");
+    public final TableField<HrSearchConditionRecord, String> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职位id");
 
     /**
      * The column <code>hrdb.hr_search_condition.keyword</code>. 关键字
@@ -160,6 +160,41 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
      * The column <code>hrdb.hr_search_condition.type</code>. 类型（0：候选人列表筛选条件，1：人才库列表筛选条件）
      */
     public final TableField<HrSearchConditionRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "类型（0：候选人列表筛选条件，1：人才库列表筛选条件）");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.candidate_source</code>. 0，社招，1，校招，2定向招聘，3不限
+     */
+    public final TableField<HrSearchConditionRecord, Byte> CANDIDATE_SOURCE = createField("candidate_source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("3", org.jooq.impl.SQLDataType.TINYINT)), this, "0，社招，1，校招，2定向招聘，3不限");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.is_public</code>.
+     */
+    public final TableField<HrSearchConditionRecord, Byte> IS_PUBLIC = createField("is_public", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("2", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.origins</code>.
+     */
+    public final TableField<HrSearchConditionRecord, String> ORIGINS = createField("origins", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.is_recommend</code>.
+     */
+    public final TableField<HrSearchConditionRecord, Byte> IS_RECOMMEND = createField("is_recommend", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.tag_id</code>.
+     */
+    public final TableField<HrSearchConditionRecord, Integer> TAG_ID = createField("tag_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.is_fresh_graduates</code>.
+     */
+    public final TableField<HrSearchConditionRecord, Byte> IS_FRESH_GRADUATES = createField("is_fresh_graduates", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("2", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.favorite_hrs</code>.
+     */
+    public final TableField<HrSearchConditionRecord, String> FAVORITE_HRS = createField("favorite_hrs", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>hrdb.hr_search_condition</code> table reference

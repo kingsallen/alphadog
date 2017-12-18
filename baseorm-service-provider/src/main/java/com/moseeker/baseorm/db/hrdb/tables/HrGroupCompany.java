@@ -136,6 +136,7 @@ public class HrGroupCompany extends TableImpl<HrGroupCompanyRecord> {
     /**
      * Rename this table
      */
+
     public HrGroupCompany rename(String name) {
         return new HrGroupCompany(name, null);
     }

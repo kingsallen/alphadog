@@ -146,7 +146,8 @@ public class HrTalentpool extends TableImpl<HrTalentpoolRecord> {
     /**
      * Rename this table
      */
-   public HrTalentpool rename(String name) {
+
+    public HrTalentpool rename(String name) {
         return new HrTalentpool(name, null);
     }
 }

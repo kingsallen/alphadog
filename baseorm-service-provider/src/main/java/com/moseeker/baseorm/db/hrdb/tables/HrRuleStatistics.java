@@ -151,6 +151,7 @@ public class HrRuleStatistics extends TableImpl<HrRuleStatisticsRecord> {
     /**
      * Rename this table
      */
+
     public HrRuleStatistics rename(String name) {
         return new HrRuleStatistics(name, null);
     }
