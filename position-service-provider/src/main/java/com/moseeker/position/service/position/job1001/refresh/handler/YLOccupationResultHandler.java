@@ -1,16 +1,10 @@
 package com.moseeker.position.service.position.job1001.refresh.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.DictJob1001OccupationDao;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
-import com.moseeker.position.service.position.job1001.Jljob88ParamRefresher;
-import com.moseeker.position.service.position.job1001.Job021ParamRefresher;
-import com.moseeker.position.service.position.job1001.Job1001ParamRefresher;
-import com.moseeker.position.service.position.job1001.Tmljob88ParamRefresher;
-import com.moseeker.position.service.position.veryeast.refresh.handler.VEResultHandlerAdapter;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictJob1001OccupationDO;
 import org.slf4j.Logger;
@@ -29,7 +23,7 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
     private DictJob1001OccupationDao occupationDao;
 
     @Autowired
-    List<YLParamRefresher> subsiteList;
+    List<AbstractYLParamRefresher> subsiteList;
 
     @Override
     protected Map<Integer, Integer> generateNewKey(List<Integer> otherCodes,JSONObject msg) {

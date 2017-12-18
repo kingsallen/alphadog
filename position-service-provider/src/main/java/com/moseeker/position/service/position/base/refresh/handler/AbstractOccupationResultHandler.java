@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonResultHandler {
     Logger logger= LoggerFactory.getLogger(AbstractOccupationResultHandler.class);
+
     //
     protected abstract T buildOccupation(List<String> texts,List<String> codes,Map<Integer, Integer> newCode,JSONObject msg);
     //持久化数据,需要加上@Transactional注解
