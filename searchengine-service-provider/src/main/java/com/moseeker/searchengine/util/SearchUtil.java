@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -33,34 +33,9 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 public class SearchUtil {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
     //启动es客户端
-    public  TransportClient getEsClient() {
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-           logger.info(e1.getMessage(),e1);
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-        TransportClient client = null;
-        try{
-       	 Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                    .build();
-            client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-        } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            try {
-                if (client != null) {
-                    client.close();
-                }
-            } catch (Exception e1) {
-                logger.error(e1.getMessage(), e1);
-            }
-            client = null;
-        }
-        return client;
+
+    public TransportClient getEsClient() {
+        return EsClientInstance.getClient();
     }
     /*
      * 拼接city
