@@ -40,7 +40,6 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.getResource(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
@@ -51,7 +50,6 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.postResource(struct);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
@@ -62,7 +60,6 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.getCompleteness(userId, uuid, profileId);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
@@ -73,7 +70,6 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.reCalculateUserCompleteness(userId, mobile);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
@@ -84,7 +80,6 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.reCalculateUserCompletenessBySettingId(id);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
@@ -133,7 +128,6 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.getResources(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
@@ -144,7 +138,6 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.getPagination(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }

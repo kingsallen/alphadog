@@ -458,6 +458,14 @@ public class ProfileService {
         return ResponseUtils.success(profileObj);
     }
 
+    /**
+     * 通过resumeSDK服务商解析文本文件成一个我们可识别的简历数据
+     * @param fileName 文件名称
+     * @param file 文件
+     * @param uuid profile uuid
+     * @param uid 用户编号
+     * @return 简历数据
+     */
     private ProfileObj parseByResumeSDK(String fileName, String file, String uuid, int uid) {
         ProfileObj profileObj = new ProfileObj();
         try {
