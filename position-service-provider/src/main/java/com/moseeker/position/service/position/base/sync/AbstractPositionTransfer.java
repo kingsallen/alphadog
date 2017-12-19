@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public abstract class AbstractPositionTransfer<Form,R,Info,ExtP> {
+public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
     protected FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
@@ -183,6 +183,10 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP> {
      * @return
      */
     public List<List<String>> getCities(JobPositionDO positionDB) {
+        if(positionDB==null || positionDB.getId()==0){
+            return Collections.emptyList();
+        }
+
         //获取职位对应的moseeker城市code
         Query query = new Query.QueryBuilder().where("pid", positionDB.getId()).buildQuery();
         List<JobPositionCityDO> positionCitys = jobPositionCityDao.getDatas(query);
@@ -271,6 +275,9 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP> {
     }
 
     protected String getEmail(JobPositionDO positionDB) throws Exception {
+        if(positionDB==null || positionDB.getId()==0){
+            return "";
+        }
         String email = getConfigString("chaos.email");
         return "cv_" + positionDB.getId() + email;
     }

@@ -1,4 +1,4 @@
-package com.moseeker.position.service.position.liepin;
+package com.moseeker.position.service.position.liepin.pojo;
 
 public enum LiepinWorkType {
 

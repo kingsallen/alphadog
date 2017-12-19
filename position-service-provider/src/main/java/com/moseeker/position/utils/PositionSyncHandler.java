@@ -123,7 +123,7 @@ public class PositionSyncHandler {
         result.setChannel(channel);
         result.setAccount_id(thirdPartyAccountId);
         result.setSync_fail_reason(reason);
-        result.setSync_status(3);
+        result.setSync_status(PositionSyncResultPojo.FAIL);
         return result;
     }
     //创建普通结果
@@ -132,7 +132,7 @@ public class PositionSyncHandler {
         String syncTime = (new DateTime()).toString("yyyy-MM-dd HH:mm:ss");
 
         result.setChannel(channel);
-        result.setSync_status(2);
+        result.setSync_status(PositionSyncResultPojo.SUCCESS);
         result.setSync_time(syncTime);
         result.setAccount_id(thirdPartyAccountId);
 

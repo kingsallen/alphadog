@@ -140,8 +140,13 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
         ThirdpartyAccountCompanyAddressDO addressDO=addressDao.getData(query);
 
         ThirdpartyAccountCompanyAddress address=new ThirdpartyAccountCompanyAddress();
-        address.setCity(addressDO.getCity());
-        address.setAddress(addressDO.getAddress());
+
+        if(addressDO==null || addressDO.getId()==0){
+            address.setAddress(form.getAddressName());
+        }else{
+            address.setCity(addressDO.getCity());
+            address.setAddress(addressDO.getAddress());
+        }
 
         position.setAddress(address);
     }

@@ -1,9 +1,14 @@
 package com.moseeker.position.service.position.job1001.pojo;
 
+import com.moseeker.position.service.position.base.sync.ITransferStrategy;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TransferStrategy {
+public class YLTransferStrategy {
+    private static Logger logger= LoggerFactory.getLogger(YLTransferStrategy.class);
+
     public enum Job1001Degree{
         //0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中',
         None("0","不限", Degree.None),
@@ -14,9 +19,9 @@ public class TransferStrategy {
         College("60","本科",Degree.College),
         JuniorCollege("50","大专",Degree.JuniorCollege),
         SpecicalSecondarySchool("40","中专",Degree.SpecicalSecondarySchool),
+        HighSchool("20","高中",Degree.HighSchool),
         DEGREE1("30","中技",null),
-        DEGREE2("20","高中",Degree.HighSchool),
-        DEGREE3("10","初中",null)
+        DEGREE2("10","初中",null)
         ;
 
         Job1001Degree(String code, String text, Degree degree) {
@@ -32,7 +37,8 @@ public class TransferStrategy {
                     return t.code;
                 }
             }
-            throw new IllegalArgumentException("no matched JobType");
+            logger.info("no matched Job1001Degree");
+            return "";
         }
 
         private String code;
@@ -63,7 +69,8 @@ public class TransferStrategy {
                     return t.code;
                 }
             }
-            throw new IllegalArgumentException("no matched JobType");
+            logger.info("no matched JobType");
+            return "";
         }
 
         private String code;
@@ -88,7 +95,8 @@ public class TransferStrategy {
                     return t.code;
                 }
             }
-            throw new IllegalArgumentException("no matched Sex");
+            logger.info("no matched Sex");
+            return "";
         }
 
         private String code;
@@ -114,7 +122,8 @@ public class TransferStrategy {
                     return t.code;
                 }
             }
-            throw new IllegalArgumentException("no matched target");
+            logger.info("no matched target");
+            return -1;
         }
 
         private int code;

@@ -2,9 +2,9 @@ package com.moseeker.position.service.position;
 
 import com.moseeker.position.service.position.alipaycampus.AlipaycampusWorkType;
 import com.moseeker.position.service.position.job51.pojo.Job51WorkType;
-import com.moseeker.position.service.position.liepin.LiepinWorkType;
+import com.moseeker.position.service.position.liepin.pojo.LiepinWorkType;
 import com.moseeker.position.service.position.qianxun.WorkType;
-import com.moseeker.position.service.position.zhilian.ZhilianWorkType;
+import com.moseeker.position.service.position.zhilian.pojo.ZhilianWorkType;
 
 /**
  * 工作性质转换

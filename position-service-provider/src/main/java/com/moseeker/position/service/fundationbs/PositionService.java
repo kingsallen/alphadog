@@ -336,7 +336,7 @@ public class PositionService {
      * @return
      */
     @CounterIface
-    public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) {
+    public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) throws BIZException {
         logger.info("------开始批量修改职位--------");
         JobPostionResponse jobPostionResponse = new JobPostionResponse();
         // 返回新增或者更新失败的职位信息
@@ -350,11 +350,11 @@ public class PositionService {
         Boolean noDelete = batchHandlerJobPosition.nodelete;
         // 参数有误
         if (null == noDelete) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_NODELETE_BLANK);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_NODELETE_BLANK);
         }
         // 提交的数据为空
         if (com.moseeker.common.util.StringUtils.isEmptyList(batchHandlerJobPosition.getData())) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_DATA_BLANK);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_DATA_BLANK);
         }
         Integer companyId;
         if (jobPositionHandlerDates.get(0).getId() != 0) {
@@ -363,7 +363,8 @@ public class PositionService {
             if (jobPostionTemp != null) {
                 companyId = jobPostionTemp.getCompanyId().intValue();
             } else {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_JOBPOSITION_COMPANY_ID_BLANK);
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_JOBPOSITION_COMPANY_ID_BLANK);
+//                return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_JOBPOSITION_COMPANY_ID_BLANK);
             }
         } else {
             // 将该公司下的所有职位查询出来
@@ -491,6 +492,8 @@ public class PositionService {
         List<JobPositionCityRecord> jobPositionCityRecordsUpdatelist = new ArrayList<>();
         // 需要新增的JobPositionCity数据
         List<JobPositionCityRecord> jobPositionCityRecordsAddlist = new ArrayList<>();
+        // 返回同步需要的的id以及对应的thirdParty_position
+        Map<Integer,String> syncData=new HashMap<>();
         // 处理数据
         for (JobPostrionObj jobPositionHandlerDate : jobPositionHandlerDates) {
             logger.info("提交的数据：" + jobPositionHandlerDate.toString());
@@ -622,6 +625,9 @@ public class PositionService {
                         }
                         // 将需要更新JobPosition的数据放入更新的列表
                         jobPositionUpdateRecordList.add(record);
+                        // 需要同步的数据
+                        syncData.put(record.getId(),jobPositionHandlerDate.getThirdParty_position());
+
                         // 需要更新JobPositionCity数据
                         List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(jobPositionHandlerDate.getCity(), record.getId());
                         if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
@@ -674,6 +680,9 @@ public class PositionService {
                 }
                 // 需要新增的JobPosition数据
                 jobPositionAddRecordList.add(record);
+                // 需要同步的数据
+                syncData.put(record.getId(),jobPositionHandlerDate.getThirdParty_position());
+
                 if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra()) || jobOccupationId != 0 || customId != 0) {
                     // 新增jobPostion_ext数据
                     JobPositionExtRecord jobPositionExtRecord = new JobPositionExtRecord();
@@ -738,16 +747,19 @@ public class PositionService {
         jobPostionResponse.setInsertCounts(jobPositionAddRecordList.size());
         jobPostionResponse.setUpdateCounts(jobPositionUpdateRecordList.size());
         jobPostionResponse.setTotalCounts(jobPositionHandlerDates.size());
+        jobPostionResponse.setSyncData(syncData);
         if (jobPositionIds.size() > 0) {
             logger.info("插入和新增的jobPositionIds为:" + jobPositionIds.toString());
             // 更新ES Search Engine
             PositionService.UpdateES updataESThread = new PositionService.UpdateES(jobPositionIds);
             Thread thread = new Thread(updataESThread);
             thread.start();
-            return ResponseUtils.success(jobPostionResponse);
+//            return ResponseUtils.success(jobPostionResponse);
+            return jobPostionResponse;
         }
         logger.info("-------批量修改职位结束---------");
-        return ResponseUtils.fail(1, "failed", jobPostionResponse);
+//        return ResponseUtils.fail(1, "failed", jobPostionResponse);
+        return jobPostionResponse;
     }
 
     /**

@@ -7,19 +7,18 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionRefreshType;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.Query.QueryBuilder;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.ResultMessage;
 import com.moseeker.position.pojo.PositionSyncResultPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
+import com.moseeker.position.service.position.base.sync.TransferCheckUtil;
 import com.moseeker.position.utils.PositionSyncHandler;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -59,13 +58,15 @@ public class PositionBS {
     private PositionSyncHandler positionSyncHandler;
     @Autowired
     private PositionChangeUtil positionChangeUtil;
+    @Autowired
+    private TransferCheckUtil transferCheckUtil;
 
     /**
      * @param position
      * @return
      */
     @CounterIface
-    public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws Exception {
+    public List<PositionSyncResultPojo> synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws Exception {
         logger.info("synchronizePositionToThirdPartyPlatform:" + JSON.toJSONString(position));
         // 职位数据是否存在
         JobPositionDO moseekerJobPosition = positionSyncHandler.getAvailableMoSeekerPosition(position.getPositionId());
@@ -92,6 +93,19 @@ public class PositionBS {
             } else {
                 p.put("thirdPartyAccountId",avaliableAccount.getId());
             }
+
+            /*ChannelType channelType=ChannelType.instaceFromInteger(channel);
+            if(channelType==null){
+                results.add(positionSyncHandler.createFailResult(channel,thirdPartyAccountId,ResultMessage.CHANNEL_NOT_EXIST.getMessage()));
+                continue;
+            }
+
+            List<String> checkMsg=transferCheckUtil.checkBeforeTransfer(channelType,p);
+            if(!StringUtils.isEmptyList(checkMsg)){
+                results.add(positionSyncHandler.createFailResult(channel,thirdPartyAccountId,JSON.toJSONString(checkMsg)));
+                continue;
+            }*/
+
             // 转成第三方渠道职位
             AbstractPositionTransfer.TransferResult result= positionChangeUtil.changeToThirdPartyPosition(p, moseekerJobPosition,avaliableAccount);
 
@@ -103,41 +117,15 @@ public class PositionBS {
 
         // 提交到chaos处理
         logger.info("chaosService.synchronizePosition:{}", positionsForSynchronizations);
-        chaosService.synchronizePosition(positionsForSynchronizations);
+//        chaosService.synchronizePosition(positionsForSynchronizations);
 
         // 回写数据到第三方职位表表
         logger.info("write back to thirdpartyposition:{}",writeBackThirdPartyPositionList);
         thirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
 
-        return ResultMessage.SUCCESS.toResponse(results);
+        return results;
     }
 
-    /**
-     * 对使用公司地址的职位设置公司地址
-     *
-     * @param channels  渠道职位
-     * @param companyId 公司编号
-     */
-
-    private void setAddressByCompanyAddress(List<ThirdPartyPosition> channels, int companyId) {
-        boolean useCompanyAddress = false;
-        for (ThirdPartyPosition channel : channels) {
-            if (channel.isUseCompanyAddress()) {
-                useCompanyAddress = true;
-                break;
-            }
-        }
-        if (useCompanyAddress) {
-            Query query = new QueryBuilder().where("id", companyId).buildQuery();
-            HrCompanyDO company = hrCompanyDao.getData(query, HrCompanyDO.class);
-            for (ThirdPartyPosition channel : channels) {
-                if (channel.isUseCompanyAddress()) {
-                    channel.setAddressId(company.getId());
-                    channel.setAddressName(company.getAddress());
-                }
-            }
-        }
-    }
 
     /**
      * 刷新职位

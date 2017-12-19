@@ -2,8 +2,12 @@ package com.moseeker.position.service.position.veryeast.pojo;
 
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VeryEastTransferStrategy {
+    private static Logger logger= LoggerFactory.getLogger(VeryEastTransferStrategy.class);
+
     public enum VeryEastDegree{
         //0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中',
         None("0","不限", Degree.None),
@@ -32,7 +36,8 @@ public class VeryEastTransferStrategy {
                     return t.code;
                 }
             }
-            throw new IllegalArgumentException("no matched JobType");
+            logger.info("no matched Job1001Degree");
+            return "";
         }
 
         private String code;
@@ -61,7 +66,8 @@ public class VeryEastTransferStrategy {
                     return t.code;
                 }
             }
-            throw new IllegalArgumentException("no matched JobType");
+            logger.info("no matched WorkMode");
+            return "";
         }
 
         private String code;

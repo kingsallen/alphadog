@@ -63,9 +63,13 @@ public class PositionParamUtils extends ParamUtils {
         List<JobPostrionObj> cs = new ArrayList<>();
         List<HashMap<String, Object>> datas = (List<HashMap<String, Object>>) data.get("data");
         if (datas != null) {
-            datas.forEach(jobPostrionObj -> {
+            datas.forEach(temp -> {
                 try {
+                    Map<String, Object> jobPostrionObj=(Map<String, Object>)temp.get("position");
+
                     JobPostrionObj c = ParamUtils.initModelForm(jobPostrionObj, JobPostrionObj.class);
+                    c.setThirdParty_position(JSON.toJSONString(temp.get("thirdParty_position")));
+
                     List<HashMap<String, Object>> citys = (List<HashMap<String, Object>>) jobPostrionObj.get("city");
                     if (citys != null) {
                         List<City> cities = new ArrayList<>();

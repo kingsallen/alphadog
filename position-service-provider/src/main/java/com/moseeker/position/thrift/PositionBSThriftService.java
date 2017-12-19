@@ -32,7 +32,7 @@ public class PositionBSThriftService implements Iface {
     @Override
     public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws TException {
         try {
-            return positionBS.synchronizePositionToThirdPartyPlatform(position);
+            return ResultMessage.SUCCESS.toResponse(positionBS.synchronizePositionToThirdPartyPlatform(position));
         } catch (BIZException e) {
             throw e;
         } catch (Exception e) {

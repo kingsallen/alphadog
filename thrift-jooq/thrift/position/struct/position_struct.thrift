@@ -259,7 +259,8 @@ struct JobPostrionObj{
     46:string extra,
     47:i32 id,
     48:string requirement,
-    49:string custom
+    49:string custom,
+    50:string thirdParty_position
 }
 
 struct City{
