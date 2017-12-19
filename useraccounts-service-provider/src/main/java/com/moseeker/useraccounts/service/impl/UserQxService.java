@@ -223,8 +223,7 @@ public class UserQxService {
                         .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN));
                 Map<Integer, String> signatureMap = wechatDao.getDatas(
                         findWechatQuery.buildQuery()).stream()
-                        .filter(distinctByKey(hrWxWechatDO -> hrWxWechatDO.getCompanyId()))
-                        .collect(Collectors.toMap(k -> k.getCompanyId(), v -> v.getSignature()));
+                        .collect(Collectors.toMap(k -> k.getCompanyId(), v -> v.getSignature(), (companyId1, companyId2) -> companyId1));
 
 
                 List<CollectPositionForm> positionFormList = new ArrayList<>();
