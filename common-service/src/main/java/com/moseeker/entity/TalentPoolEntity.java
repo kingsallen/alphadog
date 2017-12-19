@@ -310,8 +310,8 @@ public class TalentPoolEntity {
             Set<Map<String,Object>> talentSet=new HashSet<>();
             Set<Map<String,Object>> publicSet=new HashSet<>();
             Map<String,Object> data=new HashMap<>();
-            data.put("talent",talentSet);
-            data.put("public",publicSet);
+            data.put("favorite_hrs",talentSet);
+            data.put("public_hrs",publicSet);
             for(Map<String,Object> map:list) {
                 int userId = (int) map.get("user_id");
                 int hrId = (int) map.get("hr_id");
