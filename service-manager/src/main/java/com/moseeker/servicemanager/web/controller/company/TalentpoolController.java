@@ -421,14 +421,14 @@ public class TalentpoolController {
             // do nothing
         }
     }
-    @RequestMapping(value = "/api/talentpool/talentpublic", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/talentpool/talentpublic", method = RequestMethod.POST)
     @ResponseBody
     public String getTalentPublicByUserId(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
-            List<Integer> userIdList=ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
+            List<Integer> userIdList=(List<Integer>)data.get("user_ids");;
             Response result = service.getTalentAndPublicHr(hrId,companyId,userIdList);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
