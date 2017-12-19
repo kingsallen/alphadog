@@ -3,6 +3,8 @@ package com.moseeker.servicemanager.web.controller.profile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPObject;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -30,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.taobao.api.internal.util.json.JSONErrorListener;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.slf4j.Logger;
@@ -380,12 +384,21 @@ public class ProfileController {
      */
     @RequestMapping(value = "/profile/email/parser", method = RequestMethod.POST)
     @ResponseBody
-    public String emailProfileParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request) throws Exception {
-        Params<String, Object> params = ParamUtils.parseequestParameter(request);
-        Integer uid = params.getInt("uid");
+    public String emailProfileParser(@RequestParam(value = "file", required = false) MultipartFile file,
+                                     @RequestParam int position_id, @RequestParam int channel,
+
+                                     HttpServletRequest request) throws Exception {
         if (file != null) {
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
-            Response res = service.resumeProfile(uid, file.getOriginalFilename(), data);
+            Response res = service.parseProfileAttachment(file.getOriginalFilename(), data);
+            if (res.getStatus() == 0) {
+                JSONObject jsonObject = JSON.parseObject(res.getData());
+                jsonObject.put("positionId", position_id);
+                jsonObject.put("channel", channel);
+
+                boolean result = profileService.retrieveProfile(jsonObject.toJSONString());
+                return ResponseLogNotification.successJson(request, result);
+            }
             return ResponseLogNotification.success(request, res);
         } else {
             return null;
