@@ -120,15 +120,7 @@ public class TalentPoolEntity {
         return 0;
     }
 
-    /*
-     判断user_id是否是上传的
-     */
 
-    private int isUpLoad(int companyId,int userId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).buildQuery();
-        int count=talentpoolTalentDao.getCount(query);
-        return count;
-    }
     /*
       获取这个备注是否属于这个hr
      */
@@ -295,6 +287,52 @@ public class TalentPoolEntity {
         }
         return hrIdList;
     }
+    /*
+     通过userIdList获取所有的公开人和收藏人
+     */
+    public Map<Integer,Object> handlerPublicAndTalent(int companyId,Set<Integer> userIdSet){
+        List<Map<String,Object>> userHrList=this.getCompanyHrList(companyId);
+        Set<Integer> hrIdSet=this.getIdListByUserHrAccountList(userHrList);
+        if(StringUtils.isEmptySet(userIdSet)||StringUtils.isEmptySet(hrIdSet)){
+            return null;
+        }
+        List<Map<String,Object>> list=getTalentpoolHrTalentByuserIdListAndhrIdList(userIdSet,hrIdSet);
+        Map<Integer,Object> result=this.handlerPublicAndTalentData(list,userIdSet,userHrList);
+        return result;
+    }
+
+    private Map<Integer,Object> handlerPublicAndTalentData( List<Map<String,Object>> list,Set<Integer> userIdSet,List<Map<String,Object>> userHrList){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        Map<Integer,Object> result=new HashMap<>();
+        for(Integer key:userIdSet){
+            Set<Map<String,Object>> talentSet=new HashSet<>();
+            Set<Map<String,Object>> publicSet=new HashSet<>();
+            Map<String,Object> data=new HashMap<>();
+            data.put("talent",talentSet);
+            data.put("public",publicSet);
+            for(Map<String,Object> map:list) {
+                int userId = (int) map.get("user_id");
+                int hrId = (int) map.get("hr_id");
+                byte isPublic = (Byte) map.get("public");
+                if (userId == key) {
+                    for (Map<String, Object> hr : userHrList) {
+                        int id = (int) hr.get("id");
+                        if (id == hrId) {
+                            talentSet.add(hr);
+                            if (isPublic == 1) {
+                                publicSet.add(hr);
+                            }
+                        }
+                    }
+                }
+            }
+            result.put(key,data);
+        }
+        return result;
+    }
+
     /*
       验证user_id是否投递过这个hr
      */
@@ -624,6 +662,14 @@ public class TalentPoolEntity {
         }
         return result;
     }
+    /*
+     判断user_id是否是上传的
+     */
 
+    private int isUpLoad(int companyId,int userId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).buildQuery();
+        int count=talentpoolTalentDao.getCount(query);
+        return count;
+    }
 
 }

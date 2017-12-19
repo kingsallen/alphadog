@@ -230,5 +230,16 @@ public class TalentPoolServiceTest {
         System.out.println(res);
     }
 
+    @Test
+    public void testGetPublicAndHrTalentByUserIdList(){
+        int hrId=82752;
+        int companyId=39978;
+        int userId=2191508;
+        Set<Integer> userIdSet=new HashSet<>();
+        userIdSet.add(userId);
+        Response res=talentPoolService.getPublicAndHrTalentByUserIdList(hrId,companyId,userIdSet);
+        System.out.println(res);
+    }
+
 
 }

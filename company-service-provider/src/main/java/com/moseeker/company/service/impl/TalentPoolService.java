@@ -825,6 +825,22 @@ public class TalentPoolService {
         }
         return  ResponseUtils.success(allTagList);
     }
+    /*
+     获取user集合下所有的收藏的和公开的hr
+     */
+    @CounterIface
+    public Response getPublicAndHrTalentByUserIdList(int hrId,int companyId,Set<Integer> userIdSet){
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            return ResponseUtils.fail(1,"该hr不属于该company_id");
+        }
+        Map<Integer,Object> result=talentPoolEntity.handlerPublicAndTalent(companyId,userIdSet);
+        if(result==null||result.isEmpty()){
+            ResponseUtils.success("");
+        }
+        return ResponseUtils.success(result);
+    }
+
 
     //处理批量操作的结果
     private Map<String,Object> handlerBatchTalentResult( Set<Integer> unUseList,Set<Integer>unApplierIdList,Set<Integer> idList ,int companyd){
