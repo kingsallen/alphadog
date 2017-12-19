@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat implements Serializable {
 
-    private static final long serialVersionUID = -1175135283;
+    private static final long serialVersionUID = 1305727215;
 
     private Integer   id;
     private Integer   chatlistId;
@@ -32,6 +32,7 @@ public class HrWxHrChat implements Serializable {
     private Byte      speaker;
     private Byte      status;
     private Timestamp createTime;
+    private Byte      origin;
 
     public HrWxHrChat() {}
 
@@ -43,6 +44,7 @@ public class HrWxHrChat implements Serializable {
         this.speaker = value.speaker;
         this.status = value.status;
         this.createTime = value.createTime;
+        this.origin = value.origin;
     }
 
     public HrWxHrChat(
@@ -52,7 +54,8 @@ public class HrWxHrChat implements Serializable {
         Integer   pid,
         Byte      speaker,
         Byte      status,
-        Timestamp createTime
+        Timestamp createTime,
+        Byte      origin
     ) {
         this.id = id;
         this.chatlistId = chatlistId;
@@ -61,6 +64,7 @@ public class HrWxHrChat implements Serializable {
         this.speaker = speaker;
         this.status = status;
         this.createTime = createTime;
+        this.origin = origin;
     }
 
     public Integer getId() {
@@ -119,6 +123,14 @@ public class HrWxHrChat implements Serializable {
         this.createTime = createTime;
     }
 
+    public Byte getOrigin() {
+        return this.origin;
+    }
+
+    public void setOrigin(Byte origin) {
+        this.origin = origin;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrWxHrChat (");
@@ -130,6 +142,7 @@ public class HrWxHrChat implements Serializable {
         sb.append(", ").append(speaker);
         sb.append(", ").append(status);
         sb.append(", ").append(createTime);
+        sb.append(", ").append(origin);
 
         sb.append(")");
         return sb.toString();

@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = -908306210;
+    private static final long serialVersionUID = -30642020;
 
     /**
      * Setter for <code>hrdb.hr_search_condition.id</code>.
@@ -338,31 +338,31 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.candidate_source</code>. 0，社招，1，校招，2定向招聘，3不限
+     * Setter for <code>hrdb.hr_search_condition.candidate_source</code>. 0，社招，1，校招，2定向招聘
      */
-    public void setCandidateSource(Byte value) {
+    public void setCandidateSource(String value) {
         set(22, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.candidate_source</code>. 0，社招，1，校招，2定向招聘，3不限
+     * Getter for <code>hrdb.hr_search_condition.candidate_source</code>. 0，社招，1，校招，2定向招聘
      */
-    public Byte getCandidateSource() {
-        return (Byte) get(22);
+    public String getCandidateSource() {
+        return (String) get(22);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.is_public</code>.
+     * Setter for <code>hrdb.hr_search_condition.is_public</code>. 是否公开 1是
      */
-    public void setIsPublic(Byte value) {
+    public void setIsPublic(String value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.is_public</code>.
+     * Getter for <code>hrdb.hr_search_condition.is_public</code>. 是否公开 1是
      */
-    public Byte getIsPublic() {
-        return (Byte) get(23);
+    public String getIsPublic() {
+        return (String) get(23);
     }
 
     /**
@@ -380,45 +380,45 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.is_recommend</code>.
+     * Setter for <code>hrdb.hr_search_condition.is_recommend</code>. 是否内推 1是
      */
-    public void setIsRecommend(Byte value) {
+    public void setIsRecommend(String value) {
         set(25, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.is_recommend</code>.
+     * Getter for <code>hrdb.hr_search_condition.is_recommend</code>. 是否内推 1是
      */
-    public Byte getIsRecommend() {
-        return (Byte) get(25);
+    public String getIsRecommend() {
+        return (String) get(25);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.tag_id</code>.
+     * Setter for <code>hrdb.hr_search_condition.tag_ids</code>. 标签id  -1 全部公开0我的收藏 其他则为tag_id
      */
-    public void setTagId(Integer value) {
+    public void setTagIds(String value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.tag_id</code>.
+     * Getter for <code>hrdb.hr_search_condition.tag_ids</code>. 标签id  -1 全部公开0我的收藏 其他则为tag_id
      */
-    public Integer getTagId() {
-        return (Integer) get(26);
+    public String getTagIds() {
+        return (String) get(26);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.is_fresh_graduates</code>.
+     * Setter for <code>hrdb.hr_search_condition.is_fresh_graduates</code>. 是否刚毕业  1是
      */
-    public void setIsFreshGraduates(Byte value) {
+    public void setIsFreshGraduates(String value) {
         set(27, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.is_fresh_graduates</code>.
+     * Getter for <code>hrdb.hr_search_condition.is_fresh_graduates</code>. 是否刚毕业  1是
      */
-    public Byte getIsFreshGraduates() {
-        return (Byte) get(27);
+    public String getIsFreshGraduates() {
+        return (String) get(27);
     }
 
     /**
@@ -461,7 +461,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     /**
      * Create a detached, initialised HrSearchConditionRecord
      */
-    public HrSearchConditionRecord(Integer id, String name, String publisher, String positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type, Byte candidateSource, Byte isPublic, String origins, Byte isRecommend, Integer tagId, Byte isFreshGraduates, String favoriteHrs) {
+    public HrSearchConditionRecord(Integer id, String name, String publisher, String positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type, String candidateSource, String isPublic, String origins, String isRecommend, String tagIds, String isFreshGraduates, String favoriteHrs) {
         super(HrSearchCondition.HR_SEARCH_CONDITION);
 
         set(0, id);
@@ -490,7 +490,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
         set(23, isPublic);
         set(24, origins);
         set(25, isRecommend);
-        set(26, tagId);
+        set(26, tagIds);
         set(27, isFreshGraduates);
         set(28, favoriteHrs);
     }

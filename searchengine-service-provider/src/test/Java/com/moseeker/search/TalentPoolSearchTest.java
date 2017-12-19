@@ -85,7 +85,6 @@ public class TalentPoolSearchTest {
         map.put("city_name","xxxxx");
         map.put("company_name","111,222,333");
         map.put("past_position","xxxxx");
-        map.put("origin","1");
         Map<String,Object> result= talentpoolSearchengine.talentSearch(map);
         System.out.println(result);
     }

@@ -429,15 +429,11 @@ public class SearchUtil {
         for(String condition:list){
             QueryBuilder keyand1 = QueryBuilders.boolQuery();
             if("1".equals(condition)){
-                QueryBuilder query0=QueryBuilders.matchQuery("user.talent_pool.upload",1);
-                ((BoolQueryBuilder) keyand1).must(query0);
-                QueryBuilder query1=QueryBuilders.matchQuery("user.talent_pool.company_id",companyId);
-                ((BoolQueryBuilder) keyand1).must(query1);
-                QueryBuilder query=QueryBuilders.nestedQuery("user.talent_pool",keyand1);
-                ((BoolQueryBuilder) keyand).should(query);
+                QueryBuilder query0=QueryBuilders.matchQuery("user.upload",1);
+                ((BoolQueryBuilder) keyand).should(query0);
             }else{
                 if(condition.length()>8){
-                    QueryBuilder query0=QueryBuilders.matchQuery("user.profiles.origin",condition);
+                    QueryBuilder query0=QueryBuilders.matchQuery("user.origin_data",condition);
                     ((BoolQueryBuilder) keyand).should(query0);
                 }else{
                     QueryBuilder query0=QueryBuilders.matchQuery("user.applications.origin",condition);
@@ -445,7 +441,9 @@ public class SearchUtil {
                 }
             }
         }
-        System.out.println(keyand.toString());
+        ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+        ((BoolQueryBuilder) builder).filter(keyand);
+        System.out.println(builder.toString());
     }
 
 }

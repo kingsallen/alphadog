@@ -106,4 +106,11 @@ public class HrWxHrChatDao extends DAOImpl<HrWxHrChatRecord, com.moseeker.baseor
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxHrChat> fetchByCreateTime(Timestamp... values) {
         return fetch(HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>origin IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxHrChat> fetchByOrigin(Byte... values) {
+        return fetch(HrWxHrChat.HR_WX_HR_CHAT.ORIGIN, values);
+    }
 }

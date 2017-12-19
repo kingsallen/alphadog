@@ -215,14 +215,14 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     /**
      * Fetch records that have <code>candidate_source IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByCandidateSource(Byte... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByCandidateSource(String... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.CANDIDATE_SOURCE, values);
     }
 
     /**
      * Fetch records that have <code>is_public IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsPublic(Byte... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsPublic(String... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.IS_PUBLIC, values);
     }
 
@@ -236,21 +236,21 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     /**
      * Fetch records that have <code>is_recommend IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsRecommend(Byte... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsRecommend(String... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.IS_RECOMMEND, values);
     }
 
     /**
-     * Fetch records that have <code>tag_id IN (values)</code>
+     * Fetch records that have <code>tag_ids IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByTagId(Integer... values) {
-        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.TAG_ID, values);
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByTagIds(String... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.TAG_IDS, values);
     }
 
     /**
      * Fetch records that have <code>is_fresh_graduates IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsFreshGraduates(Byte... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsFreshGraduates(String... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.IS_FRESH_GRADUATES, values);
     }
 

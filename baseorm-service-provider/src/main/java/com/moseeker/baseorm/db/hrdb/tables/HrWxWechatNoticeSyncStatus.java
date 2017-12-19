@@ -141,6 +141,7 @@ public class HrWxWechatNoticeSyncStatus extends TableImpl<HrWxWechatNoticeSyncSt
     /**
      * Rename this table
      */
+
     public HrWxWechatNoticeSyncStatus rename(String name) {
         return new HrWxWechatNoticeSyncStatus(name, null);
     }

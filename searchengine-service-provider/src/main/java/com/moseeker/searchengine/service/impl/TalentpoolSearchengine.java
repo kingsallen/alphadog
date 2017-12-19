@@ -316,14 +316,13 @@ public class TalentpoolSearchengine {
             &&StringUtils.isNullOrEmpty(origins)
             &&StringUtils.isNullOrEmpty(submitTime)
             &&StringUtils.isNullOrEmpty(positionId)
-
           )
         {
             return null;
 
         }
         StringBuffer sb=new StringBuffer();
-        sb.append("origin=0;profile=_source.user.profiles.profile;if(profile){origin=profile.origin};for ( val in _source.user.applications) {");
+        sb.append("origin=0;upload=_source.user.upload;profile=_source.user.profiles.profile;if(profile){origin=profile.origin};for ( val in _source.user.applications) {");
         if(StringUtils.isNotNullOrEmpty(publisherIds)){
             List<Integer> publisherIdList=this.convertStringToList(publisherIds);
             if(!StringUtils.isEmptyList(publisherIdList)){
@@ -337,7 +336,21 @@ public class TalentpoolSearchengine {
             sb.append("val.recommender_user_id>0 &&");
         }
         if(StringUtils.isNotNullOrEmpty(origins)){
-            sb.append("(val.origin=="+origins+" || origin=="+origins+")&&");
+            List<String> list=searchUtil.stringConvertList(origins);
+            sb.append("(");
+            for(String origin:list){
+                if("1".equals(origin)){
+                    sb.append("(upload==1 ||");
+                }else{
+                    if(origin.length()>8){
+                        sb.append(" origin=="+origin+"||");
+                    }else{
+                        sb.append(" val.origin=="+origin+"||");
+                    }
+                }
+            }
+            sb.deleteCharAt(sb.lastIndexOf("||"));
+
         }
 
         if(StringUtils.isNotNullOrEmpty(submitTime)){
@@ -768,7 +781,7 @@ public class TalentpoolSearchengine {
     private boolean validateEmptyParams(Map<String,String> params){
         if(params!=null&&!params.isEmpty()){
             for(String key:params.keySet()){
-                if(!"publisher_ids".equals(key)&&!"hr_account_id".equals(key)&&params.get(key)!=null){
+                if(!"publisher".equals(key)&&!"hr_account_id".equals(key)&&params.get(key)!=null){
                     return false;
                 }
             }
