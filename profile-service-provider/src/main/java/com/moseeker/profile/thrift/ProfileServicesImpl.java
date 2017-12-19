@@ -111,6 +111,11 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
+    public Response parseProfileAttachment(String fileName, String file) throws BIZException, TException {
+        return service.profileParser(fileName, file);
+    }
+
+    @Override
     public int upsertProfile(int userId, String profile) throws BIZException, TException {
         try {
             return profileService.upsertProfile(userId, profile);

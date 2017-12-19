@@ -376,6 +376,23 @@ public class ProfileController {
     }
 
     /**
+     * 回收简历 用于替换retrieveProfile
+     */
+    @RequestMapping(value = "/profile/email/parser", method = RequestMethod.POST)
+    @ResponseBody
+    public String emailProfileParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request) throws Exception {
+        Params<String, Object> params = ParamUtils.parseequestParameter(request);
+        Integer uid = params.getInt("uid");
+        if (file != null) {
+            String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
+            Response res = service.resumeProfile(uid, file.getOriginalFilename(), data);
+            return ResponseLogNotification.success(request, res);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * 给用户添加或者更新profile
      * @param request
      * @return
