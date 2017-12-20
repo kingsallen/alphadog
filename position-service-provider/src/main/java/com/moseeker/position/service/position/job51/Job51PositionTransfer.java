@@ -1,5 +1,7 @@
 package com.moseeker.position.service.position.job51;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCompanyAddressDao;
@@ -135,18 +137,36 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
         position.setOccupation(list);
     }
 
+    /**
+     * 当addressId为空时，认为addressName是个json(包含city和address)，如果不是json则只传输addressName
+     * 当addressId不为空时，取数据库查询出city和address
+     * @param position
+     * @param form
+     */
     public void setAddress(Position51 position,ThirdPartyPosition form){
-        Query query=new Query.QueryBuilder().where("id",form.getAddressId()).buildQuery();
-        ThirdpartyAccountCompanyAddressDO addressDO=addressDao.getData(query);
-
         ThirdpartyAccountCompanyAddress address=new ThirdpartyAccountCompanyAddress();
-
-        if(addressDO==null || addressDO.getId()==0){
-            address.setAddress(form.getAddressName());
+        if(form.getAddressId()==0){
+            //这个对于json的判断很粗糙，但是我不想使用try catch来控制流程，暂时先这么写
+            if(form.getAddressName().startsWith("{") && form.getAddressName().endsWith("}")) {
+                JSONObject jsonAddress = JSON.parseObject(form.getAddressName());
+                address.setCity(jsonAddress.getString("city"));
+                address.setAddress(jsonAddress.getString("address"));
+            }else {
+                address.setAddress(form.getAddressName());
+            }
         }else{
-            address.setCity(addressDO.getCity());
-            address.setAddress(addressDO.getAddress());
+            Query query=new Query.QueryBuilder().where("id",form.getAddressId()).buildQuery();
+            ThirdpartyAccountCompanyAddressDO addressDO=addressDao.getData(query);
+
+            if(addressDO==null || addressDO.getId()==0){
+
+            }else{
+                address.setCity(addressDO.getCity());
+                address.setAddress(addressDO.getAddress());
+            }
         }
+
+
 
         position.setAddress(address);
     }
