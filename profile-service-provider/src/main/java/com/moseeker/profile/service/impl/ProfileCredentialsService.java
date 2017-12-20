@@ -2,6 +2,7 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileCredentialsDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileCredentials;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -18,6 +19,7 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCredentialsDO;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
 import org.apache.thrift.TException;
+import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,8 +94,29 @@ public class ProfileCredentialsService {
     @Transactional
     public int[] putResources(List<Credentials> structs) throws TException {
         if (structs != null && structs.size() > 0) {
+
+            List<ProfileCredentialsRecord> recordList = BeanUtils.structToDB(structs, ProfileCredentialsRecord.class);
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(
+                    new Condition(ProfileCredentials.PROFILE_CREDENTIALS.ID.getName(),
+                            recordList.stream().map(profileCredentialsRecord -> profileCredentialsRecord.getId())
+                                    .collect(Collectors.toList())));
+
+            List<ProfileCredentialsRecord> profileCredentialsRecordList = dao.getRecords(queryBuilder.buildQuery());
+            if (profileCredentialsRecordList != null && profileCredentialsRecordList.size() > 0) {
+                profileCredentialsRecordList.forEach(profileCredentialsRecord -> {
+                    Optional<ProfileCredentialsRecord> profileCredentialsRecordOptional =
+                            recordList.stream().filter(record ->
+                                    profileCredentialsRecord.getId().intValue() == record.getId().intValue())
+                                    .findAny();
+                    if (profileCredentialsRecordOptional.isPresent()) {
+
+                    }
+                });
+            }
+
             int[] updateResult = dao.updateRecords(BeanUtils.structToDB(structs, ProfileCredentialsRecord.class));
-        /* 计算profile完整度 */
+            /* 计算profile完整度 */
             List<Credentials> updatedDatas = new ArrayList<>();
             Set<Integer> profileIds = new HashSet<>();
             for (int i = 0; i < updateResult.length; i++) {
