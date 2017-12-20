@@ -7,7 +7,10 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.annotation.notify.UpdateEs;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -24,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -49,6 +53,8 @@ public class TalentPoolService {
     private JobApplicationDao jobApplicationDao;
     @Autowired
     private UserHrAccountDao userHrAccountDao;
+    @Resource(name = "cacheClient")
+    private RedisClient client;
     /*
         添加人才到人才库
         @auth:zzt
@@ -88,6 +94,7 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
     */
+    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 1, argsName = "user_id")
     @CounterIface
     public Response batchAddTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
@@ -133,6 +140,7 @@ public class TalentPoolService {
                response(status:1,message:"xxxxxx")
      */
     @CounterIface
+
     public Response cancelTalent(int hrId, int userId, int companyId)throws TException{
         Response res=validateHrAndUser(hrId,userId,companyId);
         if(res!=null){
@@ -167,6 +175,7 @@ public class TalentPoolService {
               response(status:1,message:"xxxxxx")
      */
     @CounterIface
+    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 1, argsName = "user_id")
     public Response batchCancelTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
         //验证hr
         int flag=talentPoolEntity.validateHr(hrId,companyId);
@@ -223,6 +232,7 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
+    @UpdateEs(tableName = "talentpool_user_tag", argsIndex = 1, argsName = "user_id")
     public Response addBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
         Map<String,Object> validateResult=this.validateAddTag(hrId, userIdList, tagIdList, companyId,0);
         if(validateResult.get("result")!=null){
@@ -268,6 +278,7 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
     */
     @CounterIface
+    @UpdateEs(tableName = "talentpool_user_tag", argsIndex = 1, argsName = "user_id")
     public Response addNewBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
         Map<String,Object> validateResult=this.validateAddTag(hrId, userIdList, tagIdList, companyId,1);
         if(validateResult.get("result")!=null){
@@ -325,6 +336,7 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
+    @UpdateEs(tableName = "talentpool_user_tag", argsIndex = 1, argsName = "user_id")
     public Response batchCancelTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
 
         Map<String,Object> validateResult=this.validateCancleTag(hrId, userIdList, tagIdList, companyId);
@@ -415,6 +427,16 @@ public class TalentPoolService {
         List<TalentpoolUserTagRecord> list=getTalentpoolUserByTagId( tagId);
         if(!StringUtils.isEmptyList(list)){
             talentpoolUserTagDao.deleteRecords(list);
+            List<Integer> userIdList=new ArrayList<>();
+            //实时更新tag
+            for(TalentpoolUserTagRecord record1:list){
+                userIdList.add(record1.getUserId());
+            }
+            Map<String,Object> result=new HashMap<>();
+            result.put("tableName","talentpool_user_tag");
+            result.put("user_id",userIdList);
+            client.lpush(Constant.APPID_ALPHADOG,
+                    "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
         }
         return ResponseUtils.success("");
     }
@@ -446,6 +468,19 @@ public class TalentPoolService {
         record.setName(name);
         record.setId(tagId);
         talentpoolTagDao.updateRecord(record);
+        List<TalentpoolUserTagRecord> list=getTalentpoolUserByTagId( tagId);
+        if(!StringUtils.isEmptyList(list)){
+            //实时更新tag
+            List<Integer> userIdList=new ArrayList<>();
+            for(TalentpoolUserTagRecord record1:list){
+                userIdList.add(record1.getUserId());
+            }
+            Map<String,Object> result=new HashMap<>();
+            result.put("tableName","talentpool_user_tag");
+            result.put("user_id",userIdList);
+            client.lpush(Constant.APPID_ALPHADOG,
+                    "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+        }
         return ResponseUtils.success(this.getTalentpoolTagById(tagId));
     }
     /*
@@ -647,6 +682,7 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
+    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 2, argsName = "user_id")
     public Response AddbatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
@@ -687,6 +723,7 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
+    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 2, argsName = "user_id")
     public Response cancelBatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
