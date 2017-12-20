@@ -76,7 +76,7 @@ public class PositionEmailNotification {
             StringBuilder messageBuilder = new StringBuilder();
             messageBuilder.append("【ATS端传送的json】：").append(message).append(br);
 
-            messageBuilder.append("【失败信息】:").append(refreshException.getMessage()).append(br);
+            messageBuilder.append("【失败信息】:").append(getExceptionAllinformation(refreshException)).append(br);
 
             emailBuilder.setSubject(titleBuilder.toString());
             emailBuilder.setContent(messageBuilder.toString());
@@ -150,5 +150,14 @@ public class PositionEmailNotification {
             logger.error(e.getMessage(), e);
         }
 
+    }
+
+    public static String getExceptionAllinformation(Exception ex){
+        StringBuilder sb = new StringBuilder();
+        StackTraceElement[] trace = ex.getStackTrace();
+        for (StackTraceElement s : trace) {
+            sb.append("at " + s + br);
+        }
+        return sb.toString();
     }
 }

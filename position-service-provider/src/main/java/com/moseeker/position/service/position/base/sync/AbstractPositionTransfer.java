@@ -86,7 +86,7 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
     public Form parseJsonForm(JSONObject json) throws BIZException {
         logger.info("parse json form json : {}",json);
         try {
-            Form form= JSONObject.toJavaObject(json,getFormClass());
+            Form form= JSONObject.parseObject(json.toJSONString(),getFormClass());
             logger.info("parse json form form : {}",JSON.toJSONString(form));
             return form;
         }catch (Exception e){
