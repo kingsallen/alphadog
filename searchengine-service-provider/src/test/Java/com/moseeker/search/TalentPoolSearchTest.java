@@ -75,16 +75,19 @@ public class TalentPoolSearchTest {
         map.put("hr_account_id","82752");
         map.put("candidate_source","0");
         map.put("is_recommend","1");
-        map.put("origins","2");
+        map.put("origins","1,1024,10000000000000,10000000000000,1000000000");
         map.put("progress_status","1");
-        map.put("tag_id","1,2,3,4");
+        map.put("tag_ids","1,2,3,4");
         map.put("favorite_hrs","1,2,3,4");
         map.put("keyword","111,222,333");
-        map.put("in_last_job_company","1");
-        map.put("in_last_job_position","1");
+        map.put("in_last_job_search_company","1");
+        map.put("in_last_job_search_position","1");
         map.put("city_name","xxxxx");
         map.put("company_name","111,222,333");
         map.put("past_position","xxxxx");
+        map.put("submit_time","3");
+        map.put("update_time","2");
+        map.put("is_public","1");
         Map<String,Object> result= talentpoolSearchengine.talentSearch(map);
         System.out.println(result);
     }

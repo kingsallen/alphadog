@@ -47,7 +47,7 @@ public class TalentpoolSearchengine {
     public Map<String,Object>  talentSearch(Map<String,String> params){
         TransportClient client= searchUtil.getEsClient();
         QueryBuilder query=this.query(params);
-        SearchRequestBuilder builder=client.prepareSearch("users").setTypes("user").setQuery(query);
+        SearchRequestBuilder builder=client.prepareSearch("users").setTypes("users").setQuery(query);
         Map<String,Object> aggInfo=new HashMap<>();
         if(this.validateEmptyParams(params)){
             aggInfo=this.getUserAnalysisIndex(params,client);
@@ -126,6 +126,10 @@ public class TalentpoolSearchengine {
         QueryBuilder queryAppScript=this.queryScript(params);
         if(queryAppScript!=null){
             ((BoolQueryBuilder) query).filter(queryAppScript);
+        }
+        QueryBuilder queryNest=this.queryNest(params);
+        if(queryNest!=null){
+            ((BoolQueryBuilder) query).filter(queryNest);
         }
         return query;
     }
@@ -242,7 +246,8 @@ public class TalentpoolSearchengine {
          )
         {
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
-                this.queryByPublisher(publisherIds,query);
+                    String companyId=params.get("company_id");
+                    this.queryByComapnyId(companyId,query);
             }
             if(StringUtils.isNotNullOrEmpty(candidateSource)){
                 this.queryByCandidateSource(Integer.parseInt(candidateSource),query);
@@ -273,7 +278,7 @@ public class TalentpoolSearchengine {
     public QueryBuilder queryNest(Map<String,String> params){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-        String tagIds=params.get("tag_id");
+        String tagIds=params.get("tag_ids");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
         if(
@@ -284,11 +289,13 @@ public class TalentpoolSearchengine {
         {
             return null;
         }
+        String companyId=params.get("company_id");
+        this.queryByNestCompanyId(Integer.parseInt(companyId),query);
         if(StringUtils.isNotNullOrEmpty(tagIds)){
             this.queryByTagId(tagIds,query);
         }
         if(StringUtils.isNotNullOrEmpty(favoriteHrs)){
-            this.queryHrTagId(favoriteHrs,query);
+            this.queryTagHrId(favoriteHrs,query);
         }
         if(StringUtils.isNotNullOrEmpty(isPublic)){
             this.queryByPublic(Integer.parseInt(isPublic),query);
@@ -340,7 +347,7 @@ public class TalentpoolSearchengine {
             sb.append("(");
             for(String origin:list){
                 if("1".equals(origin)){
-                    sb.append("(upload==1 ||");
+                    sb.append("upload==1 ||");
                 }else{
                     if(origin.length()>8){
                         sb.append(" origin=="+origin+"||");
@@ -349,12 +356,18 @@ public class TalentpoolSearchengine {
                     }
                 }
             }
-            sb.deleteCharAt(sb.lastIndexOf("||"));
+            sb.deleteCharAt(sb.lastIndexOf("|"));
+            sb.deleteCharAt(sb.lastIndexOf("|"));
+            sb.append(")&&");
 
         }
 
         if(StringUtils.isNotNullOrEmpty(submitTime)){
-            sb.append(" val.submit_time>"+submitTime+"&&");
+            Date date=new Date();
+            long datetime=date.getTime();
+            long preTime=Long.parseLong(submitTime)*3600*24;
+            long time=datetime-preTime;
+            sb.append(" val.submit_time>"+time+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(progressStatus)){
             sb.append(" val.progress_status=="+progressStatus+"&&");
@@ -410,9 +423,11 @@ public class TalentpoolSearchengine {
      根据简历的更新时间查询
      */
     private void queryByProfileUpDateTime(String updateTime,QueryBuilder queryBuilder){
-        Date date=new Date(updateTime);
-        Long datetime=date.getTime();
-        this.searchUtil.hanleRangeFilter(datetime,queryBuilder,"user.profiles.profile.update_time");
+        Date date=new Date();
+        long datetime=date.getTime();
+        long preTime=Long.parseLong(updateTime)*3600*24;
+        long time=datetime-preTime;
+        this.searchUtil.hanleRangeFilter(time,queryBuilder,"user.profiles.profile.update_time");
     }
 
     /*
@@ -461,16 +476,16 @@ public class TalentpoolSearchengine {
         searchUtil.handleMatch(isPublic,queryBuilder,"user.talent_pool.is_public");
     }
     /*
-      构建收藏人的查询语句
-     */
-    private void queryByCollectid(String hrIds,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(hrIds,queryBuilder,"user.talent_pool.hr_id");
-    }
-    /*
       构建按招标签的查询语句
      */
     private void queryByTagId(String tagIds,QueryBuilder queryBuilder){
         searchUtil.handleTerms(tagIds,queryBuilder,"user.talent_pool.tags.id");
+    }
+    /*
+     构建和公司相关的人才库
+     */
+    private void queryByNestCompanyId(int companyId,QueryBuilder queryBuilder){
+        searchUtil.handleMatch(companyId,queryBuilder,"user.talent_pool.company_id");
     }
     /*
       构建按照期望城市名称的查询语句
@@ -481,8 +496,8 @@ public class TalentpoolSearchengine {
     /*
       按照公司名称查询
      */
-    private void queryByComapnyName(String salaryCodes,QueryBuilder queryBuilder){
-        searchUtil.handleTermsFilter(salaryCodes,queryBuilder,"user.applications.company_name");
+    private void queryByComapnyId(String companyId,QueryBuilder queryBuilder){
+        searchUtil.handleTermsFilter(companyId,queryBuilder,"user.applications.company_id");
     }
     /*
       按照学历查询
@@ -556,9 +571,11 @@ public class TalentpoolSearchengine {
       按照投递时间查询
      */
     private void queryBySubmitTime(String submitTime,QueryBuilder queryBuilder){
-        Date date=new Date(submitTime);
-        Long datetime=date.getTime();
-        searchUtil.hanleRangeFilter(datetime,queryBuilder,"user.applications.submit_time");
+        Date date=new Date();
+        long datetime=date.getTime();
+        long preTime=Long.parseLong(submitTime)*3600*24;
+        long time=datetime-preTime;
+        searchUtil.hanleRangeFilter(time,queryBuilder,"user.applications.submit_time");
     }
     /*
       按照工作年限查新
@@ -576,8 +593,8 @@ public class TalentpoolSearchengine {
     /*
      根据hr的标签查询
      */
-    private void queryHrTagId(String hrIds,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(hrIds,queryBuilder,"user.talent_pool.tags.hr_id");
+    private void queryTagHrId(String hrIds,QueryBuilder queryBuilder){
+        searchUtil.handleTerms(hrIds,queryBuilder,"user.talent_pool.hr_id");
     }
 
     /*
@@ -726,6 +743,8 @@ public class TalentpoolSearchengine {
         String publishIds=params.get("publisher");
         String submitTime=params.get("submit_time");
         String positionIds=params.get("position_id");
+        String candidateSource=params.get("candidate_source");
+        String recommend=params.get("only_recommend");
         List<Integer> publisherIdList=this.convertStringToList(publishIds);
         StringBuffer sb=new StringBuffer();
         sb.append("int i = 0; for ( val in _source.user.applications)");
@@ -734,11 +753,21 @@ public class TalentpoolSearchengine {
             sb.append("val.progress_status=="+progressStatus+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(submitTime)){
-            sb.append("val.submit_time>"+submitTime+"&&");
+            Date date=new Date();
+            long datetime=date.getTime();
+            long preTime=Long.parseLong(submitTime)*3600*24;
+            long time=datetime-preTime;
+            sb.append("val.submit_time>"+time+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(positionIds)){
             List<Integer> positionIdList=this.convertStringToList(positionIds);
             sb.append("val.position_id in"+positionIdList.toString()+"&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(candidateSource)){
+            sb.append("val.candidate_source =="+candidateSource+"&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(recommend)){
+            sb.append("val.recommender_user_id >0 &&");
         }
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
