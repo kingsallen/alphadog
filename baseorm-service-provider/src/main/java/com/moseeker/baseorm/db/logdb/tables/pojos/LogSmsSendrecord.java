@@ -23,9 +23,10 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogSmsSendrecord implements Serializable {
 
-    private static final long serialVersionUID = 1198853460;
+    private static final long serialVersionUID = -1485973859;
 
     private Integer   id;
+    private String    countryCode;
     private Byte      sys;
     private Long      mobile;
     private String    msg;
@@ -36,6 +37,7 @@ public class LogSmsSendrecord implements Serializable {
 
     public LogSmsSendrecord(LogSmsSendrecord value) {
         this.id = value.id;
+        this.countryCode = value.countryCode;
         this.sys = value.sys;
         this.mobile = value.mobile;
         this.msg = value.msg;
@@ -45,6 +47,7 @@ public class LogSmsSendrecord implements Serializable {
 
     public LogSmsSendrecord(
         Integer   id,
+        String    countryCode,
         Byte      sys,
         Long      mobile,
         String    msg,
@@ -52,6 +55,7 @@ public class LogSmsSendrecord implements Serializable {
         Timestamp createTime
     ) {
         this.id = id;
+        this.countryCode = countryCode;
         this.sys = sys;
         this.mobile = mobile;
         this.msg = msg;
@@ -65,6 +69,14 @@ public class LogSmsSendrecord implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getCountryCode() {
+        return this.countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public Byte getSys() {
@@ -112,6 +124,7 @@ public class LogSmsSendrecord implements Serializable {
         StringBuilder sb = new StringBuilder("LogSmsSendrecord (");
 
         sb.append(id);
+        sb.append(", ").append(countryCode);
         sb.append(", ").append(sys);
         sb.append(", ").append(mobile);
         sb.append(", ").append(msg);
