@@ -386,24 +386,34 @@ public class ProfileController {
     @ResponseBody
     public String emailProfileParser(@RequestParam(value = "file", required = false) MultipartFile file,
                                      @RequestParam int position_id, @RequestParam int channel,
-
+                                     @RequestParam int appid,
                                      HttpServletRequest request) throws Exception {
         if (file != null) {
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
             Response res = service.parseProfileAttachment(file.getOriginalFilename(), data);
+            /*Response res = new Response();
+            res.setMessage("success");
+            res.setStatus(0);
+            res.setData(data);
+            */System.out.println(res);
             if (res.getStatus() == 0) {
-                JSONObject jsonObject = JSON.parseObject(res.getData());
-                jsonObject.put("positionId", position_id);
-                jsonObject.put("channel", channel);
+                JSONObject params = new JSONObject();
+                JSONObject profile = JSON.parseObject(res.getData());
+                params.put("profile", profile);
+                params.put("positionId", position_id);
+                params.put("channel", channel);
+                params.put("appid", appid);
 
-                boolean result = profileService.retrieveProfile(jsonObject.toJSONString());
+                boolean result = profileService.retrieveProfile(params.toJSONString());
                 return ResponseLogNotification.successJson(request, result);
             }
             return ResponseLogNotification.success(request, res);
         } else {
-            return null;
+            return ResponseLogNotification.fail(request, "文件是必填项");
         }
     }
+
+    private static final String data = "{\"basic\":{\"birth\":\"1978-03-04\",\"cityName\":\"上海\",\"gender\":\"2\",\"name\":\"赵静\"},\"credentials\":[],\"educations\":[{\"collegeCode\":0,\"collegeName\":\"美国南加州大学\",\"degree\":6,\"endDate\":\"\",\"endUntilNow\":0,\"isFull\":0,\"isStudyAbroad\":0,\"isUnified\":0,\"majorCode\":0,\"majorName\":\"会计学\",\"startDate\":\"\"},{\"collegeCode\":0,\"collegeName\":\"英国兰开斯特大学\",\"degree\":6,\"endDate\":\"2003-09-01\",\"endUntilNow\":0,\"isFull\":0,\"isStudyAbroad\":0,\"isUnified\":0,\"majorCode\":0,\"majorName\":\"理学\",\"startDate\":\"2002-10-01\"},{\"collegeCode\":0,\"collegeName\":\"南京邮电大学\",\"degree\":5,\"endDate\":\"2000-07-01\",\"endUntilNow\":0,\"isFull\":0,\"isStudyAbroad\":0,\"isUnified\":0,\"majorCode\":0,\"majorName\":\"计算机通信工程\",\"startDate\":\"1996-09-01\"}],\"intentions\":[{\"workstate\":0,\"worktype\":0}],\"languages\":[{\"level\":0,\"name\":\"英语\"},{\"level\":0,\"name\":\"普通话\"}],\"projectexps\":[],\"skills\":[{\"level\":0,\"month\":0,\"name\":\"游戏\"},{\"level\":0,\"month\":0,\"name\":\"市场调研\"},{\"level\":0,\"month\":0,\"name\":\"法律\"},{\"level\":0,\"month\":0,\"name\":\"黑盒测试\"},{\"level\":0,\"month\":0,\"name\":\"powerpoint\"},{\"level\":0,\"month\":0,\"name\":\"客户服务\"},{\"level\":0,\"month\":0,\"name\":\"自动化测试\"},{\"level\":0,\"month\":0,\"name\":\"软件工程\"}],\"user\":{\"email\":\"miraonstar@qq.com\",\"mobile\":\"13817825207\",\"name\":\"赵静\"},\"workexps\":[{\"company\":{\"companyProperty\":0,\"companyScale\":\"1\"},\"description\":\"在ncrc(www.ncrc.org)执行的各种职务。\\n现场技术支持,电子举办的网络活动,电子表格和powerpoint制作作出了贡献。\\n协助国家住房自有可持续发展基金,考虑替代的摄入量系统和流程。\\n无界学习,上海,中国\\n质量保证经理,质量保证部4月 - 2007年7月\\n监督质量保证部,10个移动电话应用和产品,共5个20 +的功能,10m的客户群的初创公司设计,开发和测试。\\n重新设计,实施和优化所有的业务流程,提高效率,精简产品开发和发布程序。\\n招募和训练了5个团队成员,以最大限度地发挥功能的2个月内。\\n微软公司上海,中国\\n项目经理,msn新闻组9月 - 2006年12月\\n监督msn门户网站的30名成员组成的全球支持团队,以确保24小时客户服务和解决问题。\\n招聘,培训和管理团队成员的开发和维护msn的4 +全球网站。\\n最大化客户满意度,缩短响应时间。\\n易趣,上海,中国\",\"endUntilNow\":1,\"job\":\"顾问\",\"startDate\":\"2008-10-01\",\"type\":0},{\"company\":{\"companyName\":\"海安吉安星信息服务有限公司\",\"companyProperty\":0,\"companyScale\":\"1\"},\"description\":\"上海第九城市有限公司,中国\",\"endDate\":\"2012-02-01\",\"endUntilNow\":0,\"job\":\"系统分析员\",\"startDate\":\"2010-09-01\",\"type\":0},{\"company\":{\"companyName\":\"第九城市制作中心\",\"companyProperty\":0,\"companyScale\":\"1\"},\"description\":\"第九城市制作中心及业务发展工作队。\\n支持董事会通过全球网络游戏市场调研,本地/国际法律和法规咨询,产品评估,成本/收入预测全球服务器平台项目的商业计划书。\\n白盒和黑盒测试的内部游戏工作室的设计过程和方法。\\n全国社区再投资联盟华盛顿,dc,usa\",\"endDate\":\"2010-01-01\",\"endUntilNow\":0,\"job\":\"技术经理\",\"startDate\":\"2009-09-01\",\"type\":0},{\"company\":{\"companyName\":\"上海贝尔阿尔卡特上海\",\"companyProperty\":0,\"companyScale\":\"1\"},\"description\":\"开发和测试,易趣全球的32个网站,以扩大其国际市场和增长的收入。\\n合作和沟通40 + ebay的信任与安全和实现具体的时间表和质量保证水平的客户支持团队的成员。\\n率先推出,14个全球分类广告网站客齐集项目,设计并实现自动化测试框架,人员和训练有素的永久发展,维护和优化的所有功能。\",\"endDate\":\"2006-09-01\",\"endUntilNow\":0,\"job\":\"质量保证工程师\",\"startDate\":\"2005-10-01\",\"type\":0},{\"company\":{\"companyName\":\"移动通信集团\",\"companyProperty\":0,\"companyScale\":\"1\"},\"description\":\"开发和测试软件阿尔卡特的mxbsc项目,下一代基站控制器系统。\\n分析,更新,整理,并提出整个项目的250 +国际和当地的团队成员,以方便定义的规格,交流和发展过程中的所有文档。\\n合作与跨职能团队的任务,以激励团队士气和业绩。\\n青岛朗讯青岛,中国\",\"endDate\":\"2005-10-01\",\"endUntilNow\":0,\"job\":\"软件工程师\",\"startDate\":\"2003-11-01\",\"type\":0},{\"company\":{\"companyProperty\":0,\"companyScale\":\"1\"},\"description\":\"合作与全球自动化测试朗讯的5ess2000项目,第5增强型电路开关。\\n5个月的现场在贝尔实验室,朗讯科技,在伊利诺伊州,美国的研究,开发和测试软件合作。\\n其他资料\",\"endDate\":\"2001-08-01\",\"endUntilNow\":0,\"job\":\"软件工程师\",\"startDate\":\"2000-07-01\",\"type\":0}]}";
 
     /**
      * 给用户添加或者更新profile

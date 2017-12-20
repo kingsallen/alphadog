@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.logdb;
 
 
 import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
+import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
 import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
@@ -35,6 +36,11 @@ public class Tables {
     public static final LogCronjob LOG_CRONJOB = com.moseeker.baseorm.db.logdb.tables.LogCronjob.LOG_CRONJOB;
 
     /**
+     * 死信队列日志记录表
+     */
+    public static final LogDeadLetter LOG_DEAD_LETTER = com.moseeker.baseorm.db.logdb.tables.LogDeadLetter.LOG_DEAD_LETTER;
+
+    /**
      * 短信发送记录表
      */
     public static final LogEmailSendrecord LOG_EMAIL_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord.LOG_EMAIL_SENDRECORD;
@@ -45,7 +51,7 @@ public class Tables {
     public static final LogHrOperationRecord LOG_HR_OPERATION_RECORD = com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord.LOG_HR_OPERATION_RECORD;
 
     /**
-     * 简历解析日志
+     * The table <code>logdb.log_resume_record</code>.
      */
     public static final LogResumeRecord LOG_RESUME_RECORD = com.moseeker.baseorm.db.logdb.tables.LogResumeRecord.LOG_RESUME_RECORD;
 

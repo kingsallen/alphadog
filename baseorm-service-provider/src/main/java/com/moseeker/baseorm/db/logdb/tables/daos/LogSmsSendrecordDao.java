@@ -66,6 +66,13 @@ public class LogSmsSendrecordDao extends DAOImpl<LogSmsSendrecordRecord, com.mos
     }
 
     /**
+     * Fetch records that have <code>country_code IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogSmsSendrecord> fetchByCountryCode(String... values) {
+        return fetch(LogSmsSendrecord.LOG_SMS_SENDRECORD.COUNTRY_CODE, values);
+    }
+
+    /**
      * Fetch records that have <code>sys IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogSmsSendrecord> fetchBySys(Byte... values) {
