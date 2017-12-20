@@ -27,6 +27,10 @@ service PositionServices {
 
     // 批量修改职位
     common_struct.Response batchHandlerJobPostion(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);
+
+    // 批量修改职位并且同步
+    common_struct.Response saveAndSync(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);
+
     // 删除职位
     common_struct.Response deleteJobposition(1:position_struct.DelePostion delePostion);
     // 通过companyId和部门名获取TeamId

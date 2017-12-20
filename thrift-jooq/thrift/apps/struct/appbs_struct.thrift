@@ -36,7 +36,8 @@ struct ThirdPartyPosition {
 }
 
 struct ThirdPartyPositionForm {
-    1: i32 positionId,				//职位编号
+    1: i32 positionId,			//职位编号
     2: i32 appid,				//调用方编号
     3: list<string> channels,	//渠道参数
-} 
+    4: i32 requestType          //请求端类型
+}

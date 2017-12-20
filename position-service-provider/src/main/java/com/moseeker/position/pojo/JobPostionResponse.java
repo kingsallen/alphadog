@@ -1,6 +1,8 @@
 package com.moseeker.position.pojo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by YYF
@@ -19,6 +21,43 @@ public class JobPostionResponse {
     private Integer deleteCounts;
     private Integer totalCounts;
 
+    private List<SyncFailMessPojo> syncFailMessPojolist;
+    private Integer syncingCounts;
+    private Integer notNeedSyncCounts;
+
+    private Map<Integer,String> syncData=new HashMap<>();
+
+    public List<SyncFailMessPojo> getSyncFailMessPojolist() {
+        return syncFailMessPojolist;
+    }
+
+    public void setSyncFailMessPojolist(List<SyncFailMessPojo> syncFailMessPojolist) {
+        this.syncFailMessPojolist = syncFailMessPojolist;
+    }
+
+    public Integer getSyncingCounts() {
+        return syncingCounts;
+    }
+
+    public void setSyncingCounts(Integer syncingCounts) {
+        this.syncingCounts = syncingCounts;
+    }
+
+    public Integer getNotNeedSyncCounts() {
+        return notNeedSyncCounts;
+    }
+
+    public void setNotNeedSyncCounts(Integer notNeedSyncCounts) {
+        this.notNeedSyncCounts = notNeedSyncCounts;
+    }
+
+    public Map<Integer, String> getSyncData() {
+        return syncData;
+    }
+
+    public void setSyncData(Map<Integer, String> syncData) {
+        this.syncData = syncData;
+    }
 
     public Integer getTotalCounts() {
         return totalCounts;

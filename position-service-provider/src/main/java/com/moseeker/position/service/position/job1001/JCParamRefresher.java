@@ -16,7 +16,6 @@ public class JCParamRefresher extends AbstractYLParamRefresher {
         jsonSend.put("password",getConfig("jc.password"));
         jsonSend.put("safe_code",getConfig("jc.safecode"));
         jsonSend.put("subsite",getSubSite());
-        logger.info("check if code is exceute {}",getSubSite());
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.moseeker.position.service.position;
 
 import com.moseeker.position.service.position.job51.pojo.Job51Experience;
-import com.moseeker.position.service.position.zhilian.ZhilianExperience;
+import com.moseeker.position.service.position.zhilian.pojo.ZhilianExperience;
 
 /**
  * 工作经验转换

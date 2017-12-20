@@ -62,6 +62,6 @@ public class Job51PositionTransferTest {
         ThirdPartyPositionForm form= JSON.toJavaObject(JSON.parseObject(json),ThirdPartyPositionForm.class);
         Query qu = new Query.QueryBuilder().where("id", form.positionId).buildQuery();
         JobPositionDO jobPositionDO = jobPositionDao.getData(qu);
-        job51PositionTransfer.changeToThirdPartyPosition(form.getChannels().get(0),jobPositionDO);
+//        job51PositionTransfer.changeToThirdPartyPosition(JSON.parseObject(json),form.getChannels().get(0),jobPositionDO);
     }
 }

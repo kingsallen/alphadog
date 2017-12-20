@@ -1,17 +1,25 @@
 package com.moseeker.position.thrift;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.position.pojo.JobPostionResponse;
+import com.moseeker.position.pojo.PositionSyncResultPojo;
+import com.moseeker.position.pojo.SyncFailMessPojo;
+import com.moseeker.position.service.appbs.PositionBS;
 import com.moseeker.position.service.fundationbs.*;
+import com.moseeker.position.utils.PositionEmailNotification;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
 import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
 import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
@@ -32,13 +40,11 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.position.service.JobOccupationService;
 import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.position.service.third.ThirdPositionService;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 
 @Service
@@ -59,6 +65,10 @@ public class PositionServicesImpl implements Iface {
     private PositionPcService positionPcService;
     @Autowired
     private PositionThridService positionThridService;
+    @Autowired
+    private PositionBS positionBS;
+    @Autowired
+    private PositionEmailNotification emailNotification;
 
     /**
      * 获取推荐职位
@@ -203,11 +213,64 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         try {
-            return service.batchHandlerJobPostion(batchHandlerJobPostion);
+            return ResponseUtils.success(service.batchHandlerJobPostion(batchHandlerJobPostion));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
+    }
+
+    @Override
+    public Response saveAndSync(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
+        JobPostionResponse response=service.batchHandlerJobPostion(batchHandlerJobPostion);
+
+        List<SyncFailMessPojo> syncFailMessPojolistList=new ArrayList<>();
+        int syncingCounts=0;
+
+        Map<Integer,String> syncData=response.getSyncData();
+        Iterator<Map.Entry<Integer,String>> it=syncData.entrySet().iterator();
+        while (it.hasNext()){
+            Map.Entry<Integer,String> data=it.next();
+            int positionId=data.getKey();
+            String jsonChannels=data.getValue();
+
+            if(positionId==0 || StringUtils.isNullOrEmpty(jsonChannels)){
+                continue;
+            }
+
+            ThirdPartyPositionForm form=new ThirdPartyPositionForm();
+            form.setAppid(batchHandlerJobPostion.getAppid());
+            form.setPositionId(positionId);
+            //设置请求端类型为ATS端
+            form.setRequestType(SyncRequestType.ATS.code());
+
+            TypeReference<List<String>> typeRef
+                    = new TypeReference<List<String>>() {};
+            List<String> channels= JSON.parseObject(jsonChannels,typeRef);
+            form.setChannels(channels);
+
+            try {
+                List<PositionSyncResultPojo> syncResults=positionBS.synchronizePositionToThirdPartyPlatform(form);
+                for(PositionSyncResultPojo result:syncResults){
+                    if(result.getSync_status()==PositionSyncResultPojo.SUCCESS){
+                        syncingCounts++;
+                    }else{
+                        syncFailMessPojolistList.add(new SyncFailMessPojo(positionId,result.getChannel(),result.getSync_fail_reason()));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                SyncFailMessPojo mess=new SyncFailMessPojo(positionId,0,e.getMessage());
+                syncFailMessPojolistList.add(mess);
+                emailNotification.sendATSFailureMail(jsonChannels,null,e);
+            }
+        }
+
+        response.setSyncFailMessPojolist(syncFailMessPojolistList);
+        response.setSyncingCounts(syncingCounts);
+        response.setSyncData(null);
+
+        return ResponseUtils.success(response);
     }
 
     @Override

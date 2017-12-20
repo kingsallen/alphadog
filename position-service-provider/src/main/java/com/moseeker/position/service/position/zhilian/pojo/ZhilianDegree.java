@@ -1,4 +1,4 @@
-package com.moseeker.position.service.position.zhilian;
+package com.moseeker.position.service.position.zhilian.pojo;
 
 /**
  * 智联学位

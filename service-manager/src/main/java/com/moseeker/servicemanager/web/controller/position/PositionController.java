@@ -237,6 +237,21 @@ public class PositionController {
         }
     }
 
+    @RequestMapping(value = "/position/saveAncSync", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveAndSyncPosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseBatchHandlerJobPostionParam(request);
+            Response res = positonServices.saveAndSync(batchHandlerJobPostion);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            //do nothing
+        }
+    }
+
     /**
      * 职位刷新
      */

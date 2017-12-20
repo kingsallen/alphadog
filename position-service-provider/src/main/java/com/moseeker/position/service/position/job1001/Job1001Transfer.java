@@ -9,7 +9,7 @@ import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer
 import com.moseeker.position.service.position.job1001.pojo.PositionJob1001;
 import com.moseeker.position.service.position.job1001.pojo.PositionJob1001Form;
 import com.moseeker.position.service.position.job1001.pojo.PositionJob1001WithAccount;
-import com.moseeker.position.service.position.job1001.pojo.TransferStrategy;
+import com.moseeker.position.service.position.job1001.pojo.YLTransferStrategy;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -72,10 +72,10 @@ public class Job1001Transfer extends AbstractPositionTransfer<PositionJob1001For
         positionInfo.setEmail(getEmail(positionDB));
         positionInfo.setRegions(getCities(positionDB));
 
-        positionInfo.setDegree(TransferStrategy.Job1001Degree.moseekerToJob1001((int)positionDB.getDegree()));
-        positionInfo.setTarget(TransferStrategy.Target.moseekerToJob1001((int)positionDB.getCandidateSource()));
-        positionInfo.setJob_type(TransferStrategy.JobType.moseekerToJob1001((int)positionDB.getEmploymentType()));
-        positionInfo.setSex(TransferStrategy.Sex.moseekerToJob1001((int)positionDB.gender));
+        positionInfo.setDegree(YLTransferStrategy.Job1001Degree.moseekerToJob1001((int)positionDB.getDegree()));
+        positionInfo.setTarget(YLTransferStrategy.Target.moseekerToJob1001((int)positionDB.getCandidateSource()));
+        positionInfo.setJob_type(YLTransferStrategy.JobType.moseekerToJob1001((int)positionDB.getEmploymentType()));
+        positionInfo.setSex(YLTransferStrategy.Sex.moseekerToJob1001((int)positionDB.gender));
 
         positionInfo.setCompany(positionForm.getCompanyName());
         setOccupation(positionForm,positionInfo);

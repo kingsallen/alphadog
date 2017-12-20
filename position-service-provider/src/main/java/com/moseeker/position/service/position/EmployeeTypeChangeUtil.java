@@ -2,7 +2,7 @@ package com.moseeker.position.service.position;
 
 import com.moseeker.position.service.position.job51.pojo.Job51EmployeeType;
 import com.moseeker.position.service.position.qianxun.EmployeeType;
-import com.moseeker.position.service.position.zhilian.ZhilianEmployeeType;
+import com.moseeker.position.service.position.zhilian.pojo.ZhilianEmployeeType;
 
 /**
  * 招聘类型转换

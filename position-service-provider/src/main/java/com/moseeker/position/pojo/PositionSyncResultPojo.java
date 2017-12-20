@@ -6,6 +6,8 @@ package com.moseeker.position.pojo;
  *
  */
 public class PositionSyncResultPojo {
+	public final static int SUCCESS=2;
+	public final static int FAIL=3;
 
 	private int channel;
 	private int sync_status;
