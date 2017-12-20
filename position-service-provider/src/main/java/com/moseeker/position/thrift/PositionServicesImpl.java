@@ -7,8 +7,8 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.position.constants.SyncRequestType;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionSyncResultPojo;
 import com.moseeker.position.pojo.SyncFailMessPojo;
@@ -238,6 +238,8 @@ public class PositionServicesImpl implements Iface {
             ThirdPartyPositionForm form=new ThirdPartyPositionForm();
             form.setAppid(batchHandlerJobPostion.getAppid());
             form.setPositionId(positionId);
+            //设置请求端类型为ATS端
+            form.setRequestType(SyncRequestType.ATS.code());
 
             TypeReference<List<String>> typeRef
                     = new TypeReference<List<String>>() {};

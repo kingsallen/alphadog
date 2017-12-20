@@ -2,6 +2,7 @@ package com.moseeker.position.service.position.base.sync;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.position.constants.CheckStrategy;
 import com.moseeker.position.service.position.base.config.TransferCheckConfigUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class TransferCheckUtil {
     @Autowired
     TransferCheckConfigUtil checkConfigUtil;
 
-    public List<String> checkBeforeTransfer(ChannelType channelType,JSONObject jsonForm){
+    public List<String> checkBeforeTransfer(SyncRequestType requestType, ChannelType channelType, JSONObject jsonForm){
         if(channelType==null || jsonForm==null || jsonForm.isEmpty()){
             return Collections.emptyList();
         }

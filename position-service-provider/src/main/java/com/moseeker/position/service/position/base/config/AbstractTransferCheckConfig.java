@@ -1,13 +1,14 @@
 package com.moseeker.position.service.position.base.config;
 
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.iface.ISyncRequestType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.CheckStrategy;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AbstractTransferCheckConfig {
+public abstract class AbstractTransferCheckConfig implements ISyncRequestType{
 
     public abstract Map<ChannelType,Map<String,Map<CheckStrategy,String>>> getStrategy();
 

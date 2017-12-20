@@ -1,6 +1,7 @@
 package com.moseeker.position.service.position.base.config;
 
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.position.constants.CheckStrategy;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import org.springframework.stereotype.Component;
@@ -54,5 +55,10 @@ public class ATSTransferCheckConfig extends AbstractTransferCheckConfig {
                 .add());
 
         return strategy;
+    }
+
+    @Override
+    public SyncRequestType getSyncRequestType() {
+        return SyncRequestType.ATS;
     }
 }

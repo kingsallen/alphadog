@@ -1,5 +1,6 @@
 package com.moseeker.position.thrift;
 
+import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.position.constants.ResultMessage;
 import com.moseeker.position.service.appbs.PositionBS;
 import com.moseeker.position.service.schedule.ThirdPartyPositionParamRefresh;
@@ -32,6 +33,8 @@ public class PositionBSThriftService implements Iface {
     @Override
     public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws TException {
         try {
+            //设置请求端类型为网页端
+            position.setRequestType(SyncRequestType.WEB.code());
             return ResultMessage.SUCCESS.toResponse(positionBS.synchronizePositionToThirdPartyPlatform(position));
         } catch (BIZException e) {
             throw e;

@@ -9,6 +9,7 @@ import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionRefreshType;
+import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.ResultMessage;
 import com.moseeker.position.pojo.PositionSyncResultPojo;
@@ -80,6 +81,8 @@ public class PositionBS {
         //用来同步到chaos的职位列表
         List<String>  positionsForSynchronizations=new ArrayList<>();
 
+        SyncRequestType requestType=SyncRequestType.getInstance(position.getRequestType());
+
         //这个循环检查需要同步的职位对应渠道下是否有绑定过的账号
         for (String json: position.getChannels()) {
             JSONObject p=JSON.parseObject(json);
@@ -94,17 +97,17 @@ public class PositionBS {
                 p.put("thirdPartyAccountId",avaliableAccount.getId());
             }
 
-            /*ChannelType channelType=ChannelType.instaceFromInteger(channel);
+            ChannelType channelType=ChannelType.instaceFromInteger(channel);
             if(channelType==null){
                 results.add(positionSyncHandler.createFailResult(channel,thirdPartyAccountId,ResultMessage.CHANNEL_NOT_EXIST.getMessage()));
                 continue;
             }
 
-            List<String> checkMsg=transferCheckUtil.checkBeforeTransfer(channelType,p);
+            List<String> checkMsg=transferCheckUtil.checkBeforeTransfer(requestType,channelType,p);
             if(!StringUtils.isEmptyList(checkMsg)){
                 results.add(positionSyncHandler.createFailResult(channel,thirdPartyAccountId,JSON.toJSONString(checkMsg)));
                 continue;
-            }*/
+            }
 
             // 转成第三方渠道职位
             AbstractPositionTransfer.TransferResult result= positionChangeUtil.changeToThirdPartyPosition(p, moseekerJobPosition,avaliableAccount);

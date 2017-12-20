@@ -625,8 +625,13 @@ public class PositionService {
                         }
                         // 将需要更新JobPosition的数据放入更新的列表
                         jobPositionUpdateRecordList.add(record);
-                        // 需要同步的数据
-                        syncData.put(record.getId(),jobPositionHandlerDate.getThirdParty_position());
+
+                        //更新的职位只有在title变化时才发布新职位
+                        if(record.getTitle().equals(jobPositionRecord.getTitle())){
+                            // 需要同步的数据
+                            syncData.put(record.getId(),jobPositionHandlerDate.getThirdParty_position());
+                        }
+
 
                         // 需要更新JobPositionCity数据
                         List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(jobPositionHandlerDate.getCity(), record.getId());
