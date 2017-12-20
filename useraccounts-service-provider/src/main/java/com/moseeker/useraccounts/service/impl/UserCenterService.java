@@ -85,12 +85,11 @@ public class UserCenterService {
                         .select(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName())
                         .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN))
                         .and(HrWxWechat.HR_WX_WECHAT.AUTHORIZED.getName(), WechatAuthorized.AUTHORIZED.getValue());
-                List<HrWxWechatDO> wechatDOList = wechatDao.getDatas(
-                        findWechatQuery.buildQuery());
-                Map<Integer, String> signatureMap = new HashMap<>();
-                if (wechatDOList != null && wechatDOList.size() > 0) {
-                    wechatDOList.forEach(hrWxWechatDO -> signatureMap.put(hrWxWechatDO.getCompanyId(), hrWxWechatDO.getSignature()));
-                }
+                Map<Integer, String> signatureMap = wechatDao.getDatas(
+                        findWechatQuery.buildQuery())
+                        .stream()
+                        .collect(Collectors.toMap(k->k.getCompanyId(), v->v.getSignature(),
+                                (companyId1, companyId2) -> companyId1));
                 //List<ConfigSysPointConfTplDO> tpls = bizTools.getAwardConfigTpls();
 
                 applications = apps.stream().map(app -> {
