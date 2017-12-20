@@ -106,6 +106,7 @@ public class TalentpoolSearchengine {
         }
         builder.setFrom(Integer.parseInt(pageNum)*Integer.parseInt(pageSize));
         builder.setSize(Integer.parseInt(pageSize));
+        builder.setTrackScores(true);
         logger.info(builder.toString());
         SearchResponse response = builder.execute().actionGet();
         Map<String,Object>result=searchUtil.handleData(response,"users");
@@ -312,7 +313,7 @@ public class TalentpoolSearchengine {
     public ScriptQueryBuilder queryScript(Map<String,String> params){
         String publisherIds=params.get("publisher");
         String candidateSource=params.get("candidate_source");
-        String recommend=params.get("only_recommend");
+        String recommend=params.get("is_recommend");
         String origins=params.get("origins");
         String submitTime=params.get("submit_time");
         String progressStatus=params.get("progress_status");
@@ -524,7 +525,7 @@ public class TalentpoolSearchengine {
      */
 
     private void queryByHome(String home,QueryBuilder queryBuilder){
-        searchUtil.handleTerm(home,queryBuilder,"user.profiles.basic.city_name");
+        searchUtil.handleTerms(home,queryBuilder,"user.profiles.basic.city_name");
     }
     /*
       按照期望薪资查询
