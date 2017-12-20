@@ -227,7 +227,8 @@ public class UserQxService {
                         .and(HrWxWechat.HR_WX_WECHAT.AUTHORIZED.getName(), WechatAuthorized.AUTHORIZED.getValue());
                 Map<Integer, String> signatureMap = wechatDao.getDatas(
                         findWechatQuery.buildQuery()).stream()
-                        .collect(Collectors.toMap(k -> k.getCompanyId(), v -> v.getSignature(), (companyId1, companyId2) -> companyId1));
+                        .collect(Collectors.toMap(k -> k.getCompanyId(), v -> v.getSignature(),
+                                (companyId1, companyId2) -> companyId1));
 
 
                 List<CollectPositionForm> positionFormList = new ArrayList<>();
