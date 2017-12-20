@@ -22,6 +22,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.constant.WechatAuthorized;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import org.apache.commons.lang.math.NumberUtils;
@@ -79,8 +80,11 @@ public class UserCenterService {
 
                 //查找signature
                 Query.QueryBuilder findWechatQuery = new Query.QueryBuilder();
-                findWechatQuery.select(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName()).select(HrWxWechat.HR_WX_WECHAT.ID.getName()).select(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName())
-                        .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN));
+                findWechatQuery.select(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName())
+                        .select(HrWxWechat.HR_WX_WECHAT.ID.getName())
+                        .select(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName())
+                        .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN))
+                        .and(HrWxWechat.HR_WX_WECHAT.AUTHORIZED.getName(), WechatAuthorized.AUTHORIZED.getValue());
                 List<HrWxWechatDO> wechatDOList = wechatDao.getDatas(
                         findWechatQuery.buildQuery());
                 Map<Integer, String> signatureMap = new HashMap<>();

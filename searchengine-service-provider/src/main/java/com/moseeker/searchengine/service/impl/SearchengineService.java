@@ -351,6 +351,11 @@ public class SearchengineService {
                     .actionGet();
         } catch (Exception e) {
             logger.error("error in update", e);
+            if(client!=null){
+                client.close();
+            }
+            client=null;
+            EsClientInstance.closeEsClient();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         } catch (Error error) {
             logger.error(error.getMessage());

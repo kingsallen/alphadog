@@ -21,6 +21,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 
+import com.moseeker.useraccounts.constant.WechatAuthorized;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -32,6 +33,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.moseeker.common.biztools.LambdaTool.distinctByKey;
 
 /**
  * Created by lucky8987 on 17/4/20.
@@ -217,11 +220,15 @@ public class UserQxService {
                 //查找职位所属公司的公众号
                 Set<Integer> companyIdList = positionDOList.stream().map(jobPositionDO -> jobPositionDO.getCompanyId()).collect(Collectors.toSet());
                 Query.QueryBuilder findWechatQuery = new Query.QueryBuilder();
-                findWechatQuery.select(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName()).select(HrWxWechat.HR_WX_WECHAT.ID.getName()).select(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName())
-                        .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN));
+                findWechatQuery.select(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName())
+                        .select(HrWxWechat.HR_WX_WECHAT.ID.getName())
+                        .select(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName())
+                        .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN))
+                        .and(HrWxWechat.HR_WX_WECHAT.AUTHORIZED.getName(), WechatAuthorized.AUTHORIZED.getValue());
                 Map<Integer, String> signatureMap = wechatDao.getDatas(
                         findWechatQuery.buildQuery()).stream()
-                        .collect(Collectors.toMap(k -> k.getCompanyId(), v -> v.getSignature()));
+                        .collect(Collectors.toMap(k -> k.getCompanyId(), v -> v.getSignature(), (companyId1, companyId2) -> companyId1));
+
 
                 List<CollectPositionForm> positionFormList = new ArrayList<>();
                 collectPositions.stream().filter(f -> positions.containsKey(f.getPositionId())).forEach(r -> {
