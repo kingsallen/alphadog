@@ -54,7 +54,7 @@ public class PositionEmailNotification {
         return emails;
     }
 
-    public void sendRefreshFailureMail(String message, IChannelType channel,Exception refreshException) {
+    public void sendATSFailureMail(String message, IChannelType channel,Exception refreshException) {
         List<String> mails=devMails;
         if (mails == null || mails.size() == 0) {
             logger.error("没有配置同步邮箱地址!");
@@ -65,7 +65,54 @@ public class PositionEmailNotification {
 
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
+            StringBuilder titleBuilder = new StringBuilder();
+            titleBuilder.append("【ATS职位同步失败】");
 
+            if(channel!=null) {
+                ChannelType channelType = channel.getChannelType();
+                titleBuilder.append(":【").append(channelType.getAlias()).append("】");
+            }
+
+            StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.append("【ATS端传送的json】：").append(message).append(br);
+
+            messageBuilder.append("【失败信息】:").append(refreshException.getMessage()).append(br);
+
+            emailBuilder.setSubject(titleBuilder.toString());
+            emailBuilder.setContent(messageBuilder.toString());
+            if (mails.size() > 1) {
+                emailBuilder.addCCList(mails.subList(1, mails.size()));
+            }
+            Email email = emailBuilder.build();
+            email.send(3, new Email.EmailListener() {
+                @Override
+                public void success() {
+                    logger.info("email send messageDelivered");
+                }
+
+                @Override
+                public void failed(Exception e) {
+                    logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+
+    }
+
+    public void sendRefreshFailureMail(String message, IChannelType channel,Exception refreshException) {
+        List<String> mails=devMails;
+        if (mails == null || mails.size() == 0) {
+            logger.error("没有配置同步邮箱地址!");
+            return;
+        }
+
+        try {
+
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
             titleBuilder.append("【第三方渠道信息刷新失败】");

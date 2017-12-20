@@ -14,6 +14,7 @@ import com.moseeker.position.pojo.PositionSyncResultPojo;
 import com.moseeker.position.pojo.SyncFailMessPojo;
 import com.moseeker.position.service.appbs.PositionBS;
 import com.moseeker.position.service.fundationbs.*;
+import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
@@ -66,6 +67,8 @@ public class PositionServicesImpl implements Iface {
     private PositionThridService positionThridService;
     @Autowired
     private PositionBS positionBS;
+    @Autowired
+    private PositionEmailNotification emailNotification;
 
     /**
      * 获取推荐职位
@@ -259,6 +262,7 @@ public class PositionServicesImpl implements Iface {
                 e.printStackTrace();
                 SyncFailMessPojo mess=new SyncFailMessPojo(positionId,0,e.getMessage());
                 syncFailMessPojolistList.add(mess);
+                emailNotification.sendATSFailureMail(jsonChannels,null,e);
             }
         }
 

@@ -24,7 +24,7 @@ public class TransferCheckUtil {
             return Collections.emptyList();
         }
 
-        Map<String,Map<CheckStrategy,String>> checkStrategy = getCheckStrategy(channelType);
+        Map<String,Map<CheckStrategy,String>> checkStrategy = getCheckStrategy(requestType,channelType);
         if(checkStrategy==null || checkStrategy.isEmpty()){
             return Collections.emptyList();
         }
@@ -49,7 +49,10 @@ public class TransferCheckUtil {
 
 
 
-    private Map<String, Map<CheckStrategy, String>> getCheckStrategy(ChannelType channelType){
-        return checkConfigUtil.getConfig().get(channelType);
+    private Map<String, Map<CheckStrategy, String>> getCheckStrategy(SyncRequestType requestType,ChannelType channelType){
+        if(requestType==null || channelType==null){
+            return null;
+        }
+        return checkConfigUtil.getConfig(requestType,channelType);
     }
 }
