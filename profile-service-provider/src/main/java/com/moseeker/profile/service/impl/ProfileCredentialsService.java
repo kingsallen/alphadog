@@ -107,7 +107,6 @@ public class ProfileCredentialsService {
 
             List<ProfileCredentialsRecord> profileCredentialsRecordList = dao.getRecords(queryBuilder.buildQuery());
             if (profileCredentialsRecordList != null && profileCredentialsRecordList.size() > 0) {
-
                 profileCredentialsRecordList = profileCredentialsRecordList.stream().filter(profileCredentialsRecord -> {
                     Optional<ProfileCredentialsRecord> profileCredentialsRecordOptional =
                             recordList.stream().filter(record ->
