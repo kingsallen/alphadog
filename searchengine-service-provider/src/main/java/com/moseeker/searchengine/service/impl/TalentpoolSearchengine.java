@@ -292,7 +292,8 @@ public class TalentpoolSearchengine {
         String companyId=params.get("company_id");
         this.queryByNestCompanyId(Integer.parseInt(companyId),query);
         if(StringUtils.isNotNullOrEmpty(tagIds)){
-            this.queryByTagId(tagIds,query);
+            String hrId=params.get("hr_account_id");
+            this.queryByTagId(tagIds,hrId,query);
         }
         if(StringUtils.isNotNullOrEmpty(favoriteHrs)){
             this.queryTagHrId(favoriteHrs,query);
@@ -478,8 +479,9 @@ public class TalentpoolSearchengine {
     /*
       构建按招标签的查询语句
      */
-    private void queryByTagId(String tagIds,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(tagIds,queryBuilder,"user.talent_pool.tags.id");
+    private void queryByTagId(String tagIds,String hrId,QueryBuilder queryBuilder){
+
+        searchUtil.handlerTagIds(tagIds,hrId,queryBuilder);
     }
     /*
      构建和公司相关的人才库

@@ -320,7 +320,7 @@ public class SearchengineController {
     }
 
     //pc端企业搜索的es
-    @RequestMapping(value = "/talentpool/search", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/talentpool/search", method = RequestMethod.GET)
     @ResponseBody
     public String searchUsers(HttpServletRequest request, HttpServletResponse response){
         try{
