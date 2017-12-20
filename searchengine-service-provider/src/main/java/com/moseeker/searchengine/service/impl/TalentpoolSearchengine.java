@@ -331,7 +331,7 @@ public class TalentpoolSearchengine {
 
         }
         StringBuffer sb=new StringBuffer();
-        sb.append("origin=0;upload=_source.user.upload;profile=_source.user.profiles.profile;if(profile){origin=profile.origin};for ( val in _source.user.applications) {");
+        sb.append("origin=0;upload=_source.user.upload;profiles=_source.user.profiles;if(profiles){profile=profiles.profile;if(profile){origin=profile.origin}};for ( val in _source.user.applications) {");
         if(StringUtils.isNotNullOrEmpty(publisherIds)){
             List<Integer> publisherIdList=this.convertStringToList(publisherIds);
             if(!StringUtils.isEmptyList(publisherIdList)){
