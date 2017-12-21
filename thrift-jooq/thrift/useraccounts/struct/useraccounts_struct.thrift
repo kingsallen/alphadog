@@ -153,10 +153,10 @@ struct SearchCondition {
    20: i32 update_time, // 简历更新时间选项（0：不限，1：最近一周，2：最近两周，3：最近一个月）
    21: i32 type,// 类型（0：候选人列表筛选条件，1：人才库列表筛选条件）
    22: string candidate_source,//招聘类型（0，社招，1，校招，2定向招聘）
-   23: string is_public,//是否公开  1 公开
+   23: i32 is_public,//是否公开  1 公开
    24: string origins,//简历来源，
-   25: string is_recommend,//是否内推  1是内推
-   26: string is_fresh_graduates,//是否刚毕业 1是
+   25: i32 is_recommend,//是否内推  1是内推
+   26: i32 is_fresh_graduates,//是否刚毕业 1是
    27: string tag_id,//标签id
    28: string favorite_hrs//收藏人id
 }

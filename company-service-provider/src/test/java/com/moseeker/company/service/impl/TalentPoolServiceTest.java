@@ -232,9 +232,9 @@ public class TalentPoolServiceTest {
 
     @Test
     public void testGetPublicAndHrTalentByUserIdList(){
-        int hrId=82752;
-        int companyId=39978;
-        int userId=2191508;
+        int hrId=82690;
+        int companyId=4;
+        int userId=393846;
         Set<Integer> userIdSet=new HashSet<>();
         userIdSet.add(userId);
         Response res=talentPoolService.getPublicAndHrTalentByUserIdList(hrId,companyId,userIdSet);

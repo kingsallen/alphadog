@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrGroupCompany extends TableImpl<HrGroupCompanyRecord> {
 
-    private static final long serialVersionUID = -860101503;
+    private static final long serialVersionUID = -591822031;
 
     /**
      * The reference instance of <code>hrdb.hr_group_company</code>
@@ -69,7 +69,7 @@ public class HrGroupCompany extends TableImpl<HrGroupCompanyRecord> {
     /**
      * The column <code>hrdb.hr_group_company.update_time</code>. 更新时间
      */
-    public final TableField<HrGroupCompanyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<HrGroupCompanyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * Create a <code>hrdb.hr_group_company</code> table reference

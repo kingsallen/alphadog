@@ -156,7 +156,6 @@ public class HrFeedback extends TableImpl<HrFeedbackRecord> {
     /**
      * Rename this table
      */
-
     public HrFeedback rename(String name) {
         return new HrFeedback(name, null);
     }

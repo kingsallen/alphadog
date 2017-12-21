@@ -629,7 +629,7 @@ public class TalentPoolService {
      */
     @CounterIface
     public Response delTalentComment(int hrId,int companyId,int comId)throws TException{
-        int count=talentPoolEntity.validateUserComment(comId,hrId);
+        int count=talentPoolEntity.getUserHrCommentCount(comId,hrId);
         if(count==0){
             return ResponseUtils.fail(1,"该备注不属于这个hr下的这个人才");
         }

@@ -151,6 +151,7 @@ public class HrOperationRecord extends TableImpl<HrOperationRecordRecord> {
     /**
      * Rename this table
      */
+
     public HrOperationRecord rename(String name) {
         return new HrOperationRecord(name, null);
     }

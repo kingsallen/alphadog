@@ -222,7 +222,7 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     /**
      * Fetch records that have <code>is_public IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsPublic(String... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsPublic(Byte... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.IS_PUBLIC, values);
     }
 
@@ -236,7 +236,7 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     /**
      * Fetch records that have <code>is_recommend IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsRecommend(String... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsRecommend(Byte... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.IS_RECOMMEND, values);
     }
 
@@ -250,7 +250,7 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     /**
      * Fetch records that have <code>is_fresh_graduates IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsFreshGraduates(String... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsFreshGraduates(Byte... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.IS_FRESH_GRADUATES, values);
     }
 

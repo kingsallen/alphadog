@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
 
-    private static final long serialVersionUID = -1303471357;
+    private static final long serialVersionUID = -441300555;
 
     private Integer   id;
     private String    name;
@@ -48,11 +48,11 @@ public class HrSearchCondition implements Serializable {
     private Integer   updateTime;
     private Integer   type;
     private String    candidateSource;
-    private String    isPublic;
+    private Byte      isPublic;
     private String    origins;
-    private String    isRecommend;
+    private Byte      isRecommend;
     private String    tagIds;
-    private String    isFreshGraduates;
+    private Byte      isFreshGraduates;
     private String    favoriteHrs;
 
     public HrSearchCondition() {}
@@ -113,11 +113,11 @@ public class HrSearchCondition implements Serializable {
         Integer   updateTime,
         Integer   type,
         String    candidateSource,
-        String    isPublic,
+        Byte      isPublic,
         String    origins,
-        String    isRecommend,
+        Byte      isRecommend,
         String    tagIds,
-        String    isFreshGraduates,
+        Byte      isFreshGraduates,
         String    favoriteHrs
     ) {
         this.id = id;
@@ -335,11 +335,11 @@ public class HrSearchCondition implements Serializable {
         this.candidateSource = candidateSource;
     }
 
-    public String getIsPublic() {
+    public Byte getIsPublic() {
         return this.isPublic;
     }
 
-    public void setIsPublic(String isPublic) {
+    public void setIsPublic(Byte isPublic) {
         this.isPublic = isPublic;
     }
 
@@ -351,11 +351,11 @@ public class HrSearchCondition implements Serializable {
         this.origins = origins;
     }
 
-    public String getIsRecommend() {
+    public Byte getIsRecommend() {
         return this.isRecommend;
     }
 
-    public void setIsRecommend(String isRecommend) {
+    public void setIsRecommend(Byte isRecommend) {
         this.isRecommend = isRecommend;
     }
 
@@ -367,11 +367,11 @@ public class HrSearchCondition implements Serializable {
         this.tagIds = tagIds;
     }
 
-    public String getIsFreshGraduates() {
+    public Byte getIsFreshGraduates() {
         return this.isFreshGraduates;
     }
 
-    public void setIsFreshGraduates(String isFreshGraduates) {
+    public void setIsFreshGraduates(Byte isFreshGraduates) {
         this.isFreshGraduates = isFreshGraduates;
     }
 

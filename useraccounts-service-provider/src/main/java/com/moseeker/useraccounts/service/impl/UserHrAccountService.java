@@ -607,7 +607,18 @@ public class UserHrAccountService {
                 logger.warn("保存常用筛选失败，筛选项名称={}，已存在", searchCondition.getName());
                 return ResponseUtils.fail("{'status':42004,'message':'保存失败，改筛选项名称已存在'}");
             }
-            int primaryKey = hrSearchConditionDao.addRecord(BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class)).getId();
+            HrSearchConditionRecord record=BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class);
+            if(record.getIsFreshGraduates()==0){
+                record.setIsFreshGraduates(null);
+            }
+            if(record.getIsPublic()==0){
+                record.setIsPublic(null);
+            }
+            if(record.getIsRecommend()==0){
+                record.setIsRecommend(null);
+            }
+
+            int primaryKey = hrSearchConditionDao.addRecord(record).getId();
             if (primaryKey > 0) {
                 return ResponseUtils.success(primaryKey);
             } else {
