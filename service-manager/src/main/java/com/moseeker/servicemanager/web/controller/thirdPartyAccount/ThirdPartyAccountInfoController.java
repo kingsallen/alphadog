@@ -35,7 +35,9 @@ public class ThirdPartyAccountInfoController {
     @ResponseBody
     public String getAllInfo(HttpServletRequest request, HttpServletResponse response) {
         try{
+            logger.info("getAllInfo start===============");
             ThirdPartyAccountInfoParam param=ParamUtils.initModelForm(request, ThirdPartyAccountInfoParam.class);
+            logger.info("getAllInfo start param channel:{},hrId:{}",param.channel,param.hrId);
             ThirdPartyAccountInfo info=thirdPartyAccountInfoServices.getAllInfo(param);
             logger.info("getAllInfo data:{}",info);
             return ResponseLogNotification.successJson(request, JSONObject.parseObject(info.getJson()));

@@ -1,5 +1,7 @@
 package com.moseeker.position.service.position.veryeast.pojo;
 
+import com.moseeker.common.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,20 @@ public class PositionVeryEastForm {
     private List<Language> language;
     private int computerLevel;
     private int indate;
+
+    public int getAgeBottom(){
+        if(StringUtils.isEmptyList(age)){
+            return 0;
+        }
+        return age.get(0);
+    }
+
+    public int getAgeTop(){
+        if(StringUtils.isEmptyList(age) || age.size()<2){
+            return 0;
+        }
+        return age.get(1);
+    }
 
     public int getLanguageType1(){
         if(language==null || language.isEmpty()){
@@ -52,7 +68,7 @@ public class PositionVeryEastForm {
 
     public int getLanguageLevel3(){
         if(language==null || language.size()<3){
-            throw new NullPointerException();
+            return 0;
         }
         return language.get(2).getLanguageLevel();
     }

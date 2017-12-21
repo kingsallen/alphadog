@@ -3,6 +3,7 @@ package com.moseeker.position.service.position.veryeast;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.veryeast.pojo.PositionVeryEast;
 import com.moseeker.position.service.position.veryeast.pojo.PositionVeryEastForm;
@@ -111,8 +112,8 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
     public ThirdpartyVeryEastPositionDO toExtThirdPartyPosition(PositionVeryEastForm form, PositionVeryEastWithAccount positionVeryEastWithAccount) {
         ThirdpartyVeryEastPositionDO veryEast=new ThirdpartyVeryEastPositionDO();
         veryEast.setAccommodation(form.getAccommodation());
-        veryEast.setAge_top(form.getAge().get(0));
-        veryEast.setAge_bottom(form.getAge().get(1));
+        veryEast.setAge_top(form.getAgeTop());
+        veryEast.setAge_bottom(form.getAgeBottom());
         veryEast.setLanguageType1(form.getLanguageType1());
         veryEast.setLanguageLevel1(form.getLanguageLevel1());
         veryEast.setLanguageType2(form.getLanguageType2());

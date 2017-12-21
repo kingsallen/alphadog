@@ -52,10 +52,6 @@ public abstract class AbstractTransferCheckConfig implements ISyncRequestType{
             };
         }
 
-        public class ChannelBuilder{
-
-        }
-
         public class FieldBuilder{
             private String field;
             private Map<CheckStrategy,String> fieldStrategy=new ConcurrentHashMap<>();

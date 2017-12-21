@@ -154,9 +154,10 @@ public class PositionEmailNotification {
 
     public static String getExceptionAllinformation(Exception ex){
         StringBuilder sb = new StringBuilder();
+        sb.append(ex.toString());
         StackTraceElement[] trace = ex.getStackTrace();
         for (StackTraceElement s : trace) {
-            sb.append("at " + s + br);
+            sb.append( br+"at " + s );
         }
         return sb.toString();
     }
