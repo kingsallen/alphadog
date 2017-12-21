@@ -49,40 +49,18 @@ public class PositionParamUtils extends ParamUtils {
         return form;
     }
 
-
     public static BatchHandlerJobPostion parseBatchHandlerJobPostionParam(HttpServletRequest request) throws Exception {
-        BatchHandlerJobPostion batchHandlerDate = new BatchHandlerJobPostion();
         HashMap<String, Object> data = parseRequestParam(request);
-        batchHandlerDate.setFields_nohash((String) data.get("fields_nohash"));
-        batchHandlerDate.setFields_nooverwrite((String) data.get("fields_nooverwrite"));
-        if (StringUtils.isEmptyObject(data.get("nodelete"))) {
-            batchHandlerDate.setNodelete(false);
-        } else {
-            batchHandlerDate.setNodelete((Boolean) data.get("nodelete"));
-        }
+
+        BatchHandlerJobPostion batchHandlerDate = initBatchHandlerJobPostion(data);
+
         List<JobPostrionObj> cs = new ArrayList<>();
         List<HashMap<String, Object>> datas = (List<HashMap<String, Object>>) data.get("data");
         if (datas != null) {
-            datas.forEach(temp -> {
+            datas.forEach(jobPostrionObj -> {
                 try {
-                    Map<String, Object> jobPostrionObj=(Map<String, Object>)temp.get("position");
-
                     JobPostrionObj c = ParamUtils.initModelForm(jobPostrionObj, JobPostrionObj.class);
-                    c.setThirdParty_position(JSON.toJSONString(temp.get("thirdParty_position")));
-
-                    List<HashMap<String, Object>> citys = (List<HashMap<String, Object>>) jobPostrionObj.get("city");
-                    if (citys != null) {
-                        List<City> cities = new ArrayList<>();
-                        citys.forEach(city -> {
-                            try {
-                                City cityTemp = ParamUtils.initModelForm(city, City.class);
-                                cities.add(cityTemp);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
-                        c.setCity(cities);
-                    }
+                    c.setCity(parseCitys(jobPostrionObj));
                     cs.add(c);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -96,35 +74,59 @@ public class PositionParamUtils extends ParamUtils {
         return batchHandlerDate;
     }
 
-    /**
-     * 解析职位刷新参数
-     */
-    @SuppressWarnings("unchecked")
-    public static List<HashMap<Integer, Integer>> parseRefreshParam(Params<String, Object> params) {
+    public static BatchHandlerJobPostion parseSyncBatchHandlerJobPostionParam(HttpServletRequest request) throws Exception {
+        HashMap<String, Object> data = parseRequestParam(request);
 
-        List<HashMap<Integer, Integer>> paramList = new ArrayList<>();
-        try {
-            List<Map<String, Object>> positions = (List<Map<String, Object>>) params.get("params");
-            if (positions != null && positions.size() > 0) {
-                positions.forEach(position -> {
-                    int positionId = (Integer) position.get("position_id");
-                    List<Integer> channels = (List<Integer>) position.get("channels");
-                    if (channels != null && channels.size() > 0) {
-                        channels.forEach(channel -> {
-                            HashMap<Integer, Integer> param = new HashMap<>();
-                            param.put(positionId, channel);
-                            paramList.add(param);
-                        });
-                    }
-                });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            LoggerFactory.getLogger(PositionParamUtils.class).error(e.getMessage(), e);
-        } finally {
-            //do nothing
+        BatchHandlerJobPostion batchHandlerDate = initBatchHandlerJobPostion(data);
+
+        List<JobPostrionObj> cs = new ArrayList<>();
+        List<HashMap<String, Object>> datas = (List<HashMap<String, Object>>) data.get("data");
+        if (datas != null) {
+            datas.forEach(temp -> {
+                try {
+                    Map<String, Object> jobPostrionObj = (Map<String, Object>) temp.get("position");
+                    JobPostrionObj c = ParamUtils.initModelForm(jobPostrionObj, JobPostrionObj.class);
+                    c.setThirdParty_position(JSON.toJSONString(temp.get("thirdParty_position")));
+                    c.setCity(parseCitys(jobPostrionObj));
+                    cs.add(c);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    LoggerFactory.getLogger(PositionParamUtils.class).error(e.getMessage(), e);
+                } finally {
+                    //do nothing
+                }
+            });
         }
-        return paramList;
+        batchHandlerDate.setData(cs);
+        return batchHandlerDate;
+    }
+
+    private static BatchHandlerJobPostion initBatchHandlerJobPostion(HashMap<String, Object> data){
+        BatchHandlerJobPostion batchHandlerDate = new BatchHandlerJobPostion();
+        batchHandlerDate.setFields_nohash((String) data.get("fields_nohash"));
+        batchHandlerDate.setFields_nooverwrite((String) data.get("fields_nooverwrite"));
+        if (StringUtils.isEmptyObject(data.get("nodelete"))) {
+            batchHandlerDate.setNodelete(false);
+        } else {
+            batchHandlerDate.setNodelete((Boolean) data.get("nodelete"));
+        }
+        return batchHandlerDate;
+    }
+
+    private static List<City> parseCitys(Map<String, Object> jobPostrionObj) {
+        List<HashMap<String, Object>> citys = (List<HashMap<String, Object>>) jobPostrionObj.get("city");
+        List<City> cities = new ArrayList<>();
+        if (citys != null) {
+            citys.forEach(city -> {
+                try {
+                    City cityTemp = ParamUtils.initModelForm(city, City.class);
+                    cities.add(cityTemp);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        return cities;
     }
 
     @SuppressWarnings("unchecked")
