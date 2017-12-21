@@ -94,7 +94,6 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
     */
-    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 1, argsName = "user_id")
     public Response batchAddTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
@@ -121,6 +120,7 @@ public class TalentPoolService {
             for(Integer id:idList){
                 talentPoolEntity.handlerTalentpoolTalent(id,companyId,0,0,1);
             }
+            this.realTimeUpdate(this.converSetToList(idList));
         }
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
         if(result==null||result.isEmpty()){
@@ -173,7 +173,6 @@ public class TalentPoolService {
       @return response(status:0,message:"success,data:[])
               response(status:1,message:"xxxxxx")
      */
-    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 1, argsName = "user_id")
     public Response batchCancelTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
         //验证hr
         int flag=talentPoolEntity.validateHr(hrId,companyId);
@@ -210,6 +209,7 @@ public class TalentPoolService {
             }
             //取消收藏时删除标签，并且计算标签数
             this.handleCancleTag(hrId,idList);
+            this.realTimeUpdate(this.converSetToList(idList));
         }
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
         if(result==null||result.isEmpty()){
@@ -229,7 +229,6 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-    @UpdateEs(tableName = "talentpool_user_tag", argsIndex = 1, argsName = "user_id")
     public Response addBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
         Map<String,Object> validateResult=this.validateAddTag(hrId, userIdList, tagIdList, companyId,0);
         if(validateResult.get("result")!=null){
@@ -251,6 +250,7 @@ public class TalentPoolService {
         for(Integer tagId:tagIdList){
             talentpoolTagDao.updateTagNum(tagId,idList.size());
         }
+        this.realTimeUpdate(this.converSetToList(idList));
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
@@ -274,7 +274,7 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
     */
-    @UpdateEs(tableName = "talentpool_user_tag", argsIndex = 1, argsName = "user_id")
+    @CounterIface
     public Response addNewBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
         Map<String,Object> validateResult=this.validateAddTag(hrId, userIdList, tagIdList, companyId,1);
         if(validateResult.get("result")!=null){
@@ -310,6 +310,7 @@ public class TalentPoolService {
         }
         talentpoolUserTagDao.addAllRecord(recordList);
         talentpoolTagDao.updateTagListNum(tagIdList,idList.size());
+        this.realTimeUpdate(this.converSetToList(idList));
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         userTagIdList=tagIdList;
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
@@ -331,7 +332,7 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-    @UpdateEs(tableName = "talentpool_user_tag", argsIndex = 1, argsName = "user_id")
+    @CounterIface
     public Response batchCancelTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
 
         Map<String,Object> validateResult=this.validateCancleTag(hrId, userIdList, tagIdList, companyId);
@@ -353,6 +354,7 @@ public class TalentPoolService {
         for(Integer tagId:tagIdList){
             talentpoolTagDao.updateTagNum(tagId,0-idList.size());
         }
+        this.realTimeUpdate(this.converSetToList(idList));
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,0);
@@ -427,11 +429,7 @@ public class TalentPoolService {
             for(TalentpoolUserTagRecord record1:list){
                 userIdList.add(record1.getUserId());
             }
-            Map<String,Object> result=new HashMap<>();
-            result.put("tableName","talentpool_user_tag");
-            result.put("user_id",userIdList);
-            client.lpush(Constant.APPID_ALPHADOG,
-                    "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+            this.realTimeUpdate(userIdList);
         }
         return ResponseUtils.success("");
     }
@@ -470,11 +468,7 @@ public class TalentPoolService {
             for(TalentpoolUserTagRecord record1:list){
                 userIdList.add(record1.getUserId());
             }
-            Map<String,Object> result=new HashMap<>();
-            result.put("tableName","talentpool_user_tag");
-            result.put("user_id",userIdList);
-            client.lpush(Constant.APPID_ALPHADOG,
-                    "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+            this.realTimeUpdate(userIdList);
         }
         return ResponseUtils.success(this.getTalentpoolTagById(tagId));
     }
@@ -1650,5 +1644,21 @@ public class TalentPoolService {
                 .setPageNum(pageNum).setPageSize(pageSize).orderBy("create_time",Order.DESC).buildQuery();
         List<Map<String,Object>> list=talentpoolCommentDao.getMaps(query);
         return list;
+    }
+
+    private void realTimeUpdate(List<Integer> userIdList){
+        Map<String,Object> result=new HashMap<>();
+        result.put("tableName","talentpool_user_tag");
+        result.put("user_id",userIdList);
+        client.lpush(Constant.APPID_ALPHADOG,
+                "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+    }
+
+    private List<Integer> converSetToList(Set<Integer> userIdSet){
+        List<Integer> userIdList=new ArrayList<>();
+        for(Integer id:userIdSet){
+            userIdList.add(id);
+        }
+        return userIdList;
     }
 }
