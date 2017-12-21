@@ -1647,9 +1647,11 @@ public class TalentPoolService {
     }
 
     private void realTimeUpdate(List<Integer> userIdList){
+
         Map<String,Object> result=new HashMap<>();
         result.put("tableName","talentpool_user_tag");
         result.put("user_id",userIdList);
+        logger.info("执行实时更新========={}",JSON.toJSONString(result));
         client.lpush(Constant.APPID_ALPHADOG,
                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
     }
