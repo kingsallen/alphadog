@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 团队信息
+ * 团队表
  */
 @Generated(
     value = {
@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeam implements Serializable {
 
-    private static final long serialVersionUID = -1863161737;
+    private static final long serialVersionUID = -2138134995;
 
     private Integer   id;
     private String    name;

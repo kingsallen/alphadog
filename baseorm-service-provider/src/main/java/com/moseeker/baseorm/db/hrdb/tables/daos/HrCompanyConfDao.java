@@ -136,6 +136,13 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
     }
 
     /**
+     * Fetch records that have <code>school_application_count_limit IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchBySchoolApplicationCountLimit(Short... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.SCHOOL_APPLICATION_COUNT_LIMIT, values);
+    }
+
+    /**
      * Fetch records that have <code>job_custom_title IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByJobCustomTitle(String... values) {
@@ -171,13 +178,6 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
     }
 
     /**
-     * Fetch records that have <code>application_time IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByApplicationTime(Timestamp... values) {
-        return fetch(HrCompanyConf.HR_COMPANY_CONF.APPLICATION_TIME, values);
-    }
-
-    /**
      * Fetch records that have <code>newjd_status IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByNewjdStatus(Integer... values) {
@@ -185,10 +185,24 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
     }
 
     /**
+     * Fetch records that have <code>application_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByApplicationTime(Timestamp... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.APPLICATION_TIME, values);
+    }
+
+    /**
      * Fetch records that have <code>hr_chat IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByHrChat(Byte... values) {
         return fetch(HrCompanyConf.HR_COMPANY_CONF.HR_CHAT, values);
+    }
+
+    /**
+     * Fetch records that have <code>show_qx_only IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByShowQxOnly(Byte... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.SHOW_QX_ONLY, values);
     }
 
     /**
@@ -210,5 +224,12 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByDisplayLocale(String... values) {
         return fetch(HrCompanyConf.HR_COMPANY_CONF.DISPLAY_LOCALE, values);
+    }
+
+    /**
+     * Fetch records that have <code>talentpool_status IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByTalentpoolStatus(Byte... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.TALENTPOOL_STATUS, values);
     }
 }

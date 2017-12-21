@@ -75,14 +75,14 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     /**
      * Fetch records that have <code>publisher IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPublisher(Integer... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPublisher(String... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.PUBLISHER, values);
     }
 
     /**
      * Fetch records that have <code>position_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPositionId(Integer... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPositionId(String... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.POSITION_ID, values);
     }
 
@@ -210,5 +210,54 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByType(Integer... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.TYPE, values);
+    }
+
+    /**
+     * Fetch records that have <code>candidate_source IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByCandidateSource(Byte... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.CANDIDATE_SOURCE, values);
+    }
+
+    /**
+     * Fetch records that have <code>is_public IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsPublic(Byte... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.IS_PUBLIC, values);
+    }
+
+    /**
+     * Fetch records that have <code>origins IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByOrigins(String... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.ORIGINS, values);
+    }
+
+    /**
+     * Fetch records that have <code>is_recommend IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsRecommend(Byte... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.IS_RECOMMEND, values);
+    }
+
+    /**
+     * Fetch records that have <code>tag_ids IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByTagIds(String... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.TAG_IDS, values);
+    }
+
+    /**
+     * Fetch records that have <code>is_fresh_graduates IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsFreshGraduates(Byte... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.IS_FRESH_GRADUATES, values);
+    }
+
+    /**
+     * Fetch records that have <code>favorite_hrs IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByFavoriteHrs(String... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.FAVORITE_HRS, values);
     }
 }

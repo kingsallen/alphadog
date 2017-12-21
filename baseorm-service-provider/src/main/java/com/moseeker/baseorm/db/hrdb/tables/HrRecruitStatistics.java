@@ -212,4 +212,12 @@ public class HrRecruitStatistics extends TableImpl<HrRecruitStatisticsRecord> {
     public HrRecruitStatistics as(String alias) {
         return new HrRecruitStatistics(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrRecruitStatistics rename(String name) {
+        return new HrRecruitStatistics(name, null);
+    }
 }

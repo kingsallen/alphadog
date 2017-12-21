@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> {
 
-    private static final long serialVersionUID = 1340306609;
+    private static final long serialVersionUID = -1467807755;
 
     /**
      * The reference instance of <code>hrdb.hr_referral_statistics</code>
@@ -55,16 +55,6 @@ public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> 
      * The column <code>hrdb.hr_referral_statistics.id</code>. primary key
      */
     public final TableField<HrReferralStatisticsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "primary key");
-
-    /**
-     * The column <code>hrdb.hr_referral_statistics.position_title</code>. hr_position.title
-     */
-    public final TableField<HrReferralStatisticsRecord, String> POSITION_TITLE = createField("position_title", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false), this, "hr_position.title");
-
-    /**
-     * The column <code>hrdb.hr_referral_statistics.employee_name</code>. sys_employee.cname
-     */
-    public final TableField<HrReferralStatisticsRecord, String> EMPLOYEE_NAME = createField("employee_name", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false), this, "sys_employee.cname");
 
     /**
      * The column <code>hrdb.hr_referral_statistics.employee_id</code>. 推荐员工 sys.employee.id
@@ -132,6 +122,16 @@ public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> 
     public final TableField<HrReferralStatisticsRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "job.position_id");
 
     /**
+     * The column <code>hrdb.hr_referral_statistics.employee_name</code>. sys_employee.cname
+     */
+    public final TableField<HrReferralStatisticsRecord, String> EMPLOYEE_NAME = createField("employee_name", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false), this, "sys_employee.cname");
+
+    /**
+     * The column <code>hrdb.hr_referral_statistics.position_title</code>. hr_position.title
+     */
+    public final TableField<HrReferralStatisticsRecord, String> POSITION_TITLE = createField("position_title", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false), this, "hr_position.title");
+
+    /**
      * Create a <code>hrdb.hr_referral_statistics</code> table reference
      */
     public HrReferralStatistics() {
@@ -191,5 +191,13 @@ public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> 
     @Override
     public HrReferralStatistics as(String alias) {
         return new HrReferralStatistics(alias, this);
+    }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrReferralStatistics rename(String name) {
+        return new HrReferralStatistics(name, null);
     }
 }

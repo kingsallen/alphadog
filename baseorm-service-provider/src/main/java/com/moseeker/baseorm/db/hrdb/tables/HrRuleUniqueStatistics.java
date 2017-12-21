@@ -152,4 +152,12 @@ public class HrRuleUniqueStatistics extends TableImpl<HrRuleUniqueStatisticsReco
     public HrRuleUniqueStatistics as(String alias) {
         return new HrRuleUniqueStatistics(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrRuleUniqueStatistics rename(String name) {
+        return new HrRuleUniqueStatistics(name, null);
+    }
 }

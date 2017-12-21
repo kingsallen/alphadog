@@ -142,4 +142,12 @@ public class HrHtml5Statistics extends TableImpl<HrHtml5StatisticsRecord> {
     public HrHtml5Statistics as(String alias) {
         return new HrHtml5Statistics(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrHtml5Statistics rename(String name) {
+        return new HrHtml5Statistics(name, null);
+    }
 }

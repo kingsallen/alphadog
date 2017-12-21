@@ -110,8 +110,8 @@ public class JobApplicataionServicesImpl implements Iface {
      * @param userId    用户id
      * @param companyId 公司id
      */
-    public Response validateUserApplicationCheckCountAtCompany(long userId, long companyId) {
-        return service.validateUserApplicationCheckCountAtCompany(userId, companyId);
+    public Response validateUserApplicationCheckCountAtCompany(long userId, long companyId, long positionId) {
+        return service.validateUserApplicationCheckCountAtCompany(userId, companyId, positionId);
     }
 
     @Override

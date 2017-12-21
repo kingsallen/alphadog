@@ -7,7 +7,6 @@ package com.moseeker.baseorm.db.hrdb;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
-import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
@@ -29,8 +28,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
-import com.moseeker.baseorm.db.hrdb.tables.HrMedia;
-import com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrNps;
 import com.moseeker.baseorm.db.hrdb.tables.HrNpsRecommend;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
@@ -39,17 +36,14 @@ import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrResource;
-import com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi;
-import com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
+import com.moseeker.baseorm.db.hrdb.tables.HrTalentpoolApplication;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
@@ -65,8 +59,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.VPositionRealcompany;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,22 +85,12 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1326135467;
+    private static final long serialVersionUID = -439695240;
 
     /**
      * The reference instance of <code>hrdb</code>
      */
     public static final Hrdb HRDB = new Hrdb();
-
-    /**
-     * The table <code>hrdb.hrdb.hr_html5_statistics</code>.
-     */
-    public final HrdbHrHtml5Statistics HRDB_HR_HTML5_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS;
-
-    /**
-     * The table <code>hrdb.hrdb.hr_html5_unique_statistics</code>.
-     */
-    public final HrdbHrHtml5UniqueStatistics HRDB_HR_HTML5_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS;
 
     /**
      * 企业申请简历校验配置
@@ -125,11 +108,6 @@ public class Hrdb extends SchemaImpl {
     public final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount.HR_CHAT_UNREAD_COUNT;
 
     /**
-     * 子公司表
-     */
-    public final HrChildCompany HR_CHILD_COMPANY = com.moseeker.baseorm.db.hrdb.tables.HrChildCompany.HR_CHILD_COMPANY;
-
-    /**
      * 微信端新jd模块具体内容项
      */
     public final HrCmsMedia HR_CMS_MEDIA = com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia.HR_CMS_MEDIA;
@@ -145,7 +123,7 @@ public class Hrdb extends SchemaImpl {
     public final HrCmsPages HR_CMS_PAGES = com.moseeker.baseorm.db.hrdb.tables.HrCmsPages.HR_CMS_PAGES;
 
     /**
-     * 公司表
+     * The table <code>hrdb.hr_company</code>.
      */
     public final HrCompany HR_COMPANY = com.moseeker.baseorm.db.hrdb.tables.HrCompany.HR_COMPANY;
 
@@ -200,7 +178,7 @@ public class Hrdb extends SchemaImpl {
     public final HrHbConfig HR_HB_CONFIG = com.moseeker.baseorm.db.hrdb.tables.HrHbConfig.HR_HB_CONFIG;
 
     /**
-     * 红包记录表
+     * The table <code>hrdb.hr_hb_items</code>.
      */
     public final HrHbItems HR_HB_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrHbItems.HR_HB_ITEMS;
 
@@ -210,12 +188,12 @@ public class Hrdb extends SchemaImpl {
     public final HrHbPositionBinding HR_HB_POSITION_BINDING = com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding.HR_HB_POSITION_BINDING;
 
     /**
-     * 新红包刮刮卡记录表
+     * The table <code>hrdb.hr_hb_scratch_card</code>.
      */
     public final HrHbScratchCard HR_HB_SCRATCH_CARD = com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard.HR_HB_SCRATCH_CARD;
 
     /**
-     * 红包发送记录
+     * The table <code>hrdb.hr_hb_send_record</code>.
      */
     public final HrHbSendRecord HR_HB_SEND_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord.HR_HB_SEND_RECORD;
 
@@ -233,16 +211,6 @@ public class Hrdb extends SchemaImpl {
      * 企业用户导入数据异步处理监控操作表
      */
     public final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
-
-    /**
-     * 模板媒体表，存储模板渲染的媒体信息
-     */
-    public final HrMedia HR_MEDIA = com.moseeker.baseorm.db.hrdb.tables.HrMedia.HR_MEDIA;
-
-    /**
-     * The table <code>hrdb.hr_media_backup_chendi</code>.
-     */
-    public final HrMediaBackupChendi HR_MEDIA_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI;
 
     /**
      * nps打分推荐表
@@ -285,16 +253,6 @@ public class Hrdb extends SchemaImpl {
     public final HrResource HR_RESOURCE = com.moseeker.baseorm.db.hrdb.tables.HrResource.HR_RESOURCE;
 
     /**
-     * The table <code>hrdb.hr_resource_backup_chendi</code>.
-     */
-    public final HrResourceBackupChendi HR_RESOURCE_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi.HR_RESOURCE_BACKUP_CHENDI;
-
-    /**
-     * The table <code>hrdb.hr_resource_online</code>.
-     */
-    public final HrResourceOnline HR_RESOURCE_ONLINE = com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline.HR_RESOURCE_ONLINE;
-
-    /**
      * 微信图文传播次数统计表
      */
     public final HrRuleStatistics HR_RULE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics.HR_RULE_STATISTICS;
@@ -310,7 +268,7 @@ public class Hrdb extends SchemaImpl {
     public final HrSearchCondition HR_SEARCH_CONDITION = com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition.HR_SEARCH_CONDITION;
 
     /**
-     * 升级超级账号申请表
+     * The table <code>hrdb.hr_superaccount_apply</code>.
      */
     public final HrSuperaccountApply HR_SUPERACCOUNT_APPLY = com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply.HR_SUPERACCOUNT_APPLY;
 
@@ -320,24 +278,19 @@ public class Hrdb extends SchemaImpl {
     public final HrTalentpool HR_TALENTPOOL = com.moseeker.baseorm.db.hrdb.tables.HrTalentpool.HR_TALENTPOOL;
 
     /**
-     * 团队信息
+     * hr申请人才库记录表
      */
-    public final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
+    public final HrTalentpoolApplication HR_TALENTPOOL_APPLICATION = com.moseeker.baseorm.db.hrdb.tables.HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION;
 
     /**
-     * The table <code>hrdb.hr_team_backup_chendi</code>.
+     * 团队表
      */
-    public final HrTeamBackupChendi HR_TEAM_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi.HR_TEAM_BACKUP_CHENDI;
+    public final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
 
     /**
      * 团队成员信息
      */
     public final HrTeamMember HR_TEAM_MEMBER = com.moseeker.baseorm.db.hrdb.tables.HrTeamMember.HR_TEAM_MEMBER;
-
-    /**
-     * The table <code>hrdb.hr_team_member_backup_chendi</code>.
-     */
-    public final HrTeamMemberBackupChendi HR_TEAM_MEMBER_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi.HR_TEAM_MEMBER_BACKUP_CHENDI;
 
     /**
      * 第三方渠道帐号
@@ -380,7 +333,7 @@ public class Hrdb extends SchemaImpl {
     public final HrWxImageReply HR_WX_IMAGE_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply.HR_WX_IMAGE_REPLY;
 
     /**
-     * 微信模块表
+     * The table <code>hrdb.hr_wx_module</code>.
      */
     public final HrWxModule HR_WX_MODULE = com.moseeker.baseorm.db.hrdb.tables.HrWxModule.HR_WX_MODULE;
 
@@ -395,7 +348,7 @@ public class Hrdb extends SchemaImpl {
     public final HrWxNoticeMessage HR_WX_NOTICE_MESSAGE = com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE;
 
     /**
-     * 微信回复规则表
+     * The table <code>hrdb.hr_wx_rule</code>.
      */
     public final HrWxRule HR_WX_RULE = com.moseeker.baseorm.db.hrdb.tables.HrWxRule.HR_WX_RULE;
 
@@ -413,6 +366,11 @@ public class Hrdb extends SchemaImpl {
      * 微信消息通知同步状态
      */
     public final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
+
+    /**
+     * VIEW
+     */
+    public final VPositionRealcompany V_POSITION_REALCOMPANY = com.moseeker.baseorm.db.hrdb.tables.VPositionRealcompany.V_POSITION_REALCOMPANY;
 
     /**
      * No further instances allowed
@@ -439,12 +397,9 @@ public class Hrdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
-            HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS,
-            HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS,
             HrAppCvConf.HR_APP_CV_CONF,
             HrAppExportFields.HR_APP_EXPORT_FIELDS,
             HrChatUnreadCount.HR_CHAT_UNREAD_COUNT,
-            HrChildCompany.HR_CHILD_COMPANY,
             HrCmsMedia.HR_CMS_MEDIA,
             HrCmsModule.HR_CMS_MODULE,
             HrCmsPages.HR_CMS_PAGES,
@@ -466,8 +421,6 @@ public class Hrdb extends SchemaImpl {
             HrHtml5Statistics.HR_HTML5_STATISTICS,
             HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
             HrImporterMonitor.HR_IMPORTER_MONITOR,
-            HrMedia.HR_MEDIA,
-            HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI,
             HrNps.HR_NPS,
             HrNpsRecommend.HR_NPS_RECOMMEND,
             HrOperationRecord.HR_OPERATION_RECORD,
@@ -476,17 +429,14 @@ public class Hrdb extends SchemaImpl {
             HrRecruitUniqueStatistics.HR_RECRUIT_UNIQUE_STATISTICS,
             HrReferralStatistics.HR_REFERRAL_STATISTICS,
             HrResource.HR_RESOURCE,
-            HrResourceBackupChendi.HR_RESOURCE_BACKUP_CHENDI,
-            HrResourceOnline.HR_RESOURCE_ONLINE,
             HrRuleStatistics.HR_RULE_STATISTICS,
             HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS,
             HrSearchCondition.HR_SEARCH_CONDITION,
             HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
             HrTalentpool.HR_TALENTPOOL,
+            HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION,
             HrTeam.HR_TEAM,
-            HrTeamBackupChendi.HR_TEAM_BACKUP_CHENDI,
             HrTeamMember.HR_TEAM_MEMBER,
-            HrTeamMemberBackupChendi.HR_TEAM_MEMBER_BACKUP_CHENDI,
             HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
             HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR,
             HrThirdPartyPosition.HR_THIRD_PARTY_POSITION,
@@ -501,6 +451,7 @@ public class Hrdb extends SchemaImpl {
             HrWxRule.HR_WX_RULE,
             HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE,
             HrWxWechat.HR_WX_WECHAT,
-            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS);
+            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
+            VPositionRealcompany.V_POSITION_REALCOMPANY);
     }
 }

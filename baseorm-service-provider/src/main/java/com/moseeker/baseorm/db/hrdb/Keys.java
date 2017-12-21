@@ -7,7 +7,6 @@ package com.moseeker.baseorm.db.hrdb;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
-import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
@@ -29,7 +28,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
-import com.moseeker.baseorm.db.hrdb.tables.HrMedia;
 import com.moseeker.baseorm.db.hrdb.tables.HrNps;
 import com.moseeker.baseorm.db.hrdb.tables.HrNpsRecommend;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
@@ -43,6 +41,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
+import com.moseeker.baseorm.db.hrdb.tables.HrTalentpoolApplication;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
@@ -63,7 +62,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppExportFieldsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrChildCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsMediaRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsModuleRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsPagesRecord;
@@ -85,7 +83,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrHbSendRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHtml5StatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHtml5UniqueStatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrImporterMonitorRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrMediaRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrNpsRecommendRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrNpsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
@@ -98,6 +95,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrRuleStatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrRuleUniqueStatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSuperaccountApplyRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrTalentpoolApplicationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTalentpoolRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamMemberRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
@@ -144,7 +142,6 @@ public class Keys {
 
     public static final Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = Identities0.IDENTITY_HR_APP_CV_CONF;
     public static final Identity<HrAppExportFieldsRecord, Integer> IDENTITY_HR_APP_EXPORT_FIELDS = Identities0.IDENTITY_HR_APP_EXPORT_FIELDS;
-    public static final Identity<HrChildCompanyRecord, Integer> IDENTITY_HR_CHILD_COMPANY = Identities0.IDENTITY_HR_CHILD_COMPANY;
     public static final Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = Identities0.IDENTITY_HR_CMS_MEDIA;
     public static final Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = Identities0.IDENTITY_HR_CMS_MODULE;
     public static final Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = Identities0.IDENTITY_HR_CMS_PAGES;
@@ -164,7 +161,6 @@ public class Keys {
     public static final Identity<HrHtml5StatisticsRecord, Integer> IDENTITY_HR_HTML5_STATISTICS = Identities0.IDENTITY_HR_HTML5_STATISTICS;
     public static final Identity<HrHtml5UniqueStatisticsRecord, Integer> IDENTITY_HR_HTML5_UNIQUE_STATISTICS = Identities0.IDENTITY_HR_HTML5_UNIQUE_STATISTICS;
     public static final Identity<HrImporterMonitorRecord, Integer> IDENTITY_HR_IMPORTER_MONITOR = Identities0.IDENTITY_HR_IMPORTER_MONITOR;
-    public static final Identity<HrMediaRecord, Integer> IDENTITY_HR_MEDIA = Identities0.IDENTITY_HR_MEDIA;
     public static final Identity<HrNpsRecord, Integer> IDENTITY_HR_NPS = Identities0.IDENTITY_HR_NPS;
     public static final Identity<HrNpsRecommendRecord, Integer> IDENTITY_HR_NPS_RECOMMEND = Identities0.IDENTITY_HR_NPS_RECOMMEND;
     public static final Identity<HrOperationRecordRecord, Integer> IDENTITY_HR_OPERATION_RECORD = Identities0.IDENTITY_HR_OPERATION_RECORD;
@@ -178,6 +174,7 @@ public class Keys {
     public static final Identity<HrSearchConditionRecord, Integer> IDENTITY_HR_SEARCH_CONDITION = Identities0.IDENTITY_HR_SEARCH_CONDITION;
     public static final Identity<HrSuperaccountApplyRecord, Integer> IDENTITY_HR_SUPERACCOUNT_APPLY = Identities0.IDENTITY_HR_SUPERACCOUNT_APPLY;
     public static final Identity<HrTalentpoolRecord, Integer> IDENTITY_HR_TALENTPOOL = Identities0.IDENTITY_HR_TALENTPOOL;
+    public static final Identity<HrTalentpoolApplicationRecord, Integer> IDENTITY_HR_TALENTPOOL_APPLICATION = Identities0.IDENTITY_HR_TALENTPOOL_APPLICATION;
     public static final Identity<HrTeamRecord, Integer> IDENTITY_HR_TEAM = Identities0.IDENTITY_HR_TEAM;
     public static final Identity<HrTeamMemberRecord, Integer> IDENTITY_HR_TEAM_MEMBER = Identities0.IDENTITY_HR_TEAM_MEMBER;
     public static final Identity<HrThirdPartyAccountRecord, Integer> IDENTITY_HR_THIRD_PARTY_ACCOUNT = Identities0.IDENTITY_HR_THIRD_PARTY_ACCOUNT;
@@ -203,7 +200,6 @@ public class Keys {
     public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = UniqueKeys0.KEY_HR_APP_CV_CONF_PRIMARY;
     public static final UniqueKey<HrAppExportFieldsRecord> KEY_HR_APP_EXPORT_FIELDS_PRIMARY = UniqueKeys0.KEY_HR_APP_EXPORT_FIELDS_PRIMARY;
     public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = UniqueKeys0.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY;
-    public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_CHILD_COMPANY_PRIMARY;
     public static final UniqueKey<HrCmsMediaRecord> KEY_HR_CMS_MEDIA_PRIMARY = UniqueKeys0.KEY_HR_CMS_MEDIA_PRIMARY;
     public static final UniqueKey<HrCmsModuleRecord> KEY_HR_CMS_MODULE_PRIMARY = UniqueKeys0.KEY_HR_CMS_MODULE_PRIMARY;
     public static final UniqueKey<HrCmsPagesRecord> KEY_HR_CMS_PAGES_PRIMARY = UniqueKeys0.KEY_HR_CMS_PAGES_PRIMARY;
@@ -227,7 +223,6 @@ public class Keys {
     public static final UniqueKey<HrHtml5StatisticsRecord> KEY_HR_HTML5_STATISTICS_PRIMARY = UniqueKeys0.KEY_HR_HTML5_STATISTICS_PRIMARY;
     public static final UniqueKey<HrHtml5UniqueStatisticsRecord> KEY_HR_HTML5_UNIQUE_STATISTICS_PRIMARY = UniqueKeys0.KEY_HR_HTML5_UNIQUE_STATISTICS_PRIMARY;
     public static final UniqueKey<HrImporterMonitorRecord> KEY_HR_IMPORTER_MONITOR_PRIMARY = UniqueKeys0.KEY_HR_IMPORTER_MONITOR_PRIMARY;
-    public static final UniqueKey<HrMediaRecord> KEY_HR_MEDIA_PRIMARY = UniqueKeys0.KEY_HR_MEDIA_PRIMARY;
     public static final UniqueKey<HrNpsRecord> KEY_HR_NPS_PRIMARY = UniqueKeys0.KEY_HR_NPS_PRIMARY;
     public static final UniqueKey<HrNpsRecommendRecord> KEY_HR_NPS_RECOMMEND_PRIMARY = UniqueKeys0.KEY_HR_NPS_RECOMMEND_PRIMARY;
     public static final UniqueKey<HrNpsRecommendRecord> KEY_HR_NPS_RECOMMEND_HR_NPS_ID = UniqueKeys0.KEY_HR_NPS_RECOMMEND_HR_NPS_ID;
@@ -243,6 +238,8 @@ public class Keys {
     public static final UniqueKey<HrSearchConditionRecord> KEY_HR_SEARCH_CONDITION_PRIMARY = UniqueKeys0.KEY_HR_SEARCH_CONDITION_PRIMARY;
     public static final UniqueKey<HrSuperaccountApplyRecord> KEY_HR_SUPERACCOUNT_APPLY_PRIMARY = UniqueKeys0.KEY_HR_SUPERACCOUNT_APPLY_PRIMARY;
     public static final UniqueKey<HrTalentpoolRecord> KEY_HR_TALENTPOOL_PRIMARY = UniqueKeys0.KEY_HR_TALENTPOOL_PRIMARY;
+    public static final UniqueKey<HrTalentpoolApplicationRecord> KEY_HR_TALENTPOOL_APPLICATION_PRIMARY = UniqueKeys0.KEY_HR_TALENTPOOL_APPLICATION_PRIMARY;
+    public static final UniqueKey<HrTalentpoolApplicationRecord> KEY_HR_TALENTPOOL_APPLICATION_HR_TALENTPOOL_APPLICATION_HR_ID_COMPANY_ID_UINDEX = UniqueKeys0.KEY_HR_TALENTPOOL_APPLICATION_HR_TALENTPOOL_APPLICATION_HR_ID_COMPANY_ID_UINDEX;
     public static final UniqueKey<HrTeamRecord> KEY_HR_TEAM_PRIMARY = UniqueKeys0.KEY_HR_TEAM_PRIMARY;
     public static final UniqueKey<HrTeamMemberRecord> KEY_HR_TEAM_MEMBER_PRIMARY = UniqueKeys0.KEY_HR_TEAM_MEMBER_PRIMARY;
     public static final UniqueKey<HrThirdPartyAccountRecord> KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY;
@@ -273,7 +270,6 @@ public class Keys {
     private static class Identities0 extends AbstractKeys {
         public static Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = createIdentity(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConf.HR_APP_CV_CONF.ID);
         public static Identity<HrAppExportFieldsRecord, Integer> IDENTITY_HR_APP_EXPORT_FIELDS = createIdentity(HrAppExportFields.HR_APP_EXPORT_FIELDS, HrAppExportFields.HR_APP_EXPORT_FIELDS.ID);
-        public static Identity<HrChildCompanyRecord, Integer> IDENTITY_HR_CHILD_COMPANY = createIdentity(HrChildCompany.HR_CHILD_COMPANY, HrChildCompany.HR_CHILD_COMPANY.ID);
         public static Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = createIdentity(HrCmsMedia.HR_CMS_MEDIA, HrCmsMedia.HR_CMS_MEDIA.ID);
         public static Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = createIdentity(HrCmsModule.HR_CMS_MODULE, HrCmsModule.HR_CMS_MODULE.ID);
         public static Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = createIdentity(HrCmsPages.HR_CMS_PAGES, HrCmsPages.HR_CMS_PAGES.ID);
@@ -293,7 +289,6 @@ public class Keys {
         public static Identity<HrHtml5StatisticsRecord, Integer> IDENTITY_HR_HTML5_STATISTICS = createIdentity(HrHtml5Statistics.HR_HTML5_STATISTICS, HrHtml5Statistics.HR_HTML5_STATISTICS.ID);
         public static Identity<HrHtml5UniqueStatisticsRecord, Integer> IDENTITY_HR_HTML5_UNIQUE_STATISTICS = createIdentity(HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS, HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS.ID);
         public static Identity<HrImporterMonitorRecord, Integer> IDENTITY_HR_IMPORTER_MONITOR = createIdentity(HrImporterMonitor.HR_IMPORTER_MONITOR, HrImporterMonitor.HR_IMPORTER_MONITOR.ID);
-        public static Identity<HrMediaRecord, Integer> IDENTITY_HR_MEDIA = createIdentity(HrMedia.HR_MEDIA, HrMedia.HR_MEDIA.ID);
         public static Identity<HrNpsRecord, Integer> IDENTITY_HR_NPS = createIdentity(HrNps.HR_NPS, HrNps.HR_NPS.ID);
         public static Identity<HrNpsRecommendRecord, Integer> IDENTITY_HR_NPS_RECOMMEND = createIdentity(HrNpsRecommend.HR_NPS_RECOMMEND, HrNpsRecommend.HR_NPS_RECOMMEND.ID);
         public static Identity<HrOperationRecordRecord, Integer> IDENTITY_HR_OPERATION_RECORD = createIdentity(HrOperationRecord.HR_OPERATION_RECORD, HrOperationRecord.HR_OPERATION_RECORD.ID);
@@ -307,6 +302,7 @@ public class Keys {
         public static Identity<HrSearchConditionRecord, Integer> IDENTITY_HR_SEARCH_CONDITION = createIdentity(HrSearchCondition.HR_SEARCH_CONDITION, HrSearchCondition.HR_SEARCH_CONDITION.ID);
         public static Identity<HrSuperaccountApplyRecord, Integer> IDENTITY_HR_SUPERACCOUNT_APPLY = createIdentity(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY, HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.ID);
         public static Identity<HrTalentpoolRecord, Integer> IDENTITY_HR_TALENTPOOL = createIdentity(HrTalentpool.HR_TALENTPOOL, HrTalentpool.HR_TALENTPOOL.ID);
+        public static Identity<HrTalentpoolApplicationRecord, Integer> IDENTITY_HR_TALENTPOOL_APPLICATION = createIdentity(HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION, HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION.ID);
         public static Identity<HrTeamRecord, Integer> IDENTITY_HR_TEAM = createIdentity(HrTeam.HR_TEAM, HrTeam.HR_TEAM.ID);
         public static Identity<HrTeamMemberRecord, Integer> IDENTITY_HR_TEAM_MEMBER = createIdentity(HrTeamMember.HR_TEAM_MEMBER, HrTeamMember.HR_TEAM_MEMBER.ID);
         public static Identity<HrThirdPartyAccountRecord, Integer> IDENTITY_HR_THIRD_PARTY_ACCOUNT = createIdentity(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID);
@@ -330,7 +326,6 @@ public class Keys {
         public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = createUniqueKey(HrAppCvConf.HR_APP_CV_CONF, "KEY_hr_app_cv_conf_PRIMARY", HrAppCvConf.HR_APP_CV_CONF.ID);
         public static final UniqueKey<HrAppExportFieldsRecord> KEY_HR_APP_EXPORT_FIELDS_PRIMARY = createUniqueKey(HrAppExportFields.HR_APP_EXPORT_FIELDS, "KEY_hr_app_export_fields_PRIMARY", HrAppExportFields.HR_APP_EXPORT_FIELDS.ID);
         public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = createUniqueKey(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT, "KEY_hr_chat_unread_count_PRIMARY", HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.ROOM_ID);
-        public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = createUniqueKey(HrChildCompany.HR_CHILD_COMPANY, "KEY_hr_child_company_PRIMARY", HrChildCompany.HR_CHILD_COMPANY.ID);
         public static final UniqueKey<HrCmsMediaRecord> KEY_HR_CMS_MEDIA_PRIMARY = createUniqueKey(HrCmsMedia.HR_CMS_MEDIA, "KEY_hr_cms_media_PRIMARY", HrCmsMedia.HR_CMS_MEDIA.ID);
         public static final UniqueKey<HrCmsModuleRecord> KEY_HR_CMS_MODULE_PRIMARY = createUniqueKey(HrCmsModule.HR_CMS_MODULE, "KEY_hr_cms_module_PRIMARY", HrCmsModule.HR_CMS_MODULE.ID);
         public static final UniqueKey<HrCmsPagesRecord> KEY_HR_CMS_PAGES_PRIMARY = createUniqueKey(HrCmsPages.HR_CMS_PAGES, "KEY_hr_cms_pages_PRIMARY", HrCmsPages.HR_CMS_PAGES.ID);
@@ -354,7 +349,6 @@ public class Keys {
         public static final UniqueKey<HrHtml5StatisticsRecord> KEY_HR_HTML5_STATISTICS_PRIMARY = createUniqueKey(HrHtml5Statistics.HR_HTML5_STATISTICS, "KEY_hr_html5_statistics_PRIMARY", HrHtml5Statistics.HR_HTML5_STATISTICS.ID);
         public static final UniqueKey<HrHtml5UniqueStatisticsRecord> KEY_HR_HTML5_UNIQUE_STATISTICS_PRIMARY = createUniqueKey(HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS, "KEY_hr_html5_unique_statistics_PRIMARY", HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS.ID);
         public static final UniqueKey<HrImporterMonitorRecord> KEY_HR_IMPORTER_MONITOR_PRIMARY = createUniqueKey(HrImporterMonitor.HR_IMPORTER_MONITOR, "KEY_hr_importer_monitor_PRIMARY", HrImporterMonitor.HR_IMPORTER_MONITOR.ID);
-        public static final UniqueKey<HrMediaRecord> KEY_HR_MEDIA_PRIMARY = createUniqueKey(HrMedia.HR_MEDIA, "KEY_hr_media_PRIMARY", HrMedia.HR_MEDIA.ID);
         public static final UniqueKey<HrNpsRecord> KEY_HR_NPS_PRIMARY = createUniqueKey(HrNps.HR_NPS, "KEY_hr_nps_PRIMARY", HrNps.HR_NPS.ID);
         public static final UniqueKey<HrNpsRecommendRecord> KEY_HR_NPS_RECOMMEND_PRIMARY = createUniqueKey(HrNpsRecommend.HR_NPS_RECOMMEND, "KEY_hr_nps_recommend_PRIMARY", HrNpsRecommend.HR_NPS_RECOMMEND.ID);
         public static final UniqueKey<HrNpsRecommendRecord> KEY_HR_NPS_RECOMMEND_HR_NPS_ID = createUniqueKey(HrNpsRecommend.HR_NPS_RECOMMEND, "KEY_hr_nps_recommend_hr_nps_id", HrNpsRecommend.HR_NPS_RECOMMEND.HR_NPS_ID);
@@ -370,6 +364,8 @@ public class Keys {
         public static final UniqueKey<HrSearchConditionRecord> KEY_HR_SEARCH_CONDITION_PRIMARY = createUniqueKey(HrSearchCondition.HR_SEARCH_CONDITION, "KEY_hr_search_condition_PRIMARY", HrSearchCondition.HR_SEARCH_CONDITION.ID);
         public static final UniqueKey<HrSuperaccountApplyRecord> KEY_HR_SUPERACCOUNT_APPLY_PRIMARY = createUniqueKey(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY, "KEY_hr_superaccount_apply_PRIMARY", HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.ID);
         public static final UniqueKey<HrTalentpoolRecord> KEY_HR_TALENTPOOL_PRIMARY = createUniqueKey(HrTalentpool.HR_TALENTPOOL, "KEY_hr_talentpool_PRIMARY", HrTalentpool.HR_TALENTPOOL.ID);
+        public static final UniqueKey<HrTalentpoolApplicationRecord> KEY_HR_TALENTPOOL_APPLICATION_PRIMARY = createUniqueKey(HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION, "KEY_hr_talentpool_application_PRIMARY", HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION.ID);
+        public static final UniqueKey<HrTalentpoolApplicationRecord> KEY_HR_TALENTPOOL_APPLICATION_HR_TALENTPOOL_APPLICATION_HR_ID_COMPANY_ID_UINDEX = createUniqueKey(HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION, "KEY_hr_talentpool_application_hr_talentpool_application_hr_id_company_id_uindex", HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION.HR_ID, HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION.COMPANY_ID);
         public static final UniqueKey<HrTeamRecord> KEY_HR_TEAM_PRIMARY = createUniqueKey(HrTeam.HR_TEAM, "KEY_hr_team_PRIMARY", HrTeam.HR_TEAM.ID);
         public static final UniqueKey<HrTeamMemberRecord> KEY_HR_TEAM_MEMBER_PRIMARY = createUniqueKey(HrTeamMember.HR_TEAM_MEMBER, "KEY_hr_team_member_PRIMARY", HrTeamMember.HR_TEAM_MEMBER.ID);
         public static final UniqueKey<HrThirdPartyAccountRecord> KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY = createUniqueKey(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT, "KEY_hr_third_party_account_PRIMARY", HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID);

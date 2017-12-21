@@ -136,4 +136,12 @@ public class HrEmployeeSection extends TableImpl<HrEmployeeSectionRecord> {
     public HrEmployeeSection as(String alias) {
         return new HrEmployeeSection(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrEmployeeSection rename(String name) {
+        return new HrEmployeeSection(name, null);
+    }
 }
