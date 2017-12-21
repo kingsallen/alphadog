@@ -13,7 +13,10 @@ import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Update;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
@@ -57,7 +60,7 @@ public class HRThirdPartyPositionDao  {
     Logger logger= LoggerFactory.getLogger(HRThirdPartyPositionDao.class);
 
     @Autowired
-    InnerHRThirdPartyPositionDao thirdPartyPositionDao;
+    private InnerHRThirdPartyPositionDao thirdPartyPositionDao;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -224,6 +227,17 @@ public class HRThirdPartyPositionDao  {
             }
         }
         return Ints.toArray(results);
+    }
+
+    public int disable(List<Condition> conditions){
+        Update.UpdateBuilder update=new Update.UpdateBuilder().set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),0);
+        if(!StringUtils.isEmptyList(conditions)){
+            update=update.where(conditions.get(0));
+            for(int i=1;i<conditions.size();i++){
+                update=update.and(conditions.get(i));
+            }
+        }
+        return thirdPartyPositionDao.update(update.buildUpdate());
     }
 
     /**
