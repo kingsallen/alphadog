@@ -237,7 +237,7 @@ public class PositionController {
         }
     }
 
-    @RequestMapping(value = "/position/saveAndSync", method = RequestMethod.POST)
+    @RequestMapping(value = " /jobposition/saveAndSync", method = RequestMethod.POST)
     @ResponseBody
     public String saveAndSyncPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
