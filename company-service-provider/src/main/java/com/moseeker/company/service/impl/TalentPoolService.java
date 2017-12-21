@@ -174,8 +174,8 @@ public class TalentPoolService {
       @return response(status:0,message:"success,data:[])
               response(status:1,message:"xxxxxx")
      */
-    @CounterIface
     @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 1, argsName = "user_id")
+    @CounterIface
     public Response batchCancelTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
         //验证hr
         int flag=talentPoolEntity.validateHr(hrId,companyId);
@@ -231,8 +231,8 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-    @CounterIface
     @UpdateEs(tableName = "talentpool_user_tag", argsIndex = 1, argsName = "user_id")
+    @CounterIface
     public Response addBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
         Map<String,Object> validateResult=this.validateAddTag(hrId, userIdList, tagIdList, companyId,0);
         if(validateResult.get("result")!=null){
@@ -277,8 +277,8 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
     */
-    @CounterIface
     @UpdateEs(tableName = "talentpool_user_tag", argsIndex = 1, argsName = "user_id")
+    @CounterIface
     public Response addNewBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
         Map<String,Object> validateResult=this.validateAddTag(hrId, userIdList, tagIdList, companyId,1);
         if(validateResult.get("result")!=null){
@@ -335,8 +335,8 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-    @CounterIface
     @UpdateEs(tableName = "talentpool_user_tag", argsIndex = 1, argsName = "user_id")
+    @CounterIface
     public Response batchCancelTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
 
         Map<String,Object> validateResult=this.validateCancleTag(hrId, userIdList, tagIdList, companyId);
@@ -681,8 +681,8 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-    @CounterIface
     @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 2, argsName = "user_id")
+    @CounterIface
     public Response AddbatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
@@ -722,8 +722,8 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-    @CounterIface
     @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 2, argsName = "user_id")
+    @CounterIface
     public Response cancelBatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
@@ -820,6 +820,9 @@ public class TalentPoolService {
         idList.add(userId);
         List<Map<String,Object>> userHrList=talentPoolEntity.getCompanyHrList(companyId);
         Map<Integer,Set<Map<String,Object>>> hrSet=talentPoolEntity.getBatchAboutTalent(idList,userHrList);
+        if(hrSet==null||hrSet.isEmpty()){
+            return  ResponseUtils.success("");
+        }
         Set<Map<String,Object>> result=hrSet.get(userId);
         if(StringUtils.isEmptySet(result)){
             return  ResponseUtils.success("");
