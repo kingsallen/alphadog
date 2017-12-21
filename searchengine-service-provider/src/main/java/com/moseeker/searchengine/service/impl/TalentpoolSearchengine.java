@@ -104,7 +104,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNullOrEmpty(pageSize)){
             pageSize="15";
         }
-        String returnParams=pageSize=params.get("return_params");
+        String returnParams=params.get("return_params");
         builder.setFrom(Integer.parseInt(pageNum)*Integer.parseInt(pageSize));
         builder.setSize(Integer.parseInt(pageSize));
         builder.setTrackScores(true);
