@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationRecord> {
 
-    private static final long serialVersionUID = -1525762564;
+    private static final long serialVersionUID = 1277309212;
 
     /**
      * Setter for <code>jobdb.job_application.id</code>.
@@ -100,14 +100,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     }
 
     /**
-     * Setter for <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
+     * Setter for <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
      */
     public void setStatusId(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
+     * Getter for <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
      */
     public Integer getStatusId() {
         return (Integer) get(5);
@@ -142,14 +142,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     }
 
     /**
-     * Setter for <code>jobdb.job_application.source_id</code>. job_source.id, 对应的ATS ID
+     * Setter for <code>jobdb.job_application.source_id</code>. 已废弃,job_source.id, 对应的ATS ID
      */
     public void setSourceId(Integer value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_application.source_id</code>. job_source.id, 对应的ATS ID
+     * Getter for <code>jobdb.job_application.source_id</code>. 已废弃,job_source.id, 对应的ATS ID
      */
     public Integer getSourceId() {
         return (Integer) get(8);

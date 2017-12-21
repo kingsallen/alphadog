@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPcReported extends TableImpl<JobPcReportedRecord> {
 
-    private static final long serialVersionUID = 395709703;
+    private static final long serialVersionUID = 1224818980;
 
     /**
      * The reference instance of <code>jobdb.job_pc_reported</code>
@@ -74,7 +74,7 @@ public class JobPcReported extends TableImpl<JobPcReportedRecord> {
     /**
      * The column <code>jobdb.job_pc_reported.description</code>. 举报详情描述信息
      */
-    public final TableField<JobPcReportedRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(100).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "举报详情描述信息");
+    public final TableField<JobPcReportedRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(400).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "举报详情描述信息");
 
     /**
      * The column <code>jobdb.job_pc_reported.create_time</code>. 举报时间

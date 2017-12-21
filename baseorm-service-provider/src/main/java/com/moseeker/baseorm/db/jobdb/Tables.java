@@ -8,12 +8,8 @@ import com.moseeker.baseorm.db.jobdb.tables.FeatureMapping;
 import com.moseeker.baseorm.db.jobdb.tables.FeatureNotFound;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplicationConf;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplicationOnline;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplicationStatusBeisen;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
 import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
-import com.moseeker.baseorm.db.jobdb.tables.JobOccupationRel;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
@@ -22,8 +18,6 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionFeatureFix;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionFeatureOld;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
@@ -65,21 +59,6 @@ public class Tables {
     public static final JobApplicationAts JOB_APPLICATION_ATS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts.JOB_APPLICATION_ATS;
 
     /**
-     * 部门申请配置表
-     */
-    public static final JobApplicationConf JOB_APPLICATION_CONF = com.moseeker.baseorm.db.jobdb.tables.JobApplicationConf.JOB_APPLICATION_CONF;
-
-    /**
-     * The table <code>jobdb.job_application_online</code>.
-     */
-    public static final JobApplicationOnline JOB_APPLICATION_ONLINE = com.moseeker.baseorm.db.jobdb.tables.JobApplicationOnline.JOB_APPLICATION_ONLINE;
-
-    /**
-     * 申请状态记录（ats北森）
-     */
-    public static final JobApplicationStatusBeisen JOB_APPLICATION_STATUS_BEISEN = com.moseeker.baseorm.db.jobdb.tables.JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN;
-
-    /**
      * 职位自定义字段配置表
      */
     public static final JobCustom JOB_CUSTOM = com.moseeker.baseorm.db.jobdb.tables.JobCustom.JOB_CUSTOM;
@@ -88,11 +67,6 @@ public class Tables {
      * 公司自定义职能表
      */
     public static final JobOccupation JOB_OCCUPATION = com.moseeker.baseorm.db.jobdb.tables.JobOccupation.JOB_OCCUPATION;
-
-    /**
-     * 职位与职能关系表
-     */
-    public static final JobOccupationRel JOB_OCCUPATION_REL = com.moseeker.baseorm.db.jobdb.tables.JobOccupationRel.JOB_OCCUPATION_REL;
 
     /**
      * 首页广告位数据表设计
@@ -133,16 +107,6 @@ public class Tables {
      * 职位信息扩展表
      */
     public static final JobPositionExt JOB_POSITION_EXT = com.moseeker.baseorm.db.jobdb.tables.JobPositionExt.JOB_POSITION_EXT;
-
-    /**
-     * The table <code>jobdb.job_position_feature_fix</code>.
-     */
-    public static final JobPositionFeatureFix JOB_POSITION_FEATURE_FIX = com.moseeker.baseorm.db.jobdb.tables.JobPositionFeatureFix.JOB_POSITION_FEATURE_FIX;
-
-    /**
-     * The table <code>jobdb.job_position_feature_old</code>.
-     */
-    public static final JobPositionFeatureOld JOB_POSITION_FEATURE_OLD = com.moseeker.baseorm.db.jobdb.tables.JobPositionFeatureOld.JOB_POSITION_FEATURE_OLD;
 
     /**
      * 职位分享描述配置模板
