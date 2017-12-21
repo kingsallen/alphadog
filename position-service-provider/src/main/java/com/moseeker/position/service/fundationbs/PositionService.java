@@ -528,6 +528,8 @@ public class PositionService {
         List<JobPositionFailMess> jobPositionFailMessPojos = new ArrayList<>();
         // 需要删除的城市的数据ID列表
         List<Integer> deleteCitylist = new ArrayList<>();
+        // 职位更新了，但是标题没有更新，所以不需要同步的职位个数
+        int notNeedSyncCounts = 0;
         // 处理数据
         for (JobPostrionObj jobPositionHandlerDate : jobPositionHandlerDates) {
             logger.info("提交的数据：" + jobPositionHandlerDate.toString());
@@ -668,6 +670,8 @@ public class PositionService {
                             thirdPartyPositionDisablelist.add(record.getId());
                             // 需要同步的数据
                             syncData.put(record.getId(),jobPositionHandlerDate.getThirdParty_position());
+                        }else{
+                            notNeedSyncCounts++;
                         }
 
 
@@ -799,6 +803,7 @@ public class PositionService {
         jobPostionResponse.setUpdateCounts(jobPositionUpdateRecordList.size());
         jobPostionResponse.setTotalCounts(jobPositionHandlerDates.size());
         jobPostionResponse.setSyncData(syncData);
+        jobPostionResponse.setNotNeedSyncCounts(notNeedSyncCounts);
         if (jobPositionIds.size() > 0) {
             logger.info("插入和新增的jobPositionIds为:" + jobPositionIds.toString());
             // 更新ES Search Engine
