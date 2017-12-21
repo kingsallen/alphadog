@@ -400,7 +400,7 @@ public class TalentpoolSearchengine {
       查询该hr是否在索引当中
      */
     private Map<String,Object> getUserAnalysisIndex(Map<String,String> params,TransportClient client){
-        SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
+        SearchRequestBuilder responseBuilder=client.prepareSearch("users_analysis").setTypes("analysis")
                 .setQuery(this.queryAggIndex(params));
         SearchResponse response = responseBuilder.execute().actionGet();
         long hitNum=response.getHits().getTotalHits();
