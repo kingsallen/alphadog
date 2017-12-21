@@ -13,10 +13,15 @@ import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Update;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
+import org.joda.time.DateTime;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +62,7 @@ public class HRThirdPartyPositionDao  {
     Logger logger= LoggerFactory.getLogger(HRThirdPartyPositionDao.class);
 
     @Autowired
-    InnerHRThirdPartyPositionDao thirdPartyPositionDao;
+    private InnerHRThirdPartyPositionDao thirdPartyPositionDao;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -138,7 +143,7 @@ public class HRThirdPartyPositionDao  {
     public <P> List<TwoParam<HrThirdPartyPositionDO,P>> getDatas(Query query) throws BIZException {
         List<HrThirdPartyPositionDO> list=thirdPartyPositionDao.getDatas(query);
         if(list==null || list.isEmpty()){
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
 
 
@@ -226,6 +231,19 @@ public class HRThirdPartyPositionDao  {
         return Ints.toArray(results);
     }
 
+    public int disable(List<Condition> conditions){
+        Update.UpdateBuilder update=new Update.UpdateBuilder()
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0)
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
+                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0, ValueOp.NEQ));
+        if(!StringUtils.isEmptyList(conditions)){
+            for(int i=0;i<conditions.size();i++){
+                update=update.and(conditions.get(i));
+            }
+        }
+        return thirdPartyPositionDao.update(update.buildUpdate());
+    }
+
     /**
      * 工厂类，根据渠道获取对应的dao
      * @param channel
@@ -284,5 +302,6 @@ public class HRThirdPartyPositionDao  {
         public InnerHRThirdPartyPositionDao(TableImpl<HrThirdPartyPositionRecord> table, Class<HrThirdPartyPositionDO> hrThirdPartyPositionDOClass) {
             super(table, hrThirdPartyPositionDOClass);
         }
+
     }
 }
