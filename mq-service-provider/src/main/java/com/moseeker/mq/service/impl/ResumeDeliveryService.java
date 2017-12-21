@@ -96,6 +96,7 @@ public class ResumeDeliveryService {
     private static final String mandrillApikey = propertiesReader.get("mandrill.apikey", String.class);
 
     public Response sendMessageAndEmail(int application_id) {
+        logger.info("application_id是------"+application_id);
         Query query=new Query.QueryBuilder().where("id",
                 String.valueOf(application_id)).buildQuery();
         JobApplicationDO applicationDo = applicationDao.getData(query);
@@ -136,9 +137,11 @@ public class ResumeDeliveryService {
             String workExp = calculate_workyears(applicationDo.getApplierId()+"");
             String lastWorkName = lastWorkName(applicationDo.getApplierId()+"");
             String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
+            logger.info("申请来源：-----"+applicationDo.getOrigin());
             switch (applicationDo.getOrigin()){
                 //企业号
                 case 2:{
+
                     Response sendResponse = sendTemplateMessageToApplier(templateMessageDO, hrChatDO, userUserDO, application_id, companyDO, positionDo, url);
                     if(sendResponse.getStatus()!=0) {
                         sendTemplateMessageToApplierByQX(templateMessageDO, hrChatDO, userUserDO, application_id, companyDO, positionDo, url);

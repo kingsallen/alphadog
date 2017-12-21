@@ -1,7 +1,6 @@
 package com.moseeker.common.util;
 
 import com.moseeker.common.constants.Constant;
-import com.sun.xml.internal.xsom.impl.scd.Iterators;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +59,7 @@ public class MandrillMailSendTest {
         String subject = "java工程师-刘旭辉-职位申请通知";
         params.put("subject", subject);
         params.put("to_name", "张三");
-        params.put("to_email", "liuxuhui@moseeker.com");
+        params.put("to_email", "wanglintao@moseeker.com");
         send.sendEmail(params, "MGF7plOGhGsZ3xocZDTwoQ");
     }
 
@@ -79,7 +78,7 @@ public class MandrillMailSendTest {
         String subject = "java工程师-刘旭辉-职位申请通知";
         params.put("subject", subject);
         params.put("to_name", "张三");
-        params.put("to_email", "liuxuhui@moseeker.com");
+        params.put("to_email", "wanglintao@moseeker.com");
         send.sendEmail(params, "MGF7plOGhGsZ3xocZDTwoQ");
     }
 }
