@@ -20,6 +20,7 @@ public class MandrillMailSendTest {
         map.put("company_name", "仟寻");
         map.put("position_name", "java工程师");
         map.put("heading", "https://cdn.moseeker.com/weixin/images/avatar-default.png");
+        map.put("profile_full_url", "https://cdn.moseeker.com/weixin/images/avatar-default.png");
         map.put("user_name", "刘旭辉");
         String educations = "";
         List<Map<String, String>> eduList = new ArrayList<>();
@@ -61,6 +62,8 @@ public class MandrillMailSendTest {
         params.put("to_name", "张三");
         params.put("to_email", "wanglintao@moseeker.com");
         send.sendEmail(params, "MGF7plOGhGsZ3xocZDTwoQ");
+        params.put("to_email", "liuxuhui@moseeker.com");
+        send.sendEmail(params, "MGF7plOGhGsZ3xocZDTwoQ");
     }
 
     @Test
@@ -79,6 +82,8 @@ public class MandrillMailSendTest {
         params.put("subject", subject);
         params.put("to_name", "张三");
         params.put("to_email", "wanglintao@moseeker.com");
+        send.sendEmail(params, "MGF7plOGhGsZ3xocZDTwoQ");
+        params.put("to_email", "liuxuhui@moseeker.com");
         send.sendEmail(params, "MGF7plOGhGsZ3xocZDTwoQ");
     }
 }

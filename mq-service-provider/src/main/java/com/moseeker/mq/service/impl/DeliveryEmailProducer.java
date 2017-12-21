@@ -86,6 +86,10 @@ public class DeliveryEmailProducer {
         map.put("company_name", company.getAbbreviation());
         map.put("position_name", position.getTitle());
         map.put("heading", env.getProperty("email.user.heading.url"));
+        String resume_url = env.getProperty("email.resume.Info.url")+"";
+        if(resume_url != null)
+            resume_url = resume_url.replace("{}", user.getId()+"");
+        map.put("profile_full_url", resume_url);
         if(user != null) {
             if (user.getHeadimg() != null && !user.getHeadimg().isEmpty()) {
                 map.put("heading", user.getHeadimg());
