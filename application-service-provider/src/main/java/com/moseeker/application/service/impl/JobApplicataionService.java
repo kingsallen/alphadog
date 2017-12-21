@@ -160,6 +160,7 @@ public class JobApplicataionService {
                 jobApplicationRecord.setWechatId(0);
             }
             int jobApplicationId = this.saveJobApplication(jobApplicationRecord, jobPositionRecord);
+            logger.info("申请编号为："+jobApplication);
             if (jobApplicationId > 0) {
                 //发送模板消息，短信，邮件
                 tp.startTast(() -> mqServer.sendMessageAndEmail(jobApplicationId));
