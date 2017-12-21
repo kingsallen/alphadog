@@ -207,4 +207,20 @@ public final class Constant {
 
 
     public static final long BIND_GET_REDIS_TIMEOUT=240000;
+
+    public static final int HELPER_WECHAT_ID = 278; //hr的微信号标记
+    public static final int QX_WECHAT_ID = 278; //hr的微信号标记
+
+    public static final int TEMPLATES_APPLY_NOTICE_TPL = 3; //申请成功时 的消息通知ID
+    public static final int TEMPLATES_NEW_RESUME_TPL = 24; // 新简历通知的消息通知ID
+
+    public static final int TEMPLATES_SWITCH_APPLY_NOTICE_TPL = 29; //申请成功时 的消息通知ID
+    public static final int TEMPLATES_SWITCH_NEW_RESUME_TPL = 41; //认证员工转发之后后有人投递简历 的消息通知ID
+
+    public static final String RESUME_INFORM_HR = "resume-delivery-to-hr-email"; //简历投递给HR发邮件没有附件模板
+    public static final String ANNEX_RESUME_INFORM_HR = "annex-resume-delivery-to-hr-email";
+
+    public static final int DICT_CONSTANT_DEGREE_USER = 3104; 		//求职者学历常量表parent_code值
+    public static final int DICT_CONSTANT_GENDER_USER = 3109;       //性别常量表parent_code值
+    public static final int DICT_CONSTANT_LANGUAGE_FRUENCY =3108;   //语言-掌握程度常量表parent_code值
 }

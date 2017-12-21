@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplication extends TableImpl<JobApplicationRecord> {
 
-    private static final long serialVersionUID = -1082036473;
+    private static final long serialVersionUID = -586941511;
 
     /**
      * The reference instance of <code>jobdb.job_application</code>
@@ -77,9 +77,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
     public final TableField<JobApplicationRecord, Timestamp> SUBMIT_TIME = createField("submit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "申请提交时间");
 
     /**
-     * The column <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
+     * The column <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
      */
-    public final TableField<JobApplicationRecord, Integer> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_award_config.id, 申请状态ID");
+    public final TableField<JobApplicationRecord, Integer> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_points_conf.id, 申请状态ID");
 
     /**
      * The column <code>jobdb.job_application.l_application_id</code>. ATS的申请ID
@@ -92,9 +92,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
     public final TableField<JobApplicationRecord, Integer> REWARD = createField("reward", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "当前申请的积分记录");
 
     /**
-     * The column <code>jobdb.job_application.source_id</code>. 已废弃,job_source.id, 对应的ATS ID
+     * The column <code>jobdb.job_application.source_id</code>. job_source.id, 对应的ATS ID
      */
-    public final TableField<JobApplicationRecord, Integer> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "已废弃,job_source.id, 对应的ATS ID");
+    public final TableField<JobApplicationRecord, Integer> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "job_source.id, 对应的ATS ID");
 
     /**
      * The column <code>jobdb.job_application._create_time</code>. time stamp when record created
@@ -251,5 +251,12 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
     @Override
     public JobApplication as(String alias) {
         return new JobApplication(alias, this);
+    }
+
+    /**
+     * Rename this table
+     */
+    public JobApplication rename(String name) {
+        return new JobApplication(name, null);
     }
 }

@@ -4,22 +4,29 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
+import com.moseeker.baseorm.db.jobdb.tables.FeatureMapping;
+import com.moseeker.baseorm.db.jobdb.tables.FeatureNotFound;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationConf;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationOnline;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationStatusBeisen;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
 import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
+import com.moseeker.baseorm.db.jobdb.tables.JobOccupationRel;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionRecomRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionFeatureFix;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionFeatureOld;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
-import com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,12 +52,22 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1754882701;
+    private static final long serialVersionUID = 520031955;
 
     /**
      * The reference instance of <code>jobdb</code>
      */
     public static final Jobdb JOBDB = new Jobdb();
+
+    /**
+     * The table <code>jobdb.feature_mapping</code>.
+     */
+    public final FeatureMapping FEATURE_MAPPING = com.moseeker.baseorm.db.jobdb.tables.FeatureMapping.FEATURE_MAPPING;
+
+    /**
+     * The table <code>jobdb.feature_not_found</code>.
+     */
+    public final FeatureNotFound FEATURE_NOT_FOUND = com.moseeker.baseorm.db.jobdb.tables.FeatureNotFound.FEATURE_NOT_FOUND;
 
     /**
      * The table <code>jobdb.job_application</code>.
@@ -63,6 +80,21 @@ public class Jobdb extends SchemaImpl {
     public final JobApplicationAts JOB_APPLICATION_ATS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts.JOB_APPLICATION_ATS;
 
     /**
+     * 部门申请配置表
+     */
+    public final JobApplicationConf JOB_APPLICATION_CONF = com.moseeker.baseorm.db.jobdb.tables.JobApplicationConf.JOB_APPLICATION_CONF;
+
+    /**
+     * The table <code>jobdb.job_application_online</code>.
+     */
+    public final JobApplicationOnline JOB_APPLICATION_ONLINE = com.moseeker.baseorm.db.jobdb.tables.JobApplicationOnline.JOB_APPLICATION_ONLINE;
+
+    /**
+     * 申请状态记录（ats北森）
+     */
+    public final JobApplicationStatusBeisen JOB_APPLICATION_STATUS_BEISEN = com.moseeker.baseorm.db.jobdb.tables.JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN;
+
+    /**
      * 职位自定义字段配置表
      */
     public final JobCustom JOB_CUSTOM = com.moseeker.baseorm.db.jobdb.tables.JobCustom.JOB_CUSTOM;
@@ -71,6 +103,11 @@ public class Jobdb extends SchemaImpl {
      * 公司自定义职能表
      */
     public final JobOccupation JOB_OCCUPATION = com.moseeker.baseorm.db.jobdb.tables.JobOccupation.JOB_OCCUPATION;
+
+    /**
+     * 职位与职能关系表
+     */
+    public final JobOccupationRel JOB_OCCUPATION_REL = com.moseeker.baseorm.db.jobdb.tables.JobOccupationRel.JOB_OCCUPATION_REL;
 
     /**
      * 首页广告位数据表设计
@@ -98,6 +135,11 @@ public class Jobdb extends SchemaImpl {
     public final JobPosition JOB_POSITION = com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
 
     /**
+     * The table <code>jobdb.job_position_ccmail</code>.
+     */
+    public final JobPositionCcmail JOB_POSITION_CCMAIL = com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail.JOB_POSITION_CCMAIL;
+
+    /**
      * The table <code>jobdb.job_position_city</code>.
      */
     public final JobPositionCity JOB_POSITION_CITY = com.moseeker.baseorm.db.jobdb.tables.JobPositionCity.JOB_POSITION_CITY;
@@ -108,9 +150,14 @@ public class Jobdb extends SchemaImpl {
     public final JobPositionExt JOB_POSITION_EXT = com.moseeker.baseorm.db.jobdb.tables.JobPositionExt.JOB_POSITION_EXT;
 
     /**
-     * 智能画像职位推送记录，用于微信转发
+     * The table <code>jobdb.job_position_feature_fix</code>.
      */
-    public final JobPositionRecomRecord JOB_POSITION_RECOM_RECORD = com.moseeker.baseorm.db.jobdb.tables.JobPositionRecomRecord.JOB_POSITION_RECOM_RECORD;
+    public final JobPositionFeatureFix JOB_POSITION_FEATURE_FIX = com.moseeker.baseorm.db.jobdb.tables.JobPositionFeatureFix.JOB_POSITION_FEATURE_FIX;
+
+    /**
+     * The table <code>jobdb.job_position_feature_old</code>.
+     */
+    public final JobPositionFeatureOld JOB_POSITION_FEATURE_OLD = com.moseeker.baseorm.db.jobdb.tables.JobPositionFeatureOld.JOB_POSITION_FEATURE_OLD;
 
     /**
      * 职位分享描述配置模板
@@ -126,11 +173,6 @@ public class Jobdb extends SchemaImpl {
      * 自定义简历副本记录表
      */
     public final JobResumeOther JOB_RESUME_OTHER = com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
-
-    /**
-     * VIEW
-     */
-    public final UserProfileJobapply USER_PROFILE_JOBAPPLY = com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply.USER_PROFILE_JOBAPPLY;
 
     /**
      * No further instances allowed
@@ -157,21 +199,28 @@ public class Jobdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            FeatureMapping.FEATURE_MAPPING,
+            FeatureNotFound.FEATURE_NOT_FOUND,
             JobApplication.JOB_APPLICATION,
             JobApplicationAts.JOB_APPLICATION_ATS,
+            JobApplicationConf.JOB_APPLICATION_CONF,
+            JobApplicationOnline.JOB_APPLICATION_ONLINE,
+            JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN,
             JobCustom.JOB_CUSTOM,
             JobOccupation.JOB_OCCUPATION,
+            JobOccupationRel.JOB_OCCUPATION_REL,
             JobPcAdvertisement.JOB_PC_ADVERTISEMENT,
             JobPcRecommendPositionsModule.JOB_PC_RECOMMEND_POSITIONS_MODULE,
             JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM,
             JobPcReported.JOB_PC_REPORTED,
             JobPosition.JOB_POSITION,
+            JobPositionCcmail.JOB_POSITION_CCMAIL,
             JobPositionCity.JOB_POSITION_CITY,
             JobPositionExt.JOB_POSITION_EXT,
-            JobPositionRecomRecord.JOB_POSITION_RECOM_RECORD,
+            JobPositionFeatureFix.JOB_POSITION_FEATURE_FIX,
+            JobPositionFeatureOld.JOB_POSITION_FEATURE_OLD,
             JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,
             JobPositionTopic.JOB_POSITION_TOPIC,
-            JobResumeOther.JOB_RESUME_OTHER,
-            UserProfileJobapply.USER_PROFILE_JOBAPPLY);
+            JobResumeOther.JOB_RESUME_OTHER);
     }
 }
