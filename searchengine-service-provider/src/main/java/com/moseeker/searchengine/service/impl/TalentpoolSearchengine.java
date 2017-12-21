@@ -104,9 +104,14 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNullOrEmpty(pageSize)){
             pageSize="15";
         }
+        String returnParams=pageSize=params.get("return_params");
         builder.setFrom(Integer.parseInt(pageNum)*Integer.parseInt(pageSize));
         builder.setSize(Integer.parseInt(pageSize));
         builder.setTrackScores(true);
+        if(StringUtils.isNotNullOrEmpty(returnParams)){
+            builder.setFetchSource(returnParams.split(","),null);
+        }
+
         logger.info(builder.toString());
         SearchResponse response = builder.execute().actionGet();
         Map<String,Object>result=searchUtil.handleData(response,"users");
