@@ -45,22 +45,6 @@ public class TalentpoolSearchengine {
 
     @CounterIface
     public Map<String,Object>  talentSearch(Map<String,String> params){
-        TransportClient client= searchUtil.getEsClient();
-        QueryBuilder query=this.query(params);
-        SearchRequestBuilder builder=client.prepareSearch("users").setTypes("users").setQuery(query);
-        Map<String,Object> aggInfo=new HashMap<>();
-        if(this.validateEmptyParams(params)){
-            aggInfo=this.getUserAnalysisIndex(params,client);
-
-        }else{
-            builder.addAggregation(this.handleAllApplicationCountAgg(params))
-                    .addAggregation(this.handleAllcountAgg(params))
-                    .addAggregation(this.handleEntryCountAgg(params))
-                    .addAggregation(this.handleFirstTrialOkCountAgg(params))
-                    .addAggregation(this.handleInterviewOkCountAgg(params))
-                    .addAggregation(this.handleIsViewedCountAgg(params))
-                    .addAggregation(this.handleNotViewedCountAgg(params));
-        }
         String publisherIds=params.get("publisher");
         List<Integer> publisherIdList=convertStringToList(publisherIds);
         String hrId=params.get("hr_account_id");
@@ -69,6 +53,28 @@ public class TalentpoolSearchengine {
         String companyName=params.get("company_name");
         String pastPosition=params.get("past_position");
         String intentionCity=params.get("intention_city_name");
+        String returnParams=params.get("return_params");
+        TransportClient client= searchUtil.getEsClient();
+        QueryBuilder query=this.query(params);
+        SearchRequestBuilder builder=client.prepareSearch("users").setTypes("users").setQuery(query);
+        Map<String,Object> aggInfo=new HashMap<>();
+        String searchType=params.get("all_publisher");
+        if(StringUtils.isNotNullOrEmpty(searchType)){
+            if("1".equals(searchType)){
+                aggInfo=this.getUserAnalysisIndex(params,client);
+            }
+        }
+        if(aggInfo==null){
+            if(StringUtils.isNullOrEmpty(returnParams)||!"user.applications.id".equals(returnParams)){
+            builder.addAggregation(this.handleAllApplicationCountAgg(params))
+                    .addAggregation(this.handleAllcountAgg(params))
+                    .addAggregation(this.handleEntryCountAgg(params))
+                    .addAggregation(this.handleFirstTrialOkCountAgg(params))
+                    .addAggregation(this.handleInterviewOkCountAgg(params))
+                    .addAggregation(this.handleIsViewedCountAgg(params))
+                    .addAggregation(this.handleNotViewedCountAgg(params));
+        }
+
         if(StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(cityName)||
            StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition) ||StringUtils.isNotNullOrEmpty(intentionCity)
            )
@@ -104,7 +110,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNullOrEmpty(pageSize)){
             pageSize="15";
         }
-        String returnParams=params.get("return_params");
+
         builder.setFrom(Integer.parseInt(pageNum)*Integer.parseInt(pageSize));
         builder.setSize(Integer.parseInt(pageSize));
         builder.setTrackScores(true);
@@ -811,19 +817,6 @@ public class TalentpoolSearchengine {
         StringBuffer sb=new StringBuffer();
         sb.append("profit = 0; for (t in _agg.transactions) { profit += t }; return profit");
         return sb.toString();
-    }
-    /*
-     判断所传参数除了hr_account_id和publisher之外全部为空
-     */
-    private boolean validateEmptyParams(Map<String,String> params){
-        if(params!=null&&!params.isEmpty()){
-            for(String key:params.keySet()){
-                if(!"publisher".equals(key)&&!"hr_account_id".equals(key)&&params.get(key)!=null){
-                    return false;
-                }
-            }
-        }
-        return true;
     }
     /*
      判断当前操作人是否是主账号
