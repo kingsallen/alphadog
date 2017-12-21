@@ -65,14 +65,15 @@ public class TalentpoolSearchengine {
             }
         }
         if(aggInfo==null){
-            if(StringUtils.isNullOrEmpty(returnParams)||!"user.applications.id".equals(returnParams)){
-            builder.addAggregation(this.handleAllApplicationCountAgg(params))
-                    .addAggregation(this.handleAllcountAgg(params))
-                    .addAggregation(this.handleEntryCountAgg(params))
-                    .addAggregation(this.handleFirstTrialOkCountAgg(params))
-                    .addAggregation(this.handleInterviewOkCountAgg(params))
-                    .addAggregation(this.handleIsViewedCountAgg(params))
-                    .addAggregation(this.handleNotViewedCountAgg(params));
+            if(!this.isExecAgg(returnParams)) {
+                builder.addAggregation(this.handleAllApplicationCountAgg(params))
+                        .addAggregation(this.handleAllcountAgg(params))
+                        .addAggregation(this.handleEntryCountAgg(params))
+                        .addAggregation(this.handleFirstTrialOkCountAgg(params))
+                        .addAggregation(this.handleInterviewOkCountAgg(params))
+                        .addAggregation(this.handleIsViewedCountAgg(params))
+                        .addAggregation(this.handleNotViewedCountAgg(params));
+            }
         }
 
         if(StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(cityName)||
@@ -830,5 +831,21 @@ public class TalentpoolSearchengine {
         }
         return false;
     }
-
+    /*
+     判断是否进行统计
+     */
+    private Boolean isExecAgg(String returnParams){
+        if(StringUtils.isNullOrEmpty(returnParams)){
+            return false;
+        }
+        List<String> returnParamsList=searchUtil.stringConvertList(returnParams);
+        if(returnParamsList.size()==2){
+            if(returnParamsList.contains("user.applications.id")&&returnParamsList.contains("user.applications.applier_id")){
+                return true;
+            }
+        }
+        return false;
+    }
 }
+
+
