@@ -450,35 +450,38 @@ public class SearchUtil {
      */
     public void handlerTagIds(String tagIds,String hrId,QueryBuilder builder){
         List<String> tagIdList=this.stringConvertList(tagIds);
-        if(tagIdList.size()==1){
-            if(tagIdList.contains("-1")){
-                handleMatch(1,builder,"user.talent_pool.is_public");
-            }else if(tagIdList.contains("0")){
-                handleMatch(Integer.parseInt(hrId),builder,"user.talent_pool.hr_id");
+        if(!tagIdList.contains("alltalent")){
+
+            if(tagIdList.size()==1){
+                if(tagIdList.contains("allpublic")){
+                    handleMatch(1,builder,"user.talent_pool.is_public");
+                }else if(tagIdList.contains("talent")){
+                    handleMatch(Integer.parseInt(hrId),builder,"user.talent_pool.hr_id");
+                }else{
+                        handleMatch(Integer.parseInt(tagIdList.get(0)),builder,"user.talent_pool.tags.id");
+                }
+
             }else{
-                handleMatch(Integer.parseInt(tagIdList.get(0)),builder,"user.talent_pool.tags.id");
-            }
-        }else{
-            QueryBuilder keyand = QueryBuilders.boolQuery();
-            if(tagIdList.contains("-1")){
-                QueryBuilder query0=QueryBuilders.matchQuery("user.talent_pool.is_public",1);
-                ((BoolQueryBuilder) keyand).should(query0);
-                tagIdList.remove("-1");
-            }
-            if(tagIdList.size()>0&&tagIdList.contains("0")){
-                QueryBuilder query1=QueryBuilders.matchQuery("user.talent_pool.hr_id",Integer.parseInt(hrId));
-                ((BoolQueryBuilder) keyand).should(query1);
-                tagIdList.remove("0");
-            }
-            if(tagIdList.size()>0){
-                QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.tags.id",tagIdList);
-                ((BoolQueryBuilder) keyand).should(query2);
+                QueryBuilder keyand = QueryBuilders.boolQuery();
+                if(tagIdList.contains("allpublic")){
+                    QueryBuilder query0=QueryBuilders.matchQuery("user.talent_pool.is_public",1);
+                    ((BoolQueryBuilder) keyand).should(query0);
+                    tagIdList.remove("allpublic");
+                }
+                if(tagIdList.size()>0&&tagIdList.contains("talent")){
+                    QueryBuilder query1=QueryBuilders.matchQuery("user.talent_pool.hr_id",Integer.parseInt(hrId));
+                    ((BoolQueryBuilder) keyand).should(query1);
+                    tagIdList.remove("talent");
+                }
+                if(tagIdList.size()>0){
+                    QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.tags.id",tagIdList);
+                    ((BoolQueryBuilder) keyand).should(query2);
 
+                }
+                ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+                ((BoolQueryBuilder) builder).must(keyand);
             }
-            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
-            ((BoolQueryBuilder) builder).must(keyand);
         }
-
     }
 
 }
