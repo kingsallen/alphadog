@@ -138,7 +138,7 @@ public class HRThirdPartyPositionDao  {
     public <P> List<TwoParam<HrThirdPartyPositionDO,P>> getDatas(Query query) throws BIZException {
         List<HrThirdPartyPositionDO> list=thirdPartyPositionDao.getDatas(query);
         if(list==null || list.isEmpty()){
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
 
 
@@ -284,5 +284,6 @@ public class HRThirdPartyPositionDao  {
         public InnerHRThirdPartyPositionDao(TableImpl<HrThirdPartyPositionRecord> table, Class<HrThirdPartyPositionDO> hrThirdPartyPositionDOClass) {
             super(table, hrThirdPartyPositionDOClass);
         }
+
     }
 }
