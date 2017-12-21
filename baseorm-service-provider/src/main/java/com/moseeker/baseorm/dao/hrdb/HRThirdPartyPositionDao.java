@@ -17,9 +17,11 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
+import org.joda.time.DateTime;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -230,10 +232,12 @@ public class HRThirdPartyPositionDao  {
     }
 
     public int disable(List<Condition> conditions){
-        Update.UpdateBuilder update=new Update.UpdateBuilder().set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),0);
+        Update.UpdateBuilder update=new Update.UpdateBuilder()
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0)
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
+                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0, ValueOp.NEQ));
         if(!StringUtils.isEmptyList(conditions)){
-            update=update.where(conditions.get(0));
-            for(int i=1;i<conditions.size();i++){
+            for(int i=0;i<conditions.size();i++){
                 update=update.and(conditions.get(i));
             }
         }
