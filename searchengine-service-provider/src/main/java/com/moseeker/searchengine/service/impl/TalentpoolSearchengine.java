@@ -64,7 +64,7 @@ public class TalentpoolSearchengine {
                 aggInfo=this.getUserAnalysisIndex(params,client);
             }
         }
-        if(aggInfo==null){
+        if(aggInfo==null||aggInfo.isEmpty()){
             if(!this.isExecAgg(returnParams)) {
                 builder.addAggregation(this.handleAllApplicationCountAgg(params))
                         .addAggregation(this.handleAllcountAgg(params))
