@@ -209,6 +209,7 @@ public class TalentPoolService {
             }
             //取消收藏时删除标签，并且计算标签数
             this.handleCancleTag(hrId,idList);
+            logger.debug("执行实时更新的id========="+idList.toString());
             this.realTimeUpdate(this.converSetToList(idList));
         }
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
@@ -1651,7 +1652,7 @@ public class TalentPoolService {
         Map<String,Object> result=new HashMap<>();
         result.put("tableName","talentpool_user_tag");
         result.put("user_id",userIdList);
-        logger.info("执行实时更新========={}",JSON.toJSONString(result));
+        logger.debug("执行实时更新========={}",JSON.toJSONString(result));
         client.lpush(Constant.APPID_ALPHADOG,
                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
     }
