@@ -1,9 +1,12 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.log4j.Logger;
 import org.apache.lucene.queryparser.xml.builders.FilteredQueryBuilder;
@@ -37,66 +40,25 @@ public class TalentpoolSearchengine {
     private  Logger logger=Logger.getLogger(this.getClass());
     @Autowired
     private SearchUtil searchUtil;
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     @CounterIface
     public Map<String,Object>  talentSearch(Map<String,String> params){
         TransportClient client= searchUtil.getEsClient();
+        Map<String,Object> aggInfo=new HashMap<>();
         QueryBuilder query=this.query(params);
-        SearchRequestBuilder builder=client.prepareSearch("users").setTypes("user").setQuery(query);
-        Map<String,Object> aggInfo=this.getUserAnalysisIndex(params,client);
-        if(aggInfo==null){
-            builder.addAggregation(this.handleAllApplicationCountAgg(params))
-                    .addAggregation(this.handleAllcountAgg(params))
-                    .addAggregation(this.handleEntryCountAgg(params))
-                    .addAggregation(this.handleFirstTrialOkCountAgg(params))
-                    .addAggregation(this.handleInterviewOkCountAgg(params))
-                    .addAggregation(this.handleIsViewedCountAgg(params))
-                    .addAggregation(this.handleNotViewedCountAgg(params));
-        }
-        String publisherIds=params.get("publisher_ids");
-        List<Integer> publisherIdList=convertStringToList(publisherIds);
-        String hrId=params.get("hr_account_id");
-        String keyword=params.get("keyword");
-        String lastCompany=params.get("in_last_job_company");
-        String lastPosition=params.get("in_last_job_position");
-        String cityName=params.get("city_name");
-        String companyName=params.get("company_name");
-        String pastPosition=params.get("past_position");
-        String intentionCity=params.get("intention_city_name");
-        if(StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(keyword)||
-           StringUtils.isNotNullOrEmpty(lastCompany)||StringUtils.isNotNullOrEmpty(lastPosition)||StringUtils.isNotNullOrEmpty(cityName)||
-           StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition)||StringUtils.isNotNullOrEmpty(intentionCity)
-           )
-        {
-            builder.addSort(this.handlerScoreOrderScript(publisherIds));
-            if (publisherIdList.size() > 1) {
-                builder.addSort("user.hr_all_" + hrId + "__last_submit_time", SortOrder.DESC);
-            }else{
-                builder.addSort("user.hr_" + hrId + "__last_submit_time", SortOrder.DESC);
-            }
-        }else{
-            if (publisherIdList.size() > 1) {
-                builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
-            }else{
-                builder.addSort("user.field_order.hr_"+hrId+"_order", SortOrder.DESC);
-            }
-        }
-
-        String pageNum=params.get("page_number");
-        String pageSize=params.get("page_size");
-        if(StringUtils.isNullOrEmpty(pageNum)){
-            pageNum="0";
-        }
-        if(StringUtils.isNullOrEmpty(pageSize)){
-            pageSize="15";
-        }
-        builder.setFrom(Integer.parseInt(pageNum)*Integer.parseInt(pageSize));
-        builder.setSize(Integer.parseInt(pageSize));
+        SearchRequestBuilder builder=client.prepareSearch("users").setTypes("users").setQuery(query);
+        this.handlerAggs(params,builder,client,aggInfo);
+        this.handlerSortOrder(params,builder);
+        this.handlerPage(params,builder);
+        this.handlerReturn(params,builder);
+        builder.setTrackScores(true);
         logger.info(builder.toString());
         SearchResponse response = builder.execute().actionGet();
         Map<String,Object>result=searchUtil.handleData(response,"users");
         if(aggInfo!=null&&!aggInfo.isEmpty()){
-            result.put("agg",aggInfo);
+            result.put("aggs",aggInfo.get("aggs"));
         }
         return result;
     }
@@ -113,15 +75,89 @@ public class TalentpoolSearchengine {
         if(queryAppScript!=null){
             ((BoolQueryBuilder) query).filter(queryAppScript);
         }
+        QueryBuilder queryNest=this.queryNest(params);
+        if(queryNest!=null){
+            ((BoolQueryBuilder) query).filter(queryNest);
+        }
         return query;
+    }
+    private void handlerSortOrder(Map<String,String> params,SearchRequestBuilder builder){
+        String publisherIds=params.get("publisher");
+        List<Integer> publisherIdList=convertStringToList(publisherIds);
+        String hrId=params.get("hr_account_id");
+        if(!this.isUseFieldorder(params)){
+            builder.addSort(this.handlerScoreOrderScript(publisherIds));
+            if (publisherIdList.size() > 1) {
+                builder.addSort("user.hr_all_" + hrId + "_last_submit_time", SortOrder.DESC);
+            }else{
+                if(this.isMianHr(Integer.parseInt(hrId))){
+                    builder.addSort("user.hr_" + publisherIdList.get(0) + "_last_submit_time", SortOrder.DESC);
+                }else{
+                    builder.addSort("user.hr_" + hrId + "_last_submit_time", SortOrder.DESC);
+                }
+            }
+        }else{
+            //如果查询多个。注解按照hr_all_+主账号_last_submit_time
+            if (publisherIdList.size() > 1) {
+                builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+            }else{
+                if(this.isMianHr(Integer.parseInt(hrId))){
+                    builder.addSort("user.field_order.hr_" + publisherIdList.get(0) + "_order", SortOrder.DESC);
+                }else{
+                    builder.addSort("user.field_order.hr_" + hrId + "_order", SortOrder.DESC);
+                }
+            }
+        }
+    }
+    /*
+     处理统计
+     */
+    private void handlerAggs(Map<String,String> params,SearchRequestBuilder builder,TransportClient client, Map<String,Object> aggInfo){
+        if(this.valididateSearchAggIndex(params)){
+            aggInfo=this.getUserAnalysisIndex(params,client);
+        }
+        if(aggInfo==null||aggInfo.isEmpty()){
+            String returnParams=params.get("return_params");
+            if(!this.isExecAgg(returnParams)) {
+                builder.addAggregation(this.handleAllApplicationCountAgg(params))
+                        .addAggregation(this.handleAllcountAgg(params))
+                        .addAggregation(this.handleEntryCountAgg(params))
+                        .addAggregation(this.handleFirstTrialOkCountAgg(params))
+                        .addAggregation(this.handleInterviewOkCountAgg(params))
+                        .addAggregation(this.handleIsViewedCountAgg(params))
+                        .addAggregation(this.handleNotViewedCountAgg(params));
+            }
+        }
+    }
+    /*
+     处理分页
+     */
+    private  void handlerPage(Map<String,String> params,SearchRequestBuilder builder){
+        String pageNum=params.get("page_number");
+        String pageSize=params.get("page_size");
+        if(StringUtils.isNullOrEmpty(pageNum)){
+            pageNum="0";
+        }
+        if(StringUtils.isNullOrEmpty(pageSize)){
+            pageSize="15";
+        }
+        builder.setFrom(Integer.parseInt(pageNum)*Integer.parseInt(pageSize));
+        builder.setSize(Integer.parseInt(pageSize));
+    }
+    /*
+     处理返回值
+     */
+    private void handlerReturn(Map<String,String> params,SearchRequestBuilder builder){
+        String returnParams=params.get("return_params");
+        if(StringUtils.isNotNullOrEmpty(returnParams)){
+            builder.setFetchSource(returnParams.split(","),null);
+        }
     }
     /*
      组装基本部分的查询条件
      */
     private void queryCommons(Map<String,String> params,QueryBuilder query){
         String keyword=params.get("keyword");
-        String lastCompany=params.get("in_last_job_company");
-        String lastPosition=params.get("in_last_job_position");
         String cityName=params.get("city_name");
         String companyName=params.get("company_name");
         String pastPosition=params.get("past_position");
@@ -129,8 +165,6 @@ public class TalentpoolSearchengine {
         if(
             StringUtils.isNotNullOrEmpty(keyword)||
             StringUtils.isNotNullOrEmpty(keyword)||
-            StringUtils.isNotNullOrEmpty(lastCompany)||
-            StringUtils.isNotNullOrEmpty(lastPosition)||
             StringUtils.isNotNullOrEmpty(cityName)||
             StringUtils.isNotNullOrEmpty(companyName)||
             StringUtils.isNotNullOrEmpty(pastPosition)||
@@ -146,16 +180,20 @@ public class TalentpoolSearchengine {
                 this.queryByHome(cityName,query);
             }
             if(StringUtils.isNotNullOrEmpty(companyName)){
-                this.queryByCompany(companyName,query);
-            }
-            if(StringUtils.isNotNullOrEmpty(lastCompany)){
-                this.queryByLastCompany(lastCompany,query);
-            }
-            if(StringUtils.isNotNullOrEmpty(lastPosition)){
-                this.queryByLastPositions(lastPosition,query);
+                String lastCompany=params.get("in_last_job_search_company");
+                if(StringUtils.isNotNullOrEmpty(lastCompany)&&"1".equals(lastCompany)){
+                    this.queryByLastCompany(companyName,query);
+                }else {
+                    this.queryByCompany(companyName, query);
+                }
             }
             if(StringUtils.isNotNullOrEmpty(pastPosition)){
-                this.queryByWorkJob(pastPosition,query);
+                String lastPosition=params.get("in_last_job_search_position");
+                if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
+                    this.queryByLastPositions(lastPosition,query);
+                }else{
+                    this.queryByWorkJob(pastPosition,query);
+                }
             }
         }
 
@@ -168,22 +206,20 @@ public class TalentpoolSearchengine {
         String intentionSalaryCode=params.get("intention_salary_code");
         String sex=params.get("sex");
         String workYears=params.get("work_years");
-        String ages=params.get("work_years");
-        String updateTime=params.get("ages");
+        String minAge=params.get("min_age");
+        String maxAge=params.get("max_age");
+        String updateTime=params.get("update_time");
         if(
-            StringUtils.isNotNullOrEmpty(degree)||
-            StringUtils.isNotNullOrEmpty(intentionSalaryCode)||
-            StringUtils.isNotNullOrEmpty(sex)||
-            StringUtils.isNotNullOrEmpty(workYears)||
-            StringUtils.isNotNullOrEmpty(ages)||
-            StringUtils.isNotNullOrEmpty(updateTime)
+            StringUtils.isNotNullOrEmpty(degree)||StringUtils.isNotNullOrEmpty(intentionSalaryCode)||StringUtils.isNotNullOrEmpty(sex)||
+            StringUtils.isNotNullOrEmpty(workYears)||StringUtils.isNotNullOrEmpty(updateTime)||
+            ((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge)))
            )
         {
             if(StringUtils.isNotNullOrEmpty(degree)){
                 this.QueryByDegree(degree,query);
             }
             if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
-                this.queryByIntentionSalaryCode(intentionSalaryCode,query);
+                this.queryBySlalryCode(intentionSalaryCode,query);
             }
             if(StringUtils.isNotNullOrEmpty(sex)){
                 this.queryByGender(sex,query);
@@ -194,9 +230,18 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(updateTime)){
                 this.queryByProfileUpDateTime(updateTime,query);
             }
-            if(StringUtils.isNotNullOrEmpty(ages)){
+            if(((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge)))){
+                List<Map<String,Integer>> ages=new ArrayList<>();
+                Map<String,Integer> age=new HashMap<>();
+                if(StringUtils.isNotNullOrEmpty(minAge)){
+                    age.put("min",Integer.parseInt(minAge));
+                }
+                if(StringUtils.isNotNullOrEmpty(maxAge)){
+                    age.put("max",Integer.parseInt(maxAge));
+                }
                 this.queryByAge(ages,query);
             }
+
         }
 
         return query;
@@ -204,23 +249,22 @@ public class TalentpoolSearchengine {
 
     private void queryApplications(Map<String,String> params,QueryBuilder query){
 
-        String publisherIds=params.get("publisher_ids");
+        String publisherIds=params.get("publisher");
         String candidateSource=params.get("candidate_source");
-        String recommend=params.get("only_recommend");
+        String recommend=params.get("is_recommend");
         String origins=params.get("origins");
         String submitTime=params.get("submit_time");
         String progressStatus=params.get("progress_status");
+        String positionIds=params.get("position_id");
         if(
-            StringUtils.isNotNullOrEmpty(publisherIds)||
-            StringUtils.isNotNullOrEmpty(candidateSource)||
-            StringUtils.isNotNullOrEmpty(recommend)||
-            StringUtils.isNotNullOrEmpty(origins)||
-            StringUtils.isNotNullOrEmpty(submitTime)||
-            StringUtils.isNotNullOrEmpty(progressStatus)
+            StringUtils.isNotNullOrEmpty(publisherIds)||StringUtils.isNotNullOrEmpty(candidateSource)||StringUtils.isNotNullOrEmpty(recommend)||
+            StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||
+            StringUtils.isNotNullOrEmpty(progressStatus)||StringUtils.isNotNullOrEmpty(positionIds)
          )
         {
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
-                this.queryByPublisher(publisherIds,query);
+                    String companyId=params.get("company_id");
+                    this.queryByComapnyId(companyId,query);
             }
             if(StringUtils.isNotNullOrEmpty(candidateSource)){
                 this.queryByCandidateSource(Integer.parseInt(candidateSource),query);
@@ -235,7 +279,11 @@ public class TalentpoolSearchengine {
                 this.queryByProgress(Integer.parseInt(progressStatus),query);
             }
             if(StringUtils.isNotNullOrEmpty(origins)){
-
+                String companyId=params.get("company_id");
+                this.queryByOrigin(origins,companyId,query);
+            }
+            if(StringUtils.isNotNullOrEmpty(positionIds)){
+                this.queryByPositionId(positionIds,query);
             }
         }
 
@@ -249,7 +297,7 @@ public class TalentpoolSearchengine {
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         String tagIds=params.get("tag_ids");
         String favoriteHrs=params.get("favorite_hrs");
-        String isPublic=params.get("public");
+        String isPublic=params.get("is_public");
         if(
                 StringUtils.isNullOrEmpty(tagIds)&&
                 StringUtils.isNullOrEmpty(favoriteHrs)&&
@@ -258,11 +306,14 @@ public class TalentpoolSearchengine {
         {
             return null;
         }
+        String companyId=params.get("company_id");
+        this.queryByNestCompanyId(Integer.parseInt(companyId),query);
         if(StringUtils.isNotNullOrEmpty(tagIds)){
-            this.queryByTagId(tagIds,query);
+            String hrId=params.get("hr_account_id");
+            this.queryByTagId(tagIds,hrId,query);
         }
         if(StringUtils.isNotNullOrEmpty(favoriteHrs)){
-            this.queryHrTagId(favoriteHrs,query);
+            this.queryTagHrId(favoriteHrs,query);
         }
         if(StringUtils.isNotNullOrEmpty(isPublic)){
             this.queryByPublic(Integer.parseInt(isPublic),query);
@@ -276,25 +327,27 @@ public class TalentpoolSearchengine {
      */
 
     public ScriptQueryBuilder queryScript(Map<String,String> params){
-        String publisherIds=params.get("publisher_ids");
+        String publisherIds=params.get("publisher");
         String candidateSource=params.get("candidate_source");
-        String recommend=params.get("only_recommend");
+        String recommend=params.get("is_recommend");
         String origins=params.get("origins");
         String submitTime=params.get("submit_time");
         String progressStatus=params.get("progress_status");
+        String positionId=params.get("position_id");
         if( StringUtils.isNullOrEmpty(publisherIds)
             &&StringUtils.isNullOrEmpty(progressStatus)
             &&StringUtils.isNullOrEmpty(candidateSource)
             &&StringUtils.isNullOrEmpty(recommend)
             &&StringUtils.isNullOrEmpty(origins)
             &&StringUtils.isNullOrEmpty(submitTime)
+            &&StringUtils.isNullOrEmpty(positionId)
           )
         {
             return null;
 
         }
         StringBuffer sb=new StringBuffer();
-        sb.append("origin=0;profile=_source.user.profiles.profile;if(profile){origin=profile.origin};for ( val in _source.user.applications) {");
+        sb.append("origin=0;upload=_source.user.upload;profiles=_source.user.profiles;if(profiles){profile=profiles.profile;if(profile){origin=profile.origin}};for ( val in _source.user.applications) {");
         if(StringUtils.isNotNullOrEmpty(publisherIds)){
             List<Integer> publisherIdList=this.convertStringToList(publisherIds);
             if(!StringUtils.isEmptyList(publisherIdList)){
@@ -308,14 +361,38 @@ public class TalentpoolSearchengine {
             sb.append("val.recommender_user_id>0 &&");
         }
         if(StringUtils.isNotNullOrEmpty(origins)){
-            sb.append("(val.origin=="+origins+" || origin=="+origins+")&&");
+            List<String> list=searchUtil.stringConvertList(origins);
+            sb.append("(");
+            for(String origin:list){
+                if("1".equals(origin)){
+                    sb.append("upload==1 ||");
+                }else{
+                    if(origin.length()>8){
+                        sb.append(" origin=="+origin+"||");
+                    }else{
+                        sb.append(" val.origin=="+origin+"||");
+                    }
+                }
+            }
+            sb.deleteCharAt(sb.lastIndexOf("|"));
+            sb.deleteCharAt(sb.lastIndexOf("|"));
+            sb.append(")&&");
+
         }
 
         if(StringUtils.isNotNullOrEmpty(submitTime)){
-            sb.append(" val.submit_time>"+submitTime+"&&");
+            Date date=new Date();
+            long datetime=date.getTime();
+            long preTime=Long.parseLong(submitTime)*3600*24;
+            long time=datetime-preTime;
+            sb.append(" val.submit_time>"+time+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(progressStatus)){
             sb.append(" val.progress_status=="+progressStatus+"&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(positionId)){
+            List<Integer> positionIdList=this.convertStringToList(positionId);
+            sb.append(" val.position_id in "+positionIdList.toString()+"&&");
         }
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
@@ -327,14 +404,14 @@ public class TalentpoolSearchengine {
       查询该hr是否在索引当中
      */
     private Map<String,Object> getUserAnalysisIndex(Map<String,String> params,TransportClient client){
-        SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
+        SearchRequestBuilder responseBuilder=client.prepareSearch("users_analysis").setTypes("analysis")
                 .setQuery(this.queryAggIndex(params));
         SearchResponse response = responseBuilder.execute().actionGet();
         long hitNum=response.getHits().getTotalHits();
         if(hitNum==0){
             return null;
         }
-        Map<String,Object> result=searchUtil.handleData(response,"agg");
+        Map<String,Object> result=searchUtil.handleData(response,"aggs");
         return result;
     }
     /*
@@ -364,9 +441,11 @@ public class TalentpoolSearchengine {
      根据简历的更新时间查询
      */
     private void queryByProfileUpDateTime(String updateTime,QueryBuilder queryBuilder){
-        Date date=new Date(updateTime);
-        Long datetime=date.getTime();
-        this.searchUtil.hanleRangeFilter(datetime,queryBuilder,"user.profiles.profile.update_time");
+        Date date=new Date();
+        long datetime=date.getTime();
+        long preTime=Long.parseLong(updateTime)*3600*24;
+        long time=datetime-preTime;
+        this.searchUtil.hanleRangeFilter(time,queryBuilder,"user.profiles.profile.update_time");
     }
 
     /*
@@ -398,8 +477,8 @@ public class TalentpoolSearchengine {
     /*
       构建简历来源的查询语句
      */
-    private void queryByOrigin(String condition1,String condition2,QueryBuilder queryBuilder){
-
+    private void queryByOrigin(String condition,String companyId,QueryBuilder queryBuilder){
+        searchUtil.handleOrigins(condition,companyId,queryBuilder);
     }
     /*
       构建通过职位来查询的语句
@@ -409,42 +488,41 @@ public class TalentpoolSearchengine {
     }
 
     /*
-
-    /*
       构建是否公开的查询语句,注意这个位置要做成nest的查询
      */
     private void queryByPublic(int isPublic,QueryBuilder queryBuilder){
         searchUtil.handleMatch(isPublic,queryBuilder,"user.talent_pool.is_public");
     }
     /*
-      构建收藏人的查询语句
-     */
-    private void queryByCollectid(String hrIds,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(hrIds,queryBuilder,"user.talent_pool.hr_id");
-    }
-    /*
       构建按招标签的查询语句
      */
-    private void queryByTagId(String tagIds,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(tagIds,queryBuilder,"user.talent_pool.tag.tag_id");
+    private void queryByTagId(String tagIds,String hrId,QueryBuilder queryBuilder){
+
+        searchUtil.handlerTagIds(tagIds,hrId,queryBuilder);
+    }
+    /*
+     构建和公司相关的人才库
+     */
+    private void queryByNestCompanyId(int companyId,QueryBuilder queryBuilder){
+        searchUtil.handleMatch(companyId,queryBuilder,"user.talent_pool.company_id");
     }
     /*
       构建按照期望城市名称的查询语句
      */
     private void queryByIntentionCity(String cityNames,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(cityNames,queryBuilder,"user.profiles.intentions.city");
+        searchUtil.handleTerms(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
     }
     /*
       按照公司名称查询
      */
-    private void queryByIntentionSalaryCode(String salaryCodes,QueryBuilder queryBuilder){
-        searchUtil.handleTermsFilter(salaryCodes,queryBuilder,"user.profiles.intentions.city");
+    private void queryByComapnyId(String companyId,QueryBuilder queryBuilder){
+        searchUtil.handleTermsFilter(companyId,queryBuilder,"user.applications.company_id");
     }
     /*
       按照学历查询
      */
     private void QueryByDegree(String degrees,QueryBuilder queryBuilder){
-        searchUtil.handleTermsFilter(degrees,queryBuilder,"user.profiles.basic.gender");
+        searchUtil.handleTermsFilter(degrees,queryBuilder,"user.profiles.basic.highest_degree");
     }
     /*
       按照最后工作的公司查询
@@ -463,7 +541,7 @@ public class TalentpoolSearchengine {
      */
 
     private void queryByHome(String home,QueryBuilder queryBuilder){
-        searchUtil.handleTerm(home,queryBuilder,"user.profiles.basic.city_name");
+        searchUtil.handleTerms(home,queryBuilder,"user.profiles.basic.city_name");
     }
     /*
       按照期望薪资查询
@@ -474,17 +552,10 @@ public class TalentpoolSearchengine {
     /*
       按照年龄查询
      */
-    private void queryByAge(String ages,QueryBuilder queryBuilder){
-        List<Map<String,Integer>> list=this.convertParams(ages);
-        searchUtil.shoudRangeAgeOrDegreeListFilter(list,queryBuilder,"user.age");
+    private void queryByAge(List<Map<String,Integer>> ages,QueryBuilder queryBuilder){
+        searchUtil.shoudAgeFilter(ages,queryBuilder,"user.age");
     }
-    /*
-     将字符串转换成SON
-     */
-    private List<Map<String,Integer>> convertParams(String params){
-        List<Map<String,Integer>> list= (List<Map<String, Integer>>) JSON.toJSON(params);
-        return list;
-    }
+
     /*
       按照曾任职务查询
      */
@@ -513,16 +584,51 @@ public class TalentpoolSearchengine {
       按照投递时间查询
      */
     private void queryBySubmitTime(String submitTime,QueryBuilder queryBuilder){
-        Date date=new Date(submitTime);
-        Long datetime=date.getTime();
-        searchUtil.hanleRangeFilter(datetime,queryBuilder,"user.applications.submit_time");
+        Date date=new Date();
+        long datetime=date.getTime();
+        long preTime=Long.parseLong(submitTime)*3600*24;
+        long time=datetime-preTime;
+        searchUtil.hanleRangeFilter(time,queryBuilder,"user.applications.submit_time");
     }
     /*
       按照工作年限查新
      */
     private void queryByWorkYear(String workYears,QueryBuilder queryBuilder){
-        List<Map<String,Integer>> list=this.convertParams(workYears);
-        searchUtil.shoudRangeAgeOrDegreeListFilter(list,queryBuilder,"user.workyear");
+        List<Map<String,Integer>> list=this.handlerWorkYears(workYears);//this.convertParams(workYears);
+        if(!StringUtils.isEmptyList(list)){
+            searchUtil.shoudWorkYearsListFilter(list,queryBuilder,"user.work_year");
+        }
+
+    }
+
+    private List<Map<String,Integer>> handlerWorkYears(String workYears){
+        List<String> list=searchUtil.stringConvertList(workYears);
+        List<Map<String,Integer>> result=new ArrayList<>();
+        for(String key:list){
+            int year=Integer.parseInt(key);
+            Map<String,Integer> map=new HashMap<>();
+            if(year==1){
+                map.put("min",0);
+                map.put("max",0);
+            }else if(year==2){
+                map.put("min",0);
+                map.put("max",1);
+            }else if(year==3){
+                map.put("min",1);
+                map.put("max",3);
+            }else if(year==4){
+                map.put("min",3);
+                map.put("max",5);
+            }else if(year==5){
+                map.put("min",5);
+                map.put("max",10);
+            }else{
+                map.put("min",0);
+                map.put("max",1);
+            }
+            result.add(map);
+        }
+        return result;
     }
     /*
       按照招聘进度查询
@@ -533,9 +639,10 @@ public class TalentpoolSearchengine {
     /*
      根据hr的标签查询
      */
-    private void queryHrTagId(String hrIds,QueryBuilder queryBuilder){
+    private void queryTagHrId(String hrIds,QueryBuilder queryBuilder){
         searchUtil.handleTerms(hrIds,queryBuilder,"user.talent_pool.hr_id");
     }
+
     /*
         组装全文检索查询的条件
      */
@@ -673,9 +780,11 @@ public class TalentpoolSearchengine {
      根据不同的条件组装聚合语句
      */
     private String getAggMapScript(Map<String,String> params,String progressStatus,int type){
-        String publishIds=params.get("publisher_ids");
+        String publishIds=params.get("publisher");
         String submitTime=params.get("submit_time");
         String positionIds=params.get("position_id");
+        String candidateSource=params.get("candidate_source");
+        String recommend=params.get("only_recommend");
         List<Integer> publisherIdList=this.convertStringToList(publishIds);
         StringBuffer sb=new StringBuffer();
         sb.append("int i = 0; for ( val in _source.user.applications)");
@@ -684,11 +793,21 @@ public class TalentpoolSearchengine {
             sb.append("val.progress_status=="+progressStatus+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(submitTime)){
-            sb.append("val.submit_time>"+submitTime+"&&");
+            Date date=new Date();
+            long datetime=date.getTime();
+            long preTime=Long.parseLong(submitTime)*3600*24;
+            long time=datetime-preTime;
+            sb.append("val.submit_time>"+time+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(positionIds)){
             List<Integer> positionIdList=this.convertStringToList(positionIds);
             sb.append("val.position_id in"+positionIdList.toString()+"&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(candidateSource)){
+            sb.append("val.candidate_source =="+candidateSource+"&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(recommend)){
+            sb.append("val.recommender_user_id >0 &&");
         }
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
@@ -696,7 +815,7 @@ public class TalentpoolSearchengine {
         if(type==0){
             sb.append("break;");
         }
-        sb.append(";};_agg['transactions'].add(i)");
+        sb.append("}};_agg['transactions'].add(i)");
         return sb.toString();
     }
     /*
@@ -725,6 +844,66 @@ public class TalentpoolSearchengine {
         sb.append("profit = 0; for (t in _agg.transactions) { profit += t }; return profit");
         return sb.toString();
     }
-
-
+    /*
+     判断当前操作人是否是主账号
+     */
+    private Boolean isMianHr(int hrId){
+        Query query=new Query.QueryBuilder().where("id",hrId).and(new Condition("account_type",1, ValueOp.NEQ))
+                .and("activation",1).and("disable",1).buildQuery();
+        int count=userHrAccountDao.getCount(query);
+        if(count>0){
+            return true;
+        }
+        return false;
+    }
+    /*
+     判断是否进行统计
+     */
+    private boolean isExecAgg(String returnParams){
+        if(StringUtils.isNullOrEmpty(returnParams)){
+            return false;
+        }
+        List<String> returnParamsList=searchUtil.stringConvertList(returnParams);
+        if(returnParamsList.size()==2){
+            if(returnParamsList.contains("user.applications.id")&&returnParamsList.contains("user.applications.applier_id")){
+                return true;
+            }
+        }
+        return false;
+    }
+    /*
+     判断是否可以走单独的统计索引
+     */
+    private boolean valididateSearchAggIndex(Map<String,String> params){
+        boolean flag=true;
+        for(String key:params.keySet()){
+            if(!"company_id".equals(key)&&!"publisher".equals(key)
+                    &&!"hr_account_id".equals(key)&&!"all_publisher".equals("key")){
+                return false;
+            }
+        }
+        if(flag){
+            if(StringUtils.isNullOrEmpty(params.get("all_publisher"))||!"1".equals(params.get("all_publisher"))){
+                return false;
+            }
+        }
+        return true;
+    }
+    /*
+       处理排序的方式
+     */
+    private boolean isUseFieldorder(Map<String,String> params){
+        String keyword=params.get("keyword");
+        String cityName=params.get("city_name");
+        String companyName=params.get("company_name");
+        String pastPosition=params.get("past_position");
+        String intentionCity=params.get("intention_city_name");
+        if(StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(cityName)||
+           StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition) ||StringUtils.isNotNullOrEmpty(intentionCity)){
+            return false;
+        }
+        return true;
+    }
 }
+
+

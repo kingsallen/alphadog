@@ -38,7 +38,7 @@ public class PositionSearchEngine {
         Map<String,Object> map=new HashMap<String,Object>();
         TransportClient client=null;
         try{
-            client=searchUtil.getEsClient();
+          client=searchUtil.getEsClient();
             if(!StringUtils.isEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
                 cityCode=cityCode+",111111";
             }

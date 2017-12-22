@@ -1,13 +1,18 @@
 package com.moseeker.company.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.annotation.notify.UpdateEs;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -24,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -49,6 +55,12 @@ public class TalentPoolService {
     private JobApplicationDao jobApplicationDao;
     @Autowired
     private UserHrAccountDao userHrAccountDao;
+    @Autowired
+    private TalentpoolApplicationDao talentpoolApplicationDao;
+    @Autowired
+    private HrCompanyConfDao hrCompanyConfDao;
+    @Resource(name = "cacheClient")
+    private RedisClient client;
     /*
         添加人才到人才库
         @auth:zzt
@@ -58,6 +70,43 @@ public class TalentPoolService {
         @return response(status:0,message:"success,data:[])
                or response(status:1,message:"xxxxxx")
      */
+ /*
+      修改开启人才库的申请记录
+     */
+    @CounterIface
+    public Response upsertTalentPoolApplication(int hrId,int companyId){
+        int count=this.validateHrAndCompany(hrId,companyId);
+        if(count==0){
+            return ResponseUtils.fail(1,"此账号不是主账号");
+        }
+        HrCompanyConfRecord record=this.getHrCompanyConfRecordByCompanyId(companyId);
+        if(record==null){
+            return ResponseUtils.fail(1,"此公司无配置");
+        }
+        int result=talentpoolApplicationDao.inserOrUpdateTalentPoolApplication(hrId,companyId);
+        if(result==0){
+            return ResponseUtils.fail(1,"操作失败");
+        }
+        return ResponseUtils.success("");
+    }
+    /*
+  获取此账号是不是此公司的主账号
+  */
+    private int validateHrAndCompany(int hrId,int companyId){
+        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("account_type",0).or("account_type",1)
+                .buildQuery();
+        int count =userHrAccountDao.getCount(query);
+        return count;
+    }
+    /*
+      根据公司id获取公司配置
+     */
+    private HrCompanyConfRecord getHrCompanyConfRecordByCompanyId(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+        HrCompanyConfRecord hrCompanyConfRecord=hrCompanyConfDao.getRecord(query);
+        return hrCompanyConfRecord;
+    }
+
     public Response addTalent(int hrId, int userId, int companyId) throws TException {
         Response res=validateHrAndUser(hrId,userId,companyId);
         if(res!=null){
@@ -88,7 +137,6 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
     */
-    @CounterIface
     public Response batchAddTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
@@ -115,6 +163,7 @@ public class TalentPoolService {
             for(Integer id:idList){
                 talentPoolEntity.handlerTalentpoolTalent(id,companyId,0,0,1);
             }
+            this.realTimeUpdate(this.converSetToList(idList));
         }
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
         if(result==null||result.isEmpty()){
@@ -133,6 +182,7 @@ public class TalentPoolService {
                response(status:1,message:"xxxxxx")
      */
     @CounterIface
+
     public Response cancelTalent(int hrId, int userId, int companyId)throws TException{
         Response res=validateHrAndUser(hrId,userId,companyId);
         if(res!=null){
@@ -166,7 +216,6 @@ public class TalentPoolService {
       @return response(status:0,message:"success,data:[])
               response(status:1,message:"xxxxxx")
      */
-    @CounterIface
     public Response batchCancelTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
         //验证hr
         int flag=talentPoolEntity.validateHr(hrId,companyId);
@@ -203,6 +252,8 @@ public class TalentPoolService {
             }
             //取消收藏时删除标签，并且计算标签数
             this.handleCancleTag(hrId,idList);
+            logger.debug("执行实时更新的id========="+idList.toString());
+            this.realTimeUpdate(this.converSetToList(idList));
         }
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
         if(result==null||result.isEmpty()){
@@ -222,7 +273,6 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-    @CounterIface
     public Response addBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
         Map<String,Object> validateResult=this.validateAddTag(hrId, userIdList, tagIdList, companyId,0);
         if(validateResult.get("result")!=null){
@@ -244,6 +294,7 @@ public class TalentPoolService {
         for(Integer tagId:tagIdList){
             talentpoolTagDao.updateTagNum(tagId,idList.size());
         }
+        this.realTimeUpdate(this.converSetToList(idList));
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
@@ -303,6 +354,7 @@ public class TalentPoolService {
         }
         talentpoolUserTagDao.addAllRecord(recordList);
         talentpoolTagDao.updateTagListNum(tagIdList,idList.size());
+        this.realTimeUpdate(this.converSetToList(idList));
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         userTagIdList=tagIdList;
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
@@ -346,6 +398,7 @@ public class TalentPoolService {
         for(Integer tagId:tagIdList){
             talentpoolTagDao.updateTagNum(tagId,0-idList.size());
         }
+        this.realTimeUpdate(this.converSetToList(idList));
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,0);
@@ -415,6 +468,12 @@ public class TalentPoolService {
         List<TalentpoolUserTagRecord> list=getTalentpoolUserByTagId( tagId);
         if(!StringUtils.isEmptyList(list)){
             talentpoolUserTagDao.deleteRecords(list);
+            List<Integer> userIdList=new ArrayList<>();
+            //实时更新tag
+            for(TalentpoolUserTagRecord record1:list){
+                userIdList.add(record1.getUserId());
+            }
+            this.realTimeUpdate(userIdList);
         }
         return ResponseUtils.success("");
     }
@@ -446,6 +505,15 @@ public class TalentPoolService {
         record.setName(name);
         record.setId(tagId);
         talentpoolTagDao.updateRecord(record);
+        List<TalentpoolUserTagRecord> list=getTalentpoolUserByTagId( tagId);
+        if(!StringUtils.isEmptyList(list)){
+            //实时更新tag
+            List<Integer> userIdList=new ArrayList<>();
+            for(TalentpoolUserTagRecord record1:list){
+                userIdList.add(record1.getUserId());
+            }
+            this.realTimeUpdate(userIdList);
+        }
         return ResponseUtils.success(this.getTalentpoolTagById(tagId));
     }
     /*
@@ -594,7 +662,7 @@ public class TalentPoolService {
      */
     @CounterIface
     public Response delTalentComment(int hrId,int companyId,int comId)throws TException{
-        int count=talentPoolEntity.validateUserComment(comId,hrId);
+        int count=talentPoolEntity.getUserHrCommentCount(comId,hrId);
         if(count==0){
             return ResponseUtils.fail(1,"该备注不属于这个hr下的这个人才");
         }
@@ -646,6 +714,7 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
+    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 2, argsName = "user_id")
     @CounterIface
     public Response AddbatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
@@ -686,6 +755,7 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
+    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 2, argsName = "user_id")
     @CounterIface
     public Response cancelBatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
@@ -783,6 +853,9 @@ public class TalentPoolService {
         idList.add(userId);
         List<Map<String,Object>> userHrList=talentPoolEntity.getCompanyHrList(companyId);
         Map<Integer,Set<Map<String,Object>>> hrSet=talentPoolEntity.getBatchAboutTalent(idList,userHrList);
+        if(hrSet==null||hrSet.isEmpty()){
+            return  ResponseUtils.success("");
+        }
         Set<Map<String,Object>> result=hrSet.get(userId);
         if(StringUtils.isEmptySet(result)){
             return  ResponseUtils.success("");
@@ -825,6 +898,22 @@ public class TalentPoolService {
         }
         return  ResponseUtils.success(allTagList);
     }
+    /*
+     获取user集合下所有的收藏的和公开的hr
+     */
+    @CounterIface
+    public Response getPublicAndHrTalentByUserIdList(int hrId,int companyId,Set<Integer> userIdSet){
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            return ResponseUtils.fail(1,"该hr不属于该company_id");
+        }
+        Map<Integer,Object> result=talentPoolEntity.handlerPublicAndTalent(companyId,userIdSet);
+        if(result==null||result.isEmpty()){
+            ResponseUtils.success("");
+        }
+        return ResponseUtils.success(result);
+    }
+
 
     //处理批量操作的结果
     private Map<String,Object> handlerBatchTalentResult( Set<Integer> unUseList,Set<Integer>unApplierIdList,Set<Integer> idList ,int companyd){
@@ -1599,5 +1688,23 @@ public class TalentPoolService {
                 .setPageNum(pageNum).setPageSize(pageSize).orderBy("create_time",Order.DESC).buildQuery();
         List<Map<String,Object>> list=talentpoolCommentDao.getMaps(query);
         return list;
+    }
+
+    private void realTimeUpdate(List<Integer> userIdList){
+
+        Map<String,Object> result=new HashMap<>();
+        result.put("tableName","talentpool_user_tag");
+        result.put("user_id",userIdList);
+        logger.debug("执行实时更新========={}",JSON.toJSONString(result));
+        client.lpush(Constant.APPID_ALPHADOG,
+                "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+    }
+
+    private List<Integer> converSetToList(Set<Integer> userIdSet){
+        List<Integer> userIdList=new ArrayList<>();
+        for(Integer id:userIdSet){
+            userIdList.add(id);
+        }
+        return userIdList;
     }
 }

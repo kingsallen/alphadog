@@ -41,7 +41,7 @@ service CompanyServices {
     common_struct.Response companyMessage(1:i32 companyId) throws (1: common_struct.BIZException e)
     common_struct.Response companyPaidOrFortune() throws (1: common_struct.BIZException e)
     common_struct.Response getTalentPoolStatus(1:i32 hrId,2:i32 companyId)throws (1: common_struct.BIZException e)
-    common_struct.Response upsertTalentPoolApp(1:i32 hrId,2:i32 companyId)throws (1: common_struct.BIZException e)
+
     common_struct.Response updateHrCompanyConf(1:company_struct.HrCompanyConf hrCompanyConf)throws (1: common_struct.BIZException e)
 
 }
@@ -53,6 +53,7 @@ service HrTeamServices {
 }
 
 service TalentpoolServices {
+    common_struct.Response upsertTalentPoolApp(1:i32 hrId,2:i32 companyId)throws (1: common_struct.BIZException e)
     common_struct.Response getTalentAllComment(1:i32 hr_id,2:i32 company_id,3:i32 user_id,4: i32 page_number,5:i32 page_size)throws(1: common_struct.BIZException e)
     common_struct.Response getHrTag(1:i32 hr_id,2:i32 company_id,3:i32 page_number,4:i32 page_size) throws (1: common_struct.BIZException e)
     common_struct.Response batchAddTalent(1:i32 hr_id,2:list<i32> user_ids,3:i32 company_id) throws (1: common_struct.BIZException e)
@@ -73,4 +74,5 @@ service TalentpoolServices {
     common_struct.Response getCompanyTalent(1:i32 hr_id,2:i32 company_id,3:i32 user_id) throws (1: common_struct.BIZException e)
     common_struct.Response getHrUserTag(1:i32 hr_id,2:i32 company_id,3:i32 user_id) throws (1: common_struct.BIZException e)
     common_struct.Response getUserOrigin(1:i32 hr_id,2:i32 company_id,3:i32 user_id) throws (1: common_struct.BIZException e)
+    common_struct.Response getTalentAndPublicHr(1:i32 hr_id,2:i32 company_id,3:list<i32> user_ids) throws (1: common_struct.BIZException e)
 }
