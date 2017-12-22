@@ -388,7 +388,7 @@ public class TalentpoolSearchengine {
         }
         if(StringUtils.isNotNullOrEmpty(positionId)){
             List<Integer> positionIdList=this.convertStringToList(positionId);
-            sb.append(" val.position_id in "+positionId.toLowerCase()+"&&");
+            sb.append(" val.position_id in "+positionIdList.toString()+"&&");
         }
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
