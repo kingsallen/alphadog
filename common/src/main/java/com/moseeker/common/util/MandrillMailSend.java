@@ -95,18 +95,14 @@ public class MandrillMailSend {
 
             MandrillMessageStatus[] messageStatus = mandrillApi.messages().sendTemplate((String) params.get("templateName"),
                     null, message, false);
-            LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
+
 
             if (messageStatus.length == 0) {
                 logger.error("mandrill send failed: " + params.get("to_email"));
-                emailrecord.setEmail(recipient.getEmail());
-                emailrecord.setContent("failed," + params.get("templateName") + "," + message.getSubject());
                 return ResponseUtils.fail(9999,"failed," + params.get("templateName") + "," + message.getSubject());
 
             } else {
                 logger.debug(messageStatus[0].getEmail() + " " + messageStatus[0].getStatus());
-                emailrecord.setEmail(recipient.getEmail());
-                emailrecord.setContent(messageStatus[0].getStatus() + "," + params.get("templateName") + "," + message.getSubject());
                 return ResponseUtils.fail(0,messageStatus[0].getStatus() + "," + params.get("templateName") + "," + message.getSubject());
 
             }
