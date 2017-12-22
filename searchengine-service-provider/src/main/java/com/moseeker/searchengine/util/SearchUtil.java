@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
@@ -457,8 +456,7 @@ public class SearchUtil {
                 ((BoolQueryBuilder) keyand).should(query0);
             }else{
                 if(condition.length()>8){
-                    BigInteger b = new BigInteger(condition);
-                    QueryBuilder query0=QueryBuilders.matchQuery("user.origin_data",b);
+                    QueryBuilder query0=QueryBuilders.termQuery("user.origin_data",condition);
                     ((BoolQueryBuilder) keyand).should(query0);
                 }else{
                     QueryBuilder query0=QueryBuilders.matchQuery("user.applications.origin",Long.parseLong(condition));
