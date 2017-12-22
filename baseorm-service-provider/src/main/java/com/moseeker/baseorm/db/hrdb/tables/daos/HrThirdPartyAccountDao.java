@@ -87,6 +87,13 @@ public class HrThirdPartyAccountDao extends DAOImpl<HrThirdPartyAccountRecord, c
     }
 
     /**
+     * Fetch records that have <code>membername IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccount> fetchByMembername(String... values) {
+        return fetch(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.MEMBERNAME, values);
+    }
+
+    /**
      * Fetch records that have <code>binding IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccount> fetchByBinding(Short... values) {
@@ -140,12 +147,5 @@ public class HrThirdPartyAccountDao extends DAOImpl<HrThirdPartyAccountRecord, c
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccount> fetchByErrorMessage(String... values) {
         return fetch(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ERROR_MESSAGE, values);
-    }
-
-    /**
-     * Fetch records that have <code>ext IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccount> fetchByExt(String... values) {
-        return fetch(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT, values);
     }
 }

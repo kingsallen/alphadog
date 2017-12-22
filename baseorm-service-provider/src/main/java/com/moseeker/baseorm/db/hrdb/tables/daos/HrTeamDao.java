@@ -17,7 +17,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * 团队表
+ * 团队信息
  */
 @Generated(
     value = {

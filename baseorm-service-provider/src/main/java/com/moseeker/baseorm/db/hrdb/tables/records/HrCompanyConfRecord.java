@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = -880713989;
+    private static final long serialVersionUID = -1056596552;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -268,31 +268,31 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
-     */
-    public void setNewjdStatus(Integer value) {
-        set(17, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
-     */
-    public Integer getNewjdStatus() {
-        return (Integer) get(17);
-    }
-
-    /**
      * Setter for <code>hrdb.hr_company_conf.application_time</code>. newjd_status即新的jd页的生效时间，
      */
     public void setApplicationTime(Timestamp value) {
-        set(18, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.application_time</code>. newjd_status即新的jd页的生效时间，
      */
     public Timestamp getApplicationTime() {
-        return (Timestamp) get(18);
+        return (Timestamp) get(17);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+     */
+    public void setNewjdStatus(Integer value) {
+        set(18, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+     */
+    public Integer getNewjdStatus() {
+        return (Integer) get(18);
     }
 
     /**
@@ -310,73 +310,45 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.show_qx_only</code>. 公司信息、团队信息、职位信息等只在仟寻展示，0: 否， 1: 是
-     */
-    public void setShowQxOnly(Byte value) {
-        set(20, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_company_conf.show_qx_only</code>. 公司信息、团队信息、职位信息等只在仟寻展示，0: 否， 1: 是
-     */
-    public Byte getShowQxOnly() {
-        return (Byte) get(20);
-    }
-
-    /**
      * Setter for <code>hrdb.hr_company_conf.show_in_qx</code>. 公司信息、团队信息、职位信息在仟寻展示，0: 否， 1: 是
      */
     public void setShowInQx(Byte value) {
-        set(21, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.show_in_qx</code>. 公司信息、团队信息、职位信息在仟寻展示，0: 否， 1: 是
      */
     public Byte getShowInQx() {
-        return (Byte) get(21);
+        return (Byte) get(20);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.employee_slug</code>. 员工自定义称谓
      */
     public void setEmployeeSlug(String value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.employee_slug</code>. 员工自定义称谓
      */
     public String getEmployeeSlug() {
-        return (String) get(22);
+        return (String) get(21);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.display_locale</code>. 公司页面语言，格式:IETF language tag
      */
     public void setDisplayLocale(String value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.display_locale</code>. 公司页面语言，格式:IETF language tag
      */
     public String getDisplayLocale() {
-        return (String) get(23);
-    }
-
-    /**
-     * Setter for <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启';
-     */
-    public void setTalentpoolStatus(Byte value) {
-        set(24, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启';
-     */
-    public Byte getTalentpoolStatus() {
-        return (Byte) get(24);
+        return (String) get(22);
     }
 
     // -------------------------------------------------------------------------
@@ -405,7 +377,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     /**
      * Create a detached, initialised HrCompanyConfRecord
      */
-    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Integer newjdStatus, Timestamp applicationTime, Byte hrChat, Byte showQxOnly, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus) {
+    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale) {
         super(HrCompanyConf.HR_COMPANY_CONF);
 
         set(0, companyId);
@@ -425,13 +397,11 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         set(14, searchImg);
         set(15, jobOccupation);
         set(16, teamnameCustom);
-        set(17, newjdStatus);
-        set(18, applicationTime);
+        set(17, applicationTime);
+        set(18, newjdStatus);
         set(19, hrChat);
-        set(20, showQxOnly);
-        set(21, showInQx);
-        set(22, employeeSlug);
-        set(23, displayLocale);
-        set(24, talentpoolStatus);
+        set(20, showInQx);
+        set(21, employeeSlug);
+        set(22, displayLocale);
     }
 }

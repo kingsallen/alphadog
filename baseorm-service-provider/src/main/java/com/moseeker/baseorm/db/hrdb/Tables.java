@@ -7,6 +7,7 @@ package com.moseeker.baseorm.db.hrdb;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
+import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
@@ -28,6 +29,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.HrMedia;
+import com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrNps;
 import com.moseeker.baseorm.db.hrdb.tables.HrNpsRecommend;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
@@ -36,14 +39,17 @@ import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrResource;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
-import com.moseeker.baseorm.db.hrdb.tables.HrTalentpoolApplication;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
@@ -59,7 +65,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.VPositionRealcompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics;
 
 import javax.annotation.Generated;
 
@@ -78,6 +85,16 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * The table <code>hrdb.hrdb.hr_html5_statistics</code>.
+     */
+    public static final HrdbHrHtml5Statistics HRDB_HR_HTML5_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS;
+
+    /**
+     * The table <code>hrdb.hrdb.hr_html5_unique_statistics</code>.
+     */
+    public static final HrdbHrHtml5UniqueStatistics HRDB_HR_HTML5_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS;
+
+    /**
      * 企业申请简历校验配置
      */
     public static final HrAppCvConf HR_APP_CV_CONF = com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf.HR_APP_CV_CONF;
@@ -91,6 +108,11 @@ public class Tables {
      * 聊天室未读消息
      */
     public static final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount.HR_CHAT_UNREAD_COUNT;
+
+    /**
+     * 子公司表
+     */
+    public static final HrChildCompany HR_CHILD_COMPANY = com.moseeker.baseorm.db.hrdb.tables.HrChildCompany.HR_CHILD_COMPANY;
 
     /**
      * 微信端新jd模块具体内容项
@@ -108,7 +130,7 @@ public class Tables {
     public static final HrCmsPages HR_CMS_PAGES = com.moseeker.baseorm.db.hrdb.tables.HrCmsPages.HR_CMS_PAGES;
 
     /**
-     * The table <code>hrdb.hr_company</code>.
+     * 公司表
      */
     public static final HrCompany HR_COMPANY = com.moseeker.baseorm.db.hrdb.tables.HrCompany.HR_COMPANY;
 
@@ -163,7 +185,7 @@ public class Tables {
     public static final HrHbConfig HR_HB_CONFIG = com.moseeker.baseorm.db.hrdb.tables.HrHbConfig.HR_HB_CONFIG;
 
     /**
-     * The table <code>hrdb.hr_hb_items</code>.
+     * 红包记录表
      */
     public static final HrHbItems HR_HB_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrHbItems.HR_HB_ITEMS;
 
@@ -173,12 +195,12 @@ public class Tables {
     public static final HrHbPositionBinding HR_HB_POSITION_BINDING = com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding.HR_HB_POSITION_BINDING;
 
     /**
-     * The table <code>hrdb.hr_hb_scratch_card</code>.
+     * 新红包刮刮卡记录表
      */
     public static final HrHbScratchCard HR_HB_SCRATCH_CARD = com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard.HR_HB_SCRATCH_CARD;
 
     /**
-     * The table <code>hrdb.hr_hb_send_record</code>.
+     * 红包发送记录
      */
     public static final HrHbSendRecord HR_HB_SEND_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord.HR_HB_SEND_RECORD;
 
@@ -196,6 +218,16 @@ public class Tables {
      * 企业用户导入数据异步处理监控操作表
      */
     public static final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
+
+    /**
+     * 模板媒体表，存储模板渲染的媒体信息
+     */
+    public static final HrMedia HR_MEDIA = com.moseeker.baseorm.db.hrdb.tables.HrMedia.HR_MEDIA;
+
+    /**
+     * The table <code>hrdb.hr_media_backup_chendi</code>.
+     */
+    public static final HrMediaBackupChendi HR_MEDIA_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI;
 
     /**
      * nps打分推荐表
@@ -238,6 +270,16 @@ public class Tables {
     public static final HrResource HR_RESOURCE = com.moseeker.baseorm.db.hrdb.tables.HrResource.HR_RESOURCE;
 
     /**
+     * The table <code>hrdb.hr_resource_backup_chendi</code>.
+     */
+    public static final HrResourceBackupChendi HR_RESOURCE_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi.HR_RESOURCE_BACKUP_CHENDI;
+
+    /**
+     * The table <code>hrdb.hr_resource_online</code>.
+     */
+    public static final HrResourceOnline HR_RESOURCE_ONLINE = com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline.HR_RESOURCE_ONLINE;
+
+    /**
      * 微信图文传播次数统计表
      */
     public static final HrRuleStatistics HR_RULE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics.HR_RULE_STATISTICS;
@@ -253,7 +295,7 @@ public class Tables {
     public static final HrSearchCondition HR_SEARCH_CONDITION = com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition.HR_SEARCH_CONDITION;
 
     /**
-     * The table <code>hrdb.hr_superaccount_apply</code>.
+     * 升级超级账号申请表
      */
     public static final HrSuperaccountApply HR_SUPERACCOUNT_APPLY = com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply.HR_SUPERACCOUNT_APPLY;
 
@@ -263,19 +305,24 @@ public class Tables {
     public static final HrTalentpool HR_TALENTPOOL = com.moseeker.baseorm.db.hrdb.tables.HrTalentpool.HR_TALENTPOOL;
 
     /**
-     * hr申请人才库记录表
-     */
-    public static final HrTalentpoolApplication HR_TALENTPOOL_APPLICATION = com.moseeker.baseorm.db.hrdb.tables.HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION;
-
-    /**
-     * 团队表
+     * 团队信息
      */
     public static final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
+
+    /**
+     * The table <code>hrdb.hr_team_backup_chendi</code>.
+     */
+    public static final HrTeamBackupChendi HR_TEAM_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi.HR_TEAM_BACKUP_CHENDI;
 
     /**
      * 团队成员信息
      */
     public static final HrTeamMember HR_TEAM_MEMBER = com.moseeker.baseorm.db.hrdb.tables.HrTeamMember.HR_TEAM_MEMBER;
+
+    /**
+     * The table <code>hrdb.hr_team_member_backup_chendi</code>.
+     */
+    public static final HrTeamMemberBackupChendi HR_TEAM_MEMBER_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi.HR_TEAM_MEMBER_BACKUP_CHENDI;
 
     /**
      * 第三方渠道帐号
@@ -318,7 +365,7 @@ public class Tables {
     public static final HrWxImageReply HR_WX_IMAGE_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply.HR_WX_IMAGE_REPLY;
 
     /**
-     * The table <code>hrdb.hr_wx_module</code>.
+     * 微信模块表
      */
     public static final HrWxModule HR_WX_MODULE = com.moseeker.baseorm.db.hrdb.tables.HrWxModule.HR_WX_MODULE;
 
@@ -333,7 +380,7 @@ public class Tables {
     public static final HrWxNoticeMessage HR_WX_NOTICE_MESSAGE = com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE;
 
     /**
-     * The table <code>hrdb.hr_wx_rule</code>.
+     * 微信回复规则表
      */
     public static final HrWxRule HR_WX_RULE = com.moseeker.baseorm.db.hrdb.tables.HrWxRule.HR_WX_RULE;
 
@@ -351,9 +398,4 @@ public class Tables {
      * 微信消息通知同步状态
      */
     public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
-
-    /**
-     * VIEW
-     */
-    public static final VPositionRealcompany V_POSITION_REALCOMPANY = com.moseeker.baseorm.db.hrdb.tables.VPositionRealcompany.V_POSITION_REALCOMPANY;
 }
