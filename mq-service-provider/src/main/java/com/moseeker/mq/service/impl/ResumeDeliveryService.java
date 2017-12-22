@@ -100,7 +100,7 @@ public class ResumeDeliveryService {
         Query query=new Query.QueryBuilder().where("id",
                 String.valueOf(application_id)).buildQuery();
         JobApplicationDO applicationDo = applicationDao.getData(query);
-        if(applicationDo != null && applicationDo.getPositionId() >0 && applicationDo.getAppTplId()>0){
+        if(applicationDo != null && applicationDo.getPositionId() >0 && applicationDo.getApplierId()>0){
             JobPositionDO positionDo = positionDao.getData(new Query.QueryBuilder().where("id",
                     String.valueOf(applicationDo.getPositionId())).buildQuery());
             if(positionDo == null){
@@ -187,8 +187,10 @@ public class ResumeDeliveryService {
 
             }
 
+        }else{
+            return  ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
-        return null;
+        return  ResponseUtils.success("success");
     }
 
     /**
