@@ -1,11 +1,14 @@
 package com.moseeker.position.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.iface.IChannelType;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -54,7 +57,7 @@ public class PositionEmailNotification {
         return emails;
     }
 
-    public void sendATSFailureMail(String message, IChannelType channel,Exception refreshException) {
+    public void sendSyncFailureMail(ThirdPartyPositionForm form, IChannelType channel, Exception refreshException) {
         List<String> mails=devMails;
         if (mails == null || mails.size() == 0) {
             logger.error("没有配置同步邮箱地址!");
@@ -66,7 +69,7 @@ public class PositionEmailNotification {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append("【ATS职位同步失败】");
+            titleBuilder.append("【职位同步失败】");
 
             if(channel!=null) {
                 ChannelType channelType = channel.getChannelType();
@@ -74,7 +77,12 @@ public class PositionEmailNotification {
             }
 
             StringBuilder messageBuilder = new StringBuilder();
-            messageBuilder.append("【ATS端传送的json】：").append(message).append(br);
+            if(form!=null) {
+                if(SyncRequestType.hasType(form.getRequestType()) ){
+                    messageBuilder.append("【请求端】：").append(SyncRequestType.getInstance(form.getRequestType()).title()).append(br);
+                }
+                messageBuilder.append("【传送的json】：").append(JSON.toJSONString(form)).append(br);
+            }
 
             messageBuilder.append("【失败信息】:").append(getExceptionAllinformation(refreshException)).append(br);
 

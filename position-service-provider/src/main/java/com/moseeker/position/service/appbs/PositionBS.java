@@ -16,6 +16,7 @@ import com.moseeker.position.pojo.PositionSyncResultPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.base.sync.TransferCheckUtil;
+import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.position.utils.PositionSyncHandler;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
@@ -33,9 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 职位业务层
@@ -52,8 +52,6 @@ public class PositionBS {
     @Autowired
     private JobPositionDao jobPositionDao;
     @Autowired
-    private HrCompanyDao hrCompanyDao;
-    @Autowired
     private HRThirdPartyPositionDao thirdPartyPositionDao;
     @Autowired
     private PositionSyncHandler positionSyncHandler;
@@ -61,16 +59,91 @@ public class PositionBS {
     private PositionChangeUtil positionChangeUtil;
     @Autowired
     private TransferCheckUtil transferCheckUtil;
+    @Autowired
+    private PositionEmailNotification emailNotification;
+
 
     /**
-     * @param position
+     * 单一处理职位同步
+     * @param positionForm
      * @return
+     * @throws Exception
      */
     @CounterIface
-    public List<PositionSyncResultPojo> synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws Exception {
-        logger.info("synchronizePositionToThirdPartyPlatform:" + JSON.toJSONString(position));
+    public List<PositionSyncResultPojo> syncPositionToThirdParty(ThirdPartyPositionForm positionForm) throws Exception {
+        return syncPositionToThirdParty(Arrays.asList(positionForm));
+        /*JobPositionDO moseekerJobPosition = positionSyncHandler.getAvailableMoSeekerPosition(positionForm.getPositionId());
+        List<HrThirdPartyAccountDO> avaliableAccounts=positionSyncHandler.getThirdPartAccount(moseekerJobPosition.getPublisher());
+        try {
+            return syncPositionToThirdParty(positionForm,moseekerJobPosition,avaliableAccounts);
+        }catch (Exception e){
+            emailNotification.sendSyncFailureMail(positionForm, null, e);
+            throw e;
+        }*/
+    }
+
+    /**
+     * 批量处理职位同步
+     * @param positionForms
+     * @return
+     * @throws Exception
+     */
+    @CounterIface
+    public List<PositionSyncResultPojo> syncPositionToThirdParty(List<ThirdPartyPositionForm> positionForms) throws Exception {
+        if(StringUtils.isEmptyList(positionForms)){
+            return new ArrayList<>();
+        }
+
+        //批量获取职位，转换成Map<id,JobPosition>方便查询
+        List<Integer> positionIds=positionForms.stream().map(p->p.getPositionId()).collect(Collectors.toList());
+        List<JobPositionDO> moseekerJobPositions=positionSyncHandler.getMoSeekerPositions(positionIds);
+        Map<Integer,JobPositionDO> moseekerJobPositionMap=moseekerJobPositions.stream().collect(Collectors.toMap(p->p.getId(),p->p));
+        if(moseekerJobPositionMap==null || moseekerJobPositionMap.isEmpty()){
+            return new ArrayList<>();
+        }
+
+        //批量获取第三方账号，转换成Map<hrAccountId,List<HrThirdPartyAccountDO>>方便查询
+        List<Integer> publishers=moseekerJobPositions.stream().map(p->p.getPublisher()).collect(Collectors.toList());
+        Map<Integer,List<HrThirdPartyAccountDO>> thirdAccountOfHr=positionSyncHandler.getValidThirdPartAccounts(publishers);
+        if(thirdAccountOfHr == null || thirdAccountOfHr.isEmpty()){
+            return new ArrayList<>();
+        }
+
+        List<PositionSyncResultPojo> results=new ArrayList<>();
+
+        for(ThirdPartyPositionForm positionForm:positionForms){
+            if(positionForm.getPositionId()==0 || StringUtils.isEmptyList(positionForm.getChannels())){
+                continue;
+            }
+
+            JobPositionDO moseekerJobPosition=moseekerJobPositionMap.get(positionForm.getPositionId());
+            List<HrThirdPartyAccountDO> accounts=thirdAccountOfHr.get(moseekerJobPosition.getPublisher());
+            positionSyncHandler.requireAvailablePostiion(moseekerJobPosition);
+
+            try {
+                results.addAll(syncPositionToThirdParty(positionForm,moseekerJobPosition,accounts));
+            }catch (Exception e){
+                logger.error("batch Sync Position error exception:{},positionForm:{}",e,JSON.toJSONString(positionForm));
+                emailNotification.sendSyncFailureMail(positionForm, null, e);
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),JSON.toJSONString(positionForm),"batch Sync Position error"));
+                continue;
+            }
+
+        }
+
+        return results;
+    }
+
+
+    /**
+     * @param positionForm
+     * @param moseekerJobPosition
+     * @return
+     */
+    private List<PositionSyncResultPojo> syncPositionToThirdParty(ThirdPartyPositionForm positionForm,JobPositionDO moseekerJobPosition,List<HrThirdPartyAccountDO> accounts) throws Exception {
+        logger.info("syncPositionToThirdParty:" + JSON.toJSONString(positionForm));
         // 职位数据是否存在
-        JobPositionDO moseekerJobPosition = positionSyncHandler.getAvailableMoSeekerPosition(position.getPositionId());
+        positionSyncHandler.requireAvailablePostiion(moseekerJobPosition);
 
         // 返回结果
         List<PositionSyncResultPojo> results = new ArrayList<>();
@@ -78,41 +151,53 @@ public class PositionBS {
         //第三方职位列表，用来回写写到第三方职位表
         List<TwoParam<HrThirdPartyPositionDO,Object>> writeBackThirdPartyPositionList = new ArrayList<>();
 
+        //已经同步的数据
         List<HrThirdPartyPositionDO> alreadySyncPosition=positionSyncHandler.getAlreadySyncThirdPositions(moseekerJobPosition.getId());
 
         //用来同步到chaos的职位列表
         List<String>  positionsForSynchronizations=new ArrayList<>();
 
-        SyncRequestType requestType=SyncRequestType.getInstance(position.getRequestType());
+        //记录已经同步的渠道
+        Set<ChannelType> channelTypeSet=new HashSet<>();
+
+        SyncRequestType requestType=SyncRequestType.getInstance(positionForm.getRequestType());
 
         //这个循环检查需要同步的职位对应渠道下是否有绑定过的账号
-        for (String json: position.getChannels()) {
+        for (String json: positionForm.getChannels()) {
             JSONObject p=JSON.parseObject(json);
             int channel=p.getIntValue("channel");
-            int thirdPartyAccountId=p.getIntValue("thirdPartyAccountId");
-
-            HrThirdPartyAccountDO avaliableAccount = positionSyncHandler.getAvailableThirdAccount(moseekerJobPosition.getPublisher(),p.getIntValue("channel"));
-            if (avaliableAccount == null) {
-                results.add(positionSyncHandler.createFailResult(channel,thirdPartyAccountId,ResultMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST.getMessage()));
-                continue;
-            } else {
-                p.put("thirdPartyAccountId",avaliableAccount.getId());
-            }
-
-            if(positionSyncHandler.containsAlreadySyncThirdPosition(avaliableAccount.getId(),moseekerJobPosition.getId(),alreadySyncPosition)){
-                results.add(positionSyncHandler.createFailResult(channel,thirdPartyAccountId,ResultMessage.AREADY_BINDING.getMessage()));
-                continue;
-            }
-
+            //验证渠道是否存在
             ChannelType channelType=ChannelType.instaceFromInteger(channel);
             if(channelType==null){
-                results.add(positionSyncHandler.createFailResult(channel,thirdPartyAccountId,ResultMessage.CHANNEL_NOT_EXIST.getMessage()));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.CHANNEL_NOT_EXIST.getMessage()));
+                continue;
+            }
+            //验证是否已经有相同渠道职位准备绑定
+            if(channelTypeSet.contains(channelType)){
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_PREPARE_BIND.getMessage()));
                 continue;
             }
 
+
+
+            //验证并获取对应渠道账号
+            if (!positionSyncHandler.containsThirdAccount(accounts,channel)) {
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST.getMessage()));
+                continue;
+            }
+            HrThirdPartyAccountDO avaliableAccount = positionSyncHandler.getThirdAccount(accounts,channel);
+            p.put("thirdPartyAccountId",avaliableAccount.getId());
+
+            //验证是否有正在绑定的第三方职位
+            if(positionSyncHandler.containsAlreadySyncThirdPosition(avaliableAccount.getId(),moseekerJobPosition.getId(),alreadySyncPosition)){
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_BINDING.getMessage()));
+                continue;
+            }
+
+            //验证同步数据中的参数
             List<String> checkMsg=transferCheckUtil.checkBeforeTransfer(requestType,channelType,p);
             if(!StringUtils.isEmptyList(checkMsg)){
-                results.add(positionSyncHandler.createFailResult(channel,thirdPartyAccountId,JSON.toJSONString(checkMsg)));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,JSON.toJSONString(checkMsg)));
                 continue;
             }
 
@@ -122,12 +207,15 @@ public class PositionBS {
             positionsForSynchronizations.add(JSON.toJSONString(result.getPositionWithAccount()));
             writeBackThirdPartyPositionList.add(new TwoParam(result.getThirdPartyPositionDO(),result.getExtPosition()));
 
-            results.add(positionSyncHandler.createNormalResult(channel,avaliableAccount.getId()));
+            results.add(positionSyncHandler.createNormalResult(json));
+
+            //完成转换操作，可以绑定
+            channelTypeSet.add(channelType);
         }
 
         // 提交到chaos处理
         logger.info("chaosService.synchronizePosition:{}", positionsForSynchronizations);
-//        chaosService.synchronizePosition(positionsForSynchronizations);
+        chaosService.synchronizePosition(positionsForSynchronizations);
 
         // 回写数据到第三方职位表表
         logger.info("write back to thirdpartyposition:{}",writeBackThirdPartyPositionList);

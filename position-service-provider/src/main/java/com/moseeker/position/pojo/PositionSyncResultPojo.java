@@ -9,12 +9,30 @@ public class PositionSyncResultPojo {
 	public final static int SUCCESS=2;
 	public final static int FAIL=3;
 
+	private int position_id;
 	private int channel;
 	private int sync_status;
 	private String sync_time;
 	private String sync_fail_reason;
 	private int account_id;
-	
+	private String data;
+
+	public int getPosition_id() {
+		return position_id;
+	}
+
+	public void setPosition_id(int position_id) {
+		this.position_id = position_id;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
+
 	public int getChannel() {
 		return channel;
 	}

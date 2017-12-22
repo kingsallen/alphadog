@@ -4,9 +4,13 @@ public enum SyncRequestType {
     WEB(1,"网页端"),
     ATS(2,"ATS");
 
-    SyncRequestType(int code, String name) {
+    SyncRequestType(int code, String title) {
         this.code = code;
-        this.name = name;
+        this.title = title;
+    }
+
+    public static boolean hasType(int code){
+        return getInstance(code)!=null;
     }
 
     public static SyncRequestType getInstance(int code){
@@ -19,9 +23,12 @@ public enum SyncRequestType {
     }
 
     private int code;
-    private String name;
+    private String title;
 
     public int code(){
         return code;
+    }
+    public String title(){
+        return title;
     }
 }

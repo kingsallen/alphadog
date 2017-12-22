@@ -24,7 +24,7 @@ public class PositionBSTest {
         String json="{\"appid\":4,\"channels\":[\"{\\\"occupation\\\":[\\\"1066\\\",\\\"1067\\\"],\\\"channel\\\":7,\\\"subsite\\\":\\\"监\n" +
                 "理英才网\\\",\\\"salaryBottom\\\":10,\\\"salaryTop\\\":20}\"],\"channelsIterator\":[\"{\\\"occupation\\\":[\\\"1066\\\",\\\"1067\\\"],\\\"channel\\\":7,\\\"subsite\\\":\\\"监理英才网\\\",\\\"salaryBottom\\\":10,\\\"salaryTop\\\":20}\"],\"channelsSize\":1,\"positionId\":10,\"setAppid\":true,\"setChannels\":true,\"setPositionId\":true}\n";
         ThirdPartyPositionForm form= JSON.toJavaObject(JSON.parseObject(json),ThirdPartyPositionForm.class);
-        positionBS.synchronizePositionToThirdPartyPlatform(form);
+        positionBS.syncPositionToThirdParty(form);
     }
 
 }

@@ -1,5 +1,8 @@
 package com.moseeker.position.pojo;
 
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +28,15 @@ public class JobPostionResponse {
     private Integer syncingCounts;
     private Integer notNeedSyncCounts;
 
-    private Map<Integer,String> syncData=new HashMap<>();
+    private List<ThirdPartyPositionForm> syncData;
+
+    public List<ThirdPartyPositionForm> getSyncData() {
+        return syncData;
+    }
+
+    public void setSyncData(List<ThirdPartyPositionForm> syncData) {
+        this.syncData = syncData;
+    }
 
     public List<SyncFailMessPojo> getSyncFailMessPojolist() {
         return syncFailMessPojolist;
@@ -49,14 +60,6 @@ public class JobPostionResponse {
 
     public void setNotNeedSyncCounts(Integer notNeedSyncCounts) {
         this.notNeedSyncCounts = notNeedSyncCounts;
-    }
-
-    public Map<Integer, String> getSyncData() {
-        return syncData;
-    }
-
-    public void setSyncData(Map<Integer, String> syncData) {
-        this.syncData = syncData;
     }
 
     public Integer getTotalCounts() {

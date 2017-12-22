@@ -35,7 +35,7 @@ public class PositionBSThriftService implements Iface {
         try {
             //设置请求端类型为网页端
             position.setRequestType(SyncRequestType.WEB.code());
-            return ResultMessage.SUCCESS.toResponse(positionBS.synchronizePositionToThirdPartyPlatform(position));
+            return ResultMessage.SUCCESS.toResponse(positionBS.syncPositionToThirdParty(position));
         } catch (BIZException e) {
             throw e;
         } catch (Exception e) {
