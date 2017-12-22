@@ -3,17 +3,13 @@ package com.moseeker.mq.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
-import com.moseeker.baseorm.db.logdb.tables.LogWxMessageRecord;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -93,10 +89,8 @@ public class TemlateMsgHttp {
             applierTemplate.put("url", link);
             applierTemplate.put("topcolor", template.getTopcolor());
             String result = null;
-            logger.info("模板数据Json化"+JSON.toJSONString(applierTemplate));
             result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
             Map<String, Object> params = JSON.parseObject(result);
-            logger.info("向申请者发送模板消息结果----------"+params.get("errcode").toString());
             insertLogWxMessageRecord(hrWxWechatDO, template, openId, link, colMap ,params);
             if(params!= null && "0".equals(params.get("errcode"))){
                 return ResponseUtils.success("success");
@@ -160,10 +154,8 @@ public class TemlateMsgHttp {
             applierTemplate.put("template_id", template.getWxTemplateId());
             applierTemplate.put("url", link);
             applierTemplate.put("topcolor", template.getTopcolor());
-            logger.info("模板数据Json化"+JSON.toJSONString(applierTemplate));
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
             Map<String, Object> params = JSON.parseObject(result);
-            logger.info("向推荐者发送模板消息结果----------" + params.get("errcode").toString());
             insertLogWxMessageRecord(hrWxWechatDO, template, openId, link, colMap ,params);
             if(params!= null && "0".equals(params.get("errcode"))){
                 return ResponseUtils.success("success");
@@ -231,10 +223,8 @@ public class TemlateMsgHttp {
             applierTemplate.put("template_id", template.getWxTemplateId());
             applierTemplate.put("url", link);
             applierTemplate.put("topcolor", template.getTopcolor());
-            logger.info("模板数据Json化"+JSON.toJSONString(applierTemplate));
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
             Map<String, Object> params = JSON.parseObject(result);
-            logger.info("向HR发送模板消息结果----------" + params.get("errcode").toString());
             insertLogWxMessageRecord(hrWxWechatDO, template, openId, link, colMap ,params);
             if(params!= null && "0".equals(params.get("errcode"))){
                 return ResponseUtils.success("success");
