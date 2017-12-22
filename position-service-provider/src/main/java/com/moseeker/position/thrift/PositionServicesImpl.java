@@ -67,8 +67,6 @@ public class PositionServicesImpl implements Iface {
     private PositionThridService positionThridService;
     @Autowired
     private PositionBS positionBS;
-    @Autowired
-    private PositionEmailNotification emailNotification;
 
     /**
      * 获取推荐职位
@@ -227,43 +225,28 @@ public class PositionServicesImpl implements Iface {
         List<SyncFailMessPojo> syncFailMessPojolistList=new ArrayList<>();
         int syncingCounts=0;
 
-        Map<Integer,String> syncData=response.getSyncData();
-        Iterator<Map.Entry<Integer,String>> it=syncData.entrySet().iterator();
-        while (it.hasNext()){
-            Map.Entry<Integer,String> data=it.next();
-            int positionId=data.getKey();
-            String jsonChannels=data.getValue();
-
-            if(positionId==0 || StringUtils.isNullOrEmpty(jsonChannels)){
+        List<ThirdPartyPositionForm> syncDatas=response.getSyncData();
+        for (ThirdPartyPositionForm form:syncDatas){
+            if(form.getPositionId()==0 || StringUtils.isEmptyList(form.getChannels())){
                 continue;
             }
 
-            ThirdPartyPositionForm form=new ThirdPartyPositionForm();
             form.setAppid(batchHandlerJobPostion.getAppid());
-            form.setPositionId(positionId);
             //设置请求端类型为ATS端
             form.setRequestType(SyncRequestType.ATS.code());
+        }
 
-            TypeReference<List<String>> typeRef
-                    = new TypeReference<List<String>>() {};
-            List<String> channels= JSON.parseObject(jsonChannels,typeRef);
-            form.setChannels(channels);
-
-            try {
-                List<PositionSyncResultPojo> syncResults=positionBS.synchronizePositionToThirdPartyPlatform(form);
-                for(PositionSyncResultPojo result:syncResults){
-                    if(result.getSync_status()==PositionSyncResultPojo.SUCCESS){
-                        syncingCounts++;
-                    }else{
-                        syncFailMessPojolistList.add(new SyncFailMessPojo(positionId,result.getChannel(),result.getSync_fail_reason()));
-                    }
+        try {
+            List<PositionSyncResultPojo> syncResults = positionBS.syncPositionToThirdParty(syncDatas);
+            for (PositionSyncResultPojo result : syncResults) {
+                if (result.getSync_status() == PositionSyncResultPojo.SUCCESS) {
+                    syncingCounts++;
+                } else {
+                    syncFailMessPojolistList.add(new SyncFailMessPojo(result.getPosition_id(), result.getChannel(), result.getSync_fail_reason()));
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                SyncFailMessPojo mess=new SyncFailMessPojo(positionId,0,e.getMessage());
-                syncFailMessPojolistList.add(mess);
-                emailNotification.sendATSFailureMail(jsonChannels,null,e);
             }
+        } catch (Exception e) {
+            logger.info("save and sync error exception:",e);
         }
 
         response.setSyncFailMessPojolist(syncFailMessPojolistList);
