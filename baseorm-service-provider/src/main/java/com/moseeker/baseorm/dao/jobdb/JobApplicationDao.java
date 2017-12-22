@@ -121,7 +121,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
      * @param record
      * @return
      */
-	public int addIfNotExists(JobApplicationRecord record) {
+	public JobApplicationDO addIfNotExists(JobApplicationRecord record) {
         List<Field<?>> changedFieldList = Arrays.stream(record.fields()).filter(f -> record.changed(f)).collect(Collectors.toList());
         String insertSql = " insert into jobdb.job_application ".concat(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", " (", ") ")))
                 .concat(" select ").concat(Stream.generate(() -> "?").limit(changedFieldList.size()).collect(Collectors.joining(",")))
@@ -135,11 +135,26 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
         int result = create.execute(insertSql, changedFieldList.stream().map(m -> record.getValue(m)).collect(Collectors.toList()).toArray());
         if (result == 0) {
             logger.info("用户:{}已申请过职位:{}, 无需重复投递", record.getApplierId(), record.getPositionId());
+
         }
+
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(JobApplication.JOB_APPLICATION.DISABLE.getName(), 0).and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), record.getApplierId())
         .and(JobApplication.JOB_APPLICATION.POSITION_ID.getName(), record.getPositionId());
-        return getData(queryBuilder.buildQuery()).getId();
+        JobApplicationDO applicationDO = getData(queryBuilder.buildQuery());
+
+        //如果不是新增申请，那么合并申请来源
+		if (result == 0 && record.getOrigin() != null && record.getOrigin() > 0
+				&& record.getOrigin().intValue() != applicationDO.getOrigin()) {
+
+			int origin = record.getOrigin().intValue() | applicationDO.getOrigin();
+			create.update(JobApplication.JOB_APPLICATION)
+					.set(JobApplication.JOB_APPLICATION.ORIGIN, origin)
+					.where(JobApplication.JOB_APPLICATION.ID.eq(applicationDO.getId()))
+					.execute();
+		}
+
+        return applicationDO;
     }
 
 }

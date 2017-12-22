@@ -1,5 +1,6 @@
 package com.moseeker.application.thrift;
 
+import com.moseeker.common.exception.CommonException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,9 @@ public class JobApplicataionServicesImpl implements Iface {
     public Response postApplication(JobApplication jobApplication){
     	try{
     		return service.postApplication(jobApplication);
-    	}catch(Exception e){
+    	} catch (CommonException e) {
+    	    return new Response(e.getCode(), e.getMessage());
+        } catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     	}
@@ -53,7 +56,9 @@ public class JobApplicataionServicesImpl implements Iface {
     public Response putApplication(JobApplication jobApplication){
     	try{
     		return service.putApplication(jobApplication);
-    	}catch(Exception e){
+    	} catch (CommonException e) {
+            return new Response(e.getCode(), e.getMessage());
+        } catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     	}
@@ -68,7 +73,9 @@ public class JobApplicataionServicesImpl implements Iface {
     public Response deleteApplication(long applicationId){
     	try{
     		return service.deleteApplication(applicationId);
-    	}catch(Exception e){
+    	} catch (CommonException e) {
+            return new Response(e.getCode(), e.getMessage());
+        } catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_ARCHIVE_FAILED);
     	}
@@ -84,7 +91,9 @@ public class JobApplicataionServicesImpl implements Iface {
     public Response postJobResumeOther(JobResumeOther jobResumeOther) throws TException {
     	try{
     		return service.postJobResumeOther(jobResumeOther);
-    	}catch(Exception e){
+    	} catch (CommonException e) {
+            return new Response(e.getCode(), e.getMessage());
+        }  catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     	}
@@ -146,8 +155,10 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response postApplicationIfNotApply(JobApplication application) throws TException {
     	try{
-    		return service.postApplicationIfNotApply(application);
-    	}catch(Exception e){
+    		return service.postApplication(application);
+    	}  catch (CommonException e) {
+            return new Response(e.getCode(), e.getMessage());
+        } catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     	}
