@@ -28,6 +28,9 @@ public class JsonToMap {
 	 */
 	public static Map<String, Object> parseJSON2Map(String jsonStr) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		if (jsonStr != null) {
+		    jsonStr = jsonStr.trim();
+        }
 		if (!jsonStr.startsWith("{") || !jsonStr.endsWith("}")) {
 			return map;
 		}

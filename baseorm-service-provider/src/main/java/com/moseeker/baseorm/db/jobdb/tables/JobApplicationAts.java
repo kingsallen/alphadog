@@ -128,4 +128,11 @@ public class JobApplicationAts extends TableImpl<JobApplicationAtsRecord> {
     public JobApplicationAts as(String alias) {
         return new JobApplicationAts(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    public JobApplicationAts rename(String name) {
+        return new JobApplicationAts(name, null);
+    }
 }

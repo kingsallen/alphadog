@@ -664,9 +664,9 @@ public class PositionService {
                         if(!record.getTitle().equals(jobPositionRecord.getTitle())){
                             //添加修改标题的职位对应的需要作废的第三方职位数据parent_id
                             thirdPartyPositionDisablelist.add(record.getId());
-                            // 需要同步的数据
-                            syncData.put(record.getId(),jobPositionHandlerDate.getThirdParty_position());
                         }
+                        // 需要同步的数据
+                        syncData.put(record.getId(),jobPositionHandlerDate.getThirdParty_position());
 
 
                         // 需要更新JobPositionCity数据
