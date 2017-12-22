@@ -1,9 +1,11 @@
 package com.moseeker.company.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
@@ -53,6 +55,10 @@ public class TalentPoolService {
     private JobApplicationDao jobApplicationDao;
     @Autowired
     private UserHrAccountDao userHrAccountDao;
+    @Autowired
+    private TalentpoolApplicationDao talentpoolApplicationDao;
+    @Autowired
+    private HrCompanyConfDao hrCompanyConfDao;
     @Resource(name = "cacheClient")
     private RedisClient client;
     /*
@@ -64,6 +70,43 @@ public class TalentPoolService {
         @return response(status:0,message:"success,data:[])
                or response(status:1,message:"xxxxxx")
      */
+ /*
+      修改开启人才库的申请记录
+     */
+    @CounterIface
+    public Response upsertTalentPoolApplication(int hrId,int companyId){
+        int count=this.validateHrAndCompany(hrId,companyId);
+        if(count==0){
+            return ResponseUtils.fail(1,"此账号不是主账号");
+        }
+        HrCompanyConfRecord record=this.getHrCompanyConfRecordByCompanyId(companyId);
+        if(record==null){
+            return ResponseUtils.fail(1,"此公司无配置");
+        }
+        int result=talentpoolApplicationDao.inserOrUpdateTalentPoolApplication(hrId,companyId);
+        if(result==0){
+            return ResponseUtils.fail(1,"操作失败");
+        }
+        return ResponseUtils.success("");
+    }
+    /*
+  获取此账号是不是此公司的主账号
+  */
+    private int validateHrAndCompany(int hrId,int companyId){
+        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("account_type",0).or("account_type",1)
+                .buildQuery();
+        int count =userHrAccountDao.getCount(query);
+        return count;
+    }
+    /*
+      根据公司id获取公司配置
+     */
+    private HrCompanyConfRecord getHrCompanyConfRecordByCompanyId(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+        HrCompanyConfRecord hrCompanyConfRecord=hrCompanyConfDao.getRecord(query);
+        return hrCompanyConfRecord;
+    }
+
     public Response addTalent(int hrId, int userId, int companyId) throws TException {
         Response res=validateHrAndUser(hrId,userId,companyId);
         if(res!=null){

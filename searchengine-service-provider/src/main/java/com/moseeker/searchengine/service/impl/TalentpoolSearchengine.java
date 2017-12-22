@@ -58,11 +58,8 @@ public class TalentpoolSearchengine {
         QueryBuilder query=this.query(params);
         SearchRequestBuilder builder=client.prepareSearch("users").setTypes("users").setQuery(query);
         Map<String,Object> aggInfo=new HashMap<>();
-        String searchType=params.get("all_publisher");
-        if(StringUtils.isNotNullOrEmpty(searchType)){
-            if("1".equals(searchType)){
-                aggInfo=this.getUserAnalysisIndex(params,client);
-            }
+        if(this.valididateSearchAggIndex(params)){
+           aggInfo=this.getUserAnalysisIndex(params,client);
         }
         if(aggInfo==null||aggInfo.isEmpty()){
             if(!this.isExecAgg(returnParams)) {
@@ -845,6 +842,24 @@ public class TalentpoolSearchengine {
             }
         }
         return false;
+    }
+    /*
+     判断是否可以走单独的统计索引
+     */
+    private Boolean valididateSearchAggIndex(Map<String,String> params){
+        boolean flag=true;
+        for(String key:params.keySet()){
+            if(!"company_id".equals(key)&&!"publisher".equals(key)
+                    &&!"hr_account_id".equals(key)&&!"all_publisher".equals("key")){
+                return false;
+            }
+        }
+        if(flag){
+            if(StringUtils.isNullOrEmpty(params.get("all_publisher"))||!"1".equals(params.get("all_publisher"))){
+                return false;
+            }
+        }
+        return true;
     }
 }
 

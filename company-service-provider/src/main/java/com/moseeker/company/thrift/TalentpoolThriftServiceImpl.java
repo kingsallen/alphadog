@@ -24,6 +24,18 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private TalentPoolService talentPoolService;
+
+    @Override
+    public Response upsertTalentPoolApp(int hrId, int companyId) throws BIZException, TException {
+        try{
+            Response result=talentPoolService.upsertTalentPoolApplication(hrId,companyId);
+            return result;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
     @Override
     public Response getTalentAllComment(int hr_id, int company_id, int user_id,int page_number,int page_size) throws BIZException, TException {
         try{
