@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = 86451231;
+    private static final long serialVersionUID = -1895875725;
 
     /**
      * Setter for <code>jobdb.job_position.id</code>.
@@ -884,14 +884,14 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     }
 
     /**
-     * Setter for <code>jobdb.job_position.current_status</code>. 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
+     * Setter for <code>jobdb.job_position.current_status</code>. 已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
      */
     public void setCurrentStatus(Byte value) {
         set(61, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position.current_status</code>. 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
+     * Getter for <code>jobdb.job_position.current_status</code>. 已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
      */
     public Byte getCurrentStatus() {
         return (Byte) get(61);

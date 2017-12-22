@@ -14,16 +14,15 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.mq.service.WarnService;
 import com.moseeker.thrift.gen.common.struct.Response;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @CounterIface
@@ -36,6 +35,7 @@ public class EmailProducer {
 	
 	@Autowired
 	private UserUserDao userDao;
+
 	/**
 	 * 往业务邮件队列发送一条信息
 	 * @param params 消息体
@@ -74,7 +74,6 @@ public class EmailProducer {
 			//do nothing
 		}
 	}
-	
 	/**
 	 * 获取用户的称呼
 	 * @param userId 用户id
