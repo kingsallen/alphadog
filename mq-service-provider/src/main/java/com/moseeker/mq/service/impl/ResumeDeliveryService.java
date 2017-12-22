@@ -213,7 +213,7 @@ public class ResumeDeliveryService {
         Response response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         if(templateMessageDO != null && hrChatDO != null){
             UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("sysuser_id",
-                    String.valueOf(userUserDO.getId())).buildQuery());
+                    String.valueOf(userUserDO.getId())).and("wechat_id", hrChatDO.getId()).buildQuery());
             if(userWxDO == null) return response;
             logger.info("给求职者发送企业号模板消息Template_id:"+templateMessageDO.id+";Template_id:"+templateMessageDO.getWxTemplateId()+";openid:"+userWxDO.getOpenid());
             //获取企业号消息模板发送开关
@@ -245,7 +245,7 @@ public class ResumeDeliveryService {
         Response response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         if(templateMessageDO != null && hrChatDO != null){
             UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("sysuser_id",
-                    String.valueOf(userUserDO.getId())).buildQuery());
+                    String.valueOf(userUserDO.getId())).and("wechat_id", hrChatDO.getId()).buildQuery());
             //获取申请者聚合号编号
             UserWxUserDO qx_userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("unionid",
                     String.valueOf(userWxDO.getUnionid())).and("wechat_id", Constant.QX_WECHAT_ID).buildQuery());
@@ -307,7 +307,7 @@ public class ResumeDeliveryService {
                         String.valueOf(applicationDO.getRecommenderUserId())).buildQuery());
                 if(userRecomDO == null) return response;
                 UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("sysuser_id",
-                        String.valueOf(userRecomDO.getId())).buildQuery());
+                        String.valueOf(userRecomDO.getId())).and("wechat_id", hrChatDO.getId()).buildQuery());
                 if(userWxDO == null) return response;
                 logger.info("给推荐者发送企业号模板消息编号："+templateMessageDO.id+";Template_id:"+templateMessageDO.getWxTemplateId()+";openid:"+userWxDO.getOpenid());
                 String link = handlerLink("recom").replace("{}", applicationDO.getId() + "");
@@ -343,7 +343,7 @@ public class ResumeDeliveryService {
                         String.valueOf(applicationDO.getRecommenderUserId())).buildQuery());
                 if(userRecomDO == null) return response;
                 UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("sysuser_id",
-                        String.valueOf(userRecomDO.getId())).buildQuery());
+                        String.valueOf(userRecomDO.getId())).and("wechat_id", hrChatDO.getId()).buildQuery());
                 if(userWxDO == null) return response;
                 UserWxUserDO qx_userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("unionid",
                         String.valueOf(userWxDO.getUnionid())).and("wechat_id", Constant.QX_WECHAT_ID).buildQuery());
