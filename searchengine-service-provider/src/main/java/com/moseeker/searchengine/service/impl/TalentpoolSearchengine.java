@@ -120,7 +120,7 @@ public class TalentpoolSearchengine {
         SearchResponse response = builder.execute().actionGet();
         Map<String,Object>result=searchUtil.handleData(response,"users");
         if(aggInfo!=null&&!aggInfo.isEmpty()){
-            result.put("agg",aggInfo);
+            result.put("aggs",aggInfo.get("aggs"));
         }
         return result;
     }
@@ -404,7 +404,7 @@ public class TalentpoolSearchengine {
         if(hitNum==0){
             return null;
         }
-        Map<String,Object> result=searchUtil.handleData(response,"agg");
+        Map<String,Object> result=searchUtil.handleData(response,"aggs");
         return result;
     }
     /*
