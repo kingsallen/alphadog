@@ -54,9 +54,9 @@ public class ChatThriftService implements Iface {
     }
 
     @Override
-    public void saveChat(int roomId, String content, int positionId, byte speaker) throws CURDException, TException {
+    public void saveChat(int roomId, String content, int positionId, byte speaker, byte origin) throws CURDException, TException {
         try {
-            chatService.saveChat(roomId, content, positionId, speaker);
+            chatService.saveChat(roomId, content, positionId, speaker, origin);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());

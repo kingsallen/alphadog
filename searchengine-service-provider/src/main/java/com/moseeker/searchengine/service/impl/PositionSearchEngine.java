@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -55,11 +56,13 @@ public class PositionSearchEngine {
                     return map;
                 }
             }
-        }finally{
+        } catch (Exception e) {
+            e.printStackTrace();
             if(client!=null){
                 client.close();
-                client=null;
             }
+            client=null;
+            EsClientInstance.closeEsClient();
         }
         return new HashMap<String,Object>();
     }
