@@ -77,6 +77,7 @@ public class TemlateMsgHttp {
             applierTemplate.put("url", link);
             applierTemplate.put("topcolor", template.getTopcolor());
             String result = null;
+            logger.info("模板数据Json化"+JSON.toJSONString(applierTemplate));
             result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
             Map<String, Object> params = JSON.parseObject(result);
             logger.info("向申请者发送模板消息结果----------"+params.get("errcode").toString());
@@ -125,6 +126,7 @@ public class TemlateMsgHttp {
             applierTemplate.put("template_id", template.getWxTemplateId());
             applierTemplate.put("url", link);
             applierTemplate.put("topcolor", template.getTopcolor());
+            logger.info("模板数据Json化"+JSON.toJSONString(applierTemplate));
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
             Map<String, Object> params = JSON.parseObject(result);
             logger.info("向推荐者发送模板消息结果----------" + params.get("errcode").toString());
@@ -174,6 +176,7 @@ public class TemlateMsgHttp {
             applierTemplate.put("template_id", template.getWxTemplateId());
             applierTemplate.put("url", link);
             applierTemplate.put("topcolor", template.getTopcolor());
+            logger.info("模板数据Json化"+JSON.toJSONString(applierTemplate));
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
             Map<String, Object> params = JSON.parseObject(result);
             logger.info("向HR发送模板消息结果----------" + params.get("errcode").toString());
