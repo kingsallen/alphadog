@@ -345,7 +345,7 @@ public class JobApplicataionService {
                     String.valueOf(jobApplication.company_id));
             // 获取当前申请次数 +1
 
-            UserApplyCount userApplyCount = initFromRedis(applicationCountCheck);
+            UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
             if (candidateSource == 0) {
                 userApplyCount.setSocialApplyCount(userApplyCount.getSocialApplyCount()+1);
             } else {
@@ -378,7 +378,7 @@ public class JobApplicataionService {
                         Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                         String.valueOf(jobApplication.getApplierId()),
                         String.valueOf(jobApplication.getCompanyId()));
-                UserApplyCount userApplyCount = initFromRedis(applicationCountCheck);
+                UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
 
                 if (!userApplyCount.isInit()) {
                     if (position.getCandidateSource() == 0) {
@@ -578,7 +578,7 @@ public class JobApplicataionService {
                     Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                     String.valueOf(userId), String.valueOf(companyId));
 
-            UserApplyCount userApplyCount = initFromRedis(applicationCountCheck);
+            UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
 
             UserApplyCount conf = getApplicationCountLimit((int) companyId);
             if (candidateSource == 0) {
@@ -594,27 +594,6 @@ public class JobApplicataionService {
             WarnService.notify(e);
         }
         return false;
-    }
-
-    /**
-     * 根据redis存储的内容，初始化用户投递次数
-     * @param redis redis中存储的内容
-     * @return
-     */
-    private UserApplyCount initFromRedis(String redis) {
-        UserApplyCount userApplyCount;
-        if (redis != null) {
-            if (redis.startsWith("{")) {
-                userApplyCount = JSONObject.parseObject(redis, UserApplyCount.class);
-            } else {
-                userApplyCount = new UserApplyCount();
-                userApplyCount.setSocialApplyCount(Integer.parseInt(redis));
-            }
-        } else {
-            userApplyCount = new UserApplyCount();
-            userApplyCount.setInit(true);
-        }
-        return userApplyCount;
     }
 
     /**
