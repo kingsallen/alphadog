@@ -141,7 +141,7 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
     /**
      * {@inheritDoc}
      */
-    @Override
+
     public Schema getSchema() {
         return Hrdb.HRDB;
     }

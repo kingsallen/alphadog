@@ -248,13 +248,6 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     }
 
     /**
-     * Fetch records that have <code>is_fresh_graduates IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIsFreshGraduates(Byte... values) {
-        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.IS_FRESH_GRADUATES, values);
-    }
-
-    /**
      * Fetch records that have <code>favorite_hrs IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByFavoriteHrs(String... values) {

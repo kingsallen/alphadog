@@ -191,7 +191,6 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
     /**
      * Rename this table
      */
-
     public HrTeam rename(String name) {
         return new HrTeam(name, null);
     }

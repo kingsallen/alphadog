@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = -2014873266;
+    private static final long serialVersionUID = 795206714;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
@@ -69,7 +69,7 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     /**
      * The column <code>hrdb.hr_search_condition.position_id</code>. 职位id,多个职位用,隔开
      */
-    public final TableField<HrSearchConditionRecord, String> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职位id,多个职位用,隔开");
+    public final TableField<HrSearchConditionRecord, String> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.VARCHAR.length(255).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职位id,多个职位用,隔开");
 
     /**
      * The column <code>hrdb.hr_search_condition.keyword</code>. 关键字
@@ -185,11 +185,6 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
      * The column <code>hrdb.hr_search_condition.tag_ids</code>. 标签id  -1 全部公开0我的收藏 其他则为tag_id，多个之间用逗号隔开
      */
     public final TableField<HrSearchConditionRecord, String> TAG_IDS = createField("tag_ids", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "标签id  -1 全部公开0我的收藏 其他则为tag_id，多个之间用逗号隔开");
-
-    /**
-     * The column <code>hrdb.hr_search_condition.is_fresh_graduates</code>. 是否刚毕业  1是
-     */
-    public final TableField<HrSearchConditionRecord, Byte> IS_FRESH_GRADUATES = createField("is_fresh_graduates", org.jooq.impl.SQLDataType.TINYINT, this, "是否刚毕业  1是");
 
     /**
      * The column <code>hrdb.hr_search_condition.favorite_hrs</code>.

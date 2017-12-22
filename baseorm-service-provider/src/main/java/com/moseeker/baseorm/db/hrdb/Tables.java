@@ -41,7 +41,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
-import com.moseeker.baseorm.db.hrdb.tables.HrTalentpoolApplication;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
@@ -272,11 +271,6 @@ public class Tables {
      * 人才库
      */
     public static final HrTalentpool HR_TALENTPOOL = com.moseeker.baseorm.db.hrdb.tables.HrTalentpool.HR_TALENTPOOL;
-
-    /**
-     * hr申请人才库记录表
-     */
-    public static final HrTalentpoolApplication HR_TALENTPOOL_APPLICATION = com.moseeker.baseorm.db.hrdb.tables.HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION;
 
     /**
      * 团队信息

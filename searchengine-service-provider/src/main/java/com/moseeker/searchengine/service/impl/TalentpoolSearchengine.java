@@ -546,15 +546,9 @@ public class TalentpoolSearchengine {
       按照年龄查询
      */
     private void queryByAge(List<Map<String,Integer>> ages,QueryBuilder queryBuilder){
-        searchUtil.shoudRangeAgeOrDegreeListFilter(ages,queryBuilder,"user.age");
+        searchUtil.shoudAgeFilter(ages,queryBuilder,"user.age");
     }
-    /*
-     将字符串转换成SON
-     */
-    private List<Map<String,Integer>> convertParams(String params){
-        List<Map<String,Integer>> list= (List<Map<String, Integer>>) JSON.toJSON(params);
-        return list;
-    }
+
     /*
       按照曾任职务查询
      */
@@ -593,8 +587,41 @@ public class TalentpoolSearchengine {
       按照工作年限查新
      */
     private void queryByWorkYear(String workYears,QueryBuilder queryBuilder){
-        List<Map<String,Integer>> list=this.convertParams(workYears);
-        searchUtil.shoudRangeAgeOrDegreeListFilter(list,queryBuilder,"user.work_year");
+        List<Map<String,Integer>> list=this.handlerWorkYears(workYears);//this.convertParams(workYears);
+        if(!StringUtils.isEmptyList(list)){
+            searchUtil.shoudWorkYearsListFilter(list,queryBuilder,"user.work_year");
+        }
+
+    }
+
+    private List<Map<String,Integer>> handlerWorkYears(String workYears){
+        List<String> list=searchUtil.stringConvertList(workYears);
+        List<Map<String,Integer>> result=new ArrayList<>();
+        for(String key:list){
+            int year=Integer.parseInt(key);
+            Map<String,Integer> map=new HashMap<>();
+            if(year==1){
+                map.put("min",0);
+                map.put("max",0);
+            }else if(year==2){
+                map.put("min",0);
+                map.put("max",1);
+            }else if(year==3){
+                map.put("min",1);
+                map.put("max",3);
+            }else if(year==4){
+                map.put("min",3);
+                map.put("max",5);
+            }else if(year==5){
+                map.put("min",5);
+                map.put("max",10);
+            }else{
+                map.put("min",0);
+                map.put("max",1);
+            }
+            result.add(map);
+        }
+        return result;
     }
     /*
       按照招聘进度查询

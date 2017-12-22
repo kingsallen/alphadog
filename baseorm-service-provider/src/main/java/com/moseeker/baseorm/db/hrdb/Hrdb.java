@@ -41,7 +41,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
-import com.moseeker.baseorm.db.hrdb.tables.HrTalentpoolApplication;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
@@ -86,7 +85,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1992621281;
+    private static final long serialVersionUID = -439950387;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -289,11 +288,6 @@ public class Hrdb extends SchemaImpl {
     public final HrTalentpool HR_TALENTPOOL = com.moseeker.baseorm.db.hrdb.tables.HrTalentpool.HR_TALENTPOOL;
 
     /**
-     * hr申请人才库记录表
-     */
-    public final HrTalentpoolApplication HR_TALENTPOOL_APPLICATION = com.moseeker.baseorm.db.hrdb.tables.HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION;
-
-    /**
      * 团队信息
      */
     public final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
@@ -442,7 +436,6 @@ public class Hrdb extends SchemaImpl {
             HrSearchCondition.HR_SEARCH_CONDITION,
             HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
             HrTalentpool.HR_TALENTPOOL,
-            HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION,
             HrTeam.HR_TEAM,
             HrTeamMember.HR_TEAM_MEMBER,
             HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,

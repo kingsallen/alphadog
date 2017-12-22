@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 1054826574;
+    private static final long serialVersionUID = -1602053093;
 
     /**
      * Setter for <code>hrdb.hr_search_condition.id</code>.
@@ -408,31 +408,17 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.is_fresh_graduates</code>. 是否刚毕业  1是
-     */
-    public void setIsFreshGraduates(Byte value) {
-        set(27, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_search_condition.is_fresh_graduates</code>. 是否刚毕业  1是
-     */
-    public Byte getIsFreshGraduates() {
-        return (Byte) get(27);
-    }
-
-    /**
      * Setter for <code>hrdb.hr_search_condition.favorite_hrs</code>.
      */
     public void setFavoriteHrs(String value) {
-        set(28, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_search_condition.favorite_hrs</code>.
      */
     public String getFavoriteHrs() {
-        return (String) get(28);
+        return (String) get(27);
     }
 
     // -------------------------------------------------------------------------
@@ -461,7 +447,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     /**
      * Create a detached, initialised HrSearchConditionRecord
      */
-    public HrSearchConditionRecord(Integer id, String name, String publisher, String positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type, String candidateSource, Byte isPublic, String origins, Byte isRecommend, String tagIds, Byte isFreshGraduates, String favoriteHrs) {
+    public HrSearchConditionRecord(Integer id, String name, String publisher, String positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type, String candidateSource, Byte isPublic, String origins, Byte isRecommend, String tagIds, String favoriteHrs) {
         super(HrSearchCondition.HR_SEARCH_CONDITION);
 
         set(0, id);
@@ -491,7 +477,6 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
         set(24, origins);
         set(25, isRecommend);
         set(26, tagIds);
-        set(27, isFreshGraduates);
-        set(28, favoriteHrs);
+        set(27, favoriteHrs);
     }
 }

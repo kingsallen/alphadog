@@ -112,7 +112,6 @@ public class HrdbHrHtml5Statistics extends TableImpl<HrdbHrHtml5StatisticsRecord
     /**
      * Rename this table
      */
-
     public HrdbHrHtml5Statistics rename(String name) {
         return new HrdbHrHtml5Statistics(name, null);
     }

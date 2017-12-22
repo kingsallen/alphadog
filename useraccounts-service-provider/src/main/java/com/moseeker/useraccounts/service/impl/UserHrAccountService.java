@@ -608,9 +608,7 @@ public class UserHrAccountService {
                 return ResponseUtils.fail("{'status':42004,'message':'保存失败，改筛选项名称已存在'}");
             }
             HrSearchConditionRecord record=BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class);
-            if(record.getIsFreshGraduates()==0){
-                record.setIsFreshGraduates(null);
-            }
+
             if(record.getIsPublic()==0){
                 record.setIsPublic(null);
             }

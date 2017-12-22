@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
 
-    private static final long serialVersionUID = -441300555;
+    private static final long serialVersionUID = -462704985;
 
     private Integer   id;
     private String    name;
@@ -52,7 +52,6 @@ public class HrSearchCondition implements Serializable {
     private String    origins;
     private Byte      isRecommend;
     private String    tagIds;
-    private Byte      isFreshGraduates;
     private String    favoriteHrs;
 
     public HrSearchCondition() {}
@@ -85,7 +84,6 @@ public class HrSearchCondition implements Serializable {
         this.origins = value.origins;
         this.isRecommend = value.isRecommend;
         this.tagIds = value.tagIds;
-        this.isFreshGraduates = value.isFreshGraduates;
         this.favoriteHrs = value.favoriteHrs;
     }
 
@@ -117,7 +115,6 @@ public class HrSearchCondition implements Serializable {
         String    origins,
         Byte      isRecommend,
         String    tagIds,
-        Byte      isFreshGraduates,
         String    favoriteHrs
     ) {
         this.id = id;
@@ -147,7 +144,6 @@ public class HrSearchCondition implements Serializable {
         this.origins = origins;
         this.isRecommend = isRecommend;
         this.tagIds = tagIds;
-        this.isFreshGraduates = isFreshGraduates;
         this.favoriteHrs = favoriteHrs;
     }
 
@@ -367,14 +363,6 @@ public class HrSearchCondition implements Serializable {
         this.tagIds = tagIds;
     }
 
-    public Byte getIsFreshGraduates() {
-        return this.isFreshGraduates;
-    }
-
-    public void setIsFreshGraduates(Byte isFreshGraduates) {
-        this.isFreshGraduates = isFreshGraduates;
-    }
-
     public String getFavoriteHrs() {
         return this.favoriteHrs;
     }
@@ -414,7 +402,6 @@ public class HrSearchCondition implements Serializable {
         sb.append(", ").append(origins);
         sb.append(", ").append(isRecommend);
         sb.append(", ").append(tagIds);
-        sb.append(", ").append(isFreshGraduates);
         sb.append(", ").append(favoriteHrs);
 
         sb.append(")");

@@ -156,9 +156,8 @@ struct SearchCondition {
    23: i32 is_public,//是否公开  1 公开
    24: string origins,//简历来源，
    25: i32 is_recommend,//是否内推  1是内推
-   26: i32 is_fresh_graduates,//是否刚毕业 1是
-   27: string tag_id,//标签id
-   28: string favorite_hrs//收藏人id
+   26: string tag_id,//标签id
+   27: string favorite_hrs//收藏人id
 }
 
 struct UserEmployeeStruct {

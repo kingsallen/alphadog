@@ -100,8 +100,6 @@ public class CompanyService {
     @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
 
-    @Autowired
-    private HrTalentPoolApplicationDao hrTalentPoolApplicationDao;
 
     @Autowired
     private UserHrAccountDao userHrAccountDao;

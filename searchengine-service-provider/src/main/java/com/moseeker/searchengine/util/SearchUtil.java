@@ -405,15 +405,37 @@ public class SearchUtil {
         return null;
     }
     /*
-     处理范围数据的查询语句
+     处理工作年龄数据的查询语句
      */
-    public void shoudRangeAgeOrDegreeListFilter(List<Map<String,Integer>> list,QueryBuilder query,String conditionField){
+    public void shoudWorkYearsListFilter(List<Map<String,Integer>> list,QueryBuilder query,String conditionField){
         if(list!=null&&list.size()>0){
             QueryBuilder keyand = QueryBuilders.boolQuery();
             for(Map<String,Integer> map:list){
                 int max=  map.get("max");
                 int min=  map.get("min");
-                QueryBuilder fullf = QueryBuilders.rangeQuery(conditionField).gt(min).lt(max);
+                if(max==min&&max==0){
+                    QueryBuilder fullf = QueryBuilders.matchQuery("user.is_fresh_graduates",1);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }else{
+                    QueryBuilder fullf = QueryBuilders.rangeQuery(conditionField).gt(min).lte(max);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).filter(keyand);
+        }
+    }
+    /*
+    按照年龄查询
+     */
+    public void shoudAgeFilter(List<Map<String,Integer>> list,QueryBuilder query,String conditionField){
+        if(list!=null&&list.size()>0){
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for(Map<String,Integer> map:list){
+                int max=  map.get("max");
+                int min=  map.get("min");
+                QueryBuilder fullf = QueryBuilders.rangeQuery(conditionField).gt(min).lte(max);
                 ((BoolQueryBuilder) keyand).should(fullf);
             }
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
