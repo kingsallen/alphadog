@@ -73,7 +73,7 @@ public class TemlateMsgHttp {
             colMap.put("time",dateTime);
             applierTemplate.put("data", JSON.toJSON(colMap));
             applierTemplate.put("touser", openId);
-            applierTemplate.put("template_id", template.getId());
+            applierTemplate.put("template_id", template.getWxTemplateId());
             applierTemplate.put("url", link);
             applierTemplate.put("topcolor", template.getTopcolor());
             String result = null;
@@ -122,7 +122,7 @@ public class TemlateMsgHttp {
             colMap.put("lastjob", lastWork);
             applierTemplate.put("data", JSON.toJSON(colMap));
             applierTemplate.put("touser", openId);
-            applierTemplate.put("template_id", template.getId());
+            applierTemplate.put("template_id", template.getWxTemplateId());
             applierTemplate.put("url", link);
             applierTemplate.put("topcolor", template.getTopcolor());
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
@@ -171,7 +171,7 @@ public class TemlateMsgHttp {
             colMap.put("lastjob", lastWork);
             applierTemplate.put("data", JSON.toJSON(colMap));
             applierTemplate.put("touser", openId);
-            applierTemplate.put("template_id", template.getId());
+            applierTemplate.put("template_id", template.getWxTemplateId());
             applierTemplate.put("url", link);
             applierTemplate.put("topcolor", template.getTopcolor());
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
