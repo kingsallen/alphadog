@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCcmailDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.logdb.LogEmailSendrecordDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileEducationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileWorkexpDao;
@@ -31,6 +32,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.logdb.LogEmailSendrecordDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileWorkexpDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
@@ -84,6 +86,8 @@ public class ResumeDeliveryService {
     private HrWxTemplateMessageDao wxTemplateMessageDao;
     @Autowired
     private DeliveryEmailProducer deliveryEmailToHr;
+    @Autowired
+    private LogEmailSendrecordDao emailSendrecordDao;
     @Autowired
     private JobPositionCcmailDao ccmailDao;
     @Autowired
@@ -158,6 +162,7 @@ public class ResumeDeliveryService {
                     }
                     sendSMSToHr(accountDo, positionDo, applicationDo);
                     sendEmailToHr(accountDo, companyDO, positionDo, applicationDo, userUserDO);
+                    logger.info("发送结束：--------");
                 }
                 break;
                 //聚合号
@@ -445,7 +450,11 @@ public class ResumeDeliveryService {
         emailStruct.put("subject", subject);
         emailStruct.put("to_name", accountDO.getUsername());
         emailStruct.put("to_email", accountDO.getEmail());
-        MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+        Response sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+        LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
+        emailrecord.setEmail("accountDO.getEmail()");
+        emailrecord.setContent(sendEmail.getMessage());
+        emailSendrecordDao.addData(emailrecord);
         if(positionDO.getProfile_cc_mail_enabled() == 1){
             List<JobPositionCcmail> ccmailList = ccmailDao.getDatas(new Query.QueryBuilder().where("position_id",
                     String.valueOf(positionDO.getId())).buildQuery());
@@ -453,6 +462,10 @@ public class ResumeDeliveryService {
                 for(JobPositionCcmail ccmail : ccmailList){
                     emailStruct.put("to_email", ccmail.getToEmail());
                     MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+                    LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
+                    emailrecord1.setEmail("accountDO.getEmail()");
+                    emailrecord1.setContent(sendEmail.getMessage());
+                    emailSendrecordDao.addData(emailrecord1);
                 }
             }
         }
