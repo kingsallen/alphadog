@@ -95,9 +95,11 @@ public class TalentPoolSearchTest {
 
     @Test
     public void testOriginQuery(){
-        String conditiond="1,1024,10000000000000,10000000000000,1000000000";
+        String conditiond="10000000000000000000000,100000000000000000000000,1000000000000000000000,10000000000000000000,100000000000000000000,4096,64,2048,32,8,16";
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleOrigins(conditiond,"39978",query);
     }
+
+
 }

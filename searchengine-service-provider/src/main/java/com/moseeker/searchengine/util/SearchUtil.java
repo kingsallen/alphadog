@@ -1,5 +1,6 @@
 package com.moseeker.searchengine.util;
 
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -455,7 +456,8 @@ public class SearchUtil {
                 ((BoolQueryBuilder) keyand).should(query0);
             }else{
                 if(condition.length()>8){
-                    QueryBuilder query0=QueryBuilders.matchQuery("user.origin_data",Long.parseLong(condition));
+                    BigInteger b = new BigInteger(condition);
+                    QueryBuilder query0=QueryBuilders.matchQuery("user.origin_data",b);
                     ((BoolQueryBuilder) keyand).should(query0);
                 }else{
                     QueryBuilder query0=QueryBuilders.matchQuery("user.applications.origin",Long.parseLong(condition));
