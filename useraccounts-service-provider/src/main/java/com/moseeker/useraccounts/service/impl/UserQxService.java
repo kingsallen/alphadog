@@ -33,6 +33,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.moseeker.common.biztools.LambdaTool.distinctByKey;
+
 /**
  * Created by lucky8987 on 17/4/20.
  */
@@ -221,7 +223,8 @@ public class UserQxService {
                         .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN));
                 Map<Integer, String> signatureMap = wechatDao.getDatas(
                         findWechatQuery.buildQuery()).stream()
-                        .collect(Collectors.toMap(k -> k.getCompanyId(), v -> v.getSignature()));
+                        .collect(Collectors.toMap(k -> k.getCompanyId(), v -> v.getSignature(), (companyId1, companyId2) -> companyId1));
+
 
                 List<CollectPositionForm> positionFormList = new ArrayList<>();
                 collectPositions.stream().filter(f -> positions.containsKey(f.getPositionId())).forEach(r -> {

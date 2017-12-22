@@ -181,7 +181,6 @@ public class HrCmsMedia extends TableImpl<HrCmsMediaRecord> {
     /**
      * Rename this table
      */
-
     public HrCmsMedia rename(String name) {
         return new HrCmsMedia(name, null);
     }

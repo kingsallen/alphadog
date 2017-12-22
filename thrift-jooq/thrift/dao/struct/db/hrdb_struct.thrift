@@ -75,13 +75,8 @@ struct HrCmsModuleDO {
 	1: optional i32 id,	//null
 	2: optional i32 pageId,	//hr_cms_pages.id
 	3: optional string moduleName,	//模块名称
-<<<<<<< HEAD
 	4: optional i32 type,	//1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情，10，动态
 	5: optional i32 orders,	//顺序
-=======
-	4: optional i32 type,	//1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情10，动态
-	5: optional i32 order,	//顺序
->>>>>>> master
 	6: optional string link,	//模板链接
 	7: optional i32 limit,	//限制显示数量，0为不限制
 	8: optional i32 disable,	//状态 0 是有效 1是无效
@@ -150,15 +145,6 @@ struct HrCompanyConfDO {
 	9: optional string recommendSuccess,	//推荐成功自定义文案
 	10: optional string forwardMessage,	//转发职位自定义文案
 	11: optional i32 applicationCountLimit,	//一个人在一个公司下每月申请次数限制
-<<<<<<< HEAD
-	12: optional string jobOccupation,	//自定义字段名称
-	13: optional string jobCustomTitle,	//职位自定义字段标题
-	14: optional string teamnameCustom,	//自定义部门别名
-	15: optional i32 newjdStatus,	//新jd页去设置状态 0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
-	16: optional string applicationTime,	//newjd_status即新的jd页的生效时间，
-	17: optional double hrChat,	//IM聊天开关，0：不开启，1：开启
-	18: optional double showQxOnly	//公司信息、团队信息、职位信息等只在仟寻展示，0: 否， 1: 是
-=======
 	12: optional string jobCustomTitle,	//职位自定义字段标题
 	13: optional string searchSeq,	//搜索页页面设置顺序,3#1#2
 	14: optional string searchImg,	//搜索页页面设置背景图
@@ -166,8 +152,6 @@ struct HrCompanyConfDO {
 	16: optional string teamnameCustom,	//自定义部门别名
 	17: optional string applicationTime,	//newjd_status即新的jd页的生效时间，
 	18: optional i32 newjdStatus	//新jd页去设置状态0是未开启，1是用户申请开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
->>>>>>> master
-
 }
 
 
