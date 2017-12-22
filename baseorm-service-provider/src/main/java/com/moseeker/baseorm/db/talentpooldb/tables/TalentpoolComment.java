@@ -151,7 +151,7 @@ public class TalentpoolComment extends TableImpl<TalentpoolCommentRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public TalentpoolComment rename(String name) {
         return new TalentpoolComment(name, null);
     }

@@ -127,6 +127,7 @@ public class TalentpoolUserTag extends TableImpl<TalentpoolUserTagRecord> {
     /**
      * Rename this table
      */
+    @Override
     public TalentpoolUserTag rename(String name) {
         return new TalentpoolUserTag(name, null);
     }
