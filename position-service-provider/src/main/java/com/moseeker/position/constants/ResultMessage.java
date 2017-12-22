@@ -25,6 +25,7 @@ public enum ResultMessage {
 	COMPANY_NOT_EXIST(100007, "公司不存在!"),
 	THIRD_PARTY_ACCOUNT_NOT_EXIST(100008,"未绑定该渠道下的账号!"),
 	CHANNEL_NOT_EXIST(100013,"没有对应的渠道!"),
+	AREADY_BINDING(100014,"正在绑定!"),
 
 	PROGRAM_PARAM_NOTEXIST(90015, "参数不正确!"),
 	SUCCESS(0, "success"),
