@@ -75,7 +75,9 @@ public class ExecutorParam {
                     Map<String, Object> importParam = new HashMap<>();
                     importParam.put("source", channelType.getValue());
                     importParam.put("data", JSON.toJSONString(paramMap));
-                    importParam.put("accountId", getUser().get("uid"));
+                    if (getUser().get("uid") != null) {
+                        importParam.put("accountId", getUser().get("uid"));
+                    }
                     importParam.put("userName", getUser().get("name"));
                     profileMap.put("import", importParam);
                 }

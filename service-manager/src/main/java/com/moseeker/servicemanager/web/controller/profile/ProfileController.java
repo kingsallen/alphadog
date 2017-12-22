@@ -388,14 +388,10 @@ public class ProfileController {
                                      @RequestParam int position_id, @RequestParam int channel,
                                      @RequestParam int appid,
                                      HttpServletRequest request) throws Exception {
+        logger.info("position_id:{}, channel:{}, appid:{}", position_id, channel, appid);
         if (file != null) {
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
             Response res = service.parseProfileAttachment(file.getOriginalFilename(), data);
-            /*Response res = new Response();
-            res.setMessage("success");
-            res.setStatus(0);
-            res.setData(data);
-            */System.out.println(res);
             if (res.getStatus() == 0) {
                 JSONObject params = new JSONObject();
                 JSONObject profile = JSON.parseObject(res.getData());
