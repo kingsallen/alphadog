@@ -253,7 +253,7 @@ public class ResumeDeliveryService {
             HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
                     Constant.QX_WECHAT_ID).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable","0").buildQuery());
             if( qx_userWxDO != null) {
-                logger.info("给求职者发送聚合号模板消息Template_id:"+templateMessageDO.id+";Template_id:"+templateMessageDO.getWxTemplateId()+";openid:"+userWxDO.getOpenid());
+                logger.info("给求职者发送聚合号模板消息id:"+templateMessageDOQX.id+";Template_id:"+templateMessageDOQX.getWxTemplateId()+";openid:"+qx_userWxDO.getOpenid());
                 String link = handlerLink("applier").replace("{}", application_id + "");
                 return msgHttp.handleApplierTemplate(positionDO, companyDO, hrChatDO, qx_userWxDO.getOpenid(), url, link, templateMessageDOQX);
             }
@@ -411,7 +411,7 @@ public class ResumeDeliveryService {
             HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
                     Constant.QX_WECHAT_ID).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable","0").buildQuery());
             String link ="";
-            logger.info("给HR发送聚合号模板消息编号："+templateMessageDOQX.id+";Template_id:"+templateMessageDOQX.getWxTemplateId()+";openid:"+hrWxUserDo.getOpenid());
+            logger.info("给HR发送聚合号模板消息编号："+templateMessageDOQX.id+";Template_id:"+templateMessageDOQX.getWxTemplateId()+";openid:"+qx_userWxDO.getOpenid());
             return  msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDOQX,
                     userUserDO, workExp, lastWorkName , qx_userWxDO.getOpenid(), url, link);
         }
