@@ -140,6 +140,10 @@ public class HRThirdPartyPositionDao  {
         return thirdPartyPositionDao(thirdPartyPositionDO.getChannel()).getData(thirdPartyPositionDO);
     }
 
+    public List<HrThirdPartyPositionDO> getSimpleDatas(Query query){
+        return thirdPartyPositionDao.getDatas(query);
+    }
+
     public <P> List<TwoParam<HrThirdPartyPositionDO,P>> getDatas(Query query) throws BIZException {
         List<HrThirdPartyPositionDO> list=thirdPartyPositionDao.getDatas(query);
         if(list==null || list.isEmpty()){

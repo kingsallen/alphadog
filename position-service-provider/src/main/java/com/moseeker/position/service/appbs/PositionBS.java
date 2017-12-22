@@ -78,6 +78,8 @@ public class PositionBS {
         //第三方职位列表，用来回写写到第三方职位表
         List<TwoParam<HrThirdPartyPositionDO,Object>> writeBackThirdPartyPositionList = new ArrayList<>();
 
+        List<HrThirdPartyPositionDO> alreadySyncPosition=positionSyncHandler.getAlreadySyncThirdPositions(moseekerJobPosition.getId());
+
         //用来同步到chaos的职位列表
         List<String>  positionsForSynchronizations=new ArrayList<>();
 
@@ -95,6 +97,11 @@ public class PositionBS {
                 continue;
             } else {
                 p.put("thirdPartyAccountId",avaliableAccount.getId());
+            }
+
+            if(positionSyncHandler.containsAlreadySyncThirdPosition(avaliableAccount.getId(),moseekerJobPosition.getId(),alreadySyncPosition)){
+                results.add(positionSyncHandler.createFailResult(channel,thirdPartyAccountId,ResultMessage.AREADY_BINDING.getMessage()));
+                continue;
             }
 
             ChannelType channelType=ChannelType.instaceFromInteger(channel);
@@ -120,7 +127,7 @@ public class PositionBS {
 
         // 提交到chaos处理
         logger.info("chaosService.synchronizePosition:{}", positionsForSynchronizations);
-        chaosService.synchronizePosition(positionsForSynchronizations);
+//        chaosService.synchronizePosition(positionsForSynchronizations);
 
         // 回写数据到第三方职位表表
         logger.info("write back to thirdpartyposition:{}",writeBackThirdPartyPositionList);
