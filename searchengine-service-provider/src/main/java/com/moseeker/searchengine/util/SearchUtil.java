@@ -455,10 +455,10 @@ public class SearchUtil {
                 ((BoolQueryBuilder) keyand).should(query0);
             }else{
                 if(condition.length()>8){
-                    QueryBuilder query0=QueryBuilders.matchQuery("user.origin_data",condition);
+                    QueryBuilder query0=QueryBuilders.matchQuery("user.origin_data",Long.parseLong(condition));
                     ((BoolQueryBuilder) keyand).should(query0);
                 }else{
-                    QueryBuilder query0=QueryBuilders.matchQuery("user.applications.origin",condition);
+                    QueryBuilder query0=QueryBuilders.matchQuery("user.applications.origin",Long.parseLong(condition));
                     ((BoolQueryBuilder) keyand).should(query0);
                 }
             }
