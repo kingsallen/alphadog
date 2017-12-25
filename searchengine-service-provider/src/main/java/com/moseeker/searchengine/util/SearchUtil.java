@@ -456,7 +456,6 @@ public class SearchUtil {
                 ((BoolQueryBuilder) keyand).should(query0);
             }else{
                 if(condition.length()>8){
-                    BigInteger b = new BigInteger(condition);
                     QueryBuilder query0=QueryBuilders.termQuery("user.origin_data",condition);
                     ((BoolQueryBuilder) keyand).should(query0);
                 }else{
