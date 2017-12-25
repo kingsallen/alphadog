@@ -210,15 +210,16 @@ public class TalentPoolEntity {
         if(StringUtils.isEmptySet(talentIdList)){
             result.put("nopower",userIdList);
             result.put("use",null);
-        }
-        Set<Integer> noUseIdList=new HashSet<>();
-        for(Integer userId:userIdList){
-            if(!talentIdList.contains(userId)){
-                noUseIdList.add(userId);
+        }else {
+            Set<Integer> noUseIdList = new HashSet<>();
+            for (Integer userId : userIdList) {
+                if (!talentIdList.contains(userId)) {
+                    noUseIdList.add(userId);
+                }
             }
+            result.put("nopower", noUseIdList);
+            result.put("use", talentIdList);
         }
-        result.put("nopower",noUseIdList);
-        result.put("use",talentIdList);
         return result;
     }
     /*

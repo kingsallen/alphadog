@@ -295,11 +295,13 @@ public class ParamUtils {
             params=params.replace("[","").replace("]","");
             String []arr=params.split(",");
             for(String items:arr){
-                list.add(Integer.parseInt(items));
+                list.add(Integer.parseInt(items.trim()));
             }
-
         }
         return list;
     }
+    /*
+
+     */
 
 }
