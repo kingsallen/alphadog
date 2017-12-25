@@ -303,7 +303,15 @@ public class PositionController {
             if (hbConfigId == null) {
                 throw new Exception("红包活动 id 不正确!");
             }
-            List<WechatRpPositionListData> rpPositionList = positonServices.getRpPositionList(hbConfigId);
+            String pageNum=(String)params.get("page_num");
+            String pageSize=(String)params.get("page_num");
+            if(StringUtils.isNullOrEmpty(pageNum)){
+                pageNum="1";
+            }
+            if(StringUtils.isNullOrEmpty(pageSize)){
+                pageSize="15";
+            }
+            List<WechatRpPositionListData> rpPositionList = positonServices.getRpPositionList(hbConfigId,Integer.parseInt(pageNum),Integer.parseInt(pageSize));
 
             Response res = ResponseUtils.success(rpPositionList);
             return ResponseLogNotification.success(request, res);
@@ -809,6 +817,14 @@ public class PositionController {
             String recomPushId=params.getString("recomPushId");
             String companyId=params.getString("companyId");
             String type=params.getString("type");
+            String pageNum=(String)params.get("page_num");
+            String pageSize=(String)params.get("page_num");
+            if(StringUtils.isNullOrEmpty(pageNum)){
+                pageNum="1";
+            }
+            if(StringUtils.isNullOrEmpty(pageSize)){
+                pageSize="15";
+            }
             if(StringUtils.isNullOrEmpty(recomPushId)){
                 return ResponseLogNotification.fail(request, "推荐id不能为空");
             }
@@ -818,7 +834,11 @@ public class PositionController {
             if(StringUtils.isNullOrEmpty(type)){
                 type="1";
             }
-            Response result=positonServices.getEmployeeRecomPositionByIds(Integer.parseInt(recomPushId),Integer.parseInt(companyId),Integer.parseInt(type));
+
+            Response result=positonServices.getEmployeeRecomPositionByIds(
+                    Integer.parseInt(recomPushId),Integer.parseInt(companyId),Integer.parseInt(type)
+                    ,Integer.parseInt(pageNum),Integer.parseInt(pageSize)
+            );
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage());
