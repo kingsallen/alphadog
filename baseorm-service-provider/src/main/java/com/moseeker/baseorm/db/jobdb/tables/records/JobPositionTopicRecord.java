@@ -5,9 +5,7 @@ package com.moseeker.baseorm.db.jobdb.tables.records;
 
 
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
-
 import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Row2;

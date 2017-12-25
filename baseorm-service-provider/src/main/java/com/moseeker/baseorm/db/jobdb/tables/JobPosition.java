@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = 1623730294;
+    private static final long serialVersionUID = -2110736378;
 
     /**
      * The reference instance of <code>jobdb.job_position</code>
@@ -359,7 +359,7 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
     /**
      * The column <code>jobdb.job_position.current_status</code>. 已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
      */
-    public final TableField<JobPositionRecord, Byte> CURRENT_STATUS = createField("current_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭");
+    public final TableField<JobPositionRecord, Byte> CURRENT_STATUS = createField("current_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭");
 
     /**
      * The column <code>jobdb.job_position.position_code</code>. 职能字典code, dict_position.code
@@ -370,6 +370,11 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
      * The column <code>jobdb.job_position.team_id</code>. 职位所属团队
      */
     public final TableField<JobPositionRecord, Integer> TEAM_ID = createField("team_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "职位所属团队");
+
+    /**
+     * The column <code>jobdb.job_position.profile_cc_mail_enabled</code>. 简历申请是否抄送邮箱，0 否；1 是
+     */
+    public final TableField<JobPositionRecord, Byte> PROFILE_CC_MAIL_ENABLED = createField("profile_cc_mail_enabled", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "简历申请是否抄送邮箱，0 否；1 是");
 
     /**
      * Create a <code>jobdb.job_position</code> table reference
@@ -436,6 +441,7 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
     /**
      * Rename this table
      */
+    @Override
     public JobPosition rename(String name) {
         return new JobPosition(name, null);
     }

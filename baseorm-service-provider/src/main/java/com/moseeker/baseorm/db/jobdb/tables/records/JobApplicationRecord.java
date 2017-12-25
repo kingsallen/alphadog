@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationRecord> {
 
-    private static final long serialVersionUID = -185182340;
+    private static final long serialVersionUID = 1277309212;
 
     /**
      * Setter for <code>jobdb.job_application.id</code>.
@@ -408,22 +408,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     }
 
     /**
-<<<<<<< HEAD
-     * Setter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄经历导入）; 1024: email 申请
-=======
      * Setter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄经历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才
->>>>>>> feature/application_list
      */
     public void setOrigin(Integer value) {
         set(27, value);
     }
 
     /**
-<<<<<<< HEAD
-     * Getter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄经历导入）; 1024: email 申请
-=======
      * Getter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄经历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才
->>>>>>> feature/application_list
      */
     public Integer getOrigin() {
         return (Integer) get(27);

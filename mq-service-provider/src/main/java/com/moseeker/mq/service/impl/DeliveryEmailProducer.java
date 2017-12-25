@@ -13,6 +13,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
@@ -107,7 +108,7 @@ public class DeliveryEmailProducer {
                     educations = constantDO.getName();
             }
             List<Map<String, String>> eduList = new ArrayList<>();
-            for(int i = 0 ; i< educationDOList.size()-1; i++){
+            for(int i = 0 ; i< educationDOList.size(); i++){
                 if(i>1){break;}
                 ProfileEducationDO education = educationDOList.get(i);
                 Map<String, String> educationMap = new HashMap<>();
@@ -156,7 +157,7 @@ public class DeliveryEmailProducer {
 
         if(workexpDOList!= null && workexpDOList.size()>0){
             List<Map<String, String>> workList = new ArrayList<>();
-            for(int i = 0 ; i< workexpDOList.size()-1; i++) {
+            for(int i = 0 ; i< workexpDOList.size(); i++) {
                 if(i>2){break;}
                 ProfileWorkexpDO workexpDO = workexpDOList.get(i);
                 Map<String, String> workMap = new HashMap<>();
@@ -172,8 +173,13 @@ public class DeliveryEmailProducer {
                 HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where("id",
                         workexpDO.getCompanyId()).buildQuery());
                 workMap.put("workCompany", "");
-                if (companyDO != null)
-                    workMap.put("workCompany", companyDO.getAbbreviation());
+                if (companyDO != null) {
+                    if(StringUtils.isNotNullOrEmpty(companyDO.getName())){
+                        workMap.put("workCompany", companyDO.getName());
+                    }else{
+                        workMap.put("workCompany", companyDO.getAbbreviation());
+                    }
+                }
                 workList.add(workMap);
             }
             map.put("workList", workList);
