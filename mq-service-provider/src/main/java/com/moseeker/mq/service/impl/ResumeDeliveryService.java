@@ -14,7 +14,6 @@ import com.moseeker.baseorm.dao.profiledb.ProfileWorkexpDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionCcmail;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCcmailRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -333,7 +332,6 @@ public class ResumeDeliveryService {
      */
     public Response sendTemplateMessageToRecom(HrWxTemplateMessageDO templateMessageDO, HrWxWechatDO hrChatDO, UserUserDO userDO,
                                            JobPositionDO positionDO, JobApplicationDO applicationDO, String workExp, String lastWorkName){
-
         List<HrWxNoticeMessageDO> wxNoticeMessageDO = null;
         Response response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         if(hrChatDO != null && applicationDO != null){
@@ -491,10 +489,12 @@ public class ResumeDeliveryService {
             emailStruct.put("templateName", Constant.ANNEX_RESUME_INFORM_HR);
             Map<String, Object> params = deliveryEmailToHr.annexEmailBody(companyDO, positionDO, userUserDO);
             emailStruct.put("mergeVars", params);
-        }else{
+        }else if(applicationDO.getApplyType() == 0){
             emailStruct.put("templateName", Constant.RESUME_INFORM_HR);
             Map<String, Object> params = deliveryEmailToHr.emailBady(companyDO, positionDO, userUserDO);
             emailStruct.put("mergeVars", params);
+        }else{
+            return ;
         }
 
         String subject = positionDO.getTitle()+"-"+userUserDO.getName()+"-职位申请通知";

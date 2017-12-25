@@ -173,7 +173,7 @@ public class DeliveryEmailProducer {
                 HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where("id",
                         workexpDO.getCompanyId()).buildQuery());
                 workMap.put("workCompany", "");
-                if (companyDO != null) {
+                if (companyDO != null){
                     if(StringUtils.isNotNullOrEmpty(companyDO.getName())){
                         workMap.put("workCompany", companyDO.getName());
                     }else{
