@@ -184,7 +184,7 @@ public class TalentPoolServiceTest {
     @Test
     public void getAllComment(){
         int userId=2191508;
-        int hrId=82752;
+        int hrId=91337;
         int companyId=39978;
         Response res=talentPoolService.getAllTalentComment(hrId,companyId,userId,1,10);
         System.out.println(res);
@@ -227,6 +227,17 @@ public class TalentPoolServiceTest {
         int companyId=39978;
         int userId=2191508;
         Response res=talentPoolService.getUserOrigin(hrId,companyId,userId);
+        System.out.println(res);
+    }
+
+    @Test
+    public void testGetPublicAndHrTalentByUserIdList(){
+        int hrId=82690;
+        int companyId=4;
+        int userId=393846;
+        Set<Integer> userIdSet=new HashSet<>();
+        userIdSet.add(userId);
+        Response res=talentPoolService.getPublicAndHrTalentByUserIdList(hrId,companyId,userIdSet);
         System.out.println(res);
     }
 

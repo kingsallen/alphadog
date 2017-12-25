@@ -344,16 +344,6 @@ public class CompanyServicesImpl implements Iface {
         }
     }
 
-    @Override
-    public Response upsertTalentPoolApp(int hrId, int companyId) throws BIZException, TException {
-        try{
-            Response result=service.upsertTalentPoolApplication(hrId,companyId);
-            return result;
-        }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }
-    }
 
     @Override
     public Response updateHrCompanyConf(HrCompanyConf hrCompanyConf) throws BIZException, TException {

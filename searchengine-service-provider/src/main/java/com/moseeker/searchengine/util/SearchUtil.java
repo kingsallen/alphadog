@@ -1,15 +1,17 @@
 package com.moseeker.searchengine.util;
 
-
+import java.math.BigInteger;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -30,11 +32,11 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 
 @Service
 public class SearchUtil {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+	Logger logger = LoggerFactory.getLogger(this.getClass());
     //启动es客户端
-    public  TransportClient getEsClient() {
 
-            return EsClientInstance.getClient();
+    public TransportClient getEsClient() {
+        return EsClientInstance.getClient();
     }
     /*
      * 拼接city
@@ -129,75 +131,75 @@ public class SearchUtil {
 
     //处理聚合的结果
     public Map<String,Object> handleAggs(Aggregations aggs){
-        List<Aggregation> list=aggs.asList();
-        Map<String,Object> map=new HashMap<String,Object>();
-        for(Aggregation agg:list){
-            String name=agg.getName();
-            Object data=agg.getProperty("value");
-            map.put(name, data);
-        }
-        return map;
+    	List<Aggregation> list=aggs.asList();
+    	Map<String,Object> map=new HashMap<String,Object>();
+    	for(Aggregation agg:list){
+    		String name=agg.getName();
+    		Object data=agg.getProperty("value");
+    		map.put(name, data);
+    	}
+    	return map;
     }
 
-    //处理es的返回数据
+  //处理es的返回数据
     public Map<String,Object> handleData(SearchResponse response,String dataName){
-        Map<String,Object> data=new HashMap<String,Object>();
-        Aggregations aggs=response.getAggregations();
-        if(aggs!=null){
+    	Map<String,Object> data=new HashMap<String,Object>();
+    	Aggregations aggs=response.getAggregations();
+    	if(aggs!=null){
             Map<String, Object> aggsMap=handleAggs(aggs);
             data.put("aggs", aggsMap);
         }
-        SearchHits hit=response.getHits();
-        long totalNum=hit.getTotalHits();
-        data.put("totalNum", totalNum);
-        SearchHit[] searchData=hit.getHits();
-        if(totalNum>0){
-            List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
-            for(SearchHit ss:searchData){
-                Map<String,Object> obj=ss.getSource();
-                list.add(obj);
-            }
-            data.put(dataName, list);
-        }
-        return data;
+    	SearchHits hit=response.getHits();
+    	long totalNum=hit.getTotalHits();
+    	data.put("totalNum", totalNum);
+    	SearchHit[] searchData=hit.getHits();
+    	if(totalNum>0){
+    		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+    		for(SearchHit ss:searchData){
+    			Map<String,Object> obj=ss.getSource();
+    			list.add(obj);
+    		}
+    		data.put(dataName, list);
+    	}
+    	return data;
     }
 
     //组装prefix关键字查询语句
     public void handleKeyWordForPrefix(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
-        if(StringUtils.isNotEmpty(keywords)){
-            QueryBuilder keyand = QueryBuilders.boolQuery();
-            for(String field:list){
-                QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery(field, keywords);
-                ((BoolQueryBuilder) keyand).should(fullf);
-            }
-            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+    	if(StringUtils.isNotEmpty(keywords)){
+    		QueryBuilder keyand = QueryBuilders.boolQuery();
+    		for(String field:list){
+    			QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery(field, keywords);
+        		((BoolQueryBuilder) keyand).should(fullf);
+    		}
+    		((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(keyand);
-        }
+    	}
     }
 
-    //组装query_string关键字查询语句
+	 //组装query_string关键字查询语句
     public void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
-        if(StringUtils.isNotEmpty(keywords)){
-            hasKey=true;
-            String words[]=keywords.split(",");
-            QueryBuilder keyand = QueryBuilders.boolQuery();
-            StringBuffer sb=new StringBuffer();
-            for(int i=0;i<words.length;i++){
-                if(i==words.length-1){
-                    sb.append(words[i]);
-                }else{
-                    sb.append(words[i]+" or ");
-                }
-            }
-            String condition=sb.toString();
-            QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
-            for(String field:list){
-                fullf.field(field);
-            }
-            ((BoolQueryBuilder) keyand).must(fullf);
+    	if(StringUtils.isNotEmpty(keywords)){
+    		hasKey=true;
+    		String words[]=keywords.split(",");
+    		QueryBuilder keyand = QueryBuilders.boolQuery();
+    		StringBuffer sb=new StringBuffer();
+    		for(int i=0;i<words.length;i++){
+    			if(i==words.length-1){
+    				sb.append(words[i]);
+    			}else{
+    				sb.append(words[i]+" or ");
+    			}
+    		}
+    		String condition=sb.toString();
+    		QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
+    		for(String field:list){
+    			fullf.field(field);
+    		}
+    		((BoolQueryBuilder) keyand).must(fullf);
             ((BoolQueryBuilder) query).must(keyand);
         }
-    }
+   }
     //组装query_string关键字带权重查询语句
     public void keyWordforQueryStringPropery(String keywords,QueryBuilder query,List<String> fieldList,List<Integer> properyList){
         if(StringUtils.isNotEmpty(keywords)){
@@ -222,26 +224,26 @@ public class SearchUtil {
         }
     }
     public AbstractAggregationBuilder handle(String fieldName,String name){
-        StringBuffer sb=new StringBuffer();
-        sb.append("scale=");
-        sb.append(fieldName);
-        sb.append(";if(scale  in _agg['transactions'] ){}");
-        sb.append("else{_agg['transactions'].add(scale)};");
-        String mapScript=sb.toString();
-        StringBuffer sb1=new StringBuffer();
-        sb1.append("jsay=[];");
-        sb1.append("for(a in _aggs){");
-        sb1.append("for(ss in a){");
-        sb1.append("if(ss in jsay||!ss){}");
-        sb1.append("else{jsay.add(ss);}}};");
-        sb1.append("return jsay");
-        String reduceScript=sb1.toString();
-        StringBuffer sb2=new StringBuffer();
-        sb2.append("jsay=[];");
-        sb2.append("for(ss in _agg['transactions']){jsay.add(ss)};");
-        sb2.append("return jsay");
-        String combinScript=sb2.toString();
-        MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric(name)
+    	StringBuffer sb=new StringBuffer();
+    	sb.append("scale=");
+    	sb.append(fieldName);
+    	sb.append(";if(scale  in _agg['transactions'] ){}");
+    	sb.append("else{_agg['transactions'].add(scale)};");
+    	String mapScript=sb.toString();
+    	StringBuffer sb1=new StringBuffer();
+    	sb1.append("jsay=[];");
+    	sb1.append("for(a in _aggs){");
+    	sb1.append("for(ss in a){");
+    	sb1.append("if(ss in jsay||!ss){}");
+    	sb1.append("else{jsay.add(ss);}}};");
+    	sb1.append("return jsay");
+    	String reduceScript=sb1.toString();
+    	StringBuffer sb2=new StringBuffer();
+    	sb2.append("jsay=[];");
+    	sb2.append("for(ss in _agg['transactions']){jsay.add(ss)};");
+    	sb2.append("return jsay");
+    	String combinScript=sb2.toString();
+    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric(name)
                 .initScript(new Script("_agg['transactions'] = []"))
                 .mapScript(new Script(mapScript))
                 .reduceScript(new Script(reduceScript))
@@ -307,17 +309,17 @@ public class SearchUtil {
     }
 
     public void shouldQuery(Map<String,Object> map,QueryBuilder query){
-        if(map!=null&&!map.isEmpty()){
-            QueryBuilder keyand = QueryBuilders.boolQuery();
-            for(String key:map.keySet()){
-                QueryBuilder fullf = QueryBuilders.termsQuery(key,map.get(key));
-                ((BoolQueryBuilder) keyand).should(fullf);
-            }
-            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
-            ((BoolQueryBuilder) query).must(keyand);
-        }
+    	if(map!=null&&!map.isEmpty()){
+			QueryBuilder keyand = QueryBuilders.boolQuery();
+			for(String key:map.keySet()){
+				QueryBuilder fullf = QueryBuilders.termsQuery(key,map.get(key));
+				((BoolQueryBuilder) keyand).should(fullf);
+			}
+			((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+			((BoolQueryBuilder) query).must(keyand);
+		}
 
-    }
+	}
 
     /**
      * term查询，查询的值包含单个值
@@ -392,7 +394,7 @@ public class SearchUtil {
     }
 
     //将xx,xx,xx格式的字符串转化为list
-    private List<String> stringConvertList(String keyWords) {
+    public List<String> stringConvertList(String keyWords) {
         if (StringUtils.isNotEmpty(keyWords)) {
             String[] array = keyWords.split(",");
             List<String> list = new ArrayList<String>();
@@ -404,21 +406,105 @@ public class SearchUtil {
         return null;
     }
     /*
-     处理范围数据的查询语句
+     处理工作年龄数据的查询语句
      */
-    public void shoudRangeAgeOrDegreeListFilter(List<Map<String,Integer>> list,QueryBuilder query,String conditionField){
+    public void shoudWorkYearsListFilter(List<Map<String,Integer>> list,QueryBuilder query,String conditionField){
         if(list!=null&&list.size()>0){
             QueryBuilder keyand = QueryBuilders.boolQuery();
             for(Map<String,Integer> map:list){
                 int max=  map.get("max");
                 int min=  map.get("min");
-                QueryBuilder fullf = QueryBuilders.rangeQuery(conditionField).gt(min).lt(max);
+                if(max==min&&max==0){
+                    QueryBuilder fullf = QueryBuilders.matchQuery("user.is_fresh_graduates",1);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }else{
+                    QueryBuilder fullf = QueryBuilders.rangeQuery(conditionField).gt(min).lte(max);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).filter(keyand);
+        }
+    }
+    /*
+    按照年龄查询
+     */
+    public void shoudAgeFilter(List<Map<String,Integer>> list,QueryBuilder query,String conditionField){
+        if(list!=null&&list.size()>0){
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for(Map<String,Integer> map:list){
+                int max=  map.get("max");
+                int min=  map.get("min");
+                QueryBuilder fullf = QueryBuilders.rangeQuery(conditionField).gt(min).lte(max);
                 ((BoolQueryBuilder) keyand).should(fullf);
             }
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).filter(keyand);
         }
     }
+    /*
+    专门处理来源的问题
+     */
+    public void handleOrigins(String conditions,String companyId,QueryBuilder builder){
+        List<String> list=this.stringConvertList(conditions);
+        QueryBuilder keyand = QueryBuilders.boolQuery();
+        for(String condition:list){
+            QueryBuilder keyand1 = QueryBuilders.boolQuery();
+            if("1".equals(condition)){
+                QueryBuilder query0=QueryBuilders.matchQuery("user.upload",1);
+                ((BoolQueryBuilder) keyand).should(query0);
+            }else{
+                if(condition.length()>8){
+                    QueryBuilder query0=QueryBuilders.termQuery("user.origin_data",condition);
+                    ((BoolQueryBuilder) keyand).should(query0);
+                }else{
+                    QueryBuilder query0=QueryBuilders.matchQuery("user.applications.origin",Long.parseLong(condition));
+                    ((BoolQueryBuilder) keyand).should(query0);
+                }
+            }
+        }
+        ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+        ((BoolQueryBuilder) builder).filter(keyand);
+        System.out.println(builder.toString());
+    }
+    /*
+     处理按照标签查询
+     */
+    public void handlerTagIds(String tagIds,String hrId,QueryBuilder builder){
+        List<String> tagIdList=this.stringConvertList(tagIds);
+        if(!tagIdList.contains("alltalent")){
+
+            if(tagIdList.size()==1){
+                if(tagIdList.contains("allpublic")){
+                    handleMatch(1,builder,"user.talent_pool.is_public");
+                }else if(tagIdList.contains("talent")){
+                    handleMatch(Integer.parseInt(hrId),builder,"user.talent_pool.hr_id");
+                }else{
+                        handleMatch(Integer.parseInt(tagIdList.get(0)),builder,"user.talent_pool.tags.id");
+                }
+
+            }else{
+                QueryBuilder keyand = QueryBuilders.boolQuery();
+                if(tagIdList.contains("allpublic")){
+                    QueryBuilder query0=QueryBuilders.matchQuery("user.talent_pool.is_public",1);
+                    ((BoolQueryBuilder) keyand).should(query0);
+                    tagIdList.remove("allpublic");
+                }
+                if(tagIdList.size()>0&&tagIdList.contains("talent")){
+                    QueryBuilder query1=QueryBuilders.matchQuery("user.talent_pool.hr_id",Integer.parseInt(hrId));
+                    ((BoolQueryBuilder) keyand).should(query1);
+                    tagIdList.remove("talent");
+                }
+                if(tagIdList.size()>0){
+                    QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.tags.id",tagIdList);
+                    ((BoolQueryBuilder) keyand).should(query2);
+
+                }
+                ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+                ((BoolQueryBuilder) builder).must(keyand);
+            }
+        }
+    }
 
 }
-

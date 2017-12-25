@@ -3,6 +3,7 @@ package com.moseeker.position.service.fundationbs;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
@@ -52,6 +53,7 @@ import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
@@ -521,7 +523,7 @@ public class PositionService {
         // 需要作废的第三方职位
         List<Integer> thirdPartyPositionDisablelist = new ArrayList<>();
         // 返回同步需要的的id以及对应的thirdParty_position
-        Map<Integer,String> syncData=new HashMap<>();
+        List<ThirdPartyPositionForm> syncData=new ArrayList<>();
         // 返回新增或者更新失败的职位信息
         List<JobPositionFailMess> jobPositionFailMessPojos = new ArrayList<>();
         // 需要删除的城市的数据ID列表
@@ -665,8 +667,8 @@ public class PositionService {
                             //添加修改标题的职位对应的需要作废的第三方职位数据parent_id
                             thirdPartyPositionDisablelist.add(record.getId());
                         }
-                        // 需要同步的数据
-                        syncData.put(record.getId(),jobPositionHandlerDate.getThirdParty_position());
+                        addSyncData(syncData,record.getId(),jobPositionHandlerDate.getThirdParty_position());
+
 
 
                         // 需要更新JobPositionCity数据
@@ -722,7 +724,7 @@ public class PositionService {
                 // 需要新增的JobPosition数据
                 jobPositionAddRecordList.add(record);
                 // 需要同步的数据
-                syncData.put(record.getId(),jobPositionHandlerDate.getThirdParty_position());
+                addSyncData(syncData,record.getId(),jobPositionHandlerDate.getThirdParty_position());
 
                 if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra()) || jobOccupationId != 0 || customId != 0) {
                     // 新增jobPostion_ext数据
@@ -807,6 +809,19 @@ public class PositionService {
         }
         logger.info("-------批量修改职位结束---------");
         return jobPostionResponse;
+    }
+
+    public void addSyncData(List<ThirdPartyPositionForm> syncData, int positionId, String data){
+        if(syncData==null || StringUtils.isNullOrEmpty(data)) return;
+        // 需要同步的数据
+        ThirdPartyPositionForm form=new ThirdPartyPositionForm();
+        form.setPositionId(positionId);
+
+        TypeReference<List<String>> typeRef
+                = new TypeReference<List<String>>() {};
+        List<String> channels= JSON.parseObject(data,typeRef);
+        form.setChannels(channels);
+        syncData.add(form);
     }
 
     /**

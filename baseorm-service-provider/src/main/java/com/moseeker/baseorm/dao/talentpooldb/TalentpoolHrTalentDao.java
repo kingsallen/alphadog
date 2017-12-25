@@ -1,7 +1,6 @@
 package com.moseeker.baseorm.dao.talentpooldb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 
-import com.moseeker.baseorm.db.hrdb.tables.HrTalentpoolApplication;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrTalentRecord;
 import org.jooq.impl.TableImpl;
@@ -28,7 +27,7 @@ public class TalentpoolHrTalentDao extends JooqCrudImpl<com.moseeker.baseorm.db.
                 TalentpoolHrTalent.TALENTPOOL_HR_TALENT.USER_ID)
                 .values(hrId, userId)
                 .onDuplicateKeyUpdate()
-                .set(HrTalentpoolApplication.HR_TALENTPOOL_APPLICATION.UPDATE_TIME,new Timestamp(System.currentTimeMillis()))
+                .set(TalentpoolHrTalent.TALENTPOOL_HR_TALENT.UPDATE_TIME,new Timestamp(System.currentTimeMillis()))
                 .execute();
         return result;
     }
