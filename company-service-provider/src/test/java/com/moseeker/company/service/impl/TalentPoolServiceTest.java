@@ -120,16 +120,16 @@ public class TalentPoolServiceTest {
 
     @Test
     public void testBatchAddNewTalentTag() throws TException {
-        int hrId=82752;
-        int companyId=39978;
+        int hrId=82690;
+        int companyId=4;
         Set<Integer> userIdList=new HashSet<>();
-        userIdList.add(2191508);
-        userIdList.add(2191513);
-        userIdList.add(2191525);
-        userIdList.add(2191558);
+        userIdList.add(393846);
+//        userIdList.add(2191513);
+//        userIdList.add(2191525);
+//        userIdList.add(2191558);
         Set<Integer> tagIdList=new HashSet<>();
-        tagIdList.add(1);
-        tagIdList.add(2);
+        tagIdList.add(5);
+        tagIdList.add(3);
         Response res=talentPoolService.addNewBatchTalentTag(hrId,userIdList,tagIdList,companyId);
         System.out.println(res);
     }

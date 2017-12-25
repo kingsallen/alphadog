@@ -89,44 +89,7 @@ public class TalentPoolService {
         }
         return ResponseUtils.success("");
     }
-    /*
-  获取此账号是不是此公司的主账号
-  */
-    private int validateHrAndCompany(int hrId,int companyId){
-        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("account_type",0).or("account_type",1)
-                .buildQuery();
-        int count =userHrAccountDao.getCount(query);
-        return count;
-    }
-    /*
-      根据公司id获取公司配置
-     */
-    private HrCompanyConfRecord getHrCompanyConfRecordByCompanyId(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
-        HrCompanyConfRecord hrCompanyConfRecord=hrCompanyConfDao.getRecord(query);
-        return hrCompanyConfRecord;
-    }
 
-    public Response addTalent(int hrId, int userId, int companyId) throws TException {
-        Response res=validateHrAndUser(hrId,userId,companyId);
-        if(res!=null){
-            return res;
-        }
-        int flag=talentpoolHrTalentDao.upserTalpoolHrTalent(userId,companyId);
-        if(flag==0){
-            throw new TException();
-        }
-        int count=this.getTalentpoolHrTalentCount(userId,hrId);
-        if(count>0){
-            return ResponseUtils.fail(1,"已收藏该人才");
-        }
-        talentPoolEntity.handlerTalentpoolTalent(userId,companyId,0,0,1);
-        List<Map<String,Object>> list=talentPoolEntity.getHrAboutTalent(userId,companyId);
-        Map<String,Object> result=new HashMap<>();
-        result.put("user_id",userId);
-        result.put("hrs",list);
-        return ResponseUtils.success(result);
-    }
 
     /*
      批量添加人才
@@ -172,41 +135,6 @@ public class TalentPoolService {
         return ResponseUtils.success(result);
     }
 
-    /*
-      取消收藏人才
-      @auth:zzt
-      @params: hrId hr编号
-               userId 用户的编号
-               companyId 公司的编号
-      @return: response(status:0,message:"success,data:[])
-               response(status:1,message:"xxxxxx")
-     */
-    @CounterIface
-
-    public Response cancelTalent(int hrId, int userId, int companyId)throws TException{
-        Response res=validateHrAndUser(hrId,userId,companyId);
-        if(res!=null){
-            return res;
-        }
-        int count=this.getTalentpoolHrTalentCount(userId,hrId);
-        if(count==0){
-            return ResponseUtils.fail(1,"已取消该人才");
-        }
-        TalentpoolHrTalentRecord record=new TalentpoolHrTalentRecord();
-        record.setUserId(userId);
-        record.setHrId(hrId);
-        int flag=talentpoolHrTalentDao.deleteRecord(record);
-        talentPoolEntity.handlerTalentpoolTalent(userId,companyId,0,0,-1);
-        List<Map<String,Object>> list=talentPoolEntity.getHrAboutTalent(userId,companyId);
-        Map<String,Object> result=new HashMap<>();
-        result.put("user_id",userId);
-        result.put("hrs",list);
-        Set<Integer> userIdList=new HashSet<>();
-        userIdList.add(userId);
-        //删除标签
-        this.handleCancleTag(hrId,userIdList);
-        return ResponseUtils.success(result);
-    }
     /*
       批量取消人才
       @auth:zzt
@@ -723,7 +651,7 @@ public class TalentPoolService {
         }
         int validate=this.validatePublic(hrId,userIdList);
         if(validate==0){
-            return ResponseUtils.fail(1,"无法满足批量操作的条件");
+            return ResponseUtils.fail(1,"无法满足操作条件");
         }
         if(validate==2){
             return ResponseUtils.fail(1,"在公开的人员中存在已公开的人员");
@@ -764,7 +692,7 @@ public class TalentPoolService {
         }
         boolean validate=this.validateCanclePublic(hrId,userIdList);
         if(!validate){
-            return ResponseUtils.fail(1,"无法满足批量操作的条件");
+            return ResponseUtils.fail(1,"无法满足操作条件");
         }
         List<TalentpoolHrTalentRecord> list=new ArrayList<>();
         for(Integer userId:userIdList){
@@ -1299,13 +1227,13 @@ public class TalentPoolService {
         Map<String,Object> validateResult=this.validateUserIdTag(hrId,userIdList,tagIdList,companyId);
         Set<Integer> idList= (Set<Integer>) validateResult.get("use");
         if(StringUtils.isEmptySet(idList)){
-            result.put("result",ResponseUtils.fail(1,"该无权操作这些人才"));
+            result.put("result",ResponseUtils.fail(1,"该hr无权操作这些人才"));
             return result;
         }
         Map<String,Object> validateTag=this.validateTag(idList,hrId);
         boolean flagTag= (boolean) validateTag.get("result");
         if(!flagTag){
-            result.put("result",ResponseUtils.fail(1,"不满足批量操作条件"));
+            result.put("result",ResponseUtils.fail(1,"不满足操作条件"));
             return result;
         }
         List<Map<String,Object>> hrTagList= (List<Map<String,Object>>) validateTag.get("hrTagList");
@@ -1699,12 +1627,32 @@ public class TalentPoolService {
         client.lpush(Constant.APPID_ALPHADOG,
                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
     }
-
+    /*
+     将set转换为list
+     */
     private List<Integer> converSetToList(Set<Integer> userIdSet){
         List<Integer> userIdList=new ArrayList<>();
         for(Integer id:userIdSet){
             userIdList.add(id);
         }
         return userIdList;
+    }
+
+    /*
+    获取此账号是不是此公司的主账号
+    */
+    private int validateHrAndCompany(int hrId,int companyId){
+        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("account_type",0).or("account_type",1)
+                .buildQuery();
+        int count =userHrAccountDao.getCount(query);
+        return count;
+    }
+    /*
+      根据公司id获取公司配置
+     */
+    private HrCompanyConfRecord getHrCompanyConfRecordByCompanyId(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+        HrCompanyConfRecord hrCompanyConfRecord=hrCompanyConfDao.getRecord(query);
+        return hrCompanyConfRecord;
     }
 }

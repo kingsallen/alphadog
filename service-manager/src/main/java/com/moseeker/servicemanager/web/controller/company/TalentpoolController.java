@@ -41,6 +41,9 @@ public class TalentpoolController {
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
             List<Integer> userIdList=(List<Integer>)data.get("user_ids");
+            if(StringUtils.isEmptyList(userIdList)){
+                return  ResponseLogNotification.fail(request,"userId不能为空");
+            }
             Response result = service.batchAddTalent(hrId,userIdList,companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -59,6 +62,9 @@ public class TalentpoolController {
             int hrId=Integer.parseInt(String.valueOf( data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
             List<Integer> userIdList=ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
+            if(StringUtils.isEmptyList(userIdList)){
+                return  ResponseLogNotification.fail(request,"userId不能为空");
+            }
             Response result = service.batchCancelTalent(hrId,userIdList,companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -160,6 +166,12 @@ public class TalentpoolController {
             int companyId=(int) data.get("company_id");
             List<Integer> userIdList=(List<Integer>)data.get("user_ids");
             List<Integer> tagIdList=(List<Integer>)data.get("tag_ids");
+            if(StringUtils.isEmptyList(tagIdList)){
+                return  ResponseLogNotification.fail(request,"标签不能为空");
+            }
+            if(StringUtils.isEmptyList(userIdList)){
+                return  ResponseLogNotification.fail(request,"userId不能为空");
+            }
             Response result = service.batchAddTalentTag(hrId,userIdList,tagIdList,companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -179,6 +191,12 @@ public class TalentpoolController {
             int companyId=(int) data.get("company_id");
             List<Integer> userIdList=(List<Integer>)data.get("user_ids");
             List<Integer> tagIdList=(List<Integer>)data.get("tag_ids");
+            if(StringUtils.isEmptyList(tagIdList)){
+                return  ResponseLogNotification.fail(request,"标签不能为空");
+            }
+            if(StringUtils.isEmptyList(userIdList)){
+                return  ResponseLogNotification.fail(request,"userId不能为空");
+            }
             Response result = service.batchNewAddTalentTag(hrId,userIdList,tagIdList,companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -197,6 +215,12 @@ public class TalentpoolController {
             int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
             List<Integer> userIdList=ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
             List<Integer> tagIdList=ParamUtils.convertIntList(String.valueOf(data.get("tag_ids")));
+            if(StringUtils.isEmptyList(tagIdList)){
+                return  ResponseLogNotification.fail(request,"标签不能为空");
+            }
+            if(StringUtils.isEmptyList(userIdList)){
+                return  ResponseLogNotification.fail(request,"userId不能为空");
+            }
             Response result = service.batchCancleTalentTag(hrId,userIdList,tagIdList,companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -215,6 +239,9 @@ public class TalentpoolController {
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
             List<Integer> userIdList=(List<Integer>)data.get("user_ids");
+            if(StringUtils.isEmptyList(userIdList)){
+                return  ResponseLogNotification.fail(request,"userId不能为空");
+            }
             Response result = service.batchAddPublicTalent(hrId,companyId,userIdList);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -261,6 +288,9 @@ public class TalentpoolController {
             int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
             List<Integer> userIdList=ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
+            if(StringUtils.isEmptyList(userIdList)){
+                return  ResponseLogNotification.fail(request,"userId不能为空");
+            }
             Response result = service.batchCancelPublicTalent(hrId,companyId,userIdList);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
