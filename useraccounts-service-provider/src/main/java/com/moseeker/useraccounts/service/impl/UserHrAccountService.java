@@ -605,7 +605,7 @@ public class UserHrAccountService {
             row = hrSearchConditionDao.getCount(query.buildQuery());
             if (row > 0) {
                 logger.warn("保存常用筛选失败，筛选项名称={}，已存在", searchCondition.getName());
-                return ResponseUtils.fail("{'status':42004,'message':'保存失败，改筛选项名称已存在'}");
+                return ResponseUtils.fail("{'status':42004,'message':'保存失败，该筛选项名称已存在'}");
             }
             HrSearchConditionRecord record=BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class);
 
