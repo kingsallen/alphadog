@@ -142,7 +142,10 @@ public class TemlateMsgHttp {
             resuname.setColor("#173177");
             resuname.setValue(user.getName());
             colMap.put("resuname",resuname);
-            colMap.put("realname",resuname);
+            MessageTplDataCol realname=new MessageTplDataCol();
+            realname.setColor("#173177");
+            realname.setValue(user.getName());
+            colMap.put("realname",realname);
             MessageTplDataCol exp=new MessageTplDataCol();
             exp.setColor("#173177");
             exp.setValue(workExp);

@@ -22,6 +22,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MandrillMailSend;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.MessageTemplateEntity;
@@ -572,13 +573,19 @@ public class ResumeDeliveryService {
                     HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where("id",
                             workexpDO.getCompanyId()).buildQuery());
                     if (companyDO != null) {
-                        return companyDO.getAbbreviation();
+                        if(StringUtils.isNotNullOrEmpty(companyDO.getName())){
+                            return companyDO.getName();
+                        }else{
+                            return companyDO.getAbbreviation();
+                        }
                     }
                 }
             }
             HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where("id",
                     workexpDOList.get(workexpDOList.size() - 1).getCompanyId()).buildQuery());
-            if (companyDO != null) {
+            if(StringUtils.isNotNullOrEmpty(companyDO.getName())){
+                return companyDO.getName();
+            }else{
                 return companyDO.getAbbreviation();
             }
         }
