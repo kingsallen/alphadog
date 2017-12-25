@@ -208,10 +208,8 @@ public final class Constant {
 
     public static final long BIND_GET_REDIS_TIMEOUT=240000;
 
-    public static final int HELPER_WECHAT_ID = 278; //hr的微信号标记
-    public static final int QX_WECHAT_ID = 276; //hr的微信号标记
 
-    public static final int TEMPLATES_APPLY_NOTICE_TPL = 3; //申请成功时 的消息通知ID
+    public static final int TEMPLATES_APPLY_NOTICE_TPL = 3; //申请成功时的消息通知ID
     public static final int TEMPLATES_NEW_RESUME_TPL = 24; // 新简历通知的消息通知ID
 
     public static final int TEMPLATES_SWITCH_APPLY_NOTICE_TPL = 29; //申请成功时 的消息通知ID

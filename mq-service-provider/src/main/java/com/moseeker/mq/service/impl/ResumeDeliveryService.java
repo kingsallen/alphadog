@@ -99,14 +99,20 @@ public class ResumeDeliveryService {
     private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
     private static final String mandrillApikey = propertiesReader.get("mandrill.apikey", String.class);
 
+    /**
+     * 职位申请发送信息
+     * @param application_id 申请编号
+     * @return
+     */
     public Response sendMessageAndEmail(int application_id) {
-        logger.info("application_id是------"+application_id);
+        logger.info("职位申请编号："+application_id);
         Query query=new Query.QueryBuilder().where("id",
                 String.valueOf(application_id)).buildQuery();
         JobApplicationDO applicationDo = applicationDao.getData(query);
         if(applicationDo != null && applicationDo.getPositionId() >0 && applicationDo.getApplierId()>0){
             JobPositionDO positionDo = positionDao.getData(new Query.QueryBuilder().where("id",
                     String.valueOf(applicationDo.getPositionId())).buildQuery());
+            logger.info("职位对象信息："+positionDo.toString());
             if(positionDo == null){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
@@ -116,10 +122,7 @@ public class ResumeDeliveryService {
             UserHrAccountDO accountDo = accountDao.getData(new Query.QueryBuilder().where("id",
                     String.valueOf(positionDo.getPublisher())).buildQuery());
             UserWxUserDO hrWxUserDo = null;
-            if(accountDo != null)
-                //获取hr的微信号
-                hrWxUserDo = wxUserDao.getData(new Query.QueryBuilder().where("id",
-                        String.valueOf(accountDo.getWxuserId())).and("wechat_id", Constant.HELPER_WECHAT_ID).buildQuery());
+
             List<HrWxNoticeMessageDO> wxNoticeMessageDO = null;
             //申请者用户
             UserUserDO userUserDO = userDao.getData(new Query.QueryBuilder().where("id",
@@ -132,13 +135,16 @@ public class ResumeDeliveryService {
                     String.valueOf(companyDO.getId())).and("authorized",1).buildQuery());
             if(hrChatDO == null) return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 
-            //Hr关注的微信公众号
-            HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where("id",
-                    Constant.HELPER_WECHAT_ID).buildQuery());
-
+            //关注的微信公众号
+            HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where("signature",
+                    env.getProperty("wechat.helper.signature")).buildQuery());
+            if(accountDo != null)
+                //获取hr的微信号
+                hrWxUserDo = wxUserDao.getData(new Query.QueryBuilder().where("id",
+                        String.valueOf(accountDo.getWxuserId())).and("wechat_id", hrWxWechatDO.getId()).buildQuery());
             //关注的聚合号
-            HrWxWechatDO aggregationChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where("id",
-                    Constant.QX_WECHAT_ID).buildQuery());
+            HrWxWechatDO aggregationChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where("signature",
+                    env.getProperty("wechat.qx.signature")).buildQuery());
             //向求职者发送的模板
             HrWxTemplateMessageDO templateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
                     String.valueOf(hrChatDO.getId())).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable","0").buildQuery());
@@ -148,11 +154,11 @@ public class ResumeDeliveryService {
                     String.valueOf(hrChatDO.getId())).and("sys_template_id", Constant.TEMPLATES_NEW_RESUME_TPL).and("disable","0").buildQuery());
 
             HrWxTemplateMessageDO templateMessageDOForHr = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                    String.valueOf(Constant.HELPER_WECHAT_ID)).and("sys_template_id", Constant.TEMPLATES_NEW_RESUME_TPL).and("disable","0").buildQuery());
+                    hrWxWechatDO.getId()).and("sys_template_id", Constant.TEMPLATES_NEW_RESUME_TPL).and("disable","0").buildQuery());
             //工作年限
             String workExp = calculate_workyears(applicationDo.getApplierId()+"");
             String lastWorkName = lastWorkName(applicationDo.getApplierId()+"");
-            logger.info("申请来源：-----"+applicationDo.getOrigin());
+            logger.info("简历来源："+applicationDo.getOrigin());
             switch (applicationDo.getOrigin()){
                 //企业号
                 case 2:{
@@ -173,7 +179,6 @@ public class ResumeDeliveryService {
                     }
                     sendSMSToHr(accountDo, positionDo, applicationDo);
                     sendEmailToHr(accountDo, companyDO, positionDo, applicationDo, userUserDO);
-                    logger.info("发送结束：--------");
                 }
                 break;
                 //聚合号
@@ -214,11 +219,13 @@ public class ResumeDeliveryService {
 
     /**
      * 给求职者发送企业号模板消息
-     * @param templateMessageDO
-     * @param hrChatDO
-     * @param userUserDO
-     * @param companyDO
-     * @param positionDO
+     * @param templateMessageDO 模板对象
+     * @param hrChatDO          求职者关注的企业号
+     * @param userUserDO        求职者对象
+     * @param application_id    申请编号
+     * @param companyDO         公司对象
+     * @param positionDO        职位编号
+     * @return                  发送状态
      */
     public Response sendTemplateMessageToApplier(HrWxTemplateMessageDO templateMessageDO, HrWxWechatDO hrChatDO, UserUserDO userUserDO,
         int application_id, HrCompanyDO companyDO, JobPositionDO positionDO) {
@@ -230,7 +237,6 @@ public class ResumeDeliveryService {
             UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("sysuser_id",
                     String.valueOf(userUserDO.getId())).and("wechat_id", hrChatDO.getId()).buildQuery());
             if(userWxDO == null) return response;
-            logger.info("给求职者发送企业号模板消息Template_id:"+templateMessageDO.id+";Template_id:"+templateMessageDO.getWxTemplateId()+";openid:"+userWxDO.getOpenid());
             //获取企业号消息模板发送开关
             wxNoticeMessageDO = wxNoticeMessageDao.getDatas(new Query.QueryBuilder().where("wechat_id",
                     String.valueOf(hrChatDO.getId())).and("notice_id", Constant.TEMPLATES_SWITCH_APPLY_NOTICE_TPL).and("status", "1").buildQuery());
@@ -246,14 +252,16 @@ public class ResumeDeliveryService {
         }
         return response;
     }
+
     /**
      * 给求职者发送聚合号模板消息
-     * @param templateMessageDO
-     * @param hrChatDO
-     * @param userUserDO
-     * @param application_id
-     * @param companyDO
-     * @param positionDO
+     * @param templateMessageDO 聚合号模板
+     * @param hrChatDO          仟寻聚合号
+     * @param userUserDO        申请者对象
+     * @param application_id    申请编号
+     * @param companyDO         公司信息
+     * @param positionDO        职位信息
+     * @return                  发送结果
      */
     public Response sendTemplateMessageToApplierByQX(HrWxTemplateMessageDO templateMessageDO, HrWxWechatDO hrChatDO, UserUserDO userUserDO,
                                              int application_id, HrCompanyDO companyDO, JobPositionDO positionDO) {
@@ -266,12 +274,11 @@ public class ResumeDeliveryService {
                     String.valueOf(userUserDO.getId())).and("wechat_id", hrChatDO.getId()).buildQuery());
             //获取申请者聚合号编号
             UserWxUserDO qx_userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("unionid",
-                    String.valueOf(userWxDO.getUnionid())).and("wechat_id", Constant.QX_WECHAT_ID).buildQuery());
+                    String.valueOf(userWxDO.getUnionid())).and("wechat_id", hrChatDO.getId()).buildQuery());
             //向求职者发送的模板
             HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                    Constant.QX_WECHAT_ID).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable","0").buildQuery());
+                    hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable","0").buildQuery());
             if( qx_userWxDO != null) {
-                logger.info("给求职者发送聚合号模板消息id:"+templateMessageDOQX.id+";Template_id:"+templateMessageDOQX.getWxTemplateId()+";openid:"+qx_userWxDO.getOpenid());
                 String link = handlerLink("applier").replace("{}", application_id + "");
                 return msgHttp.handleApplierTemplate(positionDO, companyDO, hrChatDO, qx_userWxDO.getOpenid(), url, link, templateMessageDOQX);
             }
@@ -281,11 +288,11 @@ public class ResumeDeliveryService {
 
     /**
      * 向申请者发送短信
-     * @param companyDO
-     * @param positionDO
-     * @param applicationDO
-     * @param userUserDO
-     * @return
+     * @param companyDO     公司对象
+     * @param positionDO    职位对象
+     * @param applicationDO 职位申请信息
+     * @param userUserDO    申请者对象
+     * @return  短信发送状态
      */
     public Response sendSMSToApplier(HrCompanyDO companyDO, JobPositionDO positionDO, JobApplicationDO applicationDO, UserUserDO userUserDO){
 
@@ -300,12 +307,13 @@ public class ResumeDeliveryService {
 
     /**
      * 向推荐人发送模板消息
-     * @param templateMessageDO
-     * @param hrChatDO
-     * @param positionDO
-     * @param applicationDO
-     * @param workExp
-     * @param lastWorkName
+     * @param templateMessageDO 推荐人的模板对象
+     * @param hrChatDO          公司企业号
+     * @param positionDO        职位信息
+     * @param applicationDO     职位申请信息
+     * @param workExp           工作年限
+     * @param lastWorkName      上一份工作的公司
+     * @return
      */
     public Response sendTemplateMessageToRecom(HrWxTemplateMessageDO templateMessageDO, HrWxWechatDO hrChatDO,
                                            JobPositionDO positionDO, JobApplicationDO applicationDO, String workExp, String lastWorkName){
@@ -327,10 +335,7 @@ public class ResumeDeliveryService {
                 UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("sysuser_id",
                         String.valueOf(userRecomDO.getId())).and("wechat_id", hrChatDO.getId()).buildQuery());
                 if(userWxDO == null) return response;
-                logger.info("给推荐者发送企业号模板消息编号："+templateMessageDO.id+";Template_id:"+templateMessageDO.getWxTemplateId()+";openid:"+userWxDO.getOpenid());
-                String link = handlerLink("recom").replace("{}", applicationDO.getId() + "");
-                link += "?wechat_signature=";
-                link = link + hrChatDO.getSignature();
+                String link = handlerLink("recom") + "?wechat_signature="+ hrChatDO.getSignature();
                 return msgHttp.handleRecomTemplate(positionDO, hrChatDO, templateMessageDO, userRecomDO, workExp, lastWorkName, userWxDO.getOpenid(), url, link);
             }
         }
@@ -339,11 +344,12 @@ public class ResumeDeliveryService {
 
     /**
      * 向推荐者发送聚合号信息
-     * @param hrChatDO
-     * @param positionDO
-     * @param applicationDO
-     * @param workExp
-     * @param lastWorkName
+     * @param hrChatDO      仟寻聚合号
+     * @param positionDO    职位信息
+     * @param applicationDO 职位申请信息
+     * @param workExp       工作年限
+     * @param lastWorkName  上一个公司名称
+     * @return
      */
     public Response sendTemplateMessageToRecomByQX( HrWxWechatDO hrChatDO, JobPositionDO positionDO, JobApplicationDO applicationDO,
                                             String workExp, String lastWorkName){
@@ -366,16 +372,13 @@ public class ResumeDeliveryService {
                         String.valueOf(userRecomDO.getId())).and("wechat_id", hrChatDO.getId()).buildQuery());
                 if(userWxDO == null) return response;
                 UserWxUserDO qx_userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("unionid",
-                        String.valueOf(userWxDO.getUnionid())).and("wechat_id", Constant.QX_WECHAT_ID).buildQuery());
+                        String.valueOf(userWxDO.getUnionid())).and("wechat_id", hrChatDO.getId()).buildQuery());
                 if(qx_userWxDO == null) return response;
 
                 //向推荐者发送的模板
                 HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                        Constant.QX_WECHAT_ID).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable", "0").buildQuery());
-                String link = handlerLink("recom").replace("{}", applicationDO.getId() + "");
-                logger.info("给推荐者发送聚合号模板消息编号："+templateMessageDOQX.id+";Template_id:"+templateMessageDOQX.getWxTemplateId()+";openid:"+userWxDO.getOpenid());
-                link += "?wechat_signature=";
-                link = link + hrChatDO.getSignature();
+                        hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable", "0").buildQuery());
+                String link = handlerLink("recom")+ "?wechat_signature="+ hrChatDO.getSignature();;
                 return msgHttp.handleRecomTemplate(positionDO, hrChatDO, templateMessageDOQX, userRecomDO, workExp, lastWorkName, qx_userWxDO.getOpenid(), url, link);
             }
         }
@@ -383,17 +386,17 @@ public class ResumeDeliveryService {
     }
 
 
-
     /**
      * 向HR发送模板消息
-     * @param templateMessageDO
-     * @param hrChatDO
-     * @param userUserDO
-     * @param hrWxUserDo
-     * @param accountDO
-     * @param positionDO
-     * @param workExp
-     * @param lastWorkName
+     * @param templateMessageDO 模板信心
+     * @param hrChatDO          仟寻HR公众号
+     * @param userUserDO        申请者信息
+     * @param hrWxUserDo        hr微信号信息
+     * @param accountDO         hr账号信息
+     * @param positionDO        职位信息
+     * @param workExp           工作年限
+     * @param lastWorkName      上一个公司名称
+     * @return
      */
     public Response sendTemplateMessageToHr(HrWxTemplateMessageDO templateMessageDO, HrWxWechatDO hrChatDO, UserUserDO userUserDO,
                                           UserWxUserDO hrWxUserDo, UserHrAccountDO accountDO, JobPositionDO positionDO,
@@ -411,13 +414,13 @@ public class ResumeDeliveryService {
 
     /**
      * 简历投递通过聚合号给HR发送消息
-     * @param hrChatDO
-     * @param userUserDO
-     * @param hrWxUserDo
-     * @param accountDO
-     * @param positionDO
-     * @param workExp
-     * @param lastWorkName
+     * @param hrChatDO      hr注册聚合号信息
+     * @param userUserDO    申请者信息
+     * @param hrWxUserDo    hr微信号信息
+     * @param accountDO     hr账号
+     * @param positionDO    职位信息
+     * @param workExp       工作年限
+     * @param lastWorkName  上一公司名称
      * @return
      */
     public Response sendTemplateMessageToHrQX( HrWxWechatDO hrChatDO, UserUserDO userUserDO,
@@ -427,11 +430,11 @@ public class ResumeDeliveryService {
         if(hrWxUserDo != null ){
             String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
             UserWxUserDO qx_userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("unionid",
-                    String.valueOf(hrWxUserDo.getUnionid())).and("wechat_id", Constant.QX_WECHAT_ID).buildQuery());
+                    String.valueOf(hrWxUserDo.getUnionid())).and("wechat_id", hrChatDO.getId()).buildQuery());
             if(qx_userWxDO==null) return response;
             //向Hr发送的模板
             HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                    Constant.QX_WECHAT_ID).and("sys_template_id", Constant.TEMPLATES_NEW_RESUME_TPL).and("disable","0").buildQuery());
+                    env.getProperty("wechat.qx.signature")).and("sys_template_id", Constant.TEMPLATES_NEW_RESUME_TPL).and("disable","0").buildQuery());
             String link ="";
             logger.info("给HR发送聚合号模板消息编号："+templateMessageDOQX.id+";Template_id:"+templateMessageDOQX.getWxTemplateId()+";openid:"+qx_userWxDO.getOpenid());
             return  msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDOQX,
@@ -443,9 +446,9 @@ public class ResumeDeliveryService {
 
     /**
      * 向HR发送短信
-     * @param accountDO
-     * @param positionDO
-     * @param applicationDO
+     * @param accountDO     hr账号信息
+     * @param positionDO    职位信息
+     * @param applicationDO 职位申请信息
      * @return
      */
     public Response sendSMSToHr(UserHrAccountDO accountDO, JobPositionDO positionDO, JobApplicationDO applicationDO) {
@@ -458,12 +461,12 @@ public class ResumeDeliveryService {
     }
 
     /**
-     * 向HR发送邮件
-     * @param accountDO
-     * @param companyDO
-     * @param positionDO
-     * @param applicationDO
-     * @param userUserDO
+     * 给Hr发送邮件
+     * @param accountDO     hr账号信息
+     * @param companyDO     公司信息
+     * @param positionDO    职位信心
+     * @param applicationDO 职位申请信息
+     * @param userUserDO    申请者信息
      */
     public void sendEmailToHr(UserHrAccountDO accountDO,HrCompanyDO companyDO, JobPositionDO positionDO, JobApplicationDO applicationDO, UserUserDO userUserDO){
 
@@ -479,14 +482,17 @@ public class ResumeDeliveryService {
         }
 
         String subject = positionDO.getTitle()+"-"+userUserDO.getName()+"-职位申请通知";
+        logger.info("邮件名称："+subject);
         emailStruct.put("subject", subject);
         emailStruct.put("to_name", accountDO.getUsername());
         emailStruct.put("to_email", accountDO.getEmail());
         Response sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
         LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
-        emailrecord.setEmail("accountDO.getEmail()");
+        emailrecord.setEmail(accountDO.getEmail());
         emailrecord.setContent(sendEmail.getMessage());
+        logger.info("发送邮箱地址："+accountDO.getEmail());
         emailSendrecordDao.addData(emailrecord);
+        logger.info("是否启用抄送邮箱："+positionDO.getProfile_cc_mail_enabled()+";判断结果："+(positionDO.getProfile_cc_mail_enabled() == 1));
         if(positionDO.getProfile_cc_mail_enabled() == 1){
             List<JobPositionCcmail> ccmailList = ccmailDao.getDatas(new Query.QueryBuilder().where("position_id",
                     String.valueOf(positionDO.getId())).buildQuery());
@@ -494,8 +500,9 @@ public class ResumeDeliveryService {
                 for(JobPositionCcmail ccmail : ccmailList){
                     emailStruct.put("to_email", ccmail.getToEmail());
                     MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+                    logger.info("抄送邮箱地址："+ccmail.getToEmail());
                     LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
-                    emailrecord1.setEmail("accountDO.getEmail()");
+                    emailrecord1.setEmail(accountDO.getEmail());
                     emailrecord1.setContent(sendEmail.getMessage());
                     emailSendrecordDao.addData(emailrecord1);
                 }
