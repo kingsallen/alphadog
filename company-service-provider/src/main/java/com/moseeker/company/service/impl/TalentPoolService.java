@@ -723,7 +723,7 @@ public class TalentPoolService {
         }
         int validate=this.validatePublic(hrId,userIdList);
         if(validate==0){
-            return ResponseUtils.fail(1,"无法满足批量操作的条件");
+            return ResponseUtils.fail(1,"无法满足操作条件");
         }
         if(validate==2){
             return ResponseUtils.fail(1,"在公开的人员中存在已公开的人员");
@@ -764,7 +764,7 @@ public class TalentPoolService {
         }
         boolean validate=this.validateCanclePublic(hrId,userIdList);
         if(!validate){
-            return ResponseUtils.fail(1,"无法满足批量操作的条件");
+            return ResponseUtils.fail(1,"无法满足操作条件");
         }
         List<TalentpoolHrTalentRecord> list=new ArrayList<>();
         for(Integer userId:userIdList){
@@ -1299,13 +1299,13 @@ public class TalentPoolService {
         Map<String,Object> validateResult=this.validateUserIdTag(hrId,userIdList,tagIdList,companyId);
         Set<Integer> idList= (Set<Integer>) validateResult.get("use");
         if(StringUtils.isEmptySet(idList)){
-            result.put("result",ResponseUtils.fail(1,"该无权操作这些人才"));
+            result.put("result",ResponseUtils.fail(1,"该hr无权操作这些人才"));
             return result;
         }
         Map<String,Object> validateTag=this.validateTag(idList,hrId);
         boolean flagTag= (boolean) validateTag.get("result");
         if(!flagTag){
-            result.put("result",ResponseUtils.fail(1,"不满足批量操作条件"));
+            result.put("result",ResponseUtils.fail(1,"不满足操作条件"));
             return result;
         }
         List<Map<String,Object>> hrTagList= (List<Map<String,Object>>) validateTag.get("hrTagList");
