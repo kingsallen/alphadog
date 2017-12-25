@@ -304,7 +304,7 @@ public class PositionController {
                 throw new Exception("红包活动 id 不正确!");
             }
             String pageNum=(String)params.get("page_num");
-            String pageSize=(String)params.get("page_num");
+            String pageSize=(String)params.get("page_size");
             if(StringUtils.isNullOrEmpty(pageNum)){
                 pageNum="1";
             }
@@ -818,7 +818,7 @@ public class PositionController {
             String companyId=params.getString("companyId");
             String type=params.getString("type");
             String pageNum=(String)params.get("page_num");
-            String pageSize=(String)params.get("page_num");
+            String pageSize=(String)params.get("page_size");
             if(StringUtils.isNullOrEmpty(pageNum)){
                 pageNum="1";
             }
