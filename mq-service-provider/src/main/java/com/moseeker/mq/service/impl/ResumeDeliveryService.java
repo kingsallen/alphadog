@@ -166,13 +166,13 @@ public class ResumeDeliveryService {
                     if(sendResponse.getStatus()!=0) {
                         sendTemplateMessageToApplierByQX(templateMessageDO, aggregationChatDO, userUserDO, application_id, companyDO, positionDo);
                     }
-                    sendSMSToApplier(companyDO, positionDo, applicationDo, userUserDO);
+                    sendSMSToApplier(companyDO, positionDo, applicationDo, userUserDO, "4");
                     sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
                     if(sendResponse.getStatus() !=0) {
                         sendTemplateMessageToHrQX(aggregationChatDO, userUserDO, hrWxUserDo, accountDo, positionDo,  workExp, lastWorkName);
                     }
-                    sendSMSToHr(accountDo, positionDo, applicationDo);
+                    sendSMSToHr(accountDo, positionDo, applicationDo, "4");
                     sendEmailToHr(accountDo, companyDO, positionDo, applicationDo, userUserDO);
                 }
                 break;
@@ -183,7 +183,7 @@ public class ResumeDeliveryService {
                     if(sendResponse.getStatus()!=0) {
                     sendTemplateMessageToApplierByQX(templateMessageDO, aggregationChatDO, userUserDO, application_id, companyDO, positionDo);
                     }
-                    sendSMSToApplier(companyDO, positionDo, applicationDo, userUserDO);
+                    sendSMSToApplier(companyDO, positionDo, applicationDo, userUserDO, "1");
                     sendResponse = sendTemplateMessageToRecom(templateMessageDOForRecom, hrChatDO, userUserDO, positionDo, applicationDo,  workExp, lastWorkName);
                     if(sendResponse.getStatus() !=0) {
                     sendTemplateMessageToRecomByQX(aggregationChatDO, positionDo, applicationDo,  workExp, lastWorkName);
@@ -193,14 +193,14 @@ public class ResumeDeliveryService {
                     if(sendResponse.getStatus() !=0) {
                     sendTemplateMessageToHrQX(aggregationChatDO, userUserDO, hrWxUserDo, accountDo, positionDo,  workExp, lastWorkName);
                     }
-                    sendSMSToHr(accountDo, positionDo, applicationDo);
+                    sendSMSToHr(accountDo, positionDo, applicationDo, "1");
                     sendEmailToHr(accountDo, companyDO, positionDo, applicationDo, userUserDO);
                 }
                 break;
                 //聚合号
                 case 4:{
                     sendTemplateMessageToApplierByQX(templateMessageDO, aggregationChatDO, userUserDO, application_id, companyDO, positionDo);
-                    sendSMSToApplier(companyDO, positionDo, applicationDo, userUserDO);
+                    sendSMSToApplier(companyDO, positionDo, applicationDo, userUserDO, "2");
                     sendTemplateMessageToRecomByQX(aggregationChatDO,positionDo, applicationDo, workExp, lastWorkName);
 
                     Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
@@ -208,20 +208,20 @@ public class ResumeDeliveryService {
                     if(sendResponse.getStatus() !=0) {
                         sendTemplateMessageToHrQX(aggregationChatDO, userUserDO, hrWxUserDo, accountDo, positionDo, workExp, lastWorkName);
                     }
-                    sendSMSToHr(accountDo, positionDo, applicationDo);
+                    sendSMSToHr(accountDo, positionDo, applicationDo,"2");
                     sendEmailToHr(accountDo, companyDO, positionDo, applicationDo, userUserDO);
                 }
                 break;
                 //PC投递
                 //简历回流
                 default:{
-                    sendSMSToApplier(companyDO, positionDo, applicationDo, userUserDO);
+                    sendSMSToApplier(companyDO, positionDo, applicationDo, userUserDO,"0");
                     Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                              workExp, lastWorkName);
                     if(sendResponse.getStatus()!=0) {
                         sendTemplateMessageToHrQX(aggregationChatDO, userUserDO, hrWxUserDo, accountDo, positionDo,  workExp, lastWorkName);
                     }
-                    sendSMSToHr(accountDo, positionDo, applicationDo);
+                    sendSMSToHr(accountDo, positionDo, applicationDo,"0");
                     sendEmailToHr(accountDo, companyDO, positionDo, applicationDo, userUserDO);
                 }
 
@@ -310,13 +310,13 @@ public class ResumeDeliveryService {
      * @param userUserDO    申请者对象
      * @return  短信发送状态
      */
-    public Response sendSMSToApplier(HrCompanyDO companyDO, JobPositionDO positionDO, JobApplicationDO applicationDO, UserUserDO userUserDO){
+    public Response sendSMSToApplier(HrCompanyDO companyDO, JobPositionDO positionDO, JobApplicationDO applicationDO, UserUserDO userUserDO, String sys){
 
         if(companyDO != null && positionDO != null && applicationDO != null && userUserDO != null) {
             Map<String, String> data = new HashMap<>();
             data.put("company", companyDO.getAbbreviation());
             data.put("position", positionDO.getTitle());
-            return smsService.sendSMS(SmsType.NEW_APPLIACATION_TO_APPLIER_SMS, userUserDO.getMobile() + "", data, applicationDO.getOrigin() + "", "");
+            return smsService.sendSMS(SmsType.NEW_APPLIACATION_TO_APPLIER_SMS, userUserDO.getMobile() + "", data, sys, "");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
@@ -467,11 +467,11 @@ public class ResumeDeliveryService {
      * @param applicationDO 职位申请信息
      * @return
      */
-    public Response sendSMSToHr(UserHrAccountDO accountDO, JobPositionDO positionDO, JobApplicationDO applicationDO) {
+    public Response sendSMSToHr(UserHrAccountDO accountDO, JobPositionDO positionDO, JobApplicationDO applicationDO, String sys) {
         if (accountDO != null && positionDO != null && applicationDO != null) {
             Map<String, String> data = new HashMap<>();
             data.put("position", positionDO.getTitle());
-            return smsService.sendSMS(SmsType.NEW_APPLICATION_TO_HR_SMS, accountDO.getMobile(), data, applicationDO.getOrigin() + "", "");
+            return smsService.sendSMS(SmsType.NEW_APPLICATION_TO_HR_SMS, accountDO.getMobile(), data, sys, "");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
