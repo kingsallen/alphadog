@@ -13,6 +13,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
@@ -172,8 +173,13 @@ public class DeliveryEmailProducer {
                 HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where("id",
                         workexpDO.getCompanyId()).buildQuery());
                 workMap.put("workCompany", "");
-                if (companyDO != null)
-                    workMap.put("workCompany", companyDO.getAbbreviation());
+                if (companyDO != null){
+                    if(StringUtils.isNotNullOrEmpty(companyDO.getName())){
+                        workMap.put("workCompany", companyDO.getName());
+                    }else{
+                        workMap.put("workCompany", companyDO.getAbbreviation());
+                    }
+                }
                 workList.add(workMap);
             }
             map.put("workList", workList);

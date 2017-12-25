@@ -14,13 +14,14 @@ import com.moseeker.baseorm.dao.profiledb.ProfileWorkexpDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionCcmail;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCcmailRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MandrillMailSend;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.MessageTemplateEntity;
@@ -483,10 +484,10 @@ public class ResumeDeliveryService {
         emailrecord.setContent(sendEmail.getMessage());
         emailSendrecordDao.addData(emailrecord);
         if(positionDO.getProfile_cc_mail_enabled() == 1){
-            List<JobPositionCcmail> ccmailList = ccmailDao.getDatas(new Query.QueryBuilder().where("position_id",
+            List<JobPositionCcmailRecord> ccmailList = ccmailDao.getRecords(new Query.QueryBuilder().where("position_id",
                     String.valueOf(positionDO.getId())).buildQuery());
             if(ccmailList != null && ccmailList.size()>0){
-                for(JobPositionCcmail ccmail : ccmailList){
+                for(JobPositionCcmailRecord ccmail : ccmailList){
                     emailStruct.put("to_email", ccmail.getToEmail());
                     MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
                     LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
@@ -559,7 +560,11 @@ public class ResumeDeliveryService {
                     HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where("id",
                             workexpDO.getCompanyId()).buildQuery());
                     if (companyDO != null) {
-                        return companyDO.getAbbreviation();
+                        if(StringUtils.isNotNullOrEmpty(companyDO.getName())){
+                            return companyDO.getName();
+                        }else{
+                            return companyDO.getAbbreviation();
+                        }
                     }
                 }
             }
