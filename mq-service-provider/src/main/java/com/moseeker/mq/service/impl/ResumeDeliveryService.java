@@ -15,6 +15,7 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionCcmail;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCcmailRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -494,10 +495,10 @@ public class ResumeDeliveryService {
         emailSendrecordDao.addData(emailrecord);
         logger.info("是否启用抄送邮箱："+positionDO.getProfile_cc_mail_enabled()+";判断结果："+(positionDO.getProfile_cc_mail_enabled() == 1));
         if(positionDO.getProfile_cc_mail_enabled() == 1){
-            List<JobPositionCcmail> ccmailList = ccmailDao.getDatas(new Query.QueryBuilder().where("position_id",
+            List<JobPositionCcmailRecord> ccmailList = ccmailDao.getRecords(new Query.QueryBuilder().where("position_id",
                     String.valueOf(positionDO.getId())).buildQuery());
             if(ccmailList != null && ccmailList.size()>0){
-                for(JobPositionCcmail ccmail : ccmailList){
+                for(JobPositionCcmailRecord ccmail : ccmailList){
                     emailStruct.put("to_email", ccmail.getToEmail());
                     MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
                     logger.info("抄送邮箱地址："+ccmail.getToEmail());
