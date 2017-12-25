@@ -112,6 +112,7 @@ public class ResumeDeliveryService {
         if(applicationDo != null && applicationDo.getPositionId() >0 && applicationDo.getApplierId()>0){
             JobPositionDO positionDo = positionDao.getData(new Query.QueryBuilder().where("id",
                     String.valueOf(applicationDo.getPositionId())).buildQuery());
+            logger.info("职位对象信息："+positionDo.toString());
             if(positionDo == null){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
