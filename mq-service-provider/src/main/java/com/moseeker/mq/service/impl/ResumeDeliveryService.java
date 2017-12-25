@@ -105,6 +105,7 @@ public class ResumeDeliveryService {
      * @return
      */
     public Response sendMessageAndEmail(int application_id) {
+        logger.info("职位申请编号："+application_id);
         Query query=new Query.QueryBuilder().where("id",
                 String.valueOf(application_id)).buildQuery();
         JobApplicationDO applicationDo = applicationDao.getData(query);
@@ -156,6 +157,7 @@ public class ResumeDeliveryService {
             //工作年限
             String workExp = calculate_workyears(applicationDo.getApplierId()+"");
             String lastWorkName = lastWorkName(applicationDo.getApplierId()+"");
+            logger.info("简历来源："+applicationDo.getOrigin());
             switch (applicationDo.getOrigin()){
                 //企业号
                 case 2:{
@@ -479,14 +481,17 @@ public class ResumeDeliveryService {
         }
 
         String subject = positionDO.getTitle()+"-"+userUserDO.getName()+"-职位申请通知";
+        logger.info("邮件名称："+subject);
         emailStruct.put("subject", subject);
         emailStruct.put("to_name", accountDO.getUsername());
         emailStruct.put("to_email", accountDO.getEmail());
         Response sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
         LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
-        emailrecord.setEmail("accountDO.getEmail()");
+        emailrecord.setEmail(accountDO.getEmail());
         emailrecord.setContent(sendEmail.getMessage());
+        logger.info("发送邮箱地址："+accountDO.getEmail());
         emailSendrecordDao.addData(emailrecord);
+        logger.info("是否启用抄送邮箱："+positionDO.getProfile_cc_mail_enabled()+";判断结果："+(positionDO.getProfile_cc_mail_enabled() == 1));
         if(positionDO.getProfile_cc_mail_enabled() == 1){
             List<JobPositionCcmail> ccmailList = ccmailDao.getDatas(new Query.QueryBuilder().where("position_id",
                     String.valueOf(positionDO.getId())).buildQuery());
@@ -494,8 +499,9 @@ public class ResumeDeliveryService {
                 for(JobPositionCcmail ccmail : ccmailList){
                     emailStruct.put("to_email", ccmail.getToEmail());
                     MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+                    logger.info("抄送邮箱地址："+ccmail.getToEmail());
                     LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
-                    emailrecord1.setEmail("accountDO.getEmail()");
+                    emailrecord1.setEmail(accountDO.getEmail());
                     emailrecord1.setContent(sendEmail.getMessage());
                     emailSendrecordDao.addData(emailrecord1);
                 }
