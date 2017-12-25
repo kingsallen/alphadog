@@ -1,8 +1,12 @@
 package com.moseeker.position.service.position.veryeast;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
+import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.veryeast.pojo.PositionVeryEast;
@@ -18,12 +22,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Component
 public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastForm,PositionVeryEastWithAccount,PositionVeryEast,ThirdpartyVeryEastPositionDO> {
+    private static final String salaryPattern="[0-9.]*~[0-9].*";
+
     Logger logger= LoggerFactory.getLogger(VeryEastTransfer.class);
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     @Override
     public PositionVeryEastWithAccount changeToThirdPartyPosition(PositionVeryEastForm positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
@@ -56,11 +67,11 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         positionInfo.setRegion(getCities(positionDB));
         positionInfo.setQuantity(getQuantity(positionForm.getQuantity(),(int)positionDB.getCount()));
         positionInfo.setIndate(positionForm.getIndate());
-        positionInfo.setSalary((int)positionDB.getSalaryTop());
+        positionInfo.setSalary(transferSalary((int)positionDB.getSalaryTop()));
         positionInfo.setOccupation(positionForm.getOccupation());
         positionInfo.setAccommodation(positionForm.getAccommodation()+"");
         positionInfo.setDegree(VeryEastTransferStrategy.VeryEastDegree.moseekerToOther((int)positionDB.getDegree()));
-        positionInfo.setExperience(positionDB.getExperience());
+        positionInfo.setExperience(transferExpreience(positionDB.getExperience()));
         positionInfo.setAge(positionForm.getAge());
         positionInfo.setLanguage(positionForm.getLanguage());
         positionInfo.setComputer_level(positionForm.getComputerLevel()+"");
@@ -69,6 +80,83 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         positionInfo.setWork_mode(VeryEastTransferStrategy.WorkMode.moseekerToOther((int)positionDB.getEmploymentType()));
 
         return positionInfo;
+    }
+
+    /**
+     * 根据redis中的salary规则转换成最佳东方的薪资
+     * 仟寻薪资0对应的是最佳东方的0，即面议
+     * 仟寻薪资1对应的是最佳东方的1，即1000以下
+     * 仟寻薪资100对应的是最佳东方的15，即100000以上
+     * 其他的真是验证salary_top是否落在区间中
+     * @param salary_top
+     * @return
+     */
+    private int transferSalary(int salary_top){
+        if(salary_top==0){
+            return 0;
+        }
+        if(salary_top<1){
+            return 1;
+        }
+        if(salary_top>=100){
+            return 15;
+        }
+        //moseeker的薪资单位是K，所以要乘以1000
+        salary_top=salary_top*1000;
+        String str=redisClient.get(RefreshConstant.APP_ID, RefreshConstant.VERY_EAST_REDIS_PARAM_KEY,"");
+        JSONObject param=JSONObject.parseObject(str);
+        JSONArray salarys=param.getJSONArray("salary");
+        if(StringUtils.isEmptyList(salarys)){
+           return 0;
+        }else{
+            for(int i=0;i<salarys.size();i++){
+                JSONObject salary=salarys.getJSONObject(i);
+                String text=salary.getString("text");
+                //用正则验证是否是1001~2000这种格式
+                if(!StringUtils.isNullOrEmpty(text) && Pattern.matches(salaryPattern,text)){
+                    String temp[]=text.split("~");
+                    //判断薪资在是否在这个区段内，比如1001~2000,那就是>=1001且<2000
+                    if(salary_top>=Integer.valueOf(temp[0]) && salary_top<=Integer.valueOf(temp[1])){
+                        return salary.getIntValue("code");
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 根据redis中的experience规则转换成最佳东方的经验要求
+     * 例如：
+     * 仟寻experience为4，即经验要求4年，
+     * 对应到最佳东方就是>3 (3年以上)且 <5 (5年以上)，取3年以上
+     * @param expreience
+     * @return
+     */
+    private String transferExpreience(String expreience){
+        int experienceInt=0;
+        try {
+            experienceInt=Integer.parseInt(expreience);
+        }catch (NumberFormatException e){
+            return "";
+        }
+        String str=redisClient.get(RefreshConstant.APP_ID, RefreshConstant.VERY_EAST_REDIS_PARAM_KEY,"");
+        JSONObject param=JSONObject.parseObject(str);
+        JSONArray experiences=param.getJSONArray("experience");
+        if(StringUtils.isEmptyList(experiences)){
+            return "";
+        }else{
+            int lastExpreience=0;
+            for(int i=0;i<experiences.size();i++){
+                JSONObject salary=experiences.getJSONObject(i);
+                int code=salary.getIntValue("code");
+                if(experienceInt>=lastExpreience && experienceInt<code){
+                   return lastExpreience+"";
+                }
+                lastExpreience=code;
+            }
+        }
+        return "";
     }
 
     @Override
