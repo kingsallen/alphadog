@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplication extends TableImpl<JobApplicationRecord> {
 
-    private static final long serialVersionUID = 2069292593;
+    private static final long serialVersionUID = -1082036473;
 
     /**
      * The reference instance of <code>jobdb.job_application</code>
@@ -256,6 +256,7 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
     /**
      * Rename this table
      */
+    @Override
     public JobApplication rename(String name) {
         return new JobApplication(name, null);
     }

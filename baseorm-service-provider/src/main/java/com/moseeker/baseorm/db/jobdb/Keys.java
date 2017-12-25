@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
-import com.moseeker.baseorm.db.jobdb.tables.FeatureMapping;
-import com.moseeker.baseorm.db.jobdb.tables.FeatureNotFound;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
@@ -20,8 +18,6 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
-import com.moseeker.baseorm.db.jobdb.tables.records.FeatureMappingRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.FeatureNotFoundRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationAtsRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobCustomRecord;
@@ -62,8 +58,6 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<FeatureMappingRecord, Integer> IDENTITY_FEATURE_MAPPING = Identities0.IDENTITY_FEATURE_MAPPING;
-    public static final Identity<FeatureNotFoundRecord, Integer> IDENTITY_FEATURE_NOT_FOUND = Identities0.IDENTITY_FEATURE_NOT_FOUND;
     public static final Identity<JobApplicationRecord, Integer> IDENTITY_JOB_APPLICATION = Identities0.IDENTITY_JOB_APPLICATION;
     public static final Identity<JobCustomRecord, Integer> IDENTITY_JOB_CUSTOM = Identities0.IDENTITY_JOB_CUSTOM;
     public static final Identity<JobOccupationRecord, Integer> IDENTITY_JOB_OCCUPATION = Identities0.IDENTITY_JOB_OCCUPATION;
@@ -79,8 +73,6 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<FeatureMappingRecord> KEY_FEATURE_MAPPING_PRIMARY = UniqueKeys0.KEY_FEATURE_MAPPING_PRIMARY;
-    public static final UniqueKey<FeatureNotFoundRecord> KEY_FEATURE_NOT_FOUND_PRIMARY = UniqueKeys0.KEY_FEATURE_NOT_FOUND_PRIMARY;
     public static final UniqueKey<JobApplicationRecord> KEY_JOB_APPLICATION_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_PRIMARY;
     public static final UniqueKey<JobApplicationAtsRecord> KEY_JOB_APPLICATION_ATS_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_ATS_PRIMARY;
     public static final UniqueKey<JobCustomRecord> KEY_JOB_CUSTOM_PRIMARY = UniqueKeys0.KEY_JOB_CUSTOM_PRIMARY;
@@ -106,8 +98,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
-        public static Identity<FeatureMappingRecord, Integer> IDENTITY_FEATURE_MAPPING = createIdentity(FeatureMapping.FEATURE_MAPPING, FeatureMapping.FEATURE_MAPPING.ID);
-        public static Identity<FeatureNotFoundRecord, Integer> IDENTITY_FEATURE_NOT_FOUND = createIdentity(FeatureNotFound.FEATURE_NOT_FOUND, FeatureNotFound.FEATURE_NOT_FOUND.ID);
         public static Identity<JobApplicationRecord, Integer> IDENTITY_JOB_APPLICATION = createIdentity(JobApplication.JOB_APPLICATION, JobApplication.JOB_APPLICATION.ID);
         public static Identity<JobCustomRecord, Integer> IDENTITY_JOB_CUSTOM = createIdentity(JobCustom.JOB_CUSTOM, JobCustom.JOB_CUSTOM.ID);
         public static Identity<JobOccupationRecord, Integer> IDENTITY_JOB_OCCUPATION = createIdentity(JobOccupation.JOB_OCCUPATION, JobOccupation.JOB_OCCUPATION.ID);
@@ -121,8 +111,6 @@ public class Keys {
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
-        public static final UniqueKey<FeatureMappingRecord> KEY_FEATURE_MAPPING_PRIMARY = createUniqueKey(FeatureMapping.FEATURE_MAPPING, "KEY_feature_mapping_PRIMARY", FeatureMapping.FEATURE_MAPPING.ID);
-        public static final UniqueKey<FeatureNotFoundRecord> KEY_FEATURE_NOT_FOUND_PRIMARY = createUniqueKey(FeatureNotFound.FEATURE_NOT_FOUND, "KEY_feature_not_found_PRIMARY", FeatureNotFound.FEATURE_NOT_FOUND.ID);
         public static final UniqueKey<JobApplicationRecord> KEY_JOB_APPLICATION_PRIMARY = createUniqueKey(JobApplication.JOB_APPLICATION, "KEY_job_application_PRIMARY", JobApplication.JOB_APPLICATION.ID);
         public static final UniqueKey<JobApplicationAtsRecord> KEY_JOB_APPLICATION_ATS_PRIMARY = createUniqueKey(JobApplicationAts.JOB_APPLICATION_ATS, "KEY_job_application_ats_PRIMARY", JobApplicationAts.JOB_APPLICATION_ATS.APP_ID);
         public static final UniqueKey<JobCustomRecord> KEY_JOB_CUSTOM_PRIMARY = createUniqueKey(JobCustom.JOB_CUSTOM, "KEY_job_custom_PRIMARY", JobCustom.JOB_CUSTOM.ID);
