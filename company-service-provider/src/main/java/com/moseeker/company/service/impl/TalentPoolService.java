@@ -285,9 +285,9 @@ public class TalentPoolService {
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         userTagIdList=tagIdList;
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
-        if(usertagMap==null||userIdList.isEmpty()){
-            ResponseUtils.fail(1,"不满足添加标签的条件");
-        }
+//        if(usertagMap==null||userIdList.isEmpty()){
+//            ResponseUtils.fail(1,"不满足添加标签的条件");
+//        }
         Map<String,Object> result=new HashMap<>();
         result.put("nopower",nouseList);
         result.put("use",usertagMap);
