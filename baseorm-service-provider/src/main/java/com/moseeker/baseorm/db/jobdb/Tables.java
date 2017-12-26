@@ -4,6 +4,8 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
+import com.moseeker.baseorm.db.jobdb.tables.FeatureMapping;
+import com.moseeker.baseorm.db.jobdb.tables.FeatureNotFound;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
@@ -13,13 +15,12 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionRecomRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
-import com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply;
 
 import javax.annotation.Generated;
 
@@ -36,6 +37,16 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>jobdb.feature_mapping</code>.
+     */
+    public static final FeatureMapping FEATURE_MAPPING = com.moseeker.baseorm.db.jobdb.tables.FeatureMapping.FEATURE_MAPPING;
+
+    /**
+     * The table <code>jobdb.feature_not_found</code>.
+     */
+    public static final FeatureNotFound FEATURE_NOT_FOUND = com.moseeker.baseorm.db.jobdb.tables.FeatureNotFound.FEATURE_NOT_FOUND;
 
     /**
      * The table <code>jobdb.job_application</code>.
@@ -83,6 +94,11 @@ public class Tables {
     public static final JobPosition JOB_POSITION = com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
 
     /**
+     * The table <code>jobdb.job_position_ccmail</code>.
+     */
+    public static final JobPositionCcmail JOB_POSITION_CCMAIL = com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail.JOB_POSITION_CCMAIL;
+
+    /**
      * The table <code>jobdb.job_position_city</code>.
      */
     public static final JobPositionCity JOB_POSITION_CITY = com.moseeker.baseorm.db.jobdb.tables.JobPositionCity.JOB_POSITION_CITY;
@@ -91,11 +107,6 @@ public class Tables {
      * 职位信息扩展表
      */
     public static final JobPositionExt JOB_POSITION_EXT = com.moseeker.baseorm.db.jobdb.tables.JobPositionExt.JOB_POSITION_EXT;
-
-    /**
-     * 智能画像职位推送记录，用于微信转发
-     */
-    public static final JobPositionRecomRecord JOB_POSITION_RECOM_RECORD = com.moseeker.baseorm.db.jobdb.tables.JobPositionRecomRecord.JOB_POSITION_RECOM_RECORD;
 
     /**
      * 职位分享描述配置模板
@@ -111,9 +122,4 @@ public class Tables {
      * 自定义简历副本记录表
      */
     public static final JobResumeOther JOB_RESUME_OTHER = com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
-
-    /**
-     * VIEW
-     */
-    public static final UserProfileJobapply USER_PROFILE_JOBAPPLY = com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply.USER_PROFILE_JOBAPPLY;
 }
