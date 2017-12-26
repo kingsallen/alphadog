@@ -10,15 +10,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * Created by moseeker on 2017/12/21.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes =AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes =AppConfig.class)
 public class ResumeDeliveryServiceTest {
 
-    @Autowired
+//    @Autowired
     private ResumeDeliveryService delivery;
 
-    @Test
+//    @Test
     public void sendMessageAndEmailTest(){
-        delivery.sendMessageAndEmail(460910);
+//        delivery.sendMessageAndEmail(460910);
     }
 }
