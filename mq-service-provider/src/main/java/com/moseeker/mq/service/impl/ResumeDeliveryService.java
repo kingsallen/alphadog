@@ -205,7 +205,6 @@ public class ResumeDeliveryService {
                 break;
                 //简历回流
                 default:{
-                    sendSMSToApplier(companyDO, positionDo, applicationDo, userUserDO,"0");
                     sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
                     sendSMSToHr(accountDo, positionDo, applicationDo, "0");
@@ -493,10 +492,12 @@ public class ResumeDeliveryService {
         emailrecord.setEmail("accountDO.getEmail()");
         emailrecord.setContent(sendEmail.getMessage());
         emailSendrecordDao.addData(emailrecord);
+        logger.info("是否启用抄送邮箱："+positionDO.getProfile_cc_mail_enabled());
         //判断是否启用抄送邮箱
         if(positionDO.getProfile_cc_mail_enabled() == 1){
             List<JobPositionCcmailRecord> ccmailList = ccmailDao.getRecords(new Query.QueryBuilder().where("position_id",
                     String.valueOf(positionDO.getId())).buildQuery());
+            logger.info("抄送邮箱长度："+ccmailList.size());
             if(ccmailList != null && ccmailList.size()>0){
                 //遍历抄送邮箱发送邮件
                 for(JobPositionCcmailRecord ccmail : ccmailList){
@@ -506,6 +507,7 @@ public class ResumeDeliveryService {
                     emailrecord1.setEmail("accountDO.getEmail()");
                     emailrecord1.setContent(sendEmail.getMessage());
                     emailSendrecordDao.addData(emailrecord1);
+                    logger.info("抄送邮箱："+ccmail.getToEmail());
                 }
             }
         }

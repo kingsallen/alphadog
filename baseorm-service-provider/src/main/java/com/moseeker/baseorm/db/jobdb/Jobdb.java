@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
-import com.moseeker.baseorm.db.jobdb.tables.FeatureMapping;
-import com.moseeker.baseorm.db.jobdb.tables.FeatureNotFound;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
@@ -21,6 +19,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
+import com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,22 +45,12 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1526569521;
+    private static final long serialVersionUID = -1374727488;
 
     /**
      * The reference instance of <code>jobdb</code>
      */
     public static final Jobdb JOBDB = new Jobdb();
-
-    /**
-     * The table <code>jobdb.feature_mapping</code>.
-     */
-    public final FeatureMapping FEATURE_MAPPING = com.moseeker.baseorm.db.jobdb.tables.FeatureMapping.FEATURE_MAPPING;
-
-    /**
-     * The table <code>jobdb.feature_not_found</code>.
-     */
-    public final FeatureNotFound FEATURE_NOT_FOUND = com.moseeker.baseorm.db.jobdb.tables.FeatureNotFound.FEATURE_NOT_FOUND;
 
     /**
      * The table <code>jobdb.job_application</code>.
@@ -139,6 +128,11 @@ public class Jobdb extends SchemaImpl {
     public final JobResumeOther JOB_RESUME_OTHER = com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
 
     /**
+     * VIEW
+     */
+    public final UserProfileJobapply USER_PROFILE_JOBAPPLY = com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply.USER_PROFILE_JOBAPPLY;
+
+    /**
      * No further instances allowed
      */
     private Jobdb() {
@@ -163,8 +157,6 @@ public class Jobdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
-            FeatureMapping.FEATURE_MAPPING,
-            FeatureNotFound.FEATURE_NOT_FOUND,
             JobApplication.JOB_APPLICATION,
             JobApplicationAts.JOB_APPLICATION_ATS,
             JobCustom.JOB_CUSTOM,
@@ -179,6 +171,7 @@ public class Jobdb extends SchemaImpl {
             JobPositionExt.JOB_POSITION_EXT,
             JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,
             JobPositionTopic.JOB_POSITION_TOPIC,
-            JobResumeOther.JOB_RESUME_OTHER);
+            JobResumeOther.JOB_RESUME_OTHER,
+            UserProfileJobapply.USER_PROFILE_JOBAPPLY);
     }
 }

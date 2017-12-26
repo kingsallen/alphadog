@@ -256,6 +256,7 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
     /**
      * Rename this table
      */
+    @Override
     public JobApplication rename(String name) {
         return new JobApplication(name, null);
     }

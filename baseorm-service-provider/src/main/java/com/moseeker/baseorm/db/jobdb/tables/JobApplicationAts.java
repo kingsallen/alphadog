@@ -132,6 +132,7 @@ public class JobApplicationAts extends TableImpl<JobApplicationAtsRecord> {
     /**
      * Rename this table
      */
+    @Override
     public JobApplicationAts rename(String name) {
         return new JobApplicationAts(name, null);
     }
