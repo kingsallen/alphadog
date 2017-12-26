@@ -273,7 +273,6 @@ public class TalentpoolSearchengine {
                     this.queryByPublisher(publisherIds,query);
                 }
             }
-
             if(StringUtils.isNotNullOrEmpty(candidateSource)){
                 this.queryByCandidateSource(Integer.parseInt(candidateSource),query);
             }
@@ -306,12 +305,7 @@ public class TalentpoolSearchengine {
         String tagIds=params.get("tag_ids");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
-        if(
-                StringUtils.isNullOrEmpty(tagIds)&&
-                StringUtils.isNullOrEmpty(favoriteHrs)&&
-                StringUtils.isNullOrEmpty(isPublic)
-        )
-        {
+        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
             return null;
         }
         String companyId=params.get("company_id");
@@ -361,7 +355,7 @@ public class TalentpoolSearchengine {
         String isPublic=params.get("is_public");
         if(StringUtils.isNotNullOrEmpty(tagIds)||StringUtils.isNotNullOrEmpty(favoriteHrs)||StringUtils.isNotNullOrEmpty(isPublic)){
             String companyId=params.get("company_id");
-            sb.append("if(val.company == "+companyId+"&&");
+            sb.append("if(val.company_id == "+companyId+"&&");
         }else{
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
                 List<Integer> publisherIdList=this.convertStringToList(publisherIds);
