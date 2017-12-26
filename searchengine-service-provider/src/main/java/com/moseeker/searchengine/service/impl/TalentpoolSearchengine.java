@@ -262,9 +262,16 @@ public class TalentpoolSearchengine {
             StringUtils.isNotNullOrEmpty(progressStatus)||StringUtils.isNotNullOrEmpty(positionIds)
          )
         {
-            if(StringUtils.isNotNullOrEmpty(publisherIds)){
-                    String companyId=params.get("company_id");
-                    this.queryByComapnyId(companyId,query);
+            String tagIds=params.get("tag_ids");
+            String favoriteHrs=params.get("favorite_hrs");
+            String isPublic=params.get("is_public");
+            if(StringUtils.isNotNullOrEmpty(tagIds)||StringUtils.isNotNullOrEmpty(favoriteHrs)||StringUtils.isNotNullOrEmpty(isPublic)){
+                String companyId=params.get("company_id");
+                this.queryByComapnyId(companyId,query);
+            }else{
+                if(StringUtils.isNotNullOrEmpty(publisherIds)){
+                    this.queryByPublisher(publisherIds,query);
+                }
             }
             if(StringUtils.isNotNullOrEmpty(candidateSource)){
                 this.queryByCandidateSource(Integer.parseInt(candidateSource),query);
@@ -298,12 +305,7 @@ public class TalentpoolSearchengine {
         String tagIds=params.get("tag_ids");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
-        if(
-                StringUtils.isNullOrEmpty(tagIds)&&
-                StringUtils.isNullOrEmpty(favoriteHrs)&&
-                StringUtils.isNullOrEmpty(isPublic)
-        )
-        {
+        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
             return null;
         }
         String companyId=params.get("company_id");
@@ -335,25 +337,27 @@ public class TalentpoolSearchengine {
         String progressStatus=params.get("progress_status");
         String positionId=params.get("position_id");
         if( StringUtils.isNullOrEmpty(publisherIds)
-            &&StringUtils.isNullOrEmpty(progressStatus)
-            &&StringUtils.isNullOrEmpty(candidateSource)
-            &&StringUtils.isNullOrEmpty(recommend)
-            &&StringUtils.isNullOrEmpty(origins)
-            &&StringUtils.isNullOrEmpty(submitTime)
-            &&StringUtils.isNullOrEmpty(positionId)
-          )
-        {
+            &&StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
+            &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)){
             return null;
-
         }
         StringBuffer sb=new StringBuffer();
         sb.append("origin=0;upload=_source.user.upload;profiles=_source.user.profiles;if(profiles){profile=profiles.profile;if(profile){origin=profile.origin}};for ( val in _source.user.applications) {");
-        if(StringUtils.isNotNullOrEmpty(publisherIds)){
-            List<Integer> publisherIdList=this.convertStringToList(publisherIds);
-            if(!StringUtils.isEmptyList(publisherIdList)){
-                sb.append("if(val.publisher in "+publisherIdList.toString()+"&&");
+        String tagIds=params.get("tag_ids");
+        String favoriteHrs=params.get("favorite_hrs");
+        String isPublic=params.get("is_public");
+        if(StringUtils.isNotNullOrEmpty(tagIds)||StringUtils.isNotNullOrEmpty(favoriteHrs)||StringUtils.isNotNullOrEmpty(isPublic)){
+            String companyId=params.get("company_id");
+            sb.append("if(val.company_id == "+companyId+"&&");
+        }else{
+            if(StringUtils.isNotNullOrEmpty(publisherIds)){
+                List<Integer> publisherIdList=this.convertStringToList(publisherIds);
+                if(!StringUtils.isEmptyList(publisherIdList)){
+                    sb.append("if(val.publisher in "+publisherIdList.toString()+"&&");
+                }
             }
         }
+
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
             sb.append("val.candidate_source=="+candidateSource+"&&");
         }
