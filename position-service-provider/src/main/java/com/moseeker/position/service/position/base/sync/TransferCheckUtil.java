@@ -20,7 +20,7 @@ public class TransferCheckUtil {
     TransferCheckConfigUtil checkConfigUtil;
 
     public List<String> checkBeforeTransfer(SyncRequestType requestType, ChannelType channelType, JSONObject jsonForm){
-        if(channelType==null || jsonForm==null || jsonForm.isEmpty()){
+        if(requestType==null || channelType==null || jsonForm==null || jsonForm.isEmpty()){
             return Collections.emptyList();
         }
 

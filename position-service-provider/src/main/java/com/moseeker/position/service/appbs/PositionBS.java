@@ -72,14 +72,6 @@ public class PositionBS {
     @CounterIface
     public List<PositionSyncResultPojo> syncPositionToThirdParty(ThirdPartyPositionForm positionForm) throws Exception {
         return syncPositionToThirdParty(Arrays.asList(positionForm));
-        /*JobPositionDO moseekerJobPosition = positionSyncHandler.getAvailableMoSeekerPosition(positionForm.getPositionId());
-        List<HrThirdPartyAccountDO> avaliableAccounts=positionSyncHandler.getThirdPartAccount(moseekerJobPosition.getPublisher());
-        try {
-            return syncPositionToThirdParty(positionForm,moseekerJobPosition,avaliableAccounts);
-        }catch (Exception e){
-            emailNotification.sendSyncFailureMail(positionForm, null, e);
-            throw e;
-        }*/
     }
 
     /**
@@ -177,8 +169,6 @@ public class PositionBS {
                 results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_PREPARE_BIND.getMessage()));
                 continue;
             }
-
-
 
             //验证并获取对应渠道账号
             if (!positionSyncHandler.containsThirdAccount(accounts,channel)) {
