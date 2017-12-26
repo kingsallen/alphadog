@@ -87,7 +87,7 @@ public class DeliveryEmailProducer {
         map.put("company_name", company.getAbbreviation());
         map.put("position_name", position.getTitle());
         map.put("heading", env.getProperty("email.user.heading.url"));
-        String resume_url = env.getProperty("email.resume.Info.url")+"";
+        String resume_url = env.getProperty("email.resume.info.url")+"";
         if(resume_url != null)
             resume_url = resume_url.replace("{}", user.getId()+"");
         map.put("profile_full_url", resume_url);
@@ -194,7 +194,7 @@ public class DeliveryEmailProducer {
         map.put("company_name", company.getAbbreviation());
         map.put("position_name", position.getTitle());
         map.put("heading", env.getProperty("email.user.heading.url"));
-        String resume_url = env.getProperty("email.resume.Info.url")+"";
+        String resume_url = env.getProperty("email.resume.info.url")+"";
         if(resume_url != null)
             resume_url = resume_url.replace("{}", user.getId()+"");
         map.put("profile_full_url", resume_url);
