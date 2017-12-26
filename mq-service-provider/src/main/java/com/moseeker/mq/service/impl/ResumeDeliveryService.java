@@ -111,6 +111,9 @@ public class ResumeDeliveryService {
                 String.valueOf(application_id)).buildQuery();
         JobApplicationDO applicationDo = applicationDao.getData(query);
         if(applicationDo != null && applicationDo.getPositionId() >0 && applicationDo.getApplierId()>0){
+            if(applicationDo.getOrigin() == 1024 && applicationDo.getApplyType() == 1 && applicationDo.getEmailStatus() != 0){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+            }
             JobPositionDO positionDo = positionDao.getData(new Query.QueryBuilder().where("id",
                     String.valueOf(applicationDo.getPositionId())).buildQuery());
             if(positionDo == null){
@@ -202,7 +205,6 @@ public class ResumeDeliveryService {
                     sendEmailToHr(accountDo, companyDO, positionDo, applicationDo, userUserDO);
                 }
                 break;
-                //PC投递
                 //简历回流
                 default:{
                     sendSMSToApplier(companyDO, positionDo, applicationDo, userUserDO,"0");
@@ -295,6 +297,7 @@ public class ResumeDeliveryService {
      * @param positionDO    职位对象
      * @param applicationDO 职位申请信息
      * @param userUserDO    申请者对象
+     * @param sys           来源
      * @return  短信发送状态
      */
     public Response sendSMSToApplier(HrCompanyDO companyDO, JobPositionDO positionDO, JobApplicationDO applicationDO, UserUserDO userUserDO, String sys){
@@ -451,6 +454,7 @@ public class ResumeDeliveryService {
      * @param accountDO     hr账号信息
      * @param positionDO    职位信息
      * @param applicationDO 职位申请信息
+     * @param sys           来源
      * @return
      */
     public Response sendSMSToHr(UserHrAccountDO accountDO, JobPositionDO positionDO, JobApplicationDO applicationDO, String sys) {
@@ -471,7 +475,7 @@ public class ResumeDeliveryService {
      * @param userUserDO    申请者信息
      */
     public void sendEmailToHr(UserHrAccountDO accountDO,HrCompanyDO companyDO, JobPositionDO positionDO, JobApplicationDO applicationDO, UserUserDO userUserDO){
-
+        //获取邮件信息
         Map<String, Object>  emailStruct = new HashMap<>();
         if(applicationDO.getApplyType() == 1 && applicationDO.getEmailStatus() == 0){
             emailStruct.put("templateName", Constant.ANNEX_RESUME_INFORM_HR);
@@ -484,23 +488,28 @@ public class ResumeDeliveryService {
         }else{
             return ;
         }
-
+        //邮件发送的名称，邮箱
         String subject = positionDO.getTitle()+"-"+userUserDO.getName()+"-职位申请通知";
         logger.info("邮件名称："+subject);
         emailStruct.put("subject", subject);
         emailStruct.put("to_name", accountDO.getUsername());
         emailStruct.put("to_email", accountDO.getEmail());
+        //发送邮件
         Response sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+        //记录发送邮件的结果
         LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
         emailrecord.setEmail(accountDO.getEmail());
         emailrecord.setContent(sendEmail.getMessage());
         logger.info("发送邮箱地址："+accountDO.getEmail());
         emailSendrecordDao.addData(emailrecord);
         logger.info("是否启用抄送邮箱："+positionDO.getProfile_cc_mail_enabled()+";判断结果："+(positionDO.getProfile_cc_mail_enabled() == 1));
+
+        //判断是否启用抄送邮箱
         if(positionDO.getProfile_cc_mail_enabled() == 1){
             List<JobPositionCcmailRecord> ccmailList = ccmailDao.getRecords(new Query.QueryBuilder().where("position_id",
                     String.valueOf(positionDO.getId())).buildQuery());
             if(ccmailList != null && ccmailList.size()>0){
+                //遍历抄送邮箱发送邮件
                 for(JobPositionCcmailRecord ccmail : ccmailList){
                     emailStruct.put("to_email", ccmail.getToEmail());
                     MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
