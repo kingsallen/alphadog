@@ -249,6 +249,7 @@ public class TalentPoolService {
         if(validateResult.get("result")!=null){
             return (Response)validateResult.get("result");
         }
+
         Set<Integer> idList= (Set<Integer>) validateResult.get("userIdList");
         Set<Integer> nouseList= (Set<Integer>)validateResult.get("nouseList");
         Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
@@ -267,19 +268,20 @@ public class TalentPoolService {
             talentpoolTagDao.updateTagListNum(userTagIdList,0-idList.size());
         }
         //添加新的标签
-        List<TalentpoolUserTagRecord> recordList=new ArrayList<>();
-        for(Integer id:idList){
-            for(Integer tagId:tagIdList){
-                TalentpoolUserTagRecord record=new TalentpoolUserTagRecord();
-                record.setUserId(id);
-                record.setTagId(tagId);
-                recordList.add(record);
+        if(!StringUtils.isEmptySet(tagIdList)){
+            List<TalentpoolUserTagRecord> recordList=new ArrayList<>();
+            for(Integer id:idList){
+                for(Integer tagId:tagIdList){
+                    TalentpoolUserTagRecord record=new TalentpoolUserTagRecord();
+                    record.setUserId(id);
+                    record.setTagId(tagId);
+                    recordList.add(record);
+                }
             }
-
+            talentpoolUserTagDao.addAllRecord(recordList);
+            talentpoolTagDao.updateTagListNum(tagIdList,idList.size());
+            this.realTimeUpdate(this.converSetToList(idList));
         }
-        talentpoolUserTagDao.addAllRecord(recordList);
-        talentpoolTagDao.updateTagListNum(tagIdList,idList.size());
-        this.realTimeUpdate(this.converSetToList(idList));
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         userTagIdList=tagIdList;
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
@@ -1236,12 +1238,17 @@ public class TalentPoolService {
             result.put("result",ResponseUtils.fail(1,"不满足操作条件"));
             return result;
         }
+
         List<Map<String,Object>> hrTagList= (List<Map<String,Object>>) validateTag.get("hrTagList");
         Set<Integer> userTagIdList= (Set<Integer>) validateTag.get("userTagIdList");
-        boolean validateOperTag=this.validateAddOperatorTag(this.getIdByTagList(hrTagList),tagIdList,userTagIdList, type);
-        if(!validateOperTag){
-            result.put("result",ResponseUtils.fail(1,"操作的标签不是hr定义的标签"));
-            return result;
+
+        //如果tagIdList是空，那么则代表删除原有的tag
+        if(!StringUtils.isEmptySet(tagIdList)) {
+            boolean validateOperTag = this.validateAddOperatorTag(this.getIdByTagList(hrTagList), tagIdList, userTagIdList, type);
+            if (!validateOperTag) {
+                result.put("result", ResponseUtils.fail(1, "操作的标签不是hr定义的标签"));
+                return result;
+            }
         }
         result.put("hrTagList",hrTagList);
         result.put("userIdList",idList);
