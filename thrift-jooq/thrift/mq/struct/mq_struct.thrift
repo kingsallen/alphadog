@@ -43,6 +43,7 @@ struct MandrillEmailStruct {
     5: optional string from_email,
     6: optional string from_name,
     7: optional string subject
+
 }
 
 enum SmsType {

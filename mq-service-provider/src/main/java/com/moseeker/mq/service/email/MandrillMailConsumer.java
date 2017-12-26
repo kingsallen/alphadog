@@ -105,9 +105,10 @@ public class MandrillMailConsumer {
 		if (StringUtils.isNotNullOrEmpty(redisMsg)) {
 			executorService.submit(() -> {
 				try {
-					MandrillMessage message = new MandrillMessage();
 
-					MandrillEmailStruct mandrillEmailStruct = JSON.parseObject(redisMsg, MandrillEmailStruct.class);
+                    MandrillEmailStruct mandrillEmailStruct = JSON.parseObject(redisMsg, MandrillEmailStruct.class);
+
+					MandrillMessage message = new MandrillMessage();
 
 					List<Recipient> recipients = new ArrayList<Recipient>();
 					Recipient recipient = new Recipient();
