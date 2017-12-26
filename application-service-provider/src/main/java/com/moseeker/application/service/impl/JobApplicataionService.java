@@ -302,6 +302,10 @@ public class JobApplicataionService {
                 queryBuilder.where(
                         com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.ID.getName(), jobApplication.getId())
                         .buildQuery());
+        boolean bool = false;
+        if(jobApplication != null && jobApplicationDO != null && jobApplication.getEmail_status() == 0 && jobApplicationDO.getEmailStatus()!=0){
+            bool = true;
+        }
         if (jobApplicationDO != null) {
             if(jobApplication.isSetOrigin()) {
                 ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(jobApplication.getOrigin());
@@ -316,6 +320,9 @@ public class JobApplicataionService {
             Timestamp updateTime = new Timestamp(System.currentTimeMillis());
             jobApplicationRecord.setUpdateTime(updateTime);
             updateStatus = jobApplicationDao.updateRecord(jobApplicationRecord);
+            if(updateStatus>0 && bool){
+                tp.startTast(() -> mqServer.sendMessageAndEmail(jobApplicationRecord.getId()));
+            }
         }
         return updateStatus;
     }
