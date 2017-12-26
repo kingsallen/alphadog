@@ -178,6 +178,8 @@ public class ReceiverHandler {
             url=env.getProperty("message.template.new.employee.url");
         }else if(type==3){
             url=env.getProperty("message.template.recom.employee.url");
+        }else if(type==5){
+            url=env.getProperty("message.template.delivery.applier.url");
         }
         return url;
 

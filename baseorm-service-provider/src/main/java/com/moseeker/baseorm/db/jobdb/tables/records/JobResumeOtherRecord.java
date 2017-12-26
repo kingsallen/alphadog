@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherRecord> implements Record4<Integer, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -363204473;
+    private static final long serialVersionUID = -618937959;
 
     /**
      * Setter for <code>jobdb.job_resume_other.app_id</code>. job_application.id
@@ -47,14 +47,14 @@ public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherReco
     }
 
     /**
-     * Setter for <code>jobdb.job_resume_other.other</code>.
+     * Setter for <code>jobdb.job_resume_other.other</code>. 自定义字段
      */
     public void setOther(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_resume_other.other</code>.
+     * Getter for <code>jobdb.job_resume_other.other</code>. 自定义字段
      */
     public String getOther() {
         return (String) get(1);
