@@ -405,7 +405,6 @@ public class ResumeDeliveryService {
         String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
         if(hrWxUserDo != null && templateMessageDO != null){
             String link ="";
-            logger.info("给HR发送企业号模板消息编号："+templateMessageDO.id+";Template_id:"+templateMessageDO.getWxTemplateId()+";openid:"+hrWxUserDo.getOpenid());
             return msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDO, userUserDO, workExp, lastWorkName , hrWxUserDo.getOpenid(), url, link);
         }
         return  response;
