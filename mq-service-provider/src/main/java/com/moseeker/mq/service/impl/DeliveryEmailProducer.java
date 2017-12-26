@@ -66,6 +66,13 @@ public class DeliveryEmailProducer {
     @Autowired
     private HrCompanyDao companyDao;
 
+    /**
+     * 当是简历投递时发送邮件中需要的信息
+     * @param company   公司信息
+     * @param position  职位信息
+     * @param user      候选人对象
+     * @return
+     */
     public  Map<String, Object> emailBady(HrCompanyDO company, JobPositionDO position, UserUserDO user){
 
         ProfileProfileDO profileDO = profileDao.getData(new Query.QueryBuilder().where("user_id",
@@ -77,17 +84,22 @@ public class DeliveryEmailProducer {
         List<ProfileEducationDO> educationDOList = educationDao.getDatas(new Query.QueryBuilder().where("profile_id",
                 profileDO.getId()).orderBy("start", Order.DESC).buildQuery());
 
+        //获取学历字典
         List<DictConstantDO> degree = dictConstantDao.getDatas(new Query.QueryBuilder().
                 where("parent_code", Constant.DICT_CONSTANT_DEGREE_USER).orderBy("priority",Order.ASC).buildQuery());
+        //性别字典
         List<DictConstantDO> gender = dictConstantDao.getDatas(new Query.QueryBuilder().
                 where("parent_code", Constant.DICT_CONSTANT_GENDER_USER).orderBy("priority",Order.ASC).buildQuery());
+        //语言字典
         List<DictConstantDO> language = dictConstantDao.getDatas(new Query.QueryBuilder().
                 where("parent_code", Constant.DICT_CONSTANT_LANGUAGE_FRUENCY).orderBy("priority",Order.ASC).buildQuery());
         Map<String, Object> map = new HashMap<>();
         map.put("company_name", company.getAbbreviation());
         map.put("position_name", position.getTitle());
+        //邮件头像默认地址
         map.put("heading", env.getProperty("email.user.heading.url"));
-        String resume_url = env.getProperty("email.resume.info.url")+"";
+        //hr端人才详情路径
+        String resume_url = env.getProperty("email.resume.info.url");
         if(resume_url != null)
             resume_url = resume_url.replace("{}", user.getId()+"");
         map.put("profile_full_url", resume_url);
@@ -101,6 +113,7 @@ public class DeliveryEmailProducer {
                 map.put("user_name", user.getNickname());
             }
         }
+        //获取教育信息
         String educations = "";
         if (degree != null && degree.size() > 0 && educationDOList != null && educationDOList.size() > 0) {
             for (DictConstantDO constantDO : degree) {
@@ -114,7 +127,7 @@ public class DeliveryEmailProducer {
                 Map<String, String> educationMap = new HashMap<>();
                 educationMap.put("startTime", education.getStartTime().substring(0,7));
                 String endTime = "";
-                if(1==education.getEndUntilNow() || education.getEndTime()==null){
+                if(1==education.getEndUntilNow() || education.getEndTime()==null || education.getEndTime().length()<7) {
                     endTime = "至今";
                 }else{
                     endTime = education.getEndTime().substring(0,7);
@@ -132,7 +145,7 @@ public class DeliveryEmailProducer {
             map.put("educationList", eduList);
         }
         map.put("degree_name", educations);
-
+        //获取基本信息
         if(basicDO != null) {
             String profileGender = "";
             if (gender != null && gender.size() > 0) {
@@ -154,7 +167,7 @@ public class DeliveryEmailProducer {
                 map.put("birth", birth + "岁");
             }
         }
-
+        //获取工作经验
         if(workexpDOList!= null && workexpDOList.size()>0){
             List<Map<String, String>> workList = new ArrayList<>();
             for(int i = 0 ; i< workexpDOList.size()-1; i++) {
@@ -163,7 +176,7 @@ public class DeliveryEmailProducer {
                 Map<String, String> workMap = new HashMap<>();
                 workMap.put("workStartTime", workexpDO.getStartTime().substring(0, 7));
                 String endTime = "";
-                if (1 == workexpDO.getEndUntilNow() || workexpDO.getEndTime() == null) {
+                if (1 == workexpDO.getEndUntilNow() || workexpDO.getEndTime() == null || workexpDO.getEndTime().length()<7) {
                     endTime = "至今";
                 } else {
                     endTime = workexpDO.getEndTime().substring(0, 7);
@@ -188,6 +201,13 @@ public class DeliveryEmailProducer {
     }
 
 
+    /**
+     * 当是邮件投递时发送附件邮件的信息
+     * @param company   公司信息
+     * @param position  职位信息
+     * @param user      候选人对象
+     * @return
+     */
     public  Map<String, Object> annexEmailBody(HrCompanyDO company, JobPositionDO position, UserUserDO user){
 
         Map<String, Object> map = new HashMap<>();

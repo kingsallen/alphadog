@@ -81,8 +81,6 @@ public class MandrillMailSendTest {
         String subject = "java工程师-刘旭辉-职位申请通知";
         params.put("subject", subject);
         params.put("to_name", "张三");
-        params.put("to_email", "wanglintao@moseeker.com");
-        send.sendEmail(params, "MGF7plOGhGsZ3xocZDTwoQ");
         params.put("to_email", "liuxuhui@moseeker.com");
         send.sendEmail(params, "MGF7plOGhGsZ3xocZDTwoQ");
     }
