@@ -136,12 +136,12 @@ public class TalentpoolSearchengine {
         String pageNum=params.get("page_number");
         String pageSize=params.get("page_size");
         if(StringUtils.isNullOrEmpty(pageNum)){
-            pageNum="0";
+            pageNum="1";
         }
         if(StringUtils.isNullOrEmpty(pageSize)){
             pageSize="15";
         }
-        builder.setFrom(Integer.parseInt(pageNum)*Integer.parseInt(pageSize));
+        builder.setFrom((Integer.parseInt(pageNum)-1)*Integer.parseInt(pageSize));
         builder.setSize(Integer.parseInt(pageSize));
     }
     /*
