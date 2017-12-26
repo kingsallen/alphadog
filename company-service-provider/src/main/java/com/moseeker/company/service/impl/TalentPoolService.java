@@ -480,7 +480,7 @@ public class TalentPoolService {
         if(StringUtils.isNullOrEmpty(content)){
             return ResponseUtils.fail(1,"该hr的备注内容不能为空");
         }
-        if(content.length()>50){
+        if(content.length()>100){
             return ResponseUtils.fail(1,"备注内容需在50字以内");
         }
         int flag=talentPoolEntity.validateHr(hrId,companyId);
