@@ -241,5 +241,11 @@ public class TalentPoolServiceTest {
         System.out.println(res);
     }
 
+    @Test
+    public void testStringLength(){
+        String string="画笔\n" +
+                "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!wwwwwwwwwwwwwwwwwwwwsaasaaaaaaaaaaaaa5";
+        System.out.println(string.length());
+    }
 
 }

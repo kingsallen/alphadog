@@ -8,8 +8,6 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
-import org.jooq.util.derby.sys.Sys;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
