@@ -111,6 +111,10 @@ public class TalentPoolEntity {
         if(!StringUtils.isEmptyList(applist)){
             return applist.size();
         }
+        int userPubliccount=this.getPublicTalentUserCount(companyId,userId);
+        if(userPubliccount>0){
+            return 1;
+        }
         List<TalentpoolTalentRecord> list=getTalentpoolTalentByCompanyId(companyId);
         Set<Integer> userIdList=getUserIdListByTalentpoolTalent(list);
         if(!StringUtils.isEmptySet(userIdList)){
@@ -668,6 +672,25 @@ public class TalentPoolEntity {
 
     public int isUpLoad(int companyId,int userId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).buildQuery();
+        int count=talentpoolTalentDao.getCount(query);
+        return count;
+    }
+    /*
+      获取公司下所有公开的人才
+     */
+    public int getPublicTalentCount(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("public_num",1,ValueOp.GE)).buildQuery();
+        int count=talentpoolTalentDao.getCount(query);
+        return count;
+    }
+    /*
+     获取人才是否在这家公司下公开
+     */
+    public int getPublicTalentUserCount(int companyId,int userId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId)
+                .and(new Condition("public_num",1,ValueOp.GE))
+                .and("user_id",userId)
+                .buildQuery();
         int count=talentpoolTalentDao.getCount(query);
         return count;
     }

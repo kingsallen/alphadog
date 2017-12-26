@@ -224,7 +224,7 @@ public class TalentPoolService {
         Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
         if(usertagMap==null||userIdList.isEmpty()){
-            ResponseUtils.fail(1,"操作失败");
+            ResponseUtils.fail(1,"不满足添加标签的条件");
         }
         Map<String,Object> result=new HashMap<>();
         result.put("nopower",nouseList);
@@ -284,7 +284,7 @@ public class TalentPoolService {
         userTagIdList=tagIdList;
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
         if(usertagMap==null||userIdList.isEmpty()){
-            ResponseUtils.fail(1,"操作失败");
+            ResponseUtils.fail(1,"不满足添加标签的条件");
         }
         Map<String,Object> result=new HashMap<>();
         result.put("nopower",nouseList);
@@ -328,7 +328,7 @@ public class TalentPoolService {
         Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,0);
         if(usertagMap==null||userIdList.isEmpty()){
-            ResponseUtils.fail(1,"操作失败");
+            ResponseUtils.fail(1,"不满足删除标签的条件");
         }
         Map<String,Object> result=new HashMap<>();
         result.put("nopower",nouseList);
@@ -527,7 +527,7 @@ public class TalentPoolService {
 
         if(type==0){
             int talentNum=this.getAllHrTalent(hrId);
-            int companyPublicNum=this.getPublicTalentCount(companyId);
+            int companyPublicNum=talentPoolEntity.getPublicTalentCount(companyId);
             int hrPublicNum=this.getHrPublicTalent(hrId);
             int allTalentNum=this.getCompanyTalentCount(companyId);
             List<Map<String,Object>> list=this.getTagByHrNoOrder(hrId,0,Integer.MAX_VALUE);
@@ -543,7 +543,7 @@ public class TalentPoolService {
             int talentNum=this.getAllHrTalent(hrId);
             result.put("talent",talentNum);
         }else if(type==3){
-            int companyPublicNum=this.getPublicTalentCount(companyId);
+            int companyPublicNum=talentPoolEntity.getPublicTalentCount(companyId);
             result.put("allpublic",companyPublicNum);
         }else if(type==4){
             List<Map<String,Object>> list=this.getTagByHr(hrId,0,Integer.MAX_VALUE);
@@ -1014,7 +1014,7 @@ public class TalentPoolService {
      分页获取数据
      */
     private Map<String,Object> handlePublicTalentData(int companyId,int pageNum,int pageSize){
-        int count=this.getPublicTalentCount(companyId);
+        int count=talentPoolEntity.getPublicTalentCount(companyId);
         double page=((double)count)/pageSize;
         int total= (int) Math.ceil(page);
         List<Map<String,Object>> list=getPublicTalentByCompanyId(companyId,pageNum,pageSize);
@@ -1514,14 +1514,7 @@ public class TalentPoolService {
         List<Map<String,Object>> list=talentpoolTalentDao.getMaps(query);
         return list;
     }
-    /*
-      获取公司下所有公开的人才
-     */
-    private int getPublicTalentCount(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("public_num",1,ValueOp.GE)).buildQuery();
-        int count=talentpoolTalentDao.getCount(query);
-        return count;
-    }
+
     /*
     获取公司下所有人才
      */
