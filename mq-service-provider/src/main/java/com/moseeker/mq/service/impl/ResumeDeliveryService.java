@@ -106,9 +106,15 @@ public class ResumeDeliveryService {
      * @return
      */
     public Response sendMessageAndEmail(int application_id) {
+
+        logger.info("sendMessageAndEmail application_id :{}", application_id);
+
         Query query=new Query.QueryBuilder().where("id",
                 application_id).buildQuery();
         JobApplicationDO applicationDo = applicationDao.getData(query);
+
+        logger.info("sendMessageAndEmail applicationDo :{}", applicationDo);
+
         if(applicationDo != null && applicationDo.getPositionId() >0 && applicationDo.getApplierId()>0){
             if(applicationDo.getApplyType() == 1 && applicationDo.getEmailStatus() != 0){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
@@ -160,6 +166,9 @@ public class ResumeDeliveryService {
             //工作年限
             String workExp = calculate_workyears(applicationDo.getApplierId()+"");
             String lastWorkName = lastWorkName(applicationDo.getApplierId()+"");
+
+            logger.info("sendMessageAndEmail origin :{}, workExp:{}, lastWorkName:{}", applicationDo.getOrigin(), workExp, lastWorkName);
+
             switch (applicationDo.getOrigin()){
                 case 1:{
                     Response sendResponse = sendTemplateMessageToApplier(templateMessageDO, hrChatDO, userUserDO, application_id, companyDO, positionDo);
@@ -251,6 +260,7 @@ public class ResumeDeliveryService {
                 return msgHttp.handleApplierTemplate(positionDO, companyDO, hrChatDO, userWxDO.getOpenid(), url, link, templateMessageDO);
             }
         }
+        logger.info("sendEmailToHr sendTemplateMessageToApplier:{}", response);
         return response;
     }
 
@@ -283,6 +293,9 @@ public class ResumeDeliveryService {
                 return msgHttp.handleApplierTemplate(positionDO, companyDO, hrChatDO, qx_userWxDO.getOpenid(), url, link, templateMessageDOQX);
             }
         }
+
+        logger.info("sendMessageAndEmail sendTemplateMessageToApplierByQX response:{}", response);
+
         return response;
     }
 
@@ -297,13 +310,17 @@ public class ResumeDeliveryService {
      */
     public Response sendSMSToApplier(HrCompanyDO companyDO, JobPositionDO positionDO, JobApplicationDO applicationDO, UserUserDO userUserDO, String sys){
 
+        Response response;
         if(companyDO != null && positionDO != null && applicationDO != null && userUserDO != null) {
             Map<String, String> data = new HashMap<>();
             data.put("company", companyDO.getAbbreviation());
             data.put("position", positionDO.getTitle());
-            return smsService.sendSMS(SmsType.NEW_APPLIACATION_TO_APPLIER_SMS, userUserDO.getMobile() + "", data, sys, "");
+            response = smsService.sendSMS(SmsType.NEW_APPLIACATION_TO_APPLIER_SMS, userUserDO.getMobile() + "", data, sys, "");
+        } else {
+            response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
-        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        logger.info("sendMessageAndEmail sendSMSToApplier response:{}", response);
+        return response;
     }
 
     /**
@@ -406,6 +423,7 @@ public class ResumeDeliveryService {
             String link ="";
             return msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDO, userUserDO, workExp, lastWorkName , hrWxUserDo.getOpenid(), url, link);
         }
+        logger.info("sendMessageAndEmail sendTemplateMessageToHr:{}", response);
         return  response;
     }
 
@@ -450,12 +468,16 @@ public class ResumeDeliveryService {
      * @return
      */
     public Response sendSMSToHr(UserHrAccountDO accountDO, JobPositionDO positionDO, JobApplicationDO applicationDO, String sys) {
+        Response response;
         if (accountDO != null && positionDO != null && applicationDO != null) {
             Map<String, String> data = new HashMap<>();
             data.put("position", positionDO.getTitle());
-            return smsService.sendSMS(SmsType.NEW_APPLICATION_TO_HR_SMS, accountDO.getMobile(), data, sys, "");
+            response = smsService.sendSMS(SmsType.NEW_APPLICATION_TO_HR_SMS, accountDO.getMobile(), data, sys, "");
+        } else {
+            response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
-        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        logger.info("sendMessageAndEmail smsToHrResponse:{}", response);
+        return response;
     }
 
     /**
@@ -485,8 +507,14 @@ public class ResumeDeliveryService {
         emailStruct.put("subject", subject);
         emailStruct.put("to_name", accountDO.getUsername());
         emailStruct.put("to_email", accountDO.getEmail());
+
+        logger.info("sendEmailToHr emailStruct:{}", emailStruct);
+
         //发送邮件
         Response sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+
+        logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
+
         //记录发送邮件的结果
         LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
         emailrecord.setEmail("accountDO.getEmail()");
