@@ -111,7 +111,7 @@ public class ResumeDeliveryService {
                 String.valueOf(application_id)).buildQuery();
         JobApplicationDO applicationDo = applicationDao.getData(query);
         if(applicationDo != null && applicationDo.getPositionId() >0 && applicationDo.getApplierId()>0){
-            if(applicationDo.getOrigin() == 1024 && applicationDo.getApplyType() == 1 && applicationDo.getEmailStatus() != 0){
+            if(applicationDo.getApplyType() == 1 && applicationDo.getEmailStatus() != 0){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             }
             JobPositionDO positionDo = positionDao.getData(new Query.QueryBuilder().where("id",
