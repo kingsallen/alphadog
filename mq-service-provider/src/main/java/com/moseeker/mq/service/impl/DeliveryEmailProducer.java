@@ -107,7 +107,8 @@ public class DeliveryEmailProducer {
         map.put("profile_full_url", resume_url);
         if(user != null) {
             if (user.getHeadimg() != null && !user.getHeadimg().isEmpty()) {
-                map.put("heading", CDN_URL+user.getHeadimg());
+                String headImgUrl = user.getHeadimg().trim().startsWith("http")? user.getHeadimg() : CDN_URL+user.getHeadimg();
+                map.put("heading", headImgUrl);
             }
             if (user.getName() != null && !user.getName().isEmpty()) {
                 map.put("user_name", user.getName());
@@ -222,7 +223,8 @@ public class DeliveryEmailProducer {
         map.put("profile_full_url", resume_url);
         if(user != null) {
             if (user.getHeadimg() != null && !user.getHeadimg().isEmpty()) {
-                map.put("heading", user.getHeadimg());
+                String headImgUrl = user.getHeadimg().trim().startsWith("http")? user.getHeadimg() : CDN_URL+user.getHeadimg();
+                map.put("heading", headImgUrl);
             }
             if (user.getName() != null && !user.getName().isEmpty()) {
                 map.put("user_name", user.getName());
