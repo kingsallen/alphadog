@@ -337,16 +337,9 @@ public class TalentpoolSearchengine {
         String progressStatus=params.get("progress_status");
         String positionId=params.get("position_id");
         if( StringUtils.isNullOrEmpty(publisherIds)
-            &&StringUtils.isNullOrEmpty(progressStatus)
-            &&StringUtils.isNullOrEmpty(candidateSource)
-            &&StringUtils.isNullOrEmpty(recommend)
-            &&StringUtils.isNullOrEmpty(origins)
-            &&StringUtils.isNullOrEmpty(submitTime)
-            &&StringUtils.isNullOrEmpty(positionId)
-          )
-        {
+            &&StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
+            &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)){
             return null;
-
         }
         StringBuffer sb=new StringBuffer();
         sb.append("origin=0;upload=_source.user.upload;profiles=_source.user.profiles;if(profiles){profile=profiles.profile;if(profile){origin=profile.origin}};for ( val in _source.user.applications) {");
