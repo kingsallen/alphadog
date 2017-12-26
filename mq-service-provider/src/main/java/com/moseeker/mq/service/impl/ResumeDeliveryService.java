@@ -205,7 +205,6 @@ public class ResumeDeliveryService {
                 break;
                 //简历回流
                 default:{
-                    sendSMSToApplier(companyDO, positionDo, applicationDo, userUserDO,"0");
                     sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
                     sendSMSToHr(accountDo, positionDo, applicationDo, "0");

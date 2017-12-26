@@ -146,6 +146,7 @@ public class JobPositionCcmail extends TableImpl<JobPositionCcmailRecord> {
     /**
      * Rename this table
      */
+    @Override
     public JobPositionCcmail rename(String name) {
         return new JobPositionCcmail(name, null);
     }

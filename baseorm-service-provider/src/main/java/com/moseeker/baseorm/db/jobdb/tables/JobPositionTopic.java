@@ -95,6 +95,7 @@ public class JobPositionTopic extends TableImpl<JobPositionTopicRecord> {
     /**
      * Rename this table
      */
+    @Override
     public JobPositionTopic rename(String name) {
         return new JobPositionTopic(name, null);
     }
