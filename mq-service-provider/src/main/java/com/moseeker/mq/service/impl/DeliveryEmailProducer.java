@@ -36,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import static com.moseeker.common.constants.Constant.CDN_URL;
+
 /**
  * Created by moseeker on 2017/12/19.
  */
@@ -105,7 +107,7 @@ public class DeliveryEmailProducer {
         map.put("profile_full_url", resume_url);
         if(user != null) {
             if (user.getHeadimg() != null && !user.getHeadimg().isEmpty()) {
-                map.put("heading", user.getHeadimg());
+                map.put("heading", CDN_URL+user.getHeadimg());
             }
             if (user.getName() != null && !user.getName().isEmpty()) {
                 map.put("user_name", user.getName());
