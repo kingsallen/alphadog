@@ -257,7 +257,7 @@ public class ResumeDeliveryService {
                 String link = handlerLink("applier").replace("{}", application_id + "");
                 link += "?wechat_signature=";
                 link = link + hrChatDO.getSignature();
-                return msgHttp.handleApplierTemplate(positionDO, companyDO, hrChatDO, userWxDO.getOpenid(), url, link, templateMessageDO);
+                response =  msgHttp.handleApplierTemplate(positionDO, companyDO, hrChatDO, userWxDO.getOpenid(), url, link, templateMessageDO);
             }
         }
         logger.info("sendEmailToHr sendTemplateMessageToApplier:{}", response);
@@ -290,7 +290,7 @@ public class ResumeDeliveryService {
                     hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable","0").buildQuery());
             if( qx_userWxDO != null) {
                 String link = handlerLink("applier").replace("{}", application_id + "");
-                return msgHttp.handleApplierTemplate(positionDO, companyDO, hrChatDO, qx_userWxDO.getOpenid(), url, link, templateMessageDOQX);
+                response = msgHttp.handleApplierTemplate(positionDO, companyDO, hrChatDO, qx_userWxDO.getOpenid(), url, link, templateMessageDOQX);
             }
         }
 
@@ -353,9 +353,10 @@ public class ResumeDeliveryService {
                         userRecomDO.getId()).and("wechat_id", hrChatDO.getId()).buildQuery());
                 if(userWxDO == null) return response;
                 String link = handlerLink("recom") + "?wechat_signature="+ hrChatDO.getSignature();
-                return msgHttp.handleRecomTemplate(positionDO, hrChatDO, templateMessageDO, userDO, workExp, lastWorkName, userWxDO.getOpenid(), url, link);
+                response = msgHttp.handleRecomTemplate(positionDO, hrChatDO, templateMessageDO, userDO, workExp, lastWorkName, userWxDO.getOpenid(), url, link);
             }
         }
+        logger.info("sendMessageAndEmail sendTemplateMessageToRecom response:{}", response);
         return  response;
     }
 
@@ -395,9 +396,10 @@ public class ResumeDeliveryService {
                 HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
                         hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable", "0").buildQuery());
                 String link = handlerLink("recom")+ "?wechat_signature="+ hrChatDO.getSignature();;
-                return msgHttp.handleRecomTemplate(positionDO, hrChatDO, templateMessageDOQX, userRecomDO, workExp, lastWorkName, qx_userWxDO.getOpenid(), url, link);
+                response = msgHttp.handleRecomTemplate(positionDO, hrChatDO, templateMessageDOQX, userRecomDO, workExp, lastWorkName, qx_userWxDO.getOpenid(), url, link);
             }
         }
+        logger.info("sendMessageAndEmail sendTemplateMessageToRecom response:{}", response);
         return response;
     }
 
@@ -421,7 +423,7 @@ public class ResumeDeliveryService {
         String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
         if(hrWxUserDo != null && templateMessageDO != null){
             String link ="";
-            return msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDO, userUserDO, workExp, lastWorkName , hrWxUserDo.getOpenid(), url, link);
+            response = msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDO, userUserDO, workExp, lastWorkName , hrWxUserDo.getOpenid(), url, link);
         }
         logger.info("sendMessageAndEmail sendTemplateMessageToHr:{}", response);
         return  response;
@@ -468,13 +470,11 @@ public class ResumeDeliveryService {
      * @return
      */
     public Response sendSMSToHr(UserHrAccountDO accountDO, JobPositionDO positionDO, JobApplicationDO applicationDO, String sys) {
-        Response response;
+        Response response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);;
         if (accountDO != null && positionDO != null && applicationDO != null) {
             Map<String, String> data = new HashMap<>();
             data.put("position", positionDO.getTitle());
             response = smsService.sendSMS(SmsType.NEW_APPLICATION_TO_HR_SMS, accountDO.getMobile(), data, sys, "");
-        } else {
-            response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         logger.info("sendMessageAndEmail smsToHrResponse:{}", response);
         return response;
