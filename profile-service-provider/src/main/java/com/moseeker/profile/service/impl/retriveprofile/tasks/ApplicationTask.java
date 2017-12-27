@@ -24,10 +24,11 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
 
     JobApplicationServices.Iface jobApplicationServices = ServiceManager.SERVICEMANAGER.getService(JobApplicationServices.Iface.class);
 
-    public Integer handler(ApplicationTaskParam param) throws TException {
+    public Integer handler(ApplicationTaskParam param) throws CommonException {
 
         JobApplication application = initApplication(param.getUserId(), param.getPositionId(),
                 param.getOrigin());
+
         try {
             Response response = jobApplicationServices.postApplication(application);
             if (response.getStatus() == 0) {
@@ -35,7 +36,7 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
             }
             return 0;
         } catch (TException e) {
-            throw ExceptionUtils.convertException(e);
+            throw CommonException.PROGRAM_PUT_FAILED;
         }
     }
 
