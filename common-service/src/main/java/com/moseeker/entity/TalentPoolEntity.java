@@ -198,7 +198,7 @@ public class TalentPoolEntity {
                 continue;
             }
         }
-        
+
         return result;
     }
     /*
@@ -216,13 +216,16 @@ public class TalentPoolEntity {
             result.put("use",null);
         }else {
             Set<Integer> noUseIdList = new HashSet<>();
+            Set<Integer> publicUserIdList=new HashSet<>();
             for (Integer userId : userIdList) {
                 if (!talentIdList.contains(userId)) {
                     noUseIdList.add(userId);
+                }else{
+                    publicUserIdList.add(userId);
                 }
             }
             result.put("nopower", noUseIdList);
-            result.put("use", talentIdList);
+            result.put("use", publicUserIdList);
         }
         return result;
     }
@@ -478,8 +481,8 @@ public class TalentPoolEntity {
             return null;
         }
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1)
-                        .and(new Condition("id",hrIdList.toArray(), ValueOp.IN))
-                        .buildQuery();
+                .and(new Condition("id",hrIdList.toArray(), ValueOp.IN))
+                .buildQuery();
         List<Map<String,Object>> list=userHrAccountDao.getMaps(query);
 
         return list;
