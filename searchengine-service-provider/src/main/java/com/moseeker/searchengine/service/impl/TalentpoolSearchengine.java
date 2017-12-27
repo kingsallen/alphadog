@@ -104,15 +104,16 @@ public class TalentpoolSearchengine {
             }
         }else{
             //如果查询多个。注解按照hr_all_+主账号_order
-            if (publisherIdList.size() > 1) {
-                builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
-            }else{
-                if(this.isMianHr(Integer.parseInt(hrId))){
-                    builder.addSort("user.field_order.hr_" + publisherIdList.get(0) + "_order", SortOrder.DESC);
-                }else{
-                    builder.addSort("user.field_order.hr_" + hrId + "_order", SortOrder.DESC);
-                }
-            }
+            builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+//            if (publisherIdList.size() > 1) {
+//                builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+//            }else{
+//                if(this.isMianHr(Integer.parseInt(hrId))){
+//                    builder.addSort("user.field_order.hr_" + publisherIdList.get(0) + "_order", SortOrder.DESC);
+//                }else{
+//                    builder.addSort("user.field_order.hr_" + hrId + "_order", SortOrder.DESC);
+//                }
+//            }
         }
     }
     /*
