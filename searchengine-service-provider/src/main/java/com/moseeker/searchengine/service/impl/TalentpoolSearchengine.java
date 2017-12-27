@@ -104,16 +104,19 @@ public class TalentpoolSearchengine {
             }
         }else{
             //如果查询多个。注解按照hr_all_+主账号_order
-            builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
-//            if (publisherIdList.size() > 1) {
-//                builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
-//            }else{
-//                if(this.isMianHr(Integer.parseInt(hrId))){
-//                    builder.addSort("user.field_order.hr_" + publisherIdList.get(0) + "_order", SortOrder.DESC);
-//                }else{
-//                    builder.addSort("user.field_order.hr_" + hrId + "_order", SortOrder.DESC);
-//                }
-//            }
+
+
+            if (publisherIdList.size() > 1) {
+                builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+            }else{
+                if(this.isMianHr(Integer.parseInt(hrId))){
+                    builder.addSort("user.field_order.hr_" + publisherIdList.get(0) + "_order", SortOrder.DESC);
+                }else{
+                    String companyId=params.get("company_id");
+                    UserHrAccountRecord record=getMainAccount(Integer.parseInt(companyId));
+                    builder.addSort("user.field_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+                }
+            }
         }
     }
     /*
@@ -378,6 +381,8 @@ public class TalentpoolSearchengine {
             for(String origin:list){
                 if("1".equals(origin)){
                     sb.append("upload==1 ||");
+                }else if("-99".equals(origin)){
+                    sb.append(" val.origin==1 ||val.origin==2 ||val.origin==4 ||val.origin==128 || val.origin==256 ||val.origin==512 ||val.origin==1024 ||");
                 }else{
                     if(origin.length()>8){
                         sb.append(" origin=="+origin+"||");
