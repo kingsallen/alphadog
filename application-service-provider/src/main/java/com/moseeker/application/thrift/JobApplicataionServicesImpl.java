@@ -1,5 +1,7 @@
 package com.moseeker.application.thrift;
 
+import com.alibaba.fastjson.JSON;
+import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +38,8 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response postApplication(JobApplication jobApplication){
     	try{
-    		return service.postApplication(jobApplication);
+    		Response response = service.postApplication(jobApplication);
+            return response;
     	}catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -146,7 +149,8 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response postApplicationIfNotApply(JobApplication application) throws TException {
     	try{
-    		return service.postApplicationIfNotApply(application);
+            Response response = service.postApplicationIfNotApply(application);
+            return response;
     	}catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
