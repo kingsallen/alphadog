@@ -1,6 +1,7 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -118,19 +119,25 @@ public class TalentpoolSearchengine {
      处理统计
      */
     private void handlerAggs(Map<String,String> params,SearchRequestBuilder builder,TransportClient client, Map<String,Object> aggInfo){
-        if(this.valididateSearchAggIndex(params)){
-            aggInfo=this.getUserAnalysisIndex(params,client);
-        }
-        if(aggInfo==null||aggInfo.isEmpty()){
-            String returnParams=params.get("return_params");
-            if(!this.isExecAgg(returnParams)) {
-                builder.addAggregation(this.handleAllApplicationCountAgg(params))
-                        .addAggregation(this.handleAllcountAgg(params))
-                        .addAggregation(this.handleEntryCountAgg(params))
-                        .addAggregation(this.handleFirstTrialOkCountAgg(params))
-                        .addAggregation(this.handleInterviewOkCountAgg(params))
-                        .addAggregation(this.handleIsViewedCountAgg(params))
-                        .addAggregation(this.handleNotViewedCountAgg(params));
+        String tagIds=params.get("tag_ids");
+        String favoriteHrs=params.get("favorite_hrs");
+        String isPublic=params.get("is_public");
+        //如果是涉及人才库的查询，那么就不走聚合函数
+        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
+            if (this.valididateSearchAggIndex(params)) {
+                aggInfo = this.getUserAnalysisIndex(params, client);
+            }
+            if (aggInfo == null || aggInfo.isEmpty()) {
+                String returnParams = params.get("return_params");
+                if (!this.isExecAgg(returnParams)) {
+                    builder.addAggregation(this.handleAllApplicationCountAgg(params))
+                            .addAggregation(this.handleAllcountAgg(params))
+                            .addAggregation(this.handleEntryCountAgg(params))
+                            .addAggregation(this.handleFirstTrialOkCountAgg(params))
+                            .addAggregation(this.handleInterviewOkCountAgg(params))
+                            .addAggregation(this.handleIsViewedCountAgg(params))
+                            .addAggregation(this.handleNotViewedCountAgg(params));
+                }
             }
         }
     }
@@ -929,6 +936,17 @@ public class TalentpoolSearchengine {
         }
         return true;
     }
+
+    /*
+     获取主账号
+     */
+    private UserHrAccountRecord getMainAccount(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("account_type",1,ValueOp.NEQ)).buildQuery();
+        UserHrAccountRecord record=userHrAccountDao.getRecord(query);
+        return record;
+    }
+
+
 
 }
 
