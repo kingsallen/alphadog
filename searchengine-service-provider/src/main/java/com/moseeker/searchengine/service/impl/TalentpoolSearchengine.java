@@ -110,10 +110,12 @@ public class TalentpoolSearchengine {
                 builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
             }else{
                 if(this.isMianHr(Integer.parseInt(hrId))){
+                    logger.info("==============================");
                     builder.addSort("user.field_order.hr_all_" + hrId + "_order", SortOrder.DESC);
                 }else{
                     String companyId=params.get("company_id");
                     UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
+                    logger.info("++++++++++++++++++++++++++++++++");
                     builder.addSort("user.field_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
                 }
             }
@@ -264,10 +266,7 @@ public class TalentpoolSearchengine {
     }
 
     private void queryApplications(Map<String,String> params,QueryBuilder query){
-        String tagIds=params.get("tag_ids");
-        String favoriteHrs=params.get("favorite_hrs");
-        String isPublic=params.get("is_public");
-        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
+
             String publisherIds = params.get("publisher");
             String candidateSource = params.get("candidate_source");
             String recommend = params.get("is_recommend");
@@ -275,13 +274,18 @@ public class TalentpoolSearchengine {
             String submitTime = params.get("submit_time");
             String progressStatus = params.get("progress_status");
             String positionIds = params.get("position_id");
+            String companyId = params.get("company_id");
             if ( StringUtils.isNotNullOrEmpty(publisherIds) || StringUtils.isNotNullOrEmpty(candidateSource) || StringUtils.isNotNullOrEmpty(recommend) ||
                     StringUtils.isNotNullOrEmpty(origins) || StringUtils.isNotNullOrEmpty(submitTime) ||
                     StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)
                     ) {
-
-                if (StringUtils.isNotNullOrEmpty(publisherIds)) {
-                    this.queryByPublisher(publisherIds, query);
+                String tagIds=params.get("tag_ids");
+                String favoriteHrs=params.get("favorite_hrs");
+                String isPublic=params.get("is_public");
+                if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
+                    if (StringUtils.isNotNullOrEmpty(publisherIds)) {
+                        this.queryByPublisher(publisherIds, query);
+                    }
                 }
 
                 if (StringUtils.isNotNullOrEmpty(candidateSource)) {
@@ -297,14 +301,13 @@ public class TalentpoolSearchengine {
                     this.queryByProgress(Integer.parseInt(progressStatus), query);
                 }
                 if (StringUtils.isNotNullOrEmpty(origins)) {
-                    String companyId = params.get("company_id");
+
                     this.queryByOrigin(origins, companyId, query);
                 }
                 if (StringUtils.isNotNullOrEmpty(positionIds)) {
                     this.queryByPositionId(positionIds, query);
                 }
             }
-        }
 
     }
 
@@ -358,10 +361,7 @@ public class TalentpoolSearchengine {
         String tagIds=params.get("tag_ids");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
-        if(StringUtils.isNotNullOrEmpty(tagIds)||StringUtils.isNotNullOrEmpty(favoriteHrs)||StringUtils.isNotNullOrEmpty(isPublic)){
-            String companyId=params.get("company_id");
-            sb.append("if(val.company_id == "+companyId+"&&");
-        }else{
+        if(StringUtils.isNullOrEmpty(tagIds)||StringUtils.isNullOrEmpty(favoriteHrs)||StringUtils.isNullOrEmpty(isPublic)){
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
                 List<Integer> publisherIdList=this.convertStringToList(publisherIds);
                 if(!StringUtils.isEmptyList(publisherIdList)){
@@ -943,7 +943,8 @@ public class TalentpoolSearchengine {
      获取主账号
      */
     private UserHrAccountRecord getMainAccount(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("account_type",1,ValueOp.NEQ)).buildQuery();
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("account_type",1,ValueOp.NEQ))
+                .and("activation",1).and("disable",1).buildQuery();
         UserHrAccountRecord record=userHrAccountDao.getRecord(query);
         return record;
     }
