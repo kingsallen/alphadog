@@ -156,6 +156,7 @@ public class JobPcAdvertisement extends TableImpl<JobPcAdvertisementRecord> {
     /**
      * Rename this table
      */
+    @Override
     public JobPcAdvertisement rename(String name) {
         return new JobPcAdvertisement(name, null);
     }

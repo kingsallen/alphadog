@@ -221,4 +221,6 @@ public final class Constant {
     public static final int DICT_CONSTANT_DEGREE_USER = 3104; 		//求职者学历常量表parent_code值
     public static final int DICT_CONSTANT_GENDER_USER = 3109;       //性别常量表parent_code值
     public static final int DICT_CONSTANT_LANGUAGE_FRUENCY =3108;   //语言-掌握程度常量表parent_code值
+
+    public static final String CDN_URL = "https://cdn.moseeker.com/";
 }
