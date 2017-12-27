@@ -1507,6 +1507,9 @@ public class TalentPoolService {
       获取人才
      */
     private List<Map<String,Object>> getTalentpoolHrTalentByIdList(int hrId, Set<Integer> userIdList){
+        if(StringUtils.isEmptySet(userIdList)){
+            return null;
+        }
         Query query=new Query.QueryBuilder().where(new Condition("user_id",userIdList.toArray(), ValueOp.IN))
                 .and("hr_id",hrId).buildQuery();
         List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);

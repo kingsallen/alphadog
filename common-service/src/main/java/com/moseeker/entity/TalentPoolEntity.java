@@ -216,13 +216,16 @@ public class TalentPoolEntity {
             result.put("use",null);
         }else {
             Set<Integer> noUseIdList = new HashSet<>();
+            Set<Integer> publicUserIdList=new HashSet<>();
             for (Integer userId : userIdList) {
                 if (!talentIdList.contains(userId)) {
                     noUseIdList.add(userId);
+                }else{
+                    publicUserIdList.add(userId);
                 }
             }
             result.put("nopower", noUseIdList);
-            result.put("use", talentIdList);
+            result.put("use", publicUserIdList);
         }
         return result;
     }
