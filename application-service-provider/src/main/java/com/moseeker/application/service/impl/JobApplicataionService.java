@@ -112,6 +112,7 @@ public class JobApplicataionService {
      */
     @SuppressWarnings("serial")
     @CounterIface
+    @Transactional
     public Response postApplication(JobApplication jobApplication) throws TException {
         logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
         try {
@@ -155,8 +156,6 @@ public class JobApplicataionService {
             }
             int jobApplicationId = this.saveJobApplication(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
-                //发送模板消息，短信，邮件
-                tp.startTast(() -> mqServer.sendMessageAndEmail(jobApplicationId));
                 // proxy 0: 正常投递, 1: 代理投递, null:默认为0
                 // 代理投递不能增加用户的申请限制次数
                 if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
@@ -178,6 +177,11 @@ public class JobApplicataionService {
             //do nothing
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+
+    public void sendMessageAndEmailThread (int applicationId){
+        //发送模板消息，短信，邮件
+        tp.startTast(() -> mqServer.sendMessageAndEmail(applicationId));
     }
 
     private void appIDToSource(JobApplication jobApplication) {
@@ -225,8 +229,6 @@ public class JobApplicataionService {
             }
             int jobApplicationId = this.saveApplicationIfNotExist(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
-                //发送模板消息，短信，邮件
-                tp.startTast(() -> mqServer.sendMessageAndEmail(jobApplicationId));
                 // proxy 0: 正常投递, 1: 代理投递, null:默认为0
                 // 代理投递不能增加用户的申请限制次数
                 if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {

@@ -1,5 +1,7 @@
 package com.moseeker.application.thrift;
 
+import com.alibaba.fastjson.JSON;
+import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +38,20 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response postApplication(JobApplication jobApplication){
     	try{
-    		return service.postApplication(jobApplication);
+    		Response response = service.postApplication(jobApplication);
+            if(response.getStatus() == 0 ){
+                String result = response.getData();
+                if(result != null){
+                    Map<String, Object> params = (Map<String, Object>) JSON.parse(result);
+                    if(params != null && params.get("jobApplicationId")!= null){
+                        Integer applicationId = (Integer) params.get("jobApplicationId");
+                        if(applicationId>0){
+                            service.sendMessageAndEmailThread(applicationId);
+                        }
+                    }
+                }
+            }
+            return response;
     	}catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -146,7 +161,20 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response postApplicationIfNotApply(JobApplication application) throws TException {
     	try{
-    		return service.postApplicationIfNotApply(application);
+            Response response = service.postApplicationIfNotApply(application);
+            if(response.getStatus() == 0 ){
+                String result = response.getData();
+                if(result != null){
+                    Map<String, Object> params = (Map<String, Object>) JSON.parse(result);
+                    if(params != null && params.get("jobApplicationId")!= null){
+                        Integer applicationId = (Integer) params.get("jobApplicationId");
+                        if(applicationId>0){
+                            service.sendMessageAndEmailThread(applicationId);
+                        }
+                    }
+                }
+            }
+            return response;
     	}catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
