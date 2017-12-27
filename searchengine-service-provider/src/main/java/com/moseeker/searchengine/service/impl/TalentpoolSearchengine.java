@@ -110,10 +110,12 @@ public class TalentpoolSearchengine {
                 builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
             }else{
                 if(this.isMianHr(Integer.parseInt(hrId))){
-                    builder.addSort("user.field_order.hr_" + publisherIdList.get(0) + "_order", SortOrder.DESC);
+                    logger.info("==============================");
+                    builder.addSort("user.field_order.hr_all_" + hrId + "_order", SortOrder.DESC);
                 }else{
                     String companyId=params.get("company_id");
                     UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
+                    logger.info("++++++++++++++++++++++++++++++++");
                     builder.addSort("user.field_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
                 }
             }
@@ -941,7 +943,8 @@ public class TalentpoolSearchengine {
      获取主账号
      */
     private UserHrAccountRecord getMainAccount(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("account_type",1,ValueOp.NEQ)).buildQuery();
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("account_type",1,ValueOp.NEQ))
+                .and("activation",1).and("disable",1).buildQuery();
         UserHrAccountRecord record=userHrAccountDao.getRecord(query);
         return record;
     }
