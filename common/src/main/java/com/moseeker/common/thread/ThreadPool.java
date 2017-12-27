@@ -23,6 +23,7 @@ public enum ThreadPool {
                 init();
             }
         }
+
         return this.service.submit(task);
     }
 
