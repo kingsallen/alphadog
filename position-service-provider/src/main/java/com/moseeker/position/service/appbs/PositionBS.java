@@ -208,7 +208,7 @@ public class PositionBS {
         chaosService.synchronizePosition(positionsForSynchronizations);
 
         // 回写数据到第三方职位表表
-        logger.info("write back to thirdpartyposition:{}",writeBackThirdPartyPositionList);
+        logger.info("write back to thirdpartyposition:{}", JSON.toJSONString(writeBackThirdPartyPositionList));
         thirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
 
         return results;

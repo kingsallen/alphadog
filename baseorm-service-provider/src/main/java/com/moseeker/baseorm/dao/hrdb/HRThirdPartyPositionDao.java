@@ -7,6 +7,7 @@ import com.moseeker.baseorm.base.IThirdPartyPositionDao;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.dao.thirdpartydb.DefaultThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyJob1001PositionDao;
+import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyVeryeastPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
@@ -271,7 +272,7 @@ public class HRThirdPartyPositionDao  {
 
     public enum ChannelPositionDao{
         JOB1001(ChannelType.JOB1001, ThirdpartyJob1001PositionDao.class),
-        VERYEAST(ChannelType.VERYEAST, ThirdpartyJob1001PositionDao.class),
+        VERYEAST(ChannelType.VERYEAST, ThirdpartyVeryeastPositionDao.class),
         JOB51(ChannelType.JOB51, DefaultThirdPartyPositionDao.class),
         LIEPIN(ChannelType.LIEPIN, DefaultThirdPartyPositionDao.class),
         ZHILIAN(ChannelType.ZHILIAN, DefaultThirdPartyPositionDao.class)
