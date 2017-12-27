@@ -112,7 +112,6 @@ public class JobApplicataionService {
      */
     @SuppressWarnings("serial")
     @CounterIface
-    @Transactional
     public Response postApplication(JobApplication jobApplication) throws TException {
         logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
         try {
@@ -130,20 +129,38 @@ public class JobApplicataionService {
             if (responseJob.status > 0) {
                 return responseJob;
             }
-//            long userId=(long)jobApplication.getApplier_id();
-//            int companyId=jobPositionRecord.getCompanyId();
-//            Query queryEmployee=new Query.QueryBuilder().where("sysuser_id",userId)
-//                    .and("company_id",companyId)
-//                    .and("disable",0)
-//                    .and("activation",0)
-//                    .buildQuery();
-//            UserEmployeeDO userEmployeeDO=userEmployeedao.getEmployee(queryEmployee);
-//            if(userEmployeeDO!=null){
-//                return ResponseUtils.fail(1,"申请人已经是该公司的员工，所以无法申请该职位");
-//            }
             if (checkApplicationCountAtCompany(jobApplication.getApplier_id(), jobPositionRecord.getCompanyId())) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
             }
+            int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
+            if (jobApplicationId > 0) {
+                // proxy 0: 正常投递, 1: 代理投递, null:默认为0
+                // 代理投递不能增加用户的申请限制次数
+                if (jobApplication.getProxy() == 0) {
+                    // 添加该人该公司的申请次数
+                    addApplicationCountAtCompany(jobApplication);
+                }
+                sendMessageAndEmailThread(jobApplicationId);
+                // 返回 jobApplicationId
+                return ResponseUtils.success(new HashMap<String, Object>() {
+                                                 {
+                                                     put("jobApplicationId", jobApplicationId);
+                                                 }
+                                             }
+                );
+            }
+        } catch (Exception e) {
+            logger.error("postResources JobApplication error: ", e);
+            throw new TException();
+        } finally {
+            //do nothing
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+
+    @Transactional
+    private int postApplication(JobApplication jobApplication, JobPositionRecord jobPositionRecord) throws TException {
+        try {
             // 初始化参数
             initJobApplication(jobApplication, jobPositionRecord);
             // 添加申请
@@ -162,21 +179,14 @@ public class JobApplicataionService {
                     // 添加该人该公司的申请次数
                     addApplicationCountAtCompany(jobApplication);
                 }
-                // 返回 jobApplicationId
-                return ResponseUtils.success(new HashMap<String, Object>() {
-                                                 {
-                                                     put("jobApplicationId", jobApplicationId);
-                                                 }
-                                             }
-                );
             }
-        } catch (Exception e) {
+            return jobApplicationId;
+        }  catch (Exception e) {
             logger.error("postResources JobApplication error: ", e);
             throw new TException();
         } finally {
             //do nothing
         }
-        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 
     public void sendMessageAndEmailThread (int applicationId){
