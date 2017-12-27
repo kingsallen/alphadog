@@ -361,7 +361,7 @@ public class TalentpoolSearchengine {
         String tagIds=params.get("tag_ids");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
-        if(StringUtils.isNullOrEmpty(tagIds)||StringUtils.isNullOrEmpty(favoriteHrs)||StringUtils.isNullOrEmpty(isPublic)){
+        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
                 List<Integer> publisherIdList=this.convertStringToList(publisherIds);
                 if(!StringUtils.isEmptyList(publisherIdList)){
