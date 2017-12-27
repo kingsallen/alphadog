@@ -61,6 +61,7 @@ public class TalentpoolSearchengine {
             }
             return result;
         } catch (Exception e) {
+            logger.info(e.getMessage()+"=================");
             if (e.getMessage().contains("all shards")) {
                 return result;
             }
