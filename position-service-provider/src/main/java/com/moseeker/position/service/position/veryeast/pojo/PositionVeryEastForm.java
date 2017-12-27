@@ -180,6 +180,8 @@ public class PositionVeryEastForm {
         private int languageType;
         private int languageLevel;
 
+        public Language(){ }
+
         public Language(int languageType, int languageLevel) {
             this.languageType = languageType;
             this.languageLevel = languageLevel;
