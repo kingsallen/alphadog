@@ -184,8 +184,9 @@ public class JobApplicataionService {
     }
 
     private void sendMessageAndEmailThread (int applicationId){
+        logger.info("sendMessageAndEmailThread applicationId{}", applicationId);
         //发送模板消息，短信，邮件
-        tp.startTast(() -> mqServer.sendMessageAndEmail(applicationId));
+        tp.startTastSleep(() -> mqServer.sendMessageAndEmail(applicationId));
     }
 
     private void appIDToSource(JobApplication jobApplication) {
@@ -231,6 +232,7 @@ public class JobApplicataionService {
             }
             int jobApplicationId = this.saveApplicationIfNotExist(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
+                logger.info("postApplicationIfNotApply jobApplicationId{}", jobApplicationId);
                 sendMessageAndEmailThread(jobApplicationId);
                 // 返回 jobApplicationId
                 return ResponseUtils.success(new HashMap<String, Object>() {
