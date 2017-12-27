@@ -113,7 +113,7 @@ public class TalentpoolSearchengine {
                     builder.addSort("user.field_order.hr_" + publisherIdList.get(0) + "_order", SortOrder.DESC);
                 }else{
                     String companyId=params.get("company_id");
-                    UserHrAccountRecord record=getMainAccount(Integer.parseInt(companyId));
+                    UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
                     builder.addSort("user.field_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
                 }
             }
