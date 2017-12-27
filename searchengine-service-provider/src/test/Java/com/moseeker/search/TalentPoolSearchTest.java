@@ -68,27 +68,23 @@ public class TalentPoolSearchTest {
         System.out.println(builder.toString());
     }
 
+    /*
+
+    {tag_ids=talent, company_id=39978, all_publisher=1, hr_account_id=82752, page_number=1, appid=4,
+    publisher=87757,90915,91318,91337,91342,91363,91364,91366,91367,82752, hr_account_id=82752, page_size=20}
+
+     */
+
     @Test
     public void testalentSearch(){
         Map<String,String> map=new HashMap<>();
-        map.put("publisher","82752,87757,90915,91318,91337,91342,9134");
+        map.put("publisher","87757,90915,91318,91337,91342,91363,91364,91366,91367,82752");
         map.put("hr_account_id","82752");
-        map.put("candidate_source","0");
-        map.put("is_recommend","1");
-        map.put("origins","1,1024,10000000000000,10000000000000,1000000000");
-        map.put("progress_status","1");
-        map.put("tag_ids","1,2,3,4");
-        map.put("favorite_hrs","82752,87757");
-        map.put("keyword","产品,Java");
-//        map.put("in_last_job_search_company","1");
-//        map.put("in_last_job_search_position","1");
-        map.put("city_name","北京,上海");
-//        map.put("company_name","111,222,333");
-        map.put("past_position","java");
-        map.put("submit_time","10");
-        map.put("update_time","10");
+        map.put("tag_ids","talent");
         map.put("company_id","39978");
-//        map.put("is_public","1");
+        map.put("all_publisher","1");
+        map.put("page_number","1");
+        map.put("page_size","20");
         Map<String,Object> result= talentpoolSearchengine.talentSearch(map);
         System.out.println(result);
     }

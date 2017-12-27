@@ -24,7 +24,7 @@ public class EsClientInstance {
     private static Logger logger=Logger.getLogger(EsClientInstance.class);
     private static Integer SLEEP_TIME=0;
     private static Integer CONNECTION_NUM=0;
-    private static  volatile   TransportClient client=null;
+    private static TransportClient client=null;
     private static Integer failNum=0;
     //初始化每次连接失败的睡眠时间和最大的链接次数
     static {
