@@ -39,18 +39,6 @@ public class JobApplicataionServicesImpl implements Iface {
     public Response postApplication(JobApplication jobApplication){
     	try{
     		Response response = service.postApplication(jobApplication);
-            if(response.getStatus() == 0 ){
-                String result = response.getData();
-                if(result != null){
-                    Map<String, Object> params = (Map<String, Object>) JSON.parse(result);
-                    if(params != null && params.get("jobApplicationId")!= null){
-                        Integer applicationId = (Integer) params.get("jobApplicationId");
-                        if(applicationId>0){
-                            service.sendMessageAndEmailThread(applicationId);
-                        }
-                    }
-                }
-            }
             return response;
     	}catch(Exception e){
     		logger.error(e.getMessage(),e);
@@ -162,18 +150,6 @@ public class JobApplicataionServicesImpl implements Iface {
     public Response postApplicationIfNotApply(JobApplication application) throws TException {
     	try{
             Response response = service.postApplicationIfNotApply(application);
-            if(response.getStatus() == 0 ){
-                String result = response.getData();
-                if(result != null){
-                    Map<String, Object> params = (Map<String, Object>) JSON.parse(result);
-                    if(params != null && params.get("jobApplicationId")!= null){
-                        Integer applicationId = (Integer) params.get("jobApplicationId");
-                        if(applicationId>0){
-                            service.sendMessageAndEmailThread(applicationId);
-                        }
-                    }
-                }
-            }
             return response;
     	}catch(Exception e){
     		logger.error(e.getMessage(),e);

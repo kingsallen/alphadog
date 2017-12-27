@@ -399,7 +399,7 @@ public class ResumeDeliveryService {
                 response = msgHttp.handleRecomTemplate(positionDO, hrChatDO, templateMessageDOQX, userRecomDO, workExp, lastWorkName, qx_userWxDO.getOpenid(), url, link);
             }
         }
-        logger.info("sendMessageAndEmail sendTemplateMessageToRecom response:{}", response);
+        logger.info("sendMessageAndEmail sendTemplateMessageToRecomByQX response:{}", response);
         return response;
     }
 

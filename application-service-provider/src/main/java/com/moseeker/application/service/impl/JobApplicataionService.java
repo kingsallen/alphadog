@@ -56,6 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -112,6 +113,7 @@ public class JobApplicataionService {
      */
     @SuppressWarnings("serial")
     @CounterIface
+    @Transactional(propagation= Propagation.NOT_SUPPORTED)
     public Response postApplication(JobApplication jobApplication) throws TException {
         logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
         try {
@@ -134,12 +136,6 @@ public class JobApplicataionService {
             }
             int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
             if (jobApplicationId > 0) {
-                // proxy 0: 正常投递, 1: 代理投递, null:默认为0
-                // 代理投递不能增加用户的申请限制次数
-                if (jobApplication.getProxy() == 0) {
-                    // 添加该人该公司的申请次数
-                    addApplicationCountAtCompany(jobApplication);
-                }
                 sendMessageAndEmailThread(jobApplicationId);
                 // 返回 jobApplicationId
                 return ResponseUtils.success(new HashMap<String, Object>() {
@@ -189,7 +185,7 @@ public class JobApplicataionService {
         }
     }
 
-    public void sendMessageAndEmailThread (int applicationId){
+    private void sendMessageAndEmailThread (int applicationId){
         //发送模板消息，短信，邮件
         tp.startTast(() -> mqServer.sendMessageAndEmail(applicationId));
     }
@@ -215,6 +211,7 @@ public class JobApplicataionService {
 
     @SuppressWarnings("serial")
     @CounterIface
+    @Transactional(propagation= Propagation.NOT_SUPPORTED)
     public Response postApplicationIfNotApply(JobApplication jobApplication) throws TException {
         try {
             appIDToSource(jobApplication);
@@ -230,21 +227,9 @@ public class JobApplicataionService {
             if (responseJob.status > 0) {
                 return responseJob;
             }
-            // 初始化参数
-            initJobApplication(jobApplication, jobPositionRecord);
-            // 添加申请
-            JobApplicationRecord jobApplicationRecord = (JobApplicationRecord) BeanUtils.structToDB(jobApplication, JobApplicationRecord.class);
-            if (jobApplicationRecord.getWechatId() == null) {
-                jobApplicationRecord.setWechatId((int) (0));
-            }
-            int jobApplicationId = this.saveApplicationIfNotExist(jobApplicationRecord, jobPositionRecord);
+            int jobApplicationId = this.postApplication(jobApplication, jobPositionRecord);
             if (jobApplicationId > 0) {
-                // proxy 0: 正常投递, 1: 代理投递, null:默认为0
-                // 代理投递不能增加用户的申请限制次数
-                if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
-                    // 添加该人该公司的申请次数
-                    addApplicationCountAtCompany(jobApplication);
-                }
+                sendMessageAndEmailThread(jobApplicationId);
                 // 返回 jobApplicationId
                 return ResponseUtils.success(new HashMap<String, Object>() {
                                                  {
