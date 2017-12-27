@@ -1,6 +1,7 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -103,35 +104,44 @@ public class TalentpoolSearchengine {
             }
         }else{
             //如果查询多个。注解按照hr_all_+主账号_order
-            builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
-//            if (publisherIdList.size() > 1) {
-//                builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
-//            }else{
-//                if(this.isMianHr(Integer.parseInt(hrId))){
-//                    builder.addSort("user.field_order.hr_" + publisherIdList.get(0) + "_order", SortOrder.DESC);
-//                }else{
-//                    builder.addSort("user.field_order.hr_" + hrId + "_order", SortOrder.DESC);
-//                }
-//            }
+
+
+            if (publisherIdList.size() > 1) {
+                builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+            }else{
+                if(this.isMianHr(Integer.parseInt(hrId))){
+                    builder.addSort("user.field_order.hr_all_" + hrId + "_order", SortOrder.DESC);
+                }else{
+                    String companyId=params.get("company_id");
+                    UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
+                    builder.addSort("user.field_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+                }
+            }
         }
     }
     /*
      处理统计
      */
     private void handlerAggs(Map<String,String> params,SearchRequestBuilder builder,TransportClient client, Map<String,Object> aggInfo){
-        if(this.valididateSearchAggIndex(params)){
-            aggInfo=this.getUserAnalysisIndex(params,client);
-        }
-        if(aggInfo==null||aggInfo.isEmpty()){
-            String returnParams=params.get("return_params");
-            if(!this.isExecAgg(returnParams)) {
-                builder.addAggregation(this.handleAllApplicationCountAgg(params))
-                        .addAggregation(this.handleAllcountAgg(params))
-                        .addAggregation(this.handleEntryCountAgg(params))
-                        .addAggregation(this.handleFirstTrialOkCountAgg(params))
-                        .addAggregation(this.handleInterviewOkCountAgg(params))
-                        .addAggregation(this.handleIsViewedCountAgg(params))
-                        .addAggregation(this.handleNotViewedCountAgg(params));
+        String tagIds=params.get("tag_ids");
+        String favoriteHrs=params.get("favorite_hrs");
+        String isPublic=params.get("is_public");
+        //如果是涉及人才库的查询，那么就不走聚合函数
+        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
+            if (this.valididateSearchAggIndex(params)) {
+                aggInfo = this.getUserAnalysisIndex(params, client);
+            }
+            if (aggInfo == null || aggInfo.isEmpty()) {
+                String returnParams = params.get("return_params");
+                if (!this.isExecAgg(returnParams)) {
+                    builder.addAggregation(this.handleAllApplicationCountAgg(params))
+                            .addAggregation(this.handleAllcountAgg(params))
+                            .addAggregation(this.handleEntryCountAgg(params))
+                            .addAggregation(this.handleFirstTrialOkCountAgg(params))
+                            .addAggregation(this.handleInterviewOkCountAgg(params))
+                            .addAggregation(this.handleIsViewedCountAgg(params))
+                            .addAggregation(this.handleNotViewedCountAgg(params));
+                }
             }
         }
     }
@@ -266,8 +276,8 @@ public class TalentpoolSearchengine {
             String progressStatus = params.get("progress_status");
             String positionIds = params.get("position_id");
             if ( StringUtils.isNotNullOrEmpty(publisherIds) || StringUtils.isNotNullOrEmpty(candidateSource) || StringUtils.isNotNullOrEmpty(recommend) ||
-                            StringUtils.isNotNullOrEmpty(origins) || StringUtils.isNotNullOrEmpty(submitTime) ||
-                            StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)
+                    StringUtils.isNotNullOrEmpty(origins) || StringUtils.isNotNullOrEmpty(submitTime) ||
+                    StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)
                     ) {
 
                 if (StringUtils.isNotNullOrEmpty(publisherIds)) {
@@ -372,6 +382,8 @@ public class TalentpoolSearchengine {
             for(String origin:list){
                 if("1".equals(origin)){
                     sb.append("upload==1 ||");
+                }else if("-99".equals(origin)){
+                    sb.append(" val.origin==1 ||val.origin==2 ||val.origin==4 ||val.origin==128 || val.origin==256 ||val.origin==512 ||val.origin==1024 ||");
                 }else{
                     if(origin.length()>8){
                         sb.append(" origin=="+origin+"||");
@@ -926,6 +938,17 @@ public class TalentpoolSearchengine {
         }
         return true;
     }
+
+    /*
+     获取主账号
+     */
+    private UserHrAccountRecord getMainAccount(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("account_type",1,ValueOp.NEQ)).buildQuery();
+        UserHrAccountRecord record=userHrAccountDao.getRecord(query);
+        return record;
+    }
+
+
 
 }
 

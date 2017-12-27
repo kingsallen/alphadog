@@ -454,6 +454,17 @@ public class SearchUtil {
             if("1".equals(condition)){
                 QueryBuilder query0=QueryBuilders.matchQuery("user.upload",1);
                 ((BoolQueryBuilder) keyand).should(query0);
+            }else if("-99".equals(condition)){
+                List<Integer>  conditionList=new ArrayList<>();
+                conditionList.add(1);
+                conditionList.add(2);
+                conditionList.add(4);
+                conditionList.add(128);
+                conditionList.add(256);
+                conditionList.add(512);
+                conditionList.add(1024);
+                QueryBuilder query0=QueryBuilders.termsQuery("user.applications.origin",conditionList);
+                ((BoolQueryBuilder) keyand).should(query0);
             }else{
                 if(condition.length()>8){
                     QueryBuilder query0=QueryBuilders.termQuery("user.origin_data",condition);
