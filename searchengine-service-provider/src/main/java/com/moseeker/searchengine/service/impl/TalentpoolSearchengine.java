@@ -1,20 +1,17 @@
 package com.moseeker.searchengine.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.log4j.Logger;
-import org.apache.lucene.queryparser.xml.builders.FilteredQueryBuilder;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.xcontent.ToXContent;
-import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -29,7 +26,6 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -37,31 +33,40 @@ import java.util.*;
  */
 @Service
 public class TalentpoolSearchengine {
-    private  Logger logger=Logger.getLogger(this.getClass());
+    private Logger logger = Logger.getLogger(this.getClass());
     @Autowired
     private SearchUtil searchUtil;
     @Autowired
     private UserHrAccountDao userHrAccountDao;
 
     @CounterIface
-    public Map<String,Object>  talentSearch(Map<String,String> params){
-        TransportClient client= searchUtil.getEsClient();
-        Map<String,Object> aggInfo=new HashMap<>();
-        QueryBuilder query=this.query(params);
-        SearchRequestBuilder builder=client.prepareSearch("users").setTypes("users").setQuery(query);
-        this.handlerAggs(params,builder,client,aggInfo);
-        this.handlerSortOrder(params,builder);
-        this.handlerPage(params,builder);
-        this.handlerReturn(params,builder);
-        builder.setTrackScores(true);
-        logger.info(builder.toString());
-        SearchResponse response = builder.execute().actionGet();
-        Map<String,Object>result=searchUtil.handleData(response,"users");
-        if(aggInfo!=null&&!aggInfo.isEmpty()){
-            result.put("aggs",aggInfo.get("aggs"));
+    public Map<String, Object> talentSearch(Map<String, String> params) {
+        Map<String, Object> result=new HashMap<>();
+        try {
+            TransportClient client = searchUtil.getEsClient();
+            Map<String, Object> aggInfo = new HashMap<>();
+            QueryBuilder query = this.query(params);
+            SearchRequestBuilder builder = client.prepareSearch("users").setTypes("users").setQuery(query);
+            this.handlerAggs(params, builder, client, aggInfo);
+            this.handlerSortOrder(params, builder);
+            this.handlerPage(params, builder);
+            this.handlerReturn(params, builder);
+            builder.setTrackScores(true);
+            logger.info(builder.toString());
+            SearchResponse response = builder.execute().actionGet();
+            result = searchUtil.handleData(response, "users");
+            if (aggInfo != null && !aggInfo.isEmpty()) {
+                result.put("aggs", aggInfo.get("aggs"));
+            }
+            return result;
+        } catch (Exception e) {
+            if (e.getMessage().contains("all shards")) {
+                return result;
+            }
         }
         return result;
     }
+
     /*
      组装查询语句
      */
@@ -97,7 +102,7 @@ public class TalentpoolSearchengine {
                 }
             }
         }else{
-            //如果查询多个。注解按照hr_all_+主账号_last_submit_time
+            //如果查询多个。注解按照hr_all_+主账号_order
             if (publisherIdList.size() > 1) {
                 builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
             }else{
@@ -703,6 +708,22 @@ public class TalentpoolSearchengine {
         return builder;
     }
     /*
+     组装没有publisher的排序
+     */
+    private SortBuilder handlerSort(int hrId,int type){
+        StringBuffer sb=new StringBuffer();
+        sb.append("double score = 0;fieldOrder=_source.user.field_order;if(fieldOrder){");
+        if(type==1){
+            sb.append("time=fieldOrder.hr_all"+hrId+"_order;if(time){score=time}};return score;");
+        }else{
+            sb.append("time=fieldOrder.hr_"+hrId+"_order;if(time){score=time}};return score;");
+        }
+        Script script=new Script(sb.toString());
+        SortBuilder builder=new ScriptSortBuilder(script,"number");
+        builder.order(SortOrder.DESC);
+        return builder;
+    }
+    /*
      组装获取所有数量统计语句
      */
 
@@ -908,6 +929,7 @@ public class TalentpoolSearchengine {
         }
         return true;
     }
+
 }
 
 

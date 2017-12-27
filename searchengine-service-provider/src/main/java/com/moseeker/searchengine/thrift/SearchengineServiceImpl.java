@@ -103,7 +103,7 @@ public class SearchengineServiceImpl implements Iface {
 	public Response userQuery(Map<String, String> params) throws TException {
 		try{
 			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
-			if(res==null){
+			if(res==null||res.isEmpty()){
 				return ResponseUtils.success("");
 			}
 			return ResponseUtils.success(res);
