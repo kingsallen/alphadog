@@ -61,6 +61,7 @@ public class TalentpoolSearchengine {
             }
             return result;
         } catch (Exception e) {
+            logger.info(e.getMessage()+"=================");
             if (e.getMessage().contains("all shards")) {
                 return result;
             }
@@ -351,16 +352,16 @@ public class TalentpoolSearchengine {
         String submitTime=params.get("submit_time");
         String progressStatus=params.get("progress_status");
         String positionId=params.get("position_id");
-        if( StringUtils.isNullOrEmpty(publisherIds)
-            &&StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
+        String tagIds=params.get("tag_ids");
+        String favoriteHrs=params.get("favorite_hrs");
+        String isPublic=params.get("is_public");
+        if( StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
             &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)){
             return null;
         }
         StringBuffer sb=new StringBuffer();
         sb.append("origin=0;upload=_source.user.upload;profiles=_source.user.profiles;if(profiles){profile=profiles.profile;if(profile){origin=profile.origin}};for ( val in _source.user.applications) {");
-        String tagIds=params.get("tag_ids");
-        String favoriteHrs=params.get("favorite_hrs");
-        String isPublic=params.get("is_public");
+
         if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
                 List<Integer> publisherIdList=this.convertStringToList(publisherIds);
