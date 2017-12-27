@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl.retriveprofile;
 
 import com.moseeker.common.exception.CommonException;
+import org.apache.thrift.TException;
 
 /**
  * 业务任务。现有的任务生成用户信息，生成或者更新profile信息，生成投递信息，通知用户密码
@@ -14,5 +15,5 @@ public interface Task<P, R> {
      * @throws CommonException 业务异常
      * @return 执行结果
      */
-    R handler(P param) throws CommonException;
+    R handler(P param) throws CommonException, TException;
 }
