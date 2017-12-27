@@ -63,7 +63,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author ltf 申请服务 2016年11月3日
  */
 @Service
-@Transactional
 public class JobApplicataionService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -113,7 +112,6 @@ public class JobApplicataionService {
      */
     @SuppressWarnings("serial")
     @CounterIface
-    @Transactional(propagation= Propagation.NOT_SUPPORTED)
     public Response postApplication(JobApplication jobApplication) throws TException {
         logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
         try {
@@ -155,7 +153,7 @@ public class JobApplicataionService {
     }
 
     @Transactional
-    private int postApplication(JobApplication jobApplication, JobPositionRecord jobPositionRecord) throws TException {
+    public int postApplication(JobApplication jobApplication, JobPositionRecord jobPositionRecord) throws TException {
         try {
             // 初始化参数
             initJobApplication(jobApplication, jobPositionRecord);
@@ -211,13 +209,17 @@ public class JobApplicataionService {
 
     @SuppressWarnings("serial")
     @CounterIface
-    @Transactional(propagation= Propagation.NOT_SUPPORTED)
     public Response postApplicationIfNotApply(JobApplication jobApplication) throws TException {
         try {
             appIDToSource(jobApplication);
             // 获取该申请的职位
             Query query = new QueryBuilder().where("id", jobApplication.position_id).buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
+            initJobApplication(jobApplication, jobPositionRecord);
+            // 添加申请
+            logger.info("JobApplicataionService postApplication ");
+            JobApplicationRecord jobApplicationRecord = BeanUtils.structToDB(jobApplication,
+                    JobApplicationRecord.class);
             //校验申请来源的有效性
             if (jobApplication.getOrigin() == 0) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_SOURCE_NOTEXIST);
@@ -227,7 +229,7 @@ public class JobApplicataionService {
             if (responseJob.status > 0) {
                 return responseJob;
             }
-            int jobApplicationId = this.postApplication(jobApplication, jobPositionRecord);
+            int jobApplicationId = this.saveApplicationIfNotExist(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
                 sendMessageAndEmailThread(jobApplicationId);
                 // 返回 jobApplicationId
@@ -254,6 +256,7 @@ public class JobApplicataionService {
      */
     @SuppressWarnings("serial")
     @CounterIface
+    @Transactional
     public Response putApplication(JobApplication jobApplication) throws TException {
         try {
             // 必填项校验
@@ -324,6 +327,7 @@ public class JobApplicataionService {
      * @param applicationId 申请Id
      */
     @CounterIface
+    @Transactional
     public Response deleteApplication(long applicationId) throws TException {
         try {
             // 必填项校验
@@ -422,6 +426,7 @@ public class JobApplicataionService {
      * @return 新创建的申请记录ID
      */
     @CounterIface
+    @Transactional
     public Response postJobResumeOther(JobResumeOther jobResumeOther) throws TException {
 //        try {
         // 必填项验证
@@ -457,6 +462,7 @@ public class JobApplicataionService {
      * @return true : 申请, false: 没申请过
      */
     @CounterIface
+    @Transactional
     public Response getApplicationByUserIdAndPositionId(long userId, long positionId, long companyId) throws TException {
         try {
             Response response = validateGetApplicationByUserIdAndPositionId(userId, positionId, companyId);
@@ -482,6 +488,7 @@ public class JobApplicataionService {
      * @param companyId 公司id
      */
     @CounterIface
+    @Transactional
     public Response validateUserApplicationCheckCountAtCompany(long userId, long companyId) {
         try {
             return ResponseUtils.success(this.checkApplicationCountAtCompany(userId, companyId));
@@ -635,6 +642,7 @@ public class JobApplicataionService {
      * @param companyId 公司id
      */
     @CounterIface
+    @Transactional
     public Response deleteRedisKeyApplicationCheckCount(long userId, long companyId) throws TException, RedisException {
         try {
             redisClient.del(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
@@ -720,6 +728,7 @@ public class JobApplicataionService {
     /**
      * 通过ApplicationId 获取company_id 和account_id
      */
+    @Transactional
     public ApplicationResponse getAccountIdAndCompanyId(long applicationId) {
         ApplicationResponse applicationResponse = new ApplicationResponse();
         try {
@@ -766,6 +775,7 @@ public class JobApplicataionService {
      * @return
      */
 
+    @Transactional
     public Response getApplicationListForThirdParty(int channel, String start_time, String end_time) {
         Query query = new Query.QueryBuilder().select("id").select("position_id").select("applier_id").select("update_time").select("not_suitable").select("app_tpl_id")
                 .where(new Condition("update_time", start_time, ValueOp.GE))
@@ -898,7 +908,8 @@ public class JobApplicataionService {
         return hrOperationRecordRecord;
     }
 
-    private int saveApplicationIfNotExist(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws TException {
+    @Transactional
+    public int saveApplicationIfNotExist(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws TException {
         // TODO Auto-generated method stub
         int appId;
         try {
