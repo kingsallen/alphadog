@@ -20,7 +20,7 @@ service PositionServices {
     // 根据职位Id获取当前职位
     common_struct.Response getPositionById(1:i32 positionId);  
     //获取公司两种自定义的字段
-    common_struct.Response CustomField(1:string param);    
+    common_struct.Response CustomField(1:string param);
     //是否可以刷新
     bool ifAllowRefresh(1:i32 positionId, 2: i32 account_id);
     list<string> getThirdPartyPositions(1: common_struct.CommonQuery query);
@@ -49,7 +49,7 @@ service PositionServices {
     list<position_struct.RpExtInfo> getPositionListRpExt(1: list<i32> pids);
 
     //微信红包职位列表
-    list<position_struct.WechatRpPositionListData> getRpPositionList(1: i32 hb_config_id);
+    list<position_struct.WechatRpPositionListData> getRpPositionList(1: i32 hb_config_id,2:i32 pageNum,3:i32 pageSize);
 
     //微信获取红包转发信息
     position_struct.WechatShareData getShareInfo(1: i32 hb_config_id);
@@ -96,7 +96,8 @@ service PositionServices {
 
     common_struct.Response positionCvConf(1:i32 positionId);
 
-    common_struct.Response getEmployeeRecomPositionByIds(1:i32 recomPushId,2:i32 companyId,3:i32 type);
+    common_struct.Response getEmployeeRecomPositionByIds(1:i32 recomPushId,2:i32 companyId,3:i32 type,4:i32 pageNum,5: i32 pageSize);
+
 }
 /*
 	查询第三方自定义职能
