@@ -193,7 +193,7 @@ public class ThirdPartyAccountService {
                     .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                     .buildUpdate();
             thirdPartyAccountHrDao.invalidByThirdPartyAccountId(accountId);
-            thirdPartyAccount.setBinding((short)BindingStatus.UNBIND.getValue());
+            thirdPartyAccount.setBinding((short)BindingStatus.UNDISPATCH.getValue());
             thirdPartyAccountDao.updateData(thirdPartyAccount);
         } else {
 
