@@ -233,7 +233,7 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         form.setLanguage1(extPosition.getLanguageType1(),extPosition.getLanguageLevel1());
         form.setLanguage2(extPosition.getLanguageType2(),extPosition.getLanguageLevel2());
         form.setLanguage3(extPosition.getLanguageType3(),extPosition.getLanguageLevel3());
-        form.setAge(Arrays.asList(extPosition.getAge_bottom(),extPosition.getAge_bottom()));
+        form.setAge(Arrays.asList(extPosition.getAge_bottom(),extPosition.getAge_top()));
 
         JSONObject result= JSON.parseObject(JSON.toJSONString(form));
 
