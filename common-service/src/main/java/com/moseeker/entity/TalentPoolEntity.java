@@ -198,7 +198,7 @@ public class TalentPoolEntity {
                 continue;
             }
         }
-        
+
         return result;
     }
     /*
@@ -481,8 +481,8 @@ public class TalentPoolEntity {
             return null;
         }
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1)
-                        .and(new Condition("id",hrIdList.toArray(), ValueOp.IN))
-                        .buildQuery();
+                .and(new Condition("id",hrIdList.toArray(), ValueOp.IN))
+                .buildQuery();
         List<Map<String,Object>> list=userHrAccountDao.getMaps(query);
 
         return list;

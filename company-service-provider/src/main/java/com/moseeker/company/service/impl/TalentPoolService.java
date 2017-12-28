@@ -1343,9 +1343,9 @@ public class TalentPoolService {
             return false;
         }
         for(Integer id:tagIdList){
-           if(!hrTagIdList.contains(id)) {
-               return false;
-           }
+            if(!hrTagIdList.contains(id)) {
+                return false;
+            }
         }
         if(type==0){
             if(!StringUtils.isEmptySet(userTagIdList)){
@@ -1477,7 +1477,7 @@ public class TalentPoolService {
             return null;
         }
         Query query=new Query.QueryBuilder().where(new Condition("user_id",userIdList.toArray(),ValueOp.IN))
-                                            .and(new Condition("tag_id",tagIdList.toArray(),ValueOp.IN)).buildQuery();
+                .and(new Condition("tag_id",tagIdList.toArray(),ValueOp.IN)).buildQuery();
         List<TalentpoolUserTagRecord> list=talentpoolUserTagDao.getRecords(query);
         return list;
     }
@@ -1603,9 +1603,9 @@ public class TalentPoolService {
         TalentpoolHrTalentRecord record=talentpoolHrTalentDao.getRecord(query);
         return record;
     }
-   /*
-    获取这个人在这家公司下所有的备注
-     */
+    /*
+     获取这个人在这家公司下所有的备注
+      */
     private Map<String,Object> getAllComment(int companyId,int userId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).orderBy("create_time", Order.DESC).buildQuery();
         Map<String,Object> list=talentpoolCommentDao.getMap(query);
