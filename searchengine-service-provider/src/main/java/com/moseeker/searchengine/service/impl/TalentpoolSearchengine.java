@@ -183,7 +183,6 @@ public class TalentpoolSearchengine {
         String intentionCity=params.get("intention_city_name");
         if(
             StringUtils.isNotNullOrEmpty(keyword)||
-            StringUtils.isNotNullOrEmpty(keyword)||
             StringUtils.isNotNullOrEmpty(cityName)||
             StringUtils.isNotNullOrEmpty(companyName)||
             StringUtils.isNotNullOrEmpty(pastPosition)||
@@ -229,10 +228,10 @@ public class TalentpoolSearchengine {
         String maxAge=params.get("max_age");
         String updateTime=params.get("update_time");
         if(
-            StringUtils.isNotNullOrEmpty(degree)||StringUtils.isNotNullOrEmpty(intentionSalaryCode)||StringUtils.isNotNullOrEmpty(sex)||
-            StringUtils.isNotNullOrEmpty(workYears)||StringUtils.isNotNullOrEmpty(updateTime)||
-            ((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge)))
-           )
+                StringUtils.isNotNullOrEmpty(degree)||StringUtils.isNotNullOrEmpty(intentionSalaryCode)||StringUtils.isNotNullOrEmpty(sex)||
+                        StringUtils.isNotNullOrEmpty(workYears)||StringUtils.isNotNullOrEmpty(updateTime)||
+                        ((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge)))
+                )
         {
             if(StringUtils.isNotNullOrEmpty(degree)){
                 this.QueryByDegree(degree,query);
@@ -269,49 +268,49 @@ public class TalentpoolSearchengine {
 
     private void queryApplications(Map<String,String> params,QueryBuilder query){
 
-            String publisherIds = params.get("publisher");
-            String candidateSource = params.get("candidate_source");
-            String recommend = params.get("is_recommend");
-            String origins = params.get("origins");
-            String submitTime = params.get("submit_time");
-            String progressStatus = params.get("progress_status");
-            String positionIds = params.get("position_id");
-            String companyId = params.get("company_id");
-            if ( StringUtils.isNotNullOrEmpty(publisherIds) || StringUtils.isNotNullOrEmpty(candidateSource) || StringUtils.isNotNullOrEmpty(recommend) ||
-                    StringUtils.isNotNullOrEmpty(origins) || StringUtils.isNotNullOrEmpty(submitTime) ||
-                    StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)
-                    ) {
-                String tagIds=params.get("tag_ids");
-                String favoriteHrs=params.get("favorite_hrs");
-                String isPublic=params.get("is_public");
-                if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
-                    if (StringUtils.isNotNullOrEmpty(publisherIds)) {
-                        this.queryByPublisher(publisherIds, query);
-                    }
-                }else{
-                    this.queryByComapnyId(companyId, query);
+        String publisherIds = params.get("publisher");
+        String candidateSource = params.get("candidate_source");
+        String recommend = params.get("is_recommend");
+        String origins = params.get("origins");
+        String submitTime = params.get("submit_time");
+        String progressStatus = params.get("progress_status");
+        String positionIds = params.get("position_id");
+        String companyId = params.get("company_id");
+        if ( StringUtils.isNotNullOrEmpty(publisherIds) || StringUtils.isNotNullOrEmpty(candidateSource) || StringUtils.isNotNullOrEmpty(recommend) ||
+                StringUtils.isNotNullOrEmpty(origins) || StringUtils.isNotNullOrEmpty(submitTime) ||
+                StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)
+                ) {
+            String tagIds=params.get("tag_ids");
+            String favoriteHrs=params.get("favorite_hrs");
+            String isPublic=params.get("is_public");
+            if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
+                if (StringUtils.isNotNullOrEmpty(publisherIds)) {
+                    this.queryByPublisher(publisherIds, query);
                 }
-
-                if (StringUtils.isNotNullOrEmpty(candidateSource)) {
-                    this.queryByCandidateSource(Integer.parseInt(candidateSource), query);
-                }
-                if (StringUtils.isNotNullOrEmpty(recommend)) {
-                    this.queryByRecom(query);
-                }
-                if (StringUtils.isNotNullOrEmpty(submitTime)) {
-                    this.queryBySubmitTime(submitTime, query);
-                }
-                if (StringUtils.isNotNullOrEmpty(progressStatus)) {
-                    this.queryByProgress(Integer.parseInt(progressStatus), query);
-                }
-                if (StringUtils.isNotNullOrEmpty(origins)) {
-
-                    this.queryByOrigin(origins, companyId, query);
-                }
-                if (StringUtils.isNotNullOrEmpty(positionIds)) {
-                    this.queryByPositionId(positionIds, query);
-                }
+            }else{
+                this.queryByComapnyId(companyId, query);
             }
+
+            if (StringUtils.isNotNullOrEmpty(candidateSource)) {
+                this.queryByCandidateSource(Integer.parseInt(candidateSource), query);
+            }
+            if (StringUtils.isNotNullOrEmpty(recommend)) {
+                this.queryByRecom(query);
+            }
+            if (StringUtils.isNotNullOrEmpty(submitTime)) {
+                this.queryBySubmitTime(submitTime, query);
+            }
+            if (StringUtils.isNotNullOrEmpty(progressStatus)) {
+                this.queryByProgress(Integer.parseInt(progressStatus), query);
+            }
+            if (StringUtils.isNotNullOrEmpty(origins)) {
+
+                this.queryByOrigin(origins, companyId, query);
+            }
+            if (StringUtils.isNotNullOrEmpty(positionIds)) {
+                this.queryByPositionId(positionIds, query);
+            }
+        }
 
     }
 
@@ -360,7 +359,7 @@ public class TalentpoolSearchengine {
         String isPublic=params.get("is_public");
         String companyId=params.get("company_id");
         if( StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
-            &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)){
+                &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)){
             return null;
         }
         StringBuffer sb=new StringBuffer();
@@ -941,7 +940,7 @@ public class TalentpoolSearchengine {
         String pastPosition=params.get("past_position");
         String intentionCity=params.get("intention_city_name");
         if(StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(cityName)||
-           StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition) ||StringUtils.isNotNullOrEmpty(intentionCity)){
+                StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition) ||StringUtils.isNotNullOrEmpty(intentionCity)){
             return false;
         }
         return true;
