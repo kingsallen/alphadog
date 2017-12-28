@@ -38,14 +38,11 @@ public class TalentPoolServiceTest {
     }
     @Test
     public void testBatchCancleTalent() throws TException {
-        int hrId=82752;
+        int hrId=91342;
         int companyId=39978;
         Set<Integer> userIdList=new HashSet<>();
-        userIdList.add(2191508);
-        userIdList.add(2191513);
-        userIdList.add(2191525);
-        userIdList.add(2191558);
-        userIdList.add(1234);
+        userIdList.add(2195000);
+
         Response res=talentPoolService.batchCancelTalent(hrId,userIdList,companyId);
         System.out.println(res);
     }
@@ -156,17 +153,17 @@ public class TalentPoolServiceTest {
         int hrId=82752;
         int companyId=39978;
         Set<Integer> userIdList=new HashSet<>();
-        userIdList.add(2191558);
+        userIdList.add(2195000);
         Response res=talentPoolService.AddbatchPublicTalent(hrId,companyId,userIdList);
         System.out.println(res);
     }
 
     @Test
     public void testBatchCancleTalentPublic() throws TException {
-        int hrId=90915;
+        int hrId=82752;
         int companyId=39978;
         List<Integer> userIdList=new ArrayList<>();
-        userIdList.add(2191558);
+        userIdList.add(2195000);
         Set<Integer> set=new HashSet<>();
         set.addAll(userIdList);
         Response res=talentPoolService.cancelBatchPublicTalent(hrId,companyId,set);

@@ -174,7 +174,8 @@ public class TalentPoolService {
                 talentPoolEntity.handlerTalentpoolTalent(id,companyId,0,0,-1);
             }
             //取消收藏时删除标签，并且计算标签数
-            this.handleCancleTag(hrId,idList);
+//            this.handleCancleTag(hrId,idList);
+            this.handlerPublicTag(idList,companyId);
             logger.debug("执行实时更新的id========="+idList.toString());
             this.realTimeUpdate(this.converSetToList(idList));
         }
@@ -719,7 +720,7 @@ public class TalentPoolService {
         List<Map<String,Integer>> data=this.getHandlerData(userIds,companyId);
         List<TalentpoolUserTagRecord> delData=this.getDelTalentpoolUserTag(data);
         if(!StringUtils.isEmptyList(delData)){
-            talentpoolUserTagDao.deleteRecords(delData);
+            int [] result=talentpoolUserTagDao.deleteRecords(delData);
             this.updateTalentpoolTagByMap(data);
         }
 
@@ -793,8 +794,10 @@ public class TalentPoolService {
         List<TalentpoolUserTagRecord> result=new ArrayList<>();
         for(Map<String,Integer> map:list){
             TalentpoolUserTagRecord record=new TalentpoolUserTagRecord();
-            record.setTagId(map.get("tag_id"));
-            record.setUserId(map.get("hr_id"));
+            int userId= map.get("user_id");
+            int tagId=map.get("tag_id");
+            record.setUserId(userId);
+            record.setTagId(tagId);
             result.add(record);
         }
         return result;
@@ -873,7 +876,7 @@ public class TalentPoolService {
      过滤点还在公开的人才
      */
     private Set<Integer> getNoPublicUserId(Set<Integer> userIds,int companyId){
-        List<TalentpoolHrTalentRecord> pubList=getPublicByCompanyAndUserId(userIds,companyId);
+        List<TalentpoolTalentRecord> pubList=getPublicByCompanyAndUserId(userIds,companyId);
         Set<Integer> pubSet=this.getPublicUserIdSet(pubList);
         Set<Integer> result=filterUserIdForNoPublic(pubSet,userIds);
         return result;
@@ -894,25 +897,25 @@ public class TalentPoolService {
         }
         return result;
     }
-    private List<TalentpoolHrTalentRecord> getPublicByCompanyAndUserId(Set<Integer> userIds,int companyId){
+    private List<TalentpoolTalentRecord> getPublicByCompanyAndUserId(Set<Integer> userIds,int companyId){
         if(StringUtils.isEmptySet(userIds)){
             return null;
         }
         Query query=new Query.QueryBuilder().where(new Condition("user_id",userIds.toArray(),ValueOp.IN)).and("company_id",companyId)
-                .and("public",1).buildQuery();
-        List<TalentpoolHrTalentRecord>  list=talentpoolHrTalentDao.getRecords(query);
+                .and(new Condition("public_num",0,ValueOp.GT)).buildQuery();
+        List<TalentpoolTalentRecord>  list=talentpoolTalentDao.getRecords(query);
         return list;
     }
 
     /*
      获取公开的user_id
      */
-    private Set<Integer> getPublicUserIdSet(List<TalentpoolHrTalentRecord> list){
+    private Set<Integer> getPublicUserIdSet(List<TalentpoolTalentRecord> list){
         if(StringUtils.isEmptyList(list)){
             return null;
         }
         Set<Integer> result=new HashSet<>();
-        for(TalentpoolHrTalentRecord record:list){
+        for(TalentpoolTalentRecord record:list){
             result.add(record.getUserId());
         }
         return result;
