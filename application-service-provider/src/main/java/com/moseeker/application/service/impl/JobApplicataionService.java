@@ -513,7 +513,7 @@ public class JobApplicataionService {
         try {
             Query query = new QueryBuilder().where("id", positionId).buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
-            return ResponseUtils.success(this.checkApplicationCountAtCompany(userId, companyId,
+            return ResponseUtils.success(this.checkApplicationCountAtCompany(userId, jobPositionRecord.getCompanyId(),
                     jobPositionRecord.getCandidateSource()));
         } catch (Exception e) {
             // TODO Auto-generated catch block
