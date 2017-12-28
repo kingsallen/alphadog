@@ -65,7 +65,7 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
         PositionLiepin positionLiepin = new PositionLiepin();
         positionLiepin.setTitle(positionDB.getTitle());
         positionLiepin.setCities(getCities(positionDB));
-        positionLiepin.setAddress(positionForm.getAddressName());
+        positionLiepin.setAddress("");
         setOccupation(positionForm,positionLiepin);
         positionLiepin.setDepartment(positionForm.getDepartmentName());
         positionLiepin.setSalary_low(positionForm.getSalaryBottom()+"");
