@@ -518,6 +518,7 @@ public class SearchUtil {
                     handleMatch(1,builder,"user.talent_pool.is_public");
                 }else if(tagIdList.contains("talent")){
                     handleMatch(Integer.parseInt(hrId),builder,"user.talent_pool.hr_id");
+                    handleMatch(1,builder,"user.talent_pool.is_talent");
                 }else{
                         handleMatch(Integer.parseInt(tagIdList.get(0)),builder,"user.talent_pool.tags.id");
                 }
@@ -530,8 +531,12 @@ public class SearchUtil {
                     tagIdList.remove("allpublic");
                 }
                 if(tagIdList.size()>0&&tagIdList.contains("talent")){
+                    QueryBuilder keyand1 = QueryBuilders.boolQuery();
                     QueryBuilder query1=QueryBuilders.matchQuery("user.talent_pool.hr_id",Integer.parseInt(hrId));
-                    ((BoolQueryBuilder) keyand).should(query1);
+                    ((BoolQueryBuilder) keyand1).must(query1);
+                    QueryBuilder query2=QueryBuilders.matchQuery("user.talent_pool.is_talent",1);
+                    ((BoolQueryBuilder) keyand1).must(query2);
+                    ((BoolQueryBuilder) keyand).should(keyand1);
                     tagIdList.remove("talent");
                 }
                 if(tagIdList.size()>0){
