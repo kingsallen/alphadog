@@ -209,9 +209,13 @@ public class JobApplicataionService {
         logger.info("sendMessageAndEmailThread messageEmailStruct{}", messageEmailStruct);
         //发送模板消息，短信，邮件
         tp.startTast(() -> {
-            Response resppnse = mqServer.sendMessageAndEmailToDelivery(messageEmailStruct);
-            logger.info("JobApplicataionService response {}", JSON.toJSONString(resppnse));
-            return resppnse;
+            try {
+                Response resppnse = mqServer.sendMessageAndEmailToDelivery(messageEmailStruct);
+                logger.info("JobApplicataionService response {}", JSON.toJSONString(resppnse));
+                return resppnse;
+            }catch (TException e){
+                return ResponseUtils.fail(e.getMessage());
+            }
         });
     }
     /**
