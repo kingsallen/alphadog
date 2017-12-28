@@ -424,7 +424,7 @@ public class TalentPoolService {
         if(validateRecord==null){
             return ResponseUtils.fail(1,"这个标签不属于这个hr");
         }
-        int count=this.validateName(hrId,name);
+        int count=this.validateUpdateName(hrId,name,tagId);
         if(count>0){
             return ResponseUtils.fail(1,"该标签重名");
         }
@@ -1106,6 +1106,17 @@ public class TalentPoolService {
         Query query=new Query.QueryBuilder().where("hr_id",hrId).and("name",name).buildQuery();
         int count=talentpoolTagDao.getCount(query);
         return count;
+    }
+
+    /*
+     修改是查询重名
+     */
+    private int validateUpdateName(int hrId,String name,int tagId){
+
+        Query query=new Query.QueryBuilder().where("hr_id",hrId).and("name",name).and(new Condition("id",tagId,ValueOp.NEQ)).buildQuery();
+        int count=talentpoolTagDao.getCount(query);
+        return count;
+
     }
     /*
      根据hr_id和tagId获取记录
