@@ -66,20 +66,6 @@ public class HrReferralStatisticsDao extends DAOImpl<HrReferralStatisticsRecord,
     }
 
     /**
-     * Fetch records that have <code>position_title IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrReferralStatistics> fetchByPositionTitle(String... values) {
-        return fetch(HrReferralStatistics.HR_REFERRAL_STATISTICS.POSITION_TITLE, values);
-    }
-
-    /**
-     * Fetch records that have <code>employee_name IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrReferralStatistics> fetchByEmployeeName(String... values) {
-        return fetch(HrReferralStatistics.HR_REFERRAL_STATISTICS.EMPLOYEE_NAME, values);
-    }
-
-    /**
      * Fetch records that have <code>employee_id IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrReferralStatistics> fetchByEmployeeId(Integer... values) {
@@ -168,5 +154,19 @@ public class HrReferralStatisticsDao extends DAOImpl<HrReferralStatisticsRecord,
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrReferralStatistics> fetchByPositionId(Integer... values) {
         return fetch(HrReferralStatistics.HR_REFERRAL_STATISTICS.POSITION_ID, values);
+    }
+
+    /**
+     * Fetch records that have <code>employee_name IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrReferralStatistics> fetchByEmployeeName(String... values) {
+        return fetch(HrReferralStatistics.HR_REFERRAL_STATISTICS.EMPLOYEE_NAME, values);
+    }
+
+    /**
+     * Fetch records that have <code>position_title IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrReferralStatistics> fetchByPositionTitle(String... values) {
+        return fetch(HrReferralStatistics.HR_REFERRAL_STATISTICS.POSITION_TITLE, values);
     }
 }

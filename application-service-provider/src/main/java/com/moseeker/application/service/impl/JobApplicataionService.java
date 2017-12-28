@@ -1,6 +1,7 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
@@ -11,7 +12,6 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobResumeOtherDao;
 import com.moseeker.baseorm.dao.userdb.UserAliUserDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
@@ -19,13 +19,13 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobResumeOtherRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
@@ -40,20 +40,10 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
-import com.moseeker.thrift.gen.candidate.service.CandidateService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
-
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,8 +51,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author ltf 申请服务 2016年11月3日
@@ -98,9 +93,6 @@ public class JobApplicataionService {
     private UserAliUserDao userAliUserDao;
 
     @Autowired
-    private UserEmployeeDao userEmployeedao;
-
-    @Autowired
     private HrOperationRecordDao hrOperationRecordDao;
 
     @Autowired
@@ -118,70 +110,57 @@ public class JobApplicataionService {
      */
     @SuppressWarnings("serial")
     @CounterIface
-    public Response postApplication(JobApplication jobApplication) throws TException {
+    public Response postApplication(JobApplication jobApplication) throws CommonException {
         logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
-        try {
-            appIDToSource(jobApplication);
-            // 获取该申请的职位
-            Query query = new QueryBuilder().where("id", jobApplication.getPosition_id()).buildQuery();
-            JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
-            //JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int) jobApplication.position_id);
-            //校验申请来源的有效性
-            if (jobApplication.getOrigin() == 0) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_SOURCE_NOTEXIST);
+        appIDToSource(jobApplication);
+        // 获取该申请的职位
+        Query query = new QueryBuilder().where("id", jobApplication.getPosition_id()).buildQuery();
+        JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
+
+        if (jobPositionRecord == null) {
+            throw ApplicationException.APPLICATION_POSITION_NOTEXIST;
+        }
+        //JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int) jobApplication.position_id);
+        //校验申请来源的有效性
+        if (jobApplication.getOrigin() == 0) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_SOURCE_NOTEXIST);
+        }
+        // 职位有效性验证
+        Response responseJob = validateJobPosition(jobPositionRecord);
+        if (responseJob.status > 0) {
+            return responseJob;
+        }
+        if (checkApplicationCountAtCompany(jobApplication.getApplier_id(), jobPositionRecord.getCompanyId(), jobPositionRecord.getCandidateSource())) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
+        }
+        // 初始化参数
+        initJobApplication(jobApplication, jobPositionRecord);
+        // 添加申请
+        logger.info("JobApplicataionService postApplication ");
+        JobApplicationRecord jobApplicationRecord = BeanUtils.structToDB(jobApplication,
+                JobApplicationRecord.class);
+        logger.info("JobApplicataionService postApplication jobApplicationRecord:{}", jobApplicationRecord);
+        if (jobApplicationRecord.getWechatId() == null) {
+            jobApplicationRecord.setWechatId(0);
+        }
+        int jobApplicationId = this.saveJobApplication(jobApplicationRecord, jobPositionRecord);
+        if (jobApplicationId > 0) {
+            // proxy 0: 正常投递, 1: 代理投递, null:默认为0
+            // 代理投递不能增加用户的申请限制次数
+            if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
+                // 添加该人该公司的申请次数
+                addApplicationCountAtCompany(jobApplication, jobPositionRecord.getCandidateSource());
             }
-            // 职位有效性验证
-            Response responseJob = validateJobPosition(jobPositionRecord);
-            if (responseJob.status > 0) {
-                return responseJob;
-            }
-//            long userId=(long)jobApplication.getApplier_id();
-//            int companyId=jobPositionRecord.getCompanyId();
-//            Query queryEmployee=new Query.QueryBuilder().where("sysuser_id",userId)
-//                    .and("company_id",companyId)
-//                    .and("disable",0)
-//                    .and("activation",0)
-//                    .buildQuery();
-//            UserEmployeeDO userEmployeeDO=userEmployeedao.getEmployee(queryEmployee);
-//            if(userEmployeeDO!=null){
-//                return ResponseUtils.fail(1,"申请人已经是该公司的员工，所以无法申请该职位");
-//            }
-            if (checkApplicationCountAtCompany(jobApplication.getApplier_id(), jobPositionRecord.getCompanyId())) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
-            }
-            // 初始化参数
-            initJobApplication(jobApplication, jobPositionRecord);
-            // 添加申请
-            logger.info("JobApplicataionService postApplication ");
-            JobApplicationRecord jobApplicationRecord = BeanUtils.structToDB(jobApplication,
-                    JobApplicationRecord.class);
-            logger.info("JobApplicataionService postApplication jobApplicationRecord:{}", jobApplicationRecord);
-            if (jobApplicationRecord.getWechatId() == null) {
-                jobApplicationRecord.setWechatId(0);
-            }
-            int jobApplicationId = this.saveJobApplication(jobApplicationRecord, jobPositionRecord);
-            if (jobApplicationId > 0) {
-                //发送模板消息，短信，邮件
-                tp.startTast(() -> mqServer.sendMessageAndEmail(jobApplicationId));
-                // proxy 0: 正常投递, 1: 代理投递, null:默认为0
-                // 代理投递不能增加用户的申请限制次数
-                if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
-                    // 添加该人该公司的申请次数
-                    addApplicationCountAtCompany(jobApplication);
-                }
+            tp.startTast(() -> mqServer.sendMessageAndEmail(jobApplicationId));
                 // 返回 jobApplicationId
                 return ResponseUtils.success(new HashMap<String, Object>() {
                                                  {
                                                      put("jobApplicationId", jobApplicationId);
                                                  }
+
                                              }
-                );
-            }
-        } catch (Exception e) {
-            logger.error("postResources JobApplication error: ", e);
-            throw new TException();
-        } finally {
-            //do nothing
+
+            );
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
@@ -205,7 +184,7 @@ public class JobApplicataionService {
         }
     }
 
-    @SuppressWarnings("serial")
+    /*@SuppressWarnings("serial")
     @CounterIface
     public Response postApplicationIfNotApply(JobApplication jobApplication) throws TException {
         try {
@@ -222,6 +201,9 @@ public class JobApplicataionService {
             if (responseJob.status > 0) {
                 return responseJob;
             }
+            if (checkApplicationCountAtCompany(jobApplication.getApplier_id(), jobPositionRecord.getCompanyId(), jobPositionRecord.getCandidateSource())) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
+            }
             // 初始化参数
             initJobApplication(jobApplication, jobPositionRecord);
             // 添加申请
@@ -237,7 +219,7 @@ public class JobApplicataionService {
                 // 代理投递不能增加用户的申请限制次数
                 if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
                     // 添加该人该公司的申请次数
-                    addApplicationCountAtCompany(jobApplication);
+                    addApplicationCountAtCompany(jobApplication, jobPositionRecord.getCandidateSource());
                 }
                 // 返回 jobApplicationId
                 return ResponseUtils.success(new HashMap<String, Object>() {
@@ -254,7 +236,7 @@ public class JobApplicataionService {
             //do nothing
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-    }
+    }*/
 
     /**
      * 更新申请数据
@@ -368,30 +350,28 @@ public class JobApplicataionService {
     /**
      * 添加该人该公司的申请次数
      */
-    private void addApplicationCountAtCompany(JobApplication jobApplication) {
+    private void addApplicationCountAtCompany(JobApplication jobApplication, byte candidateSource) {
 
-        String applicationCountCheck = null;
         try {
-            applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG,
+            String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG,
                     REDIS_KEY_APPLICATION_COUNT_CHECK,
                     String.valueOf(jobApplication.applier_id),
                     String.valueOf(jobApplication.company_id));
             // 获取当前申请次数 +1
-            if (applicationCountCheck != null) {
-                redisClient.incr(Constant.APPID_ALPHADOG,
-                        REDIS_KEY_APPLICATION_COUNT_CHECK,
-                        String.valueOf(jobApplication.applier_id),
-                        String.valueOf(jobApplication.company_id));
-                // 本月第一次申请
+
+            UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
+            if (candidateSource == 0) {
+                userApplyCount.setSocialApplyCount(userApplyCount.getSocialApplyCount()+1);
             } else {
-                redisClient.set(Constant.APPID_ALPHADOG,
-                        REDIS_KEY_APPLICATION_COUNT_CHECK,
-                        String.valueOf(jobApplication.applier_id),
-                        String.valueOf(jobApplication.company_id),
-                        "1",
-                        (int) DateUtils.calcCurrMonthSurplusSeconds()
-                );
+                userApplyCount.setSchoolApplyCount(userApplyCount.getSchoolApplyCount()+1);
             }
+            redisClient.set(Constant.APPID_ALPHADOG,
+                    REDIS_KEY_APPLICATION_COUNT_CHECK,
+                    String.valueOf(jobApplication.applier_id),
+                    String.valueOf(jobApplication.company_id),
+                    JSON.toJSONString(userApplyCount),
+                    (int) DateUtils.calcCurrMonthSurplusSeconds());
+
         } catch (RedisException e) {
             WarnService.notify(e);
         }
@@ -403,21 +383,35 @@ public class JobApplicataionService {
     private void subApplicationCountAtCompany(JobApplicationRecord jobApplication) {
 
         try {
-            String applicationCountCheck = redisClient.get(
-                    Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
-                    String.valueOf(jobApplication.getApplierId()),
-                    String.valueOf(jobApplication.getCompanyId()));
-            // 获取当前申请次数 -1
-            if (applicationCountCheck != null
-                    && Integer.parseInt(applicationCountCheck) > 0
-                    && Integer.parseInt(applicationCountCheck) <= this
-                    .getApplicationCountLimit(jobApplication
-                            .getCompanyId())) {
 
-                redisClient.decr(Constant.APPID_ALPHADOG,
-                        REDIS_KEY_APPLICATION_COUNT_CHECK,
+            Query query = new QueryBuilder().where("id", jobApplication.getPositionId()).buildQuery();
+            JobPositionRecord position = jobPositionDao.getRecord(query);
+
+            if (position != null) {
+                String applicationCountCheck = redisClient.get(
+                        Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                         String.valueOf(jobApplication.getApplierId()),
                         String.valueOf(jobApplication.getCompanyId()));
+                UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
+
+                if (!userApplyCount.isInit()) {
+                    if (position.getCandidateSource() == 0) {
+                        if (userApplyCount.getSocialApplyCount() > 1) {
+                            userApplyCount.setSocialApplyCount(userApplyCount.getSocialApplyCount() - 1);
+                        }
+                    } else {
+                        if (userApplyCount.getSchoolApplyCount() > 1) {
+                            userApplyCount.setSchoolApplyCount(userApplyCount.getSchoolApplyCount() - 1);
+                        }
+                    }
+
+                    redisClient.set(Constant.APPID_ALPHADOG,
+                            REDIS_KEY_APPLICATION_COUNT_CHECK,
+                            String.valueOf(jobApplication.getApplierId()),
+                            String.valueOf(jobApplication.getCompanyId()),
+                            JSON.toJSONString(userApplyCount),
+                            (int) DateUtils.calcCurrMonthSurplusSeconds());
+                }
             }
         } catch (RedisException e) {
             WarnService.notify(e);
@@ -491,9 +485,12 @@ public class JobApplicataionService {
      * @param companyId 公司id
      */
     @CounterIface
-    public Response validateUserApplicationCheckCountAtCompany(long userId, long companyId) {
+    public Response validateUserApplicationCheckCountAtCompany(long userId, long companyId, long positionId) {
         try {
-            return ResponseUtils.success(this.checkApplicationCountAtCompany(userId, companyId));
+            Query query = new QueryBuilder().where("id", positionId).buildQuery();
+            JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
+            return ResponseUtils.success(this.checkApplicationCountAtCompany(userId, companyId,
+                    jobPositionRecord.getCandidateSource()));
         } catch (Exception e) {
             // TODO Auto-generated catch block
             logger.error("validateUserApplicationCheckCountAtCompany error: ", e);
@@ -522,37 +519,6 @@ public class JobApplicataionService {
         }
         if (positionId == 0) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
-        }
-
-        return response;
-    }
-
-    /**
-     * 申请必填项校验
-     */
-    private Response validateJobApplication(JobApplication jobApplication) throws Exception {
-
-        // 必填项校验
-        Response response = validateGetApplicationByUserIdAndPositionId(jobApplication.applier_id,
-                jobApplication.position_id, jobApplication.company_id);
-
-        if (response.status == Constant.OK) {
-
-            // 一个用户在一家公司的每月的申请次数校验
-            boolean checkApplicationCount = this.checkApplicationCountAtCompany(jobApplication.applier_id,
-                    jobApplication.company_id);
-            if (checkApplicationCount) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
-            }
-
-            // 判断是否申请过该职位
-            boolean isApplied = this.isAppliedPosition(jobApplication.applier_id, jobApplication.position_id);
-            if (isApplied) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_POSITION_DUPLICATE);
-            }
-
-            // 申请人的有效性验证
-            response = validateUserApplicationInfo(jobApplication.applier_id);
         }
 
         return response;
@@ -615,21 +581,28 @@ public class JobApplicataionService {
 
     /**
      * 一个用户在一家公司的每月的申请次数校验 超出申请次数限制, 每月每家公司一个人只能申请10次 <p>
-     *
-     * @param userId    用户id
+     *  @param userId    用户id
      * @param companyId 公司id
+     * @param candidateSource
      */
-    private boolean checkApplicationCountAtCompany(long userId, long companyId) {
+    private boolean checkApplicationCountAtCompany(long userId, long companyId, byte candidateSource) {
 
         try {
             String applicationCountCheck = redisClient.get(
                     Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                     String.valueOf(userId), String.valueOf(companyId));
-            // 超出申请次数限制, 每月每家公司一个人只能申请3次
-            if (applicationCountCheck != null
-                    && Integer.parseInt(applicationCountCheck) >= this
-                    .getApplicationCountLimit((int) companyId)) {
-                return true;
+
+            UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
+
+            UserApplyCount conf = getApplicationCountLimit((int) companyId);
+            if (candidateSource == 0) {
+                if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
+                    return true;
+                }
+            } else {
+                if (userApplyCount.getSchoolApplyCount() >= conf.getSchoolApplyCount()) {
+                    return true;
+                }
             }
         } catch (RedisException e) {
             WarnService.notify(e);
@@ -663,15 +636,24 @@ public class JobApplicataionService {
      *
      * @param companyId 公司ID
      */
-    private int getApplicationCountLimit(int companyId) {
-        int applicaitonCountLimit = APPLICATION_COUNT_LIMIT;
+    private UserApplyCount getApplicationCountLimit(int companyId) {
+        UserApplyCount userApplyCount = new UserApplyCount();
+
+        userApplyCount.setSocialApplyCount(APPLICATION_COUNT_LIMIT);
+        userApplyCount.setSchoolApplyCount(APPLICATION_COUNT_LIMIT);
+
         Query query = new QueryBuilder().where("company_id", companyId).buildQuery();
         HrCompanyConfRecord hrCompanyConfRecord = hrCompanyConfDao.getRecord(query);
-        if (hrCompanyConfRecord != null && hrCompanyConfRecord.getApplicationCountLimit().shortValue() > 0) {
-            applicaitonCountLimit = hrCompanyConfRecord.getApplicationCountLimit().shortValue();
+        if (hrCompanyConfRecord != null) {
+            if (hrCompanyConfRecord.getApplicationCountLimit()  > 0) {
+                userApplyCount.setSocialApplyCount(hrCompanyConfRecord.getApplicationCountLimit());
+            }
+            if (hrCompanyConfRecord.getSchoolApplicationCountLimit() > 0) {
+                userApplyCount.setSchoolApplyCount(hrCompanyConfRecord.getSchoolApplicationCountLimit());
+            }
         }
-        logger.info("JobApplicataionService getApplicationCountLimit applicaitonCountLimit:{}", applicaitonCountLimit);
-        return applicaitonCountLimit;
+        logger.info("JobApplicataionService getApplicationCountLimit applicaitonCountLimit:{}", userApplyCount);
+        return userApplyCount;
     }
 
     /**
@@ -863,34 +845,32 @@ public class JobApplicataionService {
         return historyJobApplicationRecord;
     }
 
-    private int saveJobApplication(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws TException {
+    private int saveJobApplication(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws CommonException {
         // TODO Auto-generated method stub
-        int appId;
-        try {
-            if (jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
-                boolean existUserEmployee = employeeEntity.isEmployee(jobApplicationRecord.getRecommenderUserId(), jobApplicationRecord.getCompanyId());
-                logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
-                if (!existUserEmployee) {
-                    logger.info("JobApplicataionService saveJobAp plication not employee");
-                    jobApplicationRecord.setRecommenderUserId(0);
-                }
-                if (jobApplicationRecord.getApplierId() != null && jobApplicationRecord.getApplierId().intValue() == jobApplicationRecord.getRecommenderUserId().intValue()) {
-                    logger.info("JobApplicataionService saveJobApplication applier_id equals recommender_user_id");
-                    jobApplicationRecord.setRecommenderUserId(0);
-                }
+        if (jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
+            boolean existUserEmployee = employeeEntity.isEmployee(jobApplicationRecord.getRecommenderUserId(), jobApplicationRecord.getCompanyId());
+            logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
+            if (!existUserEmployee) {
+                logger.info("JobApplicataionService saveJobAp plication not employee");
+                jobApplicationRecord.setRecommenderUserId(0);
+            }
+            if (jobApplicationRecord.getApplierId() != null && jobApplicationRecord.getApplierId().intValue() == jobApplicationRecord.getRecommenderUserId().intValue()) {
+                logger.info("JobApplicataionService saveJobApplication applier_id equals recommender_user_id");
+                jobApplicationRecord.setRecommenderUserId(0);
+            }
 
-            }
-            logger.info("JobApplicataionService saveJobApplication jobApplicationRecord:{}", jobApplicationRecord);
-//            jobApplicationDao.addRecord(jobApplicationRecord);
-//            appId = jobApplicationRecord.getId();
-            appId = jobApplicationDao.addIfNotExists(jobApplicationRecord);
-            if (appId > 0) {
-                HrOperationRecordRecord hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
-                hrOperationRecordDao.addRecord(hrOperationRecord);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new TException(e);
+        }
+        logger.info("JobApplicataionService saveJobApplication jobApplicationRecord:{}", jobApplicationRecord);
+        JobApplicationDO applicationDO = jobApplicationDao.addIfNotExists(jobApplicationRecord);
+        int appId;
+        if (applicationDO != null) {
+            appId = applicationDO.getId();
+        } else {
+            appId = 0;
+        }
+        if (appId > 0) {
+            HrOperationRecordRecord hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
+            hrOperationRecordDao.addRecord(hrOperationRecord);
         }
         return appId;
     }
@@ -907,16 +887,25 @@ public class JobApplicataionService {
         return hrOperationRecordRecord;
     }
 
+    /**
+     *
+     * @param jobApplicationRecord
+     * @param jobPositionRecord
+     * @return
+     * @throws TException
+     */
     private int saveApplicationIfNotExist(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws TException {
         // TODO Auto-generated method stub
         int appId;
         try {
-            HrOperationRecordRecord hrOperationRecord = null;
-//            jobApplicationDao.addRecord(jobApplicationRecord);
-            appId = jobApplicationDao.addIfNotExists(jobApplicationRecord);
-            if (appId > 0) {
-                hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
+            JobApplicationDO applicationDO = jobApplicationDao.addIfNotExists(jobApplicationRecord);
+
+            if (applicationDO != null && applicationDO.getId() > 0) {
+                appId = applicationDO.getId();
+                HrOperationRecordRecord hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
                 hrOperationRecordDao.addRecord(hrOperationRecord);
+            } else {
+                appId = 0;
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
