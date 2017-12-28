@@ -87,13 +87,6 @@ public class HrResourceDao extends DAOImpl<HrResourceRecord, com.moseeker.baseor
     }
 
     /**
-     * Fetch records that have <code>disable IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrResource> fetchByDisable(Integer... values) {
-        return fetch(HrResource.HR_RESOURCE.DISABLE, values);
-    }
-
-    /**
      * Fetch records that have <code>company_id IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrResource> fetchByCompanyId(Integer... values) {
@@ -105,6 +98,13 @@ public class HrResourceDao extends DAOImpl<HrResourceRecord, com.moseeker.baseor
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrResource> fetchByTitle(String... values) {
         return fetch(HrResource.HR_RESOURCE.TITLE, values);
+    }
+
+    /**
+     * Fetch records that have <code>disable IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrResource> fetchByDisable(Integer... values) {
+        return fetch(HrResource.HR_RESOURCE.DISABLE, values);
     }
 
     /**
