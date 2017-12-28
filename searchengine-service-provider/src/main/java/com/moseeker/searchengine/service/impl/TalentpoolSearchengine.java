@@ -258,6 +258,7 @@ public class TalentpoolSearchengine {
                 if(StringUtils.isNotNullOrEmpty(maxAge)){
                     age.put("max",Integer.parseInt(maxAge));
                 }
+                ages.add(age);
                 this.queryByAge(ages,query);
             }
 
