@@ -6,6 +6,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
@@ -121,7 +122,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
      * @param record
      * @return
      */
-	public JobApplicationDO addIfNotExists(JobApplicationRecord record) {
+	public ApplicationSaveResultVO addIfNotExists(JobApplicationRecord record) {
         List<Field<?>> changedFieldList = Arrays.stream(record.fields()).filter(f -> record.changed(f)).collect(Collectors.toList());
         String insertSql = " insert into jobdb.job_application ".concat(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", " (", ") ")))
                 .concat(" select ").concat(Stream.generate(() -> "?").limit(changedFieldList.size()).collect(Collectors.joining(",")))
@@ -132,29 +133,39 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
                 .concat(JobApplication.JOB_APPLICATION.POSITION_ID.getName()).concat(" = ").concat(record.getPositionId().toString())
                 .concat(" ) ");
         logger.info("addIfNotExisits job_application sql: {}", insertSql);
+		ApplicationSaveResultVO resultVO = new ApplicationSaveResultVO();
         int result = create.execute(insertSql, changedFieldList.stream().map(m -> record.getValue(m)).collect(Collectors.toList()).toArray());
         if (result == 0) {
             logger.info("用户:{}已申请过职位:{}, 无需重复投递", record.getApplierId(), record.getPositionId());
-
-        }
+			resultVO.setCreate(false);
+        } else {
+        	resultVO.setCreate(true);
+		}
 
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(JobApplication.JOB_APPLICATION.DISABLE.getName(), 0).and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), record.getApplierId())
         .and(JobApplication.JOB_APPLICATION.POSITION_ID.getName(), record.getPositionId());
         JobApplicationDO applicationDO = getData(queryBuilder.buildQuery());
+		resultVO.setApplicationId(applicationDO.getId());
 
         //如果不是新增申请，那么合并申请来源
+		logger.info("addIfNotExists applicationDO:{}", applicationDO);
+		logger.info("addIfNotExists result:{}", result);
 		if (result == 0 && record.getOrigin() != null && record.getOrigin() > 0
-				&& record.getOrigin().intValue() != applicationDO.getOrigin()) {
+					&& record.getOrigin().intValue() != applicationDO.getOrigin()) {
 
-			int origin = record.getOrigin().intValue() | applicationDO.getOrigin();
-			create.update(JobApplication.JOB_APPLICATION)
-					.set(JobApplication.JOB_APPLICATION.ORIGIN, origin)
-					.where(JobApplication.JOB_APPLICATION.ID.eq(applicationDO.getId()))
-					.execute();
+				logger.info("addIfNotExists record.origin:{}", record.getOrigin());
+
+				logger.info("addIfNotExists applicationDO.origin:{}", applicationDO.getOrigin());
+				int origin = record.getOrigin().intValue() | applicationDO.getOrigin();
+				logger.info("addIfNotExists origin:{}", origin);
+				create.update(JobApplication.JOB_APPLICATION)
+						.set(JobApplication.JOB_APPLICATION.ORIGIN, origin)
+						.where(JobApplication.JOB_APPLICATION.ID.eq(applicationDO.getId()))
+						.execute();
 		}
 
-        return applicationDO;
+        return resultVO;
     }
 
 }
