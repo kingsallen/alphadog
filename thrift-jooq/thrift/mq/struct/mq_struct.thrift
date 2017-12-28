@@ -34,6 +34,16 @@ struct EmailStruct {
     5: optional string subject
 }
 
+struct MessageEmailStruct {
+    1: 		i32 position_id,
+    2: 		i32 applier_id,
+    3: 		i32 recommender_user_id,
+    4: i32 origin,
+    5: i32 apply_type,
+    6: i32 email_status,
+    7: i32 application_id
+}
+
 
 struct MandrillEmailStruct {
     1: 		string templateName,

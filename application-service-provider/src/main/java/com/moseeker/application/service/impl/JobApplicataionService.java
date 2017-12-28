@@ -43,6 +43,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -134,7 +135,15 @@ public class JobApplicataionService {
             }
             int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
             if (jobApplicationId > 0) {
-                sendMessageAndEmailThread(jobApplicationId);
+                MessageEmailStruct messageEmailStruct = new MessageEmailStruct();
+                messageEmailStruct.setApplication_id(jobApplicationId);
+                messageEmailStruct.setPosition_id((int)jobApplication.getPosition_id());
+                messageEmailStruct.setApply_type(jobApplication.getApply_type());
+                messageEmailStruct.setEmail_status(jobApplication.getEmail_status());
+                messageEmailStruct.setRecommender_user_id((int)jobApplication.getRecommender_user_id());
+                messageEmailStruct.setApplier_id((int)jobApplication.getApplier_id());
+                messageEmailStruct.setOrigin(jobApplication.getOrigin());
+                sendMessageAndEmailThread(messageEmailStruct);
                 // 返回 jobApplicationId
                 return ResponseUtils.success(new HashMap<String, Object>() {
                                                  {
@@ -144,7 +153,7 @@ public class JobApplicataionService {
                 );
             }
         } catch (Exception e) {
-            logger.error("postResources JobApplication error: ", e);
+            logger.error("JobApplicataionService JobApplication error: ", e);
             throw new TException();
         } finally {
             //do nothing
@@ -183,9 +192,14 @@ public class JobApplicataionService {
         }
     }
 
-    private void sendMessageAndEmailThread (int applicationId){
+    private void sendMessageAndEmailThread (MessageEmailStruct messageEmailStruct){
+        logger.info("sendMessageAndEmailThread messageEmailStruct{}", messageEmailStruct);
         //发送模板消息，短信，邮件
-        tp.startTast(() -> mqServer.sendMessageAndEmail(applicationId));
+        tp.startTast(() -> {
+            Response resppnse = mqServer.sendMessageAndEmailToDelivery(messageEmailStruct);
+            logger.info("JobApplicataionService response {}", JSON.toJSONString(resppnse));
+            return resppnse;
+        });
     }
 
     private void appIDToSource(JobApplication jobApplication) {
@@ -231,7 +245,16 @@ public class JobApplicataionService {
             }
             int jobApplicationId = this.saveApplicationIfNotExist(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
-                sendMessageAndEmailThread(jobApplicationId);
+                logger.info("postApplicationIfNotApply jobApplicationId{}", jobApplicationId);
+                MessageEmailStruct messageEmailStruct = new MessageEmailStruct();
+                messageEmailStruct.setApplication_id(jobApplicationId);
+                messageEmailStruct.setPosition_id((int)jobApplication.getPosition_id());
+                messageEmailStruct.setApply_type(jobApplication.getApply_type());
+                messageEmailStruct.setEmail_status(jobApplication.getEmail_status());
+                messageEmailStruct.setRecommender_user_id((int)jobApplication.getRecommender_user_id());
+                messageEmailStruct.setApplier_id((int)jobApplication.getApplier_id());
+                messageEmailStruct.setOrigin(jobApplication.getOrigin());
+                sendMessageAndEmailThread(messageEmailStruct);
                 // 返回 jobApplicationId
                 return ResponseUtils.success(new HashMap<String, Object>() {
                                                  {
@@ -315,7 +338,15 @@ public class JobApplicataionService {
             jobApplicationRecord.setUpdateTime(updateTime);
             updateStatus = jobApplicationDao.updateRecord(jobApplicationRecord);
             if(updateStatus>0 && bool){
-                tp.startTast(() -> mqServer.sendMessageAndEmail(jobApplicationRecord.getId()));
+                MessageEmailStruct messageEmailStruct = new MessageEmailStruct();
+                messageEmailStruct.setApplication_id(updateStatus);
+                messageEmailStruct.setPosition_id((int)jobApplication.getPosition_id());
+                messageEmailStruct.setApply_type(jobApplication.getApply_type());
+                messageEmailStruct.setEmail_status(jobApplication.getEmail_status());
+                messageEmailStruct.setRecommender_user_id((int)jobApplication.getRecommender_user_id());
+                messageEmailStruct.setApplier_id((int)jobApplication.getApplier_id());
+                messageEmailStruct.setOrigin(jobApplication.getOrigin());
+                sendMessageAndEmailThread(messageEmailStruct);
             }
         }
         return updateStatus;
