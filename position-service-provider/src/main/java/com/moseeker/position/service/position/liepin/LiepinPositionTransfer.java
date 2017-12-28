@@ -171,8 +171,8 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
         }
         data.setDepartmentName(position.getDepartmentName());
         data.setDepartmentId(position.getDepartmentId());
-        data.setSalaryBottom(getSalaryBottom(position.getSalaryBottom()));
-        data.setSalaryTop(getSalaryTop(position.getSalaryTop()));
+        data.setSalaryBottom(getSalaryBottom(Integer.parseInt(p.getSalary_low())));
+        data.setSalaryTop(getSalaryTop(Integer.parseInt(p.getSalary_high())));
         data.setSalaryMonth(Integer.parseInt(p.getSalary_month()));
 
         logger.info("回写到第三方职位对象:{}",data);
