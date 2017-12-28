@@ -146,6 +146,7 @@ public class ResumeDeliveryService {
             //关注的微信公众号
             HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where("signature",
                     env.getProperty("wechat.helper.signature")).buildQuery());
+
             if(accountDo != null)
                 //获取hr的微信号
                 hrWxUserDo = wxUserDao.getData(new Query.QueryBuilder().where("id",
