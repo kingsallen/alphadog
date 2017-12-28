@@ -894,12 +894,19 @@ public class ProfileService {
             try {
                 if (positionCustomConfigMap.containsKey(positionId)) {
                     JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
-                    Map<String, Object> parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
-                            map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("parent_id") == 0).collect(Collectors.toMap(k -> k.getString("field_name"), v -> {
-                                    return org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
-                            }, (oldKey, newKey) -> newKey));
+                    if (profileOtherJson != null) {
+                        Map<String, Object> parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
+                                .stream()
+                                .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
+                                map(m -> JSONObject.parseObject(String.valueOf(m)))
+                                .filter(f -> f.getIntValue("parent_id") == 0)
+                                .collect(Collectors.toMap(k -> k.getString("field_name"), v -> {
+                                    return org.apache.commons.lang.StringUtils
+                                            .defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
+                                }, (oldKey, newKey) -> newKey));
 
-                    e.put("other", parentValue);
+                        e.put("other", parentValue);
+                    }
                 }
             } catch (Exception e1) {
                 logger.error(e1.getMessage(), e1);

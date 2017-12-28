@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
+import com.moseeker.baseorm.constant.EmployeeActivedState;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileDownloadService;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
@@ -16,10 +17,12 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationAtsRecord;
 import com.moseeker.baseorm.db.profiledb.tables.*;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.*;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
@@ -41,6 +44,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 import static com.moseeker.baseorm.util.BeanUtils.jooqMapfilter;
 import static com.moseeker.baseorm.util.BeanUtils.profilter;
 
@@ -878,6 +882,13 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             create.attach(userRecord);
             userRecord.setName(name);
             userRecord.update();
+
+            create.update(USER_EMPLOYEE)
+                    .set(USER_EMPLOYEE.CNAME, name)
+                    .where(USER_EMPLOYEE.ACTIVATION.eq(EmployeeActivedState.Actived.getState()))
+                    .and(USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                    .and(USER_EMPLOYEE.SYSUSER_ID.eq(record.getUserId()))
+                    .execute();
         }
     }
 
@@ -1435,11 +1446,11 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         if (!filterTable(filter, "recommender") && recommenderIds.size() > 0) {
             allEmployee = create
                     .select()
-                    .from(UserEmployee.USER_EMPLOYEE)
-                    .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.in(recommenderIds))
-                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0))
-                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
-                    .and(UserEmployee.USER_EMPLOYEE.STATUS.eq(0))
+                    .from(USER_EMPLOYEE)
+                    .where(USER_EMPLOYEE.SYSUSER_ID.in(recommenderIds))
+                    .and(USER_EMPLOYEE.DISABLE.eq((byte) 0))
+                    .and(USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
+                    .and(USER_EMPLOYEE.STATUS.eq(0))
                     .fetchMaps();
         }
 

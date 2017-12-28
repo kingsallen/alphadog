@@ -1,5 +1,8 @@
 package com.moseeker.application.thrift;
 
+import com.alibaba.fastjson.JSON;
+import java.util.Map;
+
 import com.moseeker.common.exception.CommonException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;

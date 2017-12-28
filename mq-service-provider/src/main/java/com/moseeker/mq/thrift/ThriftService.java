@@ -12,10 +12,7 @@ import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.mq.service.sms.SmsService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService.Iface;
-import com.moseeker.thrift.gen.mq.struct.EmailStruct;
-import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
-import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
-import com.moseeker.thrift.gen.mq.struct.SmsType;
+import com.moseeker.thrift.gen.mq.struct.*;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.thrift.TException;
@@ -111,7 +108,11 @@ public class ThriftService implements Iface {
 
     @Override
     public Response sendMessageAndEmail(int application_id) throws TException{
-        deliveryService.sendMessageAndEmail(application_id);
         return null;
+    }
+
+    @Override
+    public Response sendMessageAndEmailToDelivery(MessageEmailStruct messageEmailStruct) throws TException {
+        return deliveryService.sendMessageAndEmail(messageEmailStruct);
     }
 }
