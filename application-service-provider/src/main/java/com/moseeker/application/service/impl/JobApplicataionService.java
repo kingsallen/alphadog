@@ -175,7 +175,7 @@ public class JobApplicataionService {
                 .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), jobApplication.getPosition_id());
         JobApplicationRecord record = jobApplicationDao.getRecord(queryBuilder.buildQuery());
 
-        if (jobApplication.getOrigin() > 0 && jobApplication.getOrigin() != record.getOrigin()) {
+        if (record != null && jobApplication.getOrigin() > 0 && jobApplication.getOrigin() != record.getOrigin()) {
             record.setOrigin(jobApplication.getOrigin() | record.getOrigin());
             jobApplicationDao.updateRecord(record);
         }
