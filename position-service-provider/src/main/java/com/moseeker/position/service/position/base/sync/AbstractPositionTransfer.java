@@ -110,6 +110,7 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
     public abstract HrThirdPartyPositionDO toThirdPartyPosition(Form form,R pwa);
     public abstract ExtP toExtThirdPartyPosition(Form form,R r);
     public abstract ExtP toExtThirdPartyPosition(Map<String,String> data);
+    public abstract JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition,ExtP extPosition);
 
 
     /**========================每个渠道共用的逻辑，当然也可以覆盖实现自己的逻辑========================*/

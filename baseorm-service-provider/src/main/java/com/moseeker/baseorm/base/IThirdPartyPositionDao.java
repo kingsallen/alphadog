@@ -1,11 +1,12 @@
 package com.moseeker.baseorm.base;
 
 import com.moseeker.baseorm.pojo.TwoParam;
+import com.moseeker.common.iface.IChannelType;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 
 import java.util.List;
 
-public interface IThirdPartyPositionDao<P> {
+public interface IThirdPartyPositionDao<P> extends IChannelType {
     TwoParam<HrThirdPartyPositionDO,P> getData(HrThirdPartyPositionDO thirdPartyPositionDO);
     List<TwoParam<HrThirdPartyPositionDO,P>> getDatas(List<HrThirdPartyPositionDO> list);
     TwoParam<HrThirdPartyPositionDO,P> addData(HrThirdPartyPositionDO thirdPartyPositionDO,P p);

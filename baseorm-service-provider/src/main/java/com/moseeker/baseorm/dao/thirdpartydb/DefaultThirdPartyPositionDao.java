@@ -3,9 +3,11 @@ package com.moseeker.baseorm.dao.thirdpartydb;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.base.IThirdPartyPositionDao;
 import com.moseeker.baseorm.pojo.TwoParam;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +26,7 @@ public class DefaultThirdPartyPositionDao implements IThirdPartyPositionDao<Empt
     @Override
     public List<TwoParam<HrThirdPartyPositionDO, EmptyExtThirdPartyPosition>> getDatas(List<HrThirdPartyPositionDO> list) {
         if(isEmptyList(list)){
-            return null;
+            return new ArrayList<>();
         }
         return list.stream().map(p->new TwoParam<>(p,EmptyExtThirdPartyPosition.EMPTY)).collect(Collectors.toList());
     }
@@ -52,5 +54,10 @@ public class DefaultThirdPartyPositionDao implements IThirdPartyPositionDao<Empt
     @Override
     public EmptyExtThirdPartyPosition setId(HrThirdPartyPositionDO thirdPartyPositionDO, EmptyExtThirdPartyPosition emptyExtThirdPartyPosition) {
         return emptyExtThirdPartyPosition;
+    }
+
+    @Override
+    public ChannelType getChannelType() {
+        return null;
     }
 }

@@ -5,6 +5,7 @@ import com.google.common.primitives.Ints;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.base.IThirdPartyPositionDao;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.dao.hrdb.utils.ThirdPartyPositionDaoFactory;
 import com.moseeker.baseorm.dao.thirdpartydb.DefaultThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyJob1001PositionDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyVeryeastPositionDao;
@@ -32,10 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -65,10 +63,11 @@ public class HRThirdPartyPositionDao  {
     @Autowired
     private InnerHRThirdPartyPositionDao thirdPartyPositionDao;
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
-    List<IThirdPartyPositionDao> daos;
+    private ThirdPartyPositionDaoFactory daoFactory;
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
     public <P> TwoParam<HrThirdPartyPositionDO, P> getThirdPositionById(int id) throws BIZException {
@@ -82,7 +81,6 @@ public class HRThirdPartyPositionDao  {
      * @param positions
      * @return
      */
-    @Transactional
     public <P> Response upsertThirdPartyPositions(List<TwoParam<HrThirdPartyPositionDO, P> > positions) throws BIZException {
         if (positions == null || positions.size() == 0) return ResponseUtils.success(null);
         logger.info("HRThirdPartyPositionDao upsertThirdPartyPositions" + JSON.toJSONString(positions));
@@ -99,6 +97,7 @@ public class HRThirdPartyPositionDao  {
      * @param p
      * @return
      */
+    @Transactional
     public <P> TwoParam<HrThirdPartyPositionDO, P> upsertThirdPartyPosition(TwoParam<HrThirdPartyPositionDO, P>  p) throws BIZException {
 
         HrThirdPartyPositionDO thirdPartyPositionDO=p.getR1();
@@ -119,7 +118,7 @@ public class HRThirdPartyPositionDao  {
 
             if (updateResult < 1) {
                 logger.error("更新第三方职位失败:{}", JSON.toJSONString(thirdPartyPositionDO));
-                throw new BIZException(-1, "更新状态时发生了错误，请重试！");
+                throw new RuntimeException("更新状态时发生了错误，请重试！");
             }
             query = new Query.QueryBuilder().where("id", thirdPartyPosition.getId()).buildQuery();
             return getData(query);
@@ -138,7 +137,7 @@ public class HRThirdPartyPositionDao  {
         if(thirdPartyPositionDO==null || thirdPartyPositionDO.getId()==0){
             return null;
         }
-        return thirdPartyPositionDao(thirdPartyPositionDO.getChannel()).getData(thirdPartyPositionDO);
+        return daoFactory.thirdPartyPositionDao(thirdPartyPositionDO.getChannel()).getData(thirdPartyPositionDO);
     }
 
     public List<HrThirdPartyPositionDO> getSimpleDatas(Query query){
@@ -155,9 +154,11 @@ public class HRThirdPartyPositionDao  {
         List<TwoParam<HrThirdPartyPositionDO,P>> results=new ArrayList<>();
 
         //需要根据渠道去对应的dao去调用获取对应的getdatas方法
-        List<Integer> channels=list.stream().map(p->p.getChannel()).distinct().collect(Collectors.toList());
-        for(int channel:channels){
-            results.addAll(thirdPartyPositionDao(channel).getDatas(list));
+        Map<Integer,List<HrThirdPartyPositionDO>> map=list.stream().collect(Collectors.groupingBy(p->p.getChannel()));
+        for(Map.Entry<Integer,List<HrThirdPartyPositionDO>> entry:map.entrySet()){
+            int channel=entry.getKey();
+            List<HrThirdPartyPositionDO> listToBeSearch=entry.getValue();
+            results.addAll(daoFactory.thirdPartyPositionDao(channel).getDatas(listToBeSearch));
         }
 
         return results;
@@ -166,7 +167,7 @@ public class HRThirdPartyPositionDao  {
     @Transactional
     public <P> TwoParam<HrThirdPartyPositionDO,P> addData(HrThirdPartyPositionDO s,P p) throws BIZException {
         HrThirdPartyPositionDO result=thirdPartyPositionDao.addData(s);
-        return thirdPartyPositionDao(result.getChannel()).addData(result,p);
+        return daoFactory.thirdPartyPositionDao(result.getChannel()).addData(result,p);
     }
 
     //批量更新应该很慢，慎用，或者找到可以防止批量插入HrThirdPartyPositionDO后批量对应P的问题
@@ -184,19 +185,19 @@ public class HRThirdPartyPositionDao  {
     }
 
     @Transactional
-    public <P> int updateData(HrThirdPartyPositionDO s,P p) throws BIZException {
+    public <P> int updateData(HrThirdPartyPositionDO s,P p) {
         int result=thirdPartyPositionDao.updateData(s);
         if(p== EmptyExtThirdPartyPosition.EMPTY){
             return result;
         }
-        IThirdPartyPositionDao extDao=thirdPartyPositionDao(s.getChannel());
+        IThirdPartyPositionDao extDao=daoFactory.thirdPartyPositionDao(s.getChannel());
         //设置下ExtThirdpartyPosition的id
         extDao.setId(s,p);
 
         int extResult=extDao.updateData(p);
         if(result!=extResult){
             logger.error("update Position and ExtPosition not EQ HrThirdPartyPositionDO:{}，P:{}",s,p);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"update Position and ExtPosition not EQ ");
+            throw new RuntimeException("update Position and ExtPosition not EQ ");
         }
         return result;
     }
@@ -224,11 +225,11 @@ public class HRThirdPartyPositionDao  {
                 List<P> tempExtPositions = twoTable.stream().filter(p -> p.getR1().getChannel() == channel).map(p -> p.getR2()).collect(Collectors.toList());
 
                 int[] result = thirdPartyPositionDao.updateDatas(tempPositions);
-                int[] extResult = thirdPartyPositionDao(channel).updateDatas(tempExtPositions);
+                int[] extResult = daoFactory.thirdPartyPositionDao(channel).updateDatas(tempExtPositions);
 
                 if (!Arrays.equals(result, extResult)) {
                     logger.error("batch update update Position and ExtPosition not EQ channel:{} tempPositions:{}，tempExtPositions:{}", channel, tempPositions, tempExtPositions);
-                    throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "batch update update Position and ExtPosition not EQ");
+                    throw new RuntimeException("batch update update Position and ExtPosition not EQ");
                 }
                 results.addAll(Ints.asList(result));
             }
@@ -247,54 +248,6 @@ public class HRThirdPartyPositionDao  {
             }
         }
         return thirdPartyPositionDao.update(update.buildUpdate());
-    }
-
-    /**
-     * 工厂类，根据渠道获取对应的dao
-     * @param channel
-     * @return
-     * @throws BIZException
-     */
-    public IThirdPartyPositionDao thirdPartyPositionDao(int channel) throws BIZException {
-        ChannelPositionDao channelPositionDao=ChannelPositionDao.getInsance(channel);
-        if(channelPositionDao==null){
-            logger.error("no matched ChannelPositionDao! channel : {}",channel);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"no matched ChannelPositionDao channel");
-        }
-        for(IThirdPartyPositionDao dao:daos){
-            if(dao.getClass()==channelPositionDao.dao){
-                return dao;
-            }
-        }
-        logger.error("no matched thirdPartyPositionDao! channel : {}",channel);
-        throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"no matched thirdPartyPositionDao channel");
-    }
-
-    public enum ChannelPositionDao{
-        JOB1001(ChannelType.JOB1001, ThirdpartyJob1001PositionDao.class),
-        VERYEAST(ChannelType.VERYEAST, ThirdpartyVeryeastPositionDao.class),
-        JOB51(ChannelType.JOB51, DefaultThirdPartyPositionDao.class),
-        LIEPIN(ChannelType.LIEPIN, DefaultThirdPartyPositionDao.class),
-        ZHILIAN(ChannelType.ZHILIAN, DefaultThirdPartyPositionDao.class)
-        ;
-
-        ChannelPositionDao(ChannelType channelType, Class<? extends IThirdPartyPositionDao> dao) {
-            this.channelType = channelType;
-            this.dao = dao;
-        }
-
-        public static ChannelPositionDao getInsance(int channel){
-            for(ChannelPositionDao dao:values()){
-                if(dao.channelType.getValue()==channel){
-                    return dao;
-                }
-            }
-            return null;
-        }
-
-        ChannelType channelType;
-
-        Class<? extends IThirdPartyPositionDao> dao;
     }
 
     @Repository

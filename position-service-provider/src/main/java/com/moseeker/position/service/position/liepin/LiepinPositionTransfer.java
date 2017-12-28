@@ -1,5 +1,7 @@
 package com.moseeker.position.service.position.liepin;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.common.constants.ChannelType;
@@ -185,5 +187,10 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
     @Override
     public EmptyExtThirdPartyPosition toExtThirdPartyPosition(Map<String, String> data) {
         return EmptyExtThirdPartyPosition.EMPTY;
+    }
+
+    @Override
+    public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
+        return JSONObject.parseObject(JSON.toJSONString(thirdPartyPosition));
     }
 }

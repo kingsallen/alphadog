@@ -1137,11 +1137,16 @@ public class PositionService {
     public List<String> getThirdPartyPositions(Query query) throws BIZException {
         List<TwoParam<HrThirdPartyPositionDO, Object>> list=thirdpartyPositionDao.getDatas(query);
 
-        List<String> result=list.stream().map(p->{
-            Map<String,Object> map=PositionChangeUtil.objectToMap(p.getR1());
-            map.putAll(PositionChangeUtil.objectToMap(p.getR2()));
-            return JSON.toJSONString(map);
-        }).collect(Collectors.toList());
+        List<String> result=new ArrayList<>();
+
+        for(TwoParam<HrThirdPartyPositionDO, Object> p:list){
+
+            ChannelType channelType=ChannelType.instaceFromInteger(p.getR1().getChannel());
+
+            JSONObject form =positionChangeUtil.transferSimpleFactory(channelType).toThirdPartyPositionForm(p.getR1(),p.getR2());
+
+            result.add(form.toJSONString());
+        }
 
         return result;
 
