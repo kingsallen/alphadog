@@ -23,6 +23,21 @@ public enum ThreadPool {
                 init();
             }
         }
+
+        return this.service.submit(task);
+    }
+
+    public <T> Future<T> startTastSleep(Callable<T> task) {
+        if(service == null) {
+            synchronized (this) {
+                init();
+            }
+        }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return this.service.submit(task);
     }
 
