@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictVeryeastOccupation extends TableImpl<DictVeryeastOccupationRecord> {
 
-    private static final long serialVersionUID = 221618460;
+    private static final long serialVersionUID = -983974610;
 
     /**
      * The reference instance of <code>dictdb.dict_veryeast_occupation</code>
@@ -68,7 +68,7 @@ public class DictVeryeastOccupation extends TableImpl<DictVeryeastOccupationReco
     /**
      * The column <code>dictdb.dict_veryeast_occupation.code_other</code>. 第三方职能id
      */
-    public final TableField<DictVeryeastOccupationRecord, Integer> CODE_OTHER = createField("code_other", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "第三方职能id");
+    public final TableField<DictVeryeastOccupationRecord, String> CODE_OTHER = createField("code_other", org.jooq.impl.SQLDataType.VARCHAR.length(10).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "第三方职能id");
 
     /**
      * The column <code>dictdb.dict_veryeast_occupation.level</code>. 职能级别 1是一级2是二级依次类推
