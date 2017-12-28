@@ -144,7 +144,7 @@ public class JobApplicataionService {
                 );
             }
         } catch (Exception e) {
-            logger.error("postResources JobApplication error: ", e);
+            logger.error("JobApplicataionService JobApplication error: ", e);
             throw new TException();
         } finally {
             //do nothing
@@ -186,7 +186,11 @@ public class JobApplicataionService {
     private void sendMessageAndEmailThread (int applicationId){
         logger.info("sendMessageAndEmailThread applicationId{}", applicationId);
         //发送模板消息，短信，邮件
-        tp.startTastSleep(() -> mqServer.sendMessageAndEmail(applicationId));
+        tp.startTast(() -> {
+            Response resppnse = mqServer.sendMessageAndEmail(applicationId);
+            logger.info("JobApplicataionService response {}", JSON.toJSONString(resppnse));
+            return resppnse;
+        });
     }
 
     private void appIDToSource(JobApplication jobApplication) {
@@ -317,7 +321,7 @@ public class JobApplicataionService {
             jobApplicationRecord.setUpdateTime(updateTime);
             updateStatus = jobApplicationDao.updateRecord(jobApplicationRecord);
             if(updateStatus>0 && bool){
-                tp.startTast(() -> mqServer.sendMessageAndEmail(jobApplicationRecord.getId()));
+                sendMessageAndEmailThread(jobApplicationRecord.getId());
             }
         }
         return updateStatus;
