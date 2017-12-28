@@ -288,6 +288,8 @@ public class TalentpoolSearchengine {
                     if (StringUtils.isNotNullOrEmpty(publisherIds)) {
                         this.queryByPublisher(publisherIds, query);
                     }
+                }else{
+                    this.queryByComapnyId(companyId, query);
                 }
 
                 if (StringUtils.isNotNullOrEmpty(candidateSource)) {
@@ -356,6 +358,7 @@ public class TalentpoolSearchengine {
         String tagIds=params.get("tag_ids");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
+        String companyId=params.get("company_id");
         if( StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
             &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)){
             return null;
@@ -371,6 +374,8 @@ public class TalentpoolSearchengine {
                     sb.append("val.publisher in "+publisherIdList.toString()+"&&");
                 }
             }
+        }else{
+            sb.append("val.company_id == "+companyId+"&&");
         }
 
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
