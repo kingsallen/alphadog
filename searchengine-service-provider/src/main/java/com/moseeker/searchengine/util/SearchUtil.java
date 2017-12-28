@@ -68,6 +68,8 @@ public class SearchUtil {
      */
     public void handleTerms(String conditions,QueryBuilder query,String conditionField){
         if (StringUtils.isNotEmpty(conditions)) {
+            QueryBuilder query0 = QueryBuilders.termQuery("user.talent_pool.is_talent", 1);
+            ((BoolQueryBuilder) query).must(query0);
             List<Object> codes = new ArrayList<Object>();
             String[] conditions_list = conditions.split(",");
             for(String code:conditions_list){

@@ -85,6 +85,9 @@ public class TalentPoolSearchTest {
         map.put("all_publisher","1");
         map.put("page_number","1");
         map.put("page_size","20");
+        map.put("candidate_source","0");
+        map.put("min_age","10");
+        map.put("max_age","40");
         Map<String,Object> result= talentpoolSearchengine.talentSearch(map);
         System.out.println(result);
     }
