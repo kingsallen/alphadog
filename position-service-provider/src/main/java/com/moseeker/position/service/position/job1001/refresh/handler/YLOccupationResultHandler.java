@@ -91,9 +91,9 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
         int DEFAULT_KEY_SEED=0;
 
         for(int i=0;i<subsiteList.size();i++){
-            String subsiteTemp=subsiteList.get(i).getSubSite();
+            String subsiteTemp=subsiteList.get(i).getSubsite();
             if(subsiteTemp.equals(subsite)){
-                DEFAULT_KEY_SEED=100000*(i+1);
+                DEFAULT_KEY_SEED=subsiteList.get(i).getSeed();
             }
         }
 

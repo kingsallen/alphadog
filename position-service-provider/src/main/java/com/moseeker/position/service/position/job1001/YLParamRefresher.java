@@ -7,15 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class YLParamRefresher extends AbstractYLParamRefresher {
     @Override
-    public void addUserParam(JSONObject jsonSend) {
-        jsonSend.put("user_name",getConfig("yl.username"));
-        jsonSend.put("password",getConfig("yl.password"));
-        jsonSend.put("safe_code",getConfig("yl.safecode"));
-        jsonSend.put("subsite",getSubSite());
-    }
-
-    @Override
-    public String getSubSite() {
-        return getConfig("yl.subsite");
+    public String getConfigKey() {
+        return "yl";
     }
 }
