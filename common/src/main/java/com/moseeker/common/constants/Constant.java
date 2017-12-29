@@ -223,4 +223,10 @@ public final class Constant {
     public static final int DICT_CONSTANT_LANGUAGE_FRUENCY =3108;   //语言-掌握程度常量表parent_code值
 
     public static final String CDN_URL = "https://cdn.moseeker.com/";
+
+    //微信消息模板
+    public static final int EMPLOYEE_PROFILE_COMPLETION=56;
+    public static final int FANS_PROFILE_COMPLETION=58;
+    public static final int FANS_RECOM_POSITION=57;
+    public static final int EMPLOYEE_RECOM_POSITION=59;
 }
