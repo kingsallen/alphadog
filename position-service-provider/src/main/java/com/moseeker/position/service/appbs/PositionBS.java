@@ -20,6 +20,7 @@ import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.position.utils.PositionSyncHandler;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
@@ -137,6 +138,10 @@ public class PositionBS {
         // 职位数据是否存在
         positionSyncHandler.requireAvailablePostiion(moseekerJobPosition);
 
+        if(positionSyncHandler.alreadyInRedis(moseekerJobPosition.getId())){
+            throw new BIZException(ResultMessage.AREADY_BINDING_IN_REDIS.getStatus(),ResultMessage.AREADY_BINDING_IN_REDIS.getMessage());
+        }
+
         // 返回结果
         List<PositionSyncResultPojo> results = new ArrayList<>();
 
@@ -180,7 +185,7 @@ public class PositionBS {
 
             //验证是否有正在绑定的第三方职位
             if(positionSyncHandler.containsAlreadySyncThirdPosition(avaliableAccount.getId(),moseekerJobPosition.getId(),alreadySyncPosition)){
-                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_BINDING.getMessage()));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_BINDING_IN_DATABASE.getMessage()));
                 continue;
             }
 
@@ -205,12 +210,13 @@ public class PositionBS {
 
         // 提交到chaos处理
         logger.info("chaosService.synchronizePosition:{}", positionsForSynchronizations);
-        chaosService.synchronizePosition(positionsForSynchronizations);
+//        chaosService.synchronizePosition(positionsForSynchronizations);
 
         // 回写数据到第三方职位表表
         logger.info("write back to thirdpartyposition:{}", JSON.toJSONString(writeBackThirdPartyPositionList));
         thirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
 
+        positionSyncHandler.removeRedis(moseekerJobPosition.getId());
         return results;
     }
 
