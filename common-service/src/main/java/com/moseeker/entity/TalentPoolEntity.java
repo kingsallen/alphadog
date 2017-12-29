@@ -103,6 +103,8 @@ public class TalentPoolEntity {
             int result=this.valicateCompanyApplication(userId,companyId);
             if(result==0){
                 return this.isUpLoad(companyId,userId);
+            }else{
+                return result;
             }
         }
         Set<Integer> userIdSet=new HashSet<>();
