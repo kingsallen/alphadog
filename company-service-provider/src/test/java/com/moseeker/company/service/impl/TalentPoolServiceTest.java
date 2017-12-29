@@ -132,10 +132,10 @@ public class TalentPoolServiceTest {
     }
     @Test
     public void testAddTalentComment() throws TException {
-        int hrId=91337;
+        int hrId=82752;
         int companyId=39978;
-        int userId=2194027;
-        String content="deeee";
+        int userId=2195000;
+        String content="qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq";
         Response res=talentPoolService.addTalentComment(hrId,companyId,userId,content);
         System.out.println(res);
     }

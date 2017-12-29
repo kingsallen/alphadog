@@ -769,7 +769,7 @@ public class TalentPoolService {
      */
     private List<TalentpoolTagRecord> filterOtherHr(int companyId,List<TalentpoolTagRecord> tagList){
         if(StringUtils.isEmptyList(tagList)){
-           return null;
+            return null;
         }
         List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
         Set<Integer> hrIdList=talentPoolEntity.getIdListByUserHrAccountList(hrList);
