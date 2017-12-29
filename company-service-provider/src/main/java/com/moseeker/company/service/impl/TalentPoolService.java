@@ -160,6 +160,7 @@ public class TalentPoolService {
         Set<Integer> idList=talentPoolEntity.getIdListByTalentpoolHrTalentList(talentList);
         //比较两者，取出不可以操作的
         Set<Integer> unApplierIdList=talentPoolEntity.filterIdList(applierIdList,idList);
+        List<TalentpoolHrTalentRecord> pubTalentList=getHrPublicTalent(hrId);
         if(!StringUtils.isEmptySet(idList)){
             List<TalentpoolHrTalentRecord> recordList=new ArrayList<>();
             for(Integer userId:idList){
@@ -170,8 +171,21 @@ public class TalentPoolService {
             }
             //取消收藏
             talentpoolHrTalentDao.deleteRecords(recordList);
+
             for(Integer id:idList){
-                talentPoolEntity.handlerTalentpoolTalent(id,companyId,0,0,-1);
+                int isPublic=0;
+                for(TalentpoolHrTalentRecord record:pubTalentList){
+                    int userId=record.getUserId();
+                    if(userId==id){
+                        isPublic=1;
+                    }
+                }
+                if(isPublic==0){
+                    talentPoolEntity.handlerTalentpoolTalent(id,companyId,0,0,-1);
+                }else{
+                    talentPoolEntity.handlerTalentpoolTalent(id,companyId,0,-1,-1);
+                }
+
             }
             //取消收藏时删除标签，并且计算标签数
 //            this.handleCancleTag(hrId,idList);
@@ -529,7 +543,7 @@ public class TalentPoolService {
         if(type==0){
             int talentNum=this.getAllHrTalent(hrId);
             int companyPublicNum=talentPoolEntity.getPublicTalentCount(companyId);
-            int hrPublicNum=this.getHrPublicTalent(hrId);
+            int hrPublicNum=this.getHrPublicTalentCount(hrId);
             int allTalentNum=this.getCompanyTalentCount(companyId);
             List<Map<String,Object>> list=this.getTagByHrNoOrder(hrId,0,Integer.MAX_VALUE);
             result.put("allpublic",companyPublicNum);
@@ -538,7 +552,7 @@ public class TalentPoolService {
             result.put("tag",list);
             result.put("alltalent",allTalentNum);
         }else if(type==1){
-            int hrPublicNum=this.getHrPublicTalent(hrId);
+            int hrPublicNum=this.getHrPublicTalentCount(hrId);
             result.put("hrpublic",hrPublicNum);
         }else if(type==2){
             int talentNum=this.getAllHrTalent(hrId);
@@ -1833,10 +1847,19 @@ public class TalentPoolService {
     /*
      获取hr下公开的人才数量
      */
-    private int getHrPublicTalent(int hrId){
+    private int getHrPublicTalentCount(int hrId){
         Query query=new Query.QueryBuilder().where("hr_id",hrId).and("public",1).buildQuery();
         int count=talentpoolHrTalentDao.getCount(query);
         return count;
+    }
+
+    /*
+     获取hr下公开的人才数量
+     */
+    private List<TalentpoolHrTalentRecord> getHrPublicTalent(int hrId){
+        Query query=new Query.QueryBuilder().where("hr_id",hrId).and("public",1).buildQuery();
+        List<TalentpoolHrTalentRecord> list=talentpoolHrTalentDao.getRecords(query);
+        return list;
     }
 
 
