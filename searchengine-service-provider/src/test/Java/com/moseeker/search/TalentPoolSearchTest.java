@@ -80,14 +80,12 @@ public class TalentPoolSearchTest {
         Map<String,String> map=new HashMap<>();
         map.put("publisher","87757,90915,91318,91337,91342,91363,91364,91366,91367,82752");
         map.put("hr_account_id","82752");
-        map.put("tag_ids","talent");
+        map.put("hr_id","82752");
+        map.put("position_id","1909491");
         map.put("company_id","39978");
-        map.put("all_publisher","1");
+        map.put("all_publisher","0");
         map.put("page_number","1");
         map.put("page_size","20");
-        map.put("candidate_source","0");
-        map.put("min_age","10");
-        map.put("max_age","40");
         Map<String,Object> result= talentpoolSearchengine.talentSearch(map);
         System.out.println(result);
     }
