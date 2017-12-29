@@ -53,13 +53,15 @@ public class PositionSyncHandler {
         return result;
     }
     //创建普通结果
-    public PositionSyncResultPojo createNormalResult(String data){
+    public PositionSyncResultPojo createNormalResult(int positionId,int channel,String data){
         PositionSyncResultPojo result = new PositionSyncResultPojo();
         String syncTime = (new DateTime()).toString("yyyy-MM-dd HH:mm:ss");
 
+        result.setPosition_id(positionId);
         result.setData(data);
         result.setSync_status(PositionSyncResultPojo.SUCCESS);
         result.setSync_time(syncTime);
+        result.setChannel(channel);
 
         return result;
     }

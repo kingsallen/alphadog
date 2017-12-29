@@ -197,7 +197,7 @@ public class PositionBS {
             positionsForSynchronizations.addAll(positionChangeUtil.toChaosJson(channel,result.getPositionWithAccount()));
             writeBackThirdPartyPositionList.add(new TwoParam(result.getThirdPartyPositionDO(),result.getExtPosition()));
 
-            results.add(positionSyncHandler.createNormalResult(json));
+            results.add(positionSyncHandler.createNormalResult(moseekerJobPosition.getId(),channel,json));
 
             //完成转换操作，可以绑定
             channelTypeSet.add(channelType);
