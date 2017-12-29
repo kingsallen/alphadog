@@ -78,6 +78,23 @@ public class PositionChangeUtil {
         }
     }
 
+    public List<String> toChaosJson(int channel,Object positionWithAccount) throws BIZException {
+        ChannelType channelType = ChannelType.instaceFromInteger(channel);
+        if(channelType==null){
+            logger.error("change To ThirdPartyPosition no matched channelType : {}",channel);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"change To ThirdPartyPosition no matched channelType");
+        }
+
+        AbstractPositionTransfer transfer=transferSimpleFactory(channelType);
+
+        try {
+            return transfer.toChaosJson(positionWithAccount);
+        }catch (Exception e){
+            logger.error("to toChaosJson error channel:{},data:{}",channel,JSON.toJSONString(positionWithAccount));
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"to ExtThirdPartyPosition error");
+        }
+    }
+
     public AbstractPositionTransfer transferSimpleFactory(ChannelType channelType) throws BIZException {
         for(AbstractPositionTransfer transfer:transferList){
             if(channelType==transfer.getChannel()){

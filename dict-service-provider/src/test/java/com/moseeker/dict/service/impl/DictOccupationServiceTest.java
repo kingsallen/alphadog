@@ -14,16 +14,16 @@ import static org.junit.Assert.*;
 /**
  * Created by lucky8987 on 17/5/10.
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class DictOccupationServiceTest {
 
-//    @Autowired
+    @Autowired
     private DictOccupationService service;
 
-    //@Test
+    @Test
     public void queryOccupation() throws Exception {
-        JSONArray response = service.queryOccupation("{\"level\":2, \"single_layer\":2, \"channel\":3}");
+        JSONArray response = service.queryOccupation("{\"level\":2, \"single_layer\":2, \"channel\":6}");
         System.out.println(response);
     }
 

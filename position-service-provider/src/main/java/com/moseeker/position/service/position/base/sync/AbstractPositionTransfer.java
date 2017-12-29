@@ -95,6 +95,10 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
         }
     }
 
+    public List<String> toChaosJson(R r){
+        return Arrays.asList(JSON.toJSONString(r));
+    }
+
 
     /**========================抽象方法，让每个渠道去实现自己的逻辑========================*/
     public abstract R changeToThirdPartyPosition(Form positionForm, JobPositionDO positionDB,HrThirdPartyAccountDO account) throws Exception;

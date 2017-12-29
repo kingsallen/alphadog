@@ -23,9 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Component
@@ -240,5 +238,20 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         result.putAll(JSON.parseObject(JSON.toJSONString(thirdPartyPosition)));
 
         return result;
+    }
+
+    @Override
+    public List<String> toChaosJson(PositionVeryEastWithAccount positionVeryEastWithAccount) {
+        if(positionVeryEastWithAccount==null || positionVeryEastWithAccount.getPosition_info()==null){
+            return new ArrayList<>();
+        }else{
+            List<String> results=new ArrayList<>();
+            for(List<String> city:positionVeryEastWithAccount.getPosition_info().getRegion()){
+                JSONObject result=JSON.parseObject(JSON.toJSONString(positionVeryEastWithAccount));
+                result.getJSONObject("position_info").put("region",city);
+                results.add(result.toJSONString());
+            }
+            return results;
+        }
     }
 }

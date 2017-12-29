@@ -194,7 +194,7 @@ public class PositionBS {
             // 转成第三方渠道职位
             AbstractPositionTransfer.TransferResult result= positionChangeUtil.changeToThirdPartyPosition(p, moseekerJobPosition,avaliableAccount);
 
-            positionsForSynchronizations.add(JSON.toJSONString(result.getPositionWithAccount()));
+            positionsForSynchronizations.addAll(positionChangeUtil.toChaosJson(channel,result.getPositionWithAccount()));
             writeBackThirdPartyPositionList.add(new TwoParam(result.getThirdPartyPositionDO(),result.getExtPosition()));
 
             results.add(positionSyncHandler.createNormalResult(json));
