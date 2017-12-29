@@ -5,19 +5,20 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.talentpooldb.TalentpoolCommentDao;
-import com.moseeker.baseorm.dao.talentpooldb.TalentpoolHrTalentDao;
-import com.moseeker.baseorm.dao.talentpooldb.TalentpoolTalentDao;
+import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrTalentRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTagRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolUserTagRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,10 @@ public class TalentPoolEntity {
     private TalentpoolCommentDao talentpoolCommentDao;
     @Autowired
     private JobPositionDao jobPositionDao;
+    @Autowired
+    private TalentpoolTagDao talentpoolTagDao;
+    @Autowired
+    private TalentpoolUserTagDao talentpoolUserTagDao;
 
     /*
         验证hr操作user_id是否合法
@@ -699,5 +704,61 @@ public class TalentPoolEntity {
         int count=talentpoolTalentDao.getCount(query);
         return count;
     }
+    /*
+     获取人才
+    */
+    public List<Map<String,Object>> getTalentpoolHrTalentByIdList(int hrId, Set<Integer> userIdList){
+        if(StringUtils.isEmptySet(userIdList)){
+            return null;
+        }
+        Query query=new Query.QueryBuilder().where(new Condition("user_id",userIdList.toArray(), ValueOp.IN))
+                .and("hr_id",hrId).buildQuery();
+        List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);
+        return list;
+    }
 
+    /*
+     根据hr_id和tagId获取记录
+     */
+    public TalentpoolTagRecord validateTag(int hrId, int tagId){
+        Query query=new Query.QueryBuilder().where("hr_id",hrId).and("id",tagId).buildQuery();
+        TalentpoolTagRecord record=talentpoolTagDao.getRecord(query);
+        return record;
+    }
+
+    /*
+    获取一个人才在这个hr下拥有的标签
+    */
+    public List<TalentpoolUserTagRecord> getUserTagByUserIdAndTagId(int userId, Set<Integer> tagIdList){
+        if(StringUtils.isEmptySet(tagIdList)){
+            return null;
+        }
+        Query query=new Query.QueryBuilder().where("user_id",userId).and(new Condition("tag_id",tagIdList.toArray(),ValueOp.IN)).buildQuery();
+        List<TalentpoolUserTagRecord> list=talentpoolUserTagDao.getRecords(query);
+        return list;
+    }
+
+    /*
+    获取userIdList在该hr下的所有的标签
+   */
+    public List<TalentpoolUserTagRecord> getUserTagByUserIdListAndTagId(Set<Integer> userIdList,Set<Integer> tagIdList){
+        if(StringUtils.isEmptySet(tagIdList)||StringUtils.isEmptySet(userIdList)){
+            return null;
+        }
+        Query query=new Query.QueryBuilder().where(new Condition("user_id",userIdList.toArray(),ValueOp.IN))
+                .and(new Condition("tag_id",tagIdList.toArray(),ValueOp.IN)).buildQuery();
+        List<TalentpoolUserTagRecord> list=talentpoolUserTagDao.getRecords(query);
+        return list;
+    }
+    /*
+        查询hr下所有的标签
+       */
+    public List<Map<String,Object>> getTagByHr(int hrId,int pageNum,int pageSize){
+        Query query=new Query.QueryBuilder().where("hr_id",hrId)
+                .setPageNum(pageNum).setPageSize(pageSize)
+                .orderBy("create_time", Order.DESC)
+                .buildQuery();
+        List<Map<String,Object>> list= talentpoolTagDao.getMaps(query);
+        return list;
+    }
 }
