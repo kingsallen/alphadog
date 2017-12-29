@@ -72,7 +72,7 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         positionInfo.setDegree(VeryEastTransferStrategy.VeryEastDegree.moseekerToOther((int)positionDB.getDegree()));
         positionInfo.setExperience(transferExpreience(positionDB.getExperience()));
         positionInfo.setAge(positionForm.getAge());
-        positionInfo.setLanguage(positionForm.getLanguage());
+        positionInfo.setFormLanguage(positionForm.getLanguage());
         positionInfo.setComputer_level(positionForm.getComputerLevel()+"");
         positionInfo.setDescription(getDescription(positionDB.getAccountabilities(),positionDB.getRequirement()));
         positionInfo.setEmail(getEmail(positionDB));
