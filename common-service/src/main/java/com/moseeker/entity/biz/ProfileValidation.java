@@ -265,6 +265,35 @@ public class ProfileValidation {
 		return vm;
 	}
 
+	public static ValidationMessage<ProfileWorkexpRecord> verifyWorkExp(ProfileWorkexpRecord workExp) {
+		ValidationMessage<ProfileWorkexpRecord> vm = new ValidationMessage<>();
+		if(workExp.getCompanyId() == null ) {
+			vm.addFailedElement("就职公司", "未填写就职公司");
+		}
+		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
+			vm.addFailedElement("职位名称", "未填写职位名称");
+		}
+		if(workExp.getStart() == null) {
+			vm.addFailedElement("开始时间", "未填写开始时间");
+		}
+		if(StringUtils.isNullOrEmpty(workExp.getDescription())) {
+			vm.addFailedElement("职位描述", "未对该职位做详细描述");
+		}
+		if (workExp.getStart() != null && workExp.getEnd() != null
+				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
+				&& (workExp.getEndUntilNow() == null
+				|| workExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus())) {
+			vm.addFailedElement("工作时间", "开始时间大于结束时间");
+		}
+		if (!lowerNow(workExp.getStart())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (workExp.getEnd() != null && !lowerNow(workExp.getEnd())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		return vm;
+	}
+
 	public static boolean legalDate(String date) {
 		Timestamp timestamp = BeanUtils.convertToSQLTimestamp(date);
 		return legalDate(timestamp);
