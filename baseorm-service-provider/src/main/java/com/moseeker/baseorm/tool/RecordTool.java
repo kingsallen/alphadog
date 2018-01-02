@@ -22,6 +22,7 @@ public class RecordTool {
 
     private static Logger logger = Logger.getLogger(RecordTool.class);
 
+
     /**
      * 合并两条数据。将desc中更改的属性，根据属性名称一致作为条件，给orig对象对应的属性赋值
      * @param orig 被更新的对象
