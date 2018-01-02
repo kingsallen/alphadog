@@ -245,4 +245,6 @@ public class TalentPoolServiceTest {
         System.out.println(string.length());
     }
 
+
+
 }

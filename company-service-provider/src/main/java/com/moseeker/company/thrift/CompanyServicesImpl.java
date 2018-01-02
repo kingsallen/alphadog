@@ -333,7 +333,7 @@ public class CompanyServicesImpl implements Iface {
                 return ResponseUtils.fail(1,"此账号不是此公司的主账号");
             }
             if(result==3){
-                return ResponseUtils.fail(1,"此公司无配置");
+                return ResponseUtils.fail(1,"此公司无配置,联系客服人员");
             }
             map.put("open",true);
             return ResponseUtils.success(map);

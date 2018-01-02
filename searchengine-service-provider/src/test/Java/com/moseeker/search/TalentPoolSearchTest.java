@@ -86,6 +86,7 @@ public class TalentPoolSearchTest {
         map.put("all_publisher","0");
         map.put("page_number","1");
         map.put("page_size","20");
+        map.put("hr_id","82752");
         Map<String,Object> result= talentpoolSearchengine.talentSearch(map);
         System.out.println(result);
     }
