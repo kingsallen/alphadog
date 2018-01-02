@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition implements Serializable {
 
-    private static final long serialVersionUID = 214724462;
+    private static final long serialVersionUID = -1448832961;
 
     private Integer   id;
     private String    jobnumber;
@@ -89,6 +89,7 @@ public class JobPosition implements Serializable {
     private Byte      currentStatus;
     private Integer   positionCode;
     private Integer   teamId;
+    private Byte      profileCcMailEnabled;
 
     public JobPosition() {}
 
@@ -157,6 +158,7 @@ public class JobPosition implements Serializable {
         this.currentStatus = value.currentStatus;
         this.positionCode = value.positionCode;
         this.teamId = value.teamId;
+        this.profileCcMailEnabled = value.profileCcMailEnabled;
     }
 
     public JobPosition(
@@ -223,7 +225,8 @@ public class JobPosition implements Serializable {
         Byte      targetIndustry,
         Byte      currentStatus,
         Integer   positionCode,
-        Integer   teamId
+        Integer   teamId,
+        Byte      profileCcMailEnabled
     ) {
         this.id = id;
         this.jobnumber = jobnumber;
@@ -289,6 +292,7 @@ public class JobPosition implements Serializable {
         this.currentStatus = currentStatus;
         this.positionCode = positionCode;
         this.teamId = teamId;
+        this.profileCcMailEnabled = profileCcMailEnabled;
     }
 
     public Integer getId() {
@@ -803,6 +807,14 @@ public class JobPosition implements Serializable {
         this.teamId = teamId;
     }
 
+    public Byte getProfileCcMailEnabled() {
+        return this.profileCcMailEnabled;
+    }
+
+    public void setProfileCcMailEnabled(Byte profileCcMailEnabled) {
+        this.profileCcMailEnabled = profileCcMailEnabled;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("JobPosition (");
@@ -871,6 +883,7 @@ public class JobPosition implements Serializable {
         sb.append(", ").append(currentStatus);
         sb.append(", ").append(positionCode);
         sb.append(", ").append(teamId);
+        sb.append(", ").append(profileCcMailEnabled);
 
         sb.append(")");
         return sb.toString();

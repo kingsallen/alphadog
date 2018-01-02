@@ -147,4 +147,12 @@ public class JobPcReported extends TableImpl<JobPcReportedRecord> {
     public JobPcReported as(String alias) {
         return new JobPcReported(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public JobPcReported rename(String name) {
+        return new JobPcReported(name, null);
+    }
 }

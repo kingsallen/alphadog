@@ -152,4 +152,12 @@ public class JobPcAdvertisement extends TableImpl<JobPcAdvertisementRecord> {
     public JobPcAdvertisement as(String alias) {
         return new JobPcAdvertisement(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public JobPcAdvertisement rename(String name) {
+        return new JobPcAdvertisement(name, null);
+    }
 }
