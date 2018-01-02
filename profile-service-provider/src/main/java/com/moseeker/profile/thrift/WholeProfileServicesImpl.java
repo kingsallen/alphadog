@@ -103,6 +103,7 @@ public class WholeProfileServicesImpl implements Iface {
     @Override
     public boolean retrieveProfile(String parameter) throws BIZException, TException {
         try {
+            logger.info("retrieveProfile parameter{}：", parameter);
             return service.retrieveProfile(parameter);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
