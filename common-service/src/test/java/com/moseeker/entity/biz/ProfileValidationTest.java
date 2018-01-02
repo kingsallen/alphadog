@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.struct.Education;
 import com.moseeker.thrift.gen.profile.struct.ProjectExp;
 import com.moseeker.thrift.gen.profile.struct.WorkExp;
@@ -246,5 +247,33 @@ public class ProfileValidationTest {
         workExp.setDescription("描述");
         ValidationMessage<ProfileWorkexpEntity> vm = ProfileValidation.verifyWorkExp(workExp);
         assertEquals(StringUtils.isBlank(vm.getResult()), false);
+    }
+
+    @Test
+    public void verifyOther() {
+        String content = null;
+
+        ProfileOtherDO profileOtherDO = new ProfileOtherDO();
+        profileOtherDO.setOther(content);
+        ValidationMessage<ProfileOtherDO> validationMessage = ProfileValidation.verifyOther(profileOtherDO);
+        assertEquals(false, validationMessage.isPass());
+
+
+        ProfileOtherDO profileOtherDO1 = new ProfileOtherDO();
+        profileOtherDO1.setOther("");
+        ValidationMessage<ProfileOtherDO> validationMessage1 = ProfileValidation.verifyOther(profileOtherDO1);
+        assertEquals(false, validationMessage1.isPass());
+
+        ProfileOtherDO profileOtherDO2 = new ProfileOtherDO();
+        profileOtherDO2.setOther("{}");
+        ValidationMessage<ProfileOtherDO> validationMessage2 = ProfileValidation.verifyOther(profileOtherDO2);
+        assertEquals(true, validationMessage2.isPass());
+
+
+        ProfileOtherDO profileOtherDO3 = new ProfileOtherDO();
+        profileOtherDO3.setOther("{\"id\":1");
+        ValidationMessage<ProfileOtherDO> validationMessage3 = ProfileValidation.verifyOther(profileOtherDO3);
+        System.out.println(validationMessage3.getResult());
+        assertEquals(false, validationMessage3.isPass());
     }
 }
