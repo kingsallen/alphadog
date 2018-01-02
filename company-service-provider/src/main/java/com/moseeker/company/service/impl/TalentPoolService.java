@@ -358,6 +358,9 @@ public class TalentPoolService {
      */
     @CounterIface
     public Response addHrTag(int hrId,int companyId,String name)throws TException{
+        if(StringUtils.isNullOrEmpty(name)){
+            return ResponseUtils.fail(1,"标签名称不能为空");
+        }
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
@@ -425,6 +428,9 @@ public class TalentPoolService {
      */
     @CounterIface
     public Response updateHrTag(int hrId,int companyId,int tagId,String name)throws TException{
+        if(StringUtils.isNullOrEmpty(name)){
+            return ResponseUtils.fail(1,"标签名称不能为空");
+        }
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
