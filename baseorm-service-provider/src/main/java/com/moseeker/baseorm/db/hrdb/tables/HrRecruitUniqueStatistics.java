@@ -177,4 +177,12 @@ public class HrRecruitUniqueStatistics extends TableImpl<HrRecruitUniqueStatisti
     public HrRecruitUniqueStatistics as(String alias) {
         return new HrRecruitUniqueStatistics(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrRecruitUniqueStatistics rename(String name) {
+        return new HrRecruitUniqueStatistics(name, null);
+    }
 }

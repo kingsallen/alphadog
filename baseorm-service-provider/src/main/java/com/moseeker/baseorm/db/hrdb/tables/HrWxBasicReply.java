@@ -126,4 +126,12 @@ public class HrWxBasicReply extends TableImpl<HrWxBasicReplyRecord> {
     public HrWxBasicReply as(String alias) {
         return new HrWxBasicReply(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrWxBasicReply rename(String name) {
+        return new HrWxBasicReply(name, null);
+    }
 }

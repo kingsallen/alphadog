@@ -142,4 +142,12 @@ public class HrTalentpool extends TableImpl<HrTalentpoolRecord> {
     public HrTalentpool as(String alias) {
         return new HrTalentpool(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrTalentpool rename(String name) {
+        return new HrTalentpool(name, null);
+    }
 }

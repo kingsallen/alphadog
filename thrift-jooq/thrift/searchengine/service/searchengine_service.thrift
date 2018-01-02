@@ -15,4 +15,5 @@ service SearchengineServices {
     common_struct.Response queryAwardRankingInWx(1: list<i32> companyIds, 2: string timespan, 3: i32 employeeId);
     common_struct.Response updateEmployeeAwards(1: list<i32> employeeId);
     common_struct.Response deleteEmployeeDO(1: list<i32> employeeId);
+    common_struct.Response userQuery(1: map<string,string> params);
 }

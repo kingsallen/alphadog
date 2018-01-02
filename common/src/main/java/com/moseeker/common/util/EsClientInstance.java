@@ -91,32 +91,14 @@ public class EsClientInstance {
             Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
                     .put("client.transport.sniff", true)
                     .build();
-            String es_alternate = propertiesReader.get("es.alternate", String.class);
-            String es_alternate1 = propertiesReader.get("es.alternate1", String.class);
-            if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate)||org.apache.commons.lang.StringUtils.isNotBlank(es_alternate1)){
-                if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate)&&org.apache.commons.lang.StringUtils.isNotBlank(es_alternate1)){
+            List<String> esList=StringConvertList(es_connection,",");
+            for(int i=0;i<esList.size();i++){
+                if(i==0){
                     client = TransportClient.builder().settings(settings).build()
-                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
-                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate), es_port))
-                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate1), es_port));
-                }else{
-                    if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate)){
-                        client = TransportClient.builder().settings(settings).build()
-                                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
-                                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate), es_port));
-                    }
-                    if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate1)){
-                        client = TransportClient.builder().settings(settings).build()
-                                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
-                                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate1), es_port));
-                    }
+                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(esList.get(i)), es_port));
                 }
-
-            }else{
-                client = TransportClient.builder().settings(settings).build()
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+                client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(esList.get(i)), es_port));
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             if(client!=null){

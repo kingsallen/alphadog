@@ -167,4 +167,12 @@ public class HrImporterMonitor extends TableImpl<HrImporterMonitorRecord> {
     public HrImporterMonitor as(String alias) {
         return new HrImporterMonitor(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrImporterMonitor rename(String name) {
+        return new HrImporterMonitor(name, null);
+    }
 }

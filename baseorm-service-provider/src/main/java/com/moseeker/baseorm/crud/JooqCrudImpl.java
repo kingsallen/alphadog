@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.crud;
 
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
@@ -13,6 +14,8 @@ import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -123,10 +126,31 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
 
     public Map<String,Object> getMap(Query query) {
-        return new LocalQuery<>(create, table, query).convertToOneResult().fetchAnyMap();
+        Map<String,Object> map= new LocalQuery<>(create, table, query).convertToOneResult().fetchAnyMap();
+        if(map==null||map.isEmpty()){
+            return null;
+        }
+        for(String key:map.keySet()){
+            if(key.contains("_time")&&map.get(key) instanceof Date){
+                map.put(key,map.get(key).toString());
+            }
+        }
+        return map;
     }
 
     public List<Map<String,Object>> getMaps(Query query) {
-        return new LocalQuery<>(create, table, query).convertToResultLimit().fetchMaps();
+
+        List<Map<String,Object>> list=new LocalQuery<>(create, table, query).convertToResultLimit().fetchMaps();
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        for(Map<String,Object> map:list){
+            for(String key:map.keySet()){
+                if(key.contains("_time")&&map.get(key) instanceof Date){
+                    map.put(key,map.get(key).toString());
+                }
+            }
+        }
+        return list;
     }
 }

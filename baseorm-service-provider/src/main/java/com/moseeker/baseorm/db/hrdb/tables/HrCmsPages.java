@@ -142,4 +142,12 @@ public class HrCmsPages extends TableImpl<HrCmsPagesRecord> {
     public HrCmsPages as(String alias) {
         return new HrCmsPages(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrCmsPages rename(String name) {
+        return new HrCmsPages(name, null);
+    }
 }

@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 
 import com.moseeker.common.exception.CommonException;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -285,4 +286,22 @@ public class ParamUtils {
 
         return jb.toString();
     }
+    /*
+     将字符串转化为List
+     */
+    public static List<Integer> convertIntList(String params){
+        List<Integer> list=new ArrayList<>();
+        if(StringUtils.isNotBlank(params)&&params.startsWith("[")&&params.endsWith("]")&&params.length()>2){
+            params=params.replace("[","").replace("]","");
+            String []arr=params.split(",");
+            for(String items:arr){
+                list.add(Integer.parseInt(items.trim()));
+            }
+        }
+        return list;
+    }
+    /*
+
+     */
+
 }
