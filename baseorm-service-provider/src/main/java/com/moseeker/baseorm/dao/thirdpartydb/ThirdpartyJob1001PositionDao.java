@@ -1,10 +1,12 @@
 package com.moseeker.baseorm.dao.thirdpartydb;
 
+import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.base.IThirdPartyPositionDao;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyJob1001PositionRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -12,6 +14,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyJob1001PositionDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,18 +51,21 @@ public class ThirdpartyJob1001PositionDao  extends JooqCrudImpl<ThirdpartyJob100
 
         List<TwoParam<HrThirdPartyPositionDO, ThirdpartyJob1001PositionDO>> results=new ArrayList<>();
 
-        for(HrThirdPartyPositionDO thirdPartyPositionDO:list){
+        out:for(HrThirdPartyPositionDO thirdPartyPositionDO:list){
             for(ThirdpartyJob1001PositionDO job1001:job1001s){
                 if(thirdPartyPositionDO.getId()==job1001.getPid()){
                     results.add(new TwoParam<>(thirdPartyPositionDO,job1001));
+                    continue out;
                 }
             }
+            results.add(new TwoParam<>(thirdPartyPositionDO, new ThirdpartyJob1001PositionDO()));
         }
 
         return results;
     }
 
     @Override
+    @Transactional
     public TwoParam<HrThirdPartyPositionDO, ThirdpartyJob1001PositionDO> addData(HrThirdPartyPositionDO thirdPartyPositionDO, ThirdpartyJob1001PositionDO thirdpartyJob1001PositionDO) {
         if(thirdPartyPositionDO==null || thirdPartyPositionDO.getId()==0){
             return null;
@@ -76,4 +82,8 @@ public class ThirdpartyJob1001PositionDao  extends JooqCrudImpl<ThirdpartyJob100
         return thirdpartyJob1001PositionDO;
     }
 
+    @Override
+    public ChannelType getChannelType() {
+        return ChannelType.JOB1001;
+    }
 }

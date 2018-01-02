@@ -3,7 +3,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.config.AppConfig;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
-import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;

@@ -17,7 +17,7 @@ public class VeryEastTransferTest {
 
     @Test
     public void test(){
-        System.out.println(veryEastTransfer.transferSalary(-1));
-        System.out.println(veryEastTransfer.transferExpreience("abc"));
+//        System.out.println(veryEastTransfer.transferSalary(-1));
+//        System.out.println(veryEastTransfer.transferExpreience("abc"));
     }
 }

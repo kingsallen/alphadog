@@ -26,17 +26,17 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
     List<AbstractYLParamRefresher> subsiteList;
 
     @Override
-    protected Map<Integer, Integer> generateNewKey(List<Integer> otherCodes,JSONObject msg) {
+    protected Map<String, Integer> generateNewKey(List<String> otherCodes,JSONObject msg) {
         String subsite=msg.getString("subsite");
         int DEFAULT_KEY_SEED=getSeed(subsite);
         return PositionRefreshUtils.generateNewKey(otherCodes.iterator(),DEFAULT_KEY_SEED,otherCodes.size());
     }
 
     @Override
-    public DictJob1001OccupationDO buildOccupation(List<String> texts,List<String> codes,Map<Integer, Integer> newCode,JSONObject msg) {
+    public DictJob1001OccupationDO buildOccupation(List<String> texts,List<String> codes,Map<String, Integer> newCode,JSONObject msg) {
         DictJob1001OccupationDO temp=new DictJob1001OccupationDO();
 
-        temp.setCodeOther(PositionRefreshUtils.lastCode(codes));
+        temp.setCodeOther(codes.get(codes.size()-1));
         temp.setCode(newCode.get(temp.getCodeOther()));
         temp.setLevel((short)codes.size());
         temp.setName(PositionRefreshUtils.lastString(texts));
@@ -91,9 +91,9 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
         int DEFAULT_KEY_SEED=0;
 
         for(int i=0;i<subsiteList.size();i++){
-            String subsiteTemp=subsiteList.get(i).getSubSite();
+            String subsiteTemp=subsiteList.get(i).getSubsite();
             if(subsiteTemp.equals(subsite)){
-                DEFAULT_KEY_SEED=100000*(i+1);
+                DEFAULT_KEY_SEED=subsiteList.get(i).getSeed();
             }
         }
 

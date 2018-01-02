@@ -1,5 +1,8 @@
 package com.moseeker.position.service.position.veryeast.pojo;
 
+import com.moseeker.common.util.StringUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class PositionVeryEast {
@@ -14,11 +17,25 @@ public class PositionVeryEast {
     private String degree;
     private String experience;
     private List<Integer> age;
-    private List<PositionVeryEastForm.Language> language;
+    private List<Language> language;
     private String computer_level ;
     private String description;
     private String email;
     private String work_mode;
+
+    public void setFormLanguage(List<PositionVeryEastForm.Language> formLanguages) {
+        if(!StringUtils.isEmptyList(formLanguages)){
+            if(StringUtils.isEmptyList(language)){
+                language=new ArrayList<>();
+            }
+            for(PositionVeryEastForm.Language formLanguage:formLanguages){
+                Language temp=new Language();
+                temp.setLanguage_level(formLanguage.getLanguageLevel()+"");
+                temp.setLanguage_type(formLanguage.getLanguageType()+"");
+                language.add(temp);
+            }
+        }
+    }
 
     public String getCompany() {
         return company;
@@ -108,11 +125,11 @@ public class PositionVeryEast {
         this.age = age;
     }
 
-    public List<PositionVeryEastForm.Language> getLanguage() {
+    public List<Language> getLanguage() {
         return language;
     }
 
-    public void setLanguage(List<PositionVeryEastForm.Language> language) {
+    public void setLanguage(List<Language> language) {
         this.language = language;
     }
 
@@ -146,5 +163,26 @@ public class PositionVeryEast {
 
     public void setWork_mode(String work_mode) {
         this.work_mode = work_mode;
+    }
+
+    private static class Language{
+        private String language_type;
+        private String language_level;
+
+        public String getLanguage_type() {
+            return language_type;
+        }
+
+        public void setLanguage_type(String language_type) {
+            this.language_type = language_type;
+        }
+
+        public String getLanguage_level() {
+            return language_level;
+        }
+
+        public void setLanguage_level(String language_level) {
+            this.language_level = language_level;
+        }
     }
 }

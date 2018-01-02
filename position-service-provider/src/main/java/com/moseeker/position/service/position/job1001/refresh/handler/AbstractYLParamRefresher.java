@@ -15,11 +15,28 @@ public abstract class AbstractYLParamRefresher extends AbstractRabbitMQParamRefr
     @Autowired
     List<YLResultHandlerAdapter> refreshList;
 
-    public abstract String getSubSite();
+    public abstract String getConfigKey();
 
     @Override
     public void addSendParam(JSONObject jsonSend) {
 
+    }
+
+    @Override
+    public void addUserParam(JSONObject jsonSend) {
+        String configKey=getConfigKey();
+        jsonSend.put("user_name",getConfig(configKey+".username"));
+        jsonSend.put("password",getConfig(configKey+".password"));
+        jsonSend.put("safe_code",getConfig(configKey+".safecode"));
+        jsonSend.put("subsite",getConfig(configKey+".subsite"));
+    }
+
+    public String getSubsite(){
+        return getConfig(getConfigKey()+".subsite");
+    }
+
+    public int getSeed(){
+        return Integer.parseInt(getConfig(getConfigKey()+".seed"));
     }
 
     @Override
@@ -33,4 +50,6 @@ public abstract class AbstractYLParamRefresher extends AbstractRabbitMQParamRefr
     public ChannelType getChannelType() {
         return ChannelType.JOB1001;
     }
+
+
 }

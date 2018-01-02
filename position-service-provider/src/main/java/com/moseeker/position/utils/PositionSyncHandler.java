@@ -7,6 +7,10 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.BindThirdPart;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -25,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,6 +45,8 @@ public class PositionSyncHandler {
     private HRThirdPartyPositionDao thirdPartyPositionDao;
     @Autowired
     private HRThirdPartyAccountHrDao hrThirdPartyAccountHrDao;
+    @Resource(name = "cacheClient")
+    protected RedisClient redisClient;
 
 
 
@@ -53,13 +60,15 @@ public class PositionSyncHandler {
         return result;
     }
     //创建普通结果
-    public PositionSyncResultPojo createNormalResult(String data){
+    public PositionSyncResultPojo createNormalResult(int positionId,int channel,String data){
         PositionSyncResultPojo result = new PositionSyncResultPojo();
         String syncTime = (new DateTime()).toString("yyyy-MM-dd HH:mm:ss");
 
+        result.setPosition_id(positionId);
         result.setData(data);
         result.setSync_status(PositionSyncResultPojo.SUCCESS);
         result.setSync_time(syncTime);
+        result.setChannel(channel);
 
         return result;
     }
@@ -164,5 +173,22 @@ public class PositionSyncHandler {
             throw new BIZException(ResultMessage.POSITION_NOT_EXIST.getStatus(),ResultMessage.POSITION_NOT_EXIST.getMessage());
         }
         return true;
+    }
+
+    public boolean alreadyInRedis(int positionId) throws BIZException {
+        long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.SYNC_THIRD_PARTY_POSITION.toString(), positionId+"");
+        if (check>1) {
+            //绑定中
+            return true;
+        }
+        redisClient.expire(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.SYNC_THIRD_PARTY_POSITION.toString(), positionId+"" , 300);
+        return false;
+    }
+
+    public void removeRedis(int positionId) throws BIZException {
+        String cache = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.SYNC_THIRD_PARTY_POSITION.toString(), positionId+"");
+        if (cache != null) {
+            redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.SYNC_THIRD_PARTY_POSITION.toString(), positionId+"");
+        }
     }
 }

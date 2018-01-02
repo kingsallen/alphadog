@@ -11,15 +11,7 @@ public class JCParamRefresher extends AbstractYLParamRefresher {
     private Logger logger= LoggerFactory.getLogger(JCParamRefresher.class);
 
     @Override
-    public void addUserParam(JSONObject jsonSend) {
-        jsonSend.put("user_name",getConfig("jc.username"));
-        jsonSend.put("password",getConfig("jc.password"));
-        jsonSend.put("safe_code",getConfig("jc.safecode"));
-        jsonSend.put("subsite",getSubSite());
-    }
-
-    @Override
-    public String getSubSite() {
-        return getConfig("jc.subsite");
+    public String getConfigKey() {
+        return "jc";
     }
 }

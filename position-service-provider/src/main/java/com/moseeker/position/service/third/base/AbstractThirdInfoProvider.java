@@ -51,11 +51,12 @@ public abstract class AbstractThirdInfoProvider implements JsonThirdPartyInfoPro
         if(src == null || dest == null){
             return dest;
         }
-        Iterator<Map.Entry<String,Object>> it= src.entrySet().iterator();
+        /*Iterator<Map.Entry<String,Object>> it= src.entrySet().iterator();
         while(it.hasNext()){
             Map.Entry<String,Object> e=it.next();
             dest.put(e.getKey(),e.getValue());
-        }
+        }*/
+        dest.putAll(src);
         return dest;
     }
 

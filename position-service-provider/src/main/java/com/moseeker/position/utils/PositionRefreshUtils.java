@@ -46,16 +46,11 @@ public class PositionRefreshUtils {
      * @param codes
      * @return
      */
-    public static  int parentCode(List<String> codes){
+    public static  String parentCode(List<String> codes){
         if(codes==null || codes.size()<2){
-            return 0;
+            return "0";
         }
-        try {
-            return Integer.valueOf(codes.get(codes.size()-2));
-        }catch (NumberFormatException e){
-            logger.info("parentCode NumberFormatException:{}",codes);
-            throw e;
-        }
+        return codes.get(codes.size()-2);
     }
     /**
      * 取出倒数第一个code作为code_other

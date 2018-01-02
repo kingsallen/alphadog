@@ -1,6 +1,7 @@
 package com.moseeker.position.service.position.job1001;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictJob1001OccupationDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
@@ -140,6 +141,18 @@ public class Job1001Transfer extends AbstractPositionTransfer<PositionJob1001For
     @Override
     public ThirdpartyJob1001PositionDO toExtThirdPartyPosition(Map<String, String> data) {
         ThirdpartyJob1001PositionDO result=JSON.parseObject(JSON.toJSONString(data),ThirdpartyJob1001PositionDO.class);
+        return result;
+    }
+
+    @Override
+    public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, ThirdpartyJob1001PositionDO extPosition) {
+        PositionJob1001Form form=new PositionJob1001Form();
+        form.setSubsite(form.getSubsite());
+
+        JSONObject result= JSON.parseObject(JSON.toJSONString(form));
+
+        result.putAll(JSON.parseObject(JSON.toJSONString(thirdPartyPosition)));
+
         return result;
     }
 

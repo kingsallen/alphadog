@@ -1,5 +1,7 @@
 package com.moseeker.position.service.position.liepin;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.common.constants.ChannelType;
@@ -63,7 +65,7 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
         PositionLiepin positionLiepin = new PositionLiepin();
         positionLiepin.setTitle(positionDB.getTitle());
         positionLiepin.setCities(getCities(positionDB));
-        positionLiepin.setAddress(positionForm.getAddressName());
+        positionLiepin.setAddress("");
         setOccupation(positionForm,positionLiepin);
         positionLiepin.setDepartment(positionForm.getDepartmentName());
         positionLiepin.setSalary_low(positionForm.getSalaryBottom()+"");
@@ -169,8 +171,8 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
         }
         data.setDepartmentName(position.getDepartmentName());
         data.setDepartmentId(position.getDepartmentId());
-        data.setSalaryBottom(Integer.parseInt(p.getSalary_low()));
-        data.setSalaryTop(Integer.parseInt(p.getSalary_high()));
+        data.setSalaryBottom(getSalaryBottom(Integer.parseInt(p.getSalary_low())));
+        data.setSalaryTop(getSalaryTop(Integer.parseInt(p.getSalary_high())));
         data.setSalaryMonth(Integer.parseInt(p.getSalary_month()));
 
         logger.info("回写到第三方职位对象:{}",data);
@@ -185,5 +187,10 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
     @Override
     public EmptyExtThirdPartyPosition toExtThirdPartyPosition(Map<String, String> data) {
         return EmptyExtThirdPartyPosition.EMPTY;
+    }
+
+    @Override
+    public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
+        return JSONObject.parseObject(JSON.toJSONString(thirdPartyPosition));
     }
 }

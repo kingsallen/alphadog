@@ -237,4 +237,9 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
         return EmptyExtThirdPartyPosition.EMPTY;
     }
 
+    @Override
+    public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
+        return JSONObject.parseObject(JSON.toJSONString(thirdPartyPosition));
+    }
+
 }

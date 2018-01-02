@@ -23,8 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Component
@@ -73,7 +72,7 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         positionInfo.setDegree(VeryEastTransferStrategy.VeryEastDegree.moseekerToOther((int)positionDB.getDegree()));
         positionInfo.setExperience(transferExpreience(positionDB.getExperience()));
         positionInfo.setAge(positionForm.getAge());
-        positionInfo.setLanguage(positionForm.getLanguage());
+        positionInfo.setFormLanguage(positionForm.getLanguage());
         positionInfo.setComputer_level(positionForm.getComputerLevel()+"");
         positionInfo.setDescription(getDescription(positionDB.getAccountabilities(),positionDB.getRequirement()));
         positionInfo.setEmail(getEmail(positionDB));
@@ -220,5 +219,39 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
     public ThirdpartyVeryEastPositionDO toExtThirdPartyPosition(Map<String, String> data) {
         ThirdpartyVeryEastPositionDO result= JSON.parseObject(JSON.toJSONString(data),ThirdpartyVeryEastPositionDO.class);
         return result;
+    }
+
+    @Override
+    public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, ThirdpartyVeryEastPositionDO extPosition) {
+        PositionVeryEastForm form=new PositionVeryEastForm();
+
+        form.setAccommodation(extPosition.getAccommodation());
+        form.setIndate(extPosition.getIndate());
+        form.setComputerLevel(extPosition.getComputerLevel());
+        form.setLanguage1(extPosition.getLanguageType1(),extPosition.getLanguageLevel1());
+        form.setLanguage2(extPosition.getLanguageType2(),extPosition.getLanguageLevel2());
+        form.setLanguage3(extPosition.getLanguageType3(),extPosition.getLanguageLevel3());
+        form.setAge(Arrays.asList(extPosition.getAge_bottom(),extPosition.getAge_top()));
+
+        JSONObject result= JSON.parseObject(JSON.toJSONString(form));
+
+        result.putAll(JSON.parseObject(JSON.toJSONString(thirdPartyPosition)));
+
+        return result;
+    }
+
+    @Override
+    public List<String> toChaosJson(PositionVeryEastWithAccount positionVeryEastWithAccount) {
+        if(positionVeryEastWithAccount==null || positionVeryEastWithAccount.getPosition_info()==null){
+            return new ArrayList<>();
+        }else{
+            List<String> results=new ArrayList<>();
+            for(List<String> city:positionVeryEastWithAccount.getPosition_info().getRegion()){
+                JSONObject result=JSON.parseObject(JSON.toJSONString(positionVeryEastWithAccount));
+                result.getJSONObject("position_info").put("region",city);
+                results.add(result.toJSONString());
+            }
+            return results;
+        }
     }
 }

@@ -22,10 +22,10 @@ public class VEOccupationResultHandler extends AbstractOccupationResultHandler<D
     private DictVeryEastOccupationDao occupationDao;
 
     @Override
-    public DictVeryEastOccupationDO buildOccupation(List<String> texts,List<String> codes,Map<Integer, Integer> newCode,JSONObject msg) {
+    public DictVeryEastOccupationDO buildOccupation(List<String> texts,List<String> codes,Map<String, Integer> newCode,JSONObject msg) {
         DictVeryEastOccupationDO temp=new DictVeryEastOccupationDO();
 
-        temp.setCodeOther(PositionRefreshUtils.lastCode(codes));
+        temp.setCodeOther(codes.get(codes.size()-1));
         temp.setCode(newCode.get(temp.getCodeOther()));
         temp.setLevel((short)codes.size());
         temp.setName(PositionRefreshUtils.lastString(texts));

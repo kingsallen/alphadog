@@ -77,21 +77,27 @@ public class PositionVeryEastForm {
         if(language==null){
             language=new ArrayList<>();
         }
-        language.add(new Language(languageType,languageLevel));
+        if(languageType!=0 && languageLevel!=0) {
+            language.add(new Language(languageType, languageLevel));
+        }
     }
 
     public void setLanguage2(int languageType,int languageLevel){
         if(language==null){
             language=new ArrayList<>();
         }
-        language.add(new Language(languageType,languageLevel));
+        if(languageType!=0 && languageLevel!=0) {
+            language.add(new Language(languageType, languageLevel));
+        }
     }
 
     public void setLanguage3(int languageType,int languageLevel){
         if(language==null){
             language=new ArrayList<>();
         }
-        language.add(new Language(languageType,languageLevel));
+        if(languageType!=0 && languageLevel!=0) {
+            language.add(new Language(languageType, languageLevel));
+        }
     }
 
 
@@ -179,6 +185,8 @@ public class PositionVeryEastForm {
     static class Language{
         private int languageType;
         private int languageLevel;
+
+        public Language(){ }
 
         public Language(int languageType, int languageLevel) {
             this.languageType = languageType;

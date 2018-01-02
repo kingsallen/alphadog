@@ -5,6 +5,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyVeryeastPositionRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -12,6 +13,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyVeryEastPositionDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +63,7 @@ public class ThirdpartyVeryeastPositionDao extends JooqCrudImpl<ThirdpartyVeryEa
     }
 
     @Override
+    @Transactional
     public TwoParam<HrThirdPartyPositionDO, ThirdpartyVeryEastPositionDO> addData(HrThirdPartyPositionDO thirdPartyPositionDO, ThirdpartyVeryEastPositionDO thirdpartyVeryEastPositionDO) {
         if(thirdPartyPositionDO==null || thirdPartyPositionDO.getId()==0){
             return null;
@@ -75,5 +78,10 @@ public class ThirdpartyVeryeastPositionDao extends JooqCrudImpl<ThirdpartyVeryEa
         TwoParam<HrThirdPartyPositionDO, ThirdpartyVeryEastPositionDO> result=getData(thirdPartyPositionDO);
         thirdpartyVeryEastPositionDO.setId(result.getR2().getId());
         return thirdpartyVeryEastPositionDO;
+    }
+
+    @Override
+    public ChannelType getChannelType() {
+        return ChannelType.VERYEAST;
     }
 }

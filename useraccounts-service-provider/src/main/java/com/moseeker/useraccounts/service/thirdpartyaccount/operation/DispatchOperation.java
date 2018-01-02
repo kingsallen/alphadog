@@ -77,7 +77,7 @@ public class DispatchOperation {
             List<HrThirdPartyAccountDO> otherAccounts = thirdPartyAccountDao.getAccountsById(accountIds);
 
             if (otherAccounts != null && otherAccounts.size() > 0) {
-                throw new CommonException(-1, "分配失败，请刷新页面！");
+                throw new CommonException(-1, "已分配其他账号");
             } else {
                 //错误的数据进行修复,将这些用户与无效的帐号的关联关系解除
                 List<Integer> ids = otherBinders.stream().map(item -> item.getId()).collect(Collectors.toList());
