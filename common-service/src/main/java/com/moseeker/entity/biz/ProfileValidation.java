@@ -1,16 +1,22 @@
 package com.moseeker.entity.biz;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.Constant.UnitlNow;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.struct.*;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
 
 public class ProfileValidation {
+
+	private static Logger logger = LoggerFactory.getLogger(ProfileValidation.class);
 
 	private static long minTime = new DateTime("1900-01-01").getMillis();
 	private static long maxTime = new DateTime("2099-12-31").getMillis();
@@ -36,6 +42,22 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(customizeResume.getOther())) {
 			vm.addFailedElement("其他字段", "未填写其他字段的内容");
 		}
+		return vm;
+	}
+
+	public static ValidationMessage<ProfileOtherDO> verifyOther(ProfileOtherDO profileOtherDO) {
+		ValidationMessage<ProfileOtherDO> vm = new ValidationMessage<>();
+		JSONObject jsonObject = null;
+		try {
+			jsonObject = JSONObject.parseObject(profileOtherDO.getOther());
+			if(jsonObject == null) {
+				vm.addFailedElement("其他字段", "未填写其他字段的内容");
+			}
+		} catch (Exception e) {
+			vm.addFailedElement("其他字段", "不是正确的json数据");
+			logger.error(e.getMessage(), e);
+		}
+
 		return vm;
 	}
 	
