@@ -221,7 +221,7 @@ public class ResumeDeliveryService {
                     Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
                     if(sendResponse.getStatus()!=0) {
-                        sendResponse = sendSMSToHr(accountDo, positionDo, "2");
+                        sendResponse = sendSMSToHr(accountDo, positionDo, "0");
                     }
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
