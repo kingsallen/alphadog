@@ -151,4 +151,12 @@ public class HrEmployeeCustomFields extends TableImpl<HrEmployeeCustomFieldsReco
     public HrEmployeeCustomFields as(String alias) {
         return new HrEmployeeCustomFields(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrEmployeeCustomFields rename(String name) {
+        return new HrEmployeeCustomFields(name, null);
+    }
 }

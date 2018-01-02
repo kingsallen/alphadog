@@ -162,4 +162,12 @@ public class HrAppCvConf extends TableImpl<HrAppCvConfRecord> {
     public HrAppCvConf as(String alias) {
         return new HrAppCvConf(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrAppCvConf rename(String name) {
+        return new HrAppCvConf(name, null);
+    }
 }

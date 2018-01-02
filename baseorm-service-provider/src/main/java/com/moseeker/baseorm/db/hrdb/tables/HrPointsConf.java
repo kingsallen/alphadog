@@ -192,4 +192,12 @@ public class HrPointsConf extends TableImpl<HrPointsConfRecord> {
     public HrPointsConf as(String alias) {
         return new HrPointsConf(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrPointsConf rename(String name) {
+        return new HrPointsConf(name, null);
+    }
 }

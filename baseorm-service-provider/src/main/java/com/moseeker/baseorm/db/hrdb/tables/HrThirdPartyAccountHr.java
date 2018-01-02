@@ -147,4 +147,12 @@ public class HrThirdPartyAccountHr extends TableImpl<HrThirdPartyAccountHrRecord
     public HrThirdPartyAccountHr as(String alias) {
         return new HrThirdPartyAccountHr(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrThirdPartyAccountHr rename(String name) {
+        return new HrThirdPartyAccountHr(name, null);
+    }
 }

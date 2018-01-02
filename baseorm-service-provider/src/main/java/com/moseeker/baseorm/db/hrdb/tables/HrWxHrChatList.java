@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
 
-    private static final long serialVersionUID = 2063419363;
+    private static final long serialVersionUID = -1084733399;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_hr_chat_list</code>
@@ -82,9 +82,9 @@ public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
     public final TableField<HrWxHrChatListRecord, Timestamp> HR_CHAT_TIME = createField("hr_chat_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "HR最近一次聊天时间");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat_list.update_time</code>. 创建时间
+     * The column <code>hrdb.hr_wx_hr_chat_list.update_time</code>. 更新时间
      */
-    public final TableField<HrWxHrChatListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+    public final TableField<HrWxHrChatListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat_list.hr_unread_count</code>. hr未读消息数量
@@ -156,5 +156,13 @@ public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
     @Override
     public HrWxHrChatList as(String alias) {
         return new HrWxHrChatList(alias, this);
+    }
+
+    /**
+     * Rename this table
+     */
+
+    public HrWxHrChatList rename(String name) {
+        return new HrWxHrChatList(name, null);
     }
 }

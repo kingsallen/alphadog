@@ -23,12 +23,12 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
 
-    private static final long serialVersionUID = -1329347160;
+    private static final long serialVersionUID = -462704985;
 
     private Integer   id;
     private String    name;
-    private Integer   publisher;
-    private Integer   positionId;
+    private String    publisher;
+    private String    positionId;
     private String    keyword;
     private String    submitTime;
     private String    workYears;
@@ -47,6 +47,12 @@ public class HrSearchCondition implements Serializable {
     private Timestamp createTime;
     private Integer   updateTime;
     private Integer   type;
+    private String    candidateSource;
+    private Byte      isPublic;
+    private String    origins;
+    private Byte      isRecommend;
+    private String    tagIds;
+    private String    favoriteHrs;
 
     public HrSearchCondition() {}
 
@@ -73,13 +79,19 @@ public class HrSearchCondition implements Serializable {
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
         this.type = value.type;
+        this.candidateSource = value.candidateSource;
+        this.isPublic = value.isPublic;
+        this.origins = value.origins;
+        this.isRecommend = value.isRecommend;
+        this.tagIds = value.tagIds;
+        this.favoriteHrs = value.favoriteHrs;
     }
 
     public HrSearchCondition(
         Integer   id,
         String    name,
-        Integer   publisher,
-        Integer   positionId,
+        String    publisher,
+        String    positionId,
         String    keyword,
         String    submitTime,
         String    workYears,
@@ -97,7 +109,13 @@ public class HrSearchCondition implements Serializable {
         Integer   hrAccountId,
         Timestamp createTime,
         Integer   updateTime,
-        Integer   type
+        Integer   type,
+        String    candidateSource,
+        Byte      isPublic,
+        String    origins,
+        Byte      isRecommend,
+        String    tagIds,
+        String    favoriteHrs
     ) {
         this.id = id;
         this.name = name;
@@ -121,6 +139,12 @@ public class HrSearchCondition implements Serializable {
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.type = type;
+        this.candidateSource = candidateSource;
+        this.isPublic = isPublic;
+        this.origins = origins;
+        this.isRecommend = isRecommend;
+        this.tagIds = tagIds;
+        this.favoriteHrs = favoriteHrs;
     }
 
     public Integer getId() {
@@ -139,19 +163,19 @@ public class HrSearchCondition implements Serializable {
         this.name = name;
     }
 
-    public Integer getPublisher() {
+    public String getPublisher() {
         return this.publisher;
     }
 
-    public void setPublisher(Integer publisher) {
+    public void setPublisher(String publisher) {
         this.publisher = publisher;
     }
 
-    public Integer getPositionId() {
+    public String getPositionId() {
         return this.positionId;
     }
 
-    public void setPositionId(Integer positionId) {
+    public void setPositionId(String positionId) {
         this.positionId = positionId;
     }
 
@@ -299,6 +323,54 @@ public class HrSearchCondition implements Serializable {
         this.type = type;
     }
 
+    public String getCandidateSource() {
+        return this.candidateSource;
+    }
+
+    public void setCandidateSource(String candidateSource) {
+        this.candidateSource = candidateSource;
+    }
+
+    public Byte getIsPublic() {
+        return this.isPublic;
+    }
+
+    public void setIsPublic(Byte isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public String getOrigins() {
+        return this.origins;
+    }
+
+    public void setOrigins(String origins) {
+        this.origins = origins;
+    }
+
+    public Byte getIsRecommend() {
+        return this.isRecommend;
+    }
+
+    public void setIsRecommend(Byte isRecommend) {
+        this.isRecommend = isRecommend;
+    }
+
+    public String getTagIds() {
+        return this.tagIds;
+    }
+
+    public void setTagIds(String tagIds) {
+        this.tagIds = tagIds;
+    }
+
+    public String getFavoriteHrs() {
+        return this.favoriteHrs;
+    }
+
+    public void setFavoriteHrs(String favoriteHrs) {
+        this.favoriteHrs = favoriteHrs;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrSearchCondition (");
@@ -325,6 +397,12 @@ public class HrSearchCondition implements Serializable {
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
         sb.append(", ").append(type);
+        sb.append(", ").append(candidateSource);
+        sb.append(", ").append(isPublic);
+        sb.append(", ").append(origins);
+        sb.append(", ").append(isRecommend);
+        sb.append(", ").append(tagIds);
+        sb.append(", ").append(favoriteHrs);
 
         sb.append(")");
         return sb.toString();
