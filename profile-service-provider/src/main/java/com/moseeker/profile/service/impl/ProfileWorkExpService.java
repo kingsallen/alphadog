@@ -224,8 +224,6 @@ public class ProfileWorkExpService {
             }
         }
 
-        
-
         ProfileWorkexpRecord record = structToDB(struct);
         record = dao.addRecord(record);
 
