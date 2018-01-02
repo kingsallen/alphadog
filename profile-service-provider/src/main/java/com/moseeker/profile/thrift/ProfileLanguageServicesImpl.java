@@ -1,7 +1,10 @@
 package com.moseeker.profile.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.profile.service.impl.ProfileLanguageService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -39,8 +42,9 @@ public class ProfileLanguageServicesImpl implements Iface {
     public Response putResources(List<Language> structs) throws TException {
         try {
             return service.putResources(structs);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
