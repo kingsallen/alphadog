@@ -191,6 +191,7 @@ public class ResumeDeliveryService {
                     if(sendResponse.getStatus()!=0) {
                         sendResponse = sendTemplateMessageToApplierByQX(templateMessageDO, aggregationChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
                     }
+                    logger.info("是否发送短信："+(sendResponse.getStatus() != 0));
                     if(sendResponse.getStatus()!=0) {
                         sendSMSToApplier(companyDO, positionDo, userUserDO, "1");
                     }
