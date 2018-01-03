@@ -2,10 +2,13 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileCredentialsDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileCredentials;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCredentialsRecord;
+import com.moseeker.baseorm.tool.RecordTool;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Condition;
@@ -14,10 +17,12 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
+import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCredentialsDO;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
 import org.apache.thrift.TException;
+import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,8 +97,36 @@ public class ProfileCredentialsService {
     @Transactional
     public int[] putResources(List<Credentials> structs) throws TException {
         if (structs != null && structs.size() > 0) {
-            int[] updateResult = dao.updateRecords(BeanUtils.structToDB(structs, ProfileCredentialsRecord.class));
-        /* 计算profile完整度 */
+
+            List<ProfileCredentialsRecord> recordList = BeanUtils.structToDB(structs, ProfileCredentialsRecord.class);
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(
+                    new Condition(ProfileCredentials.PROFILE_CREDENTIALS.ID.getName(),
+                            recordList.stream().map(profileCredentialsRecord -> profileCredentialsRecord.getId())
+                                    .collect(Collectors.toList())));
+
+            List<ProfileCredentialsRecord> profileCredentialsRecordList = dao.getRecords(queryBuilder.buildQuery());
+            if (profileCredentialsRecordList != null && profileCredentialsRecordList.size() > 0) {
+
+                profileCredentialsRecordList = profileCredentialsRecordList.stream().filter(profileCredentialsRecord -> {
+                    Optional<ProfileCredentialsRecord> profileCredentialsRecordOptional =
+                            recordList.stream().filter(record ->
+                                    profileCredentialsRecord.getId().intValue() == record.getId().intValue())
+                                    .findAny();
+                    if (profileCredentialsRecordOptional.isPresent()) {
+                        RecordTool.recordToRecord(profileCredentialsRecord, profileCredentialsRecordOptional.get());
+                        ValidationMessage<ProfileCredentialsRecord> validationMessage = ProfileValidation.verifyCredential(profileCredentialsRecord);
+                        if (validationMessage.isPass()) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }).collect(Collectors.toList());
+
+            }
+
+            int[] updateResult = dao.updateRecords(profileCredentialsRecordList);
+            /* 计算profile完整度 */
             List<Credentials> updatedDatas = new ArrayList<>();
             Set<Integer> profileIds = new HashSet<>();
             for (int i = 0; i < updateResult.length; i++) {
@@ -142,12 +175,12 @@ public class ProfileCredentialsService {
     }
 
     @Transactional
-    public Credentials postResource(Credentials struct) throws TException {
+    public Credentials postResource(Credentials struct) throws CommonException {
         Credentials result = null;
         if (struct != null) {
             ValidationMessage<Credentials> vm = ProfileValidation.verifyCredential(struct);
             if (!vm.isPass()) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
+                throw ProfileException.validateFailed(vm.getResult());
             }
             result = dao.addRecord(BeanUtils.structToDB(struct, ProfileCredentialsRecord.class)).into(Credentials.class);
         /* 计算profile完整度 */
@@ -161,11 +194,26 @@ public class ProfileCredentialsService {
     }
 
     @Transactional
-    public int putResource(Credentials struct) throws TException {
+    public int putResource(Credentials struct) throws CommonException {
         int result = 0;
 
         if (struct != null) {
-            result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileCredentialsRecord.class));
+
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(ProfileCredentials.PROFILE_CREDENTIALS.ID.getName(), struct.getId());
+            ProfileCredentialsRecord record = dao.getRecord(queryBuilder.buildQuery());
+
+            ProfileCredentialsRecord origin = BeanUtils.structToDB(struct, ProfileCredentialsRecord.class);
+
+            if (record != null) {
+                RecordTool.recordToRecord(record, origin);
+                ValidationMessage<ProfileCredentialsRecord> validationMessage = ProfileValidation.verifyCredential(record);
+                if (validationMessage.isPass()) {
+                    result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileCredentialsRecord.class));
+                } else {
+                    throw ProfileException.validateFailed(validationMessage.getResult());
+                }
+            }
         /* 计算profile完整度 */
             if (result > 0) {
                 updateUpdateTime(struct);
