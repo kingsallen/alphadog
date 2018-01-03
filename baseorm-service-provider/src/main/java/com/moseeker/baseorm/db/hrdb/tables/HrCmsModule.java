@@ -162,4 +162,12 @@ public class HrCmsModule extends TableImpl<HrCmsModuleRecord> {
     public HrCmsModule as(String alias) {
         return new HrCmsModule(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrCmsModule rename(String name) {
+        return new HrCmsModule(name, null);
+    }
 }

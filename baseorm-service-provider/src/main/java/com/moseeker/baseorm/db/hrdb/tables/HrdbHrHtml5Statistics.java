@@ -108,4 +108,11 @@ public class HrdbHrHtml5Statistics extends TableImpl<HrdbHrHtml5StatisticsRecord
     public HrdbHrHtml5Statistics as(String alias) {
         return new HrdbHrHtml5Statistics(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    public HrdbHrHtml5Statistics rename(String name) {
+        return new HrdbHrHtml5Statistics(name, null);
+    }
 }

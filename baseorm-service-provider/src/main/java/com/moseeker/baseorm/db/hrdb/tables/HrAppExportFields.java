@@ -146,4 +146,12 @@ public class HrAppExportFields extends TableImpl<HrAppExportFieldsRecord> {
     public HrAppExportFields as(String alias) {
         return new HrAppExportFields(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrAppExportFields rename(String name) {
+        return new HrAppExportFields(name, null);
+    }
 }

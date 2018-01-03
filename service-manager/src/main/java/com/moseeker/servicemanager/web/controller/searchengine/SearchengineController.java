@@ -47,7 +47,7 @@ public class SearchengineController {
 
     @RequestMapping(value = "/search/update", method = RequestMethod.POST)
     @ResponseBody
-    public String update_position(HttpServletRequest request, HttpServletResponse response) {
+    public String updatePosition(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> reqParams = null;
         String position = "";
         Response search_res=null;
@@ -97,7 +97,7 @@ public class SearchengineController {
 
     @RequestMapping(value = "/search/position", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
-    public String search_position(HttpServletRequest request, HttpServletResponse response) {
+    public String searchPCPosition(HttpServletRequest request, HttpServletResponse response) {
     
         try {
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
@@ -317,5 +317,26 @@ public class SearchengineController {
     		 logger.info(e.getMessage(),e);
     		 return ResponseLogNotification.fail(request, e.getMessage());
     	 }
+    }
+
+    //pc端企业搜索的es
+    @RequestMapping(value = "/api/talentpool/search", method = RequestMethod.POST)
+    @ResponseBody
+    public String searchUsers(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String,String> params=new HashMap<>();
+            if(reqParams==null||reqParams.isEmpty()){
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }
+            for(String key:reqParams.keySet()){
+                params.put(key,String.valueOf(reqParams.get(key)));
+            }
+            Response res=searchengineServices.userQuery(params);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
     }
 }
