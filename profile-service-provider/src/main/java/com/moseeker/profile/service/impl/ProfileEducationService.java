@@ -204,23 +204,24 @@ public class ProfileEducationService {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.where(ProfileEducation.PROFILE_EDUCATION.ID.getName(), education.getId());
             ProfileEducationRecord educationRecord = dao.getRecord(queryBuilder.buildQuery());
+            if (educationRecord != null) {
+                ProfileEducationRecord originEducationRecord = structToDB(education);
 
-            ProfileEducationRecord originEducationRecord = structToDB(education);
+                RecordTool.recordToRecord(educationRecord, originEducationRecord);
 
-            RecordTool.recordToRecord(educationRecord, originEducationRecord);
-
-            ValidationMessage<ProfileEducationRecord> validationMessage = ProfileValidation.verifyEducation(educationRecord);
-            if (validationMessage.isPass()) {
-                result = dao.updateRecord(structToDB(education));
-
-                if (result > 0) {
-                    updateUpdateTime(education);
-            /* 计算profile完整度 */
-                    profileEntity.reCalculateProfileEducation(education.getProfile_id(), education.getId());
+                ValidationMessage<ProfileEducationRecord> validationMessage = ProfileValidation.verifyEducation(educationRecord);
+                if (validationMessage.isPass()) {
+                    result = dao.updateRecord(structToDB(education));
+                    if (result > 0) {
+                        updateUpdateTime(education);
+                        /* 计算profile完整度 */
+                        profileEntity.reCalculateProfileEducation(education.getProfile_id(), education.getId());
+                    }
+                } else {
+                    throw ProfileException.validateFailed(validationMessage.getResult());
                 }
-            } else {
-                throw ProfileException.validateFailed(validationMessage.getResult());
             }
+
         }
         return result;
     }

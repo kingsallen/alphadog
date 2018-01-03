@@ -175,11 +175,26 @@ public class ProfileLanguageService {
 
     @Transactional
     public Response putResource(Language struct) throws TException {
-        int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileLanguageRecord.class));
-        if (result > 0) {
-            updateUpdateTime(struct);
-            profileEntity.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
-            return ResponseUtils.success("1");
+
+        ProfileLanguageRecord originLanguageRecord = BeanUtils.structToDB(struct, ProfileLanguageRecord.class);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(ProfileLanguage.PROFILE_LANGUAGE.ID.getName(), originLanguageRecord.getId());
+
+        ProfileLanguageRecord descLanguageRecord = dao.getRecord(queryBuilder.buildQuery());
+        if (descLanguageRecord != null) {
+            RecordTool.recordToRecord(descLanguageRecord, originLanguageRecord);
+            ValidationMessage<ProfileLanguageRecord> validationMessage = ProfileValidation.verifyLanguage(descLanguageRecord);
+            if (validationMessage.isPass()) {
+                int result = dao.updateRecord(descLanguageRecord);
+                if (result > 0) {
+                    updateUpdateTime(struct);
+                    profileEntity.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
+                    return ResponseUtils.success("1");
+                }
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", validationMessage.getResult()));
+            }
+
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
