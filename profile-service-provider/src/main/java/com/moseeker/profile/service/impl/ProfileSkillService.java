@@ -172,13 +172,8 @@ public class ProfileSkillService {
             }
             int result = dao.updateRecord(descProfileSkillRecord);
             if (result > 0) {
-<<<<<<< HEAD
                 updateProfileUpdateTime(descProfileSkillRecord);
                 profileEntity.reCalculateProfileSkill(descProfileSkillRecord.getProfileId(), descProfileSkillRecord.getId());
-=======
-                updateProfileUpdateTime(originProfileSkillRecord);
-                profileEntity.reCalculateProfileSkill(originProfileSkillRecord.getProfileId(), originProfileSkillRecord.getId());
->>>>>>> a9a7511bce13fe1ccc4aa1a3db39633a6bb1c517
                 return ResponseUtils.success("1");
             }
         }
