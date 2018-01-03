@@ -1,17 +1,14 @@
 package com.moseeker.baseorm.tool;
 
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.util.MyCollectors;
-import com.moseeker.common.util.StringUtils;
 import org.apache.log4j.Logger;
 import org.jooq.Field;
 import org.jooq.Record;
-import org.jooq.TableRecord;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
