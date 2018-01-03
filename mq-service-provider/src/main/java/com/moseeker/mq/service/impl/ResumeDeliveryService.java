@@ -253,7 +253,7 @@ public class ResumeDeliveryService {
      */
     public Response sendTemplateMessageToApplier(HrWxTemplateMessageDO templateMessageDO, HrWxWechatDO hrChatDO, UserUserDO userUserDO,
         int application_id, HrCompanyDO companyDO, JobPositionDO positionDO) {
-
+        logger.info("sendEmailToHr sendTemplateMessageToApplier  HrWxWechatDO:{}", hrChatDO);
         List<HrWxNoticeMessageDO> wxNoticeMessageDO = null;
         Response response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
@@ -292,7 +292,7 @@ public class ResumeDeliveryService {
                                              int application_id, HrCompanyDO companyDO, JobPositionDO positionDO) {
 
         Response response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-
+        logger.info("sendEmailToHr sendTemplateMessageToApplierByQX  HrWxWechatDO:{}", hrChatDO);
         if(templateMessageDO != null && hrChatDO != null){
             String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
             UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("sysuser_id",
