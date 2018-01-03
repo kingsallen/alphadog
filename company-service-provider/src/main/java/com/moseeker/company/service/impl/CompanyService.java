@@ -4,7 +4,9 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.*;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
@@ -28,12 +30,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
-import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
-import com.moseeker.thrift.gen.company.struct.CompanyOptions;
-import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
-import com.moseeker.thrift.gen.company.struct.HrImporterMonitorVO;
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
@@ -48,7 +45,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,6 +96,13 @@ public class CompanyService {
 
     @Autowired
     private HrEmployeeCustomFieldsDao hrEmployeeCustomFieldsDao;
+
+    @Autowired
+    private HrCompanyConfDao hrCompanyConfDao;
+
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     public Response getResource(CommonQuery query) throws TException {
         try {
@@ -666,5 +672,62 @@ public class CompanyService {
             hrEmployeeCustomFieldsVOS.add(hrEmployeeCustomFieldsVO);
         }
         return hrEmployeeCustomFieldsVOS;
+    }
+    /*
+      获取talent_pool的状态是否开启
+      @auth :zzt
+      @params: hrId:user_hr_account.id
+               companyId:hr_company.id
+      @return 0:未开启
+              1：开启
+              2：无此主账号
+              3：无此公司配置信息
+     */
+    @CounterIface
+    public int getTalentPoolSwitch(int hrId,int companyId){
+        int count=this.validateHrAndCompany(hrId,companyId);
+        if(count==0){
+            return 2;
+        }
+        HrCompanyConfRecord record=this.getHrCompanyConfRecordByCompanyId(companyId);
+        if(record==null){
+            return 3;
+        }
+        int talentPoolStatus=record.getTalentpoolStatus();
+        if(talentPoolStatus>0){
+            return 1;
+        }
+        return 0;
+    }
+    /*
+     获取此账号是不是此公司的主账号
+     */
+    private int validateHrAndCompany(int hrId,int companyId){
+        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("account_type",0).or("account_type",1)
+        .buildQuery();
+        int count =userHrAccountDao.getCount(query);
+        return count;
+    }
+    /*
+      根据公司id获取公司配置
+     */
+    private HrCompanyConfRecord getHrCompanyConfRecordByCompanyId(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+        HrCompanyConfRecord hrCompanyConfRecord=hrCompanyConfDao.getRecord(query);
+        return hrCompanyConfRecord;
+    }
+
+
+    /*
+      修改hr_company_conf
+     */
+    @CounterIface
+    public Response updateHrCompanyConf(com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf){
+        HrCompanyConfRecord record=BeanUtils.structToDB(hrCompanyConf,HrCompanyConfRecord.class);
+        int result=hrCompanyConfDao.updateRecord(record);
+        if(result==0){
+            return ResponseUtils.fail(1,"操作失败");
+        }
+        return ResponseUtils.success("");
     }
 }

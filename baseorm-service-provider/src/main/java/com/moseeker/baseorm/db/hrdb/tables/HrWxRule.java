@@ -156,4 +156,12 @@ public class HrWxRule extends TableImpl<HrWxRuleRecord> {
     public HrWxRule as(String alias) {
         return new HrWxRule(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrWxRule rename(String name) {
+        return new HrWxRule(name, null);
+    }
 }

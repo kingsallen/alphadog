@@ -3,6 +3,7 @@ package com.moseeker.company;
 import com.moseeker.company.config.AppConfig;
 import com.moseeker.company.thrift.CompanyServicesImpl;
 import com.moseeker.company.thrift.HrTeamThriftServicesImpl;
+import com.moseeker.company.thrift.TalentpoolThriftServiceImpl;
 import com.moseeker.rpccenter.main.MoServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,10 @@ public class CompanyServer {
 			MoServer server = new MoServer(
 					acac,"",
 					acac.getBean(CompanyServicesImpl.class),
-					acac.getBean(HrTeamThriftServicesImpl.class));
+					acac.getBean(HrTeamThriftServicesImpl.class),
+					acac.getBean(TalentpoolThriftServiceImpl.class)
+
+			);
 			server.startServer();
 			server.shutDownHook();
 			synchronized (CompanyServer.class) {

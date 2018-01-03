@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 403275523;
+    private static final long serialVersionUID = 795206714;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
@@ -62,14 +62,14 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(24).nullable(false), this, "常用搜索条件名称，长度不超过12个字符");
 
     /**
-     * The column <code>hrdb.hr_search_condition.publisher</code>. 发布人id(user_hr_account.id)
+     * The column <code>hrdb.hr_search_condition.publisher</code>. 发布人id(user_hr_account.id)，多个发布人用,隔开
      */
-    public final TableField<HrSearchConditionRecord, Integer> PUBLISHER = createField("publisher", org.jooq.impl.SQLDataType.INTEGER, this, "发布人id(user_hr_account.id)");
+    public final TableField<HrSearchConditionRecord, String> PUBLISHER = createField("publisher", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "发布人id(user_hr_account.id)，多个发布人用,隔开");
 
     /**
-     * The column <code>hrdb.hr_search_condition.position_id</code>. 职位id
+     * The column <code>hrdb.hr_search_condition.position_id</code>. 职位id,多个职位用,隔开
      */
-    public final TableField<HrSearchConditionRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER, this, "职位id");
+    public final TableField<HrSearchConditionRecord, String> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.VARCHAR.length(255).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职位id,多个职位用,隔开");
 
     /**
      * The column <code>hrdb.hr_search_condition.keyword</code>. 关键字
@@ -162,6 +162,36 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "类型（0：候选人列表筛选条件，1：人才库列表筛选条件）");
 
     /**
+     * The column <code>hrdb.hr_search_condition.candidate_source</code>. 0，社招，1，校招，2定向招聘
+     */
+    public final TableField<HrSearchConditionRecord, String> CANDIDATE_SOURCE = createField("candidate_source", org.jooq.impl.SQLDataType.VARCHAR.length(1).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "0，社招，1，校招，2定向招聘");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.is_public</code>. 是否公开 1是
+     */
+    public final TableField<HrSearchConditionRecord, Byte> IS_PUBLIC = createField("is_public", org.jooq.impl.SQLDataType.TINYINT, this, "是否公开 1是");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.origins</code>. 简历来源，申请来源，是否上传，多个之间用,隔开
+     */
+    public final TableField<HrSearchConditionRecord, String> ORIGINS = createField("origins", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "简历来源，申请来源，是否上传，多个之间用,隔开");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.is_recommend</code>. 是否内推 1是
+     */
+    public final TableField<HrSearchConditionRecord, Byte> IS_RECOMMEND = createField("is_recommend", org.jooq.impl.SQLDataType.TINYINT, this, "是否内推 1是");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.tag_ids</code>. 标签id  -1 全部公开0我的收藏 其他则为tag_id，多个之间用逗号隔开
+     */
+    public final TableField<HrSearchConditionRecord, String> TAG_IDS = createField("tag_ids", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "标签id  -1 全部公开0我的收藏 其他则为tag_id，多个之间用逗号隔开");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.favorite_hrs</code>.
+     */
+    public final TableField<HrSearchConditionRecord, String> FAVORITE_HRS = createField("favorite_hrs", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
      * Create a <code>hrdb.hr_search_condition</code> table reference
      */
     public HrSearchCondition() {
@@ -221,5 +251,13 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     @Override
     public HrSearchCondition as(String alias) {
         return new HrSearchCondition(alias, this);
+    }
+
+    /**
+     * Rename this table
+     */
+
+    public HrSearchCondition rename(String name) {
+        return new HrSearchCondition(name, null);
     }
 }

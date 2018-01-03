@@ -136,4 +136,12 @@ public class HrEmployeePosition extends TableImpl<HrEmployeePositionRecord> {
     public HrEmployeePosition as(String alias) {
         return new HrEmployeePosition(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+
+    public HrEmployeePosition rename(String name) {
+        return new HrEmployeePosition(name, null);
+    }
 }

@@ -148,4 +148,11 @@ public class HrHtml5UniqueStatistics extends TableImpl<HrHtml5UniqueStatisticsRe
         return new HrHtml5UniqueStatistics(alias, this);
     }
 
+    /**
+     * Rename this table
+     */
+
+    public HrHtml5UniqueStatistics rename(String name) {
+        return new HrHtml5UniqueStatistics(name, null);
+    }
 }
