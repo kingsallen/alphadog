@@ -113,4 +113,18 @@ public class SearchengineServiceImpl implements Iface {
 		}
 	}
 
+	@Override
+	public Response userAggInfo(Map<String, String> params) throws TException {
+		try{
+			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
+			if(res==null||res.isEmpty()){
+				return ResponseUtils.success("");
+			}
+			return ResponseUtils.success(res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
 }

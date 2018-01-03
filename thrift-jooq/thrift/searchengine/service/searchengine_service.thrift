@@ -16,4 +16,5 @@ service SearchengineServices {
     common_struct.Response updateEmployeeAwards(1: list<i32> employeeId);
     common_struct.Response deleteEmployeeDO(1: list<i32> employeeId);
     common_struct.Response userQuery(1: map<string,string> params);
+    common_struct.Response userAggInfo(1: map<string,string> params);
 }
