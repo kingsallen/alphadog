@@ -272,4 +272,23 @@ public class StringUtils {
             return obj == null;
         }
     }
+
+    /**
+     * 将 xx_yy 命名转为驼峰命名 xxYy
+     *
+     * @param strName
+     * @return
+     */
+    public static String humpName(String strName) {
+        String[] strs = strName.split("_");
+        if (strs.length > 1) {
+            String name = strs[0];
+            for (int i = 1; i < strs.length; i++) {
+                name += strs[i].substring(0, 1).toUpperCase() + strs[i].substring(1);
+            }
+            return name;
+        } else {
+            return strName;
+        }
+    }
 }

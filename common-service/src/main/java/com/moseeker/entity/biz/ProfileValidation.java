@@ -1,16 +1,22 @@
 package com.moseeker.entity.biz;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.entity.Constant.UnitlNow;
+import com.moseeker.entity.Constant.UntitlNow;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.struct.*;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
 
 public class ProfileValidation {
+
+	private static Logger logger = LoggerFactory.getLogger(ProfileValidation.class);
 
 	private static long minTime = new DateTime("1900-01-01").getMillis();
 	private static long maxTime = new DateTime("2099-12-31").getMillis();
@@ -33,16 +39,43 @@ public class ProfileValidation {
 
 	public static ValidationMessage<CustomizeResume> verifyCustomizeResume(CustomizeResume customizeResume) {
 		ValidationMessage<CustomizeResume> vm = new ValidationMessage<>();
-		if(StringUtils.isNullOrEmpty(customizeResume.getOther())) {
-			vm.addFailedElement("其他字段", "未填写其他字段的内容");
+		try {
+			JSONObject jsonObject = JSONObject.parseObject(customizeResume.getOther());
+			if(jsonObject == null) {
+				vm.addFailedElement("其他字段", "未填写其他字段的内容");
+			}
+		} catch (Exception e) {
+			vm.addFailedElement("其他字段", "不是正确的json数据");
+			logger.error(e.getMessage(), e);
 		}
+		return vm;
+	}
+
+	public static ValidationMessage<ProfileOtherDO> verifyOther(ProfileOtherDO profileOtherDO) {
+		ValidationMessage<ProfileOtherDO> vm = new ValidationMessage<>();
+		try {
+			JSONObject jsonObject = JSONObject.parseObject(profileOtherDO.getOther());
+			if(jsonObject == null) {
+				vm.addFailedElement("其他字段", "未填写其他字段的内容");
+			}
+		} catch (Exception e) {
+			vm.addFailedElement("其他字段", "不是正确的json数据");
+			logger.error(e.getMessage(), e);
+		}
+
 		return vm;
 	}
 	
 	public static ValidationMessage<ProfileOtherRecord> verifyCustomizeResume(ProfileOtherRecord customizeResume) {
 		ValidationMessage<ProfileOtherRecord> vm = new ValidationMessage<>();
-		if(StringUtils.isNullOrEmpty(customizeResume.getOther())) {
-			vm.addFailedElement("其他字段", "未填写其他字段的内容");
+		try {
+			JSONObject jsonObject = JSONObject.parseObject(customizeResume.getOther());
+			if(jsonObject == null) {
+				vm.addFailedElement("其他字段", "未填写其他字段的内容");
+			}
+		} catch (Exception e) {
+			vm.addFailedElement("其他字段", "不是正确的json数据");
+			logger.error(e.getMessage(), e);
 		}
 		return vm;
 	}
@@ -58,9 +91,13 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(education.getStart_date())) {
 			vm.addFailedElement("开始时间", "未选择开始时间");
 		}
+		if (org.apache.commons.lang.StringUtils.isBlank(education.getEnd_date())
+				&& education.getEnd_until_now() == UntitlNow.NotUntilNow.getStatus()) {
+			vm.addFailedElement("结束时间", "未选择结束时间");
+		}
 		if (org.apache.commons.lang.StringUtils.isNotBlank(education.getStart_date())
 				&& org.apache.commons.lang.StringUtils.isNotBlank(education.getEnd_date())
-				&& education.getEnd_until_now() != UnitlNow.NotUntilNow.getStatus()
+				&& education.getEnd_until_now() != UntitlNow.UntilNow.getStatus()
 				&& DateTime.parse(education.getStart_date()).getMillis()
 				> DateTime.parse(education.getEnd_date()).getMillis()) {
 			vm.addFailedElement("时间", "开始时间大于结束时间");
@@ -87,12 +124,16 @@ public class ProfileValidation {
 		if(education.getStart() == null) {
 			vm.addFailedElement("开始时间", "未选择开始时间");
 		}
+		if (education.getEnd() == null && education.getEndUntilNow() == UntitlNow.NotUntilNow.getStatus()) {
+			vm.addFailedElement("结束时间", "未选择结束时间");
+		}
 		if (education.getStart() != null && education.getEnd() != null
 				&& education.getStart().getTime() > education.getEnd().getTime()
 				&& (education.getEndUntilNow() == null
-				|| education.getEndUntilNow() != UnitlNow.NotUntilNow.getStatus())) {
+				|| education.getEndUntilNow() != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("时间", "开始时间大于结束时间");
 		}
+
 		if (!legalDate(education.getStart())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
@@ -126,13 +167,18 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(projectExp.getStart_date())) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
+		if (StringUtils.isNullOrEmpty(projectExp.getEnd_date())
+				&& projectExp.getEnd_until_now()  != UntitlNow.UntilNow.getStatus()) {
+			vm.addFailedElement("结束时间", "未填写结束时间");
+		}
 		if (org.apache.commons.lang.StringUtils.isNotBlank(projectExp.getStart_date())
 				&& org.apache.commons.lang.StringUtils.isNotBlank(projectExp.getEnd_date())
 				&& DateTime.parse(projectExp.getStart_date()).getMillis()
 				> DateTime.parse(projectExp.getEnd_date()).getMillis()
-				&& projectExp.getEnd_until_now() != UnitlNow.NotUntilNow.getStatus()) {
+				&& projectExp.getEnd_until_now() != UntitlNow.UntilNow.getStatus()) {
 			vm.addFailedElement("项目时间", "开始时间大于结束时间");
 		}
+
 		if (!lowerNow(projectExp.getStart_date())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
@@ -151,10 +197,13 @@ public class ProfileValidation {
 		if(projectExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
+		if (projectExp.getEnd() == null && projectExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus()) {
+			vm.addFailedElement("结束时间", "未填写结束时间");
+		}
 		if (projectExp.getStart() != null && projectExp.getEnd() != null
 				&& projectExp.getStart().getTime() > projectExp.getEnd().getTime()
 				&& (projectExp.getEndUntilNow() == null
-				|| projectExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus())) {
+				|| projectExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("项目时间", "开始时间大于结束时间");
 		}
 		if (!lowerNow(projectExp.getStart())) {
@@ -169,9 +218,9 @@ public class ProfileValidation {
 	public static ValidationMessage<Skill> verifySkill(Skill skill) {
 		ValidationMessage<Skill> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(skill.getName())) {
-			vm.addFailedElement("语言名称", "未填写语言名称");
+			vm.addFailedElement("技能名称", "未填写技能名称");
 		} else if (skill.getName().length() > 100){
-			vm.addFailedElement("语言名称", "超过最长字数限制");
+			vm.addFailedElement("技能名称", "超过最长字数限制");
 		}
 		return vm;
 	}
@@ -179,7 +228,7 @@ public class ProfileValidation {
 	public static ValidationMessage<ProfileSkillRecord> verifySkill(ProfileSkillRecord skill) {
 		ValidationMessage<ProfileSkillRecord> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(skill.getName())) {
-			vm.addFailedElement("技能名称", "未填写语言名称");
+			vm.addFailedElement("技能名称", "未填写技能名称");
 		} else if (skill.getName().length() > 128){
 			vm.addFailedElement("技能名称", "超过最长字数限制");
 		}
@@ -201,7 +250,7 @@ public class ProfileValidation {
 				&& org.apache.commons.lang.StringUtils.isNotBlank(workExp.getEnd_date())
 				&& DateTime.parse(workExp.getStart_date()).getMillis()
 				> DateTime.parse(workExp.getEnd_date()).getMillis()
-				&& workExp.getEnd_until_now()  != UnitlNow.NotUntilNow.getStatus()) {
+				&& workExp.getEnd_until_now()  != UntitlNow.UntilNow.getStatus()) {
 			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
 		if (!legalDate(workExp.getStart_date())) {
@@ -231,7 +280,40 @@ public class ProfileValidation {
 		if (workExp.getStart() != null && workExp.getEnd() != null
 				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
 				&& (workExp.getEndUntilNow() == null
-				|| workExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus())) {
+				|| workExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus())) {
+			vm.addFailedElement("工作时间", "开始时间大于结束时间");
+		}
+		if (!lowerNow(workExp.getStart())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (workExp.getEnd() != null && !lowerNow(workExp.getEnd())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		return vm;
+	}
+
+	public static ValidationMessage<ProfileWorkexpRecord> verifyWorkExp(ProfileWorkexpRecord workExp) {
+		ValidationMessage<ProfileWorkexpRecord> vm = new ValidationMessage<>();
+		if(workExp.getCompanyId() == null ) {
+			vm.addFailedElement("就职公司", "未填写就职公司");
+		}
+		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
+			vm.addFailedElement("职位名称", "未填写职位名称");
+		}
+		if(workExp.getStart() == null) {
+			vm.addFailedElement("开始时间", "未填写开始时间");
+		}
+		if(workExp.getEnd() == null && workExp.getEndUntilNow() != null
+				&& workExp.getEndUntilNow() == UntitlNow.NotUntilNow.getStatus() ) {
+			vm.addFailedElement("结束时间", "未填写结束时间");
+		}
+		if(StringUtils.isNullOrEmpty(workExp.getDescription())) {
+			vm.addFailedElement("职位描述", "未对该职位做详细描述");
+		}
+		if (workExp.getStart() != null && workExp.getEnd() != null
+				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
+				&& (workExp.getEndUntilNow() == null
+				|| workExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
 		if (!lowerNow(workExp.getStart())) {

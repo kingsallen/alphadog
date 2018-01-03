@@ -2,13 +2,18 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileLanguageDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileLanguage;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileLanguageRecord;
+import com.moseeker.baseorm.tool.RecordTool;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
@@ -27,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @CounterIface
@@ -73,17 +79,43 @@ public class ProfileLanguageService {
     }
 
     @Transactional
-    public Response putResources(List<Language> structs) throws TException {
-        int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileLanguageRecord.class));
-        if (ArrayUtils.contains(result, 1)) {
-            updateUpdateTime(structs);
-            structs.forEach(struct -> {
-                //计算profile完整度
-                profileEntity.recalculateprofileLanguage(0, struct.getId());
-            });
-            return ResponseUtils.success("1");
+    public Response putResources(List<Language> structs) throws CommonException {
+
+        if (structs != null) {
+            List<ProfileLanguageRecord> originLanguageRecordList = BeanUtils.structToDB(structs, ProfileLanguageRecord.class);
+
+            List<Integer> languageIdList = originLanguageRecordList.stream()
+                    .map(profileLanguageRecord -> profileLanguageRecord.getId())
+                    .collect(Collectors.toList());
+
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(new Condition(ProfileLanguage.PROFILE_LANGUAGE.ID.getName(), languageIdList, ValueOp.IN));
+
+            List<ProfileLanguageRecord> descLanguageRecordList = dao.getRecords(queryBuilder.buildQuery());
+            if (descLanguageRecordList != null) {
+                Iterator<ProfileLanguageRecord> iterator = descLanguageRecordList.iterator();
+                while (iterator.hasNext()) {
+                    ProfileLanguageRecord profileLanguageRecord = iterator.next();
+                    Optional<ProfileLanguageRecord> optional = originLanguageRecordList.stream()
+                            .filter(languageRecord -> languageRecord.getId().intValue() == profileLanguageRecord.getId())
+                            .findAny();
+                    if (optional.isPresent()) {
+                        RecordTool.recordToRecord(profileLanguageRecord, optional.get());
+
+                        ValidationMessage<ProfileLanguageRecord> validationMessage = ProfileValidation.verifyLanguage(profileLanguageRecord);
+                        if (!validationMessage.isPass()) {
+                            iterator.remove();
+                        }
+                    }
+                }
+                dao.updateRecords(descLanguageRecordList);
+                updateProfileUpdateTime(descLanguageRecordList);
+                descLanguageRecordList.forEach(profileLanguageRecord -> {
+                    profileEntity.recalculateprofileLanguage(profileLanguageRecord.getProfileId(), profileLanguageRecord.getId());
+                });
+            }
         }
-        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+        return ResponseUtils.success("1");
     }
 
     @Transactional
@@ -126,7 +158,7 @@ public class ProfileLanguageService {
     }
 
     @Transactional
-    public Response postResource(Language struct) throws TException {
+    public Response postResource(Language struct) throws CommonException {
         ValidationMessage<Language> vm = ProfileValidation.verifyLanguage(struct);
         if (!vm.isPass()) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
@@ -143,11 +175,26 @@ public class ProfileLanguageService {
 
     @Transactional
     public Response putResource(Language struct) throws TException {
-        int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileLanguageRecord.class));
-        if (result > 0) {
-            updateUpdateTime(struct);
-            profileEntity.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
-            return ResponseUtils.success("1");
+
+        ProfileLanguageRecord originLanguageRecord = BeanUtils.structToDB(struct, ProfileLanguageRecord.class);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(ProfileLanguage.PROFILE_LANGUAGE.ID.getName(), originLanguageRecord.getId());
+
+        ProfileLanguageRecord descLanguageRecord = dao.getRecord(queryBuilder.buildQuery());
+        if (descLanguageRecord != null) {
+            RecordTool.recordToRecord(descLanguageRecord, originLanguageRecord);
+            ValidationMessage<ProfileLanguageRecord> validationMessage = ProfileValidation.verifyLanguage(descLanguageRecord);
+            if (validationMessage.isPass()) {
+                int result = dao.updateRecord(descLanguageRecord);
+                if (result > 0) {
+                    updateUpdateTime(struct);
+                    profileEntity.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
+                    return ResponseUtils.success("1");
+                }
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", validationMessage.getResult()));
+            }
+
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
@@ -192,6 +239,13 @@ public class ProfileLanguageService {
         List<Language> languages = new ArrayList<>();
         languages.add(language);
         updateUpdateTime(languages);
+    }
+
+    private void updateProfileUpdateTime(List<ProfileLanguageRecord> descLanguageRecordList) {
+        Set<Integer> languageIds = descLanguageRecordList.stream()
+                .map(profileLanguageRecord -> profileLanguageRecord.getId())
+                .collect(Collectors.toSet());
+        dao.updateProfileUpdateTime(languageIds);
     }
 
     public Response getResource(Query query) throws TException {
