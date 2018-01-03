@@ -212,18 +212,19 @@ public class ProfileProjectExpService {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(ProfileProjectexp.PROFILE_PROJECTEXP.ID.getName(), originProfileProjectexpRecord.getId());
         ProfileProjectexpRecord descProfileProjectexpRecord = dao.getRecord(queryBuilder.buildQuery());
-        RecordTool.recordToRecord(descProfileProjectexpRecord, originProfileProjectexpRecord);
-
-        ValidationMessage<ProfileProjectexpRecord> vm = ProfileValidation.verifyProjectExp(descProfileProjectexpRecord);
-        if (!vm.isPass()) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
-        }
-        int result = dao.updateRecord(descProfileProjectexpRecord);
-        if (result > 0) {
-            updateUpdateTime(struct);
+        if (descProfileProjectexpRecord != null) {
+            RecordTool.recordToRecord(descProfileProjectexpRecord, originProfileProjectexpRecord);
+            ValidationMessage<ProfileProjectexpRecord> vm = ProfileValidation.verifyProjectExp(descProfileProjectexpRecord);
+            if (!vm.isPass()) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
+            }
+            int result = dao.updateRecord(descProfileProjectexpRecord);
+            if (result > 0) {
+                updateUpdateTime(struct);
             /* 计算profile完成度 */
-            profileEntity.reCalculateProfileProjectExpByProjectExpId(struct.getId());
-            return ResponseUtils.success("1");
+                profileEntity.reCalculateProfileProjectExpByProjectExpId(struct.getId());
+                return ResponseUtils.success("1");
+            }
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }

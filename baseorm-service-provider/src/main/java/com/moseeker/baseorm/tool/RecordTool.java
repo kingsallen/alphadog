@@ -46,7 +46,9 @@ public class RecordTool {
 
             changedFieldList.forEach((fieldName, field) -> {
                 String getKey;
-                String subKey = fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1);
+                String subKey = Arrays.stream(fieldName.split("_"))
+                        .map(fieldNameSub -> fieldNameSub.substring(0, 1).toUpperCase()+fieldNameSub.substring(1))
+                        .collect(Collectors.joining());
                 String setKey = "set" + subKey;
                 if (field.getType().isAssignableFrom(Boolean.TYPE)) {
                     getKey = "is"+subKey;
