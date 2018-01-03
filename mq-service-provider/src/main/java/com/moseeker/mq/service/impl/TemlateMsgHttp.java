@@ -78,7 +78,7 @@ public class TemlateMsgHttp {
             company.setColor("#173177");
             company.setValue(companyDO.getName());
             colMap.put("company",company);
-            String dateTime = DateUtils.dateToPattern(new Date(), "yyyy年MM月dd日 HH：mm");
+            String dateTime = DateUtils.dateToPattern(new Date(), "yyyy年MM月dd日 HH:mm");
             MessageTplDataCol time=new MessageTplDataCol();
             time.setColor("#173177");
             time.setValue(dateTime);
