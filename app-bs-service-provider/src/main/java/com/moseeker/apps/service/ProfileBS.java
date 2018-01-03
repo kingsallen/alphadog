@@ -172,10 +172,10 @@ public class ProfileBS {
                     // 判断来源
                     int origin = ApplicationSource.channelToOrigin(channel);
                     JobApplication application = initApplication(userId, positionId, position.getCompany_id(), origin);
-                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
-                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
-                        applicationService.postApplication(application);
-                    }
+//                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
+//                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
+                    applicationService.postApplication(application);
+//                    }
                     return ResultMessage.SUCCESS.toResponse(new JSONObject());
                 } else {
                     return response;
