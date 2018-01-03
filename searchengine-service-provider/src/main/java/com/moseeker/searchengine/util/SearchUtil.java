@@ -188,7 +188,14 @@ public class SearchUtil {
     	}
     	return data;
     }
-
+    //处理统计数据
+    public Map<String,Object> handleAggData(SearchResponse response){
+        Map<String,Object> data=new HashMap<String,Object>();
+        Aggregations aggs=response.getAggregations();
+        Map<String, Object> aggsMap=handleAggs(aggs);
+        data.put("aggs", aggsMap);
+        return data;
+    }
     //组装prefix关键字查询语句
     public void handleKeyWordForPrefix(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
     	if(StringUtils.isNotEmpty(keywords)){
