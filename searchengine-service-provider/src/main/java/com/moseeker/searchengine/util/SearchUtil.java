@@ -148,6 +148,12 @@ public class SearchUtil {
         logger.info("组合的条件是==================" + query.toString() + "===========");
     }
 
+    public void hanleRangeFilter(String conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
+        ((BoolQueryBuilder) query).filter(cityfilter);
+        logger.info("组合的条件是==================" + query.toString() + "===========");
+    }
+
     public void hanleRangeFilter(long conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
         ((BoolQueryBuilder) query).filter(cityfilter);
