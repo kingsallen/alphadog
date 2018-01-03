@@ -1010,6 +1010,9 @@ public class PositionService {
                         if (specicalCity != null) {
                             city.setValue(specicalCity);
                         }
+                        if (org.apache.commons.lang.StringUtils.isBlank(city.getValue())) {
+                            city.setValue("全国");
+                        }
                         // 判断下是否是中文还是英文
                         if (isChinese(city.getValue())) { // 是中文
                             cityQuery.where("name", city.getValue());
