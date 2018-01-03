@@ -379,6 +379,9 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(isPublic)){
             this.queryByPublic(Integer.parseInt(isPublic),query);
         }
+        if(StringUtils.isNotNullOrEmpty(favoriteHrs)||StringUtils.isNotNullOrEmpty(isPublic)){
+            this.queryByIstalent(query);
+        }
         query=QueryBuilders.nestedQuery("user.talent_pool",query);
         return query;
     }
@@ -707,6 +710,13 @@ public class TalentpoolSearchengine {
      */
     private void queryTagHrId(String hrIds,QueryBuilder queryBuilder){
         searchUtil.handleTerms(hrIds,queryBuilder,"user.talent_pool.hr_id");
+    }
+
+    /*
+     按照是否是收藏的人才搜索
+     */
+    private void queryByIstalent(QueryBuilder queryBuilder){
+        searchUtil.handleMatch(1,queryBuilder,"user.talent_pool.is_talent");
     }
 
     /*
