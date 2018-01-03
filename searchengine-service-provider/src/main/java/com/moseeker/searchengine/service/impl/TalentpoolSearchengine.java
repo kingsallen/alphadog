@@ -700,8 +700,8 @@ public class TalentpoolSearchengine {
                 map.put("min",5);
                 map.put("max",10);
             }else{
-                map.put("min",0);
-                map.put("max",1);
+                map.put("min",10);
+                map.put("max",100);
             }
             result.add(map);
         }
