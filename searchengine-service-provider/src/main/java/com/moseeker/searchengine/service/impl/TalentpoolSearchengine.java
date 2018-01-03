@@ -59,6 +59,42 @@ public class TalentpoolSearchengine {
             if (aggInfo != null && !aggInfo.isEmpty()) {
                 result.put("aggs", aggInfo.get("aggs"));
             }
+            String progressStatus = params.get("progress_status");
+            if(StringUtils.isNotNullOrEmpty(progressStatus)){
+                Map<String,Object> aggMap=getAggInfo(params);
+                result.put("aggs", aggMap.get("aggs"));
+            }
+            return result;
+        } catch (Exception e) {
+            logger.info(e.getMessage()+"=================");
+            if (e.getMessage().contains("all shards")) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    @CounterIface
+    public Map<String,Object> getAggInfo(Map<String, String> params){
+        Map<String, Object> result=new HashMap<>();
+        try {
+            String progressStatus = params.get("progress_status");
+            if(StringUtils.isNotNullOrEmpty(progressStatus)){
+                params.put("progress_status",null);
+            }
+            TransportClient client = searchUtil.getEsClient();
+            QueryBuilder query = this.query(params);
+            SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
+            builder.addAggregation(this.handleAllApplicationCountAgg(params))
+                    .addAggregation(this.handleAllcountAgg(params))
+                    .addAggregation(this.handleEntryCountAgg(params))
+                    .addAggregation(this.handleFirstTrialOkCountAgg(params))
+                    .addAggregation(this.handleInterviewOkCountAgg(params))
+                    .addAggregation(this.handleIsViewedCountAgg(params))
+                    .addAggregation(this.handleNotViewedCountAgg(params));
+            builder.setSize(0);
+            SearchResponse response = builder.execute().actionGet();
+            result = searchUtil.handleAggData(response);
             return result;
         } catch (Exception e) {
             logger.info(e.getMessage()+"=================");
@@ -129,25 +165,29 @@ public class TalentpoolSearchengine {
         String tagIds=params.get("tag_ids");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
-        //如果是涉及人才库的查询，那么就不走聚合函数
-        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
-            if (this.valididateSearchAggIndex(params)) {
-                aggInfo = this.getUserAnalysisIndex(params, client);
-            }
-            if (aggInfo == null || aggInfo.isEmpty()) {
-                String returnParams = params.get("return_params");
-                if (!this.isExecAgg(returnParams)) {
-                    builder.addAggregation(this.handleAllApplicationCountAgg(params))
-                            .addAggregation(this.handleAllcountAgg(params))
-                            .addAggregation(this.handleEntryCountAgg(params))
-                            .addAggregation(this.handleFirstTrialOkCountAgg(params))
-                            .addAggregation(this.handleInterviewOkCountAgg(params))
-                            .addAggregation(this.handleIsViewedCountAgg(params))
-                            .addAggregation(this.handleNotViewedCountAgg(params));
+        String progressStatus = params.get("progress_status");
+        if(StringUtils.isNullOrEmpty(progressStatus)) {
+            //如果是涉及人才库的查询，那么就不走聚合函数
+            if (StringUtils.isNullOrEmpty(tagIds) && StringUtils.isNullOrEmpty(favoriteHrs) && StringUtils.isNullOrEmpty(isPublic)) {
+                if (this.valididateSearchAggIndex(params)) {
+                    aggInfo = this.getUserAnalysisIndex(params, client);
+                }
+                if (aggInfo == null || aggInfo.isEmpty()) {
+                    String returnParams = params.get("return_params");
+                    if (!this.isExecAgg(returnParams)) {
+                        builder.addAggregation(this.handleAllApplicationCountAgg(params))
+                                .addAggregation(this.handleAllcountAgg(params))
+                                .addAggregation(this.handleEntryCountAgg(params))
+                                .addAggregation(this.handleFirstTrialOkCountAgg(params))
+                                .addAggregation(this.handleInterviewOkCountAgg(params))
+                                .addAggregation(this.handleIsViewedCountAgg(params))
+                                .addAggregation(this.handleNotViewedCountAgg(params));
+                    }
                 }
             }
         }
     }
+
     /*
      处理分页
      */
@@ -920,7 +960,7 @@ public class TalentpoolSearchengine {
         boolean flag=true;
         for(String key:params.keySet()){
             if(!"company_id".equals(key)&&!"publisher".equals(key)
-                    &&!"hr_account_id".equals(key)&&!"all_publisher".equals("key")){
+                    &&!"hr_account_id".equals(key)&&!"all_publisher".equals(key)&&!"hr_id".equals(key)){
                 return false;
             }
         }
