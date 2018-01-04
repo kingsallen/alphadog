@@ -9,6 +9,7 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
@@ -48,6 +49,11 @@ public class Dict51OccupationDao extends AbstractDictOccupationDao<Dict51jobOccu
     @Override
     protected Condition conditionToSearchFather(Dict51jobOccupationDO dict51jobOccupationDO) {
         return new Condition(Dict_51jobOccupation.DICT_51JOB_OCCUPATION.CODE.getName(),dict51jobOccupationDO.getParentId());
+    }
+
+    public int deleteAll(){
+        Condition condition=new Condition("code",0, ValueOp.NEQ);
+        return delete(condition);
     }
 
     @Override
