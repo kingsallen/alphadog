@@ -218,10 +218,10 @@ public class CompanySearchengine {
 	//做city的统计
 	private AbstractAggregationBuilder handleAggPositionCity(){
 		StringBuffer sb=new StringBuffer();
-		sb.append("city=_source.position_city;");
+		sb.append("city=_source.position_city;if(city){");
 		sb.append("for(ss in city){");
 		sb.append("if(ss  in _agg['transactions'] || !ss ){}");
-		sb.append("else{_agg['transactions'].add(ss)};}");
+		sb.append("else{_agg['transactions'].add(ss)};}}");
 		String mapScript=sb.toString();
 		StringBuffer sb1=new StringBuffer();
 		sb1.append("jsay=[];");
@@ -247,9 +247,9 @@ public class CompanySearchengine {
 	//做scale的统计
 	private AbstractAggregationBuilder handleAggScale(){
 		StringBuffer sb=new StringBuffer();
-		sb.append("scale=_source.company.scale;");
+		sb.append("company=_source.company;if(company){scale=company.scale;if(scale){");
 		sb.append("if(scale  in _agg['transactions'] ){}");
-		sb.append("else{_agg['transactions'].add(scale)};");
+		sb.append("else{_agg['transactions'].add(scale)}}};");
 		String mapScript=sb.toString();
 		StringBuffer sb1=new StringBuffer();
 		sb1.append("jsay=[];");
