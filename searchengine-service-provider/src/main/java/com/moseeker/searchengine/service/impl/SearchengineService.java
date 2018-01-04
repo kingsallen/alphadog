@@ -772,4 +772,69 @@ public class SearchengineService {
         return ResponseUtils.success(data);
     }
 
+    public Map<String,Object> getPositionSuggest(Map<String,String> params){
+        String keyWord=params.get("keyWord");
+        String companyIds=params.get("company_id");
+        if(StringUtils.isBlank(keyWord)||StringUtils.isBlank(companyIds)){
+            return null;
+        }
+        String page=params.get("page_from");
+        String pageSize=params.get("page_size");
+        if(StringUtils.isBlank(page)){
+            page="1";
+        }
+        if(StringUtils.isBlank(pageSize)){
+            pageSize="15";
+        }
+        TransportClient client=null;
+        Map<String,Object> map=new HashMap<String,Object>();
+        try {
+            client = searchUtil.getEsClient();
+            SearchResponse hits=this.searchPrefix(keyWord,companyIds,Integer.parseInt(page),Integer.parseInt(pageSize),client);
+            long hitNum=hits.getHits().getTotalHits();
+            if(hitNum==0){
+                hits=this.searchQueryString(keyWord,companyIds,Integer.parseInt(page),Integer.parseInt(pageSize),client);
+                map=searchUtil.handleData(hits,"suggest");
+            }else{
+                map=searchUtil.handleData(hits,"suggest");
+            }
+        }catch(Exception e){
+
+        }
+
+        return map;
+
+    }
+    //通过Prefix方式搜索
+     private SearchResponse searchPrefix(String keyWord,String companyIds,int page,int pageSize,TransportClient client){
+         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+         List<String> list=new ArrayList<>();
+         list.add("title");
+         searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
+         searchUtil.handleTerms(companyIds,query,"company_id");
+         SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
+                 .setQuery(query)
+                 .setFrom((page-1)*pageSize)
+                 .setSize(pageSize)
+                 .setTrackScores(true);
+         SearchResponse res=responseBuilder.execute().actionGet();
+         return res;
+     }
+    //通过QueryString搜索
+    private SearchResponse searchQueryString(String keyWord,String companyIds,int page,int pageSize,TransportClient client){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        List<String> list=new ArrayList<>();
+        list.add("title");
+        searchUtil.handleKeyWordforQueryString(keyWord, false, query, list);
+        searchUtil.handleTerms(companyIds,query,"company_id");
+        SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
+                .setQuery(query)
+                .setFrom((page-1)*pageSize)
+                .setSize(pageSize)
+                .setTrackScores(true);
+        SearchResponse res=responseBuilder.execute().actionGet();
+        return res;
+    }
 }
