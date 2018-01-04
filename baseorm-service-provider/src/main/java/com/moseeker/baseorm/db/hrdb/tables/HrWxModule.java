@@ -205,7 +205,7 @@ public class HrWxModule extends TableImpl<HrWxModuleRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrWxModule rename(String name) {
         return new HrWxModule(name, null);
     }

@@ -171,7 +171,7 @@ public class HrSuperaccountApply extends TableImpl<HrSuperaccountApplyRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrSuperaccountApply rename(String name) {
         return new HrSuperaccountApply(name, null);
     }

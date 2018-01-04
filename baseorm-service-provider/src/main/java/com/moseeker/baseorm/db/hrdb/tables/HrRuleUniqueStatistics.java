@@ -156,7 +156,7 @@ public class HrRuleUniqueStatistics extends TableImpl<HrRuleUniqueStatisticsReco
     /**
      * Rename this table
      */
-
+    @Override
     public HrRuleUniqueStatistics rename(String name) {
         return new HrRuleUniqueStatistics(name, null);
     }

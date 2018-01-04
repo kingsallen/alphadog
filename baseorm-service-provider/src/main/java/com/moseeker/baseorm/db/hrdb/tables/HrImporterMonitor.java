@@ -171,7 +171,7 @@ public class HrImporterMonitor extends TableImpl<HrImporterMonitorRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrImporterMonitor rename(String name) {
         return new HrImporterMonitor(name, null);
     }

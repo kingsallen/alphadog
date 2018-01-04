@@ -140,7 +140,7 @@ public class HrEmployeeSection extends TableImpl<HrEmployeeSectionRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrEmployeeSection rename(String name) {
         return new HrEmployeeSection(name, null);
     }

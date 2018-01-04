@@ -170,7 +170,7 @@ public class HrWxTemplateMessage extends TableImpl<HrWxTemplateMessageRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrWxTemplateMessage rename(String name) {
         return new HrWxTemplateMessage(name, null);
     }

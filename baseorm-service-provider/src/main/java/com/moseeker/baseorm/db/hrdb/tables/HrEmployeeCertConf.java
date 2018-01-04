@@ -186,7 +186,7 @@ public class HrEmployeeCertConf extends TableImpl<HrEmployeeCertConfRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrEmployeeCertConf rename(String name) {
         return new HrEmployeeCertConf(name, null);
     }

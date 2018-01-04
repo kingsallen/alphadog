@@ -166,7 +166,7 @@ public class HrAppCvConf extends TableImpl<HrAppCvConfRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrAppCvConf rename(String name) {
         return new HrAppCvConf(name, null);
     }

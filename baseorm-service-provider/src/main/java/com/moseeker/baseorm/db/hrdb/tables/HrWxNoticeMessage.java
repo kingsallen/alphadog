@@ -145,7 +145,7 @@ public class HrWxNoticeMessage extends TableImpl<HrWxNoticeMessageRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrWxNoticeMessage rename(String name) {
         return new HrWxNoticeMessage(name, null);
     }

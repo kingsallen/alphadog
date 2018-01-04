@@ -167,7 +167,7 @@ public class HrHbScratchCard extends TableImpl<HrHbScratchCardRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrHbScratchCard rename(String name) {
         return new HrHbScratchCard(name, null);
     }

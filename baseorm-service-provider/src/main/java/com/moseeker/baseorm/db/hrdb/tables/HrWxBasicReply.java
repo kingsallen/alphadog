@@ -130,7 +130,7 @@ public class HrWxBasicReply extends TableImpl<HrWxBasicReplyRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrWxBasicReply rename(String name) {
         return new HrWxBasicReply(name, null);
     }

@@ -172,7 +172,7 @@ public class HrHbItems extends TableImpl<HrHbItemsRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrHbItems rename(String name) {
         return new HrHbItems(name, null);
     }

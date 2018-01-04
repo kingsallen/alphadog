@@ -151,7 +151,7 @@ public class HrThirdPartyAccountHr extends TableImpl<HrThirdPartyAccountHrRecord
     /**
      * Rename this table
      */
-
+    @Override
     public HrThirdPartyAccountHr rename(String name) {
         return new HrThirdPartyAccountHr(name, null);
     }
