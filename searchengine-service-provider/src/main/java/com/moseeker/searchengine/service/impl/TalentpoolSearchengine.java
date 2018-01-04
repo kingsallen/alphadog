@@ -43,8 +43,9 @@ public class TalentpoolSearchengine {
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params) {
         Map<String, Object> result=new HashMap<>();
+        TransportClient client=null;
         try {
-            TransportClient client = searchUtil.getEsClient();
+            client = searchUtil.getEsClient();
             Map<String, Object> aggInfo = new HashMap<>();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
@@ -77,12 +78,13 @@ public class TalentpoolSearchengine {
     @CounterIface
     public Map<String,Object> getAggInfo(Map<String, String> params){
         Map<String, Object> result=new HashMap<>();
+        TransportClient client =null;
         try {
             String progressStatus = params.get("progress_status");
             if(StringUtils.isNotNullOrEmpty(progressStatus)){
                 params.put("progress_status",null);
             }
-            TransportClient client = searchUtil.getEsClient();
+            client=searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
             builder.addAggregation(this.handleAllApplicationCountAgg(params))
@@ -573,7 +575,7 @@ public class TalentpoolSearchengine {
       构建按照期望城市名称的查询语句
      */
     private void queryByIntentionCity(String cityNames,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
+        searchUtil.handleMatch(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
     }
     /*
       按照公司名称查询
@@ -591,13 +593,13 @@ public class TalentpoolSearchengine {
       按照最后工作的公司查询
      */
     private void queryByLastCompany(String companys,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(companys,queryBuilder,"user.profiles.recent_job.company_name");
+        searchUtil.handleMatch(companys,queryBuilder,"user.profiles.recent_job.company_name");
     }
     /*
       按照最后工作的职位名称查询
      */
     private void queryByLastPositions(String positions,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(positions,queryBuilder,"user.profiles.recent_job.job");
+        searchUtil.handleMatch(positions,queryBuilder,"user.profiles.recent_job.job");
     }
     /*
       按照现居住地查询
@@ -626,7 +628,7 @@ public class TalentpoolSearchengine {
         Map<String,Object> queryMap=new HashMap<>();
         queryMap.put("user.profiles.recent_job.job",works);
         queryMap.put("user.profiles.workexps.job",works);
-        searchUtil.shouldTermsQuery(queryMap,queryBuilder);
+        searchUtil.shouldMatchQuery(queryMap,queryBuilder);
     }
     /*
      构建通过曾经工作的公司查询
@@ -635,7 +637,7 @@ public class TalentpoolSearchengine {
         Map<String,Object> queryMap=new HashMap<>();
         queryMap.put("user.profiles.recent_job.company_name",companys);
         queryMap.put("user.profiles.workexps.company_name",companys);
-        searchUtil.shouldTermsQuery(queryMap,queryBuilder);
+        searchUtil.shouldMatchQuery(queryMap,queryBuilder);
     }
     /*
       按照性别查询
@@ -699,8 +701,8 @@ public class TalentpoolSearchengine {
                 map.put("min",5);
                 map.put("max",10);
             }else{
-                map.put("min",0);
-                map.put("max",1);
+                map.put("min",10);
+                map.put("max",100);
             }
             result.add(map);
         }
