@@ -2,6 +2,7 @@ package com.moseeker.position.service.position.base.refresh.handler;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.RefreshConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,6 @@ public abstract class AbstractRedisResultHandler extends AbstractJsonResultHandl
     private RedisClient redisClient;
 
     protected abstract String[] param();
-    protected abstract int appId();
     protected abstract String keyIdentifier();
 
     @Override
@@ -36,6 +36,6 @@ public abstract class AbstractRedisResultHandler extends AbstractJsonResultHandl
 
         String json=result.toJSONString();
         logger.info("save refresh result to {} redis : {}",keyIdentifier(),json);
-        redisClient.set(appId(),keyIdentifier(),"",json);
+        redisClient.set(RefreshConstant.APP_ID,keyIdentifier(),"",json);
     }
 }

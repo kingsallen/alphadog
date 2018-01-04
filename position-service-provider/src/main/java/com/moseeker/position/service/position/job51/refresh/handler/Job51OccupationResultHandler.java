@@ -42,7 +42,7 @@ public class Job51OccupationResultHandler extends AbstractOccupationResultHandle
 
     @Override
     protected String occupationKey() {
-        return null;
+        return "occupation";
     }
 
     @Override
