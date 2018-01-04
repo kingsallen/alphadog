@@ -146,7 +146,7 @@ public class HrCmsPages extends TableImpl<HrCmsPagesRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrCmsPages rename(String name) {
         return new HrCmsPages(name, null);
     }

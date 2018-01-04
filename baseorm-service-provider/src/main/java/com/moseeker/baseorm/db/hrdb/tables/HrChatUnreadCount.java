@@ -142,7 +142,7 @@ public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrChatUnreadCount rename(String name) {
         return new HrChatUnreadCount(name, null);
     }

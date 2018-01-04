@@ -160,7 +160,7 @@ public class HrWxRule extends TableImpl<HrWxRuleRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrWxRule rename(String name) {
         return new HrWxRule(name, null);
     }

@@ -166,7 +166,7 @@ public class HrTopic extends TableImpl<HrTopicRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrTopic rename(String name) {
         return new HrTopic(name, null);
     }

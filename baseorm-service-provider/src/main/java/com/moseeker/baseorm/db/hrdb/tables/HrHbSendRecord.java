@@ -196,7 +196,7 @@ public class HrHbSendRecord extends TableImpl<HrHbSendRecordRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrHbSendRecord rename(String name) {
         return new HrHbSendRecord(name, null);
     }

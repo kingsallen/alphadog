@@ -196,7 +196,7 @@ public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> 
     /**
      * Rename this table
      */
-
+    @Override
     public HrReferralStatistics rename(String name) {
         return new HrReferralStatistics(name, null);
     }

@@ -116,7 +116,7 @@ public class HrCompanyAccount extends TableImpl<HrCompanyAccountRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrCompanyAccount rename(String name) {
         return new HrCompanyAccount(name, null);
     }

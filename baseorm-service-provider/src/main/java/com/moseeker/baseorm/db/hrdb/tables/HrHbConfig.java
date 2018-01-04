@@ -226,7 +226,7 @@ public class HrHbConfig extends TableImpl<HrHbConfigRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrHbConfig rename(String name) {
         return new HrHbConfig(name, null);
     }

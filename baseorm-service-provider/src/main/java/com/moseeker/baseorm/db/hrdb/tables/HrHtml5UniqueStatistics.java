@@ -151,7 +151,7 @@ public class HrHtml5UniqueStatistics extends TableImpl<HrHtml5UniqueStatisticsRe
     /**
      * Rename this table
      */
-
+    @Override
     public HrHtml5UniqueStatistics rename(String name) {
         return new HrHtml5UniqueStatistics(name, null);
     }
