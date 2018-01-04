@@ -57,12 +57,8 @@ public class PositionSearchEngine {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            if(client!=null){
-                client.close();
-            }
-            client=null;
-            EsClientInstance.closeEsClient();
+            logger.info(e.getMessage(),e);
+
         }
         return new HashMap<String,Object>();
     }

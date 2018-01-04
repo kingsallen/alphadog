@@ -54,21 +54,12 @@ public class CompanySearchengine {
 			if(hitNum==0&&StringUtils.isNotEmpty(keywords)){
 				SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize,client);
 				map=searchUtil.handleData(hitsData,"companies");
-//				logger.info(map.toString());
-
 			}else{
 				map=searchUtil.handleData(hits,"companies");
-//				logger.info(map.toString());
 			}
 		}catch(Exception e){
 			logger.info(e.getMessage(),e);
-			if(client!=null){
-				client.close();
-			}
-			client=null;
-			EsClientInstance.closeEsClient();
 		}
-
 		return map;
 
 	}
@@ -200,9 +191,9 @@ public class CompanySearchengine {
 	//做行业的统计
 	private AbstractAggregationBuilder handleAggIndustry(){
 		StringBuffer sb=new StringBuffer();
-		sb.append("industry=_source.company.industry_data;");
+		sb.append("company=_source.company;if(company){industry=company.industry_data;if(industry){");
 		sb.append("if(industry  in _agg['transactions'] || !industry){}");
-		sb.append("else{_agg['transactions'].add(industry)};");
+		sb.append("else{_agg['transactions'].add(industry)}}};");
 		String mapScript=sb.toString();
 		StringBuffer sb1=new StringBuffer();
 		sb1.append("jsay=[];");
