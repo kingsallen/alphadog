@@ -146,4 +146,12 @@ public class HrMedia extends TableImpl<HrMediaRecord> {
     public HrMedia as(String alias) {
         return new HrMedia(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrMedia rename(String name) {
+        return new HrMedia(name, null);
+    }
 }

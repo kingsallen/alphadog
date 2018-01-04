@@ -153,4 +153,12 @@ public class HrTeamBackupChendi extends TableImpl<HrTeamBackupChendiRecord> {
     public HrTeamBackupChendi as(String alias) {
         return new HrTeamBackupChendi(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrTeamBackupChendi rename(String name) {
+        return new HrTeamBackupChendi(name, null);
+    }
 }

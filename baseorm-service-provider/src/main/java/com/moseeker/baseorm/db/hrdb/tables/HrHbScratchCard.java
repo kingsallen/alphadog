@@ -163,4 +163,12 @@ public class HrHbScratchCard extends TableImpl<HrHbScratchCardRecord> {
     public HrHbScratchCard as(String alias) {
         return new HrHbScratchCard(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrHbScratchCard rename(String name) {
+        return new HrHbScratchCard(name, null);
+    }
 }

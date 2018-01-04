@@ -128,4 +128,12 @@ public class HrTeamMemberBackupChendi extends TableImpl<HrTeamMemberBackupChendi
     public HrTeamMemberBackupChendi as(String alias) {
         return new HrTeamMemberBackupChendi(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrTeamMemberBackupChendi rename(String name) {
+        return new HrTeamMemberBackupChendi(name, null);
+    }
 }

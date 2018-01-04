@@ -142,4 +142,12 @@ public class HrNps extends TableImpl<HrNpsRecord> {
     public HrNps as(String alias) {
         return new HrNps(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrNps rename(String name) {
+        return new HrNps(name, null);
+    }
 }

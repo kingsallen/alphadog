@@ -167,4 +167,12 @@ public class HrSuperaccountApply extends TableImpl<HrSuperaccountApplyRecord> {
     public HrSuperaccountApply as(String alias) {
         return new HrSuperaccountApply(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrSuperaccountApply rename(String name) {
+        return new HrSuperaccountApply(name, null);
+    }
 }

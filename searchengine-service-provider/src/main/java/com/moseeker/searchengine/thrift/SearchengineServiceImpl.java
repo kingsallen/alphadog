@@ -4,6 +4,7 @@ import java.util.List;
 
 import java.util.Map;
 
+import com.moseeker.searchengine.service.impl.TalentpoolSearchengine;
 import org.apache.thrift.TException;
 import org.elasticsearch.search.SearchHits;
 import org.slf4j.Logger;
@@ -29,6 +30,8 @@ public class SearchengineServiceImpl implements Iface {
 	private CompanySearchengine companySearchengine;
 	@Autowired
 	private PositionSearchEngine positionSearchEngine;
+	@Autowired
+	private TalentpoolSearchengine talentpoolSearchengine;
 
 	@Override
 	public Response query(String keywords, String cities, String industries, String occupations, String scale,
@@ -95,5 +98,47 @@ public class SearchengineServiceImpl implements Iface {
     public Response deleteEmployeeDO(List<Integer> employeeIds) throws TException {
         return service.deleteEmployeeDO(employeeIds);
     }
+
+	@Override
+	public Response searchPositionSuggest(Map<String, String> params) throws TException {
+		try{
+			Map<String,Object> res=service.getPositionSuggest(params);
+			if(res==null||res.isEmpty()){
+				return ResponseUtils.success("");
+			}
+			return ResponseUtils.success(res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
+	@Override
+	public Response userQuery(Map<String, String> params) throws TException {
+		try{
+			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
+			if(res==null||res.isEmpty()){
+				return ResponseUtils.success("");
+			}
+			return ResponseUtils.success(res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
+	@Override
+	public Response userAggInfo(Map<String, String> params) throws TException {
+		try{
+			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
+			if(res==null||res.isEmpty()){
+				return ResponseUtils.success("");
+			}
+			return ResponseUtils.success(res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
 
 }

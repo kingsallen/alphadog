@@ -192,4 +192,12 @@ public class HrHbSendRecord extends TableImpl<HrHbSendRecordRecord> {
     public HrHbSendRecord as(String alias) {
         return new HrHbSendRecord(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrHbSendRecord rename(String name) {
+        return new HrHbSendRecord(name, null);
+    }
 }
