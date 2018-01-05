@@ -152,4 +152,12 @@ public class HrFeedback extends TableImpl<HrFeedbackRecord> {
     public HrFeedback as(String alias) {
         return new HrFeedback(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrFeedback rename(String name) {
+        return new HrFeedback(name, null);
+    }
 }

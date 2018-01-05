@@ -137,4 +137,12 @@ public class HrWxImageReply extends TableImpl<HrWxImageReplyRecord> {
     public HrWxImageReply as(String alias) {
         return new HrWxImageReply(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrWxImageReply rename(String name) {
+        return new HrWxImageReply(name, null);
+    }
 }

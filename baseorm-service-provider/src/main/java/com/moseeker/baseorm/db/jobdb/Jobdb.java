@@ -13,9 +13,9 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionRecomRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
@@ -45,7 +45,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1754882701;
+    private static final long serialVersionUID = -1374727488;
 
     /**
      * The reference instance of <code>jobdb</code>
@@ -98,6 +98,11 @@ public class Jobdb extends SchemaImpl {
     public final JobPosition JOB_POSITION = com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
 
     /**
+     * The table <code>jobdb.job_position_ccmail</code>.
+     */
+    public final JobPositionCcmail JOB_POSITION_CCMAIL = com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail.JOB_POSITION_CCMAIL;
+
+    /**
      * The table <code>jobdb.job_position_city</code>.
      */
     public final JobPositionCity JOB_POSITION_CITY = com.moseeker.baseorm.db.jobdb.tables.JobPositionCity.JOB_POSITION_CITY;
@@ -106,11 +111,6 @@ public class Jobdb extends SchemaImpl {
      * 职位信息扩展表
      */
     public final JobPositionExt JOB_POSITION_EXT = com.moseeker.baseorm.db.jobdb.tables.JobPositionExt.JOB_POSITION_EXT;
-
-    /**
-     * 智能画像职位推送记录，用于微信转发
-     */
-    public final JobPositionRecomRecord JOB_POSITION_RECOM_RECORD = com.moseeker.baseorm.db.jobdb.tables.JobPositionRecomRecord.JOB_POSITION_RECOM_RECORD;
 
     /**
      * 职位分享描述配置模板
@@ -166,9 +166,9 @@ public class Jobdb extends SchemaImpl {
             JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM,
             JobPcReported.JOB_PC_REPORTED,
             JobPosition.JOB_POSITION,
+            JobPositionCcmail.JOB_POSITION_CCMAIL,
             JobPositionCity.JOB_POSITION_CITY,
             JobPositionExt.JOB_POSITION_EXT,
-            JobPositionRecomRecord.JOB_POSITION_RECOM_RECORD,
             JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,
             JobPositionTopic.JOB_POSITION_TOPIC,
             JobResumeOther.JOB_RESUME_OTHER,

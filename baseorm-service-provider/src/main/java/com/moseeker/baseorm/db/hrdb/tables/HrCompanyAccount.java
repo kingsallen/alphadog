@@ -112,4 +112,12 @@ public class HrCompanyAccount extends TableImpl<HrCompanyAccountRecord> {
     public HrCompanyAccount as(String alias) {
         return new HrCompanyAccount(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrCompanyAccount rename(String name) {
+        return new HrCompanyAccount(name, null);
+    }
 }

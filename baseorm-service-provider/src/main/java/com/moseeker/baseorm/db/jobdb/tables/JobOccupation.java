@@ -142,4 +142,12 @@ public class JobOccupation extends TableImpl<JobOccupationRecord> {
     public JobOccupation as(String alias) {
         return new JobOccupation(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public JobOccupation rename(String name) {
+        return new JobOccupation(name, null);
+    }
 }

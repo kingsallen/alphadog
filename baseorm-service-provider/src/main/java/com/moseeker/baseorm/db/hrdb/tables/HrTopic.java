@@ -162,4 +162,12 @@ public class HrTopic extends TableImpl<HrTopicRecord> {
     public HrTopic as(String alias) {
         return new HrTopic(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrTopic rename(String name) {
+        return new HrTopic(name, null);
+    }
 }

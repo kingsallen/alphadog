@@ -147,4 +147,12 @@ public class HrRuleStatistics extends TableImpl<HrRuleStatisticsRecord> {
     public HrRuleStatistics as(String alias) {
         return new HrRuleStatistics(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrRuleStatistics rename(String name) {
+        return new HrRuleStatistics(name, null);
+    }
 }

@@ -142,4 +142,12 @@ public class HrNpsRecommend extends TableImpl<HrNpsRecommendRecord> {
     public HrNpsRecommend as(String alias) {
         return new HrNpsRecommend(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrNpsRecommend rename(String name) {
+        return new HrNpsRecommend(name, null);
+    }
 }

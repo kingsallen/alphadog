@@ -20,7 +20,7 @@
  */
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes =AppConfig.class)
-//public class PositionIndexTest {
+//public class PositionSearchTest {
 //    @Autowired
 //    private PositionSearchEngine positionSearchEngine;
 //    @Autowired

@@ -252,4 +252,12 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
     public JobApplication as(String alias) {
         return new JobApplication(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public JobApplication rename(String name) {
+        return new JobApplication(name, null);
+    }
 }

@@ -65,9 +65,36 @@ struct HrImporterMonitorVO{
 
 }
 
-
 struct HrEmployeeCustomFieldsVO{
     1: optional i32 id,	//null
     2: optional string fname,
     3: optional list<string> fvalues
+}
+
+struct HrCompanyConf {
+
+	1: optional i32 company_id,	//null
+	2: optional i32 theme_id,	//config_sys_theme.id
+	3: optional i32 hb_throttle,	//全局每人每次红包活动可以获得的红包金额上限
+	4: optional string app_reply,	//申请提交成功回复信息
+	5: optional string create_time,	//创建时间
+	6: optional string update_time,	//更新时间
+	7: optional string employee_inding,	//员工认证自定义文案
+	8: optional string recommend_presentee,	//推荐候选人自定义文案
+	9: optional string recommend_success,	//推荐成功自定义文案
+	10: optional string forward_message,	//转发职位自定义文案
+	11: optional i16 application_count_limit,	//一个人在一个公司下每月申请次数限制
+	12: optional string job_custom_title,	//职位自定义字段标题
+	13: optional string search_seq,	//搜索页页面设置顺序,3#1#2
+	14: optional string search_img,	//搜索页页面设置背景图
+	15: optional string job_occupation,	//自定义字段名称
+	16: optional string teamname_custom,	//自定义部门别名
+	17: optional string application_time,	//newjd_status即新的jd页的生效时间，
+	18: optional i32 newjd_status,	//新jd页去设置状态 0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+	19: optional double hr_chat,	//IM聊天开关，0：不开启，1：开启
+	20: optional double show_in_qx,	//公司信息、团队信息、职位信息在仟寻展示，0: 否， 1: 是
+	21: optional string employee_slug,	//员工自定义称谓
+	22: optional string display_locale,	//员工自定义称谓
+	23: optional i8 talentpool_status
+
 }

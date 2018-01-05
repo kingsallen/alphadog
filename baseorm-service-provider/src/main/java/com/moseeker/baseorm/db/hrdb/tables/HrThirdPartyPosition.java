@@ -257,4 +257,12 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     public HrThirdPartyPosition as(String alias) {
         return new HrThirdPartyPosition(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public HrThirdPartyPosition rename(String name) {
+        return new HrThirdPartyPosition(name, null);
+    }
 }
