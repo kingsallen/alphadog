@@ -46,6 +46,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
+import java.util.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,10 +57,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -231,6 +228,7 @@ public class JobApplicataionService {
 
         if (record != null && jobApplication.getOrigin() > 0 && jobApplication.getOrigin() != record.getOrigin()) {
             record.setOrigin(jobApplication.getOrigin() | record.getOrigin());
+            record.setUpdateTime(new Timestamp(new Date().getTime()));
             jobApplicationDao.updateRecord(record);
         }
     }
