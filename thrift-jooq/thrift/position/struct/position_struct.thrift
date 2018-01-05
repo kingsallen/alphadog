@@ -102,6 +102,7 @@ struct WechatPositionListData {
     16: optional i32 priority,
     17: optional i32 publisher,
     18: optional string accountabilities
+    19: optional i32 totalNum;
 }
 
 // 微信端职位列表的附加红包信息
@@ -260,8 +261,7 @@ struct JobPostrionObj{
     46:string extra,
     47:i32 id,
     48:string requirement,
-    49:string custom,
-    50:string thirdParty_position
+    49:string custom
 }
 
 struct City{
