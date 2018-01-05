@@ -11,7 +11,9 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jooq.*;
@@ -161,6 +163,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				logger.info("addIfNotExists origin:{}", origin);
 				create.update(JobApplication.JOB_APPLICATION)
 						.set(JobApplication.JOB_APPLICATION.ORIGIN, origin)
+                        .set(JobApplication.JOB_APPLICATION.UPDATE_TIME, new Timestamp(new Date().getTime()))
 						.where(JobApplication.JOB_APPLICATION.ID.eq(applicationDO.getId()))
 						.execute();
 		}
