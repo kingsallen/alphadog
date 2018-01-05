@@ -772,7 +772,7 @@ public class SearchengineService {
         if(StringUtils.isBlank(keyWord)||StringUtils.isBlank(companyIds)){
             return null;
         }
-        String publisherCompanyId=params.get("publisher_company_id");
+        String publisherCompanyId=params.get("did");
         String page=params.get("page_from");
         String pageSize=params.get("page_size");
         if(StringUtils.isBlank(page)){
