@@ -89,16 +89,13 @@ public class SearchengineService {
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
                           String employment_type, String candidate_source, String experience, String degree, String salary,
                           String company_name, int page_from, int page_size, String child_company_name, String department, boolean order_by_priority, String custom) throws TException {
-
         List listOfid = new ArrayList();
-
         if (page_from == 0) {
             page_from = 0;
         }
         if (page_size == 0) {
             page_size = 20;
         }
-
         TransportClient client = null;
         try {
             client=EsClientInstance.getClient();
@@ -291,16 +288,9 @@ public class SearchengineService {
 
         } catch (Exception e) {
             logger.error("error in search", e);
-            if(client!=null){
-                client.close();
-            }
-            client=null;
-            EsClientInstance.closeEsClient();
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        } finally {
-//            client.close();
-        }
 
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
         Map<String, List> res = new HashMap<String, List>();
         res.put("jd_id_list", listOfid);
         return ResponseUtils.success(res);
@@ -353,13 +343,7 @@ public class SearchengineService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         } catch (Error error) {
             logger.error(error.getMessage());
-            if(client!=null){
-                client.close();
-            }
-            client=null;
             EsClientInstance.closeEsClient();
-        } finally {
-
         }
 
         return ResponseUtils.success("");
@@ -497,11 +481,7 @@ public class SearchengineService {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             } catch (Error error) {
                 logger.error(error.getMessage());
-                if(client!=null){
-                    client.close();
-                }
-                client=null;
-                EsClientInstance.closeEsClient();
+
             }
         }
         return ResponseUtils.success("");
@@ -533,13 +513,8 @@ public class SearchengineService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            if(client!=null){
-                client.close();
-            }
-            client=null;
-            EsClientInstance.closeEsClient();
-        }
 
+        }
         return ResponseUtils.success("");
     }
 
@@ -687,11 +662,6 @@ public class SearchengineService {
             object.put("data", data);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            if(searchClient!=null){
-                searchClient.close();
-            }
-            searchClient=null;
-            EsClientInstance.closeEsClient();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         return ResponseUtils.success(object);
@@ -756,11 +726,6 @@ public class SearchengineService {
             data = resultList.stream().collect(Collectors.toMap(k -> TypeUtils.castToInt(k.remove("employee_id")), v -> v, (oldKey, newKey) -> newKey));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            if(searchClient!=null){
-                searchClient.close();
-            }
-            searchClient=null;
-            EsClientInstance.closeEsClient();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         return ResponseUtils.success(data);

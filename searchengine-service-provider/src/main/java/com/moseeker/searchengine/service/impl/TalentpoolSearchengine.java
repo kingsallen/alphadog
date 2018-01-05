@@ -43,8 +43,9 @@ public class TalentpoolSearchengine {
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params) {
         Map<String, Object> result=new HashMap<>();
+        TransportClient client=null;
         try {
-            TransportClient client = searchUtil.getEsClient();
+            client = searchUtil.getEsClient();
             Map<String, Object> aggInfo = new HashMap<>();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
@@ -77,12 +78,13 @@ public class TalentpoolSearchengine {
     @CounterIface
     public Map<String,Object> getAggInfo(Map<String, String> params){
         Map<String, Object> result=new HashMap<>();
+        TransportClient client =null;
         try {
             String progressStatus = params.get("progress_status");
             if(StringUtils.isNotNullOrEmpty(progressStatus)){
                 params.put("progress_status",null);
             }
-            TransportClient client = searchUtil.getEsClient();
+            client=searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
             builder.addAggregation(this.handleAllApplicationCountAgg(params))
