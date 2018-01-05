@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -101,28 +103,63 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
         return allLevelOccupation.get(j);
     }
 
-    public void generateNewCode(List<Occupation> occupationList){
-        generateNewCode(occupationList,1000);
+    public void generateNewCode(List<Occupation> occupationList,String... seeds){
+
+        try {
+            String code="";
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            Map<Integer,Map<List<String>,String>> allLevelOccupation=new HashMap<>();
+            for(int i=0;i<occupationList.size();i++) {
+                Occupation o=occupationList.get(i);
+
+                List<String> texts=o.getText();
+                List<String> codes=o.getCode();
+
+                for (int j = 1; j <= texts.size(); j++) {
+                    List<String> occupationText = texts.subList(0,j);
+                    Map<List<String>,String> oneLevelOccupation = getOrInitIfNotExist(allLevelOccupation, j);
+                    if (!oneLevelOccupation.containsKey(occupationText)) {
+                        code=md5(digest,concatKey(occupationText,seeds));
+                        oneLevelOccupation.put(occupationText, code);
+                    }
+                    codes.add(oneLevelOccupation.get(occupationText).toString());
+
+                }
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    public void generateNewCode(List<Occupation> occupationList,int seed){
-        Map<Integer,Map<List<String>,String>> allLevelOccupation=new HashMap<>();
-        for(int i=0;i<occupationList.size();i++) {
-            Occupation o=occupationList.get(i);
-
-            List<String> texts=o.getText();
-            List<String> codes=o.getCode();
-
-            for (int j = 1; j <= texts.size(); j++) {
-                List<String> occupationText = texts.subList(0,j);
-                Map<List<String>,String> oneLevelOccupation = getOrInitIfNotExist(allLevelOccupation, j);
-                if (!oneLevelOccupation.containsKey(occupationText)) {
-                    oneLevelOccupation.put(occupationText, seed + "");
-                }
-                codes.add(oneLevelOccupation.get(occupationText).toString());
-                seed++;
-            }
+    /**
+     * 拼接需要加密的key
+     * @param texts
+     * @param seeds
+     * @return
+     */
+    private String concatKey(List<String> texts,String...seeds){
+        StringBuilder key=new StringBuilder();
+        for (String text:texts){
+            key.append("_"+text);
         }
+        for(String seed:seeds){
+            key.append("_"+seed);
+        }
+        key.delete(0,1);
+        return key.toString();
+    }
+
+    private String md5(MessageDigest digest,String str) throws NoSuchAlgorithmException {
+        digest.reset();
+        StringBuilder md5=new StringBuilder();
+        digest.update(str.getBytes());
+        byte strDigest[] = digest.digest();
+        for (int i = 0; i < strDigest.length; i++) {
+            String param = Integer.toString((strDigest[i] & 0xff) + 0x100, 16);
+            md5.append(param.substring(1));
+        }
+        return md5.toString();
     }
 
     public static class Occupation {

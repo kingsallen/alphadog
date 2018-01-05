@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.DictJob1001OccupationDao;
+import com.moseeker.common.util.MD5Util;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictJob1001OccupationDO;
@@ -76,12 +77,12 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
         for(List<String> text:occupations){
             Occupation occupation=new Occupation();
             occupation.setText(text);
-            occupation.setCode(text);
+            occupation.setCode(new ArrayList<>());
             result.add(occupation);
         }
 
-//        String subsite=msg.getString("subsite");
-//        generateNewCode(result,getSeed(subsite));
+        String subsite=msg.getString("subsite");
+        generateNewCode(result,subsite);
 
         return result;
 
