@@ -76,12 +76,12 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
         for(List<String> text:occupations){
             Occupation occupation=new Occupation();
             occupation.setText(text);
-            occupation.setCode(new ArrayList<>());
+            occupation.setCode(text);
             result.add(occupation);
         }
 
-        String subsite=msg.getString("subsite");
-        generateNewCode(result,getSeed(subsite));
+//        String subsite=msg.getString("subsite");
+//        generateNewCode(result,getSeed(subsite));
 
         return result;
 

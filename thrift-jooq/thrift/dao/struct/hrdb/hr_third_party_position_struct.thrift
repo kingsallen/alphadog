@@ -32,6 +32,6 @@ struct HrThirdPartyPositionDO {
     26: optional i32 addressId,
     27: optional string addressName,
     28: optional i32 departmentId,
-    29: optional string departmentName
-
+    29: optional string departmentName,
+    30: optional i32 count  //招聘人数
 }
