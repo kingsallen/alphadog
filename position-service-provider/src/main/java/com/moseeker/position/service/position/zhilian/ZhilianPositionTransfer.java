@@ -157,6 +157,7 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
         data.setCompanyName(form.getCompanyName());
         data.setAddressId(form.getAddressId());
         data.setAddressName(form.getAddressName());
+        data.setCount(form.getCount());
 
         logger.info("回写到第三方职位对象:{}",data);
         return data;
