@@ -115,10 +115,8 @@ public class SearchengineService {
                     String keyword = keyword_list[i];
                     BoolQueryBuilder keyor = QueryBuilders.boolQuery();
                     QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
-//                            .field("_all", 1.0f)
                             .field("title", 20.0f)
                             .field("city", 10.0f)
-//                            .field("company_name", 5.0f)
                             .field("team_name",5.0f)
                             .field("custom",4.0f)
                             .field("occupation",3.0f);
@@ -305,7 +303,6 @@ public class SearchengineService {
 
         Map<String, List> res = new HashMap<String, List>();
         res.put("jd_id_list", listOfid);
-
         return ResponseUtils.success(res);
 
     }
@@ -338,17 +335,14 @@ public class SearchengineService {
     }
 
 
-
+    @CounterIface
     public Response updateposition(String position, int id) throws TException {
 
         String idx = "" + id;
         TransportClient client = null;
         try {
             client=searchUtil.getEsClient();
-            IndexResponse response = client.prepareIndex("index", "fulltext", idx)
-                    .setSource(position)
-                    .execute()
-                    .actionGet();
+            IndexResponse response = client.prepareIndex("index", "fulltext", idx).setSource(position).execute().actionGet();
         } catch (Exception e) {
             logger.error("error in update", e);
             if(client!=null){
