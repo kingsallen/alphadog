@@ -923,6 +923,7 @@ public class PositionService {
      * @return
      */
     private List<JobPositionCityRecord> cityCode(List<City> citys, Integer pid) {
+        logger.info("cityCode : {}, pid:{}", citys, pid);
         List<JobPositionCityRecord> jobPositionCityRecordList = new ArrayList<>();
         try {
             // 将已经查询的到的cityCode放到map中，避免多次查询
@@ -945,14 +946,17 @@ public class PositionService {
                     Query.QueryBuilder cityQuery = new Query.QueryBuilder();
                     JobPositionCityRecord jobPositionCityRecord = new JobPositionCityRecord();
                     jobPositionCityRecord.setPid(pid);
-                    logger.info("城市类型：" + city.getType().toLowerCase());
-                    logger.info("VAlUE：" + city.getValue());
+                    logger.info("城市类型：:{}, pid:{}", city.getType().toLowerCase(), pid);
+                    logger.info("VAlUE：{}, pid:{}",city.getValue(), pid);
                     // 城市名字，转换成cityCode，传入的是城市的时候查询dict_city
                     if (city.getType().toLowerCase().equals("text")) {
                         // 判断是不是特殊城市中的
                         String specicalCity = SpecialCtiy.specialCtiyMap.get(city.getValue().toLowerCase());
                         if (specicalCity != null) {
                             city.setValue(specicalCity);
+                        }
+                        if (org.apache.commons.lang.StringUtils.isBlank(city.getValue())) {
+                            city.setValue("全国");
                         }
                         // 判断下是否是中文还是英文
                         if (isChinese(city.getValue())) { // 是中文
@@ -965,11 +969,14 @@ public class PositionService {
                             cityQuery.where("ename", city.getValue());
                         }
                         try {
+                            logger.info("cityCode value : {}, pid:{}", city.getValue(), pid);
                             DictCityDO dictCityDO = (DictCityDO) cityMap.get(city.getValue());
+                            logger.info("cityCode dictCityDO : {}, pid:{}", dictCityDO, pid);
                             if (dictCityDO != null) {
                                 jobPositionCityRecord.setCode(dictCityDO.getCode());
                             } else {
                                 dictCityDO = dictCityDao.getData(cityQuery.buildQuery());
+                                logger.info("cityCode dictCityDO : {}, pid:{}", dictCityDO, pid);
                                 if (dictCityDO != null && dictCityDO.getCode() != 0) {
                                     jobPositionCityRecord.setCode(dictCityDO.getCode());
                                     cityMap.put(city.getValue(), dictCityDO);

@@ -118,6 +118,13 @@ public class SearchUtil {
         ((BoolQueryBuilder) query).must(cityfilter);
     }
     /*
+        处理match的查询
+     */
+    public void handleMatch(String conditions,QueryBuilder query,String conditionField ){
+        QueryBuilder cityfilter = QueryBuilders.matchQuery(conditionField, conditions);
+        ((BoolQueryBuilder) query).must(cityfilter);
+    }
+    /*
      处理match的filter查询
      */
     public void handleMatchFilter(int conditions,QueryBuilder query,String conditionField ){
@@ -145,6 +152,12 @@ public class SearchUtil {
     public void hanleRange(long conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
         ((BoolQueryBuilder) query).must(cityfilter);
+        logger.info("组合的条件是==================" + query.toString() + "===========");
+    }
+
+    public void hanleRangeFilter(String conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
+        ((BoolQueryBuilder) query).filter(cityfilter);
         logger.info("组合的条件是==================" + query.toString() + "===========");
     }
 
@@ -424,7 +437,18 @@ public class SearchUtil {
         }
 
     }
-
+    public void shouldMatchQuery(Map<String, Object> map, QueryBuilder query){
+        if (map != null && !map.isEmpty()) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String key : map.keySet()) {
+                String list=(String)map.get(key);
+                QueryBuilder fullf = QueryBuilders.matchQuery(key, list);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
     //将xx,xx,xx格式的字符串转化为list
     public List<String> stringConvertList(String keyWords) {
         if (StringUtils.isNotEmpty(keyWords)) {

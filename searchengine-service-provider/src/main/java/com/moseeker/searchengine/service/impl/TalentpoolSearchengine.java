@@ -43,8 +43,9 @@ public class TalentpoolSearchengine {
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params) {
         Map<String, Object> result=new HashMap<>();
+        TransportClient client=null;
         try {
-            TransportClient client = searchUtil.getEsClient();
+            client = searchUtil.getEsClient();
             Map<String, Object> aggInfo = new HashMap<>();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
@@ -77,12 +78,13 @@ public class TalentpoolSearchengine {
     @CounterIface
     public Map<String,Object> getAggInfo(Map<String, String> params){
         Map<String, Object> result=new HashMap<>();
+        TransportClient client =null;
         try {
             String progressStatus = params.get("progress_status");
             if(StringUtils.isNotNullOrEmpty(progressStatus)){
                 params.put("progress_status",null);
             }
-            TransportClient client = searchUtil.getEsClient();
+            client=searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
             builder.addAggregation(this.handleAllApplicationCountAgg(params))
@@ -378,6 +380,9 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(isPublic)){
             this.queryByPublic(Integer.parseInt(isPublic),query);
         }
+        if(StringUtils.isNotNullOrEmpty(favoriteHrs)||StringUtils.isNotNullOrEmpty(isPublic)){
+            this.queryByIstalent(query);
+        }
         query=QueryBuilders.nestedQuery("user.talent_pool",query);
         return query;
     }
@@ -433,7 +438,7 @@ public class TalentpoolSearchengine {
                     sb.append(" val.origin==1 ||val.origin==2 ||val.origin==4 ||val.origin==128 || val.origin==256 ||val.origin==512 ||val.origin==1024 ||");
                 }else{
                     if(origin.length()>8){
-                        sb.append(" origin=="+origin+"||");
+                        sb.append(" origin=='"+origin+"'||");
                     }else{
                         sb.append(" val.origin=="+origin+"||");
                     }
@@ -446,11 +451,8 @@ public class TalentpoolSearchengine {
         }
 
         if(StringUtils.isNotNullOrEmpty(submitTime)){
-            Date date=new Date();
-            long datetime=date.getTime();
-            long preTime=Long.parseLong(submitTime)*3600*24;
-            long time=datetime-preTime;
-            sb.append(" val.submit_time>"+time+"&&");
+            long longTime=this.getLongTime(submitTime);
+            sb.append(" val.submit_time>'"+longTime+"'&&");
         }
         if(StringUtils.isNotNullOrEmpty(progressStatus)){
             sb.append(" val.progress_status=="+progressStatus+"&&");
@@ -506,11 +508,9 @@ public class TalentpoolSearchengine {
      根据简历的更新时间查询
      */
     private void queryByProfileUpDateTime(String updateTime,QueryBuilder queryBuilder){
-        Date date=new Date();
-        long datetime=date.getTime();
-        long preTime=Long.parseLong(updateTime)*3600*24;
-        long time=datetime-preTime;
-        this.searchUtil.hanleRangeFilter(time,queryBuilder,"user.profiles.profile.update_time");
+
+        long time=this.getLongTime(updateTime);
+        this.searchUtil.hanleRangeFilter(String.valueOf(time),queryBuilder,"user.profiles.profile.update_time");
     }
 
     /*
@@ -575,7 +575,7 @@ public class TalentpoolSearchengine {
       构建按照期望城市名称的查询语句
      */
     private void queryByIntentionCity(String cityNames,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
+        searchUtil.handleMatch(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
     }
     /*
       按照公司名称查询
@@ -593,13 +593,13 @@ public class TalentpoolSearchengine {
       按照最后工作的公司查询
      */
     private void queryByLastCompany(String companys,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(companys,queryBuilder,"user.profiles.recent_job.company_name");
+        searchUtil.handleMatch(companys,queryBuilder,"user.profiles.recent_job.company_name");
     }
     /*
       按照最后工作的职位名称查询
      */
     private void queryByLastPositions(String positions,QueryBuilder queryBuilder){
-        searchUtil.handleTerms(positions,queryBuilder,"user.profiles.recent_job.job");
+        searchUtil.handleMatch(positions,queryBuilder,"user.profiles.recent_job.job");
     }
     /*
       按照现居住地查询
@@ -628,7 +628,7 @@ public class TalentpoolSearchengine {
         Map<String,Object> queryMap=new HashMap<>();
         queryMap.put("user.profiles.recent_job.job",works);
         queryMap.put("user.profiles.workexps.job",works);
-        searchUtil.shouldTermsQuery(queryMap,queryBuilder);
+        searchUtil.shouldMatchQuery(queryMap,queryBuilder);
     }
     /*
      构建通过曾经工作的公司查询
@@ -637,7 +637,7 @@ public class TalentpoolSearchengine {
         Map<String,Object> queryMap=new HashMap<>();
         queryMap.put("user.profiles.recent_job.company_name",companys);
         queryMap.put("user.profiles.workexps.company_name",companys);
-        searchUtil.shouldTermsQuery(queryMap,queryBuilder);
+        searchUtil.shouldMatchQuery(queryMap,queryBuilder);
     }
     /*
       按照性别查询
@@ -649,11 +649,24 @@ public class TalentpoolSearchengine {
       按照投递时间查询
      */
     private void queryBySubmitTime(String submitTime,QueryBuilder queryBuilder){
+        long time=this.getLongTime(submitTime);
+        searchUtil.hanleRangeFilter(String.valueOf(time),queryBuilder,"user.applications.submit_time");
+    }
+
+    private Long getLongTime(String submitTime){
         Date date=new Date();
+        long time=Long.parseLong(submitTime);
+        if(time==1){
+            time=3L;
+        }else if(time==2){
+            time=7L;
+        }else if(time==3){
+            time=30L;
+        }
         long datetime=date.getTime();
-        long preTime=Long.parseLong(submitTime)*3600*24;
-        long time=datetime-preTime;
-        searchUtil.hanleRangeFilter(time,queryBuilder,"user.applications.submit_time");
+        long preTime=time*3600*24*1000;
+        long longTime=datetime-preTime;
+        return longTime;
     }
     /*
       按照工作年限查新
@@ -688,8 +701,8 @@ public class TalentpoolSearchengine {
                 map.put("min",5);
                 map.put("max",10);
             }else{
-                map.put("min",0);
-                map.put("max",1);
+                map.put("min",10);
+                map.put("max",100);
             }
             result.add(map);
         }
@@ -706,6 +719,13 @@ public class TalentpoolSearchengine {
      */
     private void queryTagHrId(String hrIds,QueryBuilder queryBuilder){
         searchUtil.handleTerms(hrIds,queryBuilder,"user.talent_pool.hr_id");
+    }
+
+    /*
+     按照是否是收藏的人才搜索
+     */
+    private void queryByIstalent(QueryBuilder queryBuilder){
+        searchUtil.handleMatch(1,queryBuilder,"user.talent_pool.is_talent");
     }
 
     /*
@@ -874,11 +894,8 @@ public class TalentpoolSearchengine {
             sb.append("val.progress_status=="+progressStatus+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(submitTime)){
-            Date date=new Date();
-            long datetime=date.getTime();
-            long preTime=Long.parseLong(submitTime)*3600*24;
-            long time=datetime-preTime;
-            sb.append("val.submit_time>"+time+"&&");
+            long time=this.getLongTime(submitTime);
+            sb.append("val.submit_time>'"+time+"'&&");
         }
         if(StringUtils.isNotNullOrEmpty(positionIds)){
             List<Integer> positionIdList=this.convertStringToList(positionIds);
