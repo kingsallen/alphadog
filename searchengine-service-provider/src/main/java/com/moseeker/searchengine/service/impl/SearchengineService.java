@@ -85,207 +85,20 @@ public class SearchengineService {
 
     @Autowired
     private UserEmployeePointsDao userEmployeePointsDao;
-
+    @CounterIface
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
                           String employment_type, String candidate_source, String experience, String degree, String salary,
-                          String company_name, int page_from, int page_size, String child_company_name, String department, boolean order_by_priority, String custom) throws TException {
+                          String company_name, int page_from, int page_size, String child_company_name, String department,
+                          boolean order_by_priority, String custom) throws TException {
         List listOfid = new ArrayList();
-        if (page_from == 0) {
-            page_from = 0;
-        }
-        if (page_size == 0) {
-            page_size = 20;
-        }
-        TransportClient client = null;
-        try {
-            client=EsClientInstance.getClient();
-            QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
-            QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-
-            boolean haskey = false;
-
-            if (!StringUtils.isEmpty(keywords)) {
-                haskey = true;
-                String[] keyword_list = keywords.split(" ");
-                QueryBuilder keyand = QueryBuilders.boolQuery();
-                for (int i = 0; i < keyword_list.length; i++) {
-                    String keyword = keyword_list[i];
-                    BoolQueryBuilder keyor = QueryBuilders.boolQuery();
-                    QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
-                            .field("title", 20.0f)
-                            .field("city", 10.0f)
-                            .field("team_name",5.0f)
-                            .field("custom",4.0f)
-                            .field("occupation",3.0f);
-                    ((BoolQueryBuilder) keyand).must(fullf);
-                }
-                ((BoolQueryBuilder) query).must(keyand);
-            }
-
-
-            if (!StringUtils.isEmpty(cities)) {
-                String[] city_list = cities.split(",");
-                QueryBuilder cityor = QueryBuilders.boolQuery();
-                for (int i = 0; i < city_list.length; i++) {
-                    String city = city_list[i];
-                    System.out.println(city);
-                    QueryBuilder cityfilter = QueryBuilders.matchPhraseQuery("city", city);
-                    QueryBuilder cityboosting = QueryBuilders.boostingQuery()
-                            .positive(cityfilter)
-                            .negative(QueryBuilders.matchPhraseQuery("title", city)).negativeBoost(0.5f);
-
-                    ((BoolQueryBuilder) cityor).should(cityboosting);
-                }
-                ((BoolQueryBuilder) query).must(cityor);
-            }
-
-            if (!StringUtils.isEmpty(industries)) {
-                haskey = true;
-                String[] industry_list = industries.split(",");
-                QueryBuilder industryor = QueryBuilders.boolQuery();
-                for (int i = 0; i < industry_list.length; i++) {
-                    String industry = industry_list[i];
-                    QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("industry", industry);
-                    ((BoolQueryBuilder) industryor).should(industryfilter);
-                }
-                ((BoolQueryBuilder) query).must(industryor);
-            }
-
-            if (!StringUtils.isEmpty(occupations)) {
-                String[] occupation_list = occupations.split(",");
-                QueryBuilder occupationor = QueryBuilders.boolQuery();
-                for (int i = 0; i < occupation_list.length; i++) {
-                    String occupation = occupation_list[i];
-                    QueryBuilder occupationfilter = QueryBuilders.matchPhraseQuery("occupation", occupation);
-                    ((BoolQueryBuilder) occupationor).should(occupationfilter);
-                }
-                ((BoolQueryBuilder) query).must(occupationor);
-            }
-
-            if (!StringUtils.isEmpty(scale)) {
-
-                QueryBuilder scalefilter = QueryBuilders.matchPhraseQuery("scale", scale);
-                ((BoolQueryBuilder) query).must(scalefilter);
-            }
-
-            if (!StringUtils.isEmpty(employment_type)) {
-                QueryBuilder employmentfilter = QueryBuilders.matchPhraseQuery("employment_type_name", employment_type);
-                ((BoolQueryBuilder) query).must(employmentfilter);
-            }
-
-            if (!StringUtils.isEmpty(candidate_source)) {
-
-                QueryBuilder candidatefilter = QueryBuilders.matchPhraseQuery("candidate_source_name", candidate_source);
-                ((BoolQueryBuilder) query).must(candidatefilter);
-            }
-
-            if (!StringUtils.isEmpty(department)) {
-                QueryBuilder departmentfilter = QueryBuilders.matchPhraseQuery("team_name", department);
-                ((BoolQueryBuilder) query).must(departmentfilter);
-            }
-
-            if (!StringUtils.isEmpty(experience)) {
-                QueryBuilder experiencefilter = QueryBuilders.matchPhraseQuery("experience", experience);
-                ((BoolQueryBuilder) query).must(experiencefilter);
-            }
-
-
-            if (!StringUtils.isEmpty(degree)) {
-                String[] degree_list = degree.split(",");
-                QueryBuilder degreeor = QueryBuilders.boolQuery();
-                for (int i = 0; i < degree_list.length; i++) {
-                    String degree_name = degree_list[i];
-                    QueryBuilder degreefilter = QueryBuilders.matchPhraseQuery("degree_name", degree_name);
-                    ((BoolQueryBuilder) degreeor).should(degreefilter);
-                }
-                ((BoolQueryBuilder) query).must(degreeor);
-            }
-
-
-            if (!StringUtils.isEmpty(company_name)) {
-                String[] company_list = company_name.split(",");
-                QueryBuilder companyor = QueryBuilders.boolQuery();
-                for (int i = 0; i < company_list.length; i++) {
-                    String company_id = company_list[i];
-                    QueryBuilder companyfilter = QueryBuilders.matchPhraseQuery("company_id", company_id);
-                    ((BoolQueryBuilder) companyor).should(companyfilter);
-                }
-                ((BoolQueryBuilder) query).must(companyor);
-            }
-
-
-            if (!StringUtils.isEmpty(salary)) {
-                String[] salary_list = salary.split(",");
-                String salary_from = salary_list[0];
-                String salary_to = salary_list[1];
-                QueryBuilder salary_bottom_filter = QueryBuilders.rangeQuery("salary_bottom").from(salary_from).to(salary_to);
-                QueryBuilder salary_top_filter = QueryBuilders.rangeQuery("salary_top").from(salary_from).to(salary_to);
-                QueryBuilder salaryor = QueryBuilders.boolQuery();
-
-                ((BoolQueryBuilder) salaryor).should(salary_bottom_filter);
-                ((BoolQueryBuilder) salaryor).should(salary_top_filter);
-                ((BoolQueryBuilder) query).must(salaryor);
-            }
-
-            if (!StringUtils.isEmpty(child_company_name)) {
-                QueryBuilder child_company_filter = QueryBuilders.matchPhraseQuery("publisher_company_id", child_company_name);
-                ((BoolQueryBuilder) query).must(child_company_filter);
-            }
-
-            if (!StringUtils.isEmpty(custom)) {
-                QueryBuilder custom_filter = QueryBuilders.matchPhraseQuery("custom", custom);
-                ((BoolQueryBuilder) query).must(custom_filter);
-            }
-
-            QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
-            ((BoolQueryBuilder) query).must(status_filter);
-
-
-            SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
-                    .setQuery(query);
-
-            if (order_by_priority) {
-
-                if (haskey) {
-                    responseBuilder.addSort("priority", SortOrder.ASC);
-                    if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
-                        SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
-                        builder.order(SortOrder.DESC);
-                        responseBuilder.addSort(builder);
-                    }else{
-                        responseBuilder.addSort("_score", SortOrder.DESC);
-                    }
-                } else {
-                    responseBuilder.addSort("priority", SortOrder.ASC);
-                    if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
-                        SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,1),"number");
-                        builder.order(SortOrder.DESC);
-                        responseBuilder.addSort(builder);
-                    }else{
-                        responseBuilder.addSort("update_time", SortOrder.DESC);
-                    }
-
-                }
-
-            } else {
-                if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
-                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
-                    builder.order(SortOrder.DESC);
-                    responseBuilder.addSort(builder);
-                }else{
-                    responseBuilder .addSort("_score", SortOrder.DESC);
-                }
-            }
-            responseBuilder .setFrom(page_from).setSize(page_size);
-            responseBuilder.setTrackScores(true);
-            logger.info(responseBuilder.toString());
-            SearchResponse response = responseBuilder.execute().actionGet();
+        try{
+            SearchResponse response=this.getSearchIndex(keywords, cities,industries,occupations, scale,
+                     employment_type, candidate_source, experience, degree,  salary, company_name, page_from, page_size,
+                     child_company_name, department,order_by_priority,  custom);
             for (SearchHit hit : response.getHits()) {
-                //Handle the hit...
                 String id = ConverTools.converToString(hit.getSource().get("id"));
                 listOfid.add(id);
             }
-
         } catch (Exception e) {
             logger.error("error in search", e);
 
@@ -294,6 +107,236 @@ public class SearchengineService {
         Map<String, List> res = new HashMap<String, List>();
         res.put("jd_id_list", listOfid);
         return ResponseUtils.success(res);
+    }
+
+    @CounterIface
+    public Response queryPositionIndex(String keywords, String cities, String industries, String occupations, String scale,
+                                       String employment_type, String candidate_source, String experience, String degree, String salary,
+                                       String company_name, int page_from, int page_size, String child_company_name, String department,
+                                       boolean order_by_priority, String custom){
+
+        Map<String,Object> result=new HashMap<>();
+        try{
+            SearchResponse response=this.getSearchIndex(keywords, cities,industries,occupations, scale,
+                    employment_type, candidate_source, experience, degree,  salary, company_name, page_from, page_size,
+                    child_company_name, department,order_by_priority,  custom);
+            List listOfid = new ArrayList();
+            SearchHits hits=response.getHits();
+            long totalNum=hits.getTotalHits();
+            if(totalNum>0) {
+                for (SearchHit hit :hits) {
+                    String id = ConverTools.converToString(hit.getSource().get("id"));
+                    listOfid.add(id);
+                }
+            }
+            result.put("jd_id_list",listOfid);
+            result.put("total",totalNum);
+        } catch (Exception e) {
+            logger.error("error in search", e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
+        if(result.isEmpty()){
+            return ResponseUtils.success("");
+        }
+        return ResponseUtils.success(result);
+    }
+    /*
+     将查询elasticsearch index的逻辑独立出来
+     */
+    private SearchResponse getSearchIndex(String keywords, String cities, String industries, String occupations, String scale,
+                                          String employment_type, String candidate_source, String experience, String degree, String salary,
+                                          String company_name, int page_from, int page_size, String child_company_name, String department,
+                                          boolean order_by_priority, String custom){
+
+        if (page_from == 0) {
+            page_from = 0;
+        }
+        if (page_size == 0) {
+            page_size = 20;
+        }
+        TransportClient client= EsClientInstance.getClient();
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+
+        boolean haskey = false;
+
+        if (!StringUtils.isEmpty(keywords)) {
+            haskey = true;
+            String[] keyword_list = keywords.split(" ");
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (int i = 0; i < keyword_list.length; i++) {
+                String keyword = keyword_list[i];
+                BoolQueryBuilder keyor = QueryBuilders.boolQuery();
+                QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
+                        .field("title", 20.0f)
+                        .field("city", 10.0f)
+                        .field("team_name", 5.0f)
+                        .field("custom", 4.0f)
+                        .field("occupation", 3.0f);
+                ((BoolQueryBuilder) keyand).must(fullf);
+            }
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+
+
+        if (!StringUtils.isEmpty(cities)) {
+            String[] city_list = cities.split(",");
+            QueryBuilder cityor = QueryBuilders.boolQuery();
+            for (int i = 0; i < city_list.length; i++) {
+                String city = city_list[i];
+                System.out.println(city);
+                QueryBuilder cityfilter = QueryBuilders.matchPhraseQuery("city", city);
+                QueryBuilder cityboosting = QueryBuilders.boostingQuery()
+                        .positive(cityfilter)
+                        .negative(QueryBuilders.matchPhraseQuery("title", city)).negativeBoost(0.5f);
+
+                ((BoolQueryBuilder) cityor).should(cityboosting);
+            }
+            ((BoolQueryBuilder) query).must(cityor);
+        }
+
+        if (!StringUtils.isEmpty(industries)) {
+            haskey = true;
+            String[] industry_list = industries.split(",");
+            QueryBuilder industryor = QueryBuilders.boolQuery();
+            for (int i = 0; i < industry_list.length; i++) {
+                String industry = industry_list[i];
+                QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("industry", industry);
+                ((BoolQueryBuilder) industryor).should(industryfilter);
+            }
+            ((BoolQueryBuilder) query).must(industryor);
+        }
+
+        if (!StringUtils.isEmpty(occupations)) {
+            String[] occupation_list = occupations.split(",");
+            QueryBuilder occupationor = QueryBuilders.boolQuery();
+            for (int i = 0; i < occupation_list.length; i++) {
+                String occupation = occupation_list[i];
+                QueryBuilder occupationfilter = QueryBuilders.matchPhraseQuery("occupation", occupation);
+                ((BoolQueryBuilder) occupationor).should(occupationfilter);
+            }
+            ((BoolQueryBuilder) query).must(occupationor);
+        }
+
+        if (!StringUtils.isEmpty(scale)) {
+
+            QueryBuilder scalefilter = QueryBuilders.matchPhraseQuery("scale", scale);
+            ((BoolQueryBuilder) query).must(scalefilter);
+        }
+
+        if (!StringUtils.isEmpty(employment_type)) {
+            QueryBuilder employmentfilter = QueryBuilders.matchPhraseQuery("employment_type_name", employment_type);
+            ((BoolQueryBuilder) query).must(employmentfilter);
+        }
+
+        if (!StringUtils.isEmpty(candidate_source)) {
+
+            QueryBuilder candidatefilter = QueryBuilders.matchPhraseQuery("candidate_source_name", candidate_source);
+            ((BoolQueryBuilder) query).must(candidatefilter);
+        }
+
+        if (!StringUtils.isEmpty(department)) {
+            QueryBuilder departmentfilter = QueryBuilders.matchPhraseQuery("team_name", department);
+            ((BoolQueryBuilder) query).must(departmentfilter);
+        }
+
+        if (!StringUtils.isEmpty(experience)) {
+            QueryBuilder experiencefilter = QueryBuilders.matchPhraseQuery("experience", experience);
+            ((BoolQueryBuilder) query).must(experiencefilter);
+        }
+
+
+        if (!StringUtils.isEmpty(degree)) {
+            String[] degree_list = degree.split(",");
+            QueryBuilder degreeor = QueryBuilders.boolQuery();
+            for (int i = 0; i < degree_list.length; i++) {
+                String degree_name = degree_list[i];
+                QueryBuilder degreefilter = QueryBuilders.matchPhraseQuery("degree_name", degree_name);
+                ((BoolQueryBuilder) degreeor).should(degreefilter);
+            }
+            ((BoolQueryBuilder) query).must(degreeor);
+        }
+
+
+        if (!StringUtils.isEmpty(company_name)) {
+            String[] company_list = company_name.split(",");
+            QueryBuilder companyor = QueryBuilders.boolQuery();
+            for (int i = 0; i < company_list.length; i++) {
+                String company_id = company_list[i];
+                QueryBuilder companyfilter = QueryBuilders.matchPhraseQuery("company_id", company_id);
+                ((BoolQueryBuilder) companyor).should(companyfilter);
+            }
+            ((BoolQueryBuilder) query).must(companyor);
+        }
+
+
+        if (!StringUtils.isEmpty(salary)) {
+            String[] salary_list = salary.split(",");
+            String salary_from = salary_list[0];
+            String salary_to = salary_list[1];
+            QueryBuilder salary_bottom_filter = QueryBuilders.rangeQuery("salary_bottom").from(salary_from).to(salary_to);
+            QueryBuilder salary_top_filter = QueryBuilders.rangeQuery("salary_top").from(salary_from).to(salary_to);
+            QueryBuilder salaryor = QueryBuilders.boolQuery();
+
+            ((BoolQueryBuilder) salaryor).should(salary_bottom_filter);
+            ((BoolQueryBuilder) salaryor).should(salary_top_filter);
+            ((BoolQueryBuilder) query).must(salaryor);
+        }
+
+        if (!StringUtils.isEmpty(child_company_name)) {
+            QueryBuilder child_company_filter = QueryBuilders.matchPhraseQuery("publisher_company_id", child_company_name);
+            ((BoolQueryBuilder) query).must(child_company_filter);
+        }
+
+        if (!StringUtils.isEmpty(custom)) {
+            QueryBuilder custom_filter = QueryBuilders.matchPhraseQuery("custom", custom);
+            ((BoolQueryBuilder) query).must(custom_filter);
+        }
+
+        QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
+        ((BoolQueryBuilder) query).must(status_filter);
+
+
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+                .setQuery(query);
+
+        if (order_by_priority) {
+
+            if (haskey) {
+                responseBuilder.addSort("priority", SortOrder.ASC);
+                if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+                    SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
+                    builder.order(SortOrder.DESC);
+                    responseBuilder.addSort(builder);
+                } else {
+                    responseBuilder.addSort("_score", SortOrder.DESC);
+                }
+            } else {
+                responseBuilder.addSort("priority", SortOrder.ASC);
+                if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+                    SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 1), "number");
+                    builder.order(SortOrder.DESC);
+                    responseBuilder.addSort(builder);
+                } else {
+                    responseBuilder.addSort("update_time", SortOrder.DESC);
+                }
+
+            }
+
+        } else {
+            if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+                SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
+                builder.order(SortOrder.DESC);
+                responseBuilder.addSort(builder);
+            } else {
+                responseBuilder.addSort("_score", SortOrder.DESC);
+            }
+        }
+        responseBuilder.setFrom(page_from).setSize(page_size);
+        responseBuilder.setTrackScores(true);
+        logger.info(responseBuilder.toString());
+        SearchResponse response = responseBuilder.execute().actionGet();
+        return response;
 
     }
     /*

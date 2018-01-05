@@ -1253,7 +1253,7 @@ public class PositionService {
                 query.setCities(cities);
             }
             //获取 pid list
-            Response ret = searchengineServices.query(
+            Response ret = searchengineServices.queryPositionIndex(
                     query.getKeywords(),
                     query.getCities(),
                     query.getIndustries(),
@@ -1275,8 +1275,14 @@ public class PositionService {
             if (ret.getStatus() == 0 && !StringUtils.isNullOrEmpty(ret.getData())) {
                 JSONObject jobj = JSON.parseObject(ret.getData());
                 JSONArray jdIdJsonArray = jobj.getJSONArray("jd_id_list");
+                long totalNum=jobj.getLong("total");
                 List<Integer> jdIdList = jdIdJsonArray.stream().map(m -> Integer.valueOf(String.valueOf(m))).collect(Collectors.toList());
                 dataList=this.getWxPosition(jdIdList);
+                if(!StringUtils.isEmptyList(dataList)){
+                    for(WechatPositionListData data:dataList){
+                        data.setTotalNum((int)totalNum);
+                    }
+                }
             } else {
                 return new ArrayList<>();
             }
