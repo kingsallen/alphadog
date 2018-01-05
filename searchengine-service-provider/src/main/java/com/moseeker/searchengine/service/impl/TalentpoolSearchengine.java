@@ -859,9 +859,10 @@ public class TalentpoolSearchengine {
         所有申请的统计
      */
     private AbstractAggregationBuilder handleAllApplicationCountAgg(Map<String,String> params){
+        String progressStatus = params.get("progress_status");
         MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("all_application_count")
                 .initScript(new Script(getAggInitScript()))
-                .mapScript(new Script(this.getAggMapScript(params,null,1)))
+                .mapScript(new Script(this.getAggMapScript(params,progressStatus,1)))
                 .reduceScript(new Script(this.getAggReduceScript()))
                 .combineScript(new Script(this.getAggCombineScript()));
         return build;
