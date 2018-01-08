@@ -176,11 +176,8 @@ public class ResumeDeliveryService {
                     if(sendResponse.getStatus()!=0) {
                         sendSMSToApplier(companyDO, positionDo, userUserDO, "4");
                     }
-                    sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
+                    sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
-                    if(sendResponse.getStatus()!=0) {
-                        sendResponse = sendSMSToHr(accountDo, positionDo, "4");
-                    }
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
                 break;
@@ -199,11 +196,8 @@ public class ResumeDeliveryService {
                     if(sendResponse.getStatus() !=0) {
                     sendTemplateMessageToRecomByQX(aggregationChatDO, positionDo, messageEmailStruct.getRecommender_user_id(),  workExp, lastWorkName);
                     }
-                    sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
+                    sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
-                    if(sendResponse.getStatus()!=0) {
-                        sendResponse = sendSMSToHr(accountDo, positionDo, "1");
-                    }
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
                 break;
@@ -217,9 +211,6 @@ public class ResumeDeliveryService {
 
                     sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
-                    if(sendResponse.getStatus()!=0) {
-                        sendResponse = sendSMSToHr(accountDo, positionDo, "2");
-                    }
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
                 break;
@@ -227,9 +218,6 @@ public class ResumeDeliveryService {
                 default:{
                     Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
-                    if(sendResponse.getStatus()!=0) {
-                        sendResponse = sendSMSToHr(accountDo, positionDo, "0");
-                    }
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
 
@@ -408,7 +396,7 @@ public class ResumeDeliveryService {
 
                 //向推荐者发送的模板
                 HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                        hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable", "0").buildQuery());
+                        hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_NEW_RESUME_TPL).and("disable", "0").buildQuery());
                 String link = handlerLink("recom")+ "?wechat_signature="+ hrChatDO.getSignature();;
                 response = msgHttp.handleRecomTemplate(positionDO, hrChatDO, templateMessageDOQX, userRecomDO, workExp, lastWorkName, qx_userWxDO.getOpenid(), url, link);
             }
