@@ -542,9 +542,10 @@ public class TalentPoolService {
 
         if(type==0){
             int talentNum=this.getAllHrTalent(hrId);
-            int companyPublicNum=talentPoolEntity.getPublicTalentCount(companyId);
+//            int companyPublicNum=talentPoolEntity.getPublicTalentCount(companyId);
+            int companyPublicNum=this.getAllHrPublicTalentNum(companyId);
             int hrPublicNum=this.getHrPublicTalentCount(hrId);
-            int allTalentNum=this.getCompanyTalentCount(companyId);
+            int allTalentNum=this.getAllTalentNum(companyId);
             List<Map<String,Object>> list=this.getTagByHrNoOrder(hrId,0,Integer.MAX_VALUE);
             result.put("allpublic",companyPublicNum);
             result.put("hrpublic",hrPublicNum);
@@ -565,6 +566,33 @@ public class TalentPoolService {
             result.put("tag",list);
         }
         return ResponseUtils.success(result);
+    }
+
+    /*
+     获取公司下所有人才
+     */
+
+    private int getAllTalentNum(int companyId){
+        List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
+        Set<Integer> hrIdList=talentPoolEntity.getIdListByUserHrAccountList(hrList);
+        if(!StringUtils.isEmptySet(hrIdList)){
+            int count=talentPoolEntity.getAllHrTalentCount(hrIdList);
+            return count;
+        }
+        return 0;
+
+    }
+    /*
+     获取公司下公开的所有人才
+     */
+    private int getAllHrPublicTalentNum(int companyId){
+        List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
+        Set<Integer> hrIdList=talentPoolEntity.getIdListByUserHrAccountList(hrList);
+        if(!StringUtils.isEmptySet(hrIdList)){
+            int count=talentPoolEntity.getAllHrPubTalentCount(hrIdList);
+            return count;
+        }
+        return 0;
     }
     /*
       人才的来源来源

@@ -488,7 +488,7 @@ public class TalentPoolEntity {
             return null;
         }
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1)
-                .and(new Condition("id",hrIdList.toArray(), ValueOp.IN))
+                .and(new Condition("id",hrIdList.toArray(), ValueOp.IN)).and("activation",1)
                 .buildQuery();
         List<Map<String,Object>> list=userHrAccountDao.getMaps(query);
 
@@ -691,6 +691,26 @@ public class TalentPoolEntity {
     public int getPublicTalentCount(int companyId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("public_num",1,ValueOp.GE)).buildQuery();
         int count=talentpoolTalentDao.getCount(query);
+        return count;
+    }
+    /*
+     根据hr列表获取所有人才
+     */
+    /*
+      获取公司下所有的人才,一般是主账号在使用
+     */
+    public int getAllHrTalentCount(Set<Integer> hrIdSet){
+        Query query=new Query.QueryBuilder().where(new Condition("hr_id",hrIdSet.toArray(),ValueOp.IN)).buildQuery();
+        int count=talentpoolHrTalentDao.getCount(query);
+        return count;
+    }
+
+    /*
+      获取公司下所有公开的人才
+     */
+    public int getAllHrPubTalentCount(Set<Integer> hrIdSet){
+        Query query=new Query.QueryBuilder().where(new Condition("hr_id",hrIdSet.toArray(),ValueOp.IN)).and("public",1).buildQuery();
+        int count=talentpoolHrTalentDao.getCount(query);
         return count;
     }
     /*

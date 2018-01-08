@@ -1,6 +1,7 @@
 package com.moseeker.company.service.impl;
 
 import com.moseeker.company.config.AppConfig;
+import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;
 import org.junit.Test;
@@ -22,6 +23,8 @@ import java.util.Set;
 public class TalentPoolServiceTest {
     @Autowired
     private TalentPoolService talentPoolService;
+    @Autowired
+    private TalentPoolEntity talentPoolEntity;
 
     @Test
     public void testBatchAddTalent() throws TException {
@@ -191,7 +194,7 @@ public class TalentPoolServiceTest {
     }
     @Test
     public void testGetTalentState(){
-        int hrId=82752;
+        int hrId=91342;
         int companyId=39978;
         Response res=talentPoolService.getTalentState(hrId,companyId,0);
         System.out.println(res);
@@ -241,7 +244,13 @@ public class TalentPoolServiceTest {
         System.out.println(res);
     }
 
-
+    @Test
+    public void testValidateHr(){
+        int hrId=91342;
+        int companyId=39978;
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        System.out.println(flag);
+    }
 
 
 }
