@@ -1307,7 +1307,7 @@ public class TalentPoolService {
     private Map<String,Object> handlePublicTalentData(int companyId,int pageNum,int pageSize){
         List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
         Set<Integer> hrIdList=talentPoolEntity.getIdListByUserHrAccountList(hrList);
-        if(!StringUtils.isEmptySet(hrIdList)){
+        if(StringUtils.isEmptySet(hrIdList)){
             return null;
         }
         int count=talentPoolEntity.getPublicTalentCount(hrIdList);
