@@ -11,6 +11,7 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
 import org.jooq.impl.TableImpl;
@@ -56,6 +57,11 @@ public class DictLiepinOccupationDao extends AbstractDictOccupationDao<DictLiepi
     @Override
     protected String otherCodeName() {
         return DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.OTHER_CODE.getName();
+    }
+
+    public int deleteAll(){
+        Condition condition=new Condition(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE.getName(),0, ValueOp.NEQ);
+        return delete(condition);
     }
 
     @Override

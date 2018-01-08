@@ -52,7 +52,7 @@ public class Dict51OccupationDao extends AbstractDictOccupationDao<Dict51jobOccu
     }
 
     public int deleteAll(){
-        Condition condition=new Condition("code",0, ValueOp.NEQ);
+        Condition condition=new Condition(Dict_51jobOccupation.DICT_51JOB_OCCUPATION.CODE.getName(),0, ValueOp.NEQ);
         return delete(condition);
     }
 

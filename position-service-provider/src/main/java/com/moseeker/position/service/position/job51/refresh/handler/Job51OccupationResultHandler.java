@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Map;
 
-public class Job51OccupationResultHandler extends AbstractOccupationResultHandler<Dict51jobOccupationDO>{
+public class Job51OccupationResultHandler extends AbstractOccupationResultHandler<Dict51jobOccupationDO> implements Job51ResultHandlerAdapter{
     Logger logger= LoggerFactory.getLogger(Job51OccupationResultHandler.class);
 
     @Autowired
