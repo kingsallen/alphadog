@@ -23,7 +23,7 @@ public class YLOccupationResultHandlerTest {
     @Autowired
     PositionEmailNotification emailNotification;
 
-    String file="C:\\Users\\xym-moseeker\\Desktop\\YLoccupation.txt";
+    String file="C:\\Users\\xym-moseeker\\Desktop\\备份\\YLoccupation.txt";
 
     @Test
     public void test(){
