@@ -1305,10 +1305,15 @@ public class TalentPoolService {
      分页获取数据
      */
     private Map<String,Object> handlePublicTalentData(int companyId,int pageNum,int pageSize){
-        int count=talentPoolEntity.getPublicTalentCount(companyId);
+        List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
+        Set<Integer> hrIdList=talentPoolEntity.getIdListByUserHrAccountList(hrList);
+        if(!StringUtils.isEmptySet(hrIdList)){
+            return null;
+        }
+        int count=talentPoolEntity.getPublicTalentCount(hrIdList);
         double page=((double)count)/pageSize;
         int total= (int) Math.ceil(page);
-        List<Map<String,Object>> list=getPublicTalentByCompanyId(companyId,pageNum,pageSize);
+        List<Map<String,Object>> list=getPublicTalentByCompanyId(hrIdList,pageNum,pageSize);
         Map<String,Object> result=new HashMap<>();
         result.put("page_number",pageNum);
         result.put("page_size",pageSize);
@@ -1618,6 +1623,15 @@ public class TalentPoolService {
                 .setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<Map<String,Object>> list=talentpoolTalentDao.getMaps(query);
         return list;
+    }
+    /*
+    获取公司下所有的人才
+   */
+    private List<Map<String,Object>> getPublicTalentByCompanyId(Set<Integer> hrIdSet,int pageNum,int pageSize){
+//        Query query=new Query.QueryBuilder().select(new Select("'user_id",SelectOp.DISTINCT)).where(new Condition("hr_id",hrIdSet.toArray(),ValueOp.IN)).and(new Condition("public",1,ValueOp.GT))
+//                .setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+//        List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);
+        return talentpoolHrTalentDao.getAllPublicTalent(hrIdSet,pageNum,pageSize);
     }
 
     /*

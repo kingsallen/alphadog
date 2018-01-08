@@ -194,7 +194,7 @@ public class TalentPoolServiceTest {
     }
     @Test
     public void testGetTalentState(){
-        int hrId=91342;
+        int hrId=82752;
         int companyId=39978;
         Response res=talentPoolService.getTalentState(hrId,companyId,0);
         System.out.println(res);
