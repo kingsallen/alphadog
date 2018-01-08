@@ -57,7 +57,6 @@ public class SearchengineController {
             Response result = positonServices.getPositionById(id);
             position = result.data;
             Map position_map =JSON.parseObject(position,Map.class);
-            
             String company_id = BeanUtils.converToString(position_map.get("company_id"));
             CommonQuery query = new CommonQuery();
             query.setEqualFilter(new HashMap<String, String>(){{put("id", company_id);}});
@@ -77,39 +76,31 @@ public class SearchengineController {
                  }
                  position_map.put("degree_name",degree_name);
                  position_map.put("scale",scale);
-                 
             }
-           
             position = JSON.toJSONString(position_map);
             logger.info(position);
             search_res = searchengineServices.updateposition(position,id);
-
-             
         } catch (Exception e) {
-
            e.printStackTrace();
            logger.error(e.getMessage(),e);
            return ResponseLogNotification.fail(request, e.getMessage());
         }
-        
         return ResponseLogNotification.success(request, search_res);
     }
-
     @RequestMapping(value = "/search/position", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
     public String searchPCPosition(HttpServletRequest request, HttpServletResponse response) {
-    
         try {
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
             logger.info(JSON.toJSONString(reqParams)+"=============");
-            String keywords = BeanUtils.converToString(reqParams.get("keywords"));
-            String cities = BeanUtils.converToString(reqParams.get("cities"));
-            String industries = BeanUtils.converToString(reqParams.get("industries"));
-            String occupations = BeanUtils.converToString(reqParams.get("occupations"));
+            String keywords = this.filterStringForSearch(BeanUtils.converToString(reqParams.get("keywords")));
+            String cities = this.filterStringForSearch(BeanUtils.converToString(reqParams.get("cities")));
+            String industries = this.filterStringForSearch(BeanUtils.converToString(reqParams.get("industries")));
+            String occupations = this.filterStringForSearch(BeanUtils.converToString(reqParams.get("occupations")));
             String scale = BeanUtils.converToString(reqParams.get("scale"));
             String employment_type = BeanUtils.converToString(reqParams.get("employment_type"));
             String candidate_source = BeanUtils.converToString(reqParams.get("candidate_source"));
-            String experience = BeanUtils.converToString(reqParams.get("experience"));
+            String experience = this.filterStringForSearch(BeanUtils.converToString(reqParams.get("experience")));
             String degree = BeanUtils.converToString(reqParams.get("degree"));
             String salary = BeanUtils.converToString(reqParams.get("salary"));
             String company_id = BeanUtils.converToString(reqParams.get("company_id"));
@@ -119,17 +110,10 @@ public class SearchengineController {
             //由于department废弃，查询部门时使用team_name
             String department = BeanUtils.converToString(reqParams.get("team_name"));
             boolean order_by_priority = BeanUtils.convertToBoolean(reqParams.get("order_by_priority"));
-            String custom = BeanUtils.converToString(reqParams.get("custom"));
-            
-            logger.info(keywords, cities, industries, occupations, scale,
-                    employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
-                    child_company_id,department, order_by_priority, custom,"=============");
+            String custom = this.filterStringForSearch(BeanUtils.converToString(reqParams.get("custom")));
             Response result = searchengineServices.query(keywords, cities, industries, occupations, scale,
                     employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
                     child_company_id,department, order_by_priority, custom);
-            logger.info(keywords, cities, industries, occupations, scale,
-                    employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
-                    child_company_id,department, order_by_priority, custom,"=============");
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);
             } else {
@@ -166,13 +150,10 @@ public class SearchengineController {
             }else{
             	result=ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
-             
         } catch (Exception e) {
-
            e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
         }
-        
         return ResponseLogNotification.success(request,result);
     }
     
@@ -215,8 +196,8 @@ public class SearchengineController {
     	 Map<String, Object> reqParams = null;
     	 try{
     		 reqParams = ParamUtils.parseRequestParam(request);
-    		 String keyWord=(String) reqParams.get("keyWord");
-    		 String citys=(String) reqParams.get("citys");
+    		 String keyWord=this.filterStringForSearch((String) reqParams.get("keyWord"));
+    		 String citys=this.filterStringForSearch((String) reqParams.get("citys"));
     		 String industry=(String) reqParams.get("industry");
     		 String scale=(String) reqParams.get("scale");
     		 String page=(String) reqParams.get("page");
@@ -255,8 +236,8 @@ public class SearchengineController {
     	 Map<String, Object> reqParams = null;
     	 try{
     		 reqParams = ParamUtils.parseRequestParam(request);
-    		 String keyWord=(String) reqParams.get("keyWord");
-    		 String citys=(String) reqParams.get("citys");
+    		 String keyWord=this.filterStringForSearch((String) reqParams.get("keyWord"));
+    		 String citys=this.filterStringForSearch((String) reqParams.get("citys"));
     		 String industry=(String) reqParams.get("industry");
     		 String scale=(String) reqParams.get("scale");
     		 String page=(String) reqParams.get("page");
@@ -330,7 +311,8 @@ public class SearchengineController {
                 return ResponseLogNotification.fail(request, "参数不能为空");
             }
             for(String key:reqParams.keySet()){
-                params.put(key,String.valueOf(reqParams.get(key)));
+                String value=String.valueOf(reqParams.get(key));
+                params.put(key,this.filterStringForSearch(value));
             }
             Response res=searchengineServices.userQuery(params);
             return ResponseLogNotification.success(request,res);
@@ -350,7 +332,9 @@ public class SearchengineController {
                 return ResponseLogNotification.fail(request, "参数不能为空");
             }
             for(String key:reqParams.keySet()){
-                params.put(key,String.valueOf(reqParams.get(key)));
+                String value=String.valueOf(reqParams.get(key));
+
+                params.put(key,this.filterStringForSearch(value));
             }
             Response res=searchengineServices.userAggInfo(params);
             return ResponseLogNotification.success(request,res);
@@ -359,24 +343,21 @@ public class SearchengineController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-    //pc端企业搜索的es
-    @RequestMapping(value = "/api/position/suggest", method = RequestMethod.POST)
-    @ResponseBody
-    public String searchPositionSuggest(HttpServletRequest request, HttpServletResponse response){
-        try{
-            Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
-            Map<String,String> params=new HashMap<>();
-            if(reqParams==null||reqParams.isEmpty()){
-                return ResponseLogNotification.fail(request, "参数不能为空");
+    /*
+     过滤 / or and,为了防止es查询字符串产生不准或者错误
+     */
+    private String filterStringForSearch(String value){
+        if(StringUtils.isNotNullOrEmpty(value)){
+            if(value.contains("/")){
+                value.replaceAll("/","");
             }
-            for(String key:reqParams.keySet()){
-                params.put(key,String.valueOf(reqParams.get(key)));
+            if(value.toLowerCase().contains("or")){
+                value=value.toLowerCase().replaceAll("or","");
             }
-            Response res=searchengineServices.searchPositionSuggest(params);
-            return ResponseLogNotification.success(request,res);
-        }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            if(value.toLowerCase().contains("and")){
+                value=value.toLowerCase().replaceAll("and","");
+            }
         }
+        return value;
     }
 }

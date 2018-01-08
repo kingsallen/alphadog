@@ -17,20 +17,20 @@ import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecor
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolUserTagRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Order;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.common.util.query.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Created by zztaiwll on 17/12/1.
  */
 @Service
 public class TalentPoolEntity {
+    org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private JobApplicationDao jobApplicationDao;
     @Autowired
@@ -488,7 +488,7 @@ public class TalentPoolEntity {
             return null;
         }
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1)
-                .and(new Condition("id",hrIdList.toArray(), ValueOp.IN))
+                .and(new Condition("id",hrIdList.toArray(), ValueOp.IN)).and("activation",1)
                 .buildQuery();
         List<Map<String,Object>> list=userHrAccountDao.getMaps(query);
 
@@ -692,6 +692,34 @@ public class TalentPoolEntity {
         Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("public_num",1,ValueOp.GE)).buildQuery();
         int count=talentpoolTalentDao.getCount(query);
         return count;
+    }
+
+    /*
+      获取公司下所有公开的人才
+     */
+    public int getPublicTalentCount(Set<Integer> hrIdSet){
+//        Query query=new Query.QueryBuilder().select(new Select("user_id",SelectOp.DISTINCT)).where(new Condition("hr_id",hrIdSet.toArray(),ValueOp.IN)).and("public",1).buildQuery();
+//        List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);
+//        if(StringUtils.isEmptyList(list)){
+//            return 0;
+//        }
+        return talentpoolHrTalentDao.getPublicCount(hrIdSet);
+    }
+    /*
+     根据hr列表获取所有人才
+     */
+    /*
+      获取公司下所有的人才,一般是主账号在使用
+     */
+    public int getAllHrTalentCount(Set<Integer> hrIdSet){
+        return talentpoolHrTalentDao.getAllTalentCount(hrIdSet);
+    }
+
+    /*
+      获取公司下所有公开的人才
+     */
+    public int getAllHrPubTalentCount(Set<Integer> hrIdSet){
+        return talentpoolHrTalentDao.getPublicCount(hrIdSet);
     }
     /*
      获取人才是否在这家公司下公开
