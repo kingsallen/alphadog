@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = -628494346;
+    private static final long serialVersionUID = 1373866938;
 
     private Integer   companyId;
     private Integer   themeId;
@@ -36,6 +36,7 @@ public class HrCompanyConf implements Serializable {
     private String    recommendSuccess;
     private String    forwardMessage;
     private Short     applicationCountLimit;
+    private Short     schoolApplicationCountLimit;
     private String    jobCustomTitle;
     private String    searchSeq;
     private String    searchImg;
@@ -63,6 +64,7 @@ public class HrCompanyConf implements Serializable {
         this.recommendSuccess = value.recommendSuccess;
         this.forwardMessage = value.forwardMessage;
         this.applicationCountLimit = value.applicationCountLimit;
+        this.schoolApplicationCountLimit = value.schoolApplicationCountLimit;
         this.jobCustomTitle = value.jobCustomTitle;
         this.searchSeq = value.searchSeq;
         this.searchImg = value.searchImg;
@@ -89,6 +91,7 @@ public class HrCompanyConf implements Serializable {
         String    recommendSuccess,
         String    forwardMessage,
         Short     applicationCountLimit,
+        Short     schoolApplicationCountLimit,
         String    jobCustomTitle,
         String    searchSeq,
         String    searchImg,
@@ -113,6 +116,7 @@ public class HrCompanyConf implements Serializable {
         this.recommendSuccess = recommendSuccess;
         this.forwardMessage = forwardMessage;
         this.applicationCountLimit = applicationCountLimit;
+        this.schoolApplicationCountLimit = schoolApplicationCountLimit;
         this.jobCustomTitle = jobCustomTitle;
         this.searchSeq = searchSeq;
         this.searchImg = searchImg;
@@ -213,6 +217,14 @@ public class HrCompanyConf implements Serializable {
 
     public void setApplicationCountLimit(Short applicationCountLimit) {
         this.applicationCountLimit = applicationCountLimit;
+    }
+
+    public Short getSchoolApplicationCountLimit() {
+        return this.schoolApplicationCountLimit;
+    }
+
+    public void setSchoolApplicationCountLimit(Short schoolApplicationCountLimit) {
+        this.schoolApplicationCountLimit = schoolApplicationCountLimit;
     }
 
     public String getJobCustomTitle() {
@@ -326,6 +338,7 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(recommendSuccess);
         sb.append(", ").append(forwardMessage);
         sb.append(", ").append(applicationCountLimit);
+        sb.append(", ").append(schoolApplicationCountLimit);
         sb.append(", ").append(jobCustomTitle);
         sb.append(", ").append(searchSeq);
         sb.append(", ").append(searchImg);
