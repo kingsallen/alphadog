@@ -502,14 +502,33 @@ public class ProfileController {
         }
     }
 
-    @RequestMapping(value = "/api/profile/preserve", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/profile/upload/combine", method = RequestMethod.POST)
     @ResponseBody
-    public String profilePreserve(HttpServletRequest request, HttpServletResponse response) {
+    public String profileCombine(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseequestParameter(request);
             String profile=params.getString("profile");
             Integer uid = params.getInt("uuid");
-            Response res = profileService.preserveProfile(profile,StringUtils.toString(uid));
+            Response res = profileService.combinationProfile(profile,StringUtils.toString(uid));
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/profile/upload/preserve", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveProfile(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
+            String profile=params.getString("profile");
+            Integer uid = params.getInt("uuid");
+            int hrId=params.getInt("hr_id");
+            int companyId=params.getInt("companyId");
+            String fileName=params.getString("file_name");
+            Response res = profileService.preserveProfile(profile,hrId,companyId,fileName);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));

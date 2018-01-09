@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 457709294;
+    private static final long serialVersionUID = 355103740;
 
     /**
      * Setter for <code>hrdb.hr_third_party_position.id</code>.
@@ -324,30 +324,30 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_position.practice_salary_unit</code>. 实习薪资单位，0：元/月，1：元/天
-     */
-    public void setPracticeSalaryUnit(Byte value) {
-        set(21, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_third_party_position.practice_salary_unit</code>. 实习薪资单位，0：元/月，1：元/天
-     */
-    public Byte getPracticeSalaryUnit() {
-        return (Byte) get(21);
-    }
-
-    /**
      * Setter for <code>hrdb.hr_third_party_position.practice_per_week</code>. 每周实习天数
      */
     public void setPracticePerWeek(Byte value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_third_party_position.practice_per_week</code>. 每周实习天数
      */
     public Byte getPracticePerWeek() {
+        return (Byte) get(21);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_third_party_position.practice_salary_unit</code>. 实习薪资单位，0：元/月，1：元/天
+     */
+    public void setPracticeSalaryUnit(Byte value) {
+        set(22, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_third_party_position.practice_salary_unit</code>. 实习薪资单位，0：元/月，1：元/天
+     */
+    public Byte getPracticeSalaryUnit() {
         return (Byte) get(22);
     }
 
@@ -435,6 +435,20 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
         return (String) get(28);
     }
 
+    /**
+     * Setter for <code>hrdb.hr_third_party_position.count</code>. 招聘人数
+     */
+    public void setCount(Integer value) {
+        set(29, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_third_party_position.count</code>. 招聘人数
+     */
+    public Integer getCount() {
+        return (Integer) get(29);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -461,7 +475,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     /**
      * Create a detached, initialised HrThirdPartyPositionRecord
      */
-    public HrThirdPartyPositionRecord(Integer id, Integer positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String address, String occupation, String syncFailReason, Short useCompanyAddress, Integer thirdPartyAccountId, String department, Integer salaryMonth, Integer feedbackPeriod, Short salaryDiscuss, Integer salaryBottom, Integer salaryTop, Integer practiceSalary, Byte practiceSalaryUnit, Byte practicePerWeek, Integer companyId, Integer addressId, Integer departmentId, String companyName, String addressName, String departmentName) {
+    public HrThirdPartyPositionRecord(Integer id, Integer positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String address, String occupation, String syncFailReason, Short useCompanyAddress, Integer thirdPartyAccountId, String department, Integer salaryMonth, Integer feedbackPeriod, Short salaryDiscuss, Integer salaryBottom, Integer salaryTop, Integer practiceSalary, Byte practicePerWeek, Byte practiceSalaryUnit, Integer companyId, Integer addressId, Integer departmentId, String companyName, String addressName, String departmentName, Integer count) {
         super(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION);
 
         set(0, id);
@@ -485,13 +499,14 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
         set(18, salaryBottom);
         set(19, salaryTop);
         set(20, practiceSalary);
-        set(21, practiceSalaryUnit);
-        set(22, practicePerWeek);
+        set(21, practicePerWeek);
+        set(22, practiceSalaryUnit);
         set(23, companyId);
         set(24, addressId);
         set(25, departmentId);
         set(26, companyName);
         set(27, addressName);
         set(28, departmentName);
+        set(29, count);
     }
 }

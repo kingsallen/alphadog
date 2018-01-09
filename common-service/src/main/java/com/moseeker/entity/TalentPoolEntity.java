@@ -11,11 +11,10 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrTalentRecord;
-import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTagRecord;
-import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecord;
-import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolUserTagRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
@@ -51,6 +50,10 @@ public class TalentPoolEntity {
     private TalentpoolTagDao talentpoolTagDao;
     @Autowired
     private TalentpoolUserTagDao talentpoolUserTagDao;
+    @Autowired
+    private RedisClient client;
+    @Autowired
+    private TalentpoolUploadDao talentpoolUploadDao;
 
     /*
         验证hr操作user_id是否合法
@@ -751,8 +754,8 @@ public class TalentPoolEntity {
         return list;
     }
     /*
-        查询hr下所有的标签
-       */
+    查询hr下所有的标签
+    */
     public List<Map<String,Object>> getTagByHr(int hrId,int pageNum,int pageSize){
         Query query=new Query.QueryBuilder().where("hr_id",hrId)
                 .setPageNum(pageNum).setPageSize(pageSize)
@@ -760,5 +763,75 @@ public class TalentPoolEntity {
                 .buildQuery();
         List<Map<String,Object>> list= talentpoolTagDao.getMaps(query);
         return list;
+    }
+    /*
+     判断是否收藏
+     */
+    private int isHrtalent(int userId,int hrId){
+        Query query=new Query.QueryBuilder().where("user_id",userId).and("hr_id",hrId).buildQuery();
+        int count=talentpoolHrTalentDao.getCount(query);
+        return count;
+    }
+    /*
+     上传简历成为收藏人才
+     */
+    public void addUploadTalent(int userId,int hrId,int companyId,String fileName){
+        if(this.isHrtalent(userId,hrId)==0){
+            Set<Integer> userSet=new HashSet<>();
+            userSet.add(userId);
+            this.addTalent(userSet,hrId,companyId);
+            this.saveUploadProfile(fileName,hrId,companyId);
+        }
+    }
+    /*
+     记录上传的简历
+     */
+    private void saveUploadProfile(String fileName,int hrId,int companyId){
+        TalentpoolUploadRecord record=new TalentpoolUploadRecord();
+        record.setCompanyId(companyId);
+        record.setHrId(hrId);
+        record.setFileName(fileName);
+        talentpoolUploadDao.addRecord(record);
+    }
+    /*
+     添加人才
+     */
+    public void addTalent(Set<Integer> idList,int hrId,int companyId){
+        if(!StringUtils.isEmptySet(idList)){
+            List<TalentpoolHrTalentRecord> recordList=new ArrayList<>();
+            for(Integer id:idList){
+                TalentpoolHrTalentRecord record=new TalentpoolHrTalentRecord();
+                record.setHrId(hrId);
+                record.setUserId(id);
+                recordList.add(record);
+            }
+            talentpoolHrTalentDao.addAllRecord(recordList);
+            for(Integer id:idList){
+                this.handlerTalentpoolTalent(id,companyId,0,0,1);
+            }
+            this.realTimeUpdate(this.converSetToList(idList));
+        }
+    }
+    /*
+     实时更新到redis
+     */
+    public void realTimeUpdate(List<Integer> userIdList){
+
+        Map<String,Object> result=new HashMap<>();
+        result.put("tableName","talentpool_user_tag");
+        result.put("user_id",userIdList);
+        client.lpush(Constant.APPID_ALPHADOG,
+                "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+    }
+
+    /*
+    将set转换为list
+    */
+    public List<Integer> converSetToList(Set<Integer> userIdSet){
+        List<Integer> userIdList=new ArrayList<>();
+        for(Integer id:userIdSet){
+            userIdList.add(id);
+        }
+        return userIdList;
     }
 }

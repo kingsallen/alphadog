@@ -28,7 +28,9 @@ public class WholeProfileServices {
 
     public boolean retrieveProfile(java.lang.String parameter) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response preserveProfile(java.lang.String params, java.lang.String uuid) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response combinationProfile(java.lang.String params, java.lang.String uuid) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
+    public com.moseeker.thrift.gen.common.struct.Response preserveProfile(java.lang.String params, int hrId, int companyId, java.lang.String fileName) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
   }
 
@@ -50,7 +52,9 @@ public class WholeProfileServices {
 
     public void retrieveProfile(java.lang.String parameter, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException;
 
-    public void preserveProfile(java.lang.String params, java.lang.String uuid, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void combinationProfile(java.lang.String params, java.lang.String uuid, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void preserveProfile(java.lang.String params, int hrId, int companyId, java.lang.String fileName, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -288,17 +292,46 @@ public class WholeProfileServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "retrieveProfile failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response preserveProfile(java.lang.String params, java.lang.String uuid) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response combinationProfile(java.lang.String params, java.lang.String uuid) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_preserveProfile(params, uuid);
+      send_combinationProfile(params, uuid);
+      return recv_combinationProfile();
+    }
+
+    public void send_combinationProfile(java.lang.String params, java.lang.String uuid) throws org.apache.thrift.TException
+    {
+      combinationProfile_args args = new combinationProfile_args();
+      args.setParams(params);
+      args.setUuid(uuid);
+      sendBase("combinationProfile", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_combinationProfile() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      combinationProfile_result result = new combinationProfile_result();
+      receiveBase(result, "combinationProfile");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "combinationProfile failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response preserveProfile(java.lang.String params, int hrId, int companyId, java.lang.String fileName) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_preserveProfile(params, hrId, companyId, fileName);
       return recv_preserveProfile();
     }
 
-    public void send_preserveProfile(java.lang.String params, java.lang.String uuid) throws org.apache.thrift.TException
+    public void send_preserveProfile(java.lang.String params, int hrId, int companyId, java.lang.String fileName) throws org.apache.thrift.TException
     {
       preserveProfile_args args = new preserveProfile_args();
       args.setParams(params);
-      args.setUuid(uuid);
+      args.setHrId(hrId);
+      args.setCompanyId(companyId);
+      args.setFileName(fileName);
       sendBase("preserveProfile", args);
     }
 
@@ -607,27 +640,68 @@ public class WholeProfileServices {
       }
     }
 
-    public void preserveProfile(java.lang.String params, java.lang.String uuid, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void combinationProfile(java.lang.String params, java.lang.String uuid, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      preserveProfile_call method_call = new preserveProfile_call(params, uuid, resultHandler, this, ___protocolFactory, ___transport);
+      combinationProfile_call method_call = new combinationProfile_call(params, uuid, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class preserveProfile_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+    public static class combinationProfile_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
       private java.lang.String params;
       private java.lang.String uuid;
-      public preserveProfile_call(java.lang.String params, java.lang.String uuid, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public combinationProfile_call(java.lang.String params, java.lang.String uuid, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.params = params;
         this.uuid = uuid;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("combinationProfile", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        combinationProfile_args args = new combinationProfile_args();
+        args.setParams(params);
+        args.setUuid(uuid);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_combinationProfile();
+      }
+    }
+
+    public void preserveProfile(java.lang.String params, int hrId, int companyId, java.lang.String fileName, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      preserveProfile_call method_call = new preserveProfile_call(params, hrId, companyId, fileName, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class preserveProfile_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private java.lang.String params;
+      private int hrId;
+      private int companyId;
+      private java.lang.String fileName;
+      public preserveProfile_call(java.lang.String params, int hrId, int companyId, java.lang.String fileName, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.params = params;
+        this.hrId = hrId;
+        this.companyId = companyId;
+        this.fileName = fileName;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("preserveProfile", org.apache.thrift.protocol.TMessageType.CALL, 0));
         preserveProfile_args args = new preserveProfile_args();
         args.setParams(params);
-        args.setUuid(uuid);
+        args.setHrId(hrId);
+        args.setCompanyId(companyId);
+        args.setFileName(fileName);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -663,6 +737,7 @@ public class WholeProfileServices {
       processMap.put("improveProfile", new improveProfile());
       processMap.put("moveProfile", new moveProfile());
       processMap.put("retrieveProfile", new retrieveProfile());
+      processMap.put("combinationProfile", new combinationProfile());
       processMap.put("preserveProfile", new preserveProfile());
       return processMap;
     }
@@ -860,6 +935,30 @@ public class WholeProfileServices {
       }
     }
 
+    public static class combinationProfile<I extends Iface> extends org.apache.thrift.ProcessFunction<I, combinationProfile_args> {
+      public combinationProfile() {
+        super("combinationProfile");
+      }
+
+      public combinationProfile_args getEmptyArgsInstance() {
+        return new combinationProfile_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public combinationProfile_result getResult(I iface, combinationProfile_args args) throws org.apache.thrift.TException {
+        combinationProfile_result result = new combinationProfile_result();
+        try {
+          result.success = iface.combinationProfile(args.params, args.uuid);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
     public static class preserveProfile<I extends Iface> extends org.apache.thrift.ProcessFunction<I, preserveProfile_args> {
       public preserveProfile() {
         super("preserveProfile");
@@ -876,7 +975,7 @@ public class WholeProfileServices {
       public preserveProfile_result getResult(I iface, preserveProfile_args args) throws org.apache.thrift.TException {
         preserveProfile_result result = new preserveProfile_result();
         try {
-          result.success = iface.preserveProfile(args.params, args.uuid);
+          result.success = iface.preserveProfile(args.params, args.hrId, args.companyId, args.fileName);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -905,6 +1004,7 @@ public class WholeProfileServices {
       processMap.put("improveProfile", new improveProfile());
       processMap.put("moveProfile", new moveProfile());
       processMap.put("retrieveProfile", new retrieveProfile());
+      processMap.put("combinationProfile", new combinationProfile());
       processMap.put("preserveProfile", new preserveProfile());
       return processMap;
     }
@@ -1430,6 +1530,71 @@ public class WholeProfileServices {
       }
     }
 
+    public static class combinationProfile<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, combinationProfile_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public combinationProfile() {
+        super("combinationProfile");
+      }
+
+      public combinationProfile_args getEmptyArgsInstance() {
+        return new combinationProfile_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            combinationProfile_result result = new combinationProfile_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            combinationProfile_result result = new combinationProfile_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, combinationProfile_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.combinationProfile(args.params, args.uuid,resultHandler);
+      }
+    }
+
     public static class preserveProfile<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, preserveProfile_args, com.moseeker.thrift.gen.common.struct.Response> {
       public preserveProfile() {
         super("preserveProfile");
@@ -1491,7 +1656,7 @@ public class WholeProfileServices {
       }
 
       public void start(I iface, preserveProfile_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-        iface.preserveProfile(args.params, args.uuid,resultHandler);
+        iface.preserveProfile(args.params, args.hrId, args.companyId, args.fileName,resultHandler);
       }
     }
 
@@ -8750,14 +8915,14 @@ public class WholeProfileServices {
     }
   }
 
-  public static class preserveProfile_args implements org.apache.thrift.TBase<preserveProfile_args, preserveProfile_args._Fields>, java.io.Serializable, Cloneable, Comparable<preserveProfile_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("preserveProfile_args");
+  public static class combinationProfile_args implements org.apache.thrift.TBase<combinationProfile_args, combinationProfile_args._Fields>, java.io.Serializable, Cloneable, Comparable<combinationProfile_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("combinationProfile_args");
 
     private static final org.apache.thrift.protocol.TField PARAMS_FIELD_DESC = new org.apache.thrift.protocol.TField("params", org.apache.thrift.protocol.TType.STRING, (short)1);
     private static final org.apache.thrift.protocol.TField UUID_FIELD_DESC = new org.apache.thrift.protocol.TField("uuid", org.apache.thrift.protocol.TType.STRING, (short)2);
 
-    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new preserveProfile_argsStandardSchemeFactory();
-    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new preserveProfile_argsTupleSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new combinationProfile_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new combinationProfile_argsTupleSchemeFactory();
 
     public java.lang.String params; // required
     public java.lang.String uuid; // required
@@ -8832,13 +8997,13 @@ public class WholeProfileServices {
       tmpMap.put(_Fields.UUID, new org.apache.thrift.meta_data.FieldMetaData("uuid", org.apache.thrift.TFieldRequirementType.DEFAULT,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(preserveProfile_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(combinationProfile_args.class, metaDataMap);
     }
 
-    public preserveProfile_args() {
+    public combinationProfile_args() {
     }
 
-    public preserveProfile_args(
+    public combinationProfile_args(
             java.lang.String params,
             java.lang.String uuid)
     {
@@ -8850,7 +9015,7 @@ public class WholeProfileServices {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public preserveProfile_args(preserveProfile_args other) {
+    public combinationProfile_args(combinationProfile_args other) {
       if (other.isSetParams()) {
         this.params = other.params;
       }
@@ -8859,8 +9024,8 @@ public class WholeProfileServices {
       }
     }
 
-    public preserveProfile_args deepCopy() {
-      return new preserveProfile_args(this);
+    public combinationProfile_args deepCopy() {
+      return new combinationProfile_args(this);
     }
 
     @Override
@@ -8873,7 +9038,7 @@ public class WholeProfileServices {
       return this.params;
     }
 
-    public preserveProfile_args setParams(java.lang.String params) {
+    public combinationProfile_args setParams(java.lang.String params) {
       this.params = params;
       return this;
     }
@@ -8897,7 +9062,7 @@ public class WholeProfileServices {
       return this.uuid;
     }
 
-    public preserveProfile_args setUuid(java.lang.String uuid) {
+    public combinationProfile_args setUuid(java.lang.String uuid) {
       this.uuid = uuid;
       return this;
     }
@@ -8969,12 +9134,12 @@ public class WholeProfileServices {
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
-      if (that instanceof preserveProfile_args)
-        return this.equals((preserveProfile_args)that);
+      if (that instanceof combinationProfile_args)
+        return this.equals((combinationProfile_args)that);
       return false;
     }
 
-    public boolean equals(preserveProfile_args that) {
+    public boolean equals(combinationProfile_args that) {
       if (that == null)
         return false;
       if (this == that)
@@ -9017,7 +9182,7 @@ public class WholeProfileServices {
     }
 
     @Override
-    public int compareTo(preserveProfile_args other) {
+    public int compareTo(combinationProfile_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -9061,7 +9226,7 @@ public class WholeProfileServices {
 
     @Override
     public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("preserveProfile_args(");
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("combinationProfile_args(");
       boolean first = true;
 
       sb.append("params:");
@@ -9104,15 +9269,15 @@ public class WholeProfileServices {
       }
     }
 
-    private static class preserveProfile_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public preserveProfile_argsStandardScheme getScheme() {
-        return new preserveProfile_argsStandardScheme();
+    private static class combinationProfile_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public combinationProfile_argsStandardScheme getScheme() {
+        return new combinationProfile_argsStandardScheme();
       }
     }
 
-    private static class preserveProfile_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<preserveProfile_args> {
+    private static class combinationProfile_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<combinationProfile_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, preserveProfile_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, combinationProfile_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -9149,7 +9314,7 @@ public class WholeProfileServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, preserveProfile_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, combinationProfile_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -9161,6 +9326,1121 @@ public class WholeProfileServices {
         if (struct.uuid != null) {
           oprot.writeFieldBegin(UUID_FIELD_DESC);
           oprot.writeString(struct.uuid);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class combinationProfile_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public combinationProfile_argsTupleScheme getScheme() {
+        return new combinationProfile_argsTupleScheme();
+      }
+    }
+
+    private static class combinationProfile_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<combinationProfile_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, combinationProfile_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetParams()) {
+          optionals.set(0);
+        }
+        if (struct.isSetUuid()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetParams()) {
+          oprot.writeString(struct.params);
+        }
+        if (struct.isSetUuid()) {
+          oprot.writeString(struct.uuid);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, combinationProfile_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.params = iprot.readString();
+          struct.setParamsIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.uuid = iprot.readString();
+          struct.setUuidIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class combinationProfile_result implements org.apache.thrift.TBase<combinationProfile_result, combinationProfile_result._Fields>, java.io.Serializable, Cloneable, Comparable<combinationProfile_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("combinationProfile_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new combinationProfile_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new combinationProfile_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(combinationProfile_result.class, metaDataMap);
+    }
+
+    public combinationProfile_result() {
+    }
+
+    public combinationProfile_result(
+            com.moseeker.thrift.gen.common.struct.Response success,
+            com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public combinationProfile_result(combinationProfile_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public combinationProfile_result deepCopy() {
+      return new combinationProfile_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public combinationProfile_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public combinationProfile_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+          }
+          break;
+
+        case E:
+          if (value == null) {
+            unsetE();
+          } else {
+            setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+          }
+          break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+        case SUCCESS:
+          return getSuccess();
+
+        case E:
+          return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+        case SUCCESS:
+          return isSetSuccess();
+        case E:
+          return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof combinationProfile_result)
+        return this.equals((combinationProfile_result)that);
+      return false;
+    }
+
+    public boolean equals(combinationProfile_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(combinationProfile_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("combinationProfile_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class combinationProfile_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public combinationProfile_resultStandardScheme getScheme() {
+        return new combinationProfile_resultStandardScheme();
+      }
+    }
+
+    private static class combinationProfile_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<combinationProfile_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, combinationProfile_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, combinationProfile_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class combinationProfile_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public combinationProfile_resultTupleScheme getScheme() {
+        return new combinationProfile_resultTupleScheme();
+      }
+    }
+
+    private static class combinationProfile_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<combinationProfile_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, combinationProfile_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, combinationProfile_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class preserveProfile_args implements org.apache.thrift.TBase<preserveProfile_args, preserveProfile_args._Fields>, java.io.Serializable, Cloneable, Comparable<preserveProfile_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("preserveProfile_args");
+
+    private static final org.apache.thrift.protocol.TField PARAMS_FIELD_DESC = new org.apache.thrift.protocol.TField("params", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField HR_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("hrId", org.apache.thrift.protocol.TType.I32, (short)2);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)3);
+    private static final org.apache.thrift.protocol.TField FILE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("fileName", org.apache.thrift.protocol.TType.STRING, (short)4);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new preserveProfile_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new preserveProfile_argsTupleSchemeFactory();
+
+    public java.lang.String params; // required
+    public int hrId; // required
+    public int companyId; // required
+    public java.lang.String fileName; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      PARAMS((short)1, "params"),
+      HR_ID((short)2, "hrId"),
+      COMPANY_ID((short)3, "companyId"),
+      FILE_NAME((short)4, "fileName");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // PARAMS
+            return PARAMS;
+          case 2: // HR_ID
+            return HR_ID;
+          case 3: // COMPANY_ID
+            return COMPANY_ID;
+          case 4: // FILE_NAME
+            return FILE_NAME;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __HRID_ISSET_ID = 0;
+    private static final int __COMPANYID_ISSET_ID = 1;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.FILE_NAME, new org.apache.thrift.meta_data.FieldMetaData("fileName", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(preserveProfile_args.class, metaDataMap);
+    }
+
+    public preserveProfile_args() {
+    }
+
+    public preserveProfile_args(
+            java.lang.String params,
+            int hrId,
+            int companyId,
+            java.lang.String fileName)
+    {
+      this();
+      this.params = params;
+      this.hrId = hrId;
+      setHrIdIsSet(true);
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      this.fileName = fileName;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public preserveProfile_args(preserveProfile_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      if (other.isSetParams()) {
+        this.params = other.params;
+      }
+      this.hrId = other.hrId;
+      this.companyId = other.companyId;
+      if (other.isSetFileName()) {
+        this.fileName = other.fileName;
+      }
+    }
+
+    public preserveProfile_args deepCopy() {
+      return new preserveProfile_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.params = null;
+      setHrIdIsSet(false);
+      this.hrId = 0;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
+      this.fileName = null;
+    }
+
+    public java.lang.String getParams() {
+      return this.params;
+    }
+
+    public preserveProfile_args setParams(java.lang.String params) {
+      this.params = params;
+      return this;
+    }
+
+    public void unsetParams() {
+      this.params = null;
+    }
+
+    /** Returns true if field params is set (has been assigned a value) and false otherwise */
+    public boolean isSetParams() {
+      return this.params != null;
+    }
+
+    public void setParamsIsSet(boolean value) {
+      if (!value) {
+        this.params = null;
+      }
+    }
+
+    public int getHrId() {
+      return this.hrId;
+    }
+
+    public preserveProfile_args setHrId(int hrId) {
+      this.hrId = hrId;
+      setHrIdIsSet(true);
+      return this;
+    }
+
+    public void unsetHrId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __HRID_ISSET_ID);
+    }
+
+    /** Returns true if field hrId is set (has been assigned a value) and false otherwise */
+    public boolean isSetHrId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __HRID_ISSET_ID);
+    }
+
+    public void setHrIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __HRID_ISSET_ID, value);
+    }
+
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public preserveProfile_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
+    public java.lang.String getFileName() {
+      return this.fileName;
+    }
+
+    public preserveProfile_args setFileName(java.lang.String fileName) {
+      this.fileName = fileName;
+      return this;
+    }
+
+    public void unsetFileName() {
+      this.fileName = null;
+    }
+
+    /** Returns true if field fileName is set (has been assigned a value) and false otherwise */
+    public boolean isSetFileName() {
+      return this.fileName != null;
+    }
+
+    public void setFileNameIsSet(boolean value) {
+      if (!value) {
+        this.fileName = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+        case PARAMS:
+          if (value == null) {
+            unsetParams();
+          } else {
+            setParams((java.lang.String)value);
+          }
+          break;
+
+        case HR_ID:
+          if (value == null) {
+            unsetHrId();
+          } else {
+            setHrId((java.lang.Integer)value);
+          }
+          break;
+
+        case COMPANY_ID:
+          if (value == null) {
+            unsetCompanyId();
+          } else {
+            setCompanyId((java.lang.Integer)value);
+          }
+          break;
+
+        case FILE_NAME:
+          if (value == null) {
+            unsetFileName();
+          } else {
+            setFileName((java.lang.String)value);
+          }
+          break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+        case PARAMS:
+          return getParams();
+
+        case HR_ID:
+          return getHrId();
+
+        case COMPANY_ID:
+          return getCompanyId();
+
+        case FILE_NAME:
+          return getFileName();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+        case PARAMS:
+          return isSetParams();
+        case HR_ID:
+          return isSetHrId();
+        case COMPANY_ID:
+          return isSetCompanyId();
+        case FILE_NAME:
+          return isSetFileName();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof preserveProfile_args)
+        return this.equals((preserveProfile_args)that);
+      return false;
+    }
+
+    public boolean equals(preserveProfile_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_params = true && this.isSetParams();
+      boolean that_present_params = true && that.isSetParams();
+      if (this_present_params || that_present_params) {
+        if (!(this_present_params && that_present_params))
+          return false;
+        if (!this.params.equals(that.params))
+          return false;
+      }
+
+      boolean this_present_hrId = true;
+      boolean that_present_hrId = true;
+      if (this_present_hrId || that_present_hrId) {
+        if (!(this_present_hrId && that_present_hrId))
+          return false;
+        if (this.hrId != that.hrId)
+          return false;
+      }
+
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
+      boolean this_present_fileName = true && this.isSetFileName();
+      boolean that_present_fileName = true && that.isSetFileName();
+      if (this_present_fileName || that_present_fileName) {
+        if (!(this_present_fileName && that_present_fileName))
+          return false;
+        if (!this.fileName.equals(that.fileName))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetParams()) ? 131071 : 524287);
+      if (isSetParams())
+        hashCode = hashCode * 8191 + params.hashCode();
+
+      hashCode = hashCode * 8191 + hrId;
+
+      hashCode = hashCode * 8191 + companyId;
+
+      hashCode = hashCode * 8191 + ((isSetFileName()) ? 131071 : 524287);
+      if (isSetFileName())
+        hashCode = hashCode * 8191 + fileName.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(preserveProfile_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetParams()).compareTo(other.isSetParams());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetParams()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.params, other.params);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetHrId()).compareTo(other.isSetHrId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetHrId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hrId, other.hrId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetFileName()).compareTo(other.isSetFileName());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetFileName()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.fileName, other.fileName);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("preserveProfile_args(");
+      boolean first = true;
+
+      sb.append("params:");
+      if (this.params == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.params);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("hrId:");
+      sb.append(this.hrId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("fileName:");
+      if (this.fileName == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.fileName);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class preserveProfile_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public preserveProfile_argsStandardScheme getScheme() {
+        return new preserveProfile_argsStandardScheme();
+      }
+    }
+
+    private static class preserveProfile_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<preserveProfile_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, preserveProfile_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // PARAMS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.params = iprot.readString();
+                struct.setParamsIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // HR_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.hrId = iprot.readI32();
+                struct.setHrIdIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 4: // FILE_NAME
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.fileName = iprot.readString();
+                struct.setFileNameIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, preserveProfile_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.params != null) {
+          oprot.writeFieldBegin(PARAMS_FIELD_DESC);
+          oprot.writeString(struct.params);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldBegin(HR_ID_FIELD_DESC);
+        oprot.writeI32(struct.hrId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
+        if (struct.fileName != null) {
+          oprot.writeFieldBegin(FILE_NAME_FIELD_DESC);
+          oprot.writeString(struct.fileName);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -9184,29 +10464,49 @@ public class WholeProfileServices {
         if (struct.isSetParams()) {
           optionals.set(0);
         }
-        if (struct.isSetUuid()) {
+        if (struct.isSetHrId()) {
           optionals.set(1);
         }
-        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetCompanyId()) {
+          optionals.set(2);
+        }
+        if (struct.isSetFileName()) {
+          optionals.set(3);
+        }
+        oprot.writeBitSet(optionals, 4);
         if (struct.isSetParams()) {
           oprot.writeString(struct.params);
         }
-        if (struct.isSetUuid()) {
-          oprot.writeString(struct.uuid);
+        if (struct.isSetHrId()) {
+          oprot.writeI32(struct.hrId);
+        }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
+        }
+        if (struct.isSetFileName()) {
+          oprot.writeString(struct.fileName);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, preserveProfile_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(2);
+        java.util.BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
           struct.params = iprot.readString();
           struct.setParamsIsSet(true);
         }
         if (incoming.get(1)) {
-          struct.uuid = iprot.readString();
-          struct.setUuidIsSet(true);
+          struct.hrId = iprot.readI32();
+          struct.setHrIdIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
+        }
+        if (incoming.get(3)) {
+          struct.fileName = iprot.readString();
+          struct.setFileNameIsSet(true);
         }
       }
     }

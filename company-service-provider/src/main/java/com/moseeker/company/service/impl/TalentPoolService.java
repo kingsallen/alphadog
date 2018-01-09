@@ -57,7 +57,7 @@ public class TalentPoolService {
     @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
     @Resource(name = "cacheClient")
-    private RedisClient client;
+
     @Autowired
     private ValidateTalent validateTalent;
     @Autowired
@@ -107,20 +107,7 @@ public class TalentPoolService {
         List<Map<String,Object>> talentList=talentPoolEntity.getTalentpoolHrTalentByIdList(hrId,applierIdList);
         Set<Integer> unApplierIdList=talentPoolEntity.getIdListByTalentpoolHrTalentList(talentList);
         Set<Integer> idList=talentPoolEntity.filterIdList(applierIdList,unApplierIdList);
-        if(!StringUtils.isEmptySet(idList)){
-            List<TalentpoolHrTalentRecord> recordList=new ArrayList<>();
-            for(Integer id:idList){
-                TalentpoolHrTalentRecord record=new TalentpoolHrTalentRecord();
-                record.setHrId(hrId);
-                record.setUserId(id);
-                recordList.add(record);
-            }
-            talentpoolHrTalentDao.addAllRecord(recordList);
-            for(Integer id:idList){
-                talentPoolEntity.handlerTalentpoolTalent(id,companyId,0,0,1);
-            }
-            this.realTimeUpdate(this.converSetToList(idList));
-        }
+        talentPoolEntity.addTalent(idList,hrId,companyId);
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
         if(result==null||result.isEmpty()){
             return  ResponseUtils.success("");
@@ -187,7 +174,7 @@ public class TalentPoolService {
 //            this.handleCancleTag(hrId,idList);
             this.handlerPublicTag(idList,companyId);
             logger.debug("执行实时更新的id========="+idList.toString());
-            this.realTimeUpdate(this.converSetToList(idList));
+            talentPoolEntity.realTimeUpdate(talentPoolEntity.converSetToList(idList));
         }
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
         if(result==null||result.isEmpty()){
@@ -228,7 +215,7 @@ public class TalentPoolService {
         for(Integer tagId:tagIdList){
             talentpoolTagDao.updateTagNum(tagId,idList.size());
         }
-        this.realTimeUpdate(this.converSetToList(idList));
+        talentPoolEntity.realTimeUpdate(talentPoolEntity.converSetToList(idList));
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
@@ -291,7 +278,7 @@ public class TalentPoolService {
             talentpoolTagDao.updateTagListNum(tagIdList,idList.size());
 
         }
-        this.realTimeUpdate(this.converSetToList(idList));
+        talentPoolEntity.realTimeUpdate(talentPoolEntity.converSetToList(idList));
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         userTagIdList=tagIdList;
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
@@ -332,7 +319,7 @@ public class TalentPoolService {
         for(Integer tagId:tagIdList){
             talentpoolTagDao.updateTagNum(tagId,0-idList.size());
         }
-        this.realTimeUpdate(this.converSetToList(idList));
+        talentPoolEntity.realTimeUpdate(talentPoolEntity.converSetToList(idList));
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,0);
@@ -410,7 +397,7 @@ public class TalentPoolService {
             for(TalentpoolUserTagRecord record1:list){
                 userIdList.add(record1.getUserId());
             }
-            this.realTimeUpdate(userIdList);
+            talentPoolEntity.realTimeUpdate(userIdList);
         }
         return ResponseUtils.success("");
     }
@@ -452,7 +439,7 @@ public class TalentPoolService {
             for(TalentpoolUserTagRecord record1:list){
                 userIdList.add(record1.getUserId());
             }
-            this.realTimeUpdate(userIdList);
+            talentPoolEntity.realTimeUpdate(userIdList);
         }
         return ResponseUtils.success(this.getTalentpoolTagById(tagId));
     }
@@ -1697,25 +1684,7 @@ public class TalentPoolService {
         return list;
     }
 
-    private void realTimeUpdate(List<Integer> userIdList){
 
-        Map<String,Object> result=new HashMap<>();
-        result.put("tableName","talentpool_user_tag");
-        result.put("user_id",userIdList);
-        logger.debug("执行实时更新========={}",JSON.toJSONString(result));
-        client.lpush(Constant.APPID_ALPHADOG,
-                "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
-    }
-    /*
-     将set转换为list
-     */
-    private List<Integer> converSetToList(Set<Integer> userIdSet){
-        List<Integer> userIdList=new ArrayList<>();
-        for(Integer id:userIdSet){
-            userIdList.add(id);
-        }
-        return userIdList;
-    }
 
     /*
     获取此账号是不是此公司的主账号
@@ -1734,4 +1703,6 @@ public class TalentPoolService {
         HrCompanyConfRecord hrCompanyConfRecord=hrCompanyConfDao.getRecord(query);
         return hrCompanyConfRecord;
     }
+
+
 }

@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUserTag;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Talentpooldb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1582510667;
+    private static final long serialVersionUID = 358889511;
 
     /**
      * The reference instance of <code>talentpooldb</code>
@@ -66,6 +67,11 @@ public class Talentpooldb extends SchemaImpl {
      * 人才库人才表
      */
     public final TalentpoolTalent TALENTPOOL_TALENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent.TALENTPOOL_TALENT;
+
+    /**
+     * 人才库简历上传记录表
+     */
+    public final TalentpoolUpload TALENTPOOL_UPLOAD = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload.TALENTPOOL_UPLOAD;
 
     /**
      * 人才标签表
@@ -102,6 +108,7 @@ public class Talentpooldb extends SchemaImpl {
             TalentpoolHrTalent.TALENTPOOL_HR_TALENT,
             TalentpoolTag.TALENTPOOL_TAG,
             TalentpoolTalent.TALENTPOOL_TALENT,
+            TalentpoolUpload.TALENTPOOL_UPLOAD,
             TalentpoolUserTag.TALENTPOOL_USER_TAG);
     }
 }

@@ -18,9 +18,11 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -32,12 +34,16 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.OrderBy;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -60,6 +66,9 @@ public class WholeProfileService {
     ThreadPool pool = ThreadPool.Instance;
     @Autowired
     ProfileEntity profileEntity;
+
+    @Autowired
+    private TalentPoolEntity talentPoolEntity;
 
     @Autowired
     private DictIndustryDao dictIndustryDao;
@@ -150,6 +159,8 @@ public class WholeProfileService {
 
     @Autowired
     RetriveProfile retriveProfile;
+
+    UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
 
     private Query getProfileQuery(int profileId){
         return new Query.QueryBuilder().where("profile_id",profileId).setPageSize(Integer.MAX_VALUE).buildQuery();
@@ -1048,13 +1059,24 @@ public class WholeProfileService {
     /*
      合并上传的简历
      */
-    public Response preserveProfile(String params,String uuid){
+    public Response combinationProfile(String params,String uuid){
         params = EmojiFilter.filterEmoji1(params);
-        UserUserRecord userRecord=this.getUserByUuId(uuid);
+        Map<String, Object> resume = JSON.parseObject(params);
+        Map<String, Object> map = (Map<String, Object>) resume.get("user");
+        String mobile = ((String) map.get("mobile"));
+        String countryCode = "86";
+        if(StringUtils.isNullOrEmpty(mobile)){
+            return ResponseUtils.fail(1,"手机号不能为空");
+        }
+        if(mobile.contains("-")){
+            countryCode=mobile.split("-")[0];
+            mobile=mobile.split("-")[1];
+        }
+        UserUserRecord userRecord=this.getUserByProfileData( mobile, countryCode);
         if(userRecord==null){
             return ResponseUtils.success(params);
         }
-        Map<String, Object> resume = JSON.parseObject(params);
+
         ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
         if (profileRecord == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
@@ -1065,32 +1087,133 @@ public class WholeProfileService {
             ((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
             ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
             int profileId = profileDB.getId().intValue();
-            profilePojo= this.preserveProfile(profilePojo,profileId);
+            profilePojo= this.combinationProfile(profilePojo,profileId);
             return ResponseUtils.success(profilePojo);
         }
         return ResponseUtils.success(params);
     }
-    private ProfilePojo preserveProfile(ProfilePojo profilePojo,int profileId){
-        ProfileBasicRecord profileBasicRecord=this.preserveBasic(profilePojo.getBasicRecord(),profileId);
+    /*
+     保存上传的简历
+     */
+    public Response preserveProfile(String params,String fileName,int hrId,int companyId) throws TException {
+        params = EmojiFilter.filterEmoji1(params);
+        Map<String, Object> resume = JSON.parseObject(params);
+        Map<String, Object> map = (Map<String, Object>) resume.get("user");
+        String mobile = ((String) map.get("mobile"));
+        String countryCode = "86";
+        if(StringUtils.isNullOrEmpty(mobile)){
+            return ResponseUtils.fail(1,"手机号不能为空");
+        }
+        if(mobile.contains("-")){
+            countryCode=mobile.split("-")[0];
+            mobile=mobile.split("-")[1];
+        }
+        UserUserRecord userRecord=this.getUserByProfileData( mobile, countryCode);
+        int userId=0;
+        if(userRecord==null){
+            userId=this.saveNewProfile(resume,map);
+        }else{
+            Response res=this.upsertProfile(resume,userRecord);
+            if(res.getStatus()==0){
+                userId=userRecord.getId();
+            }
+        }
+        if(userId>0){
+            talentPoolEntity.addUploadTalent(userId,hrId,companyId,fileName);
+        }
+        return ResponseUtils.success("success");
+    }
+    /*
+     保存上传简历
+     */
+    private int saveNewProfile(Map<String, Object> resume,Map<String, Object> map) throws TException {
+
+        UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
+        logger.info("ProfileBS retrieveProfile user:{}", user1);
+        user1.setSource((byte) UserSource.RETRIEVE_PROFILE.getValue());
+        int userId = useraccountsServices.createRetrieveProfileUser(user1);
+        logger.info("ProfileBS retrieveProfile userId:{}", userId);
+        if (userId > 0) {
+            map.put("id", userId);
+            HashMap<String, Object> profileProfile = new HashMap<String, Object>();
+            profileProfile.put("user_id", userId);
+            profileProfile.put("source", 0);
+            resume.put("profile", profileProfile);
+            Response response = this.createProfile(JSON.toJSONString(resume));
+            if(response.getStatus()==0){
+                return userId;
+            }
+            return 0;
+        }
+        return 0;
+    }
+    /*
+     更新上传简历
+     */
+    private Response upsertProfile(Map<String, Object> resume,UserUserRecord userRecord){
+        ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
+        if (profileRecord == null) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
+        }
+        ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
+        if (profileDB != null) {
+            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+            int profileId = profileDB.getId().intValue();
+            profileEntity.improveUser(userRecord);
+            profileEntity.upsertProfileProfile(profilePojo.getProfileRecord(), profileId);
+            profileEntity.upsertProfileBasic(profilePojo.getBasicRecord(), profileId);
+            profileEntity.improveAttachment(profilePojo.getAttachmentRecords(), profileId);
+            profileEntity.improveAwards(profilePojo.getAwardsRecords(), profileId);
+            profileEntity.improveCredentials(profilePojo.getCredentialsRecords(), profileId);
+            profileEntity.improveEducation(profilePojo.getEducationRecords(), profileId);
+            profileEntity.improveIntention(profilePojo.getIntentionRecords(), profileId);
+            profileEntity.improveLanguage(profilePojo.getLanguageRecords(), profileId);
+            profileEntity.upsertProfileOther(profilePojo.getOtherRecord(), profileId);
+            profileEntity.improveProjectexp(profilePojo.getProjectExps(), profileId);
+            profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
+            profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
+            profileEntity.improveWorks(profilePojo.getWorksRecords(), profileId);
+            profileEntity.reCalculateProfileCompleteness(profileId);
+
+            try {
+                StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(profileDB.getId().intValue(), profileDB.getUserId().intValue(), (byte) 2,
+                        profilePojo.getImportRecords());
+                profileUtils.logForStatistics("upsertProfile", new JSONObject() {{
+                    this.put("profile", resume);
+                }}.toJSONString(), statisticsForChannelmportVO);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            return ResponseUtils.success("");
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
+        }
+    }
+
+    /*
+      合并简历
+     */
+    private ProfilePojo combinationProfile(ProfilePojo profilePojo,int profileId){
+        ProfileBasicRecord profileBasicRecord=this.combinationBasic(profilePojo.getBasicRecord(),profileId);
         if(profileBasicRecord!=null){
             profilePojo.setBasicRecord(profileBasicRecord);
         }
-        ProfileOtherRecord profileOtherRecord=this.preserveProfileOther(profilePojo.getOtherRecord(),profileId);
+        ProfileOtherRecord profileOtherRecord=this.combinationProfileOther(profilePojo.getOtherRecord(),profileId);
         if(profileOtherRecord!=null){
             profilePojo.setOtherRecord(profileOtherRecord);
         }
         return profilePojo;
     }
 
-    private UserUserRecord getUserByUuId(String uuid ){
-        Query query=new Query.QueryBuilder().where("uuid",uuid).buildQuery();
-        UserUserRecord userRecord=userDao.getRecord(query);
-        return userRecord;
+    private UserUserRecord getUserByProfileData(String mobile,String countryCode){
+        Query findRetrieveUserQU = new Query.QueryBuilder().where("mobile", mobile).and("country_code", countryCode).and("source", UserSource.TALENT_UPLOAD.getValue()).buildQuery();
+        UserUserRecord user = userDao.getRecord(findRetrieveUserQU);
+        return user;
     }
     /*
      合并profile_basic
      */
-    public ProfileBasicRecord preserveBasic(ProfileBasicRecord basicRecord, int profileId) {
+    public ProfileBasicRecord combinationBasic(ProfileBasicRecord basicRecord, int profileId) {
         if (basicRecord != null) {
             Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
             ProfileBasicRecord basic = profileBasicDao.getRecord(query);
@@ -1140,7 +1263,7 @@ public class WholeProfileService {
     /*
      合并Profile_Other
      */
-    public ProfileOtherRecord preserveProfileOther(ProfileOtherRecord otherRecord, int profileId) {
+    public ProfileOtherRecord combinationProfileOther(ProfileOtherRecord otherRecord, int profileId) {
         if (otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
             Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("profile_id", String.valueOf(profileId));
@@ -1161,4 +1284,5 @@ public class WholeProfileService {
         }
         return otherRecord;
     }
+
 }
