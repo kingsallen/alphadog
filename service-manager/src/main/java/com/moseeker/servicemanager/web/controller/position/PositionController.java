@@ -487,7 +487,11 @@ public class PositionController {
             Integer companyId = params.getInt("company_id");
             Integer page = params.getInt("page");
             Integer per_age = params.getInt("per_age");
-            return positonServices.companyHotPositionDetailsList(companyId, page, per_age);
+            PositionDetailsListVO positionDetailsListVO = positonServices.companyHotPositionDetailsList(companyId, page, per_age);
+            if (positionDetailsListVO.getData() != null && positionDetailsListVO.getData().size() > 0) {
+                logger.info("companyHotPositionDetailsList 1.salaryTop:{}, 1.salaryBottom:{}", positionDetailsListVO.getData().get(0).getSalaryTop(), positionDetailsListVO.getData().get(0).getSalaryBottom());
+            }
+            return positionDetailsListVO;
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
