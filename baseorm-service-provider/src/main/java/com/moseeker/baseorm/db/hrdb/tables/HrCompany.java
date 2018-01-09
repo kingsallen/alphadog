@@ -226,7 +226,7 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrCompany rename(String name) {
         return new HrCompany(name, null);
     }

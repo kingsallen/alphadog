@@ -196,7 +196,7 @@ public class HrPointsConf extends TableImpl<HrPointsConfRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrPointsConf rename(String name) {
         return new HrPointsConf(name, null);
     }

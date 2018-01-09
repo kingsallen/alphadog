@@ -23,12 +23,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount implements Serializable {
 
-    private static final long serialVersionUID = 1243768282;
+    private static final long serialVersionUID = -1029394744;
 
     private Integer   id;
     private Short     channel;
     private String    username;
     private String    password;
+    private String    membername;
     private Short     binding;
     private Integer   companyId;
     private Integer   remainNum;
@@ -37,7 +38,6 @@ public class HrThirdPartyAccount implements Serializable {
     private Timestamp createTime;
     private Integer   remainProfileNum;
     private String    errorMessage;
-    private String    ext;
 
     public HrThirdPartyAccount() {}
 
@@ -46,6 +46,7 @@ public class HrThirdPartyAccount implements Serializable {
         this.channel = value.channel;
         this.username = value.username;
         this.password = value.password;
+        this.membername = value.membername;
         this.binding = value.binding;
         this.companyId = value.companyId;
         this.remainNum = value.remainNum;
@@ -54,7 +55,6 @@ public class HrThirdPartyAccount implements Serializable {
         this.createTime = value.createTime;
         this.remainProfileNum = value.remainProfileNum;
         this.errorMessage = value.errorMessage;
-        this.ext = value.ext;
     }
 
     public HrThirdPartyAccount(
@@ -62,6 +62,7 @@ public class HrThirdPartyAccount implements Serializable {
         Short     channel,
         String    username,
         String    password,
+        String    membername,
         Short     binding,
         Integer   companyId,
         Integer   remainNum,
@@ -69,13 +70,13 @@ public class HrThirdPartyAccount implements Serializable {
         Timestamp updateTime,
         Timestamp createTime,
         Integer   remainProfileNum,
-        String    errorMessage,
-        String    ext
+        String    errorMessage
     ) {
         this.id = id;
         this.channel = channel;
         this.username = username;
         this.password = password;
+        this.membername = membername;
         this.binding = binding;
         this.companyId = companyId;
         this.remainNum = remainNum;
@@ -84,7 +85,6 @@ public class HrThirdPartyAccount implements Serializable {
         this.createTime = createTime;
         this.remainProfileNum = remainProfileNum;
         this.errorMessage = errorMessage;
-        this.ext = ext;
     }
 
     public Integer getId() {
@@ -117,6 +117,14 @@ public class HrThirdPartyAccount implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getMembername() {
+        return this.membername;
+    }
+
+    public void setMembername(String membername) {
+        this.membername = membername;
     }
 
     public Short getBinding() {
@@ -183,14 +191,6 @@ public class HrThirdPartyAccount implements Serializable {
         this.errorMessage = errorMessage;
     }
 
-    public String getExt() {
-        return this.ext;
-    }
-
-    public void setExt(String ext) {
-        this.ext = ext;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrThirdPartyAccount (");
@@ -199,6 +199,7 @@ public class HrThirdPartyAccount implements Serializable {
         sb.append(", ").append(channel);
         sb.append(", ").append(username);
         sb.append(", ").append(password);
+        sb.append(", ").append(membername);
         sb.append(", ").append(binding);
         sb.append(", ").append(companyId);
         sb.append(", ").append(remainNum);
@@ -207,7 +208,6 @@ public class HrThirdPartyAccount implements Serializable {
         sb.append(", ").append(createTime);
         sb.append(", ").append(remainProfileNum);
         sb.append(", ").append(errorMessage);
-        sb.append(", ").append(ext);
 
         sb.append(")");
         return sb.toString();

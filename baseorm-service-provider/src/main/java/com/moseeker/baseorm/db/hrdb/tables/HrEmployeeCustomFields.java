@@ -155,7 +155,7 @@ public class HrEmployeeCustomFields extends TableImpl<HrEmployeeCustomFieldsReco
     /**
      * Rename this table
      */
-
+    @Override
     public HrEmployeeCustomFields rename(String name) {
         return new HrEmployeeCustomFields(name, null);
     }

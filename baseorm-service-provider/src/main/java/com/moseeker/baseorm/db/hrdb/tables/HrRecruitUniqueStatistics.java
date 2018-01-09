@@ -181,7 +181,7 @@ public class HrRecruitUniqueStatistics extends TableImpl<HrRecruitUniqueStatisti
     /**
      * Rename this table
      */
-
+    @Override
     public HrRecruitUniqueStatistics rename(String name) {
         return new HrRecruitUniqueStatistics(name, null);
     }

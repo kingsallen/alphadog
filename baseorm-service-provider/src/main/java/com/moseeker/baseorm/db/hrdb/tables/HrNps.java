@@ -146,7 +146,7 @@ public class HrNps extends TableImpl<HrNpsRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrNps rename(String name) {
         return new HrNps(name, null);
     }

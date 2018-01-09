@@ -146,7 +146,7 @@ public class HrHtml5Statistics extends TableImpl<HrHtml5StatisticsRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrHtml5Statistics rename(String name) {
         return new HrHtml5Statistics(name, null);
     }

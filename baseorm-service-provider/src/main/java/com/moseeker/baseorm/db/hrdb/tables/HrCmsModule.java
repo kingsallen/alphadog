@@ -166,7 +166,7 @@ public class HrCmsModule extends TableImpl<HrCmsModuleRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrCmsModule rename(String name) {
         return new HrCmsModule(name, null);
     }

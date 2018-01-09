@@ -150,7 +150,7 @@ public class HrAppExportFields extends TableImpl<HrAppExportFieldsRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrAppExportFields rename(String name) {
         return new HrAppExportFields(name, null);
     }

@@ -141,7 +141,7 @@ public class HrGroupCompanyRel extends TableImpl<HrGroupCompanyRelRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HrGroupCompanyRel rename(String name) {
         return new HrGroupCompanyRel(name, null);
     }
