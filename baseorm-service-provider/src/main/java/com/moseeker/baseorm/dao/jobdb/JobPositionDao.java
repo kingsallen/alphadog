@@ -193,7 +193,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             per_page = page_size > 0 ? page_size : per_page;
             record.limit((page - 1) * per_page, per_page);
             positionDetails = record.fetchInto(PositionDetails.class);
-
+            logger.info("hotPositionDetailsList positionDetails:{}", positionDetails);
             if (positionDetails != null && positionDetails.size() > 0) {
                 // 查询职位图片信息
                 SelectOnConditionStep<Record4<String, Integer, Integer, Integer>> recordRes =
