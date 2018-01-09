@@ -133,6 +133,10 @@ public class PositionQxService {
             logger.error(e.getMessage(), e);
         }
         logger.info("companyHotPositionDetailsList positionDetailsListVO:{}", positionDetailsListVO);
+        if (positionDetailsListVO.getData() != null && positionDetailsListVO.getData().size() > 0) {
+            logger.info("companyHotPositionDetailsList salaryTop:{}, salaryBottom:{}", positionDetailsListVO.getData().get(0).getSalaryTop(), positionDetailsListVO.getData().get(0).getSalaryBottom());
+        }
+
         return positionDetailsListVO;
     }
 
