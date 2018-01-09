@@ -134,8 +134,10 @@ public class PositionQxService {
         }
         logger.info("companyHotPositionDetailsList positionDetailsListVO:{}", positionDetailsListVO);
         if (positionDetailsListVO.getData() != null && positionDetailsListVO.getData().size() > 0) {
-            positionDetailsListVO.getData().get(0).setSalaryTop(positionDetailsListVO.getData().get(0).getSalaryTop());
-            positionDetailsListVO.getData().get(0).setSalaryBottom(positionDetailsListVO.getData().get(0).getSalaryBottom());
+            positionDetailsListVO.getData().forEach(positionDetails -> {
+                positionDetails.setSalaryBottom(positionDetails.getSalaryBottom());
+                positionDetails.setSalaryTop(positionDetails.getSalaryTop());
+            });
             logger.info("companyHotPositionDetailsList salaryTop:{}, salaryBottom:{}", positionDetailsListVO.getData().get(0).getSalaryTop(), positionDetailsListVO.getData().get(0).getSalaryBottom());
         }
 
