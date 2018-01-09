@@ -133,11 +133,11 @@ public class JobApplicataionService {
 
         // 初始化参数
         initJobApplication(jobApplication, jobPositionRecord);
-
-        if (checkApplicationCountAtCompany(jobApplication.getApplier_id(),
-                jobPositionRecord.getCompanyId(), jobPositionRecord.getCandidateSource())) {
+        Response responseCheck = checkApplicationCountAtCompany(jobApplication.getApplier_id(),
+                jobPositionRecord.getCompanyId(), jobPositionRecord.getCandidateSource());
+        if (responseCheck != null && responseCheck.getStatus()!=0) {
             updateOrigin(jobApplication);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
+            return responseCheck;
         }
 
         // 添加申请
@@ -515,8 +515,13 @@ public class JobApplicataionService {
         try {
             Query query = new QueryBuilder().where("id", positionId).buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
-            return ResponseUtils.success(this.checkApplicationCountAtCompany(userId, jobPositionRecord.getCompanyId(),
-                    jobPositionRecord.getCandidateSource()));
+            Response response = this.checkApplicationCountAtCompany(userId, jobPositionRecord.getCompanyId(),
+                    jobPositionRecord.getCandidateSource());
+            if(response!= null && response.getStatus() == 0){
+                return ResponseUtils.success(false);
+            }else{
+                return ResponseUtils.success(true);
+            }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             logger.error("validateUserApplicationCheckCountAtCompany error: ", e);
@@ -611,7 +616,7 @@ public class JobApplicataionService {
      * @param companyId 公司id
      * @param candidateSource
      */
-    private boolean checkApplicationCountAtCompany(long userId, long companyId, byte candidateSource) {
+    private Response checkApplicationCountAtCompany(long userId, long companyId, byte candidateSource) {
 
         try {
             String applicationCountCheck = redisClient.get(
@@ -623,17 +628,17 @@ public class JobApplicataionService {
             UserApplyCount conf = getApplicationCountLimit((int) companyId);
             if (candidateSource == 0) {
                 if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
-                    return true;
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_SOCIAL_COUNT_CHECK);
                 }
             } else {
                 if (userApplyCount.getSchoolApplyCount() >= conf.getSchoolApplyCount()) {
-                    return true;
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_SCHOOL_COUNT_CHECK);
                 }
             }
         } catch (RedisException e) {
             WarnService.notify(e);
         }
-        return false;
+        return ResponseUtils.success("SUCCESS");
     }
 
     /**
