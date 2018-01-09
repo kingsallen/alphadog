@@ -1,6 +1,11 @@
 package com.moseeker.application.thrift;
 
+<<<<<<< HEAD
 import com.moseeker.common.exception.CommonException;
+=======
+import com.alibaba.fastjson.JSON;
+import java.util.Map;
+>>>>>>> fb1e6a9be71dec020a9524bf7bdfe7d3c7ea2d1c
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +42,16 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response postApplication(JobApplication jobApplication){
     	try{
+<<<<<<< HEAD
     		return service.postApplication(jobApplication);
     	} catch (CommonException e) {
     	    return new Response(e.getCode(), e.getMessage());
         } catch(Exception e){
+=======
+    		Response response = service.postApplication(jobApplication);
+            return response;
+    	}catch(Exception e){
+>>>>>>> fb1e6a9be71dec020a9524bf7bdfe7d3c7ea2d1c
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     	}
@@ -155,10 +166,16 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response postApplicationIfNotApply(JobApplication application) throws TException {
     	try{
+<<<<<<< HEAD
     		return service.postApplication(application);
     	}  catch (CommonException e) {
             return new Response(e.getCode(), e.getMessage());
         } catch(Exception e){
+=======
+            Response response = service.postApplicationIfNotApply(application);
+            return response;
+    	}catch(Exception e){
+>>>>>>> fb1e6a9be71dec020a9524bf7bdfe7d3c7ea2d1c
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     	}

@@ -33,16 +33,16 @@ public class MandrillEmailProducer {
 		try {
 			// 参数校验
 			ValidateUtil vu = new ValidateUtil();
-			vu.addRequiredStringValidate("邮箱", mandrillEmailStruct.getTo_email(), null, null);
-			vu.addRequiredStringValidate("邮件模板", mandrillEmailStruct.getTemplateName(), null, null);
-			String vuResult = vu.validate();
-			if (StringUtils.isNullOrEmpty(vuResult)) {
-				redisClient.lpush(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_MANDRILL,
-						JSON.toJSONString(mandrillEmailStruct));
-				return ResponseUtils.success("success");
-			} else {
-				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-			}
+            vu.addRequiredStringValidate("邮箱", mandrillEmailStruct.getTo_email(), null, null);
+            vu.addRequiredStringValidate("邮件模板", mandrillEmailStruct.getTemplateName(), null, null);
+            String vuResult = vu.validate();
+            if (StringUtils.isNullOrEmpty(vuResult)) {
+                redisClient.lpush(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_MANDRILL,
+                        JSON.toJSONString(mandrillEmailStruct));
+                return ResponseUtils.success("success");
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            }
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

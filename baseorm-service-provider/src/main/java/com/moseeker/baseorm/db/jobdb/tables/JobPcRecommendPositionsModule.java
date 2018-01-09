@@ -137,4 +137,12 @@ public class JobPcRecommendPositionsModule extends TableImpl<JobPcRecommendPosit
     public JobPcRecommendPositionsModule as(String alias) {
         return new JobPcRecommendPositionsModule(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public JobPcRecommendPositionsModule rename(String name) {
+        return new JobPcRecommendPositionsModule(name, null);
+    }
 }

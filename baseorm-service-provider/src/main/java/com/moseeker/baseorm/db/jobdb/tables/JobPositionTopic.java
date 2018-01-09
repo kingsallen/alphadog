@@ -91,4 +91,12 @@ public class JobPositionTopic extends TableImpl<JobPositionTopicRecord> {
     public JobPositionTopic as(String alias) {
         return new JobPositionTopic(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public JobPositionTopic rename(String name) {
+        return new JobPositionTopic(name, null);
+    }
 }

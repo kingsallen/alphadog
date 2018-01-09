@@ -4,6 +4,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -14,11 +15,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
-import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
-import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
-import com.moseeker.thrift.gen.company.struct.CompanyOptions;
-import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import com.moseeker.thrift.gen.position.service.PositionServices;
@@ -536,4 +533,48 @@ public class CompanyController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 获取人才库状态
+     *
+     * @param request
+     */
+    @RequestMapping(value = "/api/switch/talentpool", method = RequestMethod.GET)
+    @ResponseBody
+    public String getTalentpoolStstus(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(params.get("hr_id"));
+            String companyId=String.valueOf(params.get("company_id"));
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            Response result = companyServices.getTalentPoolStatus(Integer.parseInt(hrId),Integer.parseInt(companyId));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+       修改hr_company_conf
+   */
+    @RequestMapping(value = "/api/hrcompany/conf", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String updateCompanyConf(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            HrCompanyConf companyConf = ParamUtils.initModelForm(data, HrCompanyConf.class);
+            Response result = companyServices.updateHrCompanyConf(companyConf);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 }

@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobResumeOther extends TableImpl<JobResumeOtherRecord> {
 
-    private static final long serialVersionUID = -1842576017;
+    private static final long serialVersionUID = 1139159645;
 
     /**
      * The reference instance of <code>jobdb.job_resume_other</code>
@@ -56,9 +56,9 @@ public class JobResumeOther extends TableImpl<JobResumeOtherRecord> {
     public final TableField<JobResumeOtherRecord, Integer> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "job_application.id");
 
     /**
-     * The column <code>jobdb.job_resume_other.other</code>.
+     * The column <code>jobdb.job_resume_other.other</code>. 自定义字段
      */
-    public final TableField<JobResumeOtherRecord, String> OTHER = createField("other", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<JobResumeOtherRecord, String> OTHER = createField("other", org.jooq.impl.SQLDataType.CLOB, this, "自定义字段");
 
     /**
      * The column <code>jobdb.job_resume_other.create_time</code>. 创建时间
@@ -122,5 +122,13 @@ public class JobResumeOther extends TableImpl<JobResumeOtherRecord> {
     @Override
     public JobResumeOther as(String alias) {
         return new JobResumeOther(alias, this);
+    }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public JobResumeOther rename(String name) {
+        return new JobResumeOther(name, null);
     }
 }

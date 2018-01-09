@@ -138,4 +138,12 @@ public class JobPositionExt extends TableImpl<JobPositionExtRecord> {
     public JobPositionExt as(String alias) {
         return new JobPositionExt(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public JobPositionExt rename(String name) {
+        return new JobPositionExt(name, null);
+    }
 }

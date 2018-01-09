@@ -1,19 +1,22 @@
 package com.moseeker.servicemanager.config;
 
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4;
+import com.alibaba.fastjson.support.spring.FastJsonpHttpMessageConverter4;
 import com.moseeker.baseorm.config.AppConfig;
 import com.moseeker.servicemanager.common.UTF8StringHttpMessageConverter;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableWebMvc
@@ -38,6 +41,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(new UTF8StringHttpMessageConverter());
+        List<MediaType> mediaTypes = new ArrayList<>();
+        mediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
+        FastJsonHttpMessageConverter4 fastJsonpHttpMessageConverter4 = new FastJsonHttpMessageConverter4();
+        fastJsonpHttpMessageConverter4.setSupportedMediaTypes(mediaTypes);
+        converters.add(fastJsonpHttpMessageConverter4);
         super.configureMessageConverters(converters);
     }
 }

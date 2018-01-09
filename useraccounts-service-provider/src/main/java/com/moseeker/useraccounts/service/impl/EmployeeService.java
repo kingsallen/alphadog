@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
@@ -161,13 +162,20 @@ public class EmployeeService {
             if (employeeCertConf != null && employeeCertConf.getEmailSuffix() != null && employeeCertConf.getQuestions() != null) {
                 EmployeeVerificationConf evc = new EmployeeVerificationConf();
                 evc.setCompanyId(employeeCertConf.getCompanyId());
-                evc.setEmailSuffix(JSONObject.parseArray(employeeCertConf.getEmailSuffix()).stream().map(m -> String.valueOf(m)).collect(Collectors.toList()));
+                evc.setEmailSuffix(JSONObject.parseArray(employeeCertConf.getEmailSuffix())
+                        .stream().map(m -> String.valueOf(m))
+                        .collect(Collectors.toList()));
                 evc.setAuthMode((short) employeeCertConf.getAuthMode());
                 evc.setAuthCode(employeeCertConf.getAuthCode());
                 evc.setCustom(employeeCertConf.getCustom());
                 // 为解决gradle build时无法完成类推导的问题，顾list不指定类型
-                List questions = JSONObject.parseArray(employeeCertConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m), Map.class)).collect(Collectors.toList());
-                evc.setQuestions(questions);
+                JSONArray jsonArray = JSONObject.parseArray(employeeCertConf.getQuestions());
+                if (jsonArray != null) {
+                    List questions = jsonArray
+                            .stream().map(m -> JSONObject.parseObject(String.valueOf(m), Map.class))
+                            .collect(Collectors.toList());
+                    evc.setQuestions(questions);
+                }
                 evc.setCustomHint(employeeCertConf.getCustomHint());
                 HrCompanyConfDO hrCompanyConfig = hrCompanyConfDao.getData(query.buildQuery());
                 evc.setBindSuccessMessage(hrCompanyConfig == null ? "" : hrCompanyConfig.getEmployeeBinding());

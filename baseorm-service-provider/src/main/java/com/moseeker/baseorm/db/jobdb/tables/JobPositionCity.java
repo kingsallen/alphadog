@@ -104,4 +104,12 @@ public class JobPositionCity extends TableImpl<JobPositionCityRecord> {
     public JobPositionCity as(String alias) {
         return new JobPositionCity(alias, this);
     }
+
+    /**
+     * Rename this table
+     */
+    @Override
+    public JobPositionCity rename(String name) {
+        return new JobPositionCity(name, null);
+    }
 }

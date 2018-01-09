@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = -1056596552;
+    private static final long serialVersionUID = 1290405286;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -184,14 +184,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月申请校招职位次数限制
+     * Setter for <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月校招职位申请次数限制
      */
     public void setSchoolApplicationCountLimit(Short value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月申请校招职位次数限制
+     * Getter for <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月校招职位申请次数限制
      */
     public Short getSchoolApplicationCountLimit() {
         return (Short) get(11);
@@ -351,6 +351,20 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         return (String) get(22);
     }
 
+    /**
+     * Setter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启
+     */
+    public void setTalentpoolStatus(Byte value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启
+     */
+    public Byte getTalentpoolStatus() {
+        return (Byte) get(23);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -377,7 +391,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     /**
      * Create a detached, initialised HrCompanyConfRecord
      */
-    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale) {
+    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus) {
         super(HrCompanyConf.HR_COMPANY_CONF);
 
         set(0, companyId);
@@ -403,5 +417,6 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         set(20, showInQx);
         set(21, employeeSlug);
         set(22, displayLocale);
+        set(23, talentpoolStatus);
     }
 }

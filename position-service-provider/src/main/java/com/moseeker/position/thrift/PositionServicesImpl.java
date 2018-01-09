@@ -202,9 +202,9 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public List<WechatRpPositionListData> getRpPositionList(int hb_config_id) throws TException {
+    public List<WechatRpPositionListData> getRpPositionList(int hb_config_id,int pageNum,int pageSize) throws TException {
         try {
-            return service.getRpPositionList(hb_config_id);
+            return service.getRpPositionList(hb_config_id,pageNum,pageSize);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ArrayList<>();
@@ -483,9 +483,9 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public Response getEmployeeRecomPositionByIds(int recomPushId,int company,int type) throws TException {
+    public Response getEmployeeRecomPositionByIds(int recomPushId,int company,int type,int pageNum,int pageSize) throws TException {
         try {
-            List<WechatPositionListData> result=service.getEmployeeRecomPositionList(recomPushId,company,type);
+            List<WechatPositionListData> result=service.getEmployeeRecomPositionList(recomPushId,company,type,pageNum,pageSize);
             if(StringUtils.isEmptyList(result)){
                 return  ResponseUtils.fail(1,"您所查找的推送不存在");
             }

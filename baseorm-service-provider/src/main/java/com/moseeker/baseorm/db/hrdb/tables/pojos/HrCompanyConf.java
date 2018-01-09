@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = -1301313642;
+    private static final long serialVersionUID = 1373866938;
 
     private Integer   companyId;
     private Integer   themeId;
@@ -48,6 +48,7 @@ public class HrCompanyConf implements Serializable {
     private Byte      showInQx;
     private String    employeeSlug;
     private String    displayLocale;
+    private Byte      talentpoolStatus;
 
     public HrCompanyConf() {}
 
@@ -75,6 +76,7 @@ public class HrCompanyConf implements Serializable {
         this.showInQx = value.showInQx;
         this.employeeSlug = value.employeeSlug;
         this.displayLocale = value.displayLocale;
+        this.talentpoolStatus = value.talentpoolStatus;
     }
 
     public HrCompanyConf(
@@ -100,7 +102,8 @@ public class HrCompanyConf implements Serializable {
         Byte      hrChat,
         Byte      showInQx,
         String    employeeSlug,
-        String    displayLocale
+        String    displayLocale,
+        Byte      talentpoolStatus
     ) {
         this.companyId = companyId;
         this.themeId = themeId;
@@ -125,6 +128,7 @@ public class HrCompanyConf implements Serializable {
         this.showInQx = showInQx;
         this.employeeSlug = employeeSlug;
         this.displayLocale = displayLocale;
+        this.talentpoolStatus = talentpoolStatus;
     }
 
     public Integer getCompanyId() {
@@ -311,6 +315,14 @@ public class HrCompanyConf implements Serializable {
         this.displayLocale = displayLocale;
     }
 
+    public Byte getTalentpoolStatus() {
+        return this.talentpoolStatus;
+    }
+
+    public void setTalentpoolStatus(Byte talentpoolStatus) {
+        this.talentpoolStatus = talentpoolStatus;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrCompanyConf (");
@@ -338,6 +350,7 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(showInQx);
         sb.append(", ").append(employeeSlug);
         sb.append(", ").append(displayLocale);
+        sb.append(", ").append(talentpoolStatus);
 
         sb.append(")");
         return sb.toString();

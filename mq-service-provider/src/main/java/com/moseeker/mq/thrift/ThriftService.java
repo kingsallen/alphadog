@@ -1,28 +1,24 @@
 package com.moseeker.mq.thrift;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.moseeker.common.util.ConfigPropertiesUtil;
-import org.apache.thrift.TException;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.mq.service.impl.EmailProducer;
 import com.moseeker.mq.service.impl.MandrillEmailProducer;
+import com.moseeker.mq.service.impl.ResumeDeliveryService;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.mq.service.sms.SmsService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService.Iface;
-import com.moseeker.thrift.gen.mq.struct.EmailStruct;
-import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
-import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
-import com.moseeker.thrift.gen.mq.struct.SmsType;
+import com.moseeker.thrift.gen.mq.struct.*;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.thrift.TException;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -54,7 +50,10 @@ public class ThriftService implements Iface {
 	
 	@Autowired
 	private MandrillEmailProducer mandrillEmailProducer;
-	
+
+    @Autowired
+    private ResumeDeliveryService deliveryService;
+
 	@Override
 	public Response messageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct) throws TException {
 		return mqService.messageTemplateNotice(messageTemplateNoticeStruct);
@@ -106,4 +105,14 @@ public class ThriftService implements Iface {
 			Map<String, String> data, String sys, String ip) throws TException {
 		return smsService.sendSMS(smsType, mobile, data, sys, ip);
 	}
+
+    @Override
+    public Response sendMessageAndEmail(int application_id) throws TException{
+        return null;
+    }
+
+    @Override
+    public Response sendMessageAndEmailToDelivery(MessageEmailStruct messageEmailStruct) throws TException {
+        return deliveryService.sendMessageAndEmail(messageEmailStruct);
+    }
 }

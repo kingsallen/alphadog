@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1199588677;
+    private static final long serialVersionUID = 1969257771;
 
     /**
      * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -106,9 +106,9 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public final TableField<HrCompanyConfRecord, Short> APPLICATION_COUNT_LIMIT = createField("application_count_limit", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("3", org.jooq.impl.SQLDataType.SMALLINT)), this, "一个人在一个公司下每月申请次数限制");
 
     /**
-     * The column <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月申请校招职位次数限制
+     * The column <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月校招职位申请次数限制
      */
-    public final TableField<HrCompanyConfRecord, Short> SCHOOL_APPLICATION_COUNT_LIMIT = createField("school_application_count_limit", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("3", org.jooq.impl.SQLDataType.SMALLINT)), this, "一个人在一个公司下每月申请校招职位次数限制");
+    public final TableField<HrCompanyConfRecord, Short> SCHOOL_APPLICATION_COUNT_LIMIT = createField("school_application_count_limit", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("3", org.jooq.impl.SQLDataType.SMALLINT)), this, "一个人在一个公司下每月校招职位申请次数限制");
 
     /**
      * The column <code>hrdb.hr_company_conf.job_custom_title</code>. 职位自定义字段标题
@@ -164,6 +164,11 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
      * The column <code>hrdb.hr_company_conf.display_locale</code>. 公司页面语言，格式:IETF language tag
      */
     public final TableField<HrCompanyConfRecord, String> DISPLAY_LOCALE = createField("display_locale", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("zh_CN", org.jooq.impl.SQLDataType.VARCHAR)), this, "公司页面语言，格式:IETF language tag");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启
+     */
+    public final TableField<HrCompanyConfRecord, Byte> TALENTPOOL_STATUS = createField("talentpool_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "人才库状态表 0未开启，1开启");
 
     /**
      * Create a <code>hrdb.hr_company_conf</code> table reference
