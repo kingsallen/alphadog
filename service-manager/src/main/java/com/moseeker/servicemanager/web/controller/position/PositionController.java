@@ -481,13 +481,13 @@ public class PositionController {
      */
     @RequestMapping(value = "/positions/companyhotpositiondetailslist", method = RequestMethod.GET)
     @ResponseBody
-    public PositionDetailsListVO companyHotPositionDetailsList(HttpServletRequest request) {
+    public String companyHotPositionDetailsList(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer companyId = params.getInt("company_id");
             Integer page = params.getInt("page");
             Integer per_age = params.getInt("per_age");
-            return positonServices.companyHotPositionDetailsList(companyId, page, per_age);
+            return JSON.toJSONString(positonServices.companyHotPositionDetailsList(companyId, page, per_age));
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
