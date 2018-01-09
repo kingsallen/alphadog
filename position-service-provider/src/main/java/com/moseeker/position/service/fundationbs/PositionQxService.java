@@ -118,6 +118,12 @@ public class PositionQxService {
             }
             List<PositionDetails> list =jobPositionDao.hotPositionDetailsList(companyId,page,per_age);
             if (list != null && list.size() > 0) {
+                list.forEach(positionDetails -> {
+                    positionDetails.setSalaryBottom(positionDetails.getSalaryBottom());
+                    positionDetails.setSalaryTop(positionDetails.getSalaryTop());
+                });
+            }
+            if (list != null && list.size() > 0) {
                 positionDetailsListVO.setData(list);
                 positionDetailsListVO.setPage(page);
                 positionDetailsListVO.setPer_age(per_age);
