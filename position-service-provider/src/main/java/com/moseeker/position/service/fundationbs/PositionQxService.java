@@ -131,6 +131,7 @@ public class PositionQxService {
             positionDetailsListVO.setStatus(CommonMessage.EXCEPTION.getStatus());
             logger.error(e.getMessage(), e);
         }
+        logger.info("companyHotPositionDetailsList positionDetailsListVO:{}", positionDetailsListVO);
         return positionDetailsListVO;
     }
 
