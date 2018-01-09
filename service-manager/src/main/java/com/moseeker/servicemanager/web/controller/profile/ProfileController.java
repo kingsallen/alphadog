@@ -24,6 +24,11 @@ import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,7 +107,6 @@ public class ProfileController {
 
             ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
             Response result = profileService.postResource(form.getProfile(), form.getUser_id());
-
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -477,4 +481,42 @@ public class ProfileController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 人才库简历上传解析，也可以用在其他位置
+     */
+    @RequestMapping(value = "/profile/upload/parser", method = RequestMethod.POST)
+    @ResponseBody
+    public String profileUploadParser(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
+            Integer uid = params.getInt("uuid");
+            String fileName=params.getString("file_name");
+            String data = new String(Base64.encodeBase64(ParamUtils.file2Byte(fileName)), Consts.UTF_8);;
+            Response res = service.resumeProfile(uid, fileName, data);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/profile/preserve", method = RequestMethod.POST)
+    @ResponseBody
+    public String profilePreserve(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
+            String profile=params.getString("profile");
+            Integer uid = params.getInt("uuid");
+            Response res = profileService.preserveProfile(profile,StringUtils.toString(uid));
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
 }

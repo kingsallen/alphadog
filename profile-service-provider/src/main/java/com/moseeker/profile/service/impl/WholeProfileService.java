@@ -26,6 +26,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.OrderBy;
@@ -57,6 +58,98 @@ public class WholeProfileService {
     ProfileExtUtils profileUtils = new ProfileExtUtils();
 
     ThreadPool pool = ThreadPool.Instance;
+    @Autowired
+    ProfileEntity profileEntity;
+
+    @Autowired
+    private DictIndustryDao dictIndustryDao;
+
+    @Autowired
+    private DictPositionDao dictPositionDao;
+
+    @Autowired
+    private DictCityDao dictCityDao;
+
+    @Autowired
+    private UserWxUserDao wxuserDao;
+
+    @Autowired
+    private DictConstantDao constantDao;
+
+    @Autowired
+    private ProfileOtherDao customizeResumeDao;
+
+    @Autowired
+    private JobPositionDao jobPositionDao;
+
+    @Autowired
+    private UserSettingsDao userSettingsDao;
+
+    @Autowired
+    private ProfileIntentionCityDao intentionCityDao;
+
+    @Autowired
+    private HrCompanyDao companyDao;
+
+    @Autowired
+    private ProfileIntentionPositionDao intentionPositionDao;
+
+    @Autowired
+    private ProfileIntentionIndustryDao intentionIndustryDao;
+
+    @Autowired
+    private ProfileAwardsDao awardsDao;
+
+    @Autowired
+    private DictCollegeDao collegeDao;
+
+    @Autowired
+    private ProfileCredentialsDao credentialsDao;
+
+    @Autowired
+    private DictCountryDao countryDao;
+
+    @Autowired
+    private UserUserDao userDao;
+
+    @Autowired
+    private ProfileAttachmentDao attachmentDao;
+
+    @Autowired
+    private ProfileWorksDao worksDao;
+
+    @Autowired
+    private ProfileEducationDao educationDao;
+
+    @Autowired
+    private ProfileIntentionDao intentionDao;
+
+    @Autowired
+    private ProfileLanguageDao languageDao;
+
+    @Autowired
+    private ProfileOtherDao otherDao;
+
+    @Autowired
+    private ProfileBasicDao profileBasicDao;
+
+    @Autowired
+    private ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileImportDao profileImportDao;
+
+    @Autowired
+    private ProfileProjectexpDao projectExpDao;
+
+    @Autowired
+    private ProfileSkillDao skillDao;
+
+    @Autowired
+    private ProfileWorkexpDao workExpDao;
+
+    @Autowired
+    RetriveProfile retriveProfile;
 
     private Query getProfileQuery(int profileId){
         return new Query.QueryBuilder().where("profile_id",profileId).setPageSize(Integer.MAX_VALUE).buildQuery();
@@ -952,96 +1045,120 @@ public class WholeProfileService {
         return map;
     }
 
-    @Autowired
-    ProfileEntity profileEntity;
+    /*
+     合并上传的简历
+     */
+    public Response preserveProfile(String params,String uuid){
+        params = EmojiFilter.filterEmoji1(params);
+        UserUserRecord userRecord=this.getUserByUuId(uuid);
+        if(userRecord==null){
+            return ResponseUtils.success(params);
+        }
+        Map<String, Object> resume = JSON.parseObject(params);
+        ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
+        if (profileRecord == null) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
+        }
+        ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
 
-    @Autowired
-    private DictIndustryDao dictIndustryDao;
+        if (profileDB != null) {
+            ((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
+            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+            int profileId = profileDB.getId().intValue();
+            profilePojo= this.preserveProfile(profilePojo,profileId);
+            return ResponseUtils.success(profilePojo);
+        }
+        return ResponseUtils.success(params);
+    }
+    private ProfilePojo preserveProfile(ProfilePojo profilePojo,int profileId){
+        ProfileBasicRecord profileBasicRecord=this.preserveBasic(profilePojo.getBasicRecord(),profileId);
+        if(profileBasicRecord!=null){
+            profilePojo.setBasicRecord(profileBasicRecord);
+        }
+        ProfileOtherRecord profileOtherRecord=this.preserveProfileOther(profilePojo.getOtherRecord(),profileId);
+        if(profileOtherRecord!=null){
+            profilePojo.setOtherRecord(profileOtherRecord);
+        }
+        return profilePojo;
+    }
 
-    @Autowired
-    private DictPositionDao dictPositionDao;
+    private UserUserRecord getUserByUuId(String uuid ){
+        Query query=new Query.QueryBuilder().where("uuid",uuid).buildQuery();
+        UserUserRecord userRecord=userDao.getRecord(query);
+        return userRecord;
+    }
+    /*
+     合并profile_basic
+     */
+    public ProfileBasicRecord preserveBasic(ProfileBasicRecord basicRecord, int profileId) {
+        if (basicRecord != null) {
+            Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+            ProfileBasicRecord basic = profileBasicDao.getRecord(query);
+            if (basic != null) {
+                if (StringUtils.isNotNullOrEmpty(basicRecord.getName()) && StringUtils.isNullOrEmpty(basic.getName())) {
+                    basic.setName(basicRecord.getName());
+                }
+                if (basicRecord.getGender() != null && basic.getGender() == null) {
+                    basic.setGender(basicRecord.getGender());
+                }
+                if (basicRecord.getNationalityCode() != null && basic.getNationalityCode() == null) {
+                    basic.setNationalityCode(basicRecord.getNationalityCode());
+                }
+                if (StringUtils.isNotNullOrEmpty(basicRecord.getNationalityName()) && StringUtils.isNullOrEmpty(basic.getNationalityName())) {
+                    basic.setNationalityName(basicRecord.getNationalityName());
+                }
+                if (basicRecord.getCityCode() != null && basic.getCityCode() == null) {
+                    basic.setCityCode(basicRecord.getCityCode());
+                }
+                if (StringUtils.isNotNullOrEmpty(basicRecord.getCityName()) && StringUtils.isNullOrEmpty(basic.getCityName())) {
+                    basic.setCityName(basicRecord.getCityName());
+                }
+                if (basicRecord.getBirth() != null && basic.getBirth() == null) {
+                    basic.setBirth(basicRecord.getBirth());
+                }
+                if (StringUtils.isNotNullOrEmpty(basicRecord.getWeixin()) && StringUtils.isNullOrEmpty(basic.getWeixin())) {
+                    basic.setWeixin(basicRecord.getWeixin());
+                }
+                if (StringUtils.isNotNullOrEmpty(basicRecord.getQq()) && StringUtils.isNullOrEmpty(basic.getQq())) {
+                    basic.setQq(basicRecord.getQq());
+                }
+                if (StringUtils.isNotNullOrEmpty(basicRecord.getMotto()) && StringUtils.isNullOrEmpty(basic.getMotto())) {
+                    basic.setMotto(basicRecord.getMotto());
+                }
+                if (StringUtils.isNotNullOrEmpty(basicRecord.getSelfIntroduction()) && StringUtils.isNullOrEmpty(basic.getSelfIntroduction())) {
+                    basic.setSelfIntroduction(basicRecord.getSelfIntroduction());
+                }
+                return basic;
+            } else {
+                basicRecord.setProfileId((int) (profileId));
+                return basicRecord;
+            }
+        }
+        return null;
+    }
 
-    @Autowired
-    private DictCityDao dictCityDao;
+    /*
+     合并Profile_Other
+     */
+    public ProfileOtherRecord preserveProfileOther(ProfileOtherRecord otherRecord, int profileId) {
+        if (otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("profile_id", String.valueOf(profileId));
+            ProfileOtherRecord record = otherDao.getRecord(query.buildQuery());
+            if (record == null && otherRecord != null) {
+                otherRecord.setProfileId((int) (profileId));
+            } else if (record != null && otherRecord != null) {
+                /**
+                 * 自定义合并逻辑：oldOther没有或为空的字段且存在newOther中 -> 将newOther中的字段补填到oldOther里
+                 */
+                Map<String, Object> oldOtherMap = JSONObject.parseObject(otherRecord.getOther(), Map.class);
+                Map<String, Object> newOtherMap = JSONObject.parseObject(record.getOther(), Map.class);
+                oldOtherMap.entrySet().stream().filter(f -> (StringUtils.isNullOrEmpty(String.valueOf(f.getValue())) || "[]".equals(String.valueOf(f.getValue())))  && newOtherMap.containsKey(f.getKey())).forEach(e -> e.setValue(newOtherMap.get(e.getKey())));
+                newOtherMap.putAll(oldOtherMap);
+                otherRecord.setOther(JSONObject.toJSONString(newOtherMap));
 
-    @Autowired
-    private UserWxUserDao wxuserDao;
-
-    @Autowired
-    private DictConstantDao constantDao;
-
-    @Autowired
-    private ProfileOtherDao customizeResumeDao;
-
-    @Autowired
-    private JobPositionDao jobPositionDao;
-
-    @Autowired
-    private UserSettingsDao userSettingsDao;
-
-    @Autowired
-    private ProfileIntentionCityDao intentionCityDao;
-
-    @Autowired
-    private HrCompanyDao companyDao;
-
-    @Autowired
-    private ProfileIntentionPositionDao intentionPositionDao;
-
-    @Autowired
-    private ProfileIntentionIndustryDao intentionIndustryDao;
-
-    @Autowired
-    private ProfileAwardsDao awardsDao;
-
-    @Autowired
-    private DictCollegeDao collegeDao;
-
-    @Autowired
-    private ProfileCredentialsDao credentialsDao;
-
-    @Autowired
-    private DictCountryDao countryDao;
-
-    @Autowired
-    private UserUserDao userDao;
-
-    @Autowired
-    private ProfileAttachmentDao attachmentDao;
-
-    @Autowired
-    private ProfileWorksDao worksDao;
-
-    @Autowired
-    private ProfileEducationDao educationDao;
-
-    @Autowired
-    private ProfileIntentionDao intentionDao;
-
-    @Autowired
-    private ProfileLanguageDao languageDao;
-
-    @Autowired
-    private ProfileOtherDao otherDao;
-
-    @Autowired
-    private ProfileBasicDao profileBasicDao;
-
-    @Autowired
-    private ProfileProfileDao profileDao;
-
-    @Autowired
-    private ProfileImportDao profileImportDao;
-
-    @Autowired
-    private ProfileProjectexpDao projectExpDao;
-
-    @Autowired
-    private ProfileSkillDao skillDao;
-
-    @Autowired
-    private ProfileWorkexpDao workExpDao;
-
-    @Autowired
-    RetriveProfile retriveProfile;
+            }
+        }
+        return otherRecord;
+    }
 }

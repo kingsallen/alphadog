@@ -113,4 +113,17 @@ public class WholeProfileServicesImpl implements Iface {
         }
     }
 
+    @Override
+    public Response preserveProfile(String params, String uuid) throws BIZException, TException {
+        try {
+            logger.info("preserveProfile parameter{}：", params);
+            return service.preserveProfile(params,uuid);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
 }
