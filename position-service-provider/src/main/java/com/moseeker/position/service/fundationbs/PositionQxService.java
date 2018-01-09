@@ -108,6 +108,7 @@ public class PositionQxService {
      */
     @CounterIface
     public PositionDetailsListVO companyHotPositionDetailsList(Integer companyId, Integer page, Integer per_age) {
+        logger.info("companyHotPositionDetailsList companyId:{}, page:{}, per_age", companyId, page, per_age);
         PositionDetailsListVO positionDetailsListVO = new PositionDetailsListVO();
         try {
             if (companyId == 0) {
