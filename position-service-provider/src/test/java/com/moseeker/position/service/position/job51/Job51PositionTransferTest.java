@@ -26,6 +26,13 @@ public class Job51PositionTransferTest {
     JobPositionDao jobPositionDao;
 
     @Test
+    public void getCities(){
+        JobPositionDO positionDO=new JobPositionDO();
+        positionDO.setId(1909676);
+        System.out.print(JSON.toJSONString(job51PositionTransfer.getCities(positionDO)));
+    }
+
+//    @Test
     public void test(){
         String json="{\n" +
                 "  \"appid\": 4,\n" +
