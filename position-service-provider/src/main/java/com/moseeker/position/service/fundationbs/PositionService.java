@@ -1405,6 +1405,7 @@ public class PositionService {
                     e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
                     e.setAccountabilities(jr.getAccountabilities());
                     e.setCandidate_source(jr.getCandidateSource());
+                    e.setRequirement(jr.getRequirement());
                     dataList.add(e);
                     break;
                 }
