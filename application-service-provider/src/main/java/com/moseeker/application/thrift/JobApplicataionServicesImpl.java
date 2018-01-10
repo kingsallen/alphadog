@@ -124,6 +124,11 @@ public class JobApplicataionServicesImpl implements Iface {
     }
 
     @Override
+    public Response validateUserApplicationTypeCheckCountAtCompany(long userId, long companyId) throws TException {
+        return service.validateUserApplicationTypeCheckCountAtCompany(userId, companyId);
+    }
+
+    @Override
     public ApplicationResponse getAccountIdAndCompanyId(long jobApplicationId) throws TException {
         return service.getAccountIdAndCompanyId(jobApplicationId);
     }
