@@ -627,6 +627,9 @@ public class PositionService {
                     record.setId(jobPositionRecord.getId());
                     jobPositionIds.add(jobPositionRecord.getId());
                 }
+                // 添加同步数据
+                addSyncData(syncData,record.getId(),jobPositionHandlerDate.getThirdParty_position());
+
                 // 取出数据库中的数据进行对比操作
                 JobPositionRecord jobPositionRecordTemp = (JobPositionRecord) dbListMap.get(record.getId());
                 if (jobPositionRecordTemp != null) {
@@ -667,8 +670,6 @@ public class PositionService {
                             //添加修改标题的职位对应的需要作废的第三方职位数据parent_id
                             thirdPartyPositionDisablelist.add(record.getId());
                         }
-                        addSyncData(syncData,record.getId(),jobPositionHandlerDate.getThirdParty_position());
-
 
 
                         // 需要更新JobPositionCity数据
