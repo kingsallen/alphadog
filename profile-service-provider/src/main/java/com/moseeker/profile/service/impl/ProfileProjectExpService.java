@@ -2,15 +2,16 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProjectexpDao;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileProjectexp;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
+import com.moseeker.baseorm.tool.RecordTool;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.query.Order;
-import com.moseeker.common.util.query.OrderBy;
-import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.*;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
@@ -22,10 +23,12 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @CounterIface
@@ -118,19 +121,37 @@ public class ProfileProjectExpService {
 
     @Transactional
     public Response putResources(List<ProjectExp> structs) throws TException {
-        int[] result = dao.updateRecords(structsToDBs(structs));
-        if (ArrayUtils.contains(result, 1)) {
 
-            updateUpdateTime(structs);
+        List<ProfileProjectexpRecord> originProfileProjectList = BeanUtils.structToDB(structs, ProfileProjectexpRecord.class);
+        List<Integer> idList = originProfileProjectList.stream()
+                .map(profileProjectexpRecord -> profileProjectexpRecord.getId())
+                .collect(Collectors.toList());
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(new Condition(ProfileProjectexp.PROFILE_PROJECTEXP.ID.getName(), idList, ValueOp.IN));
 
-            structs.forEach(struct -> {
-                /* 计算profile完成度 */
-                profileEntity.reCalculateProfileProjectExpByProjectExpId(struct.getId());
+        List<ProfileProjectexpRecord> descProfileProjectList = dao.getRecords(queryBuilder.buildQuery());
+        if (descProfileProjectList != null) {
+            Iterator<ProfileProjectexpRecord> iterator = descProfileProjectList.iterator();
+            while (iterator.hasNext()) {
+                ProfileProjectexpRecord profileProjectexpRecord = iterator.next();
+                Optional<ProfileProjectexpRecord> optional = originProfileProjectList.stream()
+                        .filter(profileProjectexpRecord1 -> profileProjectexpRecord1.getId().intValue() == profileProjectexpRecord.getId())
+                        .findAny();
+                if (optional.isPresent()) {
+                    RecordTool.recordToRecord(profileProjectexpRecord, optional.get());
+                    ValidationMessage<ProfileProjectexpRecord> validationMessage = ProfileValidation.verifyProjectExp(profileProjectexpRecord);
+                    if (!validationMessage.isPass()) {
+                        iterator.remove();
+                    }
+                }
+            }
+            dao.updateRecords(descProfileProjectList);
+            updateProfileUpdateTime(descProfileProjectList);
+            descProfileProjectList.forEach(profileProjectexpRecord -> {
+                profileEntity.reCalculateProfileProjectExpByProjectExpId(profileProjectexpRecord.getId());
             });
-
-            return ResponseUtils.success("1");
         }
-        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+        return ResponseUtils.success("1");
     }
 
     @Transactional
@@ -170,7 +191,7 @@ public class ProfileProjectExpService {
     }
 
     @Transactional
-    public Response postResource(ProjectExp struct) throws TException {
+    public Response postResource(ProjectExp struct) throws CommonException {
         ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(struct);
         if (!vm.isPass()) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
@@ -187,17 +208,23 @@ public class ProfileProjectExpService {
     @Transactional
     public Response putResource(ProjectExp struct) throws TException {
 
-        ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(struct);
-        if (!vm.isPass()) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
-        }
-
-        int result = dao.updateRecord(structToDB(struct));
-        if (result > 0) {
-            updateUpdateTime(struct);
+        ProfileProjectexpRecord originProfileProjectexpRecord = structToDB(struct);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(ProfileProjectexp.PROFILE_PROJECTEXP.ID.getName(), originProfileProjectexpRecord.getId());
+        ProfileProjectexpRecord descProfileProjectexpRecord = dao.getRecord(queryBuilder.buildQuery());
+        if (descProfileProjectexpRecord != null) {
+            RecordTool.recordToRecord(descProfileProjectexpRecord, originProfileProjectexpRecord);
+            ValidationMessage<ProfileProjectexpRecord> vm = ProfileValidation.verifyProjectExp(descProfileProjectexpRecord);
+            if (!vm.isPass()) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
+            }
+            int result = dao.updateRecord(descProfileProjectexpRecord);
+            if (result > 0) {
+                updateUpdateTime(struct);
             /* 计算profile完成度 */
-            profileEntity.reCalculateProfileProjectExpByProjectExpId(struct.getId());
-            return ResponseUtils.success("1");
+                profileEntity.reCalculateProfileProjectExpByProjectExpId(struct.getId());
+                return ResponseUtils.success("1");
+            }
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
@@ -269,6 +296,15 @@ public class ProfileProjectExpService {
         List<ProjectExp> projectExps = new ArrayList<>();
         projectExps.add(projectExp);
         updateUpdateTime(projectExps);
+    }
+
+    private void updateProfileUpdateTime(List<ProfileProjectexpRecord> descProfileProjectList) {
+        if (descProfileProjectList != null) {
+            Set<Integer> peojectExpIdList = descProfileProjectList.stream()
+                    .map(profileProjectexpRecord -> profileProjectexpRecord.getId())
+                    .collect(Collectors.toSet());
+            dao.updateProfileUpdateTime(peojectExpIdList);
+        }
     }
 
     private List<ProjectExp> recordsToStructs(List<ProfileProjectexpRecord> recordList) {
