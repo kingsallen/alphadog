@@ -101,7 +101,8 @@ struct WechatPositionListData {
     15: optional string city,
     16: optional i32 priority,
     17: optional i32 publisher,
-    18: optional i32 totalNum;
+    18: optional i32 totalNum,
+    19: optional i32 candidate_source
 }
 
 // 微信端职位列表的附加红包信息

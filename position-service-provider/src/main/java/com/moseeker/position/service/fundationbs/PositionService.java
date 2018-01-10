@@ -1435,6 +1435,7 @@ public class PositionService {
                     e.setCity(jr.getCity());
                     e.setPriority(jr.getPriority());
                     e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
+                    e.setCandidate_source(jr.getCandidateSource());
                     dataList.add(e);
                     break;
                 }
