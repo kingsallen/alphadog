@@ -490,10 +490,10 @@ public class ProfileController {
     public String profileUploadParser(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseequestParameter(request);
-            Integer uid = params.getInt("uuid");
             String fileName=params.getString("file_name");
+            int companyId=params.getInt("company_id");
             String data = new String(Base64.encodeBase64(ParamUtils.file2Byte(fileName)), Consts.UTF_8);;
-            Response res = service.resumeProfile(uid, fileName, data);
+            Response res = service.resumeTalentProfile( fileName, data,companyId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -508,8 +508,8 @@ public class ProfileController {
         try {
             Params<String, Object> params = ParamUtils.parseequestParameter(request);
             String profile=params.getString("profile");
-            Integer uid = params.getInt("uuid");
-            Response res = profileService.combinationProfile(profile,StringUtils.toString(uid));
+            int companyId=params.getInt("company_id");
+            Response res = profileService.combinationProfile(profile,companyId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -518,13 +518,12 @@ public class ProfileController {
         }
     }
 
-    @RequestMapping(value = "/api/profile/upload/preserve", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/profile/talent/preserve", method = RequestMethod.POST)
     @ResponseBody
     public String saveProfile(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseequestParameter(request);
             String profile=params.getString("profile");
-            Integer uid = params.getInt("uuid");
             int hrId=params.getInt("hr_id");
             int companyId=params.getInt("companyId");
             String fileName=params.getString("file_name");

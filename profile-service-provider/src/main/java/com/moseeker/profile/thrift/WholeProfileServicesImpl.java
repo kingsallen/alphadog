@@ -114,10 +114,10 @@ public class WholeProfileServicesImpl implements Iface {
     }
 
     @Override
-    public Response combinationProfile(String params, String uuid) throws BIZException, TException {
+    public Response combinationProfile(String params, int companyId) throws BIZException, TException {
         try {
             logger.info("preserveProfile parameter{}：", params);
-            return service.combinationProfile(params,uuid);
+            return service.combinationProfile(params,companyId);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

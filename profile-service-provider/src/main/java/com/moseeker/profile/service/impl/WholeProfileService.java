@@ -1059,20 +1059,15 @@ public class WholeProfileService {
     /*
      合并上传的简历
      */
-    public Response combinationProfile(String params,String uuid){
+    public Response combinationProfile(String params,int companyId ){
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         String mobile = ((String) map.get("mobile"));
-        String countryCode = "86";
         if(StringUtils.isNullOrEmpty(mobile)){
-            return ResponseUtils.fail(1,"手机号不能为空");
+            return ResponseUtils.success(params);
         }
-        if(mobile.contains("-")){
-            countryCode=mobile.split("-")[0];
-            mobile=mobile.split("-")[1];
-        }
-        UserUserRecord userRecord=this.getUserByProfileData( mobile, countryCode);
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
         if(userRecord==null){
             return ResponseUtils.success(params);
         }
@@ -1095,31 +1090,31 @@ public class WholeProfileService {
     /*
      保存上传的简历
      */
-    public Response preserveProfile(String params,String fileName,int hrId,int companyId) throws TException {
+    public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId) throws TException {
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         String mobile = ((String) map.get("mobile"));
-        String countryCode = "86";
         if(StringUtils.isNullOrEmpty(mobile)){
             return ResponseUtils.fail(1,"手机号不能为空");
         }
-        if(mobile.contains("-")){
-            countryCode=mobile.split("-")[0];
-            mobile=mobile.split("-")[1];
-        }
-        UserUserRecord userRecord=this.getUserByProfileData( mobile, countryCode);
-        int userId=0;
-        if(userRecord==null){
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
+        int newUerId=0;
+        if(userRecord==null&&userId==0){
             userId=this.saveNewProfile(resume,map);
         }else{
+            if(userId!=0&&userId!=newUerId){
+                //合并账号
+
+            }
             Response res=this.upsertProfile(resume,userRecord);
             if(res.getStatus()==0){
                 userId=userRecord.getId();
             }
         }
         if(userId>0){
-            talentPoolEntity.addUploadTalent(userId,hrId,companyId,fileName);
+            //此处应该考虑账号合并导致的问题
+            talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName);
         }
         return ResponseUtils.success("success");
     }
@@ -1127,12 +1122,11 @@ public class WholeProfileService {
      保存上传简历
      */
     private int saveNewProfile(Map<String, Object> resume,Map<String, Object> map) throws TException {
-
         UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
-        logger.info("ProfileBS retrieveProfile user:{}", user1);
+        logger.info("talentpool upload new  user:{}", user1);
         user1.setSource((byte) UserSource.RETRIEVE_PROFILE.getValue());
         int userId = useraccountsServices.createRetrieveProfileUser(user1);
-        logger.info("ProfileBS retrieveProfile userId:{}", userId);
+        logger.info("talentpool userId:{}", userId);
         if (userId > 0) {
             map.put("id", userId);
             HashMap<String, Object> profileProfile = new HashMap<String, Object>();
@@ -1203,12 +1197,6 @@ public class WholeProfileService {
             profilePojo.setOtherRecord(profileOtherRecord);
         }
         return profilePojo;
-    }
-
-    private UserUserRecord getUserByProfileData(String mobile,String countryCode){
-        Query findRetrieveUserQU = new Query.QueryBuilder().where("mobile", mobile).and("country_code", countryCode).and("source", UserSource.TALENT_UPLOAD.getValue()).buildQuery();
-        UserUserRecord user = userDao.getRecord(findRetrieveUserQU);
-        return user;
     }
     /*
      合并profile_basic

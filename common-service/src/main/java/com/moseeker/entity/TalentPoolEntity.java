@@ -7,14 +7,18 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
+import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
@@ -54,6 +58,8 @@ public class TalentPoolEntity {
     private RedisClient client;
     @Autowired
     private TalentpoolUploadDao talentpoolUploadDao;
+    @Autowired
+    private UserUserDao userUserDao;
 
     /*
         验证hr操作user_id是否合法
@@ -775,18 +781,23 @@ public class TalentPoolEntity {
     /*
      上传简历成为收藏人才
      */
-    public void addUploadTalent(int userId,int hrId,int companyId,String fileName){
-        if(this.isHrtalent(userId,hrId)==0){
+    public void addUploadTalent(int userId,int newuserId,int hrId,int companyId,String fileName){
+        if(userId!=0&&newuserId!=0){
+            if(this.isHrtalent(userId,hrId)>0){
+
+            }
+        }
+        if(this.isHrtalent(newuserId,hrId)==0){
             Set<Integer> userSet=new HashSet<>();
             userSet.add(userId);
             this.addTalent(userSet,hrId,companyId);
-            this.saveUploadProfile(fileName,hrId,companyId);
+            this.saveUploadProfileName(fileName,hrId,companyId);
         }
     }
     /*
      记录上传的简历
      */
-    private void saveUploadProfile(String fileName,int hrId,int companyId){
+    private void saveUploadProfileName(String fileName,int hrId,int companyId){
         TalentpoolUploadRecord record=new TalentpoolUploadRecord();
         record.setCompanyId(companyId);
         record.setHrId(hrId);
@@ -833,5 +844,78 @@ public class TalentPoolEntity {
             userIdList.add(id);
         }
         return userIdList;
+    }
+
+    /*
+     获取上传简历的user_id
+     */
+    public UserUserRecord getTalentUploadUser(String phone,int companyId){
+        String countryCode="86";
+        if(phone.contains("-")){
+            String [] phoneArray=phone.split("-");
+            countryCode=phoneArray[0];
+            phone=phoneArray[1];
+        }
+        List<UserUserRecord> list=getTalentUploadUserUser(phone,countryCode);
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> userIdList=this.getUserIdByRecord(list);
+        TalentpoolTalentRecord record=this.getTalentByUserIdAndCompanyUpload(userIdList,companyId);
+        if(record==null){
+            return null;
+        }
+        UserUserRecord userRecord=handleTalentAndUser(record,list);
+        return userRecord;
+    }
+    /*
+     获取所有的手机号相同的人才库上传的简历
+     */
+    public List<UserUserRecord> getTalentUploadUserUser(String phone,String countryCode){
+        Query query=new Query.QueryBuilder().where("mobile",phone).and("country_code",countryCode)
+                .and("source", UserSource.TALENT_UPLOAD).and("is_disable",0)
+                .buildQuery();
+        List<UserUserRecord> list=userUserDao.getRecords(query);
+        return list;
+    }
+    /*
+     获取所有的user_id
+     */
+    public List<Integer> getUserIdByRecord(List<UserUserRecord> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(UserUserRecord userRecord:list){
+            if(!result.contains(userRecord.getId())){
+                result.add(userRecord.getId());
+            }
+        }
+        return result;
+    }
+    /*
+     在人才库中获取这个公司下所有hr关于这份上传的简历的user_id
+     */
+    public TalentpoolTalentRecord getTalentByUserIdAndCompanyUpload(List<Integer> userIdList,int companyId){
+        Query query=new Query.QueryBuilder().where("upload",1).and(new Condition("user_id",userIdList.toArray(),ValueOp.IN))
+                .and("company_id",companyId).buildQuery();
+        TalentpoolTalentRecord record=talentpoolTalentDao.getRecord(query);
+        return record;
+    }
+    /*
+     处理usersuserrecord和talentpoolTalentRecord，获取user
+     */
+    private UserUserRecord handleTalentAndUser(TalentpoolTalentRecord record,List<UserUserRecord> list){
+        if(record==null||StringUtils.isEmptyList(list)){
+            return null;
+        }
+        int userId=record.getUserId();
+        for(UserUserRecord userRecord:list){
+            int id=userRecord.getId();
+            if(id==userId){
+                return userRecord;
+            }
+        }
+        return null;
     }
 }
