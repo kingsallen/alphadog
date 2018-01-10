@@ -10,7 +10,7 @@ public class PositionVeryEastForm {
     private int companyId;
     private String companyName;
     private List<String> occupation;
-    private int quantity;
+    private int count;
     private int accommodation;
     private List<Integer> age;
     private List<Language> language;
@@ -134,12 +134,12 @@ public class PositionVeryEastForm {
         this.occupation = occupation;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getCount() {
+        return count;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public int getAccommodation() {
