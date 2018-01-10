@@ -211,13 +211,17 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
 
 
         //将最后一个职能的Code存到数据库
-        if (!p.getOccupation().isEmpty() && p.getOccupation().size() > 0) {
-            data.setOccupation(p.getOccupation().get(p.getOccupation().size() - 1));
+        if (!position.getOccupation().isEmpty() && position.getOccupation().size() > 0) {
+            data.setOccupation(position.getOccupation().get(position.getOccupation().size() - 1));
         }
         data.setCompanyName(position.getCompanyName());
         data.setCompanyId(position.getCompanyId());
-        data.setSalaryBottom(Integer.parseInt(p.getSalary_low()));
-        data.setSalaryTop(Integer.parseInt(p.getSalary_high()));
+        if(!StringUtils.isNullOrEmpty(p.getSalary_low())){
+            data.setSalaryBottom(Integer.parseInt(p.getSalary_low()));
+        }
+        if(!StringUtils.isNullOrEmpty(p.getSalary_high())) {
+            data.setSalaryTop(Integer.parseInt(p.getSalary_high()));
+        }
         data.setAddressId(position.getAddressId());
 
         if(p.getAddress()==null) {
