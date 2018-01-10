@@ -162,6 +162,7 @@ public class JobApplicataionServicesImpl implements Iface {
     	}  catch (CommonException e) {
             return new Response(e.getCode(), e.getMessage());
         } catch(Exception e){
+
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     	}
