@@ -1,10 +1,12 @@
-package com.moseeker.position.service.position.job51.refresh.handler;
+package com.moseeker.position.service.position.zhilian.refresher.handler;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
+import com.moseeker.baseorm.dao.dictdb.DictZhilianOccupationDao;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictZhilianOccupationDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Map;
 
-public class Job51OccupationResultHandler extends AbstractOccupationResultHandler<Dict51jobOccupationDO> implements Job51ResultHandlerAdapter{
-    Logger logger= LoggerFactory.getLogger(Job51OccupationResultHandler.class);
+public class ZhilianOccupationResultHandler extends AbstractOccupationResultHandler<DictZhilianOccupationDO> implements ZhilianResultHandlerAdapter {
+    Logger logger= LoggerFactory.getLogger(ZhilianOccupationResultHandler.class);
 
     @Autowired
-    Dict51OccupationDao occupationDao;
+    DictZhilianOccupationDao occupationDao;
 
     @Override
-    protected Dict51jobOccupationDO buildOccupation(List<String> texts, List<String> codes, Map<String, Integer> newCode, JSONObject msg) {
-        Dict51jobOccupationDO temp=new Dict51jobOccupationDO();
+    protected DictZhilianOccupationDO buildOccupation(List<String> texts, List<String> codes, Map<String, Integer> newCode, JSONObject msg) {
+        DictZhilianOccupationDO temp=new DictZhilianOccupationDO();
 
         temp.setCodeOther(Integer.valueOf(codes.get(codes.size()-1)));
         temp.setCode(newCode.get(temp.getCodeOther()));
@@ -33,10 +35,10 @@ public class Job51OccupationResultHandler extends AbstractOccupationResultHandle
     }
 
     @Override
-    protected void persistent(List<Dict51jobOccupationDO> data) {
+    protected void persistent(List<DictZhilianOccupationDO> data) {
         int delCount=occupationDao.deleteAll();
-        logger.info("job51 delete old Occupation "+delCount);
+        logger.info("zhilian delete old Occupation "+delCount);
         occupationDao.addAllData(data);
-        logger.info("job51 insert success");
+        logger.info("zhilian insert success");
     }
 }

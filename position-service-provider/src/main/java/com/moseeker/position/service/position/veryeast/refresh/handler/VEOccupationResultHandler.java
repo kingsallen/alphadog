@@ -43,15 +43,4 @@ public class VEOccupationResultHandler extends AbstractOccupationResultHandler<D
         occupationDao.addAllData(data);
         logger.info("veryeast insert success");
     }
-
-    @Override
-    public String occupationKey() {
-        return "occupation";
-    }
-
-    @Override
-    protected List<Occupation> toList(JSONObject msg) {
-        return msg.getJSONArray(occupationKey()).toJavaList(Occupation.class);
-    }
-
 }

@@ -38,18 +38,8 @@ public class LiepinOccupationResultHandler extends AbstractOccupationResultHandl
     @Override
     protected void persistent(List<DictLiepinOccupationDO> data) {
         int delCount=occupationDao.deleteAll();
-        logger.info("veryeast delete old Occupation "+delCount);
+        logger.info("liepin delete old Occupation "+delCount);
         occupationDao.addAllData(data);
-        logger.info("veryeast insert success");
-    }
-
-    @Override
-    protected String occupationKey() {
-        return "occupation";
-    }
-
-    @Override
-    protected List<Occupation> toList(JSONObject msg) {
-        return null;
+        logger.info("liepin insert success");
     }
 }

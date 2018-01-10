@@ -61,11 +61,6 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
     }
 
     @Override
-    public String occupationKey() {
-        return "occupation";
-    }
-
-    @Override
     protected List<Occupation> toList(JSONObject msg) {
         TypeReference<List<List<String>>> typeRef
                 = new TypeReference<List<List<String>>>() {};

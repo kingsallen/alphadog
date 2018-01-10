@@ -18,10 +18,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
     protected abstract T buildOccupation(List<String> texts,List<String> codes,Map<String, Integer> newCode,JSONObject msg);
     //持久化数据,需要加上@Transactional注解
     protected abstract void persistent(List<T> data);
-    //职位在json中对应的key
-    protected abstract String occupationKey();
 
-    protected abstract List<Occupation> toList(JSONObject msg);
     /**
      * 处理最佳东方职位信息
      * @param msg
@@ -32,7 +29,11 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
             logger.info("very east param does not has occupation!");
             return;
         }
-        List<Occupation> occupationList=splitOccupation(toList(msg));
+        //把json中的职能转换成List<Occupation>
+        List<Occupation> occupationsToBeSplit=toList(msg);
+        //分割list，即分出1层有哪些，2层有哪些，3层有哪些。。。
+        //比如传来的 IT,程序员，Java程序员-->IT/IT,程序员/IT,程序员，Java程序员
+        List<Occupation> occupationList=splitOccupation(occupationsToBeSplit);
         logger.info("occupationList:{}",JSON.toJSONString(occupationList));
 
         //为第三方code生成对应的本地code，作为主键,同时方便查询 第三方code的父code对应的 本地code
@@ -58,6 +59,16 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
         logger.info("occupation for persistent : {}", JSON.toJSONString(forInsert));
         //持久化操作
         persistent(forInsert);
+    }
+
+    //职位在json中对应的key
+    protected String occupationKey(){
+        return "occupation";
+    }
+
+    //将msg中的occupation转成List<Occupation>类
+    protected List<Occupation> toList(JSONObject msg){
+        return msg.getJSONArray(occupationKey()).toJavaList(Occupation.class);
     }
 
     protected Map<String,Integer> generateNewKey(List<String> otherCodes,JSONObject msg) {
