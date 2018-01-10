@@ -3,8 +3,6 @@ package com.moseeker.servicemanager.web.controller.position;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -31,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +37,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -303,7 +299,15 @@ public class PositionController {
             if (hbConfigId == null) {
                 throw new Exception("红包活动 id 不正确!");
             }
-            List<WechatRpPositionListData> rpPositionList = positonServices.getRpPositionList(hbConfigId);
+            String pageNum=(String)params.get("page_from");
+            String pageSize=(String)params.get("page_size");
+            if(StringUtils.isNullOrEmpty(pageNum)){
+                pageNum="1";
+            }
+            if(StringUtils.isNullOrEmpty(pageSize)){
+                pageSize="15";
+            }
+            List<WechatRpPositionListData> rpPositionList = positonServices.getRpPositionList(hbConfigId,Integer.parseInt(pageNum),Integer.parseInt(pageSize));
 
             Response res = ResponseUtils.success(rpPositionList);
             return ResponseLogNotification.success(request, res);
@@ -436,7 +440,7 @@ public class PositionController {
      */
     @RequestMapping(value = "/positions/companyhotpositiondetailslist", method = RequestMethod.GET)
     @ResponseBody
-    public PositionDetailsListVO companyHotPositionDetailsList(HttpServletRequest request, HttpServletResponse response) {
+    public PositionDetailsListVO companyHotPositionDetailsList(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer companyId = params.getInt("company_id");
@@ -456,6 +460,7 @@ public class PositionController {
     @RequestMapping(value = "/positions/similaritypositiondetailslist", method = RequestMethod.GET)
     @ResponseBody
     public PositionDetailsListVO similarityPositionDetailsList(HttpServletRequest request, HttpServletResponse response) {
+
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer pid = params.getInt("position_id");
@@ -809,6 +814,14 @@ public class PositionController {
             String recomPushId=params.getString("recomPushId");
             String companyId=params.getString("companyId");
             String type=params.getString("type");
+            String pageNum=(String)params.get("page_from");
+            String pageSize=(String)params.get("page_size");
+            if(StringUtils.isNullOrEmpty(pageNum)){
+                pageNum="1";
+            }
+            if(StringUtils.isNullOrEmpty(pageSize)){
+                pageSize="15";
+            }
             if(StringUtils.isNullOrEmpty(recomPushId)){
                 return ResponseLogNotification.fail(request, "推荐id不能为空");
             }
@@ -818,7 +831,11 @@ public class PositionController {
             if(StringUtils.isNullOrEmpty(type)){
                 type="1";
             }
-            Response result=positonServices.getEmployeeRecomPositionByIds(Integer.parseInt(recomPushId),Integer.parseInt(companyId),Integer.parseInt(type));
+
+            Response result=positonServices.getEmployeeRecomPositionByIds(
+                    Integer.parseInt(recomPushId),Integer.parseInt(companyId),Integer.parseInt(type)
+                    ,Integer.parseInt(pageNum),Integer.parseInt(pageSize)
+            );
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage());

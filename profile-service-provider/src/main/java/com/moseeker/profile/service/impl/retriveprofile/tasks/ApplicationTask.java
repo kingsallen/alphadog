@@ -36,7 +36,7 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
             }
             return 0;
         } catch (TException e) {
-            throw CommonException.PROGRAM_PUT_FAILED;
+            throw ExceptionUtils.convertToCommonException(e);
         }
     }
 

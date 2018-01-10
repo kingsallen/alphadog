@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 简历类型 Created by jack on 18/08/2017.
+ * 简历类型
+ * Created by jack on 18/08/2017.
  */
 public enum ApplicationSource {
 

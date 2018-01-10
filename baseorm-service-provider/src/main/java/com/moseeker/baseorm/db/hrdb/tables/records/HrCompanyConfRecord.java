@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 382903922;
+    private static final long serialVersionUID = 1290405286;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -184,171 +184,185 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
+     * Setter for <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月校招职位申请次数限制
+     */
+    public void setSchoolApplicationCountLimit(Short value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月校招职位申请次数限制
+     */
+    public Short getSchoolApplicationCountLimit() {
+        return (Short) get(11);
+    }
+
+    /**
      * Setter for <code>hrdb.hr_company_conf.job_custom_title</code>. 职位自定义字段标题
      */
     public void setJobCustomTitle(String value) {
-        set(11, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.job_custom_title</code>. 职位自定义字段标题
      */
     public String getJobCustomTitle() {
-        return (String) get(11);
+        return (String) get(12);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.search_seq</code>. 搜索页页面设置顺序,3#1#2
      */
     public void setSearchSeq(String value) {
-        set(12, value);
+        set(13, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.search_seq</code>. 搜索页页面设置顺序,3#1#2
      */
     public String getSearchSeq() {
-        return (String) get(12);
+        return (String) get(13);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.search_img</code>. 搜索页页面设置背景图
      */
     public void setSearchImg(String value) {
-        set(13, value);
+        set(14, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.search_img</code>. 搜索页页面设置背景图
      */
     public String getSearchImg() {
-        return (String) get(13);
+        return (String) get(14);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.job_occupation</code>. 自定义字段名称
      */
     public void setJobOccupation(String value) {
-        set(14, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.job_occupation</code>. 自定义字段名称
      */
     public String getJobOccupation() {
-        return (String) get(14);
+        return (String) get(15);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.teamname_custom</code>. 自定义部门别名
      */
     public void setTeamnameCustom(String value) {
-        set(15, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.teamname_custom</code>. 自定义部门别名
      */
     public String getTeamnameCustom() {
-        return (String) get(15);
+        return (String) get(16);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.application_time</code>. newjd_status即新的jd页的生效时间，
      */
     public void setApplicationTime(Timestamp value) {
-        set(16, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.application_time</code>. newjd_status即新的jd页的生效时间，
      */
     public Timestamp getApplicationTime() {
-        return (Timestamp) get(16);
+        return (Timestamp) get(17);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
      */
     public void setNewjdStatus(Integer value) {
-        set(17, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
      */
     public Integer getNewjdStatus() {
-        return (Integer) get(17);
+        return (Integer) get(18);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.hr_chat</code>. IM聊天开关，0：不开启，1：开启
      */
     public void setHrChat(Byte value) {
-        set(18, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.hr_chat</code>. IM聊天开关，0：不开启，1：开启
      */
     public Byte getHrChat() {
-        return (Byte) get(18);
+        return (Byte) get(19);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.show_in_qx</code>. 公司信息、团队信息、职位信息在仟寻展示，0: 否， 1: 是
      */
     public void setShowInQx(Byte value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.show_in_qx</code>. 公司信息、团队信息、职位信息在仟寻展示，0: 否， 1: 是
      */
     public Byte getShowInQx() {
-        return (Byte) get(19);
+        return (Byte) get(20);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.employee_slug</code>. 员工自定义称谓
      */
     public void setEmployeeSlug(String value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.employee_slug</code>. 员工自定义称谓
      */
     public String getEmployeeSlug() {
-        return (String) get(20);
+        return (String) get(21);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.display_locale</code>. 公司页面语言，格式:IETF language tag
      */
     public void setDisplayLocale(String value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.display_locale</code>. 公司页面语言，格式:IETF language tag
      */
     public String getDisplayLocale() {
-        return (String) get(21);
+        return (String) get(22);
     }
 
     /**
      * Setter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启
      */
     public void setTalentpoolStatus(Byte value) {
-        set(22, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启
      */
     public Byte getTalentpoolStatus() {
-        return (Byte) get(22);
+        return (Byte) get(23);
     }
 
     // -------------------------------------------------------------------------
@@ -377,7 +391,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     /**
      * Create a detached, initialised HrCompanyConfRecord
      */
-    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus) {
+    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus) {
         super(HrCompanyConf.HR_COMPANY_CONF);
 
         set(0, companyId);
@@ -391,17 +405,18 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         set(8, recommendSuccess);
         set(9, forwardMessage);
         set(10, applicationCountLimit);
-        set(11, jobCustomTitle);
-        set(12, searchSeq);
-        set(13, searchImg);
-        set(14, jobOccupation);
-        set(15, teamnameCustom);
-        set(16, applicationTime);
-        set(17, newjdStatus);
-        set(18, hrChat);
-        set(19, showInQx);
-        set(20, employeeSlug);
-        set(21, displayLocale);
-        set(22, talentpoolStatus);
+        set(11, schoolApplicationCountLimit);
+        set(12, jobCustomTitle);
+        set(13, searchSeq);
+        set(14, searchImg);
+        set(15, jobOccupation);
+        set(16, teamnameCustom);
+        set(17, applicationTime);
+        set(18, newjdStatus);
+        set(19, hrChat);
+        set(20, showInQx);
+        set(21, employeeSlug);
+        set(22, displayLocale);
+        set(23, talentpoolStatus);
     }
 }

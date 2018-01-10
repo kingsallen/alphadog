@@ -27,8 +27,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   private static final org.apache.thrift.protocol.TField CITY_FIELD_DESC = new org.apache.thrift.protocol.TField("city", org.apache.thrift.protocol.TType.STRING, (short)15);
   private static final org.apache.thrift.protocol.TField PRIORITY_FIELD_DESC = new org.apache.thrift.protocol.TField("priority", org.apache.thrift.protocol.TType.I32, (short)16);
   private static final org.apache.thrift.protocol.TField PUBLISHER_FIELD_DESC = new org.apache.thrift.protocol.TField("publisher", org.apache.thrift.protocol.TType.I32, (short)17);
-  private static final org.apache.thrift.protocol.TField TOTAL_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("totalNum", org.apache.thrift.protocol.TType.I32, (short)18);
-  private static final org.apache.thrift.protocol.TField CANDIDATE_SOURCE_FIELD_DESC = new org.apache.thrift.protocol.TField("candidate_source", org.apache.thrift.protocol.TType.I32, (short)19);
+  private static final org.apache.thrift.protocol.TField ACCOUNTABILITIES_FIELD_DESC = new org.apache.thrift.protocol.TField("accountabilities", org.apache.thrift.protocol.TType.STRING, (short)18);
+  private static final org.apache.thrift.protocol.TField TOTAL_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("totalNum", org.apache.thrift.protocol.TType.I32, (short)19);
+  private static final org.apache.thrift.protocol.TField CANDIDATE_SOURCE_FIELD_DESC = new org.apache.thrift.protocol.TField("candidate_source", org.apache.thrift.protocol.TType.I32, (short)20);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new WechatPositionListDataStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new WechatPositionListDataTupleSchemeFactory();
@@ -49,6 +50,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   public java.lang.String city; // optional
   public int priority; // optional
   public int publisher; // optional
+  public java.lang.String accountabilities; // optional
   public int totalNum; // optional
   public int candidate_source; // optional
 
@@ -70,8 +72,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     CITY((short)15, "city"),
     PRIORITY((short)16, "priority"),
     PUBLISHER((short)17, "publisher"),
-    TOTAL_NUM((short)18, "totalNum"),
-    CANDIDATE_SOURCE((short)19, "candidate_source");
+    ACCOUNTABILITIES((short)18, "accountabilities"),
+    TOTAL_NUM((short)19, "totalNum"),
+    CANDIDATE_SOURCE((short)20, "candidate_source");
 
     private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -118,9 +121,11 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
           return PRIORITY;
         case 17: // PUBLISHER
           return PUBLISHER;
-        case 18: // TOTAL_NUM
+        case 18: // ACCOUNTABILITIES
+          return ACCOUNTABILITIES;
+        case 19: // TOTAL_NUM
           return TOTAL_NUM;
-        case 19: // CANDIDATE_SOURCE
+        case 20: // CANDIDATE_SOURCE
           return CANDIDATE_SOURCE;
         default:
           return null;
@@ -174,7 +179,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   private static final int __TOTALNUM_ISSET_ID = 9;
   private static final int __CANDIDATE_SOURCE_ISSET_ID = 10;
   private short __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID,_Fields.TITLE,_Fields.SALARY_TOP,_Fields.SALARY_BOTTOM,_Fields.PUBLISH_DATE,_Fields.DEPARTMENT,_Fields.VISITNUM,_Fields.IN_HB,_Fields.COUNT,_Fields.COMPANY_ABBR,_Fields.COMPANY_LOGO,_Fields.COMPANY_NAME,_Fields.IS_NEW,_Fields.CITY,_Fields.PRIORITY,_Fields.PUBLISHER,_Fields.TOTAL_NUM,_Fields.CANDIDATE_SOURCE};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.TITLE,_Fields.SALARY_TOP,_Fields.SALARY_BOTTOM,_Fields.PUBLISH_DATE,_Fields.DEPARTMENT,_Fields.VISITNUM,_Fields.IN_HB,_Fields.COUNT,_Fields.COMPANY_ABBR,_Fields.COMPANY_LOGO,_Fields.COMPANY_NAME,_Fields.IS_NEW,_Fields.CITY,_Fields.PRIORITY,_Fields.PUBLISHER,_Fields.ACCOUNTABILITIES,_Fields.TOTAL_NUM,_Fields.CANDIDATE_SOURCE};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -210,6 +215,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.PUBLISHER, new org.apache.thrift.meta_data.FieldMetaData("publisher", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.ACCOUNTABILITIES, new org.apache.thrift.meta_data.FieldMetaData("accountabilities", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.TOTAL_NUM, new org.apache.thrift.meta_data.FieldMetaData("totalNum", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.CANDIDATE_SOURCE, new org.apache.thrift.meta_data.FieldMetaData("candidate_source", org.apache.thrift.TFieldRequirementType.OPTIONAL,
@@ -256,6 +263,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     }
     this.priority = other.priority;
     this.publisher = other.publisher;
+    if (other.isSetAccountabilities()) {
+      this.accountabilities = other.accountabilities;
+    }
     this.totalNum = other.totalNum;
     this.candidate_source = other.candidate_source;
   }
@@ -291,6 +301,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     this.priority = 0;
     setPublisherIsSet(false);
     this.publisher = 0;
+    this.accountabilities = null;
     setTotalNumIsSet(false);
     this.totalNum = 0;
     setCandidate_sourceIsSet(false);
@@ -672,6 +683,30 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PUBLISHER_ISSET_ID, value);
   }
 
+  public java.lang.String getAccountabilities() {
+    return this.accountabilities;
+  }
+
+  public WechatPositionListData setAccountabilities(java.lang.String accountabilities) {
+    this.accountabilities = accountabilities;
+    return this;
+  }
+
+  public void unsetAccountabilities() {
+    this.accountabilities = null;
+  }
+
+  /** Returns true if field accountabilities is set (has been assigned a value) and false otherwise */
+  public boolean isSetAccountabilities() {
+    return this.accountabilities != null;
+  }
+
+  public void setAccountabilitiesIsSet(boolean value) {
+    if (!value) {
+      this.accountabilities = null;
+    }
+  }
+
   public int getTotalNum() {
     return this.totalNum;
   }
@@ -848,6 +883,14 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         }
         break;
 
+      case ACCOUNTABILITIES:
+        if (value == null) {
+          unsetAccountabilities();
+        } else {
+          setAccountabilities((java.lang.String)value);
+        }
+        break;
+
       case TOTAL_NUM:
         if (value == null) {
           unsetTotalNum();
@@ -917,6 +960,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       case PUBLISHER:
         return getPublisher();
 
+      case ACCOUNTABILITIES:
+        return getAccountabilities();
+
       case TOTAL_NUM:
         return getTotalNum();
 
@@ -966,6 +1012,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         return isSetPriority();
       case PUBLISHER:
         return isSetPublisher();
+      case ACCOUNTABILITIES:
+        return isSetAccountabilities();
       case TOTAL_NUM:
         return isSetTotalNum();
       case CANDIDATE_SOURCE:
@@ -1133,6 +1181,15 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         return false;
     }
 
+    boolean this_present_accountabilities = true && this.isSetAccountabilities();
+    boolean that_present_accountabilities = true && that.isSetAccountabilities();
+    if (this_present_accountabilities || that_present_accountabilities) {
+      if (!(this_present_accountabilities && that_present_accountabilities))
+        return false;
+      if (!this.accountabilities.equals(that.accountabilities))
+        return false;
+    }
+
     boolean this_present_totalNum = true && this.isSetTotalNum();
     boolean that_present_totalNum = true && that.isSetTotalNum();
     if (this_present_totalNum || that_present_totalNum) {
@@ -1221,6 +1278,10 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     hashCode = hashCode * 8191 + ((isSetPublisher()) ? 131071 : 524287);
     if (isSetPublisher())
       hashCode = hashCode * 8191 + publisher;
+
+    hashCode = hashCode * 8191 + ((isSetAccountabilities()) ? 131071 : 524287);
+    if (isSetAccountabilities())
+      hashCode = hashCode * 8191 + accountabilities.hashCode();
 
     hashCode = hashCode * 8191 + ((isSetTotalNum()) ? 131071 : 524287);
     if (isSetTotalNum())
@@ -1401,6 +1462,16 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         return lastComparison;
       }
     }
+    lastComparison = java.lang.Boolean.valueOf(isSetAccountabilities()).compareTo(other.isSetAccountabilities());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetAccountabilities()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.accountabilities, other.accountabilities);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     lastComparison = java.lang.Boolean.valueOf(isSetTotalNum()).compareTo(other.isSetTotalNum());
     if (lastComparison != 0) {
       return lastComparison;
@@ -1562,6 +1633,16 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       if (!first) sb.append(", ");
       sb.append("publisher:");
       sb.append(this.publisher);
+      first = false;
+    }
+    if (isSetAccountabilities()) {
+      if (!first) sb.append(", ");
+      sb.append("accountabilities:");
+      if (this.accountabilities == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.accountabilities);
+      }
       first = false;
     }
     if (isSetTotalNum()) {
@@ -1749,7 +1830,15 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 18: // TOTAL_NUM
+          case 18: // ACCOUNTABILITIES
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.accountabilities = iprot.readString();
+              struct.setAccountabilitiesIsSet(true);
+            } else {
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 19: // TOTAL_NUM
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.totalNum = iprot.readI32();
               struct.setTotalNumIsSet(true);
@@ -1757,7 +1846,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 19: // CANDIDATE_SOURCE
+          case 20: // CANDIDATE_SOURCE
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.candidate_source = iprot.readI32();
               struct.setCandidate_sourceIsSet(true);
@@ -1874,6 +1963,13 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         oprot.writeI32(struct.publisher);
         oprot.writeFieldEnd();
       }
+      if (struct.accountabilities != null) {
+        if (struct.isSetAccountabilities()) {
+          oprot.writeFieldBegin(ACCOUNTABILITIES_FIELD_DESC);
+          oprot.writeString(struct.accountabilities);
+          oprot.writeFieldEnd();
+        }
+      }
       if (struct.isSetTotalNum()) {
         oprot.writeFieldBegin(TOTAL_NUM_FIELD_DESC);
         oprot.writeI32(struct.totalNum);
@@ -1950,13 +2046,16 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       if (struct.isSetPublisher()) {
         optionals.set(15);
       }
-      if (struct.isSetTotalNum()) {
+      if (struct.isSetAccountabilities()) {
         optionals.set(16);
       }
-      if (struct.isSetCandidate_source()) {
+      if (struct.isSetTotalNum()) {
         optionals.set(17);
       }
-      oprot.writeBitSet(optionals, 18);
+      if (struct.isSetCandidate_source()) {
+        optionals.set(18);
+      }
+      oprot.writeBitSet(optionals, 19);
       if (struct.isSetId()) {
         oprot.writeI32(struct.id);
       }
@@ -2005,6 +2104,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       if (struct.isSetPublisher()) {
         oprot.writeI32(struct.publisher);
       }
+      if (struct.isSetAccountabilities()) {
+        oprot.writeString(struct.accountabilities);
+      }
       if (struct.isSetTotalNum()) {
         oprot.writeI32(struct.totalNum);
       }
@@ -2016,7 +2118,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, WechatPositionListData struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-      java.util.BitSet incoming = iprot.readBitSet(18);
+      java.util.BitSet incoming = iprot.readBitSet(19);
       if (incoming.get(0)) {
         struct.id = iprot.readI32();
         struct.setIdIsSet(true);
@@ -2082,10 +2184,14 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         struct.setPublisherIsSet(true);
       }
       if (incoming.get(16)) {
+        struct.accountabilities = iprot.readString();
+        struct.setAccountabilitiesIsSet(true);
+      }
+      if (incoming.get(17)) {
         struct.totalNum = iprot.readI32();
         struct.setTotalNumIsSet(true);
       }
-      if (incoming.get(17)) {
+      if (incoming.get(18)) {
         struct.candidate_source = iprot.readI32();
         struct.setCandidate_sourceIsSet(true);
       }

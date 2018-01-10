@@ -136,6 +136,13 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
     }
 
     /**
+     * Fetch records that have <code>school_application_count_limit IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchBySchoolApplicationCountLimit(Short... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.SCHOOL_APPLICATION_COUNT_LIMIT, values);
+    }
+
+    /**
      * Fetch records that have <code>job_custom_title IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByJobCustomTitle(String... values) {

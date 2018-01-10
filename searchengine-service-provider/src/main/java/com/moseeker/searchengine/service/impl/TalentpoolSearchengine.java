@@ -83,6 +83,8 @@ public class TalentpoolSearchengine {
             String progressStatus = params.get("progress_status");
             if(StringUtils.isNotNullOrEmpty(progressStatus)){
                 params.put("progress_status",null);
+                //修改progress.没办法按照建立进度查询时只有applicationcount需要变化
+                params.put("progress",progressStatus);
             }
             client=searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
@@ -168,6 +170,7 @@ public class TalentpoolSearchengine {
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
         String progressStatus = params.get("progress_status");
+        //如果是按建立进度查询。那么不走着一段，会另外走一段逻辑
         if(StringUtils.isNullOrEmpty(progressStatus)) {
             //如果是涉及人才库的查询，那么就不走聚合函数
             if (StringUtils.isNullOrEmpty(tagIds) && StringUtils.isNullOrEmpty(favoriteHrs) && StringUtils.isNullOrEmpty(isPublic)) {
@@ -225,7 +228,6 @@ public class TalentpoolSearchengine {
         String intentionCity=params.get("intention_city_name");
         if(
                 StringUtils.isNotNullOrEmpty(keyword)||
-                        StringUtils.isNotNullOrEmpty(keyword)||
                         StringUtils.isNotNullOrEmpty(cityName)||
                         StringUtils.isNotNullOrEmpty(companyName)||
                         StringUtils.isNotNullOrEmpty(pastPosition)||
@@ -860,9 +862,10 @@ public class TalentpoolSearchengine {
         所有申请的统计
      */
     private AbstractAggregationBuilder handleAllApplicationCountAgg(Map<String,String> params){
+        String progressStatus = params.get("progress");
         MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("all_application_count")
                 .initScript(new Script(getAggInitScript()))
-                .mapScript(new Script(this.getAggMapScript(params,null,1)))
+                .mapScript(new Script(this.getAggMapScript(params,progressStatus,1)))
                 .reduceScript(new Script(this.getAggReduceScript()))
                 .combineScript(new Script(this.getAggCombineScript()));
         return build;

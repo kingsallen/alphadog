@@ -1313,8 +1313,8 @@ public class PositionService {
         return result;
     }
     @CounterIface
-    public List<WechatPositionListData> getEmployeeRecomPositionList(int recomPushId,int companyId,int type){
-        List<Integer> pids=this.handlerEmployeeRecom(recomPushId,companyId,type);
+    public List<WechatPositionListData> getEmployeeRecomPositionList(int recomPushId,int companyId,int type,int pageNum,int pageSize){
+        List<Integer> pids=this.handlerEmployeeRecom(recomPushId,companyId,type,pageNum,pageSize);
         if(StringUtils.isEmptyList(pids)){
             return null;
         }
@@ -1324,8 +1324,8 @@ public class PositionService {
     /*
      处理推送数据，获取position.id的list
      */
-    private List<Integer> handlerEmployeeRecom(int recomPushId,int companyId,int type){
-        CampaignRecomPositionlistRecord campaignRecomPosition=this.getCampaignRecomPositionlistByIdAndCompanyType(recomPushId,companyId,type);
+    private List<Integer> handlerEmployeeRecom(int recomPushId,int companyId,int type,int pageNum,int pageSize){
+        CampaignRecomPositionlistRecord campaignRecomPosition=this.getCampaignRecomPositionlistByIdAndCompanyType(recomPushId,companyId,type,pageNum,pageSize);
         if(campaignRecomPosition==null){
             return null;
         }
@@ -1335,8 +1335,12 @@ public class PositionService {
     /*
       获取推送的数据记录
      */
-    private CampaignRecomPositionlistRecord getCampaignRecomPositionlistByIdAndCompanyType(int recomPushId,int companyId,int type){
-        Query query=new Query.QueryBuilder().where("id",recomPushId).and("company_id",companyId).and("type",(byte)type).buildQuery();
+    private CampaignRecomPositionlistRecord getCampaignRecomPositionlistByIdAndCompanyType(int recomPushId,int companyId,int type,int pageNum,int pageSize){
+        Query query=new Query.QueryBuilder().where("id",recomPushId).and("company_id",companyId)
+                .and("type",(byte)type)
+                .setPageNum(pageNum)
+                .setPageSize(pageSize)
+                .buildQuery();
         CampaignRecomPositionlistRecord data=campaignRecomPositionlistDao.getRecord(query);
         return data;
     }
@@ -1436,6 +1440,7 @@ public class PositionService {
                     e.setPriority(jr.getPriority());
                     e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
                     e.setCandidate_source(jr.getCandidateSource());
+                    e.setAccountabilities(jr.getAccountabilities());
                     dataList.add(e);
                     break;
                 }
@@ -1627,10 +1632,12 @@ public class PositionService {
      * @param hbConfigId 红包活动id
      * @return 红包职位列表
      */
-    public List<WechatRpPositionListData> getRpPositionList(int hbConfigId) {
+    public List<WechatRpPositionListData> getRpPositionList(int hbConfigId,int pageNum,int pageSize) {
         List<WechatRpPositionListData> result = new ArrayList<>();
         Query qu = new Query.QueryBuilder()
                 .where("hb_config_id", hbConfigId)
+                .setPageNum(pageNum)
+                .setPageSize(pageSize)
                 .buildQuery();
         List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu, HrHbPositionBindingDO.class);
         List<Integer> pids = bindings.stream().map(HrHbPositionBindingDO::getPositionId).collect(Collectors.toList());
