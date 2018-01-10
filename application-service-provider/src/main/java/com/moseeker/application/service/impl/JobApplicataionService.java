@@ -1,7 +1,6 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
@@ -44,33 +43,18 @@ import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
-
-import java.util.*;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
-
-
-
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
