@@ -7,9 +7,7 @@ import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCredentialsRecord
 import com.moseeker.baseorm.tool.RecordTool;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -22,7 +20,6 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCredentialsDO;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
 import org.apache.thrift.TException;
-import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +104,6 @@ public class ProfileCredentialsService {
 
             List<ProfileCredentialsRecord> profileCredentialsRecordList = dao.getRecords(queryBuilder.buildQuery());
             if (profileCredentialsRecordList != null && profileCredentialsRecordList.size() > 0) {
-
                 profileCredentialsRecordList = profileCredentialsRecordList.stream().filter(profileCredentialsRecord -> {
                     Optional<ProfileCredentialsRecord> profileCredentialsRecordOptional =
                             recordList.stream().filter(record ->

@@ -87,8 +87,11 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
         position.setExperience(ExperienceChangeUtil.getJob51Experience(experience).getValue());
 
         //薪资要求
-        position.setSalary_low(getSalaryBottom(positionForm.getSalaryBottom())+"");
-        position.setSalary_high(getSalaryTop(positionForm.getSalaryTop())+"");
+        int salaryBottom=getSalaryBottom(positionForm.getSalaryBottom());
+        position.setSalary_low(salaryBottom==0?"":String.valueOf(salaryBottom));
+
+        int salaryTop=getSalaryTop(positionForm.getSalaryTop());
+        position.setSalary_high(salaryTop==0?"":String.valueOf(salaryTop));
 
 
         //职位详情

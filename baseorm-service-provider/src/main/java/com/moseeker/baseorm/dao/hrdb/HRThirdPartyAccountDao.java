@@ -189,7 +189,7 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
             Condition condition = new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.getName(), thirdPartyAccountIdList, ValueOp.IN);
             query = new Query.QueryBuilder()
                     .where(condition)
-                    .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), BindingStatus.UNBIND, ValueOp.NEQ))
+                    .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), BindingStatus.UNBIND.getValue(), ValueOp.NEQ))
                     .buildQuery();
             HrThirdPartyAccountDO accountDO =  getData(query);
             if (accountDO != null) {
@@ -224,7 +224,7 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 
         query = new Query.QueryBuilder()
                 .where(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.getName(), thirdPartyAccountIds, ValueOp.IN))
-                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), BindingStatus.UNBIND, ValueOp.NEQ))
+                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), BindingStatus.UNBIND.getValue(), ValueOp.NEQ))
                 .buildQuery();
 
         List<HrThirdPartyAccountDO> hrThirdPartyAccountDOS = getDatas(query);

@@ -1,5 +1,6 @@
-package com.moseeker.useraccounts.service.thirdpartyaccount.operation;
+package com.moseeker.useraccounts;
 
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.useraccounts.config.AppConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,22 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static org.junit.Assert.*;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
-public class DispatchOperationTest {
+public class HRThirdPartyAccountDaoTest {
+
     @Autowired
-    DispatchOperation operation;
+    HRThirdPartyAccountDao thirdPartyAccountDao;
 
     @Test
-    public void test() throws Exception {
-        List<Integer> hrIds= Arrays.asList(82752);
-        int accountId=560;
-
-        operation.dispatch(accountId,hrIds);
+    public void test(){
+        thirdPartyAccountDao.getThirdPartyAccountByUserId(82752,1);
     }
+
 }
