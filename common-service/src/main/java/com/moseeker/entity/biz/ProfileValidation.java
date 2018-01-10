@@ -48,6 +48,7 @@ public class ProfileValidation {
 			vm.addFailedElement("其他字段", "不是正确的json数据");
 			logger.error(e.getMessage(), e);
 		}
+
 		return vm;
 	}
 
@@ -197,7 +198,7 @@ public class ProfileValidation {
 		if(projectExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
-		if (projectExp.getEnd() == null && projectExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus()) {
+		if (projectExp.getEnd() == null && (projectExp.getEndUntilNow() == null || projectExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("结束时间", "未填写结束时间");
 		}
 		if (projectExp.getStart() != null && projectExp.getEnd() != null
@@ -274,9 +275,6 @@ public class ProfileValidation {
 		if(workExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
-		if(StringUtils.isNullOrEmpty(workExp.getDescription())) {
-			vm.addFailedElement("职位描述", "未对该职位做详细描述");
-		}
 		if (workExp.getStart() != null && workExp.getEnd() != null
 				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
 				&& (workExp.getEndUntilNow() == null
@@ -306,9 +304,6 @@ public class ProfileValidation {
 		if(workExp.getEnd() == null && workExp.getEndUntilNow() != null
 				&& workExp.getEndUntilNow() == UntitlNow.NotUntilNow.getStatus() ) {
 			vm.addFailedElement("结束时间", "未填写结束时间");
-		}
-		if(StringUtils.isNullOrEmpty(workExp.getDescription())) {
-			vm.addFailedElement("职位描述", "未对该职位做详细描述");
 		}
 		if (workExp.getStart() != null && workExp.getEnd() != null
 				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
