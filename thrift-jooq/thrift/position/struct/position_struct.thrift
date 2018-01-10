@@ -132,7 +132,9 @@ struct WechatRpPositionListData {
     14: optional bool is_new
     15: optional i32 remain,
     16: optional bool employee_only,
-    17: optional string city
+    17: optional string city,
+    18: optional i32 candidate_source,
+    19: optional string requirement
 }
 
 // 微信端获取红包分享信息

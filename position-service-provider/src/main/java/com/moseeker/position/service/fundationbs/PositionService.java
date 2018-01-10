@@ -1663,6 +1663,8 @@ public class PositionService {
             e.setIn_hb(true);
             e.setCount(jr.getCount());
             e.setCity(jr.getCity());
+            e.setCandidate_source(jr.getCandidateSource());
+            e.setRequirement(jr.getRequirement());
             result.add(e);
         }
 
