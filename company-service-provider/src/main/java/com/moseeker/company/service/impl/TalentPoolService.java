@@ -15,9 +15,12 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
+import com.moseeker.company.bean.ValidateCommonBean;
+import com.moseeker.company.bean.ValidateTagBean;
 import com.moseeker.company.bean.ValidateTalentBean;
 import com.moseeker.company.utils.ValidateTalent;
 import com.moseeker.company.utils.ValidateTalentTag;
+import com.moseeker.company.utils.ValidateUtils;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;
@@ -62,6 +65,8 @@ public class TalentPoolService {
     private ValidateTalent validateTalent;
     @Autowired
     private ValidateTalentTag validateTalentTag;
+    @Autowired
+    private ValidateUtils validateUtils;
 
     /*
       修改开启人才库的申请记录
@@ -107,7 +112,7 @@ public class TalentPoolService {
         List<Map<String,Object>> talentList=talentPoolEntity.getTalentpoolHrTalentByIdList(hrId,applierIdList);
         Set<Integer> unApplierIdList=talentPoolEntity.getIdListByTalentpoolHrTalentList(talentList);
         Set<Integer> idList=talentPoolEntity.filterIdList(applierIdList,unApplierIdList);
-        talentPoolEntity.addTalent(idList,hrId,companyId);
+        talentPoolEntity.addTalents(idList,hrId,companyId);
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
         if(result==null||result.isEmpty()){
             return  ResponseUtils.success("");
@@ -132,16 +137,17 @@ public class TalentPoolService {
         }
         //验证所有人才是否可以操作
         ValidateTalentBean bean=validateTalent.handlerApplierId(hrId,userIdList,companyId);
+        //被操作的人中申请该hr下职位的人
         Set<Integer> applierIdList=bean.getUserIdSet();
+        //被操作的人中没有申请该hr下职位的人
         Set<Integer> unUseList=bean.getUnUseUserIdSet();
+        //所有人都没有收藏，所以都不能操作
         if(StringUtils.isEmptySet(applierIdList)){
             return ResponseUtils.fail(1,"hr无权操作人才");
         }
-        //获取hr下的applierIdList中的人才
-        List<Map<String,Object>> talentList=talentPoolEntity.getTalentpoolHrTalentByIdList(hrId,applierIdList);
-        //获取人才的Id
-        Set<Integer> idList=talentPoolEntity.getIdListByTalentpoolHrTalentList(talentList);
-        //比较两者，取出不可以操作的
+        //获取hr下的已被收藏的人才
+        Set<Integer> idList=validateUtils.getTalentuserIdSet(hrId,applierIdList);
+        //在申请了这个hr下职位的人中，没有被收藏的人
         Set<Integer> unApplierIdList=talentPoolEntity.filterIdList(applierIdList,idList);
 
         if(!StringUtils.isEmptySet(idList)){
@@ -166,12 +172,12 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     public Response addBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
-        Map<String,Object> validateResult=validateTalentTag.validateAddTag(hrId, userIdList, tagIdList, companyId,0);
-        if(validateResult.get("result")!=null){
-            return (Response)validateResult.get("result");
+        ValidateTagBean validateResult=validateTalentTag.validateAddTag(hrId, userIdList, tagIdList, companyId,0);
+        if(validateResult.getStatus()==1){
+            return ResponseUtils.fail(validateResult.getStatus(),validateResult.getErrorMessage());
         }
-        Set<Integer> idList= (Set<Integer>) validateResult.get("userIdList");
-        Set<Integer> nouseList= (Set<Integer>)validateResult.get("nouseList");
+        Set<Integer> idList=validateResult.getIdList();
+        Set<Integer> nouseList=validateResult.getNouseList();
         List<TalentpoolUserTagRecord> recordList=new ArrayList<>();
         for(Integer id:idList){
             for(Integer tagId:tagIdList){
@@ -180,15 +186,14 @@ public class TalentPoolService {
                 record.setTagId(tagId);
                 recordList.add(record);
             }
-
         }
         talentpoolUserTagDao.addAllRecord(recordList);
         for(Integer tagId:tagIdList){
             talentpoolTagDao.updateTagNum(tagId,idList.size());
         }
         talentPoolEntity.realTimeUpdate(talentPoolEntity.converSetToList(idList));
-        List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
-        Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
+        List<Map<String,Object>> hrTagList=validateResult.getHrTagList();
+        Set<Integer> userTagIdList=validateResult.getUserTagIdList();
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
         if(usertagMap==null||userIdList.isEmpty()){
             ResponseUtils.fail(1,"不满足添加标签的条件");
@@ -212,14 +217,13 @@ public class TalentPoolService {
     */
     @CounterIface
     public Response addNewBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
-        Map<String,Object> validateResult=validateTalentTag.validateAddTag(hrId, userIdList, tagIdList, companyId,1);
-        if(validateResult.get("result")!=null){
-            return (Response)validateResult.get("result");
+        ValidateTagBean validateResult=validateTalentTag.validateAddTag(hrId, userIdList, tagIdList, companyId,1);
+        if(validateResult.getStatus()==1){
+            return ResponseUtils.fail(validateResult.getStatus(),validateResult.getErrorMessage());
         }
-
-        Set<Integer> idList= (Set<Integer>) validateResult.get("userIdList");
-        Set<Integer> nouseList= (Set<Integer>)validateResult.get("nouseList");
-        Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
+        Set<Integer> idList=validateResult.getIdList();
+        Set<Integer> nouseList=validateResult.getNouseList();
+        Set<Integer> userTagIdList=validateResult.getUserTagIdList();
         //先删除所有的标签
         if(!StringUtils.isEmptySet(userTagIdList)){
             List<TalentpoolUserTagRecord> recordList=new ArrayList<>();
@@ -247,10 +251,9 @@ public class TalentPoolService {
             }
             talentpoolUserTagDao.addAllRecord(recordList);
             talentpoolTagDao.updateTagListNum(tagIdList,idList.size());
-
         }
         talentPoolEntity.realTimeUpdate(talentPoolEntity.converSetToList(idList));
-        List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
+        List<Map<String,Object>> hrTagList=validateResult.getHrTagList();
         userTagIdList=tagIdList;
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
         Map<String,Object> result=new HashMap<>();
@@ -271,12 +274,12 @@ public class TalentPoolService {
     @CounterIface
     public Response batchCancelTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
 
-        Map<String,Object> validateResult=this.validateCancleTag(hrId, userIdList, tagIdList, companyId);
-        if(validateResult.get("result")!=null){
-            return (Response)validateResult.get("result");
+        ValidateTagBean validateResult=this.validateCancleTag(hrId, userIdList, tagIdList, companyId);
+        if(validateResult.getStatus()==1){
+            return ResponseUtils.fail(validateResult.getStatus(),validateResult.getErrorMessage());
         }
-        Set<Integer> idList= (Set<Integer>) validateResult.get("userIdList");
-        Set<Integer> nouseList= (Set<Integer>)validateResult.get("nouseList");
+        Set<Integer> idList= validateResult.getIdList();
+        Set<Integer> nouseList=validateResult.getNouseList();
         List<TalentpoolUserTagRecord> recordList=new ArrayList<>();
         for(Integer id:idList){
             for(Integer tagId:tagIdList){
@@ -291,8 +294,8 @@ public class TalentPoolService {
             talentpoolTagDao.updateTagNum(tagId,0-idList.size());
         }
         talentPoolEntity.realTimeUpdate(talentPoolEntity.converSetToList(idList));
-        List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
-        Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
+        List<Map<String,Object>> hrTagList=validateResult.getHrTagList();
+        Set<Integer> userTagIdList=validateResult.getUserTagIdList();
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,0);
         if(usertagMap==null||userIdList.isEmpty()){
             ResponseUtils.fail(1,"不满足删除标签的条件");
@@ -1151,36 +1154,40 @@ public class TalentPoolService {
     /*
        校验批量删除标签
       */
-    private Map<String,Object> validateCancleTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId){
-        Map<String,Object> result=new HashMap<>();
+    private ValidateTagBean validateCancleTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId){
+        ValidateTagBean result=new ValidateTagBean();
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
-            result.put("result",ResponseUtils.fail(1,"该hr不属于该company_id"));
+            result.setStatus(1);
+            result.setErrorMessage("该hr不属于该company_id");
             return result;
         }
-        Map<String,Object> validateResult=validateTalentTag.validateUserIdTag(hrId,userIdList,tagIdList,companyId);
-        Set<Integer> idList= (Set<Integer>) validateResult.get("use");
+        ValidateCommonBean validateResult=validateTalentTag.validateUserIdTag(hrId,userIdList,tagIdList,companyId);
+        Set<Integer> idList=validateResult.getUseId();
         if(StringUtils.isEmptySet(idList)){
-            result.put("result",ResponseUtils.fail(1,"该无权操作这些人才"));
+            result.setStatus(1);
+            result.setErrorMessage("该无权操作这些人才");
             return result;
         }
-        Map<String,Object> validateTag=validateTalentTag.validateTag(idList,hrId);
-        boolean flagTag= (boolean) validateTag.get("result");
-        if(!flagTag){
-            result.put("result",ResponseUtils.fail(1,"不满足批量操作条件"));
+        ValidateTagBean validateTag=validateTalentTag.validateTag(idList,hrId);
+        int flagTag= validateTag.getStatus();
+        if(flagTag==1){
+            result.setStatus(1);
+            result.setErrorMessage("不满足批量操作条件");
             return result;
         }
-        List<Map<String,Object>> hrTagList= (List<Map<String,Object>>) validateTag.get("hrTagList");
-        Set<Integer> userTagIdList= (Set<Integer>) validateTag.get("userTagIdList");
+        List<Map<String,Object>> hrTagList=validateTag.getHrTagList();
+        Set<Integer> userTagIdList=validateTag.getUserTagIdList();
         boolean validateOperTag=this.validateCancleOperatorTag(validateTalentTag.getIdByTagList(hrTagList),tagIdList,userTagIdList);
         if(!validateOperTag){
-            result.put("result",ResponseUtils.fail(1,"操作的标签不是hr定义的标签"));
+            result.setStatus(1);
+            result.setErrorMessage("操作的标签不是hr定义的标签");
             return result;
         }
-        result.put("hrTagList",hrTagList);
-        result.put("userIdList",idList);
-        result.put("userTagIdList",userTagIdList);
-        result.put("nouseList",(Set<Integer>)validateResult.get("nouse"));
+        result.setHrTagList(hrTagList);
+        result.setIdList(idList);
+        result.setUserTagIdList(userTagIdList);
+        result.setNouseList(validateResult.getUnuseId());
         return result;
     }
 

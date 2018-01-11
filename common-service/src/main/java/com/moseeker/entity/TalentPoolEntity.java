@@ -220,34 +220,7 @@ public class TalentPoolEntity {
 
         return result;
     }
-    /*
-      处理批量处理标签的公开人才部分的校验
-     */
-    public Map<String,Object> filterNoPowerUserId(Set<Integer> userIdList,int companyId){
-        if(StringUtils.isEmptySet(userIdList)){
-            return null;
-        }
-        Map<String,Object> result=new HashMap<>();
-        List<TalentpoolTalentRecord> talentList=this.getTalentpoolTalentByCompanyId(companyId);
-        Set<Integer> talentIdList=this.getUserIdListByTalentpoolTalent(talentList);
-        if(StringUtils.isEmptySet(talentIdList)){
-            result.put("nopower",userIdList);
-            result.put("use",null);
-        }else {
-            Set<Integer> noUseIdList = new HashSet<>();
-            Set<Integer> publicUserIdList=new HashSet<>();
-            for (Integer userId : userIdList) {
-                if (!talentIdList.contains(userId)) {
-                    noUseIdList.add(userId);
-                }else{
-                    publicUserIdList.add(userId);
-                }
-            }
-            result.put("nopower", noUseIdList);
-            result.put("use", publicUserIdList);
-        }
-        return result;
-    }
+
     /*
      获取一个公司下所有的公开的人才
      */
@@ -270,26 +243,7 @@ public class TalentPoolEntity {
         }
         return result;
     }
-    /*
-     处理批量传输的人才，获取其中有效的和无效的
-     */
-    public Map<String,Object> handlerApplierId(int hrId,Set<Integer> userIdList,int companyId){
-        int flag= this.valiadteMainAccount(hrId,companyId);
-        Set<Integer> unUsedApplierIdList=new HashSet<>();
-        Set<Integer> applierIdList=new HashSet<>();
-        if(flag==0){
-            List<JobApplicationRecord> list=this.getJobApplicationByPublisherAndApplierId(userIdList,hrId);
-            applierIdList=this.getIdListByApplicationList(list);
-        }else{
-            List<JobApplicationRecord> list=this.getJobApplicationByCompanyIdAndApplierId(userIdList,companyId);
-            applierIdList=this.getIdListByApplicationList(list);
-        }
-        unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);
-        Map<String,Object> result=new HashMap<>();
-        result.put("unuse",unUsedApplierIdList);
-        result.put("use",applierIdList);
-        return result;
-    }
+
     /*
       获取公司下所有的hr信息
      */
@@ -785,7 +739,7 @@ public class TalentPoolEntity {
      上传简历成为收藏人才
      */
     public void addUploadTalent(int userId,int newuserId,int hrId,int companyId,String fileName){
-        if(userId!=0&&newuserId!=0){
+        if(userId!=0&&newuserId!=0&&userId!=newuserId){
             if(this.isHrtalent(userId,hrId)>0){
                 Set<Integer> userIds=new HashSet<>();
                 userIds.add(userId);
