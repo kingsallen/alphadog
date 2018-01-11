@@ -35,6 +35,7 @@ import com.moseeker.common.util.query.OrderBy;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
@@ -66,6 +67,9 @@ public class WholeProfileService {
     ThreadPool pool = ThreadPool.Instance;
     @Autowired
     ProfileEntity profileEntity;
+
+    @Autowired
+    private UserAccountEntity userAccountEntity;
 
     @Autowired
     private TalentPoolEntity talentPoolEntity;
@@ -1090,6 +1094,7 @@ public class WholeProfileService {
     /*
      保存上传的简历
      */
+    @Transactional
     public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId) throws TException {
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
@@ -1100,24 +1105,26 @@ public class WholeProfileService {
         }
         UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
         int newUerId=0;
-        if(userRecord==null&&userId==0){
-            userId=this.saveNewProfile(resume,map);
+        if(userRecord!=null){
+            newUerId=userRecord.getId();
+        }
+        if(userId==0&&newUerId==0){
+            newUerId=this.saveNewProfile(resume,map);
         }else{
-            if(userId!=0&&userId!=newUerId){
-                //合并账号
-
-            }
+            userRecord=userAccountEntity.combineAccount(userId,newUerId);
+            newUerId=userRecord.getId();
             Response res=this.upsertProfile(resume,userRecord);
-            if(res.getStatus()==0){
-                userId=userRecord.getId();
+            if(res.getStatus()!=0){
+                return res;
             }
+
         }
-        if(userId>0){
-            //此处应该考虑账号合并导致的问题
-            talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName);
-        }
+        //此处应该考虑账号合并导致的问题
+        talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName);
+
         return ResponseUtils.success("success");
     }
+
     /*
      保存上传简历
      */

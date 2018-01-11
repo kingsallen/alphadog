@@ -487,13 +487,13 @@ public class ProfileController {
      */
     @RequestMapping(value = "/profile/upload/parser", method = RequestMethod.POST)
     @ResponseBody
-    public String profileUploadParser(HttpServletRequest request, HttpServletResponse response) {
+    public String talentUploadParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseequestParameter(request);
             String fileName=params.getString("file_name");
             int companyId=params.getInt("company_id");
-            String data = new String(Base64.encodeBase64(ParamUtils.file2Byte(fileName)), Consts.UTF_8);;
-            Response res = service.resumeTalentProfile( fileName, data,companyId);
+            String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);;
+            Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,companyId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
