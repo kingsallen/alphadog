@@ -1,5 +1,7 @@
 package com.moseeker.profile.service.impl.retriveprofile.tasks;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -32,7 +34,8 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
         try {
             Response response = jobApplicationServices.postApplication(application);
             if (response.getStatus() == 0) {
-                return Integer.valueOf(response.getData());
+                JSONObject jsonObject = JSON.parseObject(response.getData());
+                return Integer.valueOf((String)jsonObject.get("jobApplicationId"));
             }
             return 0;
         } catch (TException e) {
