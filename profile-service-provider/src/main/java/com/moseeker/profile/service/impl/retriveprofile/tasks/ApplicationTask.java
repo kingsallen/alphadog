@@ -35,7 +35,7 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
             Response response = jobApplicationServices.postApplication(application);
             if (response.getStatus() == 0) {
                 JSONObject jsonObject = JSON.parseObject(response.getData());
-                return Integer.valueOf((String)jsonObject.get("jobApplicationId"));
+                return (Integer)jsonObject.get("jobApplicationId");
             }
             return 0;
         } catch (TException e) {
