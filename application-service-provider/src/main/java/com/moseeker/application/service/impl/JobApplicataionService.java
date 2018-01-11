@@ -1,7 +1,6 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
@@ -46,33 +45,16 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
-
-import java.util.*;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-
-import com.moseeker.thrift.gen.mq.service.MqService;
-import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
-
-
-
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -591,7 +573,7 @@ public class JobApplicataionService {
         }
         // ats_status初始化 ats_status初始化:1 是ats职位申请  ats_status初始化:0 仟寻职位申请
         // TODO 职位表的source_id > 0 只能识别出是ats职位/ 不能识别出该ats是否可用
-        if (jobPositionRecord != null && jobPositionRecord.getSourceId() > 0) {
+        if (jobPositionRecord != null && jobPositionRecord.getSourceId() > 0 && jobApplication.getOrigin() != 64) {
             jobApplication.setAts_status(IS_ATS_APPLICATION);
         } else {
             // 默认仟寻投递
