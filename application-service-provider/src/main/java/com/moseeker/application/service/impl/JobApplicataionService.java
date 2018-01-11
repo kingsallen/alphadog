@@ -1,7 +1,6 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
@@ -46,33 +45,16 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
-
-import java.util.*;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-
-import com.moseeker.thrift.gen.mq.service.MqService;
-import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
-
-
-
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -533,6 +515,40 @@ public class JobApplicataionService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 
+
+
+    /**
+     * 一个用户在一家公司的每月的申请次数校验 超出申请次数限制, 每月每家公司一个人只能申请10次 <p>
+     *
+     * @param userId    用户id
+     * @param companyId 公司id
+     */
+    @CounterIface
+    public Response validateUserApplicationTypeCheckCountAtCompany(long userId, long companyId) {
+        Map<String, Boolean> params = new HashMap<>();
+        try {
+            String applicationCountCheck = redisClient.get(
+                    Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
+                    String.valueOf(userId), String.valueOf(companyId));
+
+            UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
+            UserApplyCount conf = getApplicationCountLimit((int) companyId);
+            if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
+                params.put("socialApply", false);
+            }else{
+                params.put("socialApply", true);
+            }
+            if (userApplyCount.getSchoolApplyCount() >= conf.getSchoolApplyCount()) {
+                params.put("schoolApply", false);
+            }else{
+                params.put("schoolApply", true);
+            }
+        } catch (RedisException e) {
+            WarnService.notify(e);
+        }
+        return ResponseUtils.success(params);
+    }
+
     /**
      * 必填项校验 - 判断当前用户是否申请了该职位 <p>
      *
@@ -642,6 +658,7 @@ public class JobApplicataionService {
         }
         return ResponseUtils.success("SUCCESS");
     }
+
 
     /**
      * 清除一个公司一个人申请次数限制的redis key 给sysplat用

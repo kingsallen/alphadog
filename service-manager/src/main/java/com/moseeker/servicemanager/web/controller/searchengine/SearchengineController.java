@@ -343,6 +343,26 @@ public class SearchengineController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+    //pc端企业搜索的es
+    @RequestMapping(value = "/api/position/suggest", method = RequestMethod.POST)
+    @ResponseBody
+    public String searchPositionSuggest(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String,String> params=new HashMap<>();
+            if(reqParams==null||reqParams.isEmpty()){
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }
+            for(String key:reqParams.keySet()){
+                params.put(key,String.valueOf(reqParams.get(key)));
+            }
+            Response res=searchengineServices.searchPositionSuggest(params);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
     /*
      过滤 / or and,为了防止es查询字符串产生不准或者错误
      */
