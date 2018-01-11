@@ -17,5 +17,4 @@ public interface DemoApplicaiton {
      * @throws CommonException 业务异常
      */
     String viewApplication(int hrId, List<Integer> applicationIds) throws CommonException;
-
 }
