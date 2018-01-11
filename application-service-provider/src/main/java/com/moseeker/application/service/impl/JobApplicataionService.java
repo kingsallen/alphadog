@@ -515,6 +515,40 @@ public class JobApplicataionService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 
+
+
+    /**
+     * 一个用户在一家公司的每月的申请次数校验 超出申请次数限制, 每月每家公司一个人只能申请10次 <p>
+     *
+     * @param userId    用户id
+     * @param companyId 公司id
+     */
+    @CounterIface
+    public Response validateUserApplicationTypeCheckCountAtCompany(long userId, long companyId) {
+        Map<String, Boolean> params = new HashMap<>();
+        try {
+            String applicationCountCheck = redisClient.get(
+                    Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
+                    String.valueOf(userId), String.valueOf(companyId));
+
+            UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
+            UserApplyCount conf = getApplicationCountLimit((int) companyId);
+            if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
+                params.put("socialApply", false);
+            }else{
+                params.put("socialApply", true);
+            }
+            if (userApplyCount.getSchoolApplyCount() >= conf.getSchoolApplyCount()) {
+                params.put("schoolApply", false);
+            }else{
+                params.put("schoolApply", true);
+            }
+        } catch (RedisException e) {
+            WarnService.notify(e);
+        }
+        return ResponseUtils.success(params);
+    }
+
     /**
      * 必填项校验 - 判断当前用户是否申请了该职位 <p>
      *
@@ -624,6 +658,7 @@ public class JobApplicataionService {
         }
         return ResponseUtils.success("SUCCESS");
     }
+
 
     /**
      * 清除一个公司一个人申请次数限制的redis key 给sysplat用

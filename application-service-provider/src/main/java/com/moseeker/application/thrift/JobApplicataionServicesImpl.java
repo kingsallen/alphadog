@@ -1,5 +1,6 @@
 package com.moseeker.application.thrift;
 
+
 import com.moseeker.application.service.impl.JobApplicataionService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
@@ -120,6 +121,11 @@ public class JobApplicataionServicesImpl implements Iface {
      */
     public Response validateUserApplicationCheckCountAtCompany(long userId, long companyId, long positionId) {
         return service.validateUserApplicationCheckCountAtCompany(userId, companyId, positionId);
+    }
+
+    @Override
+    public Response validateUserApplicationTypeCheckCountAtCompany(long userId, long companyId) throws TException {
+        return service.validateUserApplicationTypeCheckCountAtCompany(userId, companyId);
     }
 
     @Override
