@@ -3,7 +3,6 @@ package com.moseeker.chat.thriftservice;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.chat.service.ChatService;
 import com.moseeker.thrift.gen.chat.struct.*;
-import org.junit.Test;
 
 import java.util.List;
 

@@ -124,7 +124,6 @@ public class ProfilePojo {
 		try {
 			educationRecords = profileUtils
 					.mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
-			LoggerFactory.getLogger(ProfilePojo.class).info("majorName:{}"+educationRecords.get(0).getDescription());
 			pojo.setEducationRecords(educationRecords);
 		} catch (Exception e) {
 			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
