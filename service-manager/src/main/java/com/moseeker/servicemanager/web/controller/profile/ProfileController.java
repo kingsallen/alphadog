@@ -526,7 +526,7 @@ public class ProfileController {
     public String talentUploadParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request,
                                      HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
             int companyId=params.getInt("company_id");
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);;
             Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,companyId);
@@ -542,7 +542,7 @@ public class ProfileController {
     @ResponseBody
     public String profileCombine(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
             String profile=params.getString("profile");
             int companyId=params.getInt("company_id");
             Response res = profileService.combinationProfile(profile,companyId);
@@ -558,7 +558,7 @@ public class ProfileController {
     @ResponseBody
     public String saveProfile(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
             String profile=params.getString("profile");
             int hrId=params.getInt("hr_id");
             int userId=params.getInt("user_id");
