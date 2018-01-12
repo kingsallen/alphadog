@@ -113,4 +113,31 @@ public class WholeProfileServicesImpl implements Iface {
         }
     }
 
+    @Override
+    public Response combinationProfile(String params, int companyId) throws BIZException, TException {
+        try {
+            logger.info("preserveProfile parameter{}：", params);
+            return service.combinationProfile(params,companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response preserveProfile(String params, int hrId, int companyId, String fileName,int userId) throws BIZException, TException {
+        try {
+            logger.info("preserveProfile parameter{}：", params);
+            return service.preserveProfile(params,fileName,hrId,companyId,userId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+
 }

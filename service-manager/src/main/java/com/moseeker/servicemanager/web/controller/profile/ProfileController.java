@@ -26,6 +26,11 @@ import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -106,7 +111,6 @@ public class ProfileController {
 
             ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
             Response result = profileService.postResource(form.getProfile(), form.getUser_id());
-
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -513,4 +517,60 @@ public class ProfileController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 人才库简历上传解析，也可以用在其他位置
+     */
+    @RequestMapping(value = "/profile/upload/parser", method = RequestMethod.POST)
+    @ResponseBody
+    public String talentUploadParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
+            int companyId=params.getInt("company_id");
+            String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);;
+            Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,companyId);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/profile/upload/combine", method = RequestMethod.POST)
+    @ResponseBody
+    public String profileCombine(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
+            String profile=params.getString("profile");
+            int companyId=params.getInt("company_id");
+            Response res = profileService.combinationProfile(profile,companyId);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/profile/talent/preserve", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveProfile(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
+            String profile=params.getString("profile");
+            int hrId=params.getInt("hr_id");
+            int userId=params.getInt("user_id");
+            int companyId=params.getInt("company_id");
+            String fileName=params.getString("file_name");
+            Response res = profileService.preserveProfile(profile,hrId,companyId,fileName,userId);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
 }

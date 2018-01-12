@@ -260,4 +260,11 @@ public class HrThirdPartyPositionDao extends DAOImpl<HrThirdPartyPositionRecord,
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByDepartmentName(String... values) {
         return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.DEPARTMENT_NAME, values);
     }
+
+    /**
+     * Fetch records that have <code>count IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByCount(Integer... values) {
+        return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.COUNT, values);
+    }
 }

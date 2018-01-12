@@ -1,8 +1,6 @@
 package com.moseeker.servicemanager.common;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -301,7 +299,31 @@ public class ParamUtils {
         return list;
     }
     /*
-
+        文件转换成byte
      */
+    public static byte[] file2Byte(String filePath)
+    {
+        byte[] buffer = null;
+        try
+        {
+            File file = new File(filePath);
+            FileInputStream fis = new FileInputStream(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] b = new byte[1024];
+            int n;
+            while ((n = fis.read(b)) != -1)
+            {
+                bos.write(b, 0, n);
+            }
+            fis.close();
+            bos.close();
+            buffer = bos.toByteArray();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return buffer;
+    }
 
 }
