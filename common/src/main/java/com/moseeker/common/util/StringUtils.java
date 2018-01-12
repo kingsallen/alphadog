@@ -313,6 +313,12 @@ public class StringUtils {
             if(value.contains(")")){
                 value=value.toLowerCase().replaceAll("\\)","");
             }
+            if(value.contains("+")){
+                value=value.toLowerCase().replaceAll("\\+","");
+            }
+            if(value.contains("\\")){
+                value=value.toLowerCase().replaceAll("\\\\","");
+            }
         }
         return value;
     }
