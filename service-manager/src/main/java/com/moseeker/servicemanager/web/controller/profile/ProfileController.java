@@ -524,14 +524,10 @@ public class ProfileController {
     @RequestMapping(value = "/profile/upload/parser", method = RequestMethod.POST)
     @ResponseBody
     public String talentUploadParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     @RequestParam int appid,
-                                     @RequestParam int company_id
-
-    ) {
+                                     HttpServletResponse response) {
         try {
-//            Params<String, Object> params = ParamUtils.parseequestParameter(request);
-            int companyId=company_id;
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId=params.getInt("company_id");
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);;
             Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,companyId);
             return ResponseLogNotification.success(request, res);
@@ -546,7 +542,7 @@ public class ProfileController {
     @ResponseBody
     public String profileCombine(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseequestParameter(request);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
             String profile=params.getString("profile");
             int companyId=params.getInt("company_id");
             Response res = profileService.combinationProfile(profile,companyId);
@@ -562,7 +558,7 @@ public class ProfileController {
     @ResponseBody
     public String saveProfile(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseequestParameter(request);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
             String profile=params.getString("profile");
             int hrId=params.getInt("hr_id");
             int userId=params.getInt("user_id");
