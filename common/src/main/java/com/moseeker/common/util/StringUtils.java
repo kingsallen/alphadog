@@ -299,7 +299,7 @@ public class StringUtils {
     public static String filterStringForSearch(String value){
         if(StringUtils.isNotNullOrEmpty(value)){
             if(value.contains("/")){
-                value.replaceAll("/","");
+                value=value.replaceAll("/","");
             }
             if(value.toLowerCase().contains("or")){
                 value=value.toLowerCase().replaceAll("or","");
@@ -323,4 +323,7 @@ public class StringUtils {
         return value;
     }
 
+    public static void main(String[] args) {
+        System.out.println(StringUtils.filterStringForSearch("平安综合金融诚聘保险业务经理/主管"));
+    }
 }
