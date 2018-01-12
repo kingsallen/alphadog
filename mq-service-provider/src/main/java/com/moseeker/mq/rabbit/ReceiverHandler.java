@@ -2,6 +2,7 @@ package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
@@ -91,10 +92,10 @@ public class ReceiverHandler {
             int templateId;
             if(type!=0){
                 switch (type) {
-                    case 1: templateId = 58; break;
-                    case 2: templateId = 57; break;
-                    case 3: templateId = 57; break;
-                    case 4: templateId = 56; break;
+                    case 1: templateId = Constant.FANS_PROFILE_COMPLETION; break;
+                    case 2: templateId = Constant.FANS_RECOM_POSITION; break;
+                    case 3: templateId = Constant.EMPLOYEE_RECOM_POSITION; break;
+                    case 4: templateId = Constant.EMPLOYEE_PROFILE_COMPLETION; break;
                     default: templateId = 0;
                 }
                 String url=jsonObject.getString("url");
