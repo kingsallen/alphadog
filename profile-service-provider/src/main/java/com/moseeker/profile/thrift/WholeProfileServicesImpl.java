@@ -127,10 +127,10 @@ public class WholeProfileServicesImpl implements Iface {
     }
 
     @Override
-    public Response preserveProfile(String params, int hrId, int companyId, String fileName) throws BIZException, TException {
+    public Response preserveProfile(String params, int hrId, int companyId, String fileName,int userId) throws BIZException, TException {
         try {
             logger.info("preserveProfile parameter{}：", params);
-            return service.preserveProfile(params,fileName,hrId,companyId);
+            return service.preserveProfile(params,fileName,hrId,companyId,userId);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

@@ -39,7 +39,7 @@ service WholeProfileServices {
     common_struct.Response moveProfile(1:i32 destUserId, 2:i32 originUserId) throws (1: common_struct.BIZException e);
     bool retrieveProfile(1:string parameter)throws (1: common_struct.BIZException e);
     common_struct.Response combinationProfile(1:string params, 2:i32 companyId) throws (1: common_struct.BIZException e);
-    common_struct.Response preserveProfile(1:string params, 2:i32 hrId,3:i32 companyId,4:string fileName) throws (1: common_struct.BIZException e);
+    common_struct.Response preserveProfile(1:string params, 2:i32 hrId,3:i32 companyId,4:string fileName,5: i32 userId) throws (1: common_struct.BIZException e);
 }
 
 service ProfileServices {

@@ -490,7 +490,6 @@ public class ProfileController {
     public String talentUploadParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseequestParameter(request);
-            String fileName=params.getString("file_name");
             int companyId=params.getInt("company_id");
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);;
             Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,companyId);
@@ -525,9 +524,10 @@ public class ProfileController {
             Params<String, Object> params = ParamUtils.parseequestParameter(request);
             String profile=params.getString("profile");
             int hrId=params.getInt("hr_id");
-            int companyId=params.getInt("companyId");
+            int userId=params.getInt("user_id");
+            int companyId=params.getInt("company_id");
             String fileName=params.getString("file_name");
-            Response res = profileService.preserveProfile(profile,hrId,companyId,fileName);
+            Response res = profileService.preserveProfile(profile,hrId,companyId,fileName,userId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
