@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts;
 
+import com.moseeker.common.util.StringUtils;
 import org.apache.thrift.TBase;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +17,10 @@ import java.util.Map;
 public class GenerateDoc {
     Logger logger= LoggerFactory.getLogger(GenerateDoc.class);
 
+
     @Test
     public void test() throws ClassNotFoundException {
-        Class clazz=Class.forName("com.moseeker.useraccounts.thrift.EmployeeServiceImpl");
+        Class clazz=Class.forName("com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl");
         Method[] methods=clazz.getDeclaredMethods();
         int i=0;
         for(Method method:methods){
@@ -57,7 +60,10 @@ public class GenerateDoc {
                 .end();
     }
     public String getMethodName(Method method){
-        return method.getDeclaringClass().getSimpleName()+"."+method.getName();
+        String interfaceName=method.getDeclaringClass().getGenericInterfaces()[0].getTypeName();
+        String thriftName=interfaceName.substring(interfaceName.lastIndexOf(".")+1,interfaceName.indexOf("$"));
+
+        return thriftName+"."+method.getName();
     }
 
     private String requestExample(){
@@ -88,12 +94,26 @@ public class GenerateDoc {
         DocBuilder builder=DocBuilder.newInstance().append(ParamBuilder.TITLE);
         for(int i=0;i<parameters.length;i++){
             Parameter parameter=parameters[i];
-//            if(parameter.getType().isPrimitive() || parameter.getType() == String.class){  //基本类型
             String paramDoc=ParamBuilder.newInstance()
                     .append(names[i])
                     .append(getSpecialName(parameter))
                     .append("是")
                     .append("这是描述").build();
+            builder.append(paramDoc);
+            if(!isSpecialReturnType(parameter)){
+                Field fields[] = parameter.getType().getFields();
+                for (Field field : fields) {
+                    if (filterField(field)) {
+                        continue;
+                    }
+                    paramDoc = ParamBuilder.newInstance()
+                            .append(names[i]+"."+field.getName())
+                            .append(getSpecialName(field))
+                            .append("是")
+                            .append("这是描述").build();
+                    builder.append(paramDoc);
+                }
+            }
             builder.append(paramDoc);
         }
         return builder.end();
@@ -110,7 +130,10 @@ public class GenerateDoc {
     private String result(Method method){
         return DocBuilder.newInstance()
                 .append("##### 返回结果:")
-                .append(getSpecialName(method))
+                .emptyLine()
+                .append(getReturnName(method))
+                .emptyLine()
+                .append(getThrift(method.getReturnType(),method.getGenericReturnType()))
                 .end();
     }
 
@@ -130,9 +153,6 @@ public class GenerateDoc {
             }
         }
 
-        /*if(!returnClass.isAssignableFrom(TBase.class)) {
-            logger.info("还有返回其他的"+returnClass.getName());
-        }*/
         Field fields[] = returnClass.getFields();
         DocBuilder builder = DocBuilder.newInstance().append(ParamBuilder.RESULT_TITLE);
         for (Field field : fields) {
@@ -146,6 +166,40 @@ public class GenerateDoc {
             builder.append(paramDoc);
         }
         return builder.end();
+    }
+
+    private String getThrift(Class clazz,Type type){
+        if(clazz==null) return "";
+
+        List<String> thriftNames=new ArrayList<>();
+
+        if(clazz.isAssignableFrom(List.class)) { //【2】
+            clazz=getGenericType(type);
+        }
+
+        if(clazz==null){
+            return "";
+        }
+
+        Type interfaces[]=clazz.getGenericInterfaces();
+
+        if(interfaces!=null && interfaces.length>0 && interfaces[0].getTypeName().contains("TBase")){
+            thriftNames.add(clazz.getSimpleName());
+        }
+
+        String thrift= ThriftUtil.getStructThrift(thriftNames);
+
+        if(StringUtils.isNotNullOrEmpty(thrift)){
+            thrift=DocBuilder.newInstance()
+                    .append("```")
+                    .append(thrift)
+                    .append("```")
+                    .end();
+        }
+
+        return thrift;
+
+
     }
 
     private boolean isSpecialReturnType(Parameter parameter){
@@ -191,7 +245,7 @@ public class GenerateDoc {
         return getSpecialName(parameter.getType(),parameter.getParameterizedType());
     }
 
-    private String getSpecialName(Method method){
+    private String getReturnName(Method method){
         return getSpecialName(method.getReturnType(),method.getGenericReturnType());
     }
 
@@ -245,7 +299,7 @@ public class GenerateDoc {
     }
 
 
-    private static class DocBuilder{
+    static class DocBuilder{
         private final StringBuilder builder=new StringBuilder();
         public static DocBuilder newInstance(){
             return new DocBuilder();
