@@ -9,6 +9,13 @@ import java.util.List;
  */
 public interface DemoApplicaiton {
 
+    /**
+     * HR浏览申请记录
+     * @param hrId HR编号
+     * @param applicationIds 申请编号
+     * @return 浏览结果
+     * @throws CommonException 业务异常
+     */
     String viewApplication(int hrId, List<Integer> applicationIds) throws CommonException;
 
 }
