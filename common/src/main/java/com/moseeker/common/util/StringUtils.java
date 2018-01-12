@@ -291,4 +291,29 @@ public class StringUtils {
             return strName;
         }
     }
+    /**
+     * 去掉字符串的特殊字符
+     * @param
+     * @return
+     */
+    public static String filterStringForSearch(String value){
+        if(StringUtils.isNotNullOrEmpty(value)){
+            if(value.contains("/")){
+                value.replaceAll("/","");
+            }
+            if(value.toLowerCase().contains("or")){
+                value=value.toLowerCase().replaceAll("or","");
+            }
+            if(value.toLowerCase().contains("and")){
+                value=value.toLowerCase().replaceAll("and","");
+            }
+            if(value.contains("(")){
+                value=value.toLowerCase().replaceAll("\\(","");
+            }
+            if(value.contains("(")){
+                value=value.toLowerCase().replaceAll("\\)","");
+            }
+        }
+        return value;
+    }
 }
