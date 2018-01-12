@@ -16,7 +16,7 @@ public class DemoThriftServiceImplTest {
     DemoThriftService.Iface demoService = ServiceManager.SERVICEMANAGER.getService(DemoThriftService.Iface.class);
 
     ////@Test
-    public void testGetData() {
+    /*public void testGetData() {
         CommonQuery query = new CommonQuery();
         DemoStruct demoStruct = new DemoStruct();
         demoStruct.setId(1);
@@ -38,5 +38,5 @@ public class DemoThriftServiceImplTest {
         } catch (TException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
