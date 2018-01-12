@@ -227,6 +227,6 @@ public final class Constant {
     //微信消息模板
     public static final int EMPLOYEE_PROFILE_COMPLETION=56;
     public static final int FANS_PROFILE_COMPLETION=58;
-    public static final int FANS_RECOM_POSITION=57;
-    public static final int EMPLOYEE_RECOM_POSITION=59;
+    public static final int FANS_RECOM_POSITION=59;
+    public static final int EMPLOYEE_RECOM_POSITION=57;
 }
