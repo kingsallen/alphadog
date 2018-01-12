@@ -64,15 +64,16 @@ public class EmployeeServiceTest {
 //    }
 
 
+
     @Test
     public void getEmployee() throws Exception {
         EmployeeResponse employee = service.getEmployee(2376, 2878);
         System.out.println(employee);
     }
 
-    //@Test
+    @Test
     public void getEmployeeVerificationConf() throws Exception {
-        EmployeeVerificationConfResponse response = service.getEmployeeVerificationConf(27);
+        EmployeeVerificationConfResponse response = service.getEmployeeVerificationConf(30);
         System.out.println(response);
     }
 

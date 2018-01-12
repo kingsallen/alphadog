@@ -1,22 +1,29 @@
 package com.moseeker.useraccounts;
 
+import org.apache.thrift.TBase;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import java.lang.reflect.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class GenerateDoc {
+    Logger logger= LoggerFactory.getLogger(GenerateDoc.class);
 
     @Test
     public void test() throws ClassNotFoundException {
         Class clazz=Class.forName("com.moseeker.useraccounts.thrift.EmployeeServiceImpl");
         Method[] methods=clazz.getDeclaredMethods();
+        int i=0;
         for(Method method:methods){
-            method.getModifiers();
+            if(!Modifier.isPublic(method.getModifiers())){
+                continue;
+            }
             String doc=DocBuilder.newInstance()
                     .append(describe())
                     .append(requestDescribe(method))
@@ -27,7 +34,9 @@ public class GenerateDoc {
                     .append(resultParam(method))
                     .end();
             System.out.print(doc);
+            i++;
         }
+        System.out.println(i);
     }
 
 
@@ -40,8 +49,8 @@ public class GenerateDoc {
 
     private String requestDescribe(Method method){
         return DocBuilder.newInstance()
-                .append("#### 请求说明")
-                .append("http请求方式：无")
+                .append("#### 请求说明:")
+                .append("请求方式：Thrift")
                 .emptyLine()
                 .append(getMethodName(method))
 //                .append("[http://api.moseeker.com/retrieval/profile](http://api.moseeker.com/retrieval/profile)")
@@ -53,13 +62,13 @@ public class GenerateDoc {
 
     private String requestExample(){
         return DocBuilder.newInstance()
-                .append("#### 请求示例")
+                .append("#### 请求示例:")
                 .end();
     }
 
     private String paramDescribe(Method method){
         return DocBuilder.newInstance()
-                .append("#### 参数说明")
+                .append("#### 参数说明:")
                 .emptyLine()
                 .append(buildParam(method))
                 .end();
@@ -71,14 +80,20 @@ public class GenerateDoc {
         String names[]=parameterNameDiscoverer.getParameterNames(method);
 
         Parameter[] parameters=method.getParameters();
+
+        if(names==null || names.length==0 || parameters==null || parameters.length==0){
+            return "";
+        }
+
         DocBuilder builder=DocBuilder.newInstance().append(ParamBuilder.TITLE);
         for(int i=0;i<parameters.length;i++){
             Parameter parameter=parameters[i];
+//            if(parameter.getType().isPrimitive() || parameter.getType() == String.class){  //基本类型
             String paramDoc=ParamBuilder.newInstance()
-                    .param(names[i])
-                    .type(parameter.getType().getSimpleName())
-                    .isNecessary("是")
-                    .describe("这是描述").build();
+                    .append(names[i])
+                    .append(getSpecialName(parameter))
+                    .append("是")
+                    .append("这是描述").build();
             builder.append(paramDoc);
         }
         return builder.end();
@@ -86,7 +101,7 @@ public class GenerateDoc {
 
     private String rootDescribe(){
         return DocBuilder.newInstance()
-                .append("##### 权限说明")
+                .append("##### 权限说明:")
                 .emptyLine()
                 .append(" 暂无")
                 .end();
@@ -94,29 +109,139 @@ public class GenerateDoc {
 
     private String result(Method method){
         return DocBuilder.newInstance()
-                .append("##### 返回结果")
+                .append("##### 返回结果:")
+                .append(getSpecialName(method))
                 .end();
     }
 
     private String resultParam(Method method){
         return DocBuilder.newInstance()
-                .append("##### 参数说明")
-                .append(buildParam(method.getReturnType()))
+                .append("##### 参数说明:")
+                .append(buildReturnParam(method))
                 .end();
     }
 
-    private String buildParam(Class clazz){
-        Field fields[]=clazz.getFields();
-        DocBuilder builder=DocBuilder.newInstance().append(ParamBuilder.TITLE);
-        for(Field field:fields){
-            String paramDoc=ParamBuilder.newInstance()
-                    .param(field.getName())
-                    .type(field.getType().getSimpleName())
-                    .isNecessary("是")
-                    .describe("这是描述").build();
+    private String buildReturnParam(Method method){
+        Class returnClass=method.getReturnType();
+
+        if(isSpecialReturnType(method)){
+            if(method.getReturnType().isAssignableFrom(List.class)){
+                returnClass=getGenericType(method.getGenericReturnType());
+            }
+        }
+
+        /*if(!returnClass.isAssignableFrom(TBase.class)) {
+            logger.info("还有返回其他的"+returnClass.getName());
+        }*/
+        Field fields[] = returnClass.getFields();
+        DocBuilder builder = DocBuilder.newInstance().append(ParamBuilder.RESULT_TITLE);
+        for (Field field : fields) {
+            if (filterField(field)) {
+                continue;
+            }
+            String paramDoc = ParamBuilder.newInstance()
+                    .append(field.getName())
+                    .append(getSpecialName(field))
+                    .append("这是描述").build();
             builder.append(paramDoc);
         }
         return builder.end();
+    }
+
+    private boolean isSpecialReturnType(Parameter parameter){
+        return isSpecialReturnType(parameter.getType(),parameter.getParameterizedType());
+    }
+
+    private boolean isSpecialReturnType(Method method){
+        return isSpecialReturnType(method.getReturnType(),method.getGenericReturnType());
+    }
+
+    private boolean isSpecialReturnType(Class clazz,Type fc){
+        if(clazz.isPrimitive()) {  //判断是否为基本类型
+            return true;
+        }
+
+        if(clazz.getName().startsWith("java.lang")) { //getName()返回field的类型全路径；
+            return true;
+        }
+
+        if(clazz.isAssignableFrom(List.class)) //【2】
+        {
+            if(fc == null) return false;
+
+            if(fc instanceof ParameterizedType) // 【3】如果是泛型参数的类型
+            {
+                ParameterizedType pt = (ParameterizedType) fc;
+
+                Class genericClazz = (Class)pt.getActualTypeArguments()[0]; //【4】 得到泛型里的class类型对象。
+
+                if(genericClazz!=null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private String getSpecialName(Field field){
+        return getSpecialName(field.getType(),field.getGenericType());
+    }
+
+    private String getSpecialName(Parameter parameter){
+        return getSpecialName(parameter.getType(),parameter.getParameterizedType());
+    }
+
+    private String getSpecialName(Method method){
+        return getSpecialName(method.getReturnType(),method.getGenericReturnType());
+    }
+
+    private String getSpecialName(Class clazz,Type fc){
+        if(clazz.isPrimitive()) {  //判断是否为基本类型
+            return clazz.getSimpleName();
+        }
+
+        if(clazz.getName().startsWith("java.lang")) { //getName()返回field的类型全路径；
+            return clazz.getName();
+        }
+
+        if(clazz.isAssignableFrom(List.class)) //【2】
+        {
+            return clazz.getSimpleName()+"&lt;"+getGenericTypeSimpleName(fc)+"&gt;";
+        }
+
+        return clazz.getName();
+    }
+
+
+    private Class getGenericType(Type fc){
+        if(fc == null) return null;
+
+        if(fc instanceof ParameterizedType) // 【3】如果是泛型参数的类型
+        {
+            ParameterizedType pt = (ParameterizedType) fc;
+
+            Class genericClazz = (Class)pt.getActualTypeArguments()[0]; //【4】 得到泛型里的class类型对象。
+
+            return genericClazz;
+        }
+        return null;
+    }
+    private String getGenericTypeSimpleName(Type fc){
+        Class clazz=getGenericType(fc);
+        if(clazz!=null){
+            return clazz.getSimpleName();
+        }
+        return "";
+    }
+
+
+
+
+    private boolean filterField(Field field){
+        if(field.getName().equals("metaDataMap")){
+            return true;
+        }
+        return false;
     }
 
 
@@ -139,63 +264,38 @@ public class GenerateDoc {
     }
 
     private static class ParamBuilder{
-        private String title;
-        private String param;
-        private String type;
-        private String isNecessary;
-        private String describe;
+        private final StringBuilder builder=new StringBuilder();
 
         private final static String TITLE;
+
+        private final static String RESULT_TITLE;
 
         static {
             StringBuilder builder=new StringBuilder();
             TITLE=builder
                     .append("| 参数 | 类型 | 必须 | 说明 |")
                     .append("\r\n")
-                    .append("|--|--|--|--|")
+                    .append("|---|---|---|---|")
+                    .toString();
+            builder=new StringBuilder();
+            RESULT_TITLE=builder
+                    .append("| 参数 | 类型 | 说明 |")
+                    .append("\r\n")
+                    .append("|---|---|---|")
                     .toString();
         }
 
         public static ParamBuilder newInstance(){
             return new ParamBuilder();
         }
-        public static ParamBuilder newInstanceWithDefaultTitle(){
-            return new ParamBuilder().title(TITLE);
-        }
 
-        public ParamBuilder title(String title){
-            this.title=title;
-            return this;
-        }
-
-        public ParamBuilder param(String param){
-            this.param=param;
-            return this;
-        }
-
-        public ParamBuilder type(String type){
-            this.type=type;
-            return this;
-        }
-
-        public ParamBuilder isNecessary(String isNecessary){
-            this.isNecessary=isNecessary;
-            return this;
-        }
-
-        public ParamBuilder describe(String describe){
-            this.describe=describe;
+        public ParamBuilder append(String str){
+            builder.append("|").append(str);
             return this;
         }
 
         public String build(){
-            StringBuilder builder=new StringBuilder();
-            return builder
-                    .append("|")
-                    .append(param).append("|")
-                    .append(type).append("|")
-                    .append(isNecessary).append("|")
-                    .append(describe).append("|")
+            return builder.append("|")
                     .toString();
         }
 
