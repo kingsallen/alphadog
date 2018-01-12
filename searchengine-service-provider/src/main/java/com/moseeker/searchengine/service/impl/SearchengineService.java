@@ -819,6 +819,7 @@ public class SearchengineService {
          if(StringUtils.isNotBlank(publisherCompanyId)){
              searchUtil.handleTerms(companyIds,query,"publisher_company_id");
          }
+         searchUtil.handleMatch(0,query,"status");
          SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                  .setQuery(query)
                  .setFrom((page-1)*pageSize)
@@ -839,6 +840,7 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(publisherCompanyId)){
             searchUtil.handleTerms(companyIds,query,"publisher_company_id");
         }
+        searchUtil.handleMatch(0,query,"status");
         SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
