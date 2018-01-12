@@ -281,7 +281,7 @@ public class StringUtils {
     public static String filterStringForSearch(String value){
         if(StringUtils.isNotNullOrEmpty(value)){
             if(value.contains("/")){
-                value.replaceAll("/","");
+                value=value.replaceAll("/","");
             }
             if(value.toLowerCase().contains("or")){
                 value=value.toLowerCase().replaceAll("or","");
