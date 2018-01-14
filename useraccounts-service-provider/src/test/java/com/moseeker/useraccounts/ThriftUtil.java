@@ -14,7 +14,15 @@ import java.util.regex.Pattern;
 
 public class ThriftUtil {
 
-    private static String thirftPath="/Users/pyb/IdeaProjects/alphadog/thrift-jooq/thrift";
+//    private static String thirftPath="/Users/pyb/IdeaProjects/alphadog/thrift-jooq/thrift";
+
+    private static String thirftPath="D:\\Git-Moseeker\\alphadog\\thrift-jooq\\thrift";
+
+    public static String testGetStructThrift(List<String> names){
+        String result=getStructThrift(names);
+        System.out.println(result);
+        return result;
+    }
 
     public static String getServiceThrift(List<String> names){
         return getThrift(names,ThriftType.SERVICE);
@@ -47,13 +55,16 @@ public class ThriftUtil {
                     for(int i=0;i<lines.size();i++) {
                         String line=lines.get(i);
                         for (String name : names) {
+                            if(StringUtils.isNullOrEmpty(name)){
+                                continue;
+                            }
                             if (Pattern.matches(thriftType.pattern().replace("{}",name), line)) {
                                 GenerateDoc.DocBuilder builder=GenerateDoc.DocBuilder.newInstance();
                                 List<String> innerStruct=new ArrayList<>();
                                 for(int j=i;j<lines.size();j++){
                                     String innerLine=lines.get(j);
                                     builder.append(innerLine);
-                                    if(Pattern.matches(".*[0-9]+:\\s+(required|optional){1}.*",innerLine)){
+                                    if(Pattern.matches(".*[0-9]+:\\s?(required|optional){0,1}.*",innerLine)){
                                         if(!isThriftGenericType(innerLine)) {
                                             innerStruct.addAll(Arrays.asList(getThriftStructParam(innerLine)));
                                         }
@@ -67,7 +78,6 @@ public class ThriftUtil {
                                 if(!innerStruct.isEmpty()) {
                                     sb.append(getThrift(innerStruct, thriftType));
                                 }
-//                                System.out.println(builder.end());
                                 sb.append(builder.end());
                             }
                         }
@@ -82,7 +92,6 @@ public class ThriftUtil {
             e.printStackTrace();
         }
 
-
         return sb.toString();
     }
 
@@ -96,7 +105,7 @@ public class ThriftUtil {
         return false;
     }
 
-    private static String typeFirst=".*[0-9]+:\\s+(required|optional){1}\\s+(list<|set<|map<)?";
+    private static String typeFirst=".*[0-9]+:\\s?(required|optional){1}\\s+(list<|set<|map<)?";
     private static String typeLast="(>)?\\s+.*";
     private static String[] getThriftStructParam(String str){
         if(StringUtils.isNotNullOrEmpty(str)){
@@ -107,20 +116,24 @@ public class ThriftUtil {
 
     @Test
     public void test(){
-        getStructThrift(Arrays.asList("UserEmployeeVOPageVO"));
-//        getStructThrift(Arrays.asList("ProfileApplicationForm"));
-//        getStructThrift(Arrays.asList("EmployeeResponse"));
-//        getStructThrift(Arrays.asList("Result"));
-//        getStructThrift(Arrays.asList("EmployeeCustomFieldsConf"));
-//        getStructThrift(Arrays.asList("RewardsResponse"));
-//        getStructThrift(Arrays.asList("EmployeeAward"));
+//        testGetStructThrift(Arrays.asList("UserEmployeeVOPageVO"));
+//        testGetStructThrift(Arrays.asList("ProfileApplicationForm"));
+//        testGetStructThrift(Arrays.asList("EmployeeResponse"));
+//        testGetStructThrift(Arrays.asList("Result"));
+//        testGetStructThrift(Arrays.asList("EmployeeCustomFieldsConf"));
+//        testGetStructThrift(Arrays.asList("RewardsResponse"));
+//        testGetStructThrift(Arrays.asList("EmployeeAward"));
 //        System.out.println("1:  required  BindStatus  bindStatus,".replaceAll("[0-9]+:\\s+(required|optional){1}\\s+(list<|set<|map<)?","").replaceAll("(>)?\\s+.*",""));
+
+        Pattern pattern=Pattern.compile("[0-9]+:\\s?(required|optional){1}");
+        Matcher matcher=pattern.matcher("    1: required BindStatus bindStatus,");
+        System.out.println(matcher.find());
 //        System.out.println(Pattern.matches(".*[0-9]+:\\s+(required|optional){1}.*","    1: required BindStatus bindStatus,"));
     }
 
     private enum ThriftType{
         STRUCT(".*[struct|enum]{1}\\s+{}\\s?\\{.*"),
-        SERVICE(".*service\\s+{}.*")
+        SERVICE(".*service\\s+{}\\s?\\{.*")
         ;
 
 
