@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts;
 
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
 import org.apache.thrift.TBase;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -66,6 +67,9 @@ public class GenerateDoc {
     }
 
     private String requestExample(Method method){
+        if(getMethodName(method).contains("UserHrAccountService.employeeExport")){
+            System.out.println();
+        }
         return DocBuilder.newInstance()
                 .append("#### 请求示例:")
                 .emptyLine()
@@ -172,7 +176,7 @@ public class GenerateDoc {
         List<Class> returnClasses=Arrays.asList(method.getReturnType());
 
         if(isSpecialReturnType(method)){
-            if(method.getReturnType().isAssignableFrom(List.class)){
+            if(isCollection(method.getReturnType())){
                 returnClasses=getGenericType(method.getGenericReturnType());
             }
         }
@@ -202,7 +206,7 @@ public class GenerateDoc {
 
         List<Class> classes=Arrays.asList(clazz);
 
-        if(clazz.isAssignableFrom(List.class)||clazz.isAssignableFrom(Map.class)||clazz.isAssignableFrom(Set.class)) { //【2】
+        if(isCollection(clazz)) { //【2】
             classes=getGenericType(type);
         }
 
@@ -214,7 +218,7 @@ public class GenerateDoc {
             Type interfaces[] = temp.getGenericInterfaces();
 
             if (interfaces != null && interfaces.length > 0 && interfaces[0].getTypeName().contains("TBase")) {
-                thriftNames.add(clazz.getSimpleName());
+                thriftNames.add(temp.getSimpleName());
             }
 
             String thrift=ThriftUtil.getStructThrift(thriftNames);
@@ -250,7 +254,7 @@ public class GenerateDoc {
             return true;
         }
 
-        if(clazz.isAssignableFrom(List.class)) //【2】
+        if(isCollection(clazz)) //【2】
         {
             if(fc == null) return false;
 
@@ -289,9 +293,10 @@ public class GenerateDoc {
             return clazz.getSimpleName();
         }
 
-        if(clazz.isAssignableFrom(List.class)||clazz.isAssignableFrom(Set.class)||clazz.isAssignableFrom(Map.class)) //【2】
+        if(isCollection(clazz)) //【2】
         {
-            return clazz.getSimpleName()+"&lt;"+getGenericTypeSimpleName(fc)+"&gt;";
+            return getGenericTypeSimpleName(clazz,fc);
+//            return clazz.getSimpleName()+"&lt;"+getGenericTypeSimpleName(fc)+"&gt;";
         }
 
         return clazz.getName();
@@ -306,9 +311,16 @@ public class GenerateDoc {
             ParameterizedType pt = (ParameterizedType) fc;
 
             List<Class> genericTypes=new ArrayList<>();
+
             for(Type type:pt.getActualTypeArguments()) {
-                if (pt.getActualTypeArguments()[0] instanceof Class) {
-                    Class genericClazz = (Class) pt.getActualTypeArguments()[0]; //【4】 得到泛型里的class类型对象。
+                if(type instanceof  ParameterizedType){
+                    ParameterizedType pType=(ParameterizedType)type;
+                    if(pType.getRawType() instanceof Map){
+
+                    }
+                }
+                if (type instanceof Class) {
+                    Class genericClazz = (Class) type; //【4】 得到泛型里的class类型对象。
                     genericTypes.add(genericClazz);
                 }
             }
@@ -316,12 +328,16 @@ public class GenerateDoc {
         }
         return new ArrayList<>();
     }
-    private String getGenericTypeSimpleName(Type fc){
-        List<Class> clazz=getGenericType(fc);
-        if(!StringUtils.isEmptyList(clazz)){
+    private String getGenericTypeSimpleName(Class clazz,Type type){
+        List<Class> clazzes=getGenericType(type);
+        if(!StringUtils.isEmptyList(clazzes)){
             StringBuilder builder=new StringBuilder();
-            clazz.forEach(c->{
-                builder.append(","+c.getSimpleName());
+            clazzes.forEach(c->{
+                if(isCollection(c)){
+                    builder.append(getGenericTypeSimpleName(c,c.getGenericSuperclass()));
+                }else {
+                    builder.append(clazz.getSimpleName()+"\\<," + c.getSimpleName()+"\\>");
+                }
             });
             builder.delete(0,1);
 
@@ -330,7 +346,16 @@ public class GenerateDoc {
         return "";
     }
 
+    @Test
+    public void test2() throws NoSuchFieldException {
+        Field field=UserEmployeeVO.class.getField("customFieldValues");
+        getGenericTypeSimpleName(field.getType(),field.getGenericType());
+    }
 
+
+    private boolean isCollection(Class clazz){
+        return clazz.isAssignableFrom(List.class)||clazz.isAssignableFrom(Set.class)||clazz.isAssignableFrom(Map.class);
+    }
 
 
     private boolean filterField(Field field){

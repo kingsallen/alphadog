@@ -14,9 +14,9 @@ import java.util.regex.Pattern;
 
 public class ThriftUtil {
 
-//    private static String thirftPath="/Users/pyb/IdeaProjects/alphadog/thrift-jooq/thrift";
+    private static String thirftPath="/Users/pyb/IdeaProjects/alphadog/thrift-jooq/thrift";
 
-    private static String thirftPath="D:\\Git-Moseeker\\alphadog\\thrift-jooq\\thrift";
+//    private static String thirftPath="D:\\Git-Moseeker\\alphadog\\thrift-jooq\\thrift";
 
     public static String testGetStructThrift(List<String> names){
         String result=getStructThrift(names);
