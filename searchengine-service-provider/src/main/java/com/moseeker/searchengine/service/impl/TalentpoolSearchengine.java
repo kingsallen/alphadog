@@ -46,10 +46,8 @@ public class TalentpoolSearchengine {
         TransportClient client=null;
         try {
             client = searchUtil.getEsClient();
-            Map<String, Object> aggInfo = new HashMap<>();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
-//            this.handlerAggs(params, builder, client, aggInfo);
             this.handlerSortOrder(params, builder);
             this.handlerPage(params, builder);
             this.handlerReturn(params, builder);
@@ -57,14 +55,6 @@ public class TalentpoolSearchengine {
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleData(response, "users");
-//            if (aggInfo != null && !aggInfo.isEmpty()) {
-//                result.put("aggs", aggInfo.get("aggs"));
-//            }
-//            String progressStatus = params.get("progress_status");
-//            if(StringUtils.isNotNullOrEmpty(progressStatus)){
-//                Map<String,Object> aggMap=getAggInfo(params);
-//                result.put("aggs", aggMap.get("aggs"));
-//            }
             return result;
         } catch (Exception e) {
             logger.info(e.getMessage()+"=================");
@@ -333,9 +323,10 @@ public class TalentpoolSearchengine {
                 if (StringUtils.isNotNullOrEmpty(publisherIds)) {
                     this.queryByPublisher(publisherIds, query);
                 }
-            }else{
-                this.queryByComapnyId(companyId, query);
             }
+//            else{
+//                this.queryByComapnyId(companyId, query);
+//            }
 
             if (StringUtils.isNotNullOrEmpty(candidateSource)) {
                 this.queryByCandidateSource(Integer.parseInt(candidateSource), query);
@@ -422,9 +413,10 @@ public class TalentpoolSearchengine {
                     sb.append("val.publisher in "+publisherIdList.toString()+"&&");
                 }
             }
-        }else{
-            sb.append("val.company_id == "+companyId+"&&");
         }
+//        else{
+//            sb.append("val.company_id == "+companyId+"&&");
+//        }
 
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
             sb.append("val.candidate_source=="+candidateSource+"&&");
