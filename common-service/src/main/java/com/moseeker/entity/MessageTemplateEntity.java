@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
 import com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxTemplateMessageRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -79,6 +80,8 @@ public class MessageTemplateEntity {
     private JobPositionDao jobPositionDao;
     @Autowired
     private HrWxTemplateMessageDao hrWxTemplateMessageDao;
+    @Autowired
+    private HrWxNoticeMessageDao hrWxNoticeMessageDao;
 
     @Autowired
     private CampaignRecomPositionlistDao campaignRecomPositionlistDao;
@@ -182,7 +185,7 @@ public class MessageTemplateEntity {
         }
         MessageTplDataCol first=new MessageTplDataCol();
         first.setColor("#173177");
-        HrWxTemplateMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.FANS_PROFILE_COMPLETION);
+        HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.FANS_PROFILE_COMPLETION);
         if(record !=null&&StringUtils.isNotNullOrEmpty(record.getFirst())){
             first.setValue(record.getFirst());
         }else{
@@ -219,7 +222,7 @@ public class MessageTemplateEntity {
             jobName = this.getJobName(userId,companyId,0);
             MessageTplDataCol first=new MessageTplDataCol();
             first.setColor("#173177");
-            HrWxTemplateMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.FANS_RECOM_POSITION);
+            HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.FANS_RECOM_POSITION);
             if(record !=null&&StringUtils.isNotNullOrEmpty(record.getFirst())){
                 first.setValue(record.getFirst());
             }else {
@@ -239,7 +242,7 @@ public class MessageTemplateEntity {
             jobName = this.getJobName(userId,companyId,1);
             MessageTplDataCol first=new MessageTplDataCol();
             first.setColor("#173177");
-            HrWxTemplateMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.EMPLOYEE_RECOM_POSITION);
+            HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.EMPLOYEE_RECOM_POSITION);
             if(record !=null&&StringUtils.isNotNullOrEmpty(record.getFirst())){
                 first.setValue(record.getFirst());
             }else {
@@ -284,7 +287,7 @@ public class MessageTemplateEntity {
         }
         MessageTplDataCol first=new MessageTplDataCol();
         first.setColor("#173177");
-        HrWxTemplateMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.EMPLOYEE_PROFILE_COMPLETION);
+        HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.EMPLOYEE_PROFILE_COMPLETION);
         if(record !=null&&StringUtils.isNotNullOrEmpty(record.getFirst())){
             first.setValue(record.getFirst());
         }else {
@@ -506,9 +509,9 @@ public class MessageTemplateEntity {
         return campaignRecomPositionlist.getId();
     }
 
-    private HrWxTemplateMessageRecord getHrWxTemplateMessage(int wechatId,int tempId){
-        Query query=new Query.QueryBuilder().where("sys_template_id",tempId).and("wechat_id",wechatId).buildQuery();
-        HrWxTemplateMessageRecord record=hrWxTemplateMessageDao.getRecord(query);
+    private HrWxNoticeMessageRecord getHrWxTemplateMessage(int wechatId, int tempId){
+        Query query=new Query.QueryBuilder().where("notice_id",tempId).and("wechat_id",wechatId).buildQuery();
+        HrWxNoticeMessageRecord record=hrWxNoticeMessageDao.getRecord(query);
         return record;
     }
 
