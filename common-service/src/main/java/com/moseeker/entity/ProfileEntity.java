@@ -105,7 +105,9 @@ public class ProfileEntity {
         HttpResponse response = httpclient.execute(httpPost);
         // 处理返回结果
         String resCont = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
+        logger.info("==============================");
         logger.info(resCont);
+        logger.info("==============================");
         // 参考博客：http://loveljy119.iteye.com/blog/2366623  反序列化的ASM代码问题：https://github.com/alibaba/fastjson/issues/383
         ParserConfig.getGlobalInstance().setAsmEnable(false);
         ResumeObj res = JSONObject.parseObject(resCont, ResumeObj.class);

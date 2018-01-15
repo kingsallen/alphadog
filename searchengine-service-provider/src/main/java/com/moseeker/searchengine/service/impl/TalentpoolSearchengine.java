@@ -49,7 +49,7 @@ public class TalentpoolSearchengine {
             Map<String, Object> aggInfo = new HashMap<>();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
-            this.handlerAggs(params, builder, client, aggInfo);
+//            this.handlerAggs(params, builder, client, aggInfo);
             this.handlerSortOrder(params, builder);
             this.handlerPage(params, builder);
             this.handlerReturn(params, builder);
@@ -57,14 +57,14 @@ public class TalentpoolSearchengine {
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleData(response, "users");
-            if (aggInfo != null && !aggInfo.isEmpty()) {
-                result.put("aggs", aggInfo.get("aggs"));
-            }
-            String progressStatus = params.get("progress_status");
-            if(StringUtils.isNotNullOrEmpty(progressStatus)){
-                Map<String,Object> aggMap=getAggInfo(params);
-                result.put("aggs", aggMap.get("aggs"));
-            }
+//            if (aggInfo != null && !aggInfo.isEmpty()) {
+//                result.put("aggs", aggInfo.get("aggs"));
+//            }
+//            String progressStatus = params.get("progress_status");
+//            if(StringUtils.isNotNullOrEmpty(progressStatus)){
+//                Map<String,Object> aggMap=getAggInfo(params);
+//                result.put("aggs", aggMap.get("aggs"));
+//            }
             return result;
         } catch (Exception e) {
             logger.info(e.getMessage()+"=================");
@@ -97,6 +97,7 @@ public class TalentpoolSearchengine {
                     .addAggregation(this.handleIsViewedCountAgg(params))
                     .addAggregation(this.handleNotViewedCountAgg(params));
             builder.setSize(0);
+            logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleAggData(response);
             return result;

@@ -130,7 +130,7 @@ public class SearchengineServiceImpl implements Iface {
 	@Override
 	public Response userAggInfo(Map<String, String> params) throws TException {
 		try{
-			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
+			Map<String,Object> res=talentpoolSearchengine.getAggInfo(params);
 			if(res==null||res.isEmpty()){
 				return ResponseUtils.success("");
 			}

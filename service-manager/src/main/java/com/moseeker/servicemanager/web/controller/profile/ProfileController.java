@@ -526,10 +526,23 @@ public class ProfileController {
     public String talentUploadParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request,
                                      HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseequestParameter(request);
-            int companyId=params.getInt("company_id");
-            String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);;
-            Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,companyId);
+            Map<String, Object> params = ParamUtils.parseequestParameter(request);
+            logger.info(JSON.toJSONString(params));
+            logger.info("***************************");
+            for(String key:params.keySet()){
+                logger.info((String)params.get(key));
+            }
+            logger.info("***************************");
+
+            String  companyId=(String)params.get("company_id");
+            logger.info("company_id========"+companyId);
+            logger.info("***************************");
+            String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
+            logger.info("***************************");
+            logger.info(data);
+            logger.info("***************************");
+            logger.info("data filename========"+file.getOriginalFilename());
+            Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
