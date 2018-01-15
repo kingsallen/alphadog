@@ -491,7 +491,8 @@ public class ProfileController {
         try {
 
             Params<String, Object> params = ParamUtils.parseequestParameter(request);
-            int companyId=params.getInt("company_id");
+            List<Integer> companyIdList=(List<Integer>)params.get("company_id");
+            int companyId=companyIdList.get(0);
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);;
             Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,companyId);
             return ResponseLogNotification.success(request, res);
