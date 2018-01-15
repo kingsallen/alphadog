@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -57,7 +58,7 @@ public class TalentPoolEntity {
     private TalentpoolTagDao talentpoolTagDao;
     @Autowired
     private TalentpoolUserTagDao talentpoolUserTagDao;
-    @Autowired
+    @Resource(name = "cacheClient")
     private RedisClient client;
     @Autowired
     private TalentpoolUploadDao talentpoolUploadDao;
