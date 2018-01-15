@@ -946,7 +946,7 @@ public class ProfileService {
     /*
      人才库简历上传
      */
-    public Response talentpoolUploadParse(String fileData,String fileName,int companyId) throws TException, IOException {
+    public Response talentpoolUploadParse(String fileName,String fileData,int companyId) throws TException, IOException {
         Map<String,Object> result=new HashMap<>();
         ResumeObj resumeObj = profileEntity.profileParser(fileName, fileData);
         logger.debug("==============**********************");
