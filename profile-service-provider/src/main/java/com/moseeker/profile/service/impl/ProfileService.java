@@ -962,6 +962,6 @@ public class ProfileService {
         }else{
             ResponseUtils.fail(1,"解析失败");
         }
-        return ResponseUtils.success(result);
+        return ResponseUtils.successWithoutStringify(result.toString());
     }
 }
