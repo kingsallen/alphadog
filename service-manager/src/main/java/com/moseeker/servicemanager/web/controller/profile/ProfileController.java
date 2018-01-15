@@ -491,10 +491,10 @@ public class ProfileController {
         try {
 
             Params<String, Object> params = ParamUtils.parseequestParameter(request);
-            List<Integer> companyIdList=(List<Integer>)params.get("company_id");
-            int companyId=companyIdList.get(0);
+            List<String> companyIdList=(List<String>)params.get("company_id");
+            String companyId=companyIdList.get(0);
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);;
-            Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,companyId);
+            Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
