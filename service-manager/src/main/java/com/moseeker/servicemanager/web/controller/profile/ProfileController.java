@@ -501,7 +501,10 @@ public class ProfileController {
             logger.info("company_id========"+companyId);
             logger.info("***************************");
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
-            logger.info("data========"+data);
+            logger.info("***************************");
+            logger.info(data);
+            logger.info("***************************");
+            logger.info("data filename========"+file.getOriginalFilename());
             Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
