@@ -125,11 +125,11 @@ public class ProfileBS {
                 logger.info("ProfileBS retrieveProfile profile exist");
                 Response improveProfile = wholeProfileService.improveProfile(JSON.toJSONString(resume));
                 if (improveProfile.getStatus() == 0) {
-                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
-                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
-                        Response response = applicationService.postApplication(application);
-                        return response;
-                    }
+//                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
+//                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
+                    Response response = applicationService.postApplication(application);
+//                        return response;
+//                    }
                     return ResultMessage.SUCCESS.toResponse(new JSONObject());
                 } else {
                     return improveProfile;
@@ -138,11 +138,9 @@ public class ProfileBS {
                 logger.info("ProfileBS retrieveProfile profile not exist");
                 //如果不存在profile，进行profile创建
                 Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
+                logger.info("ProfileBS retrieveProfile response:{}",response);
                 if (response.getStatus() == 0) {
-                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
-                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
-                        applicationService.postApplication(application);
-                    }
+                    applicationService.postApplication(application);
                     return ResultMessage.SUCCESS.toResponse(new JSONObject());
                 } else {
                     return response;
@@ -172,10 +170,10 @@ public class ProfileBS {
                     // 判断来源
                     int origin = ApplicationSource.channelToOrigin(channel);
                     JobApplication application = initApplication(userId, positionId, position.getCompany_id(), origin);
-                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
-                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
-                        applicationService.postApplication(application);
-                    }
+//                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
+//                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
+                    applicationService.postApplication(application);
+//                    }
                     return ResultMessage.SUCCESS.toResponse(new JSONObject());
                 } else {
                     return response;

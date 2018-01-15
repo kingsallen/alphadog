@@ -97,6 +97,7 @@ public class TalentpoolSearchengine {
                     .addAggregation(this.handleIsViewedCountAgg(params))
                     .addAggregation(this.handleNotViewedCountAgg(params));
             builder.setSize(0);
+            logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleAggData(response);
             return result;
@@ -411,7 +412,7 @@ public class TalentpoolSearchengine {
             return null;
         }
         StringBuffer sb=new StringBuffer();
-        sb.append("origin=0;upload=_source.user.upload;profiles=_source.user.profiles;if(profiles)" +
+        sb.append("origin=0;if(_source.user){upload=_source.user.upload;profiles=_source.user.profiles;if(profiles)" +
                 "{profile=profiles.profile;if(profile){origin=profile.origin}};for ( val in _source.user.applications) {if(");
 
         if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
@@ -466,7 +467,7 @@ public class TalentpoolSearchengine {
         }
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
-        sb.append("){return true}}");
+        sb.append("){return true}}}");
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         return script;
     }

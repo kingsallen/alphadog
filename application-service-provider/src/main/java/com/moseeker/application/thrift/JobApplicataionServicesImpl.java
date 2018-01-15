@@ -1,21 +1,20 @@
 package com.moseeker.application.thrift;
 
-import com.alibaba.fastjson.JSON;
-import java.util.Map;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.moseeker.application.service.impl.JobApplicataionService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices.Iface;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 申请服务实现类
@@ -38,9 +37,10 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response postApplication(JobApplication jobApplication){
     	try{
-    		Response response = service.postApplication(jobApplication);
-            return response;
-    	}catch(Exception e){
+    		return service.postApplication(jobApplication);
+    	} catch (CommonException e) {
+    	    return new Response(e.getCode(), e.getMessage());
+        } catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     	}
@@ -56,7 +56,9 @@ public class JobApplicataionServicesImpl implements Iface {
     public Response putApplication(JobApplication jobApplication){
     	try{
     		return service.putApplication(jobApplication);
-    	}catch(Exception e){
+    	} catch (CommonException e) {
+            return new Response(e.getCode(), e.getMessage());
+        } catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     	}
@@ -71,7 +73,9 @@ public class JobApplicataionServicesImpl implements Iface {
     public Response deleteApplication(long applicationId){
     	try{
     		return service.deleteApplication(applicationId);
-    	}catch(Exception e){
+    	} catch (CommonException e) {
+            return new Response(e.getCode(), e.getMessage());
+        } catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_ARCHIVE_FAILED);
     	}
@@ -87,7 +91,9 @@ public class JobApplicataionServicesImpl implements Iface {
     public Response postJobResumeOther(JobResumeOther jobResumeOther) throws TException {
     	try{
     		return service.postJobResumeOther(jobResumeOther);
-    	}catch(Exception e){
+    	} catch (CommonException e) {
+            return new Response(e.getCode(), e.getMessage());
+        }  catch(Exception e){
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     	}
@@ -113,8 +119,8 @@ public class JobApplicataionServicesImpl implements Iface {
      * @param userId    用户id
      * @param companyId 公司id
      */
-    public Response validateUserApplicationCheckCountAtCompany(long userId, long companyId) {
-        return service.validateUserApplicationCheckCountAtCompany(userId, companyId);
+    public Response validateUserApplicationCheckCountAtCompany(long userId, long companyId, long positionId) {
+        return service.validateUserApplicationCheckCountAtCompany(userId, companyId, positionId);
     }
 
     @Override
@@ -149,9 +155,11 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response postApplicationIfNotApply(JobApplication application) throws TException {
     	try{
-            Response response = service.postApplicationIfNotApply(application);
-            return response;
-    	}catch(Exception e){
+    		return service.postApplication(application);
+    	}  catch (CommonException e) {
+            return new Response(e.getCode(), e.getMessage());
+        } catch(Exception e){
+
     		logger.error(e.getMessage(),e);
     		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     	}

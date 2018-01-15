@@ -31,4 +31,16 @@ public class ExceptionUtils {
             return new BIZException(1, "发生异常，请稍候再试!");
         }
     }
+
+    public static CommonException convertToCommonException(Throwable e) {
+        if (e instanceof CommonException) {
+            return (CommonException) e;
+        } else if (e instanceof BIZException ) {
+            return new CommonException(((BIZException)e).getCode(), e.getMessage());
+        } else if (e instanceof TException) {
+            return CommonException.PROGRAM_EXCEPTION;
+        } else {
+            return CommonException.NODATA_EXCEPTION;
+        }
+    }
 }
