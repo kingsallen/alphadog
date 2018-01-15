@@ -949,9 +949,9 @@ public class ProfileService {
     public Response talentpoolUploadParse(String fileData,String fileName,int companyId) throws TException, IOException {
         Map<String,Object> result=new HashMap<>();
         ResumeObj resumeObj = profileEntity.profileParser(fileName, fileData);
-        logger.error("==============**********************");
-        logger.error(JSON.toJSONString(resumeObj));
-        logger.error("==============**********************");
+        logger.debug("==============**********************");
+        logger.debug(JSON.toJSONString(resumeObj));
+        logger.debug("==============**********************");
         result.put("resumeObj",resumeObj);
         if(resumeObj.getStatus().getCode() == 200){
             String phone=resumeObj.getResult().getPhone();
