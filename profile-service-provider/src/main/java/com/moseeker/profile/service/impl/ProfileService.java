@@ -733,7 +733,9 @@ public class ProfileService {
             logger.info("profileParser resumeObj.getResult().getBirthday():{}", resumeObj.getResult().getBirthday());
             Basic basic = new Basic();
             basic.setCityName(resumeObj.getResult().getCity());
-            basic.setGender(String.valueOf(DictCode.gender(resumeObj.getResult().getGender())));
+            if(StringUtils.isNotNullOrEmpty(resumeObj.getResult().getGender())){
+                basic.setGender(String.valueOf(DictCode.gender(resumeObj.getResult().getGender())));
+            }
             basic.setName(resumeObj.getResult().getName());
             basic.setSelfIntroduction(resumeObj.getResult().getCont_my_desc());
             if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getBirthday())) {
