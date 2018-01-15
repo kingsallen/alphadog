@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.exception.CommonException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -201,6 +202,9 @@ public class ParamUtils {
         Map<String, Object> param = new HashMap<>();
 
         Map<String, String[]> reqParams = request.getParameterMap();
+        logger.info("=============================");
+        logger.info(JSON.toJSONString(reqParams));
+        logger.info("=============================");
         if (reqParams != null) {
             for (Entry<String, String[]> entry : reqParams.entrySet()) {
                 if (entry.getValue() != null && entry.getValue().length > 1) {

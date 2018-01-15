@@ -489,6 +489,7 @@ public class ProfileController {
     @ResponseBody
     public String talentUploadParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         try {
+
             Params<String, Object> params = ParamUtils.parseequestParameter(request);
             int companyId=params.getInt("company_id");
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);;
