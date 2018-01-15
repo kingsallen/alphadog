@@ -490,7 +490,7 @@ public class ProfileController {
     public String talentUploadParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         try {
 
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
             String companyId=(String)params.get("company_id");
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);;
             Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,Integer.parseInt(companyId));
