@@ -110,10 +110,10 @@ public class PositionController {
             query.setPage_from(Integer.valueOf((String) map.getOrDefault("page_from", "0")));
             query.setPage_size(Integer.valueOf((String) map.getOrDefault("page_size", "10")));
 
-            query.setKeywords((String) map.getOrDefault("keywords", ""));
-            query.setCities((String) map.getOrDefault("cities", ""));
-            query.setIndustries((String) map.getOrDefault("industries", ""));
-            query.setOccupations((String) map.getOrDefault("occupations", ""));
+            query.setKeywords(StringUtils.filterStringForSearch((String) map.getOrDefault("keywords", "")));
+            query.setCities(StringUtils.filterStringForSearch((String) map.getOrDefault("cities", "")));
+            query.setIndustries(StringUtils.filterStringForSearch((String) map.getOrDefault("industries", "")));
+            query.setOccupations(StringUtils.filterStringForSearch((String) map.getOrDefault("occupations", "")));
             query.setScale((String) map.getOrDefault("scale", ""));
             query.setCandidate_source((String) map.getOrDefault("candidate_source", ""));
             query.setEmployment_type((String) map.getOrDefault("employment_type", ""));
