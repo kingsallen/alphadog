@@ -54,13 +54,12 @@ public class UserThirdPartyController {
             // GET方法 通用参数解析并赋值
             CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
             logger.info(query.toString());
-//            Response result = service.getResources(query);
+            Response result = service.get(query);
 
-//            return ResponseLogNotification.success(request, result);
+            return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
-        return "";
     }
 }
