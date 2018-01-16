@@ -320,8 +320,12 @@ public class StringUtils {
             if(value.contains("\\")){
                 value=value.toLowerCase().replaceAll("\\\\","");
             }
+            if(StringUtils.isNotNullOrEmpty(value)){
+                value=value.trim();
+            }
         }
         return value;
     }
+
 
 }
