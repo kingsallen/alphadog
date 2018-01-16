@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.userdb.ThirdPartyUserDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StructSerializer;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -40,7 +41,7 @@ public class ThirdPartyUserService {
     public Response get(Query query) throws TException {
         try {
             List<UserThirdpartyUserDO> list=thirdPartyUserDao.getDatas(query);
-            return ResponseUtils.success(list);
+            return ResponseUtils.successWithoutStringify(StructSerializer.toString(list));
         } catch (Exception e) {
             logger.error("getResources error", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
