@@ -34,7 +34,8 @@ public class GenerateDoc {
                 .append(paramDescribe(method))
                 .append(rootDescribe())
                 .append(result(method))
-                .append(resultParam(method));
+                .append(resultParam(method))
+                .append(exception(method));
             i++;
         }
         System.out.print(docBuilder.end());
@@ -199,6 +200,18 @@ public class GenerateDoc {
         return builder.end();
     }
 
+    private String exception(Method method){
+        Class<?>[] exceptions=method.getExceptionTypes();
+        if(exceptions==null || exceptions.length==0){
+            return "";
+        }
+        return DocBuilder.newInstance()
+                .append("##### 抛出异常:")
+                .append(exceptions[0].getSimpleName())
+                .emptyLine()
+                .append(ParamBuilder.EXCEPTION_MSG_TITLE).end();
+    }
+
     private String getThrift(Class clazz,Type type){
         if(clazz==null) return "";
 
@@ -299,7 +312,7 @@ public class GenerateDoc {
 //            return clazz.getSimpleName()+"&lt;"+getGenericTypeSimpleName(fc)+"&gt;";
         }
 
-        return clazz.getName();
+        return clazz.getSimpleName();
     }
 
 
@@ -315,11 +328,10 @@ public class GenerateDoc {
             for(Type type:pt.getActualTypeArguments()) {
                 if(type instanceof  ParameterizedType){
                     ParameterizedType pType=(ParameterizedType)type;
-                    if(pType.getRawType() instanceof Map){
-
+                    if(pType.getRawType() instanceof Class){
+                        genericTypes.add((Class)pType.getRawType());
                     }
-                }
-                if (type instanceof Class) {
+                }else if (type instanceof Class) {
                     Class genericClazz = (Class) type; //【4】 得到泛型里的class类型对象。
                     genericTypes.add(genericClazz);
                 }
@@ -329,27 +341,55 @@ public class GenerateDoc {
         return new ArrayList<>();
     }
     private String getGenericTypeSimpleName(Class clazz,Type type){
-        List<Class> clazzes=getGenericType(type);
+        if(type instanceof ParameterizedType) // 【3】如果是泛型参数的类型
+        {
+            ParameterizedType pt = (ParameterizedType) type;
+
+            List<Class> genericTypes=new ArrayList<>();
+
+            StringBuilder str=new StringBuilder(clazz.getSimpleName()+"\\<");
+            for(Type innerType:pt.getActualTypeArguments()) {
+                if(innerType instanceof ParameterizedType){
+                    ParameterizedType innerPt=(ParameterizedType)innerType;
+                    if(innerPt.getRawType() instanceof Class) {
+                        Class rawType=(Class)innerPt.getRawType();
+                        if (isCollection(rawType)){
+                            str.append(getGenericTypeSimpleName(rawType,innerPt)).append(",");
+                        }
+                    }
+                }else if(innerType instanceof Class){
+                    Class innerTypeClass=(Class)innerType;
+                    str.append(innerTypeClass.getSimpleName()).append(",");
+                }
+            }
+            str.append("\\>");
+            if(str.lastIndexOf(",")>0){
+                str.deleteCharAt(str.lastIndexOf(","));
+            }
+            return str.toString();
+        }
+
+
+        /*List<Class> clazzes=getGenericType(type);
         if(!StringUtils.isEmptyList(clazzes)){
             StringBuilder builder=new StringBuilder();
             clazzes.forEach(c->{
                 if(isCollection(c)){
                     builder.append(getGenericTypeSimpleName(c,c.getGenericSuperclass()));
                 }else {
-                    builder.append(clazz.getSimpleName()+"\\<," + c.getSimpleName()+"\\>");
+                    builder.append(clazz.getSimpleName()+"\\<" + c.getSimpleName()+",\\>");
                 }
             });
-            builder.delete(0,1);
 
             return builder.toString();
-        }
+        }*/
         return "";
     }
 
     @Test
     public void test2() throws NoSuchFieldException {
         Field field=UserEmployeeVO.class.getField("customFieldValues");
-        getGenericTypeSimpleName(field.getType(),field.getGenericType());
+        System.out.println(getGenericTypeSimpleName(field.getType(),field.getGenericType()));
     }
 
 
@@ -391,6 +431,8 @@ public class GenerateDoc {
 
         private final static String RESULT_TITLE;
 
+        private final static String EXCEPTION_MSG_TITLE;
+
         static {
             StringBuilder builder=new StringBuilder();
             TITLE=builder
@@ -403,6 +445,12 @@ public class GenerateDoc {
                     .append("| 参数 | 类型 | 说明 |")
                     .append("\r\n")
                     .append("|---|---|---|")
+                    .toString();
+            builder=new StringBuilder();
+            EXCEPTION_MSG_TITLE=builder
+                    .append("| code | 说明 |")
+                    .append("\r\n")
+                    .append("|---|---|")
                     .toString();
         }
 
