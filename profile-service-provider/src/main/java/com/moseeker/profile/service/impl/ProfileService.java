@@ -631,6 +631,15 @@ public class ProfileService {
                 user.setUid(String.valueOf(uid));
                 user.setName(userUser.getName());
                 profileObj.setUser(user);
+            }else{
+                User user = new User();
+                user.setEmail(resumeObj.getResult().getEmail());
+                user.setMobile(resumeObj.getResult().getPhone());
+                if(uid!=0){
+                    user.setUid(String.valueOf(uid));
+                }
+                user.setName(resumeObj.getResult().getName());
+                profileObj.setUser(user);
             }
             logger.info("profileParser getUser:{}", JSON.toJSONString(profileObj.getUser()));
 
@@ -960,7 +969,10 @@ public class ProfileService {
             int userId=0;
             if(StringUtils.isNotNullOrEmpty(phone)){
                 UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(phone,companyId);
-                userId=userRecord.getId();
+                if(userRecord!=null){
+                    userId=userRecord.getId();
+                }
+
             }
             ProfileObj profileObj=handlerParseData(resumeObj,userId,fileName);
             logger.info("==============**********************");
