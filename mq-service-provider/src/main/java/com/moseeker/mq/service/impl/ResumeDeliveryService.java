@@ -155,9 +155,9 @@ public class ResumeDeliveryService {
             HrWxTemplateMessageDO templateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
                     hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable","0").buildQuery());
 
-            //向推荐者和HR发送的模板
+            //向推荐者
             HrWxTemplateMessageDO templateMessageDOForRecom = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                    hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_NEW_RESUME_TPL).and("disable","0").buildQuery());
+                    hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_SWITCH_NEW_RESUME_TPL).and("disable","0").buildQuery());
 
             HrWxTemplateMessageDO templateMessageDOForHr = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
                     hrWxWechatDO.getId()).and("sys_template_id", Constant.TEMPLATES_NEW_RESUME_TPL).and("disable","0").buildQuery());
@@ -249,7 +249,7 @@ public class ResumeDeliveryService {
             if(userWxDO == null) return response;
             //获取企业号消息模板发送开关
             wxNoticeMessageDO = wxNoticeMessageDao.getDatas(new Query.QueryBuilder().where("wechat_id",
-                    hrChatDO.getId()).and("notice_id", Constant.TEMPLATES_SWITCH_APPLY_NOTICE_TPL).and("status", "1").buildQuery());
+                    hrChatDO.getId()).and("notice_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("status", "1").buildQuery());
             boolean send_applier = true;
             if(wxNoticeMessageDO == null || wxNoticeMessageDO.size()==0)
                 send_applier = false;
@@ -420,6 +420,7 @@ public class ResumeDeliveryService {
                                             String workExp, String lastWorkName) {
         Response response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
+
         if(hrWxUserDo != null && templateMessageDO != null){
             String link ="";
             response = msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDO, userUserDO, workExp, lastWorkName , hrWxUserDo.getOpenid(), url, link);
