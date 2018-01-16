@@ -1283,7 +1283,13 @@ public class PositionService {
         if(StringUtils.isEmptyList(pids)){
             return null;
         }
+        int count=this.getCampaignRecomPositionlistByIdAndCompanyTypeCount(recomPushId,companyId,type);
         List<WechatPositionListData> result=this.getWxPosition(pids);
+        if(!StringUtils.isEmptyList(result)){
+            for(WechatPositionListData position:result){
+                position.setTotalNum(count);
+            }
+        }
         return result;
     }
     /*
@@ -1308,6 +1314,16 @@ public class PositionService {
                 .buildQuery();
         CampaignRecomPositionlistRecord data=campaignRecomPositionlistDao.getRecord(query);
         return data;
+    }
+    /*
+   获取推送的数据记录
+  */
+    private int getCampaignRecomPositionlistByIdAndCompanyTypeCount(int recomPushId,int companyId,int type){
+        Query query=new Query.QueryBuilder().where("id",recomPushId).and("company_id",companyId)
+                .and("type",(byte)type)
+                .buildQuery();
+        int count=campaignRecomPositionlistDao.getCount(query);
+        return count;
     }
     /*
      将String转化为list
@@ -1614,7 +1630,7 @@ public class PositionService {
 
         // filter 出已经发完红包的职位
         jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
-
+        int totalNum=this.getRpPositionCount(hbConfigId);
         // 拼装职位信息
         for (JobPositionRecord jr : jobRecords) {
             WechatRpPositionListData e = new WechatRpPositionListData();
@@ -1630,7 +1646,7 @@ public class PositionService {
             e.setCity(jr.getCity());
             e.setCandidate_source(jr.getCandidateSource());
             e.setRequirement(jr.getRequirement());
-
+            e.setTotalNum(totalNum);
             result.add(e);
         }
 
@@ -1657,6 +1673,16 @@ public class PositionService {
             }
         });
         return result;
+    }
+    /*
+     获取所有的红包职位数量
+     */
+    private int getRpPositionCount(int hbConfigId){
+        Query qu = new Query.QueryBuilder()
+                .where("hb_config_id", hbConfigId)
+                .buildQuery();
+        int count=hrHbPositionBindingDao.getCount(qu);
+        return count;
     }
 
     private List<DictAlipaycampusJobcategoryRecord> getAllDictAlipaycampusJobcategory() {
@@ -1705,7 +1731,6 @@ public class PositionService {
         positionForAlipaycampusPojo.setSource_id(positionRecord.getId().toString());
         positionForAlipaycampusPojo.setJob_name(positionRecord.getTitle());
         positionForAlipaycampusPojo.setJob_desc(PositionUtil.convertDescription(positionRecord.getAccountabilities(), positionRecord.getRequirement()));
-
 
         // 职业分类
         List<DictAlipaycampusJobcategoryRecord> allDictAlipaycampusJobcategory = this.getAllDictAlipaycampusJobcategory();
