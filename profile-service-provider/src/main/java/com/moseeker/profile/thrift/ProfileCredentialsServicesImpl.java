@@ -1,7 +1,9 @@
 package com.moseeker.profile.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.profile.service.impl.ProfileCredentialsService;
@@ -74,7 +76,9 @@ public class ProfileCredentialsServicesImpl implements Iface {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
+            if (e instanceof CommonException) {
+                ExceptionConvertUtil.convertCommonException((CommonException)e);
+            } else if (e instanceof BIZException) {
                 return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
             }
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -112,7 +116,9 @@ public class ProfileCredentialsServicesImpl implements Iface {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
+            if (e instanceof CommonException) {
+                ExceptionConvertUtil.convertCommonException((CommonException)e);
+            } else if (e instanceof BIZException) {
                 return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
             }
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -128,6 +134,8 @@ public class ProfileCredentialsServicesImpl implements Iface {
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
             }
+        } catch (CommonException e) {
+            return ResponseUtils.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
