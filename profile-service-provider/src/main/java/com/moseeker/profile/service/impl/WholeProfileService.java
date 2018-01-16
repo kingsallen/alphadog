@@ -1069,7 +1069,7 @@ public class WholeProfileService {
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         String mobile = ((String) map.get("mobile"));
         if(StringUtils.isNullOrEmpty(mobile)){
-            return ResponseUtils.success(params);
+            return ResponseUtils.fail(1,"手机号不能为空");
         }
         UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
         if(userRecord==null){
