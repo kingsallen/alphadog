@@ -291,6 +291,7 @@ public class StringUtils {
             return strName;
         }
     }
+
     /**
      * 去掉字符串的特殊字符
      * @param
@@ -319,11 +320,18 @@ public class StringUtils {
             if(value.contains("\\")){
                 value=value.toLowerCase().replaceAll("\\\\","");
             }
+            if(value.contains("（")){
+                value=value.toLowerCase().replaceAll("（","");
+            }
+            if(value.contains("）")){
+                value=value.toLowerCase().replaceAll("）","");
+            }
+            if(StringUtils.isNotNullOrEmpty(value)){
+                value=value.trim();
+            }
         }
         return value;
     }
 
-    public static void main(String[] args) {
-        System.out.println(StringUtils.filterStringForSearch("平安综合金融诚聘保险业务经理/主管"));
-    }
+
 }
