@@ -87,4 +87,33 @@ public class PositionServiceTest {
     	cities.add(city);
     	service.cityCode(cities,1909944);
 	}*/
+
+    @Test
+	public void testCitys(){
+    	List<City> list=new ArrayList<>();
+    	City city=new City();
+    	city.setType("text");
+    	city.setValue("");
+    	list.add(city);
+
+		city=new City();
+		city.setType("text");
+		list.add(city);
+
+		city=new City();
+		city.setType("text");
+		city.setValue("");
+		list.add(city);
+
+    	city=new City();
+		city.setType("text");
+		city.setValue("北京");
+		list.add(city);
+
+		city=new City();
+		city.setType("text");
+		city.setValue("北京");
+		list.add(city);
+//    	System.out.println(service.citys(list));
+	}
 }
