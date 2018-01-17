@@ -534,13 +534,13 @@ public class ProfileController {
     @ResponseBody
     public String saveProfile(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            String profile=params.getString("profile");
-            int hrId=params.getInt("hr_id");
-            int userId=params.getInt("user_id");
-            int companyId=params.getInt("company_id");
-            String fileName=params.getString("file_name");
-            Response res = profileService.preserveProfile(profile,hrId,companyId,fileName,userId);
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String,Object> profile= (Map<String, Object>) params.get("profile");
+            int hrId=(int)params.get("hr_id");
+            int userId=(int)params.get("user_id");
+            int companyId=(int)params.get("company_id");
+            String fileName=(String)params.get("file_name");
+            Response res = profileService.preserveProfile(JSON.toJSONString(profile),hrId,companyId,fileName,userId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
