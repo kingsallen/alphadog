@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.position.service.third.ThirdPositionService;
+import com.moseeker.thrift.gen.position.struct.City;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionInfoForm;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionResult;
 import org.junit.Test;
@@ -75,4 +76,33 @@ public class PositionServiceTest {
 
         System.out.println(JSON.toJSONString(result));
     }
+
+    @Test
+	public void testCitys(){
+    	List<City> list=new ArrayList<>();
+    	City city=new City();
+    	city.setType("text");
+    	city.setValue("");
+    	list.add(city);
+
+		city=new City();
+		city.setType("text");
+		list.add(city);
+
+		city=new City();
+		city.setType("text");
+		city.setValue("");
+		list.add(city);
+
+    	city=new City();
+		city.setType("text");
+		city.setValue("北京");
+		list.add(city);
+
+		city=new City();
+		city.setType("text");
+		city.setValue("北京");
+		list.add(city);
+//    	System.out.println(service.citys(list));
+	}
 }
