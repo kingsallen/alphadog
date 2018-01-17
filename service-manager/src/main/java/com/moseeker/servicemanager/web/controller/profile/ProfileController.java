@@ -518,10 +518,10 @@ public class ProfileController {
     @ResponseBody
     public String profileCombine(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            String profile=params.getString("profile");
-            int companyId=params.getInt("company_id");
-            Response res = profileService.combinationProfile(profile,companyId);
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String,Object> profile= (Map<String, Object>) params.get("profile");
+            int companyId=(int)params.get("company_id");
+            Response res = profileService.combinationProfile(JSON.toJSONString(profile),companyId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
