@@ -749,7 +749,7 @@ public class TalentPoolEntity {
         }
         if(this.isHrtalent(newuserId,hrId)==0){
             Set<Integer> userSet=new HashSet<>();
-            userSet.add(userId);
+            userSet.add(newuserId);
             this.addTalents(userSet,hrId,companyId);
             if(StringUtils.isNotNullOrEmpty(fileName)){
                 this.saveUploadProfileName(fileName,hrId,companyId);
