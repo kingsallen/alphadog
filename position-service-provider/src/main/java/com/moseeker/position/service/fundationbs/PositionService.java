@@ -252,11 +252,13 @@ public class PositionService {
                         jobOccupationDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobOccupationId()).buildQuery());
                 if (jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
                     jobPositionPojo.occupation = jobOccupationRecord.getName();
+                    jobPositionPojo.search_data.occupation=jobOccupationRecord.getName();
                 }
             }
         } else{
                    jobPositionPojo.custom = "";
                    jobPositionPojo.occupation = "";
+                   jobPositionPojo.search_data.occupation="";
     }
 
     // 修改更新时间
