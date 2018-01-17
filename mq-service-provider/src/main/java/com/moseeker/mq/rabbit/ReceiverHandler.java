@@ -50,9 +50,6 @@ public class ReceiverHandler {
     private PersonaRecomEntity personaRecomEntity;
 
 
-
-
-
     @RabbitListener(queues = "#{addAwardQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void addAwardHandler(Message message, Channel channel) {
