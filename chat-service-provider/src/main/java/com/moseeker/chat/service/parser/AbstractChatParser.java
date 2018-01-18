@@ -29,13 +29,10 @@ public abstract class AbstractChatParser implements ChatParser{
 
         String content=chatDO.getContent();
 
-        JSONObject jsonContent=null;
+        JSONObject jsonContent=JSONObject.parseObject(content);
 
-        if(content.startsWith("{") && content.endsWith("}")){
-            jsonContent=JSONObject.parseObject(content);
-        }else{
-            jsonContent=new JSONObject();
-            jsonContent.put("content",content);
+        if(jsonContent==null){
+            return chatDO;
         }
 
         jsonContent.put(fieldName(),field);
@@ -57,6 +54,11 @@ public abstract class AbstractChatParser implements ChatParser{
         }
 
         JSONObject jsonContent= JSON.parseObject(content);
+
+        if(jsonContent==null){
+            return vo;
+        }
+
 
         Object field=jsonContent.get(fieldName());
 
