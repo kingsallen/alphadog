@@ -2,6 +2,8 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.config.HRAccountActivationType;
+import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -46,9 +48,7 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
-import com.moseeker.useraccounts.constant.HRAccountActivationType;
 import com.moseeker.useraccounts.constant.HRAccountStatus;
-import com.moseeker.useraccounts.constant.HRAccountType;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
@@ -216,7 +216,7 @@ public class UserHrAccountService {
             userHrAccountRecord.setDisable(HRAccountStatus.Enabled.getStatus());
         }
         if (userHrAccountRecord.getActivation() == null) {
-            userHrAccountRecord.setActivation((byte)HRAccountActivationType.Actived.getValue());
+            userHrAccountRecord.setActivation((byte) HRAccountActivationType.Actived.getValue());
         }
         Timestamp now = new Timestamp(System.currentTimeMillis());
         userHrAccountRecord.setCreateTime(now);

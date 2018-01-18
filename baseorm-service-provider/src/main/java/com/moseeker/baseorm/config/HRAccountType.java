@@ -1,4 +1,7 @@
-package com.moseeker.useraccounts.constant;
+package com.moseeker.baseorm.config;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by jack on 15/11/2017.
@@ -12,6 +15,13 @@ public enum HRAccountType {
         this.name = name;
     }
 
+    private static Map<Integer, HRAccountType> storage = new HashMap<>();
+    static {
+        for (HRAccountType hrAccountType : HRAccountType.values()) {
+            storage.put(hrAccountType.getType(), hrAccountType);
+        }
+    }
+
     private int type;
     private String name;
 
@@ -21,5 +31,9 @@ public enum HRAccountType {
 
     public String getName() {
         return name;
+    }
+
+    public static HRAccountType initFromType(Integer accountType) {
+        return storage.get(accountType);
     }
 }
