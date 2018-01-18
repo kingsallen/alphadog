@@ -1072,11 +1072,11 @@ public class WholeProfileService {
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         String mobile = ((String) map.get("mobile"));
         if(StringUtils.isNullOrEmpty(mobile)){
-            return ResponseUtils.success(params);
+            return ResponseUtils.success(resume);
         }
         UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
         if(userRecord==null){
-            return ResponseUtils.success(params);
+            return ResponseUtils.success(resume);
         }
 
         ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
@@ -1283,4 +1283,16 @@ public class WholeProfileService {
         return otherRecord;
     }
 
+    @CounterIface
+    public Response validateUpLoadHr(int companyId,int hrId,int userId){
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            return ResponseUtils.fail(1,"该hr不属于该公司");
+        }
+        int result=talentPoolEntity.ValidateUploadProfileIsHr(userId,companyId,hrId);
+        if(result==0){
+            return ResponseUtils.success(false);
+        }
+        return  ResponseUtils.success(true);
+    }
 }

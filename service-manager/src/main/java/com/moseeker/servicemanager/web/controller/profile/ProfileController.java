@@ -555,10 +555,10 @@ public class ProfileController {
     @ResponseBody
     public String profileCombine(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseequestParameter(request);
-            String profile=params.getString("profile");
-            int companyId=params.getInt("company_id");
-            Response res = profileService.combinationProfile(profile,companyId);
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String,Object> profile= (Map<String, Object>) params.get("profile");
+            int companyId=(int)params.get("company_id");
+            Response res = profileService.combinationProfile(JSON.toJSONString(profile),companyId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -571,13 +571,39 @@ public class ProfileController {
     @ResponseBody
     public String saveProfile(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseequestParameter(request);
-            String profile=params.getString("profile");
-            int hrId=params.getInt("hr_id");
-            int userId=params.getInt("user_id");
-            int companyId=params.getInt("company_id");
-            String fileName=params.getString("file_name");
-            Response res = profileService.preserveProfile(profile,hrId,companyId,fileName,userId);
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String,Object> profile= (Map<String, Object>) params.get("profile");
+            int hrId=(int)params.get("hr_id");
+            int userId=(int)params.get("user_id");
+            int companyId=(int)params.get("company_id");
+            String fileName=(String)params.get("file_name");
+            Response res = profileService.preserveProfile(JSON.toJSONString(profile),hrId,companyId,fileName,userId);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/profile/upload/validate", method = RequestMethod.GET)
+    @ResponseBody
+    public String ValidateUploadHr(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=(String)params.get("hr_id");
+            String userId=(String)params.get("user_id");
+            String companyId=(String)params.get("company_id");
+            if("0".equals(hrId)||StringUtils.isNullOrEmpty(hrId)){
+                return ResponseLogNotification.fail(request, "hr_id不能为0或者为空");
+            }
+            if("0".equals(userId)||StringUtils.isNullOrEmpty(userId)){
+                return ResponseLogNotification.fail(request, "userId不能为0或者为空");
+            }
+            if("0".equals(companyId)||StringUtils.isNullOrEmpty(companyId)){
+                return ResponseLogNotification.fail(request, "companyId不能为0或者为空");
+            }
+            Response res = profileService.validateHrAndUploaduser(Integer.parseInt(hrId),Integer.parseInt(companyId),Integer.parseInt(userId));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));

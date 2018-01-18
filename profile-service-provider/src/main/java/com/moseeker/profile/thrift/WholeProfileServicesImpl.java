@@ -139,5 +139,17 @@ public class WholeProfileServicesImpl implements Iface {
         }
     }
 
+    @Override
+    public Response validateHrAndUploaduser(int hrId, int companyId, int userId) throws BIZException, TException {
+        try {
+            return service.validateUpLoadHr(companyId,hrId,userId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
 
 }

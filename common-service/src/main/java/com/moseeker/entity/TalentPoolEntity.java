@@ -774,9 +774,12 @@ public class TalentPoolEntity {
         }
         if(this.isHrtalent(newuserId,hrId)==0){
             Set<Integer> userSet=new HashSet<>();
-            userSet.add(userId);
+            userSet.add(newuserId);
             this.addTalents(userSet,hrId,companyId);
-            this.saveUploadProfileName(fileName,hrId,companyId);
+            if(StringUtils.isNotNullOrEmpty(fileName)){
+                this.saveUploadProfileName(fileName,hrId,companyId);
+            }
+
         }
     }
     /*
@@ -889,6 +892,21 @@ public class TalentPoolEntity {
         }
         UserUserRecord userRecord=handleTalentAndUser(record,list);
         return userRecord;
+    }
+
+    /*
+     获取这份上传简历是否属于这个hr
+
+     */
+    public int ValidateUploadProfileIsHr(int userId,int companyId,int hrId){
+        List<Integer> userIdList=new ArrayList<>();
+        userIdList.add(userId);
+        TalentpoolTalentRecord record=this.getTalentByUserIdAndCompanyUpload(userIdList,companyId);
+        if(record==null){
+            return 0;
+        }
+        int result=isHrtalent(userId,hrId);
+        return result;
     }
     /*
      获取所有的手机号相同的人才库上传的简历
@@ -1220,6 +1238,16 @@ public class TalentPoolEntity {
     private List<TalentpoolHrTalentRecord> getHrPublicTalent(int hrId){
         Query query=new Query.QueryBuilder().where("hr_id",hrId).and("public",1).buildQuery();
         List<TalentpoolHrTalentRecord> list=talentpoolHrTalentDao.getRecords(query);
+        return list;
+    }
+
+    /*
+     获取人才
+    */
+    public List<Map<String,Object>> getTalentpoolHrTalentById(int hrId, int userId){
+        Query query=new Query.QueryBuilder().where("user_id",userId)
+                .and("hr_id",hrId).buildQuery();
+        List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);
         return list;
     }
 }

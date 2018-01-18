@@ -28,6 +28,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.pojo.TwoParam;
+import com.moseeker.baseorm.pojo.SearchData;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -259,11 +260,17 @@ public class PositionService {
                         jobOccupationDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobOccupationId()).buildQuery());
                 if (jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
                     jobPositionPojo.occupation = jobOccupationRecord.getName();
+                    SearchData searchData=new SearchData();
+                    searchData.occupation=jobOccupationRecord.getName();
+                    jobPositionPojo.search_data=searchData;
                 }
             }
         } else{
                    jobPositionPojo.custom = "";
                    jobPositionPojo.occupation = "";
+                   SearchData searchData=new SearchData();
+                   searchData.occupation="";
+                   jobPositionPojo.search_data=searchData;
     }
 
     // 修改更新时间

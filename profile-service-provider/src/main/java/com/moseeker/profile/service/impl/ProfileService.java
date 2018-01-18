@@ -981,6 +981,15 @@ public class ProfileService {
                 user.setUid(String.valueOf(uid));
                 user.setName(userUser.getName());
                 profileObj.setUser(user);
+            }else{
+                User user = new User();
+                user.setEmail(resumeObj.getResult().getEmail());
+                user.setMobile(resumeObj.getResult().getPhone());
+                if(uid!=0){
+                    user.setUid(String.valueOf(uid));
+                }
+                user.setName(resumeObj.getResult().getName());
+                profileObj.setUser(user);
             }
             logger.info("profileParser getUser:{}", JSON.toJSONString(profileObj.getUser()));
 
@@ -1083,7 +1092,9 @@ public class ProfileService {
             logger.info("profileParser resumeObj.getResult().getBirthday():{}", resumeObj.getResult().getBirthday());
             Basic basic = new Basic();
             basic.setCityName(resumeObj.getResult().getCity());
-            basic.setGender(String.valueOf(DictCode.gender(resumeObj.getResult().getGender())));
+            if(StringUtils.isNotNullOrEmpty(resumeObj.getResult().getGender())){
+                basic.setGender(String.valueOf(DictCode.gender(resumeObj.getResult().getGender())));
+            }
             basic.setName(resumeObj.getResult().getName());
             basic.setSelfIntroduction(resumeObj.getResult().getCont_my_desc());
             if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getBirthday())) {
@@ -1309,7 +1320,10 @@ public class ProfileService {
             int userId=0;
             if(StringUtils.isNotNullOrEmpty(phone)){
                 UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(phone,companyId);
-                userId=userRecord.getId();
+                if(userRecord!=null){
+                    userId=userRecord.getId();
+                }
+
             }
             ProfileObj profileObj=handlerParseData(resumeObj,userId,fileName);
             logger.info("==============**********************");
