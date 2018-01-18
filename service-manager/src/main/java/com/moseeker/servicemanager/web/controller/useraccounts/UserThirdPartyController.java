@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -53,9 +54,10 @@ public class UserThirdPartyController {
         try {
             // GET方法 通用参数解析并赋值
             CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
-            logger.info(query.toString());
+            logger.info("user thirdparty query:"+query.toString());
             Response result = service.get(query);
 
+            logger.info("user thirdparty result: {}", JSON.toJSONString(result));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.info(e.getMessage(),e);
