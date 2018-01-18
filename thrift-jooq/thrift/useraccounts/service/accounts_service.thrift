@@ -202,7 +202,8 @@ service UserCenterService {
 service ThirdPartyUserService {
     //更新账号
     common_struct.Response updateUser(1: useraccounts_struct.ThirdPartyUser user);
-
+    //获取账号
+    common_struct.Response get(1:common_struct.CommonQuery query);
 }
 
 //UserEmployeeDao数据库单表操作
