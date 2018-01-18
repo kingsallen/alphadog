@@ -137,7 +137,7 @@ public class ResumeDeliveryService {
 
             //投递者关注的微信公众号
             HrWxWechatDO hrChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where("company_id",
-                    companyDO.getId()).and("authorized",1).buildQuery());
+                    companyDO.getId()).buildQuery());
             if(hrChatDO == null) return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 
             //关注的微信公众号
