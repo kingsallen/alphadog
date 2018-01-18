@@ -117,9 +117,6 @@ public class PositionBS {
         logger.info("write back to thirdpartyposition:{}",writeBackThirdPartyPositionList);
         hRThirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
 
-        //回写薪资到MoSeeker职位表
-        positionSyncHandler.writeBackJobPositionField(moseekerPosition,positionsForSynchronizations);
-
         return ResultMessage.SUCCESS.toResponse(results);
     }
 
