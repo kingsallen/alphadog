@@ -14,7 +14,9 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.ResultMessage;
 import com.moseeker.position.pojo.PositionSyncResultPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
+import com.moseeker.position.service.position.base.PositionFactory;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
+import com.moseeker.position.service.position.base.sync.PositionSyncVerifyHandler;
 import com.moseeker.position.service.position.base.sync.TransferCheckUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.position.utils.PositionSyncHandler;
@@ -62,6 +64,8 @@ public class PositionBS {
     private TransferCheckUtil transferCheckUtil;
     @Autowired
     private PositionEmailNotification emailNotification;
+    @Autowired
+    private PositionFactory positionFactory;
 
 
     /**
@@ -218,6 +222,20 @@ public class PositionBS {
 
         positionSyncHandler.removeRedis(moseekerJobPosition.getId());
         return results;
+    }
+
+    public Response syncVerifyInfo(String jsonParam){
+        JSONObject jsonObject=JSON.parseObject(jsonParam);
+        int channel=jsonObject.getIntValue("channel");
+
+
+        ChannelType channelType=ChannelType.instaceFromInteger(channel);
+
+        PositionSyncVerifyHandler verifyHandler=positionFactory.getVerifyHandlerInstance(channelType);
+
+        verifyHandler.syncVerifyInfo(jsonParam);
+
+        return null;
     }
 
 
