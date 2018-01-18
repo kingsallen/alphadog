@@ -1280,4 +1280,16 @@ public class WholeProfileService {
         return otherRecord;
     }
 
+    @CounterIface
+    public Response validateUpLoadHr(int companyId,int hrId,int userId){
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            return ResponseUtils.fail(1,"该hr不属于该公司");
+        }
+        int result=talentPoolEntity.ValidateUploadProfileIsHr(userId,companyId,hrId);
+        if(result==0){
+            return ResponseUtils.success(false);
+        }
+        return  ResponseUtils.success(true);
+    }
 }

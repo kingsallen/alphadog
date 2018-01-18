@@ -549,5 +549,31 @@ public class ProfileController {
         }
     }
 
+    @RequestMapping(value = "/api/profile/upload/validate", method = RequestMethod.GET)
+    @ResponseBody
+    public String ValidateUploadHr(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=(String)params.get("hr_id");
+            String userId=(String)params.get("user_id");
+            String companyId=(String)params.get("company_id");
+            if("0".equals(hrId)||StringUtils.isNullOrEmpty(hrId)){
+                return ResponseLogNotification.fail(request, "hr_id不能为0或者为空");
+            }
+            if("0".equals(userId)||StringUtils.isNullOrEmpty(userId)){
+                return ResponseLogNotification.fail(request, "userId不能为0或者为空");
+            }
+            if("0".equals(companyId)||StringUtils.isNullOrEmpty(companyId)){
+                return ResponseLogNotification.fail(request, "companyId不能为0或者为空");
+            }
+            Response res = profileService.validateHrAndUploaduser(Integer.parseInt(hrId),Integer.parseInt(companyId),Integer.parseInt(userId));
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 
 }
