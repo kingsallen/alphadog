@@ -2,12 +2,9 @@ package com.moseeker.application.domain.component.state;
 
 import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.pojo.Application;
-import com.moseeker.application.domain.pojo.ApplicationStatePojo;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 投递申请，申请的初始状态

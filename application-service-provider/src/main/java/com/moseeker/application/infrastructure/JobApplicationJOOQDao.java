@@ -2,15 +2,14 @@ package com.moseeker.application.infrastructure;
 
 import com.moseeker.application.domain.constant.ApplicationViewStatus;
 import com.moseeker.application.domain.pojo.Application;
-import com.moseeker.application.domain.pojo.ApplicationStatePojo;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.common.constants.AbleFlag;
-import org.jooq.*;
+import org.jooq.Configuration;
+import org.jooq.Record2;
+import org.jooq.Result;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.using;
 
