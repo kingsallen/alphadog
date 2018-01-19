@@ -224,10 +224,9 @@ public class PositionBS {
         return results;
     }
 
-    public Response syncVerifyInfo(String jsonParam){
+    public Response syncVerifyInfo(String jsonParam) throws BIZException {
         JSONObject jsonObject=JSON.parseObject(jsonParam);
         int channel=jsonObject.getIntValue("channel");
-
 
         ChannelType channelType=ChannelType.instaceFromInteger(channel);
 
@@ -235,7 +234,7 @@ public class PositionBS {
 
         verifyHandler.syncVerifyInfo(jsonParam);
 
-        return null;
+        return ResultMessage.SUCCESS.toResponse("");
     }
 
 

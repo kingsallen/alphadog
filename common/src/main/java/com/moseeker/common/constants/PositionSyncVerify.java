@@ -5,6 +5,8 @@ public class PositionSyncVerify {
 
     public static final String MOBILE_VERIFY_ROUTING_KEY="request";
 
+    public static final String MOBILE_VERIFY_RESPONSE_ROUTING_KEY="{}_response";
+
     public static final String MOBILE_VERIFY_QUEUE="mobile_verify_queue";
 
 }
