@@ -140,6 +140,10 @@ public class HRThirdPartyPositionDao  {
         return daoFactory.thirdPartyPositionDao(thirdPartyPositionDO.getChannel()).getData(thirdPartyPositionDO);
     }
 
+    public HrThirdPartyPositionDO getSimpleData(Query query){
+        return thirdPartyPositionDao.getData(query);
+    }
+
     public List<HrThirdPartyPositionDO> getSimpleDatas(Query query){
         return thirdPartyPositionDao.getDatas(query);
     }
