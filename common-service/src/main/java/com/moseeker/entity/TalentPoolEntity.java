@@ -750,7 +750,7 @@ public class TalentPoolEntity {
         if(this.isHrtalent(newuserId,hrId)==0){
             Set<Integer> userSet=new HashSet<>();
             userSet.add(newuserId);
-            this.addTalents(userSet,hrId,companyId);
+            this.addTalents(userSet,hrId,companyId,1);
             if(StringUtils.isNotNullOrEmpty(fileName)){
                 this.saveUploadProfileName(fileName,hrId,companyId);
             }
@@ -770,7 +770,7 @@ public class TalentPoolEntity {
     /*
      添加人才
      */
-    public void addTalents(Set<Integer> idList,int hrId,int companyId){
+    public void addTalents(Set<Integer> idList,int hrId,int companyId,int flag){
         if(!StringUtils.isEmptySet(idList)){
             List<TalentpoolHrTalentRecord> recordList=new ArrayList<>();
             for(Integer id:idList){
@@ -781,7 +781,7 @@ public class TalentPoolEntity {
             }
             talentpoolHrTalentDao.addAllRecord(recordList);
             for(Integer id:idList){
-                this.handlerTalentpoolTalent(id,companyId,0,0,1);
+                this.handlerTalentpoolTalent(id,companyId,flag,0,1);
             }
             this.realTimeUpdate(this.converSetToList(idList));
         }
