@@ -61,14 +61,32 @@ ServiceManager为了让用户更方便地开发功能，对获取RPC服务做了
 在命令行启动项目：
 
 1. 安装[zookeeper](https://zookeeper.apache.org/)最新版本
-2. `git clone http://git.moseeker.com/git/zhaozh/alphadog.git`
-3. run zookeeper
-	* `zkServer.sh start some_conf_file`
-4. run a service-provider
-	* `cd path/oo-service-provider`
-	* `gradle build`
-	* `java -jar ./build/libs/xxx.jar`
-5. run the "client"
+2. 安装[redis集群](https://redis.io/)
+3. 下载alphadog项目`git clone http://git.moseeker.com/git/zhaozh/alphadog.git`
+4. 运行依赖服务
+    * 启动zookeeper服务 `zkServer.sh start some_conf_file`
+    * 启动redis集群
+    * 启动数据库
+5. 修改服务配置
+    * /src/main/resources/common.properties
+        * redis.{通配符}.host reids 集群地址-IP地址
+        * redis.{通配符}.port reids 集群地址-端口号
+        * redis.elk.host log4j日志（不必要）
+        * rabbitmq. rebbitmq地址（部分服务需要）
+        *  mycat. 数据库配置
+    * /src/main/resources/es.properties （部分服务需要）
+        * es elasticsearch服务地址 
+    * service.properties 
+        * zookeeper.ZKIP zokeeper IP 地址
+        * zookeeper.ZKport zokeeper 端口号
+    * log4j.properties
+        * log4j.appender.D.File 文件日志输出地址  
+6. 运行一个服务
+	* cd 到一个具体的服务下, 比如alpahdog/profile-service-provider。
+	* 依次执行 `gradle clean` `gradle build -x test --parallel`
+	* cd 到打包的目标目录，比如 build/libs，找到声称好的jar包，执行: `java -jar ./build/libs/xxx.jar`
+	* 也可以在IDE中，直接run /src/main/java/{root package}/{service}Server.java，比如profile-service-provider服务中，com.moseeker.profile.ProfileServer.java 直接执行main方法。
+7. run the "client"
 	* `cd service-manager`
 	* `gradle jetty run`
 

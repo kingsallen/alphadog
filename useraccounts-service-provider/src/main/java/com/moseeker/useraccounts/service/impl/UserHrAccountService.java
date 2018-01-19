@@ -224,7 +224,7 @@ public class UserHrAccountService {
         userHrAccountRecord.setLastLoginTime(now);
         userHrAccountRecord.setDownloadToken(null);
         userHrAccountRecord.setLastLoginIp(null);
-        if (org.apache.commons.lang.StringUtils.isNotBlank(userHrAccountRecord.getPassword())) {
+        if (userHrAccountRecord.getPassword() == null) {
             userHrAccountRecord.setPassword("");
         }
 
@@ -566,38 +566,14 @@ public class UserHrAccountService {
         logger.info("UserHrAccountService - getSearchCondition ");
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("hr_account_id", String.valueOf(hrAccountId)).and("type", String.valueOf(type));
-        List<SearchCondition> list;
-        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> list;
         try {
-            list = hrSearchConditionDao.getDatas(query.buildQuery(), SearchCondition.class);
-            logger.info("UserHrAccountService - getSearchCondition  list:{}", list);
-            list.forEach(sc -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("id", sc.getId());
-                map.put("name", org.apache.commons.lang.StringUtils.defaultString(sc.getName()));
-                map.put("publisher", sc.getPublisher());
-                map.put("position_id", sc.getPosition_id());
-                map.put("keyword", org.apache.commons.lang.StringUtils.defaultString(sc.getKeyword()));
-                map.put("submit_time", org.apache.commons.lang.StringUtils.defaultString(sc.getSubmit_time()));
-                map.put("work_years", sc.getWork_years());
-                map.put("city_name", org.apache.commons.lang.StringUtils.defaultString(sc.getCity_name()));
-                map.put("degree", org.apache.commons.lang.StringUtils.defaultString(sc.getDegree()));
-                map.put("past_position", org.apache.commons.lang.StringUtils.defaultString(sc.getPast_position()));
-                map.put("in_last_job_search_position", sc.getIn_last_job_search_position());
-                map.put("min_age", sc.getMin_age());
-                map.put("max_age", sc.getMax_age());
-                map.put("intention_city_name", org.apache.commons.lang.StringUtils.defaultString(sc.getIntention_city_name()));
-                map.put("sex", sc.getSex());
-                map.put("intention_salary_code", org.apache.commons.lang.StringUtils.defaultString(sc.getIntention_salary_code()));
-                map.put("company_name", org.apache.commons.lang.StringUtils.defaultString(sc.getCompany_name()));
-                map.put("in_last_job_search_company", sc.getIn_last_job_search_company());
-                map.put("hr_account_id", sc.getHr_account_id());
-                map.put("update_time", sc.getUpdate_time());
-                map.put("type", sc.getType());
-                result.add(map);
-            });
-            logger.info("UserHrAccountService - getSearchCondition  result:{}", result);
-            return ResponseUtils.success(result);
+            list = hrSearchConditionDao.getMaps(query.buildQuery());
+            logger.info("UserHrAccountService - getSearchCondition  result:{}", list);
+            if(StringUtils.isEmptyList(list)){
+                return ResponseUtils.success("");
+            }
+            return ResponseUtils.success(list);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             logger.info("UserHrAccountService - getSearchCondition  error:{}", e);
@@ -626,9 +602,18 @@ public class UserHrAccountService {
             row = hrSearchConditionDao.getCount(query.buildQuery());
             if (row > 0) {
                 logger.warn("保存常用筛选失败，筛选项名称={}，已存在", searchCondition.getName());
-                return ResponseUtils.fail("{'status':42004,'message':'保存失败，改筛选项名称已存在'}");
+                return ResponseUtils.fail("{'status':42004,'message':'保存失败，该筛选项名称已存在'}");
             }
-            int primaryKey = hrSearchConditionDao.addRecord(BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class)).getId();
+            HrSearchConditionRecord record=BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class);
+
+            if(record.getIsPublic()==0){
+                record.setIsPublic(null);
+            }
+            if(record.getIsRecommend()==0){
+                record.setIsRecommend(null);
+            }
+
+            int primaryKey = hrSearchConditionDao.addRecord(record).getId();
             if (primaryKey > 0) {
                 return ResponseUtils.success(primaryKey);
             } else {

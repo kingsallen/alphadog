@@ -17,6 +17,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.mq.service.MqService;
@@ -150,6 +151,14 @@ public abstract class EmployeeBinder {
             employeeDao.updateData(useremployee);
             employeeId = useremployee.getId();
         }
+        if (useremployee.getSysuserId() > 0
+                && org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCname())) {
+            UserUserDO userUserDO = new UserUserDO();
+            userUserDO.setId(useremployee.getSysuserId());
+            userUserDO.setName(useremployee.getCname());
+            userDao.updateData(userUserDO);
+        }
+
         //将属于本公司的潜在候选人设置为无效
         cancelCandidate(useremployee.getSysuserId(),useremployee.getCompanyId());
         // 将其他公司的员工认证记录设为未认证

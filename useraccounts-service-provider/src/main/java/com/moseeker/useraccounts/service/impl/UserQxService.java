@@ -1,11 +1,13 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserCollectPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserSearchConditionDao;
 import com.moseeker.baseorm.dao.userdb.UserViewedPositionDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -18,6 +20,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 
+import com.moseeker.useraccounts.constant.WechatAuthorized;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -52,6 +55,9 @@ public class UserQxService {
 
     @Autowired
     private JobPositionDao jobPositionDao;
+
+    @Autowired
+    private HrWxWechatDao wechatDao;
 
     /**
      * 用户获取筛选条件列表
@@ -205,7 +211,23 @@ public class UserQxService {
                 List<Integer> positionIds = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
                 query.clear();
                 query.where(Condition.buildCommonCondition("id", positionIds, ValueOp.IN));
-                Map<Integer, JobPositionDO> positions = jobPositionDao.getPositions(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
+                List<JobPositionDO> positionDOList = jobPositionDao.getPositions(query.buildQuery());
+                Map<Integer, JobPositionDO> positions = positionDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
+
+                //查找职位所属公司的公众号
+                Set<Integer> companyIdList = positionDOList.stream().map(jobPositionDO -> jobPositionDO.getCompanyId()).collect(Collectors.toSet());
+                Query.QueryBuilder findWechatQuery = new Query.QueryBuilder();
+                findWechatQuery.select(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName())
+                        .select(HrWxWechat.HR_WX_WECHAT.ID.getName())
+                        .select(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName())
+                        .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN))
+                        .and(HrWxWechat.HR_WX_WECHAT.AUTHORIZED.getName(), WechatAuthorized.AUTHORIZED.getValue());
+                Map<Integer, String> signatureMap = wechatDao.getDatas(
+                        findWechatQuery.buildQuery()).stream()
+                        .collect(Collectors.toMap(k -> k.getCompanyId(), v -> v.getSignature(),
+                                (companyId1, companyId2) -> companyId1));
+
+
                 List<CollectPositionForm> positionFormList = new ArrayList<>();
                 collectPositions.stream().filter(f -> positions.containsKey(f.getPositionId())).forEach(r -> {
                     CollectPositionForm form = new CollectPositionForm();
@@ -219,6 +241,9 @@ public class UserQxService {
                     form.setSalary_bottom(NumberUtils.toInt(positionDO.getSalaryBottom() + "", 0));
                     form.setUpdate_time(positionDO.getUpdateTime());
                     form.setStatus((byte) positionDO.getStatus());
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(signatureMap.get(positionDO.getCompanyId()))) {
+                        form.setSignature(signatureMap.get(positionDO.getCompanyId()));
+                    }
                     positionFormList.add(form);
                 });
                 result.setUserCollectPosition(positionFormList);

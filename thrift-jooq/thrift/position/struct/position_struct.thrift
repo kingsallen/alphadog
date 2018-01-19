@@ -100,7 +100,11 @@ struct WechatPositionListData {
     14: optional bool is_new,
     15: optional string city,
     16: optional i32 priority,
-    17: optional i32 publisher
+    17: optional i32 publisher,
+    18: optional string accountabilities,
+    19: optional i32 totalNum,
+    20: optional i32 candidate_source,
+    21: optional string requirement
 }
 
 // 微信端职位列表的附加红包信息
@@ -128,7 +132,10 @@ struct WechatRpPositionListData {
     14: optional bool is_new
     15: optional i32 remain,
     16: optional bool employee_only,
-    17: optional string city
+    17: optional string city,
+    18: optional i32 candidate_source,
+    19: optional string requirement,
+    20: optional i32 totalNum
 }
 
 // 微信端获取红包分享信息

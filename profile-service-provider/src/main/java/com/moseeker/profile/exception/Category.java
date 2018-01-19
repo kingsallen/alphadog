@@ -13,7 +13,6 @@ public enum Category {
     PROFILE_USER_NOTEXIST(31014,"用户信息不正确！"),
     PROFILE_ALLREADY_EXIST(31015,"个人profile已存在！"),
     PROFILE_ILLEGAL(31016,"profile数据不正确！"),
-    PROFILE_POSITION_NOTEXIST(31017,"职位信息不正确！"),
     PROFILE_DICT_NATIONALITY_NOTEXIST(31018,"国家字典不存在！"),
     PROFILE_DATA_NULL(31019,"数据不存在！"),
     PROFILE_DICT_COLLEGE_NOTEXIST(30020,"院校字典不存在！"),
