@@ -12,6 +12,8 @@ struct HrWxHrChatDO {
 	6: optional i8 status,	//状态，0：有效，1：无效
 	7: optional string createTime,	//创建时间
 	8: optional i8 origin,   // 来源 0 用户输入， 1 系统自动生成：欢迎语， 2 AI输入
-	9: optional string msg_type     // 消息类型
+	9: optional string msgType,     // 消息类型
+	10:optional string picUrl,      //照片Url
+	11:optional string btnContent   //控件内容
 
 }
