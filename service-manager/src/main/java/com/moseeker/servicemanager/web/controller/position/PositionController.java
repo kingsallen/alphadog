@@ -360,6 +360,7 @@ public class PositionController {
 
     /**
      * 根据 pids (List<Integer>) 获取职位的红包附加信息
+     * 根据 pids (List<Integer>)
      *
      * @param request  request
      * @param response response

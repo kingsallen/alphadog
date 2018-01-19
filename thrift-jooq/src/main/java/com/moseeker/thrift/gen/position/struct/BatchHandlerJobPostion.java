@@ -20,7 +20,7 @@ public class BatchHandlerJobPostion implements org.apache.thrift.TBase<BatchHand
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new BatchHandlerJobPostionStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new BatchHandlerJobPostionTupleSchemeFactory();
 
-  public int appid; // required
+  public int appid; // requirelist
   public java.util.List<JobPostrionObj> data; // required
   public java.lang.String fields_nooverwrite; // required
   public boolean nodelete; // required

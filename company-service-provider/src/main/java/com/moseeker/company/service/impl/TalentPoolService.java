@@ -112,7 +112,7 @@ public class TalentPoolService {
         List<Map<String,Object>> talentList=talentPoolEntity.getTalentpoolHrTalentByIdList(hrId,applierIdList);
         Set<Integer> unApplierIdList=talentPoolEntity.getIdListByTalentpoolHrTalentList(talentList);
         Set<Integer> idList=talentPoolEntity.filterIdList(applierIdList,unApplierIdList);
-        talentPoolEntity.addTalents(idList,hrId,companyId);
+        talentPoolEntity.addTalents(idList,hrId,companyId,0);
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
         if(result==null||result.isEmpty()){
             return  ResponseUtils.success("");
