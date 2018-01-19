@@ -55,7 +55,12 @@ public class ChatServiceTest {
         chatVO.setBtnContent(JSON.parseArray("[{\"content\":\"是\"},{\"content\":\"否\"}]",BtnContent.class)); // optional
         chatVO.setRoomId(1); // optional
         chatVO.setPositionId(7);
+
+        JSON.toJSONString(chatVO);
+
         chatService.saveChat(chatVO);
+
+
 
         ChatsVO chatsVO=chatService.listChatLogs(1,1,10);
         System.out.println(JSON.toJSONString(chatsVO));

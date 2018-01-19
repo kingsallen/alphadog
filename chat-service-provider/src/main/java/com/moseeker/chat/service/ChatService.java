@@ -265,7 +265,7 @@ public class ChatService {
 
                     chatVO.setMsgType(chatDO.getMsgType());
                     chatVO.setPicUrl(chatDO.getPicUrl());
-                    if(StringUtils.isNullOrEmpty(chatDO.getBtnContent())) {
+                    if(!StringUtils.isNullOrEmpty(chatDO.getBtnContent())) {
                         chatVO.setBtnContent(JSON.parseArray(chatDO.getBtnContent(), BtnContent.class));
                     }
 
