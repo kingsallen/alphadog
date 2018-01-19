@@ -1301,7 +1301,7 @@ public class WholeProfileService {
     @CounterIface
     public Response getProfileUpload(int userId) throws Exception {
         Response res=this.getResource(userId,0,null);
-        if(res.getStatus()==0&&StringUtils.isNullOrEmpty(res.getData())){
+        if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
             String result=res.getData();
             Map<String,Object> resume=JSON.parseObject(result);
             Map<String,Object> userMap=this.getUserUserMap(userId);
