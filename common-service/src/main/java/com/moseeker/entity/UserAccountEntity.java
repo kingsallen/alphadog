@@ -126,7 +126,7 @@ public class UserAccountEntity {
      根据id获取useruserRecord
      */
     public UserUserRecord getUserRecordbyId(int userId){
-        Query query=new Query.QueryBuilder().where("id",userId).and("disable",1).buildQuery();
+        Query query=new Query.QueryBuilder().where("id",userId).and("is_disable",0).buildQuery();
         UserUserRecord userRecord=userDao.getRecord(query);
         return userRecord;
     }
