@@ -1165,8 +1165,10 @@ public class WholeProfileService {
         if (profileDB != null) {
             ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
             int profileId = profileDB.getId().intValue();
+            ProfileProfileRecord profileProfileRecord=profilePojo.getProfileRecord();
+
             profileEntity.improveUser(userRecord);
-            profileEntity.upsertProfileProfile(profilePojo.getProfileRecord(), profileId);
+            profileEntity.upsertProfileProfile(profileProfileRecord, profileId);
             profileEntity.upsertProfileBasic(profilePojo.getBasicRecord(), profileId);
             profileEntity.improveAttachment(profilePojo.getAttachmentRecords(), profileId);
             profileEntity.improveAwards(profilePojo.getAwardsRecords(), profileId);
@@ -1301,7 +1303,7 @@ public class WholeProfileService {
     @CounterIface
     public Response getProfileUpload(int userId) throws Exception {
         Response res=this.getResource(userId,0,null);
-        if(res.getStatus()==0&&StringUtils.isNullOrEmpty(res.getData())){
+        if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
             String result=res.getData();
             Map<String,Object> resume=JSON.parseObject(result);
             Map<String,Object> userMap=this.getUserUserMap(userId);
