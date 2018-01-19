@@ -59,8 +59,6 @@ public class TalentPoolService {
     private TalentpoolApplicationDao talentpoolApplicationDao;
     @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
-    @Resource(name = "cacheClient")
-
     @Autowired
     private ValidateTalent validateTalent;
     @Autowired
