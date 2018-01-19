@@ -1136,7 +1136,7 @@ public class WholeProfileService {
     private int saveNewProfile(Map<String, Object> resume,Map<String, Object> map) throws TException {
         UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
         logger.info("talentpool upload new  user:{}", user1);
-        user1.setSource((byte) UserSource.RETRIEVE_PROFILE.getValue());
+        user1.setSource((byte) UserSource.TALENT_UPLOAD.getValue());
         int userId = useraccountsServices.createRetrieveProfileUser(user1);
         logger.info("talentpool userId:{}", userId);
         if (userId > 0) {
@@ -1296,5 +1296,56 @@ public class WholeProfileService {
             return ResponseUtils.success(false);
         }
         return  ResponseUtils.success(true);
+    }
+
+    @CounterIface
+    public Response getProfileUpload(int userId) throws Exception {
+        Response res=this.getResource(userId,0,null);
+        if(res.getStatus()==0&&StringUtils.isNullOrEmpty(res.getData())){
+            String result=res.getData();
+            Map<String,Object> resume=JSON.parseObject(result);
+            Map<String,Object> userMap=this.getUserUserMap(userId);
+            resume.put("user",userMap);
+            resume.put("workexps",this.addCompanyMap((List<Map<String,Object>>)resume.get("workexps")));
+            return ResponseUtils.success(resume);
+
+        }
+        return res;
+
+    }
+    /*
+     获取个人信息
+     */
+    private Map<String,Object> getUserUserMap(int userId){
+        Query query=new Query.QueryBuilder().where("id",userId).and("is_disable",0).and("source",UserSource.TALENT_UPLOAD).buildQuery();
+        Map<String,Object>  result=userDao.getMap(query);
+        return result;
+    }
+    /*
+     处理公司信息
+     */
+    private List<Map<String,Object>> addCompanyMap(List<Map<String,Object>> workExp){
+        if(StringUtils.isEmptyList(workExp)){
+            return null;
+        }
+        for(Map<String,Object> map:workExp){
+            Map<String,Object> company=new HashMap<>();
+            if(map.get("company_property")!=null){
+                company.put("company_property",map.get("company_property"));
+            }
+            if(map.get("company_industry")!=null){
+                company.put("company_industry",map.get("company_property"));
+            }
+            if(map.get("company_scale")!=null){
+                company.put("company_scale",map.get("company_scale"));
+            }
+            if(map.get("company_name")!=null){
+                company.put("company_name",map.get("company_name"));
+            }
+            map.put("company",company);
+
+        }
+
+        return workExp;
     }
 }

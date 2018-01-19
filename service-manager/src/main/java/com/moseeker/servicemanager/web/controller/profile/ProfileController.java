@@ -574,6 +574,22 @@ public class ProfileController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+    @RequestMapping(value = "/profile/upload", method = RequestMethod.GET)
+    @ResponseBody
+    public String getUploadprofile(HttpServletRequest request, HttpServletResponse response) {
+        // PrintWriter writer = null;
+        try {
+            // GET方法 通用参数解析并赋值
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Response result = profileService.getUploadProfile(Integer.parseInt(String.valueOf(params.get("user_id"))));
 
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
 
 }
