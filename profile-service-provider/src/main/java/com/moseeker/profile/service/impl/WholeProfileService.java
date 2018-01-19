@@ -53,6 +53,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -571,9 +572,6 @@ public class WholeProfileService {
         if (profileDB != null) {
             ((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
             ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
-            logger.info("========================================");
-            logger.info(profilePojo.toString());
-            logger.info("========================================");
             int profileId = profileDB.getId().intValue();
             profileEntity.improveUser(userRecord);
             profileEntity.improveProfile(profilePojo.getProfileRecord(), profileDB);
@@ -1072,11 +1070,25 @@ public class WholeProfileService {
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         String mobile = ((String) map.get("mobile"));
         if(StringUtils.isNullOrEmpty(mobile)){
-            return ResponseUtils.success(resume);
+            logger.info("===========================================");
+            logger.info(JSON.toJSONString(resume));
+            logger.info("===========================================");
+
+            logger.info("++++++++++++++++++++++++++++++++++++++++++++");
+            logger.info(JSON.toJSONString(StringUtils.underscoreNameMap(resume)));
+            logger.info("++++++++++++++++++++++++++++++++++++++++++++");
+            return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
         UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
         if(userRecord==null){
-            return ResponseUtils.success(resume);
+            logger.info("===========================================");
+            logger.info(JSON.toJSONString(resume));
+            logger.info("===========================================");
+
+            logger.info("++++++++++++++++++++++++++++++++++++++++++++");
+            logger.info(JSON.toJSONString(StringUtils.underscoreNameMap(resume)));
+            logger.info("++++++++++++++++++++++++++++++++++++++++++++");
+            return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
 
         ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
@@ -1090,10 +1102,20 @@ public class WholeProfileService {
             ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
             int profileId = profileDB.getId().intValue();
             profilePojo= this.combinationProfile(profilePojo,profileId);
-            return ResponseUtils.success(profilePojo);
+            Map<String,Object> result=JSON.parseObject(JSON.toJSONString(profilePojo),Map.class);
+            logger.info("===========================================");
+            logger.info(JSON.toJSONString(result));
+            logger.info("===========================================");
+            result=StringUtils.underscoreNameMap(result);
+            logger.info("++++++++++++++++++++++++++++++++++++++++++++");
+            logger.info(JSON.toJSONString(result));
+            logger.info("++++++++++++++++++++++++++++++++++++++++++++");
+            return ResponseUtils.success(result);
         }
         return ResponseUtils.success(params);
     }
+
+
     /*
      保存上传的简历
      */
