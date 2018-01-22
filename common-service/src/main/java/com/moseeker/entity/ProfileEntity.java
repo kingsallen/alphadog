@@ -142,6 +142,9 @@ public class ProfileEntity {
     }
     @Transactional
     public void upsertProfileProfile(ProfileProfileRecord profileRecord, int  profileId) {
+        if(profileRecord==null){
+            profileRecord=new ProfileProfileRecord();
+        }
         if (profileRecord != null) {
             profileRecord.setId(profileId);
             profileRecord.setUpdateTime(new Timestamp(System.currentTimeMillis()));
