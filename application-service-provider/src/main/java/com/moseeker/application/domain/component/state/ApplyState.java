@@ -45,7 +45,12 @@ public class ApplyState extends ApplicationState {
                     .collect(Collectors.toList());
             if (unViewedApplicationList != null && unViewedApplicationList.size() > 0) {
                 daoManagement.getJobApplicationDao().viewApplication(unViewedApplicationList);
-                ViewApplicationListEvent viewApplicationListEvent = new ViewApplicationListEvent("查看申请");
+
+                ViewApplicationListEvent viewApplicationListEvent
+                        = new ViewApplicationListEvent(unViewedApplicationList
+                        .stream()
+                        .map(applicationStatePojo -> applicationStatePojo.getId())
+                        .collect(Collectors.toList()));
                 applicationEntity.getApplicationContext().publishEvent(viewApplicationListEvent); //发布查看申请事件
             }
 
