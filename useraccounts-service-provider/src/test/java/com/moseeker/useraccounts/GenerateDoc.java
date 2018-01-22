@@ -18,7 +18,7 @@ public class GenerateDoc {
 
     @Test
     public void test() throws ClassNotFoundException {
-        Class clazz=Class.forName("com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl");
+        Class clazz=Class.forName("com.moseeker.useraccounts.thrift.UseraccountsServiceImpl");
         Method[] methods=clazz.getDeclaredMethods();
         int i=0;
         DocBuilder docBuilder=DocBuilder.newInstance();
@@ -83,7 +83,7 @@ public class GenerateDoc {
         String thriftName=interfaceName.substring(interfaceName.lastIndexOf(".")+1,interfaceName.indexOf("$"));
 
         DocBuilder docBuilder=new DocBuilder();
-        docBuilder.append(thriftName+"."+method.getName());
+        docBuilder.append(thriftName+"."+method.getName()).emptyLine();
 
         Parameter[] parameters=method.getParameters();
 
