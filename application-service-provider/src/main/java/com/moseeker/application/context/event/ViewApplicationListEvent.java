@@ -10,9 +10,6 @@ import java.util.List;
  */
 public class ViewApplicationListEvent extends ApplicationEvent {
 
-    private List<Integer> applicationIdList;    //申请编号
-    private int hrId;                           //HR编号
-
     /**
      * Create a new ApplicationEvent.
      *
@@ -20,21 +17,5 @@ public class ViewApplicationListEvent extends ApplicationEvent {
      */
     public ViewApplicationListEvent(Object source) {
         super(source);
-    }
-
-    public List<Integer> getApplicationIdList() {
-        return applicationIdList;
-    }
-
-    public void setApplicationIdList(List<Integer> applicationIdList) {
-        this.applicationIdList = applicationIdList;
-    }
-
-    public int getHrId() {
-        return hrId;
-    }
-
-    public void setHrId(int hrId) {
-        this.hrId = hrId;
     }
 }
