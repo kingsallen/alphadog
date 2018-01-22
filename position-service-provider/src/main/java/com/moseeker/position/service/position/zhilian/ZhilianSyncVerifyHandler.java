@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserWxUser;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -106,7 +107,7 @@ public class ZhilianSyncVerifyHandler implements PositionSyncVerifyHandler<Strin
 
         query=new Query.QueryBuilder()
                 .where(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.WECHAT_ID.getName(),userWxUserDO.getId())
-                .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.SYS_TEMPLATE_ID.getName(),SYS_TEMPLATE_ID)
+                .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.SYS_TEMPLATE_ID.getName(), Constant.POSITION_SYNC_VERIFY_INFO)
                 .buildQuery();
         HrWxWechatDO hrWxWechatDO=verifyHandlerUtil.getMoseekerWxWechat();
         String openId=userWxUserDO.getOpenid();
