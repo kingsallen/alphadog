@@ -1183,7 +1183,7 @@ public class WholeProfileService {
             map.put("id", userId);
             HashMap<String, Object> profileProfile = new HashMap<String, Object>();
             profileProfile.put("user_id", userId);
-            profileProfile.put("source", UserSource.TALENT_UPLOAD.getValue());
+            profileProfile.put("origin", resume.get("origin"));
             resume.put("profile", profileProfile);
             user1.setId(userId);
             UserUserRecord userRecord=BeanUtils.structToDB(user1,UserUserRecord.class);
@@ -1191,7 +1191,7 @@ public class WholeProfileService {
             if(id==0){
                 throw new TException();
             }
-            return id;
+            return userId;
         }else{
             throw new TException();
         }
@@ -1208,6 +1208,7 @@ public class WholeProfileService {
             }else{
                 Map<String,Object> profileMap=new HashMap<>();
                 profileMap.put("user_id",newUserId);
+                profileMap.put("origin",resume.get("origin"));
                 resume.put("profile",profileMap);
             }
         }
