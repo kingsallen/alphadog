@@ -280,11 +280,11 @@ public class PositionSyncFailedNotification {
 
                 @Override
                 public void failed(Exception e) {
-                    logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+                    logger.error("发送处理同步结果失败的邮件发生错误：{}", e.getMessage());
                 }
             });
         } catch (Exception e) {
-            logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+            logger.error("发送处理同步结果失败的邮件发生错误：{}", e.getMessage());
             e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
