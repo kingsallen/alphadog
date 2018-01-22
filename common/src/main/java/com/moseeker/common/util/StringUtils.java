@@ -373,32 +373,47 @@ public class StringUtils {
             if(StringUtils.isNullOrEmpty(newKey)){
                 newKey=key;
             }
-            if(resume.get(key) instanceof Map){
-                Map<String,Object> result1=underscoreNameMap((Map<String,Object>)resume.get(key));
+            if(resume.get(key)==null){
+                result.put(newKey, resume.get(key));
+            }else if(resume.get(key) instanceof Map){
+                Map<String,Object> map=(Map<String,Object>)resume.get(key);
+                Map<String,Object> result1=new HashMap<>();
+                if(map!=null&&!map.isEmpty()){
+                    result1 =underscoreNameMap(map);
+                }
                 result.put(newKey,result1);
             }else if(resume.get(key) instanceof List){
                 List<Object> list= (List<Object>) resume.get(key);
                 List tempList = new ArrayList();
-                for(Object ss :list){
-                    if(ss instanceof Map){
-                        tempList.add(underscoreNameMap((Map<String,Object>)ss));
-                    }else{
-                        tempList.add(ss);
+                if(!StringUtils.isEmptyList(list)){
+                    for(Object ss :list){
+                        if(ss instanceof Map){
+                            tempList.add(underscoreNameMap((Map<String,Object>)ss));
+                        }else{
+                            tempList.add(ss);
+                        }
                     }
                 }
                 result.put(newKey,tempList);
             }else if(resume.get(key).getClass().isArray()){
-                Object[] arr=new Object[Array.getLength(resume.get(key))];
-                for (int i = 0; i < Array.getLength(resume.get(key)); i++) {
-                    Object value = Array.get(resume.get(key), i);
-                    if (value instanceof Map) {
-                        Map<String,Object> result2=underscoreNameMap((Map) value);
-                        arr[i]=result2;
-                    }else{
-                        arr[i]=value;
+                int length=Array.getLength(resume.get(key));
+                if(length!=0){
+                    result.put(newKey,new Object[1]);
+                }else{
+                    Object[] arr=new Object[length];
+                    for (int i = 0; i < Array.getLength(resume.get(key)); i++) {
+                        Object value = Array.get(resume.get(key), i);
+                        if (value instanceof Map) {
+                            Map<String,Object> result2=underscoreNameMap((Map) value);
+                            arr[i]=result2;
+                        }else{
+                            arr[i]=value;
+                        }
                     }
+                    result.put(newKey,arr);
                 }
-                result.put(newKey,arr);
+
+
             }else {
                 result.put(newKey, resume.get(key));
             }

@@ -1077,6 +1077,7 @@ public class WholeProfileService {
     public Response combinationProfile(String params,int companyId ){
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
+        handleResumeMap(resume);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         String mobile = ((String) map.get("mobile"));
         if(StringUtils.isNullOrEmpty(mobile)){
@@ -1086,25 +1087,50 @@ public class WholeProfileService {
         if(userRecord==null){
             return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
-
-        ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
-        if (profileRecord == null) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
+        Map<String, Object> profileMap = (Map<String, Object>) resume.get("profile");
+        if(profileMap==null||profileMap.isEmpty()){
+            profileMap=new HashMap<>();
+            profileMap.put("user_id",userRecord.getId());
+            resume.put("profile",profileMap);
         }
-        ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
-
-        if (profileDB != null) {
-            ((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
-            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
-            int profileId = profileDB.getId().intValue();
-            profilePojo= this.combinationProfile(profilePojo,profileId);
-            Map<String,Object> result=JSON.parseObject(JSON.toJSONString(profilePojo),Map.class);
-            result=StringUtils.underscoreNameMap(result);
-            return ResponseUtils.success(result);
+        Map<String, Object> profileProfileMap=getProfileByUserId(userRecord.getId());
+        if (profileProfileMap != null&&!profileProfileMap.isEmpty()) {
+            int profileId = (int)profileProfileMap.get("id");
+            profileMap = (Map<String, Object>) resume.get("profile");
+            profileMap.put("id",profileId);
+            resume.put("profile",profileMap);
+            this.combinationProfile(resume,profileId);
+            resume=StringUtils.underscoreNameMap(resume);
+            return ResponseUtils.success(resume);
         }
-        return ResponseUtils.success(params);
+        return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
     }
+    /*
+    通过userId获取profileId
+    */
+    private Map<String,Object> getProfileByUserId(int userId){
+        Query query=new Query.QueryBuilder().where("user_id",userId).buildQuery();
+        Map<String,Object> result=profileDao.getMap(query);
+        return result;
+    }
+    /*
+     将user的一些信息放到basic中
+     */
+    public void handleResumeMap( Map<String,Object> result){
+        if(result!=null&&!result.isEmpty()){
+            Map<String,Object> basic= (Map<String, Object>) result.get("basic");
+            if(basic==null){
+                basic=new HashMap<>();
+            }
+            Map<String,Object> user= (Map<String, Object>) result.get("user");
+            if(user!=null&&!user.isEmpty()){
+                for(String key :user.keySet()){
+                    basic.put(key,user.get(key));
+                }
+            }
 
+        }
+    }
 
     /*
      保存上传的简历
@@ -1146,22 +1172,25 @@ public class WholeProfileService {
      将上传的basic的内容组合到user当中
      */
     private Map<String,Object> handlerBasicAndUser(Map<String,Object> basicMap,Map<String,Object> userMap){
+        if(userMap==null||userMap.isEmpty()){
+            userMap=new HashMap<>();
+        }
         if(basicMap==null||basicMap.isEmpty()){
             return null;
         }
-        if(basicMap.get("name")!=null&&StringUtils.isNotNullOrEmpty(String.valueOf(basicMap.get("name")))){
+        if(basicMap.get("name")!=null){
             userMap.put("name",basicMap.get("name"));
         }
-        if(basicMap.get("mobile")!=null&&StringUtils.isNotNullOrEmpty(String.valueOf(basicMap.get("mobile")))){
+        if(basicMap.get("mobile")!=null){
             userMap.put("mobile",basicMap.get("mobile"));
         }
-        if(basicMap.get("nationality_code")!=null&&StringUtils.isNotNullOrEmpty(String.valueOf(basicMap.get("nationality_code")))){
+        if(basicMap.get("nationality_code")!=null){
             userMap.put("national_code_id",basicMap.get("nationality_code"));
         }
-        if(basicMap.get("email")!=null&&StringUtils.isNotNullOrEmpty(String.valueOf(basicMap.get("email")))){
+        if(basicMap.get("email")!=null){
             userMap.put("email",basicMap.get("email"));
         }
-        if(basicMap.get("country_code")!=null&&StringUtils.isNotNullOrEmpty(String.valueOf(basicMap.get("country_code")))){
+        if(basicMap.get("country_code")!=null){
             userMap.put("country_code",basicMap.get("country_code"));
         }else{
             userMap.put("country_code","86");
@@ -1250,62 +1279,60 @@ public class WholeProfileService {
     /*
       合并简历
      */
-    private ProfilePojo combinationProfile(ProfilePojo profilePojo,int profileId){
-        ProfileBasicRecord profileBasicRecord=this.combinationBasic(profilePojo.getBasicRecord(),profileId);
-        if(profileBasicRecord!=null){
-            profilePojo.setBasicRecord(profileBasicRecord);
+    private void combinationProfile(Map<String,Object> resume,int profileId){
+        Map<String,Object> profileBasic=this.combinationBasic((Map<String,Object>) resume.get("basic"),profileId);
+        if(profileBasic!=null){
+            resume.put("basic",profileBasic);
         }
-        ProfileOtherRecord profileOtherRecord=this.combinationProfileOther(profilePojo.getOtherRecord(),profileId);
+        Map<String,Object> profileOtherRecord=this.combinationProfileOther((Map<String,Object>)profileBasic.get("others"),profileId);
         if(profileOtherRecord!=null){
-            profilePojo.setOtherRecord(profileOtherRecord);
+            resume.put("others",profileOtherRecord);
         }
-        return profilePojo;
+
     }
     /*
      合并profile_basic
      */
-    public ProfileBasicRecord combinationBasic(ProfileBasicRecord basicRecord, int profileId) {
-        if (basicRecord != null) {
+    public Map<String,Object>  combinationBasic(Map<String,Object> basicMap, int profileId) {
+        if (basicMap != null) {
             Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
-            ProfileBasicRecord basic = profileBasicDao.getRecord(query);
+            Map<String,Object> basic = profileBasicDao.getMap(query);
             if (basic != null) {
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getName()) && StringUtils.isNullOrEmpty(basic.getName())) {
-                    basic.setName(basicRecord.getName());
+                if (StringUtils.isNotNullOrEmpty((String)basicMap.get("name")) && StringUtils.isNullOrEmpty((String)basic.get("name"))) {
+                    basic.put("name",(String)basicMap.get("name"));
                 }
-                if (basicRecord.getGender() != null && basic.getGender() == null) {
-                    basic.setGender(basicRecord.getGender());
+                if (basicMap.get("gender") != null && basic.get("gender") == null) {
+                    basic.put("gender",basicMap.get("gender"));
                 }
-                if (basicRecord.getNationalityCode() != null && basic.getNationalityCode() == null) {
-                    basic.setNationalityCode(basicRecord.getNationalityCode());
+                if (basicMap.get("nationalityName") != null && basic.get("nationalityName") == null) {
+                    basic.put("nationalityName",basicMap.get("nationalityName"));
                 }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getNationalityName()) && StringUtils.isNullOrEmpty(basic.getNationalityName())) {
-                    basic.setNationalityName(basicRecord.getNationalityName());
+                if (basicMap.get("citycode") != null && basic.get("citycode") == null) {
+                    basic.put("citycode",basicMap.get("citycode"));
                 }
-                if (basicRecord.getCityCode() != null && basic.getCityCode() == null) {
-                    basic.setCityCode(basicRecord.getCityCode());
+                if (basicMap.get("cityName") != null && basic.get("cityName") == null) {
+                    basic.put("cityName",basicMap.get("cityName"));
                 }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getCityName()) && StringUtils.isNullOrEmpty(basic.getCityName())) {
-                    basic.setCityName(basicRecord.getCityName());
+                if (basicMap.get("birth") != null && basic.get("birth") == null) {
+                    basic.put("birth",basicMap.get("birth"));
                 }
-                if (basicRecord.getBirth() != null && basic.getBirth() == null) {
-                    basic.setBirth(basicRecord.getBirth());
+                if (basicMap.get("weixin") != null && basic.get("weixin") == null) {
+                    basic.put("weixin",basicMap.get("weixin"));
                 }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getWeixin()) && StringUtils.isNullOrEmpty(basic.getWeixin())) {
-                    basic.setWeixin(basicRecord.getWeixin());
+                if (basicMap.get("qq") != null && basic.get("qq") == null) {
+                    basic.put("qq",basicMap.get("qq"));
                 }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getQq()) && StringUtils.isNullOrEmpty(basic.getQq())) {
-                    basic.setQq(basicRecord.getQq());
+
+                if (basicMap.get("motto") != null && basic.get("motto") == null) {
+                    basic.put("motto",basicMap.get("motto"));
                 }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getMotto()) && StringUtils.isNullOrEmpty(basic.getMotto())) {
-                    basic.setMotto(basicRecord.getMotto());
+                if (basicMap.get("selfIntroduction") != null && basic.get("selfIntroduction") == null) {
+                    basic.put("selfIntroduction",basicMap.get("selfIntroduction"));
                 }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getSelfIntroduction()) && StringUtils.isNullOrEmpty(basic.getSelfIntroduction())) {
-                    basic.setSelfIntroduction(basicRecord.getSelfIntroduction());
-                }
+
                 return basic;
             } else {
-                basicRecord.setProfileId((int) (profileId));
-                return basicRecord;
+                return basicMap;
             }
         }
         return null;
@@ -1314,22 +1341,22 @@ public class WholeProfileService {
     /*
      合并Profile_Other
      */
-    public ProfileOtherRecord combinationProfileOther(ProfileOtherRecord otherRecord, int profileId) {
-        if (otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
+    public Map<String,Object> combinationProfileOther(Map<String,Object> otherRecord, int profileId) {
+        if (otherRecord != null &&otherRecord.get("other")!=null) {
             Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("profile_id", String.valueOf(profileId));
             ProfileOtherRecord record = otherDao.getRecord(query.buildQuery());
             if (record == null && otherRecord != null) {
-                otherRecord.setProfileId((int) (profileId));
+                otherRecord.put("profileId",profileId);
             } else if (record != null && otherRecord != null) {
                 /**
                  * 自定义合并逻辑：oldOther没有或为空的字段且存在newOther中 -> 将newOther中的字段补填到oldOther里
                  */
-                Map<String, Object> oldOtherMap = JSONObject.parseObject(otherRecord.getOther(), Map.class);
+                Map<String, Object> oldOtherMap = (Map<String, Object>) otherRecord.get("other");
                 Map<String, Object> newOtherMap = JSONObject.parseObject(record.getOther(), Map.class);
                 oldOtherMap.entrySet().stream().filter(f -> (StringUtils.isNullOrEmpty(String.valueOf(f.getValue())) || "[]".equals(String.valueOf(f.getValue())))  && newOtherMap.containsKey(f.getKey())).forEach(e -> e.setValue(newOtherMap.get(e.getKey())));
                 newOtherMap.putAll(oldOtherMap);
-                otherRecord.setOther(JSONObject.toJSONString(newOtherMap));
+                otherRecord.put("other",JSONObject.toJSONString(newOtherMap));
 
             }
         }
