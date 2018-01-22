@@ -1088,17 +1088,13 @@ public class WholeProfileService {
             return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
         Map<String, Object> profileMap = (Map<String, Object>) resume.get("profile");
-        if(profileMap==null||profileMap.isEmpty()){
-            profileMap=new HashMap<>();
-            profileMap.put("user_id",userRecord.getId());
-            resume.put("profile",profileMap);
-        }
         Map<String, Object> profileProfileMap=getProfileByUserId(userRecord.getId());
+        if(profileMap==null||profileMap.isEmpty()){
+            resume.put("profile",profileProfileMap);
+        }
+
         if (profileProfileMap != null&&!profileProfileMap.isEmpty()) {
             int profileId = (int)profileProfileMap.get("id");
-            profileMap = (Map<String, Object>) resume.get("profile");
-            profileMap.put("id",profileId);
-            resume.put("profile",profileMap);
             this.combinationProfile(resume,profileId);
             resume=StringUtils.underscoreNameMap(resume);
             return ResponseUtils.success(resume);
@@ -1288,7 +1284,110 @@ public class WholeProfileService {
         if(profileOtherRecord!=null){
             resume.put("others",profileOtherRecord);
         }
+        if(resume.get("projectexps")==null){
+            resume.put("projectexps",this.getProjectExpById(profileId));
+        }
+        if(resume.get("skills")==null){
+            resume.put("skills",this.getSkillExpById(profileId));
+        }
+        if(resume.get("workexps")==null){
+            resume.put("workexps",this.getWorkExpsById(profileId));
+        }
+        if(resume.get("educations")==null){
+            resume.put("educations",this.getEducationsById(profileId));
+        }
+        if(resume.get("languages")==null){
+            resume.put("languages",this.getLanguagesById(profileId));
+        }
+        if(resume.get("intentions")==null){
+            resume.put("intentions",this.getIntentions(profileId));
+        }
+        if(resume.get("credentials")==null){
+            resume.put("credentials",this.getCredentialsById(profileId));
+        }
+        if(resume.get("awards")==null){
+            resume.put("awards",this.getAwardsById(profileId));
+        }
+        if(resume.get("works")==null){
+            resume.put("works",this.getWorksById(profileId));
+        }
 
+    }
+    /*
+     根据id获取ProjectExp
+     */
+    private List<Map<String,Object>> getProjectExpById(int profileId){
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<Map<String,Object>> list=projectExpDao.getMaps(query);
+        return list;
+    }
+    /*
+     根据id获取Skill
+     */
+    private List<Map<String,Object>> getSkillExpById(int profileId){
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<Map<String,Object>> list=skillDao.getMaps(query);
+        return list;
+    }
+    /*
+     根据id获取WorkExps
+     */
+    private List<Map<String,Object>> getWorkExpsById(int profileId){
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<Map<String,Object>> list=workExpDao.getMaps(query);
+        return list;
+    }
+    /*
+     根据id获取Languages
+     */
+    private List<Map<String,Object>> getLanguagesById(int profileId){
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<Map<String,Object>> list=languageDao.getMaps(query);
+        return list;
+    }
+    /*
+     根据id获取Educations
+     */
+    private List<Map<String,Object>> getEducationsById(int profileId){
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<Map<String,Object>> list=educationDao.getMaps(query);
+        return list;
+    }
+    /*
+     根据id获取Credentials
+     */
+    private List<Map<String,Object>> getCredentialsById(int profileId){
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<Map<String,Object>> list=credentialsDao.getMaps(query);
+        return list;
+    }
+    /*
+     根据id获取Awards
+     */
+    private List<Map<String,Object>> getAwardsById(int profileId){
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<Map<String,Object>> list=awardsDao.getMaps(query);
+        return list;
+    }
+    /*
+    根据id获取Works
+    */
+    private List<Map<String,Object>> getWorksById(int profileId){
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<Map<String,Object>> list=worksDao.getMaps(query);
+        return list;
+    }
+    /*
+     根据id获取Intention
+     */
+    private List<Map<String,Object>> getIntentions(int profileId){
+        List<DictConstantRecord> constantRecords = constantDao
+                .getCitiesByParentCodes(Arrays.asList(3109, 3105, 3102, 2105, 3120, 3115, 3114, 3119, 3120));
+        ProfileProfileRecord profileRecord=profileDao.getProfileByIdOrUserIdOrUUID(0,profileId,null);
+        List<Map<String, Object>> list=profileUtils.buildsIntentions(profileRecord, getProfileQuery(profileId),
+                constantRecords, intentionDao, intentionCityDao, intentionIndustryDao, intentionPositionDao,
+                dictCityDao, dictIndustryDao, dictPositionDao);
+        return list;
     }
     /*
      合并profile_basic
