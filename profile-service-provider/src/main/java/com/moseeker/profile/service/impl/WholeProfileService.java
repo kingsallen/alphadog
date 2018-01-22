@@ -1317,7 +1317,7 @@ public class WholeProfileService {
      获取个人信息
      */
     private Map<String,Object> getUserUserMap(int userId){
-        Query query=new Query.QueryBuilder().where("id",userId).and("is_disable",0).and("source",UserSource.TALENT_UPLOAD).buildQuery();
+        Query query=new Query.QueryBuilder().where("id",userId).and("is_disable",0).and("source",UserSource.TALENT_UPLOAD.getValue()).buildQuery();
         Map<String,Object>  result=userDao.getMap(query);
         return result;
     }
