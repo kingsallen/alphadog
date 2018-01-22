@@ -1171,8 +1171,8 @@ public class WholeProfileService {
     }
 
     /*
-     保存上传简历
-     */
+      保存上传简历
+      */
     private int saveNewProfile(Map<String, Object> resume,Map<String, Object> map) throws TException {
         UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
         logger.info("talentpool upload new  user:{}", user1);
@@ -1183,7 +1183,7 @@ public class WholeProfileService {
             map.put("id", userId);
             HashMap<String, Object> profileProfile = new HashMap<String, Object>();
             profileProfile.put("user_id", userId);
-            profileProfile.put("source", UserSource.TALENT_UPLOAD.getValue());
+            profileProfile.put("origin", resume.get("origin"));
             resume.put("profile", profileProfile);
             user1.setId(userId);
             UserUserRecord userRecord=BeanUtils.structToDB(user1,UserUserRecord.class);
@@ -1191,7 +1191,7 @@ public class WholeProfileService {
             if(id==0){
                 throw new TException();
             }
-            return id;
+            return userId;
         }else{
             throw new TException();
         }
@@ -1208,6 +1208,7 @@ public class WholeProfileService {
             }else{
                 Map<String,Object> profileMap=new HashMap<>();
                 profileMap.put("user_id",newUserId);
+                profileMap.put("origin",resume.get("origin"));
                 resume.put("profile",profileMap);
             }
         }
@@ -1215,9 +1216,8 @@ public class WholeProfileService {
         if (profileDB != null) {
             ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
             int profileId = profileDB.getId().intValue();
-            ProfileProfileRecord profileProfileRecord=profilePojo.getProfileRecord();
             profileEntity.improveUser(userRecord);
-            profileEntity.upsertProfileProfile(profileProfileRecord, profileId);
+            profileEntity.upsertProfileProfile(profilePojo.getProfileRecord(), profileId);
             profileEntity.upsertProfileBasic(profilePojo.getBasicRecord(), profileId);
             profileEntity.improveAttachment(profilePojo.getAttachmentRecords(), profileId);
             profileEntity.improveAwards(profilePojo.getAwardsRecords(), profileId);
@@ -1398,48 +1398,5 @@ public class WholeProfileService {
         }
 
         return workExp;
-    }
-
-    /**
-     * 创建上传简历
-     *
-     * @param profile 简历json格式的数据
-     * @return
-     */
-    public Response createUploadProfile(String profile) {
-        Map<String, Object> resume = JSON.parseObject(profile);
-        ProfileProfileRecord profileRecord = profileUtils
-                .mapToProfileRecord((Map<String, Object>) resume.get("profile"));
-        if (profileRecord == null) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
-        }
-        UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
-        if (userRecord == null) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
-        }
-
-        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
-
-        int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
-                profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
-                profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
-                profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
-                profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
-                userRecord, null);
-        if (id > 0) {
-
-            try {
-                StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id,
-                        userRecord.getId().intValue(), (byte) 0, profilePojo.getImportRecords());
-                profileUtils.logForStatistics("importCV", new JSONObject() {{
-                    this.put("profile", profile);
-                }}.toJSONString(), statisticsForChannelmportVO);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-            return ResponseUtils.success(id);
-        } else {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
-        }
     }
 }

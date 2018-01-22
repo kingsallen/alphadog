@@ -408,17 +408,7 @@ public class StringUtils {
     }
 
 //    public static void main(String[] args) {
-//        Map<String,Object> result=new HashMap<>();
-//        Map<String ,Object> ss=new HashMap<>();
-//        ss.put("startDate","");
-//        ss.put("majorName","销售");
-//        ss.put("majorCode","0");
-//        ss.put("degree","0");
-//        result.put("educations",ss);
-//        List<Map<String,Object>> ll=new ArrayList<>();
-//        ll.add(ss);
-//        result.put("intentions",ll);
-//        result=StringUtils.underscoreNameMap(result);
-//        System.out.println(JSON.toJSONString(result));
+//        int code=146;
+//        System.out.println((byte)code);
 //    }
 }
