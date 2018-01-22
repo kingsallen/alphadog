@@ -44,7 +44,7 @@ public class VEPositionEmailBuilder implements PositionEmailBuilder<ThirdpartyVe
         map.put("【计算机能力】",getText(computerLevels,position.getComputerLevel()+""));
         map.put("【有效期】",position.getIndate()+"天");
 
-        return null;
+        return map;
     }
 
     public String getText(JSONArray array,String code){
