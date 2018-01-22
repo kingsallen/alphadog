@@ -888,7 +888,7 @@ public class TalentPoolEntity {
      */
     public List<UserUserRecord> getTalentUploadUserUser(String phone,String countryCode){
         Query query=new Query.QueryBuilder().where("mobile",phone).and("country_code",countryCode)
-                .and("source", UserSource.TALENT_UPLOAD).and("is_disable",0)
+                .and("source", UserSource.TALENT_UPLOAD.getValue()).and("is_disable",0)
                 .buildQuery();
         List<UserUserRecord> list=userUserDao.getRecords(query);
         return list;
