@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
@@ -31,15 +32,26 @@ public class PositionSyncVerifyHandlerUtil {
 
     public String deliveryUrl(){
         String url="";
-        url=env.getProperty("message.template.delivery.url");
+        url=env.getProperty("message.template.sync.code.url");
         return url;
 
     }
 
 
-    public String getLink(){
-        String link="";
-        return link;
+    public String getCodeLink(Map<String,Object> param){
+        StringBuilder link=new StringBuilder(env.getProperty("sync.code.url"));
+
+        if(param!=null && !param.isEmpty()){
+            link.append("?");
+        }
+
+        for(Map.Entry<String,Object> entry:param.entrySet()){
+            link.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+
+        link.deleteCharAt(link.lastIndexOf("&"));
+
+        return link.toString();
     }
 
     public HrWxWechatDO getMoseekerWxWechat(){

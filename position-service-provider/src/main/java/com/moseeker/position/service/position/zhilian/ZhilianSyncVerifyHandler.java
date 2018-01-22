@@ -73,11 +73,11 @@ public class ZhilianSyncVerifyHandler implements PositionSyncVerifyHandler<Strin
 
     @Override
     public void verifyHandler(String param) throws BIZException {
-        JSONObject jsonObject= JSON.parseObject(param);
-        Integer accountId=jsonObject.getInteger("accountId");
-        Integer channel=jsonObject.getInteger("channel");
-        String mobile=jsonObject.getString("mobile");
-        Integer positionId=jsonObject.getInteger("positionId");
+        JSONObject jsonParam= JSON.parseObject(param);
+        Integer accountId=jsonParam.getInteger("accountId");
+        Integer channel=jsonParam.getInteger("channel");
+        String mobile=jsonParam.getString("mobile");
+        Integer positionId=jsonParam.getInteger("positionId");
 
         if(accountId==null || channel==null || StringUtils.isNullOrEmpty(mobile) || positionId==null){
             logger.error("智联验证处理参数错误：{}",param);
@@ -111,7 +111,7 @@ public class ZhilianSyncVerifyHandler implements PositionSyncVerifyHandler<Strin
         HrWxWechatDO hrWxWechatDO=verifyHandlerUtil.getMoseekerWxWechat();
         String openId=userWxUserDO.getOpenid();
         String url=verifyHandlerUtil.deliveryUrl();
-        String link=verifyHandlerUtil.getLink();
+        String link=verifyHandlerUtil.getCodeLink(jsonParam);
         HrWxTemplateMessageDO template=templateMessageDao.getData(query);
 
         Map<String, Object> applierTemplate = new HashMap<>();
@@ -176,6 +176,10 @@ public class ZhilianSyncVerifyHandler implements PositionSyncVerifyHandler<Strin
             logger.error("智联验证信息accountId为空，无法发送消息给爬虫端,info : "+info);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"智联验证信息第三方账号为空，无法发送消息给爬虫端！");
         }
+
+        //同一信息都是info，但是智联需要code
+        jsonObject.put("code",jsonObject.get("info"));
+
         String rountingKey=PositionSyncVerify.MOBILE_VERIFY_RESPONSE_ROUTING_KEY.replace("{}",accountId);
         amqpTemplate.send(
                 PositionSyncVerify.MOBILE_VERIFY_EXCHANGE
