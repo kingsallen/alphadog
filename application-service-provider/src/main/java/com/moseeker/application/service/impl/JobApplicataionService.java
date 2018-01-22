@@ -318,13 +318,13 @@ public class JobApplicataionService {
             updateStatus = jobApplicationDao.updateRecord(jobApplicationRecord);
             if(updateStatus>0 && bool){
                 MessageEmailStruct messageEmailStruct = new MessageEmailStruct();
-                messageEmailStruct.setApplication_id(updateStatus);
-                messageEmailStruct.setPosition_id((int)jobApplication.getPosition_id());
-                messageEmailStruct.setApply_type(jobApplication.getApply_type());
+                messageEmailStruct.setApplication_id((int)jobApplication.getId());
+                messageEmailStruct.setPosition_id(jobApplicationDO.getPositionId());
+                messageEmailStruct.setApply_type(jobApplicationDO.getApplyType());
                 messageEmailStruct.setEmail_status(jobApplication.getEmail_status());
-                messageEmailStruct.setRecommender_user_id((int)jobApplication.getRecommender_user_id());
-                messageEmailStruct.setApplier_id((int)jobApplication.getApplier_id());
-                messageEmailStruct.setOrigin(jobApplication.getOrigin());
+                messageEmailStruct.setRecommender_user_id(jobApplicationDO.getRecommenderUserId());
+                messageEmailStruct.setApplier_id(jobApplicationDO.getApplierId());
+                messageEmailStruct.setOrigin(jobApplicationDO.getOrigin());
                 sendMessageAndEmailThread(messageEmailStruct);
             }
         }
