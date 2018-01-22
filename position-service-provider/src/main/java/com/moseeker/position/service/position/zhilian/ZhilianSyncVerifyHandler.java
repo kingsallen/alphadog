@@ -174,7 +174,7 @@ public class ZhilianSyncVerifyHandler implements PositionSyncVerifyHandler<Strin
         String accountId=jsonObject.getString("accountId");
         if(StringUtils.isNullOrEmpty(accountId)){
             logger.error("智联验证信息accountId为空，无法发送消息给爬虫端,info : "+info);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"智联验证信息accountId为空，无法发送消息给爬虫端,info : "+info);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"智联验证信息第三方账号为空，无法发送消息给爬虫端！");
         }
         String rountingKey=PositionSyncVerify.MOBILE_VERIFY_RESPONSE_ROUTING_KEY.replace("{}",accountId);
         amqpTemplate.send(

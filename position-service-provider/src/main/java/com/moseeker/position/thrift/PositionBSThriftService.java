@@ -87,8 +87,11 @@ public class PositionBSThriftService implements Iface {
 
     @Override
     public Response syncVerifyInfo(String info) throws BIZException, TException {
-        try{
+        try {
             return positionBS.syncVerifyInfo(info);
+        }catch (BIZException e){
+            logger.error("sync Verify Info error {}",e.getMessage());
+            throw e;
         }catch (Exception e){
             logger.error("sync Verify Info error {}",e.getMessage());
             return ResultMessage.PROGRAM_EXCEPTION.toResponse();
