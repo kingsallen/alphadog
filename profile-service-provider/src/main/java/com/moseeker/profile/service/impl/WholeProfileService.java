@@ -524,10 +524,20 @@ public class WholeProfileService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
         }
         UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
-        if (userRecord == null) {
+        int id=this.createProfileItem(userRecord,resume,profile);
+        if(id==-1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
+        }else if(id==0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+        }else{
+            return ResponseUtils.success(id);
         }
+    }
 
+    private int createProfileItem(UserUserRecord userRecord,Map<String, Object> resume,String profile){
+        if (userRecord == null) {
+            return -1;
+        }
         ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
 
         int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
@@ -547,9 +557,9 @@ public class WholeProfileService {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-            return ResponseUtils.success(id);
+            return id;
         } else {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            return 0;
         }
     }
 
@@ -1161,8 +1171,8 @@ public class WholeProfileService {
     }
 
     /*
-     保存上传简历
-     */
+      保存上传简历
+      */
     private int saveNewProfile(Map<String, Object> resume,Map<String, Object> map) throws TException {
         UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
         logger.info("talentpool upload new  user:{}", user1);
@@ -1173,15 +1183,18 @@ public class WholeProfileService {
             map.put("id", userId);
             HashMap<String, Object> profileProfile = new HashMap<String, Object>();
             profileProfile.put("user_id", userId);
-            profileProfile.put("source", 0);
+            profileProfile.put("source", UserSource.TALENT_UPLOAD.getValue());
             resume.put("profile", profileProfile);
-            Response response = this.createProfile(JSON.toJSONString(resume));
-            if(response.getStatus()==0){
-                return userId;
+            user1.setId(userId);
+            UserUserRecord userRecord=BeanUtils.structToDB(user1,UserUserRecord.class);
+            int id= this.createProfileItem(userRecord,resume,JSON.toJSONString(resume));
+            if(id==0){
+                throw new TException();
             }
-            return 0;
+            return id;
+        }else{
+            throw new TException();
         }
-        return 0;
     }
     /*
      更新上传简历
