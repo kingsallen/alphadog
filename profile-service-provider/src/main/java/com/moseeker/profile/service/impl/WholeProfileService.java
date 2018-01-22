@@ -1104,6 +1104,8 @@ public class WholeProfileService {
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
+        Map<String,Object> basic=(Map<String, Object>)resume.get("basic");
+        map=this.handlerBasicAndUser(basic,map);
         String mobile = ((String) map.get("mobile"));
         if(StringUtils.isNullOrEmpty(mobile)){
             return ResponseUtils.fail(1,"手机号不能为空");
@@ -1118,7 +1120,7 @@ public class WholeProfileService {
         }else{
             userRecord=userAccountEntity.combineAccount(userId,newUerId);
             newUerId=userRecord.getId();
-            Response res=this.upsertProfile(resume,userRecord);
+            Response res=this.upsertProfile(resume,userRecord,userId,newUerId);
             if(res.getStatus()!=0){
                 return res;
             }
@@ -1128,6 +1130,34 @@ public class WholeProfileService {
         talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName);
 
         return ResponseUtils.success("success");
+    }
+
+    /*
+     将上传的basic的内容组合到user当中
+     */
+    private Map<String,Object> handlerBasicAndUser(Map<String,Object> basicMap,Map<String,Object> userMap){
+        if(basicMap==null||basicMap.isEmpty()){
+            return null;
+        }
+        if(basicMap.get("name")!=null&&StringUtils.isNotNullOrEmpty(String.valueOf(basicMap.get("name")))){
+            userMap.put("name",basicMap.get("name"));
+        }
+        if(basicMap.get("mobile")!=null&&StringUtils.isNotNullOrEmpty(String.valueOf(basicMap.get("mobile")))){
+            userMap.put("mobile",basicMap.get("mobile"));
+        }
+        if(basicMap.get("nationality_code")!=null&&StringUtils.isNotNullOrEmpty(String.valueOf(basicMap.get("nationality_code")))){
+            userMap.put("national_code_id",basicMap.get("nationality_code"));
+        }
+        if(basicMap.get("email")!=null&&StringUtils.isNotNullOrEmpty(String.valueOf(basicMap.get("email")))){
+            userMap.put("email",basicMap.get("email"));
+        }
+        if(basicMap.get("country_code")!=null&&StringUtils.isNotNullOrEmpty(String.valueOf(basicMap.get("country_code")))){
+            userMap.put("country_code",basicMap.get("country_code"));
+        }else{
+            userMap.put("country_code","86");
+        }
+        userMap.put("source",UserSource.TALENT_UPLOAD.getValue());
+        return userMap;
     }
 
     /*
@@ -1156,10 +1186,17 @@ public class WholeProfileService {
     /*
      更新上传简历
      */
-    private Response upsertProfile(Map<String, Object> resume,UserUserRecord userRecord){
+    private Response upsertProfile(Map<String, Object> resume,UserUserRecord userRecord,int userId,int newUserId){
+
         ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
         if (profileRecord == null) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
+            if(userId!=0){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
+            }else{
+                Map<String,Object> profileMap=new HashMap<>();
+                profileMap.put("user_id",newUserId);
+                resume.put("profile",profileMap);
+            }
         }
         ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
         if (profileDB != null) {
