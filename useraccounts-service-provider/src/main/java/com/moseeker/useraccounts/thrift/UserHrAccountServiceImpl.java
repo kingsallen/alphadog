@@ -646,4 +646,11 @@ public class UserHrAccountServiceImpl implements Iface {
             throw new SysBIZException();
         }
     }
+
+    @Override
+    public Response getHrCompanyInfo(int wechat_id, String unionId, int account_id) throws BIZException, TException {
+        Response response = service.getHrCompanyInfo(wechat_id, unionId, account_id);
+        logger.info("getHrCompanyInfo fanhuizhi:{}", response);
+        return response;
+    }
 }
