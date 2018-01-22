@@ -35,7 +35,6 @@ public class ViewApplicationAwardListener implements SmartApplicationListener {
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
-
     }
 
     @Override
