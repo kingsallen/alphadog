@@ -1,5 +1,7 @@
 package com.moseeker.chat.service;
 
+import com.alibaba.fastjson.JSON;
+import com.moseeker.chat.config.AppConfig;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.thrift.gen.chat.struct.*;
@@ -14,14 +16,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.joda.time.DateTime;
+import org.jooq.tools.json.JSONArray;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +38,39 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by jack on 13/03/2017.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class ChatServiceTest {
 
-    @Mock
+    @Autowired
+    private ChatService chatService;
+
+    @Test
+    public void saveChat() throws Exception {
+        ChatVO chatVO=new ChatVO();
+        chatVO.setId(0); // optional
+        chatVO.setContent("您是否是在找这些职位:<a href=\" \">大数据分析师</a ><br><a href=\"http://platform.moseeker.com/m/position/1888996?wechat_signature=NjYyM2M4ZDAzOTk5NThmNjlhMGI0OWM2ZTgwOTk1Njc2MTU0Y2ZhOQ==\">数据分析师2</a ><br><a href=\"http://platform.moseeker.com/m/position/1885811?wechat_signature=NjYyM2M4ZDAzOTk5NThmNjlhMGI0OWM2ZTgwOTk1Njc2MTU0Y2ZhOQ==\">数据分析师</a ><br>"); // optional
+        chatVO.setSpeaker((byte) 1); // optional
+        chatVO.setOrigin((byte) 1); // optional
+        chatVO.setOrigin_str("aaa"); // optional
+        chatVO.setMsgType("html"); // optional
+        chatVO.setPicUrl("https://cdn.moseeker.com/athena/static/images/new-home/qx_as_qrcode.jpg"); // optional
+        chatVO.setBtnContent(JSON.parseArray("[{\"content\":\"是\"},{\"content\":\"否\"}]",BtnContent.class)); // optional
+        chatVO.setRoomId(1); // optional
+        chatVO.setPositionId(7);
+
+        JSON.toJSONString(chatVO);
+
+        chatService.saveChat(chatVO);
+
+
+
+        ChatsVO chatsVO=chatService.listChatLogs(1,1,10);
+        System.out.println(JSON.toJSONString(chatsVO));
+    }
+
+
+    /*@Mock
     private ChatDao chatDao;
 
     @InjectMocks
@@ -380,10 +417,7 @@ public class ChatServiceTest {
         assertEquals(1, chatVO3.getId());
     }
 
-    //@Test
-    public void saveChat() throws Exception {
-        //chatService.saveChat(1, "test", 1, (byte)0);
-    }
+
 
     //@Test
     public void enterChatRoom() throws Exception {
@@ -400,5 +434,5 @@ public class ChatServiceTest {
 
         UserVO userVO = result.getUser();
         assertEquals(1, userVO.getUserId());
-    }
+    }*/
 }
