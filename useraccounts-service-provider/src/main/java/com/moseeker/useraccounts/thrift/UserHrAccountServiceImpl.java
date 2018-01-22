@@ -162,6 +162,11 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
+    public HrThirdPartyAccountDO syncThirdPartyAccount(int hrId, int id, boolean sync) throws BIZException, TException {
+        return null;
+    }
+
+    @Override
     public HrThirdPartyAccountDO bindConfirm(int hrId, int id, boolean confirm) throws BIZException, TException {
         try {
             return thirdPartyAccountService.bindConfirm(hrId,id,confirm);
@@ -635,5 +640,12 @@ public class UserHrAccountServiceImpl implements Iface {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
         }
+    }
+
+    @Override
+    public Response getHrCompanyInfo(int wechat_id, String unionId, int account_id) throws BIZException, TException {
+        Response response = service.getHrCompanyInfo(wechat_id, unionId, account_id);
+        logger.info("getHrCompanyInfo fanhuizhi:{}", response);
+        return response;
     }
 }

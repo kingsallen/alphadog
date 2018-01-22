@@ -173,6 +173,8 @@ service UserHrAccountService {
     useraccounts_struct.ImportUserEmployeeStatistic checkBatchInsert(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId) throws (1: common_struct.BIZException e)
     //查询自定义导出字段
     list<hr_app_export_fields_struct.HrAppExportFieldsDO> getExportFields(1: i32 companyId, 2: i32 userHrAccountId) throws (1: common_struct.BIZException e)
+    // 员工信息导入
+    common_struct.Response getHrCompanyInfo(1:i32 wechat_id, 2:string unionId, 3:i32 account_id) throws (1: common_struct.BIZException e)
 }
 
 
