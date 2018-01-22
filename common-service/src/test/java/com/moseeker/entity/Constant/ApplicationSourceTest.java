@@ -35,4 +35,10 @@ public class ApplicationSourceTest {
         assertEquals(3, ApplicationSource.ENTERPRISE.andSource(1));
         assertEquals(3, ApplicationSource.ENTERPRISE.andSource(ApplicationSource.PC));
     }
+
+    @Test
+    public void testChannelToOrigin() {
+        int origin = ApplicationSource.channelToOrigin(6);
+        System.out.println(origin);
+    }
 }

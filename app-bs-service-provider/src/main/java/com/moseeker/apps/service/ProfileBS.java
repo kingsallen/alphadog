@@ -111,6 +111,7 @@ public class ProfileBS {
             logger.info("ProfileBS retrieveProfile user exist");
             //查找该帐号是否有profile
             int origin = ApplicationSource.channelToOrigin(channel);
+            logger.info("ProfileBS retrieveProfile origin:{}", origin);
             JobApplication application = initApplication(user.getId(), positionId, position.getCompany_id(), origin);
             logger.info("ProfileBS retrieveProfile application:{}", application);
             //更新用户数据
