@@ -769,7 +769,7 @@ public class TalentPoolEntity {
             if(this.isHrtalent(userId,hrId)>0){
                 Set<Integer> userIds=new HashSet<>();
                 userIds.add(userId);
-                this.cancleTalents(userIds,hrId,companyId);
+                this.cancleTalents(userIds,hrId,companyId,1);
             }
         }
         if(this.isHrtalent(newuserId,hrId)==0){
@@ -809,13 +809,18 @@ public class TalentPoolEntity {
             for(Integer id:idList){
                 this.handlerTalentpoolTalent(id,companyId,flag,0,1);
             }
-            this.realTimeUpdate(this.converSetToList(idList));
+            if(flag==1){
+                this.realTimeUpdateUpload(this.converSetToList(idList));
+            }else{
+                this.realTimeUpdate(this.converSetToList(idList));
+            }
+
         }
     }
     /*
      删除人才
      */
-    public void cancleTalents(Set<Integer> idList,int hrId,int companyId){
+    public void cancleTalents(Set<Integer> idList,int hrId,int companyId,int flag){
         List<TalentpoolHrTalentRecord> pubTalentList=getHrPublicTalent(hrId);
         List<TalentpoolHrTalentRecord> recordList=new ArrayList<>();
         for(Integer userId:idList){
@@ -846,7 +851,11 @@ public class TalentPoolEntity {
 //            this.handleCancleTag(hrId,idList);
         this.handlerPublicTag(idList,companyId);
         logger.debug("执行实时更新的id========="+idList.toString());
-        this.realTimeUpdate(this.converSetToList(idList));
+        if(flag==1){
+            this.realTimeUpdateUpload(this.converSetToList(idList));
+        }else{
+            this.realTimeUpdate(this.converSetToList(idList));
+        }
     }
 
     /*
@@ -860,6 +869,15 @@ public class TalentPoolEntity {
         client.lpush(Constant.APPID_ALPHADOG,
                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
     }
+    public void realTimeUpdateUpload(List<Integer> userIdList){
+
+        Map<String,Object> result=new HashMap<>();
+        result.put("tableName","talentpool_upload");
+        result.put("user_id",userIdList);
+        client.lpush(Constant.APPID_ALPHADOG,
+                "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+    }
+
 
     /*
     将set转换为list
