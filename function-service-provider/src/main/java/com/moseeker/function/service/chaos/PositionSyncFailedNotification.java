@@ -10,6 +10,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.util.OccupationUtil;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
+import com.moseeker.common.iface.IChannelType;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
@@ -244,6 +245,50 @@ public class PositionSyncFailedNotification {
             logger.error(e.getMessage(), e);
             logger.error("发送职位同步刷新错误的邮件失败了:EmailTO:{}:Title:{}:Message:{}", recipients, subject.toString(), content.toString());
         }
+    }
+
+    public void sendHandlerFailureMail(String message, Exception handlerException) {
+        List<String> mails=devMails;
+        if (mails == null || mails.size() == 0) {
+            logger.error("没有配置同步邮箱地址!");
+            return;
+        }
+
+        try {
+
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
+
+            StringBuilder titleBuilder = new StringBuilder();
+            titleBuilder.append("【第三方职位同步结果处理失败】");
+
+            StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.append("【爬虫端传送的json】：").append(message).append(divider);
+
+            messageBuilder.append("【失败信息】:").append(handlerException.getMessage()).append(divider);
+
+            emailBuilder.setSubject(titleBuilder.toString());
+            emailBuilder.setContent(messageBuilder.toString());
+            if (mails.size() > 1) {
+                emailBuilder.addCCList(mails.subList(1, mails.size()));
+            }
+            Email email = emailBuilder.build();
+            email.send(3, new Email.EmailListener() {
+                @Override
+                public void success() {
+                    logger.info("email send messageDelivered");
+                }
+
+                @Override
+                public void failed(Exception e) {
+                    logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+
     }
 
     private void buildExtContext(int channel,Object extThirdPartyPosition,StringBuilder emailMessgeBuilder){
