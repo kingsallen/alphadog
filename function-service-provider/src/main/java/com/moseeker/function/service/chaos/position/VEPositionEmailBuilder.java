@@ -34,17 +34,7 @@ public class VEPositionEmailBuilder implements PositionEmailBuilder<ThirdpartyVe
 
         String json=redisClient.get(RefreshConstant.APP_ID,RefreshConstant.VERY_EAST_REDIS_PARAM_KEY,"");
 
-        if(StringUtils.isNullOrEmpty(json)){
-            logger.error("veryeast has no redis param!");
-            return map;
-        }
-
         JSONObject obj=JSONObject.parseObject(json);
-
-        if(obj==null){
-            logger.error("veryeast has no redis param!");
-            return map;
-        }
 
         JSONArray accommodations=obj.getJSONArray("accommodation");
         JSONArray computerLevels=obj.getJSONArray("computerLevel");

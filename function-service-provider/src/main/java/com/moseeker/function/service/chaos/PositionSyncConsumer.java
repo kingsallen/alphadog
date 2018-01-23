@@ -50,7 +50,7 @@ public class PositionSyncConsumer  {
      * @param pojo
      */
     @CounterIface
-    public void positionSyncComplete(PositionForSyncResultPojo pojo) {
+    public void positionSyncComplete(PositionForSyncResultPojo pojo) throws BIZException {
 
         if (pojo == null) return;
 
@@ -85,6 +85,7 @@ public class PositionSyncConsumer  {
         } catch (BIZException e) {
             e.printStackTrace();
             logger.error("读取职位同步队列后无法更新到数据库:{}", JSON.toJSONString(data));
+            throw e;
         }
 
         if (pojo.getStatus() == 2) {
@@ -95,6 +96,7 @@ public class PositionSyncConsumer  {
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.getMessage(), e);
+                throw e;
             }
         }
 

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeam implements Serializable {
 
-    private static final long serialVersionUID = -1863161737;
+    private static final long serialVersionUID = 1407211245;
 
     private Integer   id;
     private String    name;
@@ -40,6 +40,7 @@ public class HrTeam implements Serializable {
     private String    teamDetail;
     private Integer   disable;
     private String    subTitle;
+    private String    resAttrs;
 
     public HrTeam() {}
 
@@ -59,6 +60,7 @@ public class HrTeam implements Serializable {
         this.teamDetail = value.teamDetail;
         this.disable = value.disable;
         this.subTitle = value.subTitle;
+        this.resAttrs = value.resAttrs;
     }
 
     public HrTeam(
@@ -76,7 +78,8 @@ public class HrTeam implements Serializable {
         Integer   resId,
         String    teamDetail,
         Integer   disable,
-        String    subTitle
+        String    subTitle,
+        String    resAttrs
     ) {
         this.id = id;
         this.name = name;
@@ -93,6 +96,7 @@ public class HrTeam implements Serializable {
         this.teamDetail = teamDetail;
         this.disable = disable;
         this.subTitle = subTitle;
+        this.resAttrs = resAttrs;
     }
 
     public Integer getId() {
@@ -215,6 +219,14 @@ public class HrTeam implements Serializable {
         this.subTitle = subTitle;
     }
 
+    public String getResAttrs() {
+        return this.resAttrs;
+    }
+
+    public void setResAttrs(String resAttrs) {
+        this.resAttrs = resAttrs;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrTeam (");
@@ -234,6 +246,7 @@ public class HrTeam implements Serializable {
         sb.append(", ").append(teamDetail);
         sb.append(", ").append(disable);
         sb.append(", ").append(subTitle);
+        sb.append(", ").append(resAttrs);
 
         sb.append(")");
         return sb.toString();
