@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogResumeRecord extends TableImpl<LogResumeRecordRecord> {
 
-    private static final long serialVersionUID = 271326307;
+    private static final long serialVersionUID = -1916963349;
 
     /**
      * The reference instance of <code>logdb.log_resume_record</code>
@@ -85,11 +85,6 @@ public class LogResumeRecord extends TableImpl<LogResumeRecordRecord> {
      * The column <code>logdb.log_resume_record.create_time</code>. 创建时间
      */
     public final TableField<LogResumeRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
-
-    /**
-     * The column <code>logdb.log_resume_record.uuid</code>. profile的uuid标识,与主一一应
-     */
-    public final TableField<LogResumeRecordRecord, String> UUID = createField("uuid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "profile的uuid标识,与主一一应");
 
     /**
      * Create a <code>logdb.log_resume_record</code> table reference

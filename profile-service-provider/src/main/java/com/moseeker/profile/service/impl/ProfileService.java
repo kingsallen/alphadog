@@ -497,7 +497,6 @@ public class ProfileService {
                             logResumeRecordRecord.setErrorLog("日期转换异常: " + e.getMessage());
                             logResumeRecordRecord.setFieldValue("projectexp: {\"startDate\": " + projectexpObj.getStart_date() + "\", \"endDate\":" + projectexpObj.getEnd_date()+"}");
                             logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setUuid(uuid);
                             logResumeRecordRecord.setFileName(fileName);
                             logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
                             resumeDao.addRecord(logResumeRecordRecord);
@@ -538,7 +537,6 @@ public class ProfileService {
                             logResumeRecordRecord.setErrorLog("日期转换异常: " + e.getMessage());
                             logResumeRecordRecord.setFieldValue("education: {\"startDate\": " + educationObj.getStart_date() + "\", \"endDate\":" + educationObj.getEnd_date()+"}");
                             logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setUuid(uuid);
                             logResumeRecordRecord.setFileName(fileName);
                             logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
                             resumeDao.addRecord(logResumeRecordRecord);
@@ -584,7 +582,6 @@ public class ProfileService {
                             logResumeRecordRecord.setErrorLog("公司名称为空");
                             logResumeRecordRecord.setFieldValue("job_exp_obj: " + JSONObject.toJSONString(jobExpObj));
                             logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setUuid(uuid);
                             logResumeRecordRecord.setFileName(fileName);
                             logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
                             resumeDao.addRecord(logResumeRecordRecord);
@@ -598,7 +595,6 @@ public class ProfileService {
                             logResumeRecordRecord.setErrorLog("公司规模转换异常: " + e.getMessage());
                             logResumeRecordRecord.setFieldValue("companyScale: " + jobExpObj.getJob_cpy_size());
                             logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setUuid(uuid);
                             logResumeRecordRecord.setFileName(fileName);
                             logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
                             resumeDao.addRecord(logResumeRecordRecord);
@@ -619,7 +615,6 @@ public class ProfileService {
                             logResumeRecordRecord.setErrorLog("日期转换异常: " + e.getMessage());
                             logResumeRecordRecord.setFieldValue("workexp: {\"startDate\": " + jobExpObj.getStart_date() + "\", \"endDate\":" + jobExpObj.getEnd_date()+"}");
                             logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setUuid(uuid);
                             logResumeRecordRecord.setFileName(fileName);
                             logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
                             resumeDao.addRecord(logResumeRecordRecord);
@@ -629,7 +624,6 @@ public class ProfileService {
                             LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
                             logResumeRecordRecord.setErrorLog("工作职位为空: ");
                             logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setUuid(uuid);
                             logResumeRecordRecord.setFileName(fileName);
                             logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
                             resumeDao.addRecord(logResumeRecordRecord);
@@ -673,7 +667,6 @@ public class ProfileService {
                         logResumeRecordRecord.setErrorLog("期望薪资转换异常: " + e.getMessage());
                         logResumeRecordRecord.setFieldValue("expectSalary: " + resumeObj.getResult().getExpect_salary());
                         logResumeRecordRecord.setUserId(uid);
-                        logResumeRecordRecord.setUuid(uuid);
                         logResumeRecordRecord.setFileName(fileName);
                         logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
                         resumeDao.addRecord(logResumeRecordRecord);
@@ -691,7 +684,6 @@ public class ProfileService {
                         logResumeRecordRecord.setErrorLog("期望城市转换异常: ");
                         logResumeRecordRecord.setFieldValue("expectJlocation: " + resumeObj.getResult().getExpect_jlocation());
                         logResumeRecordRecord.setUserId(uid);
-                        logResumeRecordRecord.setUuid(uuid);
                         logResumeRecordRecord.setFileName(fileName);
                         logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
                         resumeDao.addRecord(logResumeRecordRecord);
@@ -713,7 +705,6 @@ public class ProfileService {
                         logResumeRecordRecord.setErrorLog("期望职能转换异常: ");
                         logResumeRecordRecord.setFieldValue("expectJob: " + resumeObj.getResult().getExpect_job());
                         logResumeRecordRecord.setUserId(uid);
-                        logResumeRecordRecord.setUuid(uuid);
                         logResumeRecordRecord.setFileName(fileName);
                         logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
                         resumeDao.addRecord(logResumeRecordRecord);
@@ -747,7 +738,6 @@ public class ProfileService {
                     logResumeRecordRecord.setErrorLog("证书为空，证书内容却不为空 ");
                     logResumeRecordRecord.setFieldValue("contCertificate: " + resumeObj.getResult().getCont_certificate());
                     logResumeRecordRecord.setUserId(uid);
-                    logResumeRecordRecord.setUuid(uuid);
                     logResumeRecordRecord.setFileName(fileName);
                     logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
                     resumeDao.addRecord(logResumeRecordRecord);
@@ -779,7 +769,6 @@ public class ProfileService {
                         logResumeRecordRecord.setErrorLog("出生日期转换异常: " + e.getMessage());
                         logResumeRecordRecord.setFieldValue("birthday: " + resumeObj.getResult().getBirthday());
                         logResumeRecordRecord.setUserId(uid);
-                        logResumeRecordRecord.setUuid(uuid);
                         logResumeRecordRecord.setFileName(fileName);
                         logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
                         resumeDao.addRecord(logResumeRecordRecord);
