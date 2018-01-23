@@ -1286,30 +1286,102 @@ public class WholeProfileService {
         }
         if(resume.get("projectexps")==null||StringUtils.isEmptyList((List)resume.get("projectexps"))){
             resume.put("projectexps",this.getProjectExpById(profileId));
+        }else{
+            List<Map<String,Object>> projectList=(List)resume.get("projectexps");
+            if(projectList.size()==1){
+                Map<String,Object> map=projectList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("projectexps",this.getProjectExpById(profileId));
+                }
+            }
         }
         if(resume.get("skills")==null||StringUtils.isEmptyList((List)resume.get("skills"))){
             resume.put("skills",this.getSkillExpById(profileId));
+        }else{
+            List<Map<String,Object>> skillList=(List)resume.get("skills");
+            if(skillList.size()==1){
+                Map<String,Object> map=skillList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("skills",this.getSkillExpById(profileId));
+                }
+            }
         }
         if(resume.get("workexps")==null||StringUtils.isEmptyList((List)resume.get("workexps"))){
             resume.put("workexps",this.getWorkExpsById(profileId));
+        }else{
+            List<Map<String,Object>> workExpsList=(List)resume.get("workexps");
+            if(workExpsList.size()==1){
+                Map<String,Object> map=workExpsList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("workexps",this.getWorkExpsById(profileId));
+                }
+            }
         }
         if(resume.get("educations")==null||StringUtils.isEmptyList((List)resume.get("educations"))){
             resume.put("educations",this.getEducationsById(profileId));
+        }else{
+            List<Map<String,Object>> educationsList=(List)resume.get("educations");
+            if(educationsList.size()==1){
+                Map<String,Object> map=educationsList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("educations",this.getEducationsById(profileId));
+                }
+            }
         }
         if(resume.get("languages")==null||StringUtils.isEmptyList((List)resume.get("languages"))){
             resume.put("languages",this.getLanguagesById(profileId));
+        }else{
+            List<Map<String,Object>> languagesList=(List)resume.get("languages");
+            if(languagesList.size()==1){
+                Map<String,Object> map=languagesList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("languages",this.getLanguagesById(profileId));
+                }
+            }
         }
         if(resume.get("intentions")==null||StringUtils.isEmptyList((List)resume.get("intentions"))){
             resume.put("intentions",this.getIntentions(profileId));
+        }else{
+            List<Map<String,Object>> intentionsList=(List)resume.get("intentions");
+            if(intentionsList.size()==1){
+                Map<String,Object> map=intentionsList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("intentions",this.getIntentions(profileId));
+                }
+            }
         }
         if(resume.get("credentials")==null||StringUtils.isEmptyList((List)resume.get("credentials"))){
             resume.put("credentials",this.getCredentialsById(profileId));
+        }else{
+            List<Map<String,Object>> credentialsList=(List)resume.get("credentials");
+            if(credentialsList.size()==1){
+                Map<String,Object> map=credentialsList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("credentials",this.getCredentialsById(profileId));
+                }
+            }
         }
         if(resume.get("awards")==null||StringUtils.isEmptyList((List)resume.get("awards"))){
             resume.put("awards",this.getAwardsById(profileId));
+        }else{
+            List<Map<String,Object>> awardsList=(List)resume.get("awards");
+            if(awardsList.size()==1){
+                Map<String,Object> map=awardsList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("awards",this.getAwardsById(profileId));
+                }
+            }
         }
         if(resume.get("works")==null||StringUtils.isEmptyList((List)resume.get("works"))){
             resume.put("works",this.getWorksById(profileId));
+        }else{
+            List<Map<String,Object>> getWorksByIdList=(List)resume.get("works");
+            if(getWorksByIdList.size()==1){
+                Map<String,Object> map=getWorksByIdList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("works",this.getWorksById(profileId));
+                }
+            }
         }
 
     }
