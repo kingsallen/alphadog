@@ -119,9 +119,9 @@ public class PositionController {
             query.setEmployment_type((String) map.getOrDefault("employment_type", ""));
             query.setExperience((String) map.getOrDefault("experience", ""));
             query.setSalary((String) map.getOrDefault("salary", ""));
-            query.setDegree((String) map.getOrDefault("degree", ""));
-            query.setDepartment((String) map.getOrDefault("department", ""));
-            query.setCustom((String) map.getOrDefault("custom", ""));
+            query.setDegree(StringUtils.filterStringForSearch((String) map.getOrDefault("degree", "")));
+            query.setDepartment(StringUtils.filterStringForSearch((String) map.getOrDefault("department", "")));
+            query.setCustom(StringUtils.filterStringForSearch((String) map.getOrDefault("custom", "")));
             query.setDid(Integer.valueOf((String) map.getOrDefault("did", "0")));
 
             String param_setOrder_by_priority = (String) map.getOrDefault("order_by_priority", "True");
