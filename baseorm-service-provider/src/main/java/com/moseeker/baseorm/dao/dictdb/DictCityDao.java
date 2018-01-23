@@ -88,50 +88,77 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
         return record;
     }
 
+    public DictCityDO getCityDOByCode(int city_code) {
+        Query query=new Query.QueryBuilder().where(DictCity.DICT_CITY.CODE.getName(),city_code).buildQuery();
+        return getData(query);
+    }
+
 
     /**
      * 获取完整的城市级别
      * 例:徐家汇 -> 上海，徐家汇
      * 具体逻辑：
      * 例如：栾城区（130111）- 石家庄（130100） - 河北省（130000）
-     * 城市选择的是130111，
-     * 要找上一级，130110，找到鹿泉区，level为3，和栾城区相同为3，放弃，
-     * 再找上一级，130100，找到石家庄，level为2，那上一级就是它
-     * 再找上一级，130000，找到河北省，level为1，那再上一级就是它
+     * 城市传入的的是130111，先计算出130111、130110、130100、130000、100000
+     * 在城市表中找到这些code存在的对应城市list
+     * 处理5开头的由于重庆市
+     * 返回list
      * @param city
      * @return
      */
     public List<DictCityDO> getMoseekerLevels(DictCityDO city) {
+        return getMoseekerLevels(city,null);
+    }
+    public List<DictCityDO> getMoseekerLevels(DictCityDO city,Map<Integer,DictCityDO> allCity) {
 
         if (city == null || city.getCode() == 0) {
             return new ArrayList<>();
         }
 
-        int divide = 10;
-
-        Set<Integer> allCodes = new HashSet<>();
-        allCodes.add(city.getCode());
-        while (city.getCode() / divide > 0) {
-            allCodes.add((city.getCode() / divide) * divide);
-            divide *= 10;
+        if(allCity!=null){
+            city=allCity.get(city.getCode());
+        }else{
+            city=getCityDOByCode(city.getCode());
         }
 
-        if (allCodes.size() == 0) {
-            List<DictCityDO> fullLevels = new ArrayList<>();
-            fullLevels.add(city);
-            return fullLevels;
+        if(city == null){
+            return new ArrayList<>(Arrays.asList(city));
         }
-        Query query = new Query.QueryBuilder()
-                .where(new com.moseeker.common.util.query.Condition(DictCity.DICT_CITY.CODE.getName(), allCodes, ValueOp.IN))
-                .orderBy(DictCity.DICT_CITY.CODE.getName(), Order.ASC)
-                .buildQuery();
 
-        List<DictCityDO> allCities = getDatas(query);
-
+        Set<Integer> allCodes = calcCityChain(city);
+        List<DictCityDO> allCities = getCityChain(allCodes,allCity);
         if (allCities == null || allCities.size() == 0) {
             return new ArrayList<>();
         }
 
+        removeInvalidCity(allCities);
+        removeEQLevelCity(allCities,city);
+
+        return allCities;
+    }
+
+    /**
+     * 去除同级城市
+     * @param allCities
+     * @param city
+     */
+    public void removeEQLevelCity(List<DictCityDO> allCities,DictCityDO city){
+        Iterator<DictCityDO> cityDOIterator = allCities.iterator();
+        while (cityDOIterator.hasNext()) {
+            DictCityDO cityD = cityDOIterator.next();
+            if (cityD.getLevel() == 0) {
+                cityDOIterator.remove();
+            } else if (cityD.getLevel()==city.getLevel() && cityD.getCode()!=city.getCode()) {
+                cityDOIterator.remove();
+            }
+        }
+    }
+
+    /**
+     * 去除不符合规范城市
+     * @param allCities
+     */
+    public void removeInvalidCity(List<DictCityDO> allCities){
         Iterator<DictCityDO> cityDOIterator = allCities.iterator();
         //5开头的由于重庆市的code不符合规范特殊处理
         if (allCities.get(allCities.size() - 1).getCode() >= 500000 && allCities.get(allCities.size() - 1).getCode() < 510000) {
@@ -151,22 +178,51 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
                 }
             }
         }
+    }
 
-        cityDOIterator = allCities.iterator();
-        allCodes.clear();
-        Set<Byte> uniqLevels = new HashSet<>();
-        while (cityDOIterator.hasNext()) {
-            DictCityDO cityD = cityDOIterator.next();
-            if (cityD.getLevel() == 0) {
-                cityDOIterator.remove();
-            } else if (uniqLevels.contains(cityD.getLevel())) {
-                cityDOIterator.remove();
-            } else {
-                uniqLevels.add(cityD.getLevel());
+    public List<DictCityDO> getCityChain(Set<Integer> allCodes, Map<Integer,DictCityDO> allCity){
+        List<DictCityDO> result=null;
+        if(allCity==null){
+            Query query = new Query.QueryBuilder()
+                    .where(new com.moseeker.common.util.query.Condition(DictCity.DICT_CITY.CODE.getName(), allCodes, ValueOp.IN))
+                    .orderBy(DictCity.DICT_CITY.CODE.getName(), Order.ASC)
+                    .buildQuery();
+
+            result= getDatas(query);
+
+        }else{
+            result=new ArrayList<>();
+
+            TreeSet<Integer> sortAllCodes=new TreeSet<>(new Comparator<Integer>() {
+                @Override
+                public int compare(Integer o1, Integer o2) {
+                    return o1-o2;
+                }
+            });
+            sortAllCodes.addAll(allCodes);
+
+            Iterator<Integer> it=sortAllCodes.iterator();
+            while (it.hasNext()){
+                Integer key=it.next();
+                if(allCity.containsKey(key)){
+                    result.add(allCity.get(key));
+                }
             }
         }
 
-        return allCities;
+        return result;
+    }
+
+    public Set<Integer> calcCityChain(DictCityDO city){
+        int divide = 10;
+
+        Set<Integer> allCodes = new HashSet<>();
+        allCodes.add(city.getCode());
+        while (city.getCode() / divide > 0) {
+            allCodes.add((city.getCode() / divide) * divide);
+            divide *= 10;
+        }
+        return allCodes;
     }
 
     public List<List<DictCityDO>> getFullCity(List<DictCityDO> citys) {

@@ -1,5 +1,6 @@
 package com.moseeker.position.service.third;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
@@ -12,6 +13,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
+import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
@@ -21,6 +23,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -36,6 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by zhangdi on 2017/7/17.
@@ -61,8 +65,11 @@ public class ThirdPositionService {
     @Autowired
     JobPositionDao positionDao;
 
+    @Autowired
+    PositionChangeUtil positionChangeUtil;
+
     @CounterIface
-    public ThirdPartyPositionResult getThirdPartyPositionInfo(ThirdPartyPositionInfoForm infoForm) {
+    public ThirdPartyPositionResult getThirdPartyPositionInfo(ThirdPartyPositionInfoForm infoForm) throws BIZException {
 
         ThirdPartyPositionResult result = new ThirdPartyPositionResult();
         List<ThirdPartyPositionInfo> datas = new ArrayList<>();
@@ -141,7 +148,7 @@ public class ThirdPositionService {
         queryBuilder.orderBy(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(), Order.DESC);
 
         /** 找到所有的第三方职位 **/
-        List<HrThirdPartyPositionDO> thirdPositions = thirdPartyPositionDao.getDatas(queryBuilder.buildQuery());
+        List<TwoParam<HrThirdPartyPositionDO,Object>> thirdPositions = thirdPartyPositionDao.getDatas(queryBuilder.buildQuery());
 
         if (thirdPositions == null || thirdPositions.size() == 0) {
             return result;
@@ -151,7 +158,9 @@ public class ThirdPositionService {
         Set<Integer> positionIds = new HashSet<>();
         //所有的第三方帐号ID
         Set<Integer> thirdAccountIds = new HashSet<>();
-        for (HrThirdPartyPositionDO thirdPartyPosition : thirdPositions) {
+
+        for (TwoParam<HrThirdPartyPositionDO,Object> p: thirdPositions) {
+            HrThirdPartyPositionDO thirdPartyPosition=p.getR1();
             positionIds.add(thirdPartyPosition.getPositionId());
             thirdAccountIds.add(thirdPartyPosition.getThirdPartyAccountId());
         }
@@ -218,7 +227,8 @@ public class ThirdPositionService {
         JobPositionDO position;
         HrCompanyDO company;
         HrThirdPartyAccountDO thirdAccount;
-        for (HrThirdPartyPositionDO thirdPosition : thirdPositions) {
+        for (TwoParam<HrThirdPartyPositionDO,Object> p : thirdPositions) {
+            HrThirdPartyPositionDO thirdPosition=p.getR1();
             data = new ThirdPartyPositionInfo();
             position = positionMap.get(thirdPosition.getPositionId());
             thirdAccount = thirdAccountMap.get(thirdPosition.getThirdPartyAccountId());
@@ -231,6 +241,7 @@ public class ThirdPositionService {
             }
 
             data.setThirdPosition(thirdPosition);
+            data.setExtThirdPosition(PositionChangeUtil.objectToStr(p.getR2()));
             data.setThirdAccount(thirdAccount);
             data.setPosition(position);
             data.setHr(hr);
@@ -242,11 +253,11 @@ public class ThirdPositionService {
     }
 
 
-    public int updateThirdPartyPosition(HrThirdPartyPositionDO data) {
+    public int updateThirdPartyPosition(HrThirdPartyPositionDO data,Map<String,String> extData) throws BIZException {
         if (data.getId() == 0) {
             throw new CommonException(-1, "ID不能为空!");
         }
-        int result = thirdPartyPositionDao.updateData(data);
+        int result = thirdPartyPositionDao.updateData(data,positionChangeUtil.toThirdPartyPosition(data.getChannel(),extData));
 
         if (result < 1) {
             throw ExceptionUtils.getCommonException(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -256,17 +267,17 @@ public class ThirdPositionService {
     }
 
     @Transactional
-    public int updateThirdPartyPositionWithAccount(HrThirdPartyPositionDO thirdPartyPosition, HrThirdPartyAccountDO thirdPartyAccount) {
+    public int updateThirdPartyPositionWithAccount(HrThirdPartyPositionDO thirdPartyPosition, HrThirdPartyAccountDO thirdPartyAccount,Map<String,String> extData) throws BIZException {
         if (thirdPartyPosition.getId() == 0) {
             throw new CommonException(-1, "ID不能为空!");
         }
 
-        HrThirdPartyPositionDO thirdPostion = thirdPartyPositionDao.getThirdPositionById(thirdPartyPosition.getId());
+        TwoParam<HrThirdPartyPositionDO,Object> thirdPostion = thirdPartyPositionDao.getThirdPositionById(thirdPartyPosition.getId());
         if (thirdPostion == null) {
             throw new CommonException(-1, "无效的第三方帐号！");
         }
-        thirdPartyAccount.setId(thirdPostion.getThirdPartyAccountId());
-        int result = thirdPartyPositionDao.updateData(thirdPartyPosition);
+        thirdPartyAccount.setId(thirdPostion.getR1().getThirdPartyAccountId());
+        int result = thirdPartyPositionDao.updateData(thirdPartyPosition,positionChangeUtil.toThirdPartyPosition(thirdPartyAccount.getChannel(),extData));
 
         if (result < 1) {
             throw ExceptionUtils.getCommonException(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);

@@ -1,11 +1,10 @@
 package com.moseeker.position.service.position;
 
 import com.moseeker.position.service.position.alipaycampus.AlipaycampusDegree;
-import com.moseeker.position.service.position.job51.Job51Degree;
-import com.moseeker.position.service.position.liepin.LiepinDegree;
+import com.moseeker.position.service.position.job51.pojo.Job51Degree;
+import com.moseeker.position.service.position.liepin.pojo.LiepinDegree;
 import com.moseeker.position.service.position.qianxun.Degree;
-import com.moseeker.position.service.position.zhilian.ZhilianDegree;
-import com.moseeker.position.service.position.alipaycampus.AlipaycampusDegree;
+import com.moseeker.position.service.position.zhilian.pojo.ZhilianDegree;
 
 
 /**
