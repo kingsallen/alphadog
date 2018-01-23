@@ -43,9 +43,12 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import org.apache.thrift.TException;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1074,7 +1077,7 @@ public class WholeProfileService {
     /*
      合并上传的简历
      */
-    public Response combinationProfile(String params,int companyId ){
+    public Response combinationProfile(String params,int companyId ) throws TException {
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
@@ -1141,6 +1144,12 @@ public class WholeProfileService {
         String mobile = ((String) map.get("mobile"));
         if(StringUtils.isNullOrEmpty(mobile)){
             return ResponseUtils.fail(1,"手机号不能为空");
+        }
+        if(!org.apache.commons.lang.StringUtils.isNumeric(mobile)){
+            return ResponseUtils.fail(1,"手机号必须全部为数字");
+        }
+        if(mobile.length()!=11){
+            return ResponseUtils.fail(1,"手机号必须为11位");
         }
         UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
         int newUerId=0;
@@ -1275,7 +1284,7 @@ public class WholeProfileService {
     /*
       合并简历
      */
-    private void combinationProfile(Map<String,Object> resume,int profileId){
+    private void combinationProfile(Map<String,Object> resume,int profileId) throws TException {
         Map<String,Object> profileBasic=this.combinationBasic((Map<String,Object>) resume.get("basic"),profileId);
         if(profileBasic!=null){
             resume.put("basic",profileBasic);
@@ -1388,66 +1397,138 @@ public class WholeProfileService {
     /*
      根据id获取ProjectExp
      */
-    private List<Map<String,Object>> getProjectExpById(int profileId){
+    private List<Map<String,Object>> getProjectExpById(int profileId) throws TException {
         Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
-        List<Map<String,Object>> list=projectExpDao.getMaps(query);
-        return list;
+        List<ProfileProjectexpDO> list=projectExpDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileProjectexpDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
     }
     /*
      根据id获取Skill
      */
-    private List<Map<String,Object>> getSkillExpById(int profileId){
+    private List<Map<String,Object>> getSkillExpById(int profileId) throws TException {
         Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
-        List<Map<String,Object>> list=skillDao.getMaps(query);
-        return list;
+        List<ProfileSkillDO> list=skillDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileSkillDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
     }
     /*
      根据id获取WorkExps
      */
-    private List<Map<String,Object>> getWorkExpsById(int profileId){
+    private List<Map<String,Object>> getWorkExpsById(int profileId) throws TException {
         Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
-        List<Map<String,Object>> list=workExpDao.getMaps(query);
-        return list;
+        List<ProfileWorkexpDO> list=workExpDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileWorkexpDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
     }
     /*
      根据id获取Languages
      */
-    private List<Map<String,Object>> getLanguagesById(int profileId){
+    private List<Map<String,Object>> getLanguagesById(int profileId) throws TException {
         Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
-        List<Map<String,Object>> list=languageDao.getMaps(query);
-        return list;
+        List<ProfileLanguageDO> list=languageDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileLanguageDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
     }
     /*
      根据id获取Educations
      */
-    private List<Map<String,Object>> getEducationsById(int profileId){
+    private List<Map<String,Object>> getEducationsById(int profileId) throws TException {
         Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
-        List<Map<String,Object>> list=educationDao.getMaps(query);
-        return list;
+        List<ProfileEducationDO> list=educationDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileEducationDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
     }
     /*
      根据id获取Credentials
      */
-    private List<Map<String,Object>> getCredentialsById(int profileId){
+    private List<Map<String,Object>> getCredentialsById(int profileId) throws TException {
         Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
-        List<Map<String,Object>> list=credentialsDao.getMaps(query);
-        return list;
+        List<ProfileCredentialsDO> list=credentialsDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileCredentialsDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
     }
     /*
      根据id获取Awards
      */
-    private List<Map<String,Object>> getAwardsById(int profileId){
+    private List<Map<String,Object>> getAwardsById(int profileId) throws TException {
         Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
-        List<Map<String,Object>> list=awardsDao.getMaps(query);
-        return list;
+        List<ProfileAwardsDO> list=awardsDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileAwardsDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
     }
     /*
     根据id获取Works
     */
-    private List<Map<String,Object>> getWorksById(int profileId){
+    private List<Map<String,Object>> getWorksById(int profileId) throws TException {
         Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
-        List<Map<String,Object>> list=worksDao.getMaps(query);
-        return list;
+        List<ProfileWorksDO> list=worksDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileWorksDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
     }
     /*
      根据id获取Intention
@@ -1464,44 +1545,50 @@ public class WholeProfileService {
     /*
      合并profile_basic
      */
-    public Map<String,Object>  combinationBasic(Map<String,Object> basicMap, int profileId) {
+    public Map<String,Object>  combinationBasic(Map<String,Object> basicMap, int profileId) throws TException {
         if (basicMap != null) {
             Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
-            Map<String,Object> basic = profileBasicDao.getMap(query);
+            ProfileBasicDO basic = profileBasicDao.getData(query,ProfileBasicDO.class);
             if (basic != null) {
-                if (StringUtils.isNotNullOrEmpty((String)basicMap.get("name")) && StringUtils.isNullOrEmpty((String)basic.get("name"))) {
-                    basic.put("name",(String)basicMap.get("name"));
+                if (StringUtils.isNotNullOrEmpty((String)basicMap.get("name")) && StringUtils.isNullOrEmpty(basic.getName())) {
+                    basic.setName((String)basicMap.get("name"));
                 }
-                if (basicMap.get("gender") != null && basic.get("gender") == null) {
-                    basic.put("gender",basicMap.get("gender"));
+                if (basicMap.get("gender") != null && basic.getGender()==0) {
+                    int gender=Integer.parseInt(String.valueOf(basicMap.get("gender")));
+                    basic.setGender((byte)gender);
                 }
-                if (basicMap.get("nationalityName") != null && basic.get("nationalityName") == null) {
-                    basic.put("nationalityName",basicMap.get("nationalityName"));
+                if(basicMap.get("nationalityCode") != null&& basic.getNationalityCode()==0){
+                    int nationalityCode=Integer.parseInt(String.valueOf(basicMap.get("nationalityCode")));
+                    basic.setNationalityCode(nationalityCode);
                 }
-                if (basicMap.get("citycode") != null && basic.get("citycode") == null) {
-                    basic.put("citycode",basicMap.get("citycode"));
+                if (basicMap.get("nationalityName") != null && StringUtils.isNullOrEmpty(basic.getNationalityName())) {
+                    basic.setNationalityName((String)basicMap.get("nationalityName"));
                 }
-                if (basicMap.get("cityName") != null && basic.get("cityName") == null) {
-                    basic.put("cityName",basicMap.get("cityName"));
+                if (basicMap.get("citycode") != null && basic.getCityCode()==0) {
+                    int citycode=Integer.parseInt(String.valueOf(basicMap.get("citycode")));
+                    basic.setCityCode(citycode);
                 }
-                if (basicMap.get("birth") != null && basic.get("birth") == null) {
-                    basic.put("birth",basicMap.get("birth"));
+                if (basicMap.get("cityName") != null && StringUtils.isNullOrEmpty(basic.getCityName())) {
+                    basic.setCityName((String)basicMap.get("cityName"));
                 }
-                if (basicMap.get("weixin") != null && basic.get("weixin") == null) {
-                    basic.put("weixin",basicMap.get("weixin"));
+                if (basicMap.get("birth") != null && StringUtils.isNullOrEmpty(basic.getBirth())) {
+                    basic.setBirth((String)basicMap.get("birth") );
                 }
-                if (basicMap.get("qq") != null && basic.get("qq") == null) {
-                    basic.put("qq",basicMap.get("qq"));
+                if (basicMap.get("weixin") != null && StringUtils.isNullOrEmpty(basic.getWeixin())) {
+                    basic.setWeixin((String)basicMap.get("weixin") );
                 }
-
-                if (basicMap.get("motto") != null && basic.get("motto") == null) {
-                    basic.put("motto",basicMap.get("motto"));
+                if (basicMap.get("qq") != null && StringUtils.isNullOrEmpty(basic.getQq())) {
+                    basic.setQq((String)basicMap.get("qq"));
                 }
-                if (basicMap.get("selfIntroduction") != null && basic.get("selfIntroduction") == null) {
-                    basic.put("selfIntroduction",basicMap.get("selfIntroduction"));
+                if (basicMap.get("motto") != null && StringUtils.isNullOrEmpty(basic.getMotto())) {
+                    basic.setMotto((String)basicMap.get("motto"));
                 }
-
-                return basic;
+                if (basicMap.get("selfIntroduction") != null &&  StringUtils.isNullOrEmpty(basic.getSelfIntroduction())) {
+                    basic.setSelfIntroduction((String)basicMap.get("selfIntroduction"));
+                }
+                String basicDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(basic);
+                Map<String,Object> basicData= JSON.parseObject(basicDOs, Map.class);
+                return basicData;
             } else {
                 return basicMap;
             }
