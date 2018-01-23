@@ -149,7 +149,7 @@ public class TalentPoolService {
         Set<Integer> unApplierIdList=talentPoolEntity.filterIdList(applierIdList,idList);
 
         if(!StringUtils.isEmptySet(idList)){
-            talentPoolEntity.cancleTalents(idList,hrId,companyId);
+            talentPoolEntity.cancleTalents(idList,hrId,companyId,0);
         }
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
         if(result==null||result.isEmpty()){
