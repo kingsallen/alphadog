@@ -30,6 +30,7 @@ import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindOperati
 import com.moseeker.useraccounts.service.thirdpartyaccount.util.BindCheck;
 import com.moseeker.useraccounts.service.thirdpartyaccount.base.ThirdPartyAccountContext;
 import com.moseeker.useraccounts.service.thirdpartyaccount.util.BindUtil;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,6 +195,10 @@ public class ThirdPartyAccountService {
                     .buildUpdate();
             thirdPartyAccountHrDao.invalidByThirdPartyAccountId(accountId);
             thirdPartyAccount.setBinding((short)BindingStatus.UNDISPATCH.getValue());
+            //设置更新时间
+            FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
+            thirdPartyAccount.setUpdateTime(sdf.format(new Date()));
+
             thirdPartyAccountDao.updateData(thirdPartyAccount);
         } else {
 
