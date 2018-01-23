@@ -1284,31 +1284,31 @@ public class WholeProfileService {
         if(profileOtherRecord!=null){
             resume.put("others",profileOtherRecord);
         }
-        if(resume.get("projectexps")==null){
+        if(resume.get("projectexps")==null||StringUtils.isEmptyList((List)resume.get("projectexps"))){
             resume.put("projectexps",this.getProjectExpById(profileId));
         }
-        if(resume.get("skills")==null){
+        if(resume.get("skills")==null||StringUtils.isEmptyList((List)resume.get("skills"))){
             resume.put("skills",this.getSkillExpById(profileId));
         }
-        if(resume.get("workexps")==null){
+        if(resume.get("workexps")==null||StringUtils.isEmptyList((List)resume.get("workexps"))){
             resume.put("workexps",this.getWorkExpsById(profileId));
         }
-        if(resume.get("educations")==null){
+        if(resume.get("educations")==null||StringUtils.isEmptyList((List)resume.get("educations"))){
             resume.put("educations",this.getEducationsById(profileId));
         }
-        if(resume.get("languages")==null){
+        if(resume.get("languages")==null||StringUtils.isEmptyList((List)resume.get("languages"))){
             resume.put("languages",this.getLanguagesById(profileId));
         }
-        if(resume.get("intentions")==null){
+        if(resume.get("intentions")==null||StringUtils.isEmptyList((List)resume.get("intentions"))){
             resume.put("intentions",this.getIntentions(profileId));
         }
-        if(resume.get("credentials")==null){
+        if(resume.get("credentials")==null||StringUtils.isEmptyList((List)resume.get("credentials"))){
             resume.put("credentials",this.getCredentialsById(profileId));
         }
-        if(resume.get("awards")==null){
+        if(resume.get("awards")==null||StringUtils.isEmptyList((List)resume.get("awards"))){
             resume.put("awards",this.getAwardsById(profileId));
         }
-        if(resume.get("works")==null){
+        if(resume.get("works")==null||StringUtils.isEmptyList((List)resume.get("works"))){
             resume.put("works",this.getWorksById(profileId));
         }
 
