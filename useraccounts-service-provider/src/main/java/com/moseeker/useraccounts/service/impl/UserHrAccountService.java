@@ -1635,21 +1635,21 @@ public class UserHrAccountService {
             Query query = new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), wechat_id).and(UserWxUser.USER_WX_USER.UNIONID.getName(), unionId).buildQuery();
             userWxUserDO = userWxUserDao.getData(query);
             if (userWxUserDO == null)
-                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
             Query accountQuery = new Query.QueryBuilder().where(com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT.WXUSER_ID.getName(), userWxUserDO.getId()).buildQuery();
             accountDO = userHrAccountDao.getData(accountQuery);
             if (accountDO == null)
-                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
             account_id = accountDO.getId();
         }else{
             Query accountQuery = new Query.QueryBuilder().where(com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT.ID.getName(), account_id).buildQuery();
             accountDO = userHrAccountDao.getData(accountQuery);
             if (accountDO == null)
-                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
             Query query = new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.ID.getName(), accountDO.getWxuserId()).buildQuery();
             userWxUserDO = userWxUserDao.getData(query);
             if (userWxUserDO == null)
-                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
         }
         Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), account_id).buildQuery();
         HrCompanyAccountDO companyAccountDO = hrCompanyAccountDao.getData(companyAccountQuery);
