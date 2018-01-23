@@ -765,14 +765,17 @@ public class TalentPoolEntity {
      上传简历成为收藏人才
      */
     public void addUploadTalent(int userId,int newuserId,int hrId,int companyId,String fileName){
+        int flagResult=0;
         if(userId!=0&&newuserId!=0&&userId!=newuserId){
             if(this.isHrtalent(userId,hrId)>0){
+                flagResult=1;
                 Set<Integer> userIds=new HashSet<>();
                 userIds.add(userId);
                 this.cancleTalents(userIds,hrId,companyId,1);
             }
         }
         if(this.isHrtalent(newuserId,hrId)==0){
+            flagResult=1;
             Set<Integer> userSet=new HashSet<>();
             userSet.add(newuserId);
             this.addTalents(userSet,hrId,companyId,1);
@@ -781,6 +784,11 @@ public class TalentPoolEntity {
                 this.saveUploadProfileName(fileName,hrId,companyId);
             }
 
+        }
+        if(flagResult==0&&newuserId!=0){
+            Set<Integer> userSet=new HashSet<>();
+            userSet.add(newuserId);
+            this.realTimeUpdateUpload(this.converSetToList(userSet));
         }
     }
     /*
@@ -817,6 +825,7 @@ public class TalentPoolEntity {
 
         }
     }
+
     /*
      删除人才
      */
@@ -857,6 +866,7 @@ public class TalentPoolEntity {
             this.realTimeUpdate(this.converSetToList(idList));
         }
     }
+
 
     /*
      实时更新到redis
