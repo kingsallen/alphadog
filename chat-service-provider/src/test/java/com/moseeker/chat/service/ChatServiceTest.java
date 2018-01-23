@@ -46,8 +46,14 @@ public class ChatServiceTest {
     private ChatService chatService;
 
     @Test
+    public void listChatLog(){
+        System.out.println(JSON.toJSONString(chatService.listChatLogs(33 ,1, 10)));
+    }
+
+
+    @Test
     public void saveChat() throws Exception {
-        ChatVO chatVO=new ChatVO();
+        /*ChatVO chatVO=new ChatVO();
         chatVO.setId(0); // optional
         chatVO.setContent("您是否是在找这些职位:<a href=\" \">大数据分析师</a ><br><a href=\"http://platform.moseeker.com/m/position/1888996?wechat_signature=NjYyM2M4ZDAzOTk5NThmNjlhMGI0OWM2ZTgwOTk1Njc2MTU0Y2ZhOQ==\">数据分析师2</a ><br><a href=\"http://platform.moseeker.com/m/position/1885811?wechat_signature=NjYyM2M4ZDAzOTk5NThmNjlhMGI0OWM2ZTgwOTk1Njc2MTU0Y2ZhOQ==\">数据分析师</a ><br>"); // optional
         chatVO.setSpeaker((byte) 1); // optional
@@ -59,7 +65,21 @@ public class ChatServiceTest {
         chatVO.setRoomId(1); // optional
         chatVO.setPositionId(7);
 
-        JSON.toJSONString(chatVO);
+        JSON.toJSONString(chatVO);*/
+
+        String jsonChat="{" +
+                "  \"content\": \"名\"," +
+                "  \"id\": 0," +
+                "  \"origin\": 1," +
+                "  \"positionId\": 7," +
+                "  \"roomId\": 1," +
+                "  \"speaker\": 1," +
+                "  \"btnContent\": [{\"content\":\"是\"},{\"content\":\"否\"}]," +
+                "  \"picUrl\": \"http://www.baidu.com\"," +
+                "  \"msgType\": \"html\"" +
+                "}";
+
+        ChatVO chatVO=JSON.toJavaObject(JSON.parseObject(jsonChat),ChatVO.class);
 
         chatService.saveChat(chatVO);
 
