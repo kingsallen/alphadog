@@ -244,10 +244,8 @@ public class PositionService {
         if (jobPositionPojo.degree > 0) {
             String degreeName=getDictConstantJson(2101, jobPositionPojo.degree);
             jobPositionPojo.degree_name = degreeName;
-            searchData.setDegree_name(StringUtils.filterStringForSearch(degreeName));
-
         }
-
+        searchData.setDegree_name(StringUtils.filterStringForSearch(jobPositionPojo.degree_name));
         // 工作性质
         jobPositionPojo.employment_type_name = getDictConstantJson(2103, jobPositionPojo.employment_type);
 
@@ -261,7 +259,7 @@ public class PositionService {
                 JobCustomRecord jobCustomRecord = jobCustomDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobCustomId()).buildQuery());
                 if (jobCustomRecord != null && !"".equals(jobCustomRecord.getName())) {
                     jobPositionPojo.custom = jobCustomRecord.getName();
-                    searchData.setCustom(StringUtils.filterStringForSearch(jobCustomRecord.getName()));
+
                 }
             }
             if (jobPositionExtRecord.getJobOccupationId() > 0) {
@@ -269,15 +267,15 @@ public class PositionService {
                         jobOccupationDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobOccupationId()).buildQuery());
                 if (jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
                     jobPositionPojo.occupation = jobOccupationRecord.getName();
-                    searchData.setOccupation(StringUtils.filterStringForSearch(jobOccupationRecord.getName()));
+
                 }
             }
-        } else{
-                   jobPositionPojo.custom = "";
-                   jobPositionPojo.occupation = "";
-                   searchData.setCustom("");
-                   searchData.setOccupation("");
-    }
+         } else{
+               jobPositionPojo.custom = "";
+               jobPositionPojo.occupation = "";
+             }
+        searchData.setCustom(StringUtils.filterStringForSearch(jobPositionPojo.custom));
+        searchData.setOccupation(StringUtils.filterStringForSearch(jobPositionPojo.occupation));
 
     // 修改更新时间
         jobPositionPojo.publish_date_view = DateUtils.dateToPattern(jobPositionPojo.publish_date,
