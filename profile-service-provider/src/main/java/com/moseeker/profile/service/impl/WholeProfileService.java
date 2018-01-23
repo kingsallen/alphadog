@@ -1077,7 +1077,6 @@ public class WholeProfileService {
     public Response combinationProfile(String params,int companyId ){
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
-        handleResumeMap(resume);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         String mobile = ((String) map.get("mobile"));
         if(StringUtils.isNullOrEmpty(mobile)){
@@ -1096,6 +1095,7 @@ public class WholeProfileService {
         if (profileProfileMap != null&&!profileProfileMap.isEmpty()) {
             int profileId = (int)profileProfileMap.get("id");
             this.combinationProfile(resume,profileId);
+            handleResumeMap(resume);
             resume=StringUtils.underscoreNameMap(resume);
             return ResponseUtils.success(resume);
         }
