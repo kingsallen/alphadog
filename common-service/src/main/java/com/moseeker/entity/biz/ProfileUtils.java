@@ -682,27 +682,30 @@ public class ProfileUtils {
         处理basic中的超长字段
       */
 	private void basicMaxLimit(ProfileBasicRecord record){
-		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.BasicName.getLengthLimit()){
-			record.setName(this.handlerOutLimitString(record.getName(),ProfileAttributeLengthLimit.BasicName.getLengthLimit(),DEFAULT_FLAG));
-		}
-		if(StringUtils.isNotBlank(record.getNationalityName())&&record.getNationalityName().length()>ProfileAttributeLengthLimit.BasicNationalityName.getLengthLimit()){
-			record.setNationalityName(this.handlerOutLimitString(record.getNationalityName(),ProfileAttributeLengthLimit.BasicNationalityName.getLengthLimit(),DEFAULT_FLAG));
-		}
-		if(StringUtils.isNotBlank(record.getCityName())&&record.getCityName().length()>ProfileAttributeLengthLimit.BasicCityName.getLengthLimit()){
-			record.setCityName(this.handlerOutLimitString(record.getCityName(),ProfileAttributeLengthLimit.BasicCityName.getLengthLimit(),DEFAULT_FLAG));
-		}
-		if(StringUtils.isNotBlank(record.getWeixin())&&record.getWeixin().length()>ProfileAttributeLengthLimit.BasicWeiXin.getLengthLimit()){
-			record.setWeixin(this.handlerOutLimitString(record.getWeixin(),ProfileAttributeLengthLimit.BasicWeiXin.getLengthLimit(),DEFAULT_FLAG));
-		}
-		if(StringUtils.isNotBlank(record.getQq())&&record.getQq().length()>ProfileAttributeLengthLimit.BasicQQ.getLengthLimit()){
-			record.setQq(this.handlerOutLimitString(record.getQq(),ProfileAttributeLengthLimit.BasicQQ.getLengthLimit(),DEFAULT_FLAG));
-		}
-		if(StringUtils.isNotBlank(record.getMotto())&&record.getMotto().length()>ProfileAttributeLengthLimit.BasicMotto.getLengthLimit()){
-			record.setMotto(this.handlerOutLimitString(record.getMotto(),ProfileAttributeLengthLimit.BasicMotto.getLengthLimit(),DEFAULT_FLAG));
-		}
-		if(StringUtils.isNotBlank(record.getSelfIntroduction())&&record.getSelfIntroduction().length()>ProfileAttributeLengthLimit.BasicSelfIntroduction.getLengthLimit()){
-			record.setSelfIntroduction(this.handlerOutLimitString(record.getSelfIntroduction(),ProfileAttributeLengthLimit.BasicSelfIntroduction.getLengthLimit(),DEFAULT_FLAG));
-		}
+	    logger.info("record :{}",record);
+	    if(record != null ) {
+            if (StringUtils.isNotBlank(record.getName()) && record.getName().length() > ProfileAttributeLengthLimit.BasicName.getLengthLimit()) {
+                record.setName(this.handlerOutLimitString(record.getName(), ProfileAttributeLengthLimit.BasicName.getLengthLimit(), DEFAULT_FLAG));
+            }
+            if (StringUtils.isNotBlank(record.getNationalityName()) && record.getNationalityName().length() > ProfileAttributeLengthLimit.BasicNationalityName.getLengthLimit()) {
+                record.setNationalityName(this.handlerOutLimitString(record.getNationalityName(), ProfileAttributeLengthLimit.BasicNationalityName.getLengthLimit(), DEFAULT_FLAG));
+            }
+            if (StringUtils.isNotBlank(record.getCityName()) && record.getCityName().length() > ProfileAttributeLengthLimit.BasicCityName.getLengthLimit()) {
+                record.setCityName(this.handlerOutLimitString(record.getCityName(), ProfileAttributeLengthLimit.BasicCityName.getLengthLimit(), DEFAULT_FLAG));
+            }
+            if (StringUtils.isNotBlank(record.getWeixin()) && record.getWeixin().length() > ProfileAttributeLengthLimit.BasicWeiXin.getLengthLimit()) {
+                record.setWeixin(this.handlerOutLimitString(record.getWeixin(), ProfileAttributeLengthLimit.BasicWeiXin.getLengthLimit(), DEFAULT_FLAG));
+            }
+            if (StringUtils.isNotBlank(record.getQq()) && record.getQq().length() > ProfileAttributeLengthLimit.BasicQQ.getLengthLimit()) {
+                record.setQq(this.handlerOutLimitString(record.getQq(), ProfileAttributeLengthLimit.BasicQQ.getLengthLimit(), DEFAULT_FLAG));
+            }
+            if (StringUtils.isNotBlank(record.getMotto()) && record.getMotto().length() > ProfileAttributeLengthLimit.BasicMotto.getLengthLimit()) {
+                record.setMotto(this.handlerOutLimitString(record.getMotto(), ProfileAttributeLengthLimit.BasicMotto.getLengthLimit(), DEFAULT_FLAG));
+            }
+            if (StringUtils.isNotBlank(record.getSelfIntroduction()) && record.getSelfIntroduction().length() > ProfileAttributeLengthLimit.BasicSelfIntroduction.getLengthLimit()) {
+                record.setSelfIntroduction(this.handlerOutLimitString(record.getSelfIntroduction(), ProfileAttributeLengthLimit.BasicSelfIntroduction.getLengthLimit(), DEFAULT_FLAG));
+            }
+        }
 	}
 
 	public ProfileProfileRecord mapToProfileRecord(Map<String, Object> profile) {
