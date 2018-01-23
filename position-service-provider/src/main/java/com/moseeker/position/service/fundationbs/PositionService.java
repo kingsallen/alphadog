@@ -218,8 +218,8 @@ public class PositionService {
             if (hrTeamRecord != null) {
                 jobPositionPojo.department = hrTeamRecord.getName();
                 jobPositionPojo.team_name = hrTeamRecord.getName();
-                searchData.setTeam_name(hrTeamRecord.getName());
-                searchData.setDepartment(hrTeamRecord.getName());
+                searchData.setTeam_name(StringUtils.filterStringForSearch(hrTeamRecord.getName()));
+                searchData.setDepartment(StringUtils.filterStringForSearch(hrTeamRecord.getName()));
             }
         }
 
@@ -244,7 +244,7 @@ public class PositionService {
         if (jobPositionPojo.degree > 0) {
             String degreeName=getDictConstantJson(2101, jobPositionPojo.degree);
             jobPositionPojo.degree_name = degreeName;
-            searchData.setDegree_name(degreeName);
+            searchData.setDegree_name(StringUtils.filterStringForSearch(degreeName));
 
         }
 
@@ -261,7 +261,7 @@ public class PositionService {
                 JobCustomRecord jobCustomRecord = jobCustomDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobCustomId()).buildQuery());
                 if (jobCustomRecord != null && !"".equals(jobCustomRecord.getName())) {
                     jobPositionPojo.custom = jobCustomRecord.getName();
-                    searchData.setCustom(jobCustomRecord.getName());
+                    searchData.setCustom(StringUtils.filterStringForSearch(jobCustomRecord.getName()));
                 }
             }
             if (jobPositionExtRecord.getJobOccupationId() > 0) {
@@ -269,7 +269,7 @@ public class PositionService {
                         jobOccupationDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobOccupationId()).buildQuery());
                 if (jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
                     jobPositionPojo.occupation = jobOccupationRecord.getName();
-                    searchData.setOccupation(jobOccupationRecord.getName());
+                    searchData.setOccupation(StringUtils.filterStringForSearch(jobOccupationRecord.getName()));
                 }
             }
         } else{
