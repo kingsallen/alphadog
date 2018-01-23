@@ -10,6 +10,7 @@ import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl employeeService;
+    UserEmployeeServiceImpl employeeService;
 
     @Autowired
     private EmployeeEntity employeeEntity;
@@ -104,5 +105,10 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
         }
+    }
+
+    @Override
+    public void addEmployeeAward(List<Integer> applicationIdList, int eventType) throws BIZException, TException {
+        employeeService.addEmployeeAward(applicationIdList, eventType);
     }
 }

@@ -11,13 +11,11 @@ import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -213,6 +211,24 @@ public class JobApplicationController {
 			Response res =  applicationService.getApplicationListForThirdParty(channel, start_time, end_time);
 			return ResponseLogNotification.success(request, res);
 
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return ResponseLogNotification.fail(request,e.getMessage());
+		}
+	}
+
+	/**
+	 * 招聘进度同步到第三方
+	 */
+	@RequestMapping(value = "/v1/applications/browse", method = RequestMethod.POST)
+	@ResponseBody
+	public String viewApplications(HttpServletRequest request) {
+		try {
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+			List<Integer> applicationIds = (List<Integer>)params.get("application_ids");
+			int hrId = params.getInt("hr_id");
+			applicationService.viewApplications(hrId, applicationIds);
+			return ResponseLogNotification.successJson(request, "success");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			return ResponseLogNotification.fail(request,e.getMessage());
