@@ -1,6 +1,5 @@
 package com.moseeker.application.context.agreegateid;
 
-import javax.swing.text.View;
 import java.util.List;
 
 /**
