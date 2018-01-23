@@ -1,5 +1,6 @@
 package com.moseeker.application.context.agreegateid;
 
+import javax.swing.text.View;
 import java.util.List;
 
 /**
@@ -10,6 +11,11 @@ public class ViewApplicationAggregateId {
 
     private int hrId;
     private List<Integer> applicationIds;
+
+    public ViewApplicationAggregateId(int hrId, List<Integer> applicationIds) {
+        this.hrId = hrId;
+        this.applicationIds = applicationIds;
+    }
 
     public int getHrId() {
         return hrId;
