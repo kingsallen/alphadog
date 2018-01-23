@@ -27,6 +27,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
+import com.moseeker.baseorm.pojo.SearchData;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -205,8 +206,11 @@ public class PositionService {
             logger.error("无法根据ID查找到职位。 positionId:{}", positionId);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
+        SearchData searchData=new SearchData();
         jobPositionPojo.team_name = "";
         jobPositionPojo.department = "";
+        searchData.setTeam_name("");
+        searchData.setDepartment("");
         int team_id = jobPositionPojo.team_id;
         if (team_id != 0) {
             Query query1 = new Query.QueryBuilder().where("id", team_id).and("disable", 0).buildQuery();
@@ -214,6 +218,8 @@ public class PositionService {
             if (hrTeamRecord != null) {
                 jobPositionPojo.department = hrTeamRecord.getName();
                 jobPositionPojo.team_name = hrTeamRecord.getName();
+                searchData.setTeam_name(StringUtils.filterStringForSearch(hrTeamRecord.getName()));
+                searchData.setDepartment(StringUtils.filterStringForSearch(hrTeamRecord.getName()));
             }
         }
 
@@ -236,7 +242,10 @@ public class PositionService {
 
         // 学历
         if (jobPositionPojo.degree > 0) {
-            jobPositionPojo.degree_name = getDictConstantJson(2101, jobPositionPojo.degree);
+            String degreeName=getDictConstantJson(2101, jobPositionPojo.degree);
+            jobPositionPojo.degree_name = degreeName;
+            searchData.setDegree_name(StringUtils.filterStringForSearch(degreeName));
+
         }
 
         // 工作性质
@@ -252,6 +261,7 @@ public class PositionService {
                 JobCustomRecord jobCustomRecord = jobCustomDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobCustomId()).buildQuery());
                 if (jobCustomRecord != null && !"".equals(jobCustomRecord.getName())) {
                     jobPositionPojo.custom = jobCustomRecord.getName();
+                    searchData.setCustom(StringUtils.filterStringForSearch(jobCustomRecord.getName()));
                 }
             }
             if (jobPositionExtRecord.getJobOccupationId() > 0) {
@@ -259,11 +269,14 @@ public class PositionService {
                         jobOccupationDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobOccupationId()).buildQuery());
                 if (jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
                     jobPositionPojo.occupation = jobOccupationRecord.getName();
+                    searchData.setOccupation(StringUtils.filterStringForSearch(jobOccupationRecord.getName()));
                 }
             }
         } else{
                    jobPositionPojo.custom = "";
                    jobPositionPojo.occupation = "";
+                   searchData.setCustom("");
+                   searchData.setOccupation("");
     }
 
     // 修改更新时间
@@ -290,6 +303,7 @@ public class PositionService {
         if ("全国".equals(jobPositionPojo.city)) {
             jobPositionPojo.city_flag = 1;
         }
+        jobPositionPojo.search_data=searchData;
         return ResponseUtils.success(jobPositionPojo);
     }
 
