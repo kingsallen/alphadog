@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.position.service.third.ThirdPositionService;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.position.struct.City;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionInfoForm;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionResult;
 import org.junit.Test;
@@ -34,7 +36,7 @@ public class PositionServiceTest {
 		Response res=service.verifyCustomize(106002);
 		System.out.println(res);
 	}
-	@Test
+//	@Test
 	public void getPositionByIdTest() throws Exception{
 		Response res=service.getPositionById(80571);
 		System.out.println(res);
@@ -51,11 +53,11 @@ public class PositionServiceTest {
 	}
 	//@Test
 	public void ifAllowRefreshTest(){
-		boolean bool=service.ifAllowRefresh(124445, 82671);
-		System.out.println(bool+"==================");
+//		boolean bool=service.ifAllowRefresh(124445, 82671);
+//		System.out.println(bool+"==================");
 	}
 
-    @Test
+//    @Test
     public void test() throws Exception {
     	List<Integer> list=new ArrayList<Integer>();
     	list.add(124340);
@@ -68,11 +70,21 @@ public class PositionServiceTest {
     @Autowired
     ThirdPositionService thirdPositionService;
 
-    @Test
-    public void testThirdPartyPosition() {
+//    @Test
+    public void testThirdPartyPosition() throws BIZException {
         ThirdPartyPositionInfoForm infoForm = new ThirdPartyPositionInfoForm();
         ThirdPartyPositionResult result = thirdPositionService.getThirdPartyPositionInfo(infoForm);
 
         System.out.println(JSON.toJSONString(result));
     }
+
+    /*@Test
+    public void cityCode(){
+    	List<City> cities=new ArrayList<>();
+    	City city=new City();
+    	city.setType("text");
+    	city.setValue("九龙城区");
+    	cities.add(city);
+    	service.cityCode(cities,1909944);
+	}*/
 }

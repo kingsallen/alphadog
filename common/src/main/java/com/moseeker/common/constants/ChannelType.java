@@ -98,9 +98,19 @@ public enum ChannelType {
 			}
 			return result;
 		}
+	}, VERYEAST(6, "veryeast","最佳东方","common_retrieval_flow") {
+		@Override
+		public String getOrigin(String origin) {
+			return null;
+		}
+	}, JOB1001(7,"job1001","一览英才","common_retrieval_flow"){
+		@Override
+		public String getOrigin(String origin) {
+		return null;
+	}
 	};
 
-	private ChannelType(int value, String name,String alias,String retriveName) {
+	ChannelType(int value, String name,String alias,String retriveName) {
 		this.value = value;
 		this.name = name;
 		this.alias = alias;
@@ -123,6 +133,10 @@ public enum ChannelType {
 	static { // Initialize map from constant name to enum constant
 		for (ChannelType op : values())
 			intToEnum.put(op.getValue(), op);
+	}
+
+	public static boolean containsChannelType(int value) {
+		return intToEnum.containsKey(value);
 	}
 
 	public static ChannelType instaceFromInteger(int value) {

@@ -4,6 +4,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.*;
 import org.apache.thrift.TException;
+import org.junit.Test;
 
 import java.util.Arrays;
 
@@ -27,10 +28,10 @@ public class EmployeeServiceTest {
 		}
 	}
 
-	////@Test
+	@Test
 	public void getEmpConfigTest() {
 		try {
-			EmployeeVerificationConfResponse conf = service.getEmployeeVerificationConf(2878);
+			EmployeeVerificationConfResponse conf = service.getEmployeeVerificationConf(30);
 			System.out.println(conf);
 		} catch (TException e) {
 			// TODO Auto-generated catch block

@@ -1,6 +1,8 @@
 package com.moseeker.useraccounts.config;
 
 import com.rabbitmq.client.ConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -24,8 +26,10 @@ import java.util.List;
 @EnableRabbit
 @ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.notify"})
 @PropertySource("classpath:common.properties")
-@Import(com.moseeker.baseorm.config.AppConfig.class)
+@Import({com.moseeker.baseorm.config.AppConfig.class})
 public class AppConfig {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private Environment env;
@@ -71,7 +75,7 @@ public class AppConfig {
      * listener 容器 （consumer 需要手动确认消息）
      * @return
      */
-    @Bean
+    @Bean("rabbitListenerContainerFactory")
     public RabbitListenerContainerFactory rabbitListenerContainerFactory() {
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
@@ -94,7 +98,6 @@ public class AppConfig {
         return listenerContainerFactory;
     }
 
-
     @Bean
     public Queue bindAccountQueue() {
         Queue queue = new Queue("chaos.bind.response", true, false, false);
@@ -115,29 +118,18 @@ public class AppConfig {
     }
 
     @Bean
+    public TopicExchange webPresetExchange() {
+        TopicExchange topicExchange = new TopicExchange("chaos", true, false);
+        return topicExchange;
+    }
+
+    @Bean
     public Queue presetQueue() {
         Queue queue = new Queue("chaos.preset.response", true, false, false);
         return queue;
     }
 
-    @Bean
-    public TopicExchange presetExchange() {
-        TopicExchange topicExchange = new TopicExchange("chaos.preset.response.exchange", true, false);
-        return topicExchange;
-    }
 
-    @Bean
-    public List<Binding> bindingPreset() {
-        return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(presetQueue()).to(presetExchange()).with("chaos.preset.response.#"));
-        }};
-    }
-
-    @Bean
-    public TopicExchange webPresetExchange() {
-        TopicExchange topicExchange = new TopicExchange("chaos", true, false);
-        return topicExchange;
-    }
 
     @Bean
     public List<Binding> webBindingPreset() {

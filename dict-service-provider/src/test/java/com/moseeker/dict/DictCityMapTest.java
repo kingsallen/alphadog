@@ -1,10 +1,12 @@
 package com.moseeker.dict;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.dict.config.AppConfig;
 import com.moseeker.dict.service.impl.DictOccupationService;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,12 +43,12 @@ public class DictCityMapTest {
     DictOccupationService occupationService;
 
     @Test
-    public void testGetOccupation(){
+    public void testGetOccupation() throws BIZException {
         Map<String,Object> param = new HashMap<>();
         param.put("channel",3);
         param.put("single_layer",1);
         param.put("code",110208);
-        Response response = occupationService.queryOccupation(JSON.toJSONString(param));
+        JSONArray response = occupationService.queryOccupation(JSON.toJSONString(param));
 
         response.toString();
     }

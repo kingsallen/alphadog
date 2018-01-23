@@ -1,14 +1,13 @@
 package com.moseeker.function.service.chaos;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.PositionSync;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -51,7 +50,7 @@ public class PositionSyncConsumer  {
      * @param pojo
      */
     @CounterIface
-    public void positionSyncComplete(PositionForSyncResultPojo pojo) {
+    public void positionSyncComplete(PositionForSyncResultPojo pojo) throws BIZException {
 
         if (pojo == null) return;
 
@@ -67,7 +66,7 @@ public class PositionSyncConsumer  {
             data.setIsSynchronization((byte) PositionSync.bindingError.getValue());
         } else {
             data.setIsSynchronization((byte) PositionSync.failed.getValue());
-    }
+        }
 
         data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()));
 
@@ -79,23 +78,25 @@ public class PositionSyncConsumer  {
             return;
         }
 
-        HrThirdPartyPositionDO thirdPartyPositionDO = null;
+        TwoParam<HrThirdPartyPositionDO,Object> thirdPartyPositionDO = new TwoParam<>(data, EmptyExtThirdPartyPosition.EMPTY);
 
         try {
-            thirdPartyPositionDO = thirdpartyPositionDao.upsertThirdPartyPosition(data);
+            thirdPartyPositionDO = thirdpartyPositionDao.upsertThirdPartyPosition(thirdPartyPositionDO);
         } catch (BIZException e) {
             e.printStackTrace();
             logger.error("读取职位同步队列后无法更新到数据库:{}", JSON.toJSONString(data));
+            throw e;
         }
 
         if (pojo.getStatus() == 2) {
             logger.info("发送同步失败的邮件:{}", pojo.getStatus());
             try {
                 //发送邮件，表示这个职位无法判断是否成功同步到对应的平台，需要确认一下。
-                syncFailedNotification.sendUnKnowResultMail(positionDO, thirdPartyPositionDO, pojo);
+                syncFailedNotification.sendUnKnowResultMail(positionDO, thirdPartyPositionDO.getR1(),thirdPartyPositionDO.getR2(), pojo);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.getMessage(), e);
+                throw e;
             }
         }
 
