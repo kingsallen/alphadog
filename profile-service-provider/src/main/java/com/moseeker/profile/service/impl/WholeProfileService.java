@@ -1145,6 +1145,12 @@ public class WholeProfileService {
         if(StringUtils.isNullOrEmpty(mobile)){
             return ResponseUtils.fail(1,"手机号不能为空");
         }
+        if(!org.apache.commons.lang.StringUtils.isNumeric(mobile)){
+            return ResponseUtils.fail(1,"手机号必须全部为数字");
+        }
+        if(mobile.length()!=11){
+            return ResponseUtils.fail(1,"手机号必须为11位");
+        }
         UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
         int newUerId=0;
         if(userRecord!=null){
@@ -1399,6 +1405,7 @@ public class WholeProfileService {
             for(ProfileProjectexpDO DO:list){
                 String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
                 Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
                 result.add(data);
             }
         }
@@ -1415,6 +1422,7 @@ public class WholeProfileService {
             for(ProfileSkillDO DO:list){
                 String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
                 Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
                 result.add(data);
             }
         }
@@ -1431,6 +1439,7 @@ public class WholeProfileService {
             for(ProfileWorkexpDO DO:list){
                 String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
                 Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
                 result.add(data);
             }
         }
@@ -1447,6 +1456,7 @@ public class WholeProfileService {
             for(ProfileLanguageDO DO:list){
                 String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
                 Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
                 result.add(data);
             }
         }
@@ -1463,6 +1473,7 @@ public class WholeProfileService {
             for(ProfileEducationDO DO:list){
                 String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
                 Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
                 result.add(data);
             }
         }
@@ -1479,6 +1490,7 @@ public class WholeProfileService {
             for(ProfileCredentialsDO DO:list){
                 String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
                 Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
                 result.add(data);
             }
         }
@@ -1495,6 +1507,7 @@ public class WholeProfileService {
             for(ProfileAwardsDO DO:list){
                 String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
                 Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
                 result.add(data);
             }
         }
@@ -1511,6 +1524,7 @@ public class WholeProfileService {
             for(ProfileWorksDO DO:list){
                 String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
                 Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
                 result.add(data);
             }
         }
