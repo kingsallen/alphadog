@@ -32,21 +32,23 @@ public abstract class WXMsgNoticeViceMTP {
 
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
+    protected WXTemplateMsgPojo wxTemplateMsg;
+    private RedisClient redisClient;
+
     public WXMsgNoticeViceMTP() {
         serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
         initTemplateMsg();
     }
-
-    private WXTemplateMsgPojo wxTemplateMsg;
-
-    @Resource(name = "cacheClient")
-    private RedisClient redisClient;
 
     /**
      * 发送模板消息
      * @throws CommonException 业务异常 (90014, message)
      */
     public void sendWXTemplateMsg() throws CommonException {
+        if (redisClient == null) {
+            throw ApplicationException.APPLICATION_REDIS_CLIENT;
+        }
+        initTemplateMsg();
         try {
             ValidationMessage<String> validationMessage = validateMessageTemplateNotice(wxTemplateMsg);
             if (validationMessage.isPass()) {
