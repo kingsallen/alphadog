@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.position.service.position.base.PositionFactory;
-import com.moseeker.position.service.position.base.sync.PositionSyncVerifyHandler;
+import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
 import com.moseeker.position.utils.PositionEmailNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public class PositionSyncVerifyConsumer {
 
         }catch (Exception e){
             logger.error("handle refresh result Error : {}, message :{}",e.getMessage(),json);
-
+            emailNotification.sendVerifyFailureMail(json, null, e);
         }
     }
 

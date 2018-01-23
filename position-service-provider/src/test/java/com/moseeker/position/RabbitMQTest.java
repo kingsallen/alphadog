@@ -23,10 +23,10 @@ public class RabbitMQTest {
 
 //        channel.queueDeclare(PositionSyncVerify.MOBILE_VERIFY_QUEUE, false, false, false, null);
         Map<String,Object> map=new HashMap<>();
-        map.put("accountId",574);
+        map.put("accountId",611);
         map.put("channel",3);
         map.put("mobile",110);
-        map.put("positionId",1910844);
+        map.put("positionId",1909943);
 
         String message = JSON.toJSONString(map);
         channel.basicPublish(PositionSyncVerify.MOBILE_VERIFY_EXCHANGE, PositionSyncVerify.MOBILE_VERIFY_ROUTING_KEY, null, message.getBytes());

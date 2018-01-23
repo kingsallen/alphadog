@@ -2,7 +2,7 @@ package com.moseeker.position.service.position.base;
 
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.position.service.position.base.refresh.AbstractRabbitMQParamRefresher;
-import com.moseeker.position.service.position.base.sync.PositionSyncVerifyHandler;
+import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
