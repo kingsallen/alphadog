@@ -263,10 +263,7 @@ public class ChatService {
 
                     chatVO.setMsgType(chatDO.getMsgType());
                     chatVO.setPicUrl(chatDO.getPicUrl());
-                    if(!StringUtils.isNullOrEmpty(chatDO.getBtnContent())) {
-
-                        chatVO.setBtnContent(JSON.parseObject(chatDO.getBtnContent(),new TypeReference<List<Map<String,String>>>(){}));
-                    }
+                    chatVO.setBtnContent(chatDO.getBtnContent());
 
                     byte speaker = chatDO.getSpeaker();
                     chatVO.setSpeaker(speaker);
