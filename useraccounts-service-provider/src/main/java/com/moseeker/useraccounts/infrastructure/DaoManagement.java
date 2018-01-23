@@ -5,6 +5,8 @@ import com.moseeker.baseorm.db.hrdb.tables.pojos.HrPointsConf;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeePointsRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.useraccounts.context.constant.AwardEvent;
@@ -12,6 +14,7 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import org.jooq.Configuration;
 import org.jooq.Record2;
 import org.jooq.Result;
+import org.jooq.UpdateConditionStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
+import static org.jooq.impl.DSL.currentTimestamp;
+import static org.jooq.impl.DSL.recordType;
 import static org.jooq.impl.DSL.using;
 
 /**
@@ -39,6 +44,7 @@ public class DaoManagement {
     private JobPositionJOOQDao positionJOOQDao;
     private UserEmployeeJOOQDao userEmployeeJOOQDao;
     private HrPointsConfJOOQDao confJOOQDao;
+    private UserEmployeePointsRecordJOOQDao employeePointsRecordJOOQDao;
 
     @Autowired
     public DaoManagement(Configuration configuration) {
@@ -47,6 +53,7 @@ public class DaoManagement {
         positionJOOQDao = new JobPositionJOOQDao(configuration);
         confJOOQDao = new HrPointsConfJOOQDao(configuration);
         userEmployeeJOOQDao = new UserEmployeeJOOQDao(configuration);
+        employeePointsRecordJOOQDao = new UserEmployeePointsRecordJOOQDao(configuration);
     }
 
     public JobApplicationJOOQDao getJobApplicationDao() {
@@ -171,5 +178,32 @@ public class DaoManagement {
                 .and(USER_EMPLOYEE.ACTIVATION.eq(EmployeeActivedState.Actived.getState()))
                 .and(USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .fetch();
+    }
+
+    /**
+     * 修改员工积分
+     * @param employeeAward 员工积分参数
+     */
+    public void updateEmployeeAwards(Map<Integer, Integer> employeeAward) {
+
+        if (employeeAward != null && employeeAward.size() > 0) {
+            employeeAward.entrySet().stream().forEach(entry ->
+                using(configuration)
+                        .update(USER_EMPLOYEE)
+                        .set(USER_EMPLOYEE.AWARD, entry.getValue())
+                        .where(USER_EMPLOYEE.ID.eq(entry.getKey()))
+                        .and(USER_EMPLOYEE.AWARD.eq(USER_EMPLOYEE.AWARD))
+                        .execute()
+            );
+        }
+
+    }
+
+    /**
+     * 添加员工积分记录集合
+     * @param userEmployeePointsRecordList 员工积分记录集合
+     */
+    public List<UserEmployeePointsRecord> addEmployeeAwards(List<UserEmployeePointsRecord> userEmployeePointsRecordList) {
+        return employeePointsRecordJOOQDao.addEmployeeAwards(userEmployeePointsRecordList);
     }
 }

@@ -47,7 +47,7 @@ public class ApplyContext {
      * 那么会对推荐人添加对应积分。HR查看申请 对推荐人（申请是员工转发的候选人投递的，
      * 那么员工就是该申请的推荐人）添加对应积分（需要公司配置了该操作的积分项）。
      * @param viewApplicationAggregateId 参数
-     * @throws CommonException 业务异常
+     * @throws CommonException 业务异常 (41012,  "请提交正确的HR信息!" )(41013,  "HR账号类型异常!" )(41014,  "申请信息不正确!" )(41010,  "没有权限查看申请信息!" )
      */
     @Transactional
     @CounterIface
