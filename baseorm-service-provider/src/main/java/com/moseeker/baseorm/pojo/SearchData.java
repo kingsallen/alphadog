@@ -4,19 +4,18 @@ package com.moseeker.baseorm.pojo;
  * Created by zztaiwll on 18/1/22.
  */
 public class SearchData {
-
-    private String city;
     private String occupation;
     private String team_name;
     private String degree_name;
     private String custom;
+    private String department;
 
-    public String getCity() {
-        return city;
+    public String getDepartment() {
+        return department;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     public String getOccupation() {
