@@ -116,7 +116,7 @@ public class ThriftUtil {
 
     @Test
     public void test(){
-//        testGetStructThrift(Arrays.asList("UserEmployeeVOPageVO"));
+        testGetStructThrift(Arrays.asList("User"));
 //        testGetStructThrift(Arrays.asList("ProfileApplicationForm"));
 //        testGetStructThrift(Arrays.asList("EmployeeResponse"));
 //        testGetStructThrift(Arrays.asList("Result"));
@@ -125,9 +125,9 @@ public class ThriftUtil {
 //        testGetStructThrift(Arrays.asList("EmployeeAward"));
 //        System.out.println("1:  required  BindStatus  bindStatus,".replaceAll("[0-9]+:\\s+(required|optional){1}\\s+(list<|set<|map<)?","").replaceAll("(>)?\\s+.*",""));
 
-        Pattern pattern=Pattern.compile("[0-9]+:\\s?(required|optional){1}");
-        Matcher matcher=pattern.matcher("    1: required BindStatus bindStatus,");
-        System.out.println(matcher.find());
+//        Pattern pattern=Pattern.compile("[0-9]+:\\s?(required|optional){1}");
+//        Matcher matcher=pattern.matcher("    1: required BindStatus bindStatus,");
+//        System.out.println(matcher.find());
 //        System.out.println(Pattern.matches(".*[0-9]+:\\s+(required|optional){1}.*","    1: required BindStatus bindStatus,"));
     }
 
