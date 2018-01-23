@@ -1,6 +1,8 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.application.context.ApplyContext;
+import com.moseeker.application.context.agreegateid.ViewApplicationAggregateId;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
@@ -100,6 +102,9 @@ public class JobApplicataionService {
     @Autowired
     EmployeeEntity employeeEntity;
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+
+    @Autowired
+    private ApplyContext applyContext;
 
     /**
      * 创建申请
@@ -928,6 +933,12 @@ public class JobApplicataionService {
         hrOperationRecordRecord.setAppId(appId);
         hrOperationRecordRecord.setOperateTplId(jobApplicationRecord.getAppTplId().intValue());
         return hrOperationRecordRecord;
+    }
+
+    public void viewApplications(int hrId, List<Integer> applicationIdList) {
+
+        ViewApplicationAggregateId viewApplicationAggregateId = new ViewApplicationAggregateId(hrId, applicationIdList);
+        applyContext.hrViewApplications(viewApplicationAggregateId);
     }
 }
 

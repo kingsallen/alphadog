@@ -15,19 +15,16 @@ public class ApplicationsAggregateId {
     List<Integer> applicationIdList;           //申请编号集合
     private AwardEvent awardEvent;             //积分添加事件
 
+    public ApplicationsAggregateId(List<Integer> applicationIdList, AwardEvent awardEvent) {
+        this.applicationIdList = applicationIdList;
+        this.awardEvent = awardEvent;
+    }
+
     public List<Integer> getApplicationIdList() {
         return applicationIdList;
     }
 
-    public void setApplicationIdList(List<Integer> applicationIdList) {
-        this.applicationIdList = applicationIdList;
-    }
-
     public AwardEvent getAwardEvent() {
         return awardEvent;
-    }
-
-    public void setAwardEvent(AwardEvent awardEvent) {
-        this.awardEvent = awardEvent;
     }
 }

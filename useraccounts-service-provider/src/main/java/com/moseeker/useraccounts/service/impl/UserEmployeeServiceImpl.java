@@ -14,6 +14,8 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import com.moseeker.useraccounts.context.AwardContext;
+import com.moseeker.useraccounts.domain.AwardEntity;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
@@ -37,6 +39,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     private UserEmployeeDao userEmployeeDao;
+
+    @Autowired
+    private AwardContext awardContext;
 
     @Autowired
     EmployeeEntity employeeEntity;
@@ -198,4 +203,7 @@ public class UserEmployeeServiceImpl {
         }
     }
 
+    public void addEmployeeAward(List<Integer> applicationIdList, int eventType) {
+        awardContext.addEmployeeAward(applicationIdList, eventType);
+    }
 }

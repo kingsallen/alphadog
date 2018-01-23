@@ -9,12 +9,15 @@ import com.moseeker.thrift.gen.application.service.JobApplicationServices.Iface;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 申请服务实现类
@@ -144,6 +147,18 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response getApplicationListForThirdParty(int channel, String start_time, String end_time) throws TException {
         return service.getApplicationListForThirdParty(channel, start_time, end_time);
+    }
+
+    /**
+     * HR查看申请
+     * @param hrId HR编号
+     * @param applicationIdList 申请编号集合
+     * @throws BIZException 业务异常
+     * @throws TException thrift异常
+     */
+    @Override
+    public void viewApplications(int hrId, List<Integer> applicationIdList) throws BIZException, TException {
+        service.viewApplications(hrId, applicationIdList);
     }
 
     /**
