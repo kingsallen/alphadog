@@ -19,7 +19,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
   private static final org.apache.thrift.protocol.TField ORIGIN_STR_FIELD_DESC = new org.apache.thrift.protocol.TField("origin_str", org.apache.thrift.protocol.TType.STRING, (short)6);
   private static final org.apache.thrift.protocol.TField MSG_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("msgType", org.apache.thrift.protocol.TType.STRING, (short)7);
   private static final org.apache.thrift.protocol.TField PIC_URL_FIELD_DESC = new org.apache.thrift.protocol.TField("picUrl", org.apache.thrift.protocol.TType.STRING, (short)8);
-  private static final org.apache.thrift.protocol.TField BTN_CONTENT_FIELD_DESC = new org.apache.thrift.protocol.TField("btnContent", org.apache.thrift.protocol.TType.LIST, (short)9);
+  private static final org.apache.thrift.protocol.TField BTN_CONTENT_FIELD_DESC = new org.apache.thrift.protocol.TField("btnContent", org.apache.thrift.protocol.TType.STRING, (short)9);
   private static final org.apache.thrift.protocol.TField ROOM_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("roomId", org.apache.thrift.protocol.TType.I32, (short)10);
   private static final org.apache.thrift.protocol.TField POSITION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("positionId", org.apache.thrift.protocol.TType.I32, (short)11);
 
@@ -34,7 +34,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
   public String origin_str; // optional
   public String msgType; // optional
   public String picUrl; // optional
-  public java.util.List<java.util.Map<String,String>> btnContent; // optional
+  public String btnContent; // optional
   public int roomId; // optional
   public int positionId; // optional
 
@@ -154,10 +154,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
     tmpMap.put(_Fields.PIC_URL, new org.apache.thrift.meta_data.FieldMetaData("picUrl", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.BTN_CONTENT, new org.apache.thrift.meta_data.FieldMetaData("btnContent", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-            new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
-                new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
-                new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)))));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.ROOM_ID, new org.apache.thrift.meta_data.FieldMetaData("roomId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
@@ -193,12 +190,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
       this.picUrl = other.picUrl;
     }
     if (other.isSetBtnContent()) {
-      java.util.List<java.util.Map<String,String>> __this__btnContent = new java.util.ArrayList<java.util.Map<String,String>>(other.btnContent.size());
-      for (java.util.Map<String,String> other_element : other.btnContent) {
-        java.util.Map<String,String> __this__btnContent_copy = new java.util.HashMap<String,String>(other_element);
-        __this__btnContent.add(__this__btnContent_copy);
-      }
-      this.btnContent = __this__btnContent;
+      this.btnContent = other.btnContent;
     }
     this.roomId = other.roomId;
     this.positionId = other.positionId;
@@ -417,26 +409,11 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
     }
   }
 
-  public int getBtnContentSize() {
-    return (this.btnContent == null) ? 0 : this.btnContent.size();
-  }
-
-  public java.util.Iterator<java.util.Map<String,String>> getBtnContentIterator() {
-    return (this.btnContent == null) ? null : this.btnContent.iterator();
-  }
-
-  public void addToBtnContent(java.util.Map<String,String> elem) {
-    if (this.btnContent == null) {
-      this.btnContent = new java.util.ArrayList<java.util.Map<String,String>>();
-    }
-    this.btnContent.add(elem);
-  }
-
-  public java.util.List<java.util.Map<String,String>> getBtnContent() {
+  public String getBtnContent() {
     return this.btnContent;
   }
 
-  public ChatVO setBtnContent(java.util.List<java.util.Map<String,String>> btnContent) {
+  public ChatVO setBtnContent(String btnContent) {
     this.btnContent = btnContent;
     return this;
   }
@@ -572,7 +549,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
       if (value == null) {
         unsetBtnContent();
       } else {
-        setBtnContent((java.util.List<java.util.Map<String,String>>)value);
+        setBtnContent((String)value);
       }
       break;
 
@@ -1172,30 +1149,8 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
             }
             break;
           case 9: // BTN_CONTENT
-            if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-              {
-                org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
-                struct.btnContent = new java.util.ArrayList<java.util.Map<String,String>>(_list16.size);
-                java.util.Map<String,String> _elem17;
-                for (int _i18 = 0; _i18 < _list16.size; ++_i18)
-                {
-                  {
-                    org.apache.thrift.protocol.TMap _map19 = iprot.readMapBegin();
-                    _elem17 = new java.util.HashMap<String,String>(2*_map19.size);
-                    String _key20;
-                    String _val21;
-                    for (int _i22 = 0; _i22 < _map19.size; ++_i22)
-                    {
-                      _key20 = iprot.readString();
-                      _val21 = iprot.readString();
-                      _elem17.put(_key20, _val21);
-                    }
-                    iprot.readMapEnd();
-                  }
-                  struct.btnContent.add(_elem17);
-                }
-                iprot.readListEnd();
-              }
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.btnContent = iprot.readString();
               struct.setBtnContentIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1285,22 +1240,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
       if (struct.btnContent != null) {
         if (struct.isSetBtnContent()) {
           oprot.writeFieldBegin(BTN_CONTENT_FIELD_DESC);
-          {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.MAP, struct.btnContent.size()));
-            for (java.util.Map<String,String> _iter23 : struct.btnContent)
-            {
-              {
-                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, _iter23.size()));
-                for (java.util.Map.Entry<String, String> _iter24 : _iter23.entrySet())
-                {
-                  oprot.writeString(_iter24.getKey());
-                  oprot.writeString(_iter24.getValue());
-                }
-                oprot.writeMapEnd();
-              }
-            }
-            oprot.writeListEnd();
-          }
+          oprot.writeString(struct.btnContent);
           oprot.writeFieldEnd();
         }
       }
@@ -1391,20 +1331,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
         oprot.writeString(struct.picUrl);
       }
       if (struct.isSetBtnContent()) {
-        {
-          oprot.writeI32(struct.btnContent.size());
-          for (java.util.Map<String,String> _iter25 : struct.btnContent)
-          {
-            {
-              oprot.writeI32(_iter25.size());
-              for (java.util.Map.Entry<String, String> _iter26 : _iter25.entrySet())
-              {
-                oprot.writeString(_iter26.getKey());
-                oprot.writeString(_iter26.getValue());
-              }
-            }
-          }
-        }
+        oprot.writeString(struct.btnContent);
       }
       if (struct.isSetRoomId()) {
         oprot.writeI32(struct.roomId);
@@ -1451,27 +1378,7 @@ public class ChatVO implements org.apache.thrift.TBase<ChatVO, ChatVO._Fields>, 
         struct.setPicUrlIsSet(true);
       }
       if (incoming.get(8)) {
-        {
-          org.apache.thrift.protocol.TList _list27 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.MAP, iprot.readI32());
-          struct.btnContent = new java.util.ArrayList<java.util.Map<String,String>>(_list27.size);
-          java.util.Map<String,String> _elem28;
-          for (int _i29 = 0; _i29 < _list27.size; ++_i29)
-          {
-            {
-              org.apache.thrift.protocol.TMap _map30 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-              _elem28 = new java.util.HashMap<String,String>(2*_map30.size);
-              String _key31;
-              String _val32;
-              for (int _i33 = 0; _i33 < _map30.size; ++_i33)
-              {
-                _key31 = iprot.readString();
-                _val32 = iprot.readString();
-                _elem28.put(_key31, _val32);
-              }
-            }
-            struct.btnContent.add(_elem28);
-          }
-        }
+        struct.btnContent = iprot.readString();
         struct.setBtnContentIsSet(true);
       }
       if (incoming.get(9)) {
