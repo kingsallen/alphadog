@@ -1,6 +1,7 @@
 package com.moseeker.chat.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.chat.constant.ChatOrigin;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -261,7 +263,8 @@ public class ChatService {
                     chatVO.setMsgType(chatDO.getMsgType());
                     chatVO.setPicUrl(chatDO.getPicUrl());
                     if(!StringUtils.isNullOrEmpty(chatDO.getBtnContent())) {
-                        chatVO.setBtnContent(JSON.parseArray(chatDO.getBtnContent(), BtnContent.class));
+
+                        chatVO.setBtnContent(JSON.parseObject(chatDO.getBtnContent(),new TypeReference<List<Map<String,String>>>(){}));
                     }
 
                     byte speaker = chatDO.getSpeaker();
