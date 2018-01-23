@@ -67,10 +67,13 @@ public class ChatServiceTest {
         String jsonChat="{" +
                 "  \"content\": \"名\"," +
                 "  \"id\": 0," +
-                "  \"origin\": 0," +
-                "  \"positionId\": 0," +
-                "  \"roomId\": 0," +
-                "  \"speaker\": 0" +
+                "  \"origin\": 1," +
+                "  \"positionId\": 7," +
+                "  \"roomId\": 1," +
+                "  \"speaker\": 1," +
+                "  \"btnContent\": [{\"content\":\"是\"},{\"content\":\"否\"}]," +
+                "  \"picUrl\": \"http://www.baidu.com\"," +
+                "  \"msgType\": \"html\"" +
                 "}";
 
         ChatVO chatVO=JSON.toJavaObject(JSON.parseObject(jsonChat),ChatVO.class);
