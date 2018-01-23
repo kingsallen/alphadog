@@ -300,7 +300,7 @@ public class SearchengineService {
         ((BoolQueryBuilder) query).must(status_filter);
 
 
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index1").setTypes("fulltext")
                 .setQuery(query);
 
         if (order_by_priority) {
@@ -378,7 +378,7 @@ public class SearchengineService {
         TransportClient client = null;
         try {
             client=searchUtil.getEsClient();
-            IndexResponse response = client.prepareIndex("index", "fulltext", idx).setSource(position).execute().actionGet();
+            IndexResponse response = client.prepareIndex("index1", "fulltext", idx).setSource(position).execute().actionGet();
         } catch (Exception e) {
             logger.error("error in update", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -812,7 +812,7 @@ public class SearchengineService {
              searchUtil.handleTerms(companyIds,query,"publisher_company_id");
          }
          searchUtil.handleMatch(0,query,"status");
-         SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
+         SearchRequestBuilder responseBuilder=client.prepareSearch("index1").setTypes("fulltext")
                  .setQuery(query)
                  .setFrom((page-1)*pageSize)
                  .setSize(pageSize)
@@ -832,7 +832,7 @@ public class SearchengineService {
             searchUtil.handleTerms(companyIds,query,"publisher_company_id");
         }
         searchUtil.handleMatch(0,query,"status");
-        SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder=client.prepareSearch("index1").setTypes("fulltext")
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
                 .setSize(pageSize)
