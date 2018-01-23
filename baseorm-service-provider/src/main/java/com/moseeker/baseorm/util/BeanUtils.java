@@ -92,25 +92,6 @@ public class BeanUtils {
     }
 
     /**
-     * 将 xx_yy 命名转为驼峰命名 xxYy
-     *
-     * @param strName
-     * @return
-     */
-    public static String humpName(String strName) {
-        String[] strs = strName.split("_");
-        if (strs.length > 1) {
-            String name = strs[0];
-            for (int i = 1; i < strs.length; i++) {
-                name += strs[i].substring(0, 1).toUpperCase() + strs[i].substring(1);
-            }
-            return name;
-        } else {
-            return strName;
-        }
-    }
-
-    /**
      * struct 类和JOOQ类的属性和方法固定，可以预先加载成静态的属性和方法
      *
      * @param dest struct 对象
@@ -132,7 +113,7 @@ public class BeanUtils {
 
         // 将strut对象的属性名和get方法提取成map
         Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> (f.getName().startsWith("get") || f.getName().startsWith("is")) && f.getParameterTypes().length == 0).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
-        Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> humpName(k.getName()), v -> {
+        Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> StringUtils.humpName(k.getName()), v -> {
             String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
             Method isSetMethod;
             try {
@@ -156,7 +137,7 @@ public class BeanUtils {
         // 将DO对象的属性名和set方法提取成map
         Map<String, Method> origMap = Arrays.asList(orig.getClass().getMethods()).stream().filter(f -> f.getName().length() > 3 && f.getName().startsWith("set")).collect(Collectors.toMap(k -> {
             String fileName = k.getName().substring(3, 4).toLowerCase() + k.getName().substring(4);
-            return eqr.containsKey(fileName) ? humpName(eqr.get(fileName)) : humpName(fileName);
+            return eqr.containsKey(fileName) ? StringUtils.humpName(eqr.get(fileName)) : StringUtils.humpName(fileName);
         }, v -> v, (oldKey, newKey) -> newKey));
 
         // 赋值
@@ -231,7 +212,7 @@ public class BeanUtils {
 
         // 将strut对象的属性名和set方法提取成map
         Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("set") && f.getParameterTypes().length == 1).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
-        Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> humpName(k.getName()), v -> {
+        Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> StringUtils.humpName(k.getName()), v -> {
             String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
             if (destGetMeths.containsKey("set".concat(fileName))) {
                 return destGetMeths.get("set".concat(fileName));
@@ -243,7 +224,7 @@ public class BeanUtils {
         // 将DO对象的属性名和get方法提取成map
         Map<String, Method> origMap = Arrays.asList(orig.getClass().getMethods()).stream().filter(f -> f.getName().length() > 3 && f.getName().startsWith("get")).collect(Collectors.toMap(k -> {
             String fileName = k.getName().substring(3, 4).toLowerCase() + k.getName().substring(4);
-            return eqr.containsKey(fileName) ? humpName(eqr.get(fileName)) : humpName(fileName);
+            return eqr.containsKey(fileName) ? StringUtils.humpName(eqr.get(fileName)) : StringUtils.humpName(fileName);
         }, v -> v, (oldKey, newKey) -> newKey));
 
 
@@ -284,7 +265,7 @@ public class BeanUtils {
 
         // 将strut对象的属性名和set方法提取成map
         Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("set") && f.getParameterTypes().length == 1).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
-        Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> humpName(k.getName()), v -> {
+        Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> StringUtils.humpName(k.getName()), v -> {
             String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
             if (destGetMeths.containsKey("set".concat(fileName))) {
                 return destGetMeths.get("set".concat(fileName));
@@ -296,7 +277,7 @@ public class BeanUtils {
         // 将DO对象的属性名和get方法提取成map
         Map<String, Method> origMap = Arrays.asList(orig.getClass().getMethods()).stream().filter(f -> f.getName().length() > 3 && f.getName().startsWith("get")).collect(Collectors.toMap(k -> {
             String fileName = k.getName().substring(3, 4).toLowerCase() + k.getName().substring(4);
-            return humpName(fileName);
+            return StringUtils.humpName(fileName);
         }, v -> v, (oldKey, newKey) -> newKey));
 
 

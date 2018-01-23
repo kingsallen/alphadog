@@ -17,8 +17,8 @@ dependencies {
     compile deps["spring-core"]
     compile deps["spring-jdbc"]
     compile deps["spring-tx"]
+    compile deps["jooq"]
     compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
-    compile  fileTree(dir:'../libs',include:'jooq*.jar')
 	testCompile 'junit:junit:4.12'
 }
 

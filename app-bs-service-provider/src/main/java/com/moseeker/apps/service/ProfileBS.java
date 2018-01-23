@@ -10,6 +10,7 @@ import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
@@ -63,6 +64,7 @@ public class ProfileBS {
         if (positionId == 0 || StringUtils.isNullOrEmpty(profile)) {
             return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
         }
+        profile = EmojiFilter.filterEmoji1(profile);
         Query qu = new Query.QueryBuilder().where("id", positionId).buildQuery();
         Position position;
         try {
@@ -123,11 +125,11 @@ public class ProfileBS {
                 logger.info("ProfileBS retrieveProfile profile exist");
                 Response improveProfile = wholeProfileService.improveProfile(JSON.toJSONString(resume));
                 if (improveProfile.getStatus() == 0) {
-                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
-                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
-                        Response response = applicationService.postApplication(application);
-                        return response;
-                    }
+//                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
+//                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
+                    Response response = applicationService.postApplication(application);
+//                        return response;
+//                    }
                     return ResultMessage.SUCCESS.toResponse(new JSONObject());
                 } else {
                     return improveProfile;
@@ -136,11 +138,9 @@ public class ProfileBS {
                 logger.info("ProfileBS retrieveProfile profile not exist");
                 //如果不存在profile，进行profile创建
                 Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
+                logger.info("ProfileBS retrieveProfile response:{}",response);
                 if (response.getStatus() == 0) {
-                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
-                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
-                        applicationService.postApplication(application);
-                    }
+                    applicationService.postApplication(application);
                     return ResultMessage.SUCCESS.toResponse(new JSONObject());
                 } else {
                     return response;
@@ -170,10 +170,10 @@ public class ProfileBS {
                     // 判断来源
                     int origin = ApplicationSource.channelToOrigin(channel);
                     JobApplication application = initApplication(userId, positionId, position.getCompany_id(), origin);
-                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
-                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
-                        applicationService.postApplication(application);
-                    }
+//                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
+//                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
+                    applicationService.postApplication(application);
+//                    }
                     return ResultMessage.SUCCESS.toResponse(new JSONObject());
                 } else {
                     return response;

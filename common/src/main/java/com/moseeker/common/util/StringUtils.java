@@ -60,7 +60,16 @@ public class StringUtils {
             return true;
         }
     }
-
+    /*
+     判断set是否为空
+     */
+    public static boolean isEmptySet(Set set) {
+        if (set != null && set.size() > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     /**
      * 生成随机字符串， 作为密码等。
      *
@@ -246,4 +255,87 @@ public class StringUtils {
         }
         return false;
     }
+
+    /**
+     * 校验是否是JSON中的空字符
+     * @param obj
+     * @return
+     */
+    public static boolean isJsonNullOrEmpty(Object obj) {
+        if (obj instanceof String) {
+            if (org.apache.commons.lang.StringUtils.isNotBlank((String) obj) && !obj.equals("[]") && !obj.equals("{}") && !obj.equals("null")) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return obj == null;
+        }
+    }
+
+    /**
+     * 将 xx_yy 命名转为驼峰命名 xxYy
+     *
+     * @param strName
+     * @return
+     */
+    public static String humpName(String strName) {
+        String[] strs = strName.split("_");
+        if (strs.length > 1) {
+            String name = strs[0];
+            for (int i = 1; i < strs.length; i++) {
+                name += strs[i].substring(0, 1).toUpperCase() + strs[i].substring(1);
+            }
+            return name;
+        } else {
+            return strName;
+        }
+    }
+
+    /**
+     * 去掉字符串的特殊字符
+     * @param
+     * @return
+     */
+    public static String filterStringForSearch(String value){
+        if(StringUtils.isNotNullOrEmpty(value)){
+            if(value.contains("/")){
+                value=value.replaceAll("/","");
+            }
+            if(value.contains("OR")){
+                value=value.replaceAll("OR","");
+            }
+            if(value.contains("AND")){
+                value=value.replaceAll("AND","");
+            }
+
+            if(value.contains("(")){
+                value=value.replaceAll("\\(","");
+            }
+            if(value.contains(")")){
+                value=value.replaceAll("\\)","");
+            }
+            if(value.contains("+")){
+                value=value.replaceAll("\\+","");
+            }
+            if(value.contains("\\")){
+                value=value.replaceAll("\\\\","");
+            }
+            if(value.contains("（")){
+                value=value.replaceAll("（","");
+            }
+            if(value.contains("）")){
+                value=value.replaceAll("）","");
+            }
+            if(value.contains("-")){
+                value=value.replaceAll("-","");
+            }
+            if(StringUtils.isNotNullOrEmpty(value)){
+                value=value.trim();
+            }
+        }
+        return value;
+    }
+
+
 }

@@ -68,7 +68,7 @@ public enum SmsTemplate {
 	PPLIER_APP_ATTACH_RESOLVE_OVERSIZE_SMS("SMS_5910306", "您好！您上传的附件简历过大，请在仟寻发送给您的邮件中再次上传简历附件。关注微信公众号'仟寻'，实时查看您的求进度"),
 	
 	APPLIER_APP_RESOLVE_FAIL_SMS("SMS_5910307", "您好！您上传的附件获取失败，请在仟寻发送给您的邮件中再次上传简历附件。关注微信公众号'仟寻'，实时查看您的求进度"),
-	
+
 	ALARM_SMS("SMS_5905208", "系统报警！项目%s，错误消息%s，发生频率%s");
 	
 	private String smsCode;
