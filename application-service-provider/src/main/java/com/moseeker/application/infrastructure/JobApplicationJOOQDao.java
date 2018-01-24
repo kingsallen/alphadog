@@ -5,10 +5,11 @@ import com.moseeker.application.domain.pojo.Application;
 import com.moseeker.application.domain.pojo.ApplicationStatePojo;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.common.constants.AbleFlag;
-import org.jooq.Configuration;
+import org.jooq.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.using;
@@ -93,5 +94,68 @@ public class JobApplicationJOOQDao extends com.moseeker.baseorm.db.jobdb.tables.
         } else {
             return new ArrayList<>();
         }
+    }
+
+    /**
+     *
+     * 根据申请编号查找申请编号和职位编号（查找申请和职位的关系）
+     *
+     * @param applicationIdList 申请编号集合
+     * @return 申请和职位的关系
+     */
+    public List<Record2<Integer, Integer>> fetchPositionIdsByIdList(List<Integer> applicationIdList) {
+        if (applicationIdList != null && applicationIdList.size() > 0) {
+            List<Record2<Integer, Integer>> result = using(configuration())
+                    .select(JobApplication.JOB_APPLICATION.ID, JobApplication.JOB_APPLICATION.POSITION_ID)
+                    .from(JobApplication.JOB_APPLICATION)
+                    .where(JobApplication.JOB_APPLICATION.ID.in(applicationIdList))
+                    .fetch();
+            if (result != null) {
+                return result;
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     *
+     * 查找申请所处的公司编号
+     *
+     * @param applicationIdList 申请编号
+     * @return 公司编号集合
+     */
+    public List<Record2<Integer, Integer>> fetchCompanyIdListByApplicationIdList(List<Integer> applicationIdList) {
+        if (applicationIdList != null && applicationIdList.size() > 0) {
+            Result<Record2<Integer, Integer>> result = using(configuration())
+                    .select(JobApplication.JOB_APPLICATION.ID, JobApplication.JOB_APPLICATION.COMPANY_ID)
+                    .from(JobApplication.JOB_APPLICATION)
+                    .where(JobApplication.JOB_APPLICATION.ID.in(applicationIdList))
+                    .fetch();
+            if (result != null && result.size() > 0) {
+                return result;
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     *
+     * 查找申请与申请人编号
+     *
+     * @param applicationIdList 申请编号集合
+     * @return 申请和申请人集合
+     */
+    public List<Record2<Integer,Integer>> fetchApplierIdListByIdList(List<Integer> applicationIdList) {
+        if (applicationIdList != null && applicationIdList.size() > 0) {
+            Result<Record2<Integer, Integer>> result = using(configuration())
+                    .select(JobApplication.JOB_APPLICATION.ID, JobApplication.JOB_APPLICATION.APPLIER_ID)
+                    .from(JobApplication.JOB_APPLICATION)
+                    .where(JobApplication.JOB_APPLICATION.ID.in(applicationIdList))
+                    .fetch();
+            if (result != null) {
+                return result;
+            }
+        }
+        return new ArrayList<>();
     }
 }

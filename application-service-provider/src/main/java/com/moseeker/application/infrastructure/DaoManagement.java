@@ -1,8 +1,24 @@
 package com.moseeker.application.infrastructure;
 
+import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.HREntity;
+import com.moseeker.application.domain.constant.ApplicationViewStatus;
+import com.moseeker.application.domain.pojo.Application;
+import com.moseeker.application.exception.ApplicationException;
+import com.moseeker.baseorm.config.HRAccountType;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
+import com.moseeker.common.exception.CommonException;
 import org.jooq.Configuration;
+import org.jooq.Record2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by jack on 16/01/2018.
@@ -15,6 +31,11 @@ public class DaoManagement {
     private UserHRAccountJOOQDao userHrAccountDao;
     private JobPositionJOOQDao positionJOOQDao;
     private HrOperationJOOQDao hrOperationJOOQDao;
+    private HrCompanyJOOQDao companyJOOQDao;
+    private WechatJOOQDao wechatJOOQDao;
+
+    @Autowired
+    ApplicationContext applicationContext;
 
     @Autowired
     public DaoManagement(Configuration configuration) {
@@ -23,6 +44,7 @@ public class DaoManagement {
         userHrAccountDao = new UserHRAccountJOOQDao(configuration);
         positionJOOQDao = new JobPositionJOOQDao(configuration);
         hrOperationJOOQDao = new HrOperationJOOQDao(configuration);
+        companyJOOQDao = new HrCompanyJOOQDao(configuration);
     }
 
     public JobApplicationJOOQDao getJobApplicationDao() {
@@ -39,5 +61,168 @@ public class DaoManagement {
 
     public HrOperationJOOQDao getHrOperationJOOQDao() {
         return hrOperationJOOQDao;
+    }
+
+    /**
+     * 查找申请投递的职位名称
+     * @param applicationIdList 申请编号
+     * @return 申请对应的职位名称 key 申请编号 value 职位名称
+     */
+    public Map<Integer, String> getPositionName(List<Integer> applicationIdList) {
+
+        Map<Integer, String> positionNameMap= new HashMap<>();
+
+        List<Record2<Integer, Integer>> record1List = jobApplicationDao.fetchPositionIdsByIdList(applicationIdList);
+        if (record1List != null) {
+
+            List<Integer> positionIdList = record1List.stream().map(map -> map.value2()).collect(Collectors.toList());
+            List<Record2<Integer, String>> positionList = positionJOOQDao.fetchPositionNamesByIdList(positionIdList);
+
+            if (positionList != null) {
+                record1List.stream().forEach(record2 -> {
+                    Optional<Record2<Integer, String>> optional= positionList
+                            .stream()
+                            .filter(p -> record2.value2().intValue() == p.value1().intValue())
+                            .findAny();
+                    if (optional.isPresent()) {
+                        positionNameMap.put(record2.value1(), optional.get().value2());
+                    }
+                });
+            }
+        }
+        return positionNameMap;
+    }
+
+    /**
+     * 查找申请和公司的关系
+     * @param applicationIdList 申请编号
+     * @return 申请和公司的关系
+     */
+    public Map<Integer, HrCompany> getCompaniesByApplicationIdList(List<Integer> applicationIdList) {
+        List<Record2<Integer, Integer>> appIdCompanyIdList = jobApplicationDao.fetchCompanyIdListByApplicationIdList(applicationIdList);
+        List<Integer> companyIdList = appIdCompanyIdList.stream().map(record -> record.value2()).collect(Collectors.toList());
+        List<HrCompany> companyList = companyJOOQDao.fetchByIdList(companyIdList);
+        Map<Integer, HrCompany> map = new HashMap<>();
+
+        applicationIdList.forEach(appid -> {
+            Optional<Record2<Integer, Integer>> optional = appIdCompanyIdList
+                    .stream()
+                    .filter(ac -> ac.value1().intValue() == appid)
+                    .findAny();
+            if (optional.isPresent()) {
+                Optional<HrCompany> companyOptional = companyList
+                        .stream()
+                        .filter(hrCompany -> hrCompany.getId().intValue() == optional.get().value2().intValue())
+                        .findAny();
+                if (companyOptional.isPresent()) {
+                    map.put(appid, companyOptional.get());
+                }
+            }
+        });
+
+        return map;
+    }
+
+    /**
+     * 查找公司signature信息  key是公司编号， value是signature
+     * @param companyIdList 公司编号集合
+     * @return 公司signature信息集合 key是公司编号， value是signature
+     */
+    public Map<Integer,String> getSignatureByCompanyId(List<Integer> companyIdList) {
+        Map<Integer, String> map = new HashMap<>();
+        List<Record2<Integer,String>> result = wechatJOOQDao.getCompanyIdAndSignatureByCompanyId(companyIdList);
+        if (result != null) {
+            result.forEach(record -> {
+                map.put(record.value1(), record.value2());
+            });
+        }
+        return map;
+    }
+
+    /**
+     * 查找申请人编号
+     * @param applicationIdList 申请编号
+     * @return 申请人编号
+     */
+    public Map<Integer,Integer> getAppliers(List<Integer> applicationIdList) {
+        Map<Integer,Integer> result = new HashMap<>();
+        List<Record2<Integer,Integer>> list = jobApplicationDao.fetchApplierIdListByIdList(applicationIdList);
+        if (list != null) {
+            list.forEach(record -> {
+                result.put(record.value1(), record.value2());
+            });
+        }
+        return result;
+    }
+
+    public HREntity fetchHREntity(int hrId) throws CommonException {
+        //理论上获取用户信息应该访问用户服务
+        UserHrAccount userHrAccount = getUserHrAccountDao().fetchActiveHRByID(hrId);
+        if (userHrAccount == null) {
+            throw ApplicationException.APPLICATION_HR_ILLEGAL;
+        }
+        HRAccountType hrAccountType = HRAccountType.initFromType(userHrAccount.getAccountType());
+        if (hrAccountType == null) {
+            throw ApplicationException.APPLICATION_HR_ACCOUT_TYPE_ILLEGAL;
+        }
+
+        return new HREntity(userHrAccount.getId(), hrAccountType, userHrAccount.getCompanyId(),
+                this, applicationContext);
+    }
+
+    public ApplicationEntity fetchApplicationEntity(List<Integer> applicationIdList) throws CommonException {
+        List<JobApplication> applicationList = getJobApplicationDao()
+                .fetchActiveApplicationByIdList(applicationIdList);
+        if (applicationList == null || applicationList.size() == 0) {
+            throw ApplicationException.APPLICATION_APPLICATION_ELLEGAL;
+        }
+        //查找申请和HR的关系--通过职位信息
+        List<JobPosition> positionList = getPositionJOOQDao()
+                .fetchPublisherByAppIds(applicationList
+                        .stream()
+                        .map(jobApplication -> jobApplication.getPositionId())
+                        .collect(Collectors.toList()));
+
+        List<Record2<Integer, Integer>> superAccountList = userHrAccountDao
+                .fetchActiveSuperHRByCompanyIDList(positionList
+                        .stream().map(p -> p.getCompanyId())
+                        .collect(Collectors.toList()));
+
+        //生成被查看的申请记录
+        List<Application> applications = applicationList.stream().map(jobApplication -> {
+            Application application = new Application();
+            application.setStatus(jobApplication.getAppTplId());
+            if (jobApplication.getIsViewed() != null
+                    && jobApplication.getIsViewed() == ApplicationViewStatus.VIEWED.getStatus()) {
+                application.setViewed(true);
+            } else {
+                application.setViewed(false);
+            }
+            if (positionList != null && positionList.size() > 0) {
+                Optional<JobPosition> jobPositionOptional = positionList
+                        .stream()
+                        .filter(jobPosition -> jobApplication.getPositionId().intValue()
+                                == jobPosition.getId()).findAny();
+                List<Integer> hrIdList = new ArrayList<>();
+                if (jobPositionOptional.isPresent()) {
+                    hrIdList.add(jobPositionOptional.get().getPublisher());
+                    Optional<Record2<Integer, Integer>> optional
+                            = superAccountList
+                            .stream()
+                            .filter(record -> record.value1().intValue() == jobPositionOptional.get().getCompanyId().intValue())
+                            .findAny();
+                    if (optional.isPresent()) {
+                        hrIdList.add(optional.get().value2());
+                    }
+                }
+                application.setHrId(hrIdList);
+            }
+            application.setId(jobApplication.getId());
+            return application;
+        }).collect(Collectors.toList());
+
+        ApplicationEntity applicationEntity = new ApplicationEntity(this, applications, applicationContext);
+
+        return applicationEntity;
     }
 }

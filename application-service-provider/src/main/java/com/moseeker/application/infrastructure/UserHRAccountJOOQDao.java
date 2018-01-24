@@ -6,7 +6,11 @@ import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.common.constants.AbleFlag;
 import org.jooq.Configuration;
 import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.Result;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.jooq.impl.DSL.using;
 
@@ -34,7 +38,7 @@ public class UserHRAccountJOOQDao extends com.moseeker.baseorm.db.userdb.tables.
                         UserHrAccount.USER_HR_ACCOUNT.USERNAME, UserHrAccount.USER_HR_ACCOUNT.COMPANY_ID)
                 .from(UserHrAccount.USER_HR_ACCOUNT)
                 .where(UserHrAccount.USER_HR_ACCOUNT.ID.eq(hrId))
-                .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.eq(AbleFlag.OLDENABLE.getValue()))
+                .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.eq(AbleFlag.ENABLE.getValue()))
                 .and(UserHrAccount.USER_HR_ACCOUNT.ACTIVATION.eq((byte) HRAccountActivationType.Actived.getValue()))
                 .fetchOneInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount.class);
 
@@ -64,5 +68,27 @@ public class UserHRAccountJOOQDao extends com.moseeker.baseorm.db.userdb.tables.
             }
         }
         return 0;
+    }
+
+    /**
+     * 根据公司编号查找公司下的主账号
+     * @param companyIdList 公司编号集合
+     * @return 公司编号与主账号的集合
+     */
+    public List<Record2<Integer,Integer>> fetchActiveSuperHRByCompanyIDList(List<Integer> companyIdList) {
+        if (companyIdList != null && companyIdList.size() > 0) {
+            Result<Record2<Integer, Integer>> result = using(configuration())
+                    .select(UserHrAccount.USER_HR_ACCOUNT.COMPANY_ID, UserHrAccount.USER_HR_ACCOUNT.ID)
+                    .from(UserHrAccount.USER_HR_ACCOUNT)
+                    .where(UserHrAccount.USER_HR_ACCOUNT.COMPANY_ID.in(companyIdList))
+                    .and(UserHrAccount.USER_HR_ACCOUNT.ACTIVATION.eq((byte) HRAccountActivationType.Actived.getValue()))
+                    .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.eq(AbleFlag.ENABLE.getValue()))
+                    .and(UserHrAccount.USER_HR_ACCOUNT.ACCOUNT_TYPE.eq(HRAccountType.SupperAccount.getType()))
+                    .fetch();
+            if (result != null) {
+                return result;
+            }
+        }
+        return  new ArrayList<>();
     }
 }

@@ -1,10 +1,7 @@
 package com.moseeker.application.infrastructure;
 
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import org.jooq.Configuration;
-import org.jooq.Record1;
-import org.jooq.Record2;
-import org.jooq.Result;
+import org.jooq.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,13 +48,32 @@ public class JobPositionJOOQDao extends com.moseeker.baseorm.db.jobdb.tables.dao
      */
     public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetchPublisherByAppIds(List<Integer> positionIdList) {
         if (positionIdList != null && positionIdList.size() > 0) {
-            Result<Record2<Integer, Integer>> result = using(configuration())
-                    .select(JobPosition.JOB_POSITION.ID, JobPosition.JOB_POSITION.PUBLISHER)
+            Result<Record3<Integer, Integer, Integer>> result = using(configuration())
+                    .select(JobPosition.JOB_POSITION.ID, JobPosition.JOB_POSITION.PUBLISHER, JobPosition.JOB_POSITION.COMPANY_ID)
                     .from(JobPosition.JOB_POSITION)
                     .where(JobPosition.JOB_POSITION.ID.in(positionIdList))
                     .fetch();
             if (result != null) {
                 return result.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition.class);
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * 查找职位名称
+     * @param positionIdList 职位编号
+     * @return 职位编号和职位名称
+     */
+    public List<Record2<Integer,String>> fetchPositionNamesByIdList(List<Integer> positionIdList) {
+        if (positionIdList != null && positionIdList.size() > 0) {
+            Result<Record2<Integer, String>> positionNames = using(configuration())
+                    .select(JobPosition.JOB_POSITION.ID, JobPosition.JOB_POSITION.TITLE)
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.ID.in(positionIdList))
+                    .fetch();
+            if (positionNames != null) {
+                return positionNames;
             }
         }
         return new ArrayList<>();
