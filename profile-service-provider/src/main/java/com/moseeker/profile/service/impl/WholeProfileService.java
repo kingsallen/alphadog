@@ -600,7 +600,6 @@ public class WholeProfileService {
             profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
             profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
             profileEntity.improveWorks(profilePojo.getWorksRecords(), profileId);
-//            profileEntity.getCompleteness(0, null, profileId);
             profileEntity.reCalculateProfileCompleteness(profileId);
 
             try {

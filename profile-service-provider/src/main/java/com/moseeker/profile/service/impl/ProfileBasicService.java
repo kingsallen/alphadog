@@ -7,6 +7,8 @@ import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.baseorm.tool.RecordTool;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -18,6 +20,9 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.biz.ProfileValidation;
+import com.moseeker.entity.biz.ValidationMessage;
+import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
@@ -31,9 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -138,6 +141,10 @@ public class ProfileBasicService {
     public Basic postResource(Basic struct) throws BIZException {
         Basic resultStruct = null;
         if (struct != null) {
+            ValidationMessage<Basic> vm = ProfileValidation.verifyBasic(struct);
+            if (!vm.isPass()) {
+                throw ProfileException.validateFailed(vm.getResult());
+            }
             if (struct.getCity_code() > 0) {
                 DictCityRecord city = cityDao.getCityByCode(struct.getCity_code());
                 if (city != null) {
@@ -206,18 +213,26 @@ public class ProfileBasicService {
             if (repeat == null) {
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DATA_NULL);
             }
-            i = dao.updateRecord(BeanUtils.structToDB(struct, ProfileBasicRecord.class));
-            if (i > 0) {
 
-                updateUpdateTime(struct);
+            ProfileBasicRecord param = BeanUtils.structToDB(struct, ProfileBasicRecord.class);
+            RecordTool.recordToRecord(repeat, param);
+            ValidationMessage<ProfileBasicRecord> validationMessage = ProfileValidation.verifyBasic(repeat);
+            if (validationMessage.isPass()) {
+                i = dao.updateRecord(BeanUtils.structToDB(struct, ProfileBasicRecord.class));
+                if (i > 0) {
 
-                if (!StringUtils.isNullOrEmpty(struct.getName())) {
-                    profileDao.updateRealName(struct.getProfile_id(), struct.getName());
-                }
+                    updateUpdateTime(struct);
+
+                    if (!StringUtils.isNullOrEmpty(struct.getName())) {
+                        profileDao.updateRealName(struct.getProfile_id(), struct.getName());
+                    }
 
 				/* 计算用户基本信息的简历完整度 */
-                profileEntity.reCalculateUserUser(struct.getProfile_id());
-                profileEntity.reCalculateProfileBasic(struct.getProfile_id());
+                    profileEntity.reCalculateUserUser(struct.getProfile_id());
+                    profileEntity.reCalculateProfileBasic(struct.getProfile_id());
+                }
+            } else {
+                throw ProfileException.validateFailed(validationMessage.getResult());
             }
         }
         return i;
@@ -226,6 +241,9 @@ public class ProfileBasicService {
     @Transactional
     public List<Basic> postResources(List<Basic> structs) throws TException {
         List<Basic> resultDatas = new ArrayList<>();
+
+        //删除不符合数据要求的基本信息数据
+        removeIllegalBasic(structs);
 
         if (structs != null && structs.size() > 0) {
 
@@ -256,7 +274,33 @@ public class ProfileBasicService {
     public int[] putResources(List<Basic> structs) throws TException {
 
         if (structs != null && structs.size() > 0) {
-            int[] putResult = dao.updateRecords(BeanUtils.structToDB(structs, ProfileBasicRecord.class));
+
+            List<ProfileBasicRecord> paramList = BeanUtils.structToDB(structs, ProfileBasicRecord.class);
+
+            /** 校验基本信息数据是否符合要求 */
+            List<Integer> paramIdList = paramList.stream().map(basicRecord -> basicRecord.getProfileId()).collect(Collectors.toList());
+            List<ProfileBasicRecord> basicRecordList = dao.fetchBasicByProfileIdList(paramIdList);
+            if (basicRecordList != null && basicRecordList .size() > 0) {
+                Iterator<ProfileBasicRecord> iterator = basicRecordList.iterator();
+                while (iterator.hasNext()) {
+                    ProfileBasicRecord basicRecord = iterator.next();
+                    Optional<ProfileBasicRecord> optional = paramList
+                            .stream()
+                            .filter(basic -> basic.getProfileId().intValue() == basicRecord.getProfileId().intValue())
+                            .findAny();
+                    if (optional.isPresent()) {
+                        RecordTool.recordToRecord(basicRecord, optional.get());
+                        ValidationMessage<ProfileBasicRecord> validationMessage = ProfileValidation.verifyBasic(basicRecord);
+                        if (!validationMessage.isPass()) {
+                            iterator.remove();
+                        }
+                    } else {
+                        iterator.remove();
+                    }
+                }
+            }
+
+            int[] putResult = dao.updateRecords(basicRecordList);
 
             HashSet<Integer> profileIds = new HashSet<>();
 
@@ -352,5 +396,22 @@ public class ProfileBasicService {
         List<?> datas = dao.getDatas(query);
 
         return ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
+    }
+
+    /**
+     * 过滤不合法的基本信息
+     * @param structs
+     */
+    private void removeIllegalBasic(List<Basic> structs) {
+        if (structs != null && structs.size() > 0) {
+            Iterator<Basic> ie = structs.iterator();
+            while (ie.hasNext()) {
+                Basic basic = ie.next();
+                ValidationMessage<Basic> vm = ProfileValidation.verifyBasic(basic);
+                if (!vm.isPass()) {
+                    ie.remove();
+                }
+            }
+        }
     }
 }
