@@ -266,7 +266,7 @@ public class PositionBS {
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
         }
 
-        return ResultMessage.SUCCESS.toResponse(jsonParam);
+        return ResultMessage.SUCCESS.toResponse(jsonObject);
     }
 
     /**

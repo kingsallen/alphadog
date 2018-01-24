@@ -43,7 +43,7 @@ public class PositionSyncVerifyConsumer {
 
             JSONObject obj=JSONObject.parseObject(json);
 
-            if(obj.containsKey("positionId")){  //账号同步验证
+            if(!obj.containsKey("positionId")){  //账号同步验证
 
                 logger.info("账号同步验证 推送数据到redis中 json：{}",json);
                 redisClient.set(BindThirdPart.APP_ID, BindThirdPart.KEY_IDENTIFIER,obj.getJSONObject("data").getString(BindThirdPart.CHAOS_ACCOUNTID),json);
