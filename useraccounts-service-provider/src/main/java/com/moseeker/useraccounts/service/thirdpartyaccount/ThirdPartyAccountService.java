@@ -99,7 +99,7 @@ public class ThirdPartyAccountService {
                 logger.info("子账号{}，并且已经绑定过该渠道第三方帐号", hrAccount);
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_BINDING_LIMIT);
             }
-            if (BindCheck.isNotNullAccount(oldAccount)) {
+            if (BindCheck.isNotNullAccount(oldAccount) && oldAccount.getBinding()!=BindingStatus.UNDISPATCH.getValue()) {   //状态为9的数据是可以重新绑定的,因为9和0一样不显示
                 //公司下已经有人绑定了这个第三方账号，则这个公司谁都不能再绑定这个账号了
                 logger.info("子账号不能重新绑定第三方账号");
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.SUBACCOUNT_REBIND_ERROR);
