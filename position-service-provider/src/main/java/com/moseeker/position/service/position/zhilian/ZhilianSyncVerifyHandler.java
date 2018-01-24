@@ -70,6 +70,7 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
      */
     @Override
     public void verifyHandler(JSONObject jsonParam) throws BIZException {
+        logger.info("zhilian verifyHandler jsonParam:{}",jsonParam.toJSONString());
         Integer accountId=jsonParam.getInteger("accountId");
         Integer channel=jsonParam.getInteger("channel");
         Integer positionId=jsonParam.getInteger("positionId");
@@ -89,10 +90,13 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
 
         //发送消息模板
         mobileVeifyHandler.verifyHandler(channelType,userHrAccountDO,thirdPartyPosition,jsonParam);
+
+        logger.info("zhilian verifyHandler success jsonParam:{}",jsonParam.toJSONString());
     }
 
     @Override
     public void syncVerifyInfo(JSONObject jsonInfo) throws BIZException{
+        logger.info("zhilian syncVerifyInfo jsonInfo:{}",jsonInfo.toJSONString());
         //同一信息都是info，但是智联需要code
         jsonInfo.put("code",jsonInfo.get("info"));
 
@@ -123,6 +127,7 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
      */
     @Override
     protected boolean checkVerifyParam(JSONObject jsonParam) throws BIZException {
+        logger.info("zhilian checkVerifyParam jsonInfo:{}",jsonParam.toJSONString());
         String mobile = jsonParam.getString("mobile");
         if(StringUtils.isNullOrEmpty(mobile)){
             logger.error("智联验证处理--手机号为空");
@@ -133,6 +138,7 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
 
     @Override
     protected boolean checkVerifyInfo(JSONObject jsonInfo) throws BIZException {
+        logger.info("zhilian checkVerifyInfo jsonInfo:{}",jsonInfo.toJSONString());
         String code = jsonInfo.getString("info");
         if(StringUtils.isNullOrEmpty(code)){
             logger.error("智联验证处理--验证码为空");
@@ -144,6 +150,8 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
     @Override
     public void timeoutHandler(String param) throws BIZException {
         super.timeoutHandler(param);
+
+        logger.info("zhilian timeoutHandler param:{}",param);
 
         JSONObject jsonObject= JSON.parseObject(param);
         if(jsonObject.containsKey("paramId")) {

@@ -1,6 +1,7 @@
 package com.moseeker.position.service.position.base.sync.verify;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
@@ -108,17 +109,19 @@ public class MobileVeifyHandler {
         applierTemplate.put("topcolor", template.getTopcolor());
         String result=null;
         try {
+            logger.info("mobile verify send template url:{},template:{}",url,JSON.toJSONString(applierTemplate));
             result  = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
+            logger.info("mobile verify send template result",result);
         }catch (ConnectException e){
             logger.error("发送手机验证码模板消息失败 param: {}",JSON.toJSONString(param));
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_SEND_MOBILE_TEMPLATE_ERROR);
         }
 
 
-        Map<String, Object> params = JSON.parseObject(result);
+        JSONObject params = JSON.parseObject(result);
         insertLogWxMessageRecord(hrWxWechatDO, template, openId, link, colMap ,params);
 
-        if(params!= null && "0".equals(params.get("errcode"))){
+        if(params!= null && "0".equals(params.getString("errcode"))){
             return ;
         }
         throw new BIZException((int)params.get("errcode"), (String)params.get("errmsg"));
