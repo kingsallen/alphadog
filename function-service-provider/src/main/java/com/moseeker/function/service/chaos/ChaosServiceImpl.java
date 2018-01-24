@@ -1,5 +1,6 @@
 package com.moseeker.function.service.chaos;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -87,7 +88,7 @@ public class ChaosServiceImpl {
      * @return
      */
     public String bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
-        logger.info("ChaosServiceImpl bind account:{},extras:{}",hrThirdPartyAccount,extras);
+        logger.info("ChaosServiceImpl bind account:{},extras:{}",hrThirdPartyAccount, JSON.toJSONString(extras));
         String data=postBind(hrThirdPartyAccount,new HashMap<>(extras), BindThirdPart.BIND_SEND_ROUTING_KEY);
         logger.info("ChaosServiceImpl bind result:"+data);
         return data;
@@ -101,7 +102,7 @@ public class ChaosServiceImpl {
      * @return
      */
     public String bindConfirm(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, boolean confirm) throws Exception {
-        logger.info("ChaosServiceImpl bindConfirm account:{},extras:{},confirm:{}",hrThirdPartyAccount,extras,confirm);
+        logger.info("ChaosServiceImpl bindConfirm account:{},extras:{},confirm:{}",hrThirdPartyAccount,JSON.toJSONString(extras),confirm);
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("confirm", confirm);
@@ -118,7 +119,7 @@ public class ChaosServiceImpl {
      * @return
      */
     public String bindMessage(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, String code) throws Exception {
-        logger.info("ChaosServiceImpl bindMessage account:{},extras:{},code:{}",hrThirdPartyAccount,extras,code);
+        logger.info("ChaosServiceImpl bindMessage account:{},extras:{},code:{}",hrThirdPartyAccount,JSON.toJSONString(extras),code);
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("code", code);
