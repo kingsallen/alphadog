@@ -141,6 +141,23 @@ public class SearchengineService {
         return ResponseUtils.success(result);
     }
     /*
+     小程序用的查詢職位接口
+     */
+    @CounterIface
+    public Map<String,Object> searchPositionMini(Map<String,String> params){
+        String pageFrom=params.get("page");
+        String pageSize=params.get("pageSize");
+        String childCompany=params.get("childCompanyId");
+        String motherCompanyId=params.get("motherCompanyId");
+        String keyWord=params.get("keyword");
+        SearchResponse response=this.getSearchIndex(keyWord,null,null,null,null,null,
+                null,null,null,null,motherCompanyId,Integer.parseInt(pageFrom),
+                Integer.parseInt(pageSize),childCompany,null,true,null);
+
+        Map<String,Object> result=searchUtil.handleData(response,"positionList");
+        return result;
+    }
+    /*
      将查询elasticsearch index的逻辑独立出来
      */
     private SearchResponse getSearchIndex(String keywords, String cities, String industries, String occupations, String scale,
