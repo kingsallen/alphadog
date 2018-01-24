@@ -225,6 +225,7 @@ public abstract class RedisClient {
 			throws CacheConfigNotExistException,RedisException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
+		logger.info("cacheKey: {}; value:{}",cacheKey,redisCluster.get(cacheKey));
 		try {
 			return redisCluster.get(cacheKey);
 		} catch (Exception e) {
