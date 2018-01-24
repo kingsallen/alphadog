@@ -3,8 +3,7 @@ package com.moseeker.application.service.listener;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.application.service.event.ViewApplicationListEvent;
 import com.moseeker.application.domain.component.state.ApplicationStatus;
-import com.moseeker.application.infrastructure.ApplicationRepository;
-import com.moseeker.application.service.event.ViewApplicationSource;
+import com.moseeker.application.infrastructure.DaoManagement;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -31,7 +30,7 @@ import java.util.List;
 public class ViewApplicationAwardListener implements SmartApplicationListener {
 
     @Autowired
-    ApplicationRepository applicationRepository;
+    DaoManagement daoManagement;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -48,7 +47,7 @@ public class ViewApplicationAwardListener implements SmartApplicationListener {
 
     @Override
     public boolean supportsSourceType(Class<?> sourceType) {
-        if (sourceType == ViewApplicationSource.class) {
+        if (sourceType == List.class) {
             return true;
         }
         return false;
@@ -60,12 +59,12 @@ public class ViewApplicationAwardListener implements SmartApplicationListener {
         logger.info("ViewApplicationAwardListener onApplicationEvent");
 
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            ViewApplicationSource viewApplicationSource = (ViewApplicationSource) event.getSource();
+            List<Integer> applicationIdList = (List<Integer>) event.getSource();
             ApplicationStatus status = ApplicationStatus.CVChecked;
 
             HttpPost post = new HttpPost(url);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("application_ids", viewApplicationSource.getApplicationIdList());
+            jsonObject.put("application_ids", applicationIdList);
             jsonObject.put("event_type", status.getState());
             StringEntity entity = new StringEntity(jsonObject.toString());
             post.setEntity(entity);
@@ -83,8 +82,6 @@ public class ViewApplicationAwardListener implements SmartApplicationListener {
         } catch (ClientProtocolException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }

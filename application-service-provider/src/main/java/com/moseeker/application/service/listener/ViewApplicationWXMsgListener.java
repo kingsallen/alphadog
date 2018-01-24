@@ -13,7 +13,6 @@ import org.springframework.context.event.SmartApplicationListener;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  *
