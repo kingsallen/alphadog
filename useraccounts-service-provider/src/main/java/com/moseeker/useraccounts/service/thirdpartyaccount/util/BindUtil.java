@@ -36,7 +36,7 @@ public class BindUtil {
         Map<String, String> extras = new HashMap<>();
         ChannelType channelType=ChannelType.instaceFromInteger(account.getChannel());
         switch (channelType){
-            case JOB51:
+            case ZHILIAN:
                 extras.put("mobile",userHrAccount.getMobile());
                 break;
             default:
