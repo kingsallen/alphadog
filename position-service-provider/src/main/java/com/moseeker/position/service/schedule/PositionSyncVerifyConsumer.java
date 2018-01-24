@@ -5,6 +5,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.BindThirdPart;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSyncVerify;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.base.PositionFactory;
 import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
 import com.moseeker.position.utils.PositionEmailNotification;
@@ -43,7 +44,9 @@ public class PositionSyncVerifyConsumer {
 
             JSONObject obj=JSONObject.parseObject(json);
 
-            if(!obj.containsKey("positionId")){  //账号同步验证
+            String positionId=obj.getString("positionId");
+
+            if(StringUtils.isNullOrEmpty(positionId)){  //账号同步验证
 
                 logger.info("账号同步验证 推送数据到redis中 json：{}",json);
                 redisClient.set(BindThirdPart.APP_ID, BindThirdPart.KEY_IDENTIFIER,obj.getJSONObject("data").getString(BindThirdPart.CHAOS_ACCOUNTID),json);
@@ -60,9 +63,6 @@ public class PositionSyncVerifyConsumer {
 
                 verifyHandler.verifyHandler(json);
             }
-
-
-
 
             logger.info("handle json success json: {}",json);
         }catch (Exception e){

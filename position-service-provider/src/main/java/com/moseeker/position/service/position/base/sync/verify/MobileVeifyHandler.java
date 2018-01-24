@@ -111,7 +111,7 @@ public class MobileVeifyHandler {
         try {
             logger.info("mobile verify send template url:{},template:{}",url,JSON.toJSONString(applierTemplate));
             result  = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
-            logger.info("mobile verify send template result",result);
+            logger.info("mobile verify send template result:{}",result);
         }catch (ConnectException e){
             logger.error("发送手机验证码模板消息失败 param: {}",JSON.toJSONString(param));
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_SEND_MOBILE_TEMPLATE_ERROR);
