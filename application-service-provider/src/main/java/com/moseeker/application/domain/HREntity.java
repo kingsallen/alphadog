@@ -43,23 +43,23 @@ public class HREntity {
 
     /**
      * HREntity 查阅申请
-     * @param applicationEntity 申请实体
+     * @param applicationBatchEntity 申请实体
      * @throws CommonException APPLICATION_HAVE_NO_PERMISSION(41010)
      */
-    public void viewApplication(ApplicationEntity applicationEntity) throws CommonException {
-        if (applicationEntity == null || applicationEntity.getApplicationList() == null
-                || applicationEntity.getApplicationList().size() == 0) {
+    public void viewApplication(ApplicationBatchEntity applicationBatchEntity) throws CommonException {
+        if (applicationBatchEntity == null || applicationBatchEntity.getApplicationList() == null
+                || applicationBatchEntity.getApplicationList().size() == 0) {
             return;
         }
         //校验是否有权限浏览申请
-        if (!validateAuthority(applicationEntity.getApplicationList())) {
+        if (!validateAuthority(applicationBatchEntity.getApplicationList())) {
             throw ApplicationException.APPLICATION_HAVE_NO_PERMISSION;
         }
         //申请被查阅
-        applicationEntity.viewed();
+        applicationBatchEntity.viewed();
 
         //添加HR对申请的操作记录
-        List<Application> unViewedApplicationList = applicationEntity.getApplicationList()
+        List<Application> unViewedApplicationList = applicationBatchEntity.getApplicationList()
                 .stream()
                 .filter(application -> !application.isViewed())
                 .collect(Collectors.toList());

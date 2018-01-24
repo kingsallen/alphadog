@@ -1,7 +1,7 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.infrastructure.DaoManagement;
 import com.moseeker.application.service.application.StatusChangeUtil;
@@ -955,8 +955,8 @@ public class JobApplicataionService {
     public void viewApplications(int hrId, List<Integer> applicationIdList) throws CommonException {
 
         HREntity hrEntity = daoManagement.fetchHREntity(hrId);
-        ApplicationEntity applicationEntity = daoManagement.fetchApplicationEntity(applicationIdList);
-        hrEntity.viewApplication(applicationEntity);
+        ApplicationBatchEntity applicationBatchEntity = daoManagement.fetchApplicationEntity(applicationIdList);
+        hrEntity.viewApplication(applicationBatchEntity);
     }
 }
 

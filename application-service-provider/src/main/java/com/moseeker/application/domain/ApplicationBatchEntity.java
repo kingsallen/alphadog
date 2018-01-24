@@ -13,14 +13,14 @@ import java.util.List;
  * 申请实体
  * Created by jack on 17/01/2018.
  */
-public class ApplicationEntity {
+public class ApplicationBatchEntity {
 
     private List<Application> applicationList;          //申请编号集合
     private DaoManagement daoManagement;                //DAO操作
     private volatile ApplicationState applicationState;
     private final ApplicationContext applicationContext;
 
-    public ApplicationEntity(DaoManagement daoManagement, List<Application> applicationList, ApplicationContext applicationContext) throws CommonException {
+    public ApplicationBatchEntity(DaoManagement daoManagement, List<Application> applicationList, ApplicationContext applicationContext) throws CommonException {
         if (applicationList == null || applicationList.size() == 0 || daoManagement == null) {
             throw ApplicationException.APPLICATION_ENTITY_BUILD_FAILED;
         }

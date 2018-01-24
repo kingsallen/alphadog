@@ -3,7 +3,7 @@ package com.moseeker.application.domain.pojo;
 import java.util.List;
 
 /**
- * 申请实体
+ * 申请数据
  * Created by jack on 17/01/2018.
  */
 public class Application {
