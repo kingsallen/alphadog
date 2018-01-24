@@ -33,7 +33,7 @@ public class PositionSyncVerifyConsumer {
 
         try {
             json=new String(message.getBody(), "UTF-8");
-            logger.info("receive json" );
+            logger.info("receive json {}",json );
 
             JSONObject obj=JSONObject.parseObject(json);
 
@@ -45,6 +45,7 @@ public class PositionSyncVerifyConsumer {
 
             verifyHandler.verifyHandler(json);
 
+            logger.info("handle json success json: {}",json);
         }catch (Exception e){
             logger.error("handle refresh result Error : {}, message :{}",e.getMessage(),json);
             emailNotification.sendVerifyFailureMail(json, null, e);

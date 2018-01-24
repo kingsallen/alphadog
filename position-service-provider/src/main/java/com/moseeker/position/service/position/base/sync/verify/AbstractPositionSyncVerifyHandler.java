@@ -56,6 +56,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
      */
     @Override
     public void verifyHandler(String param) throws BIZException {
+        logger.info("verifyHandler param:{}",param);
         try {
             checkVerifyParam(param);
 
@@ -69,6 +70,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_ALREADY_VERIFY);
             }
             verifyHandler(verifyParam);
+            logger.info("verifyHandler success ,param:{}",param);
         } catch (BIZException e){
             logger.error("处理爬虫端推送的需要验证的请求失败，错误：{}",e);
             timeoutHandler(param);
@@ -87,6 +89,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
      */
     @Override
     public void syncVerifyInfo(String info) throws BIZException {
+        logger.info("syncVerifyInfo info:{}",info);
         try {
             checkVerifyParam(info);
 
@@ -96,6 +99,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             checkVerifyInfo(jsonInfo);
 
             if(isTimeout(info)){
+                logger.info("syncVerifyInfo timeout info:{}",info);
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
             }
 
@@ -104,6 +108,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
 
             //验证流程完成，删除验证缓存
             finishVerify(jsonInfo);
+            logger.info("syncVerifyInfo success:{}",info);
         } catch (BIZException e){
             logger.error("处理验证完成的消息错误：{}",e);
             emailNotification.sendVerifyFailureMail(info, null, e);
@@ -125,8 +130,10 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
      */
     @Override
     public boolean isTimeout(String param){
+        logger.info("isTimeout param:{}",param);
         JsonVerifyParam verifyParam=JsonVerifyParam.newInstance(param);
         if(!verifyParam.isValid()){
+            logger.info("isTimeout invalid param :{}",param);
             return true;
         }
         String timeoutKey=redisTimeoutKey(verifyParam);
@@ -141,6 +148,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
      */
     @Override
     public void timeoutHandler(String param) throws BIZException {
+        logger.info("timeoutHandler param:{}",param);
         if(StringUtils.isNullOrEmpty(param)){
             return;
         }
@@ -156,16 +164,11 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
         Query query=new Query.QueryBuilder()
                 .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),verifyParam.getPositionId())
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(),verifyParam.getAccountId())
-                .and(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),(short)0, ValueOp.NEQ))
+                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),PositionSync.binding.getValue()) //只有正在绑定才能改为3，重新同步
                 .buildQuery();
         HrThirdPartyPositionDO thirdPartyPosition = thirdPartyPositionDao.getSimpleData(query);
 
         if(thirdPartyPosition==null){
-            return;
-        }
-
-        //只有正在绑定才能改为3，重新同步
-        if(thirdPartyPosition.getIsSynchronization()!=PositionSync.binding.getValue()){
             return;
         }
 
@@ -184,6 +187,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             logger.error("读取职位同步队列后无法更新到数据库:{}", JSON.toJSONString(data));
             throw e;
         }
+        logger.info("timeoutHandler success param:{}",param);
     }
 
     /**
@@ -236,6 +240,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_NO_THIRD_POSITION);
         }
 
+        logger.info("checkVerifyParam success param:{}",param);
         return true;
     }
 
