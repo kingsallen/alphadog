@@ -1144,7 +1144,7 @@ public class WholeProfileService {
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         Map<String,Object> basic=(Map<String, Object>)resume.get("basic");
         map=this.handlerBasicAndUser(basic,map);
-        String mobile = ((String) map.get("mobile"));
+        String mobile =String.valueOf( map.get("mobile"));
         if(StringUtils.isNullOrEmpty(mobile)){
             return ResponseUtils.fail(1,"手机号不能为空");
         }
@@ -1190,7 +1190,7 @@ public class WholeProfileService {
             userMap.put("name",basicMap.get("name"));
         }
         if(basicMap.get("mobile")!=null){
-            userMap.put("mobile",basicMap.get("mobile"));
+            userMap.put("mobile",String.valueOf(basicMap.get("mobile")));
         }
         if(basicMap.get("nationality_code")!=null){
             userMap.put("national_code_id",basicMap.get("nationality_code"));
