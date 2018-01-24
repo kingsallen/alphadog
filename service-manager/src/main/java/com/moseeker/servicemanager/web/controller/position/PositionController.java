@@ -254,7 +254,7 @@ public class PositionController {
         }
     }
 
-    @RequestMapping(value = "/position/getVerifyParam", method = RequestMethod.POST)
+    @RequestMapping(value = "/position/getSyncVerifyParam", method = RequestMethod.GET)
     @ResponseBody
     public String getVerifyParam(HttpServletRequest request, HttpServletResponse response) {
         try {

@@ -14,6 +14,7 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSyncVerify;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -59,6 +60,9 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
     @Autowired
     private MobileVeifyHandler mobileVeifyHandler;
 
+    @Autowired
+    private PositionSyncVerifyHandlerUtil verifyHandlerUtil;
+
     /**
      * 发送需要手机验证码消息模板
      * @param jsonParam
@@ -99,6 +103,11 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
                 PositionSyncVerify.MOBILE_VERIFY_EXCHANGE
                 , rountingKey
                 , MessageBuilder.withBody(jsonInfo.toJSONString().getBytes()).build());
+
+        if(jsonInfo.containsKey("paramId")){
+            verifyHandlerUtil.delParam(jsonInfo.getString("paramId"));
+        }
+
     }
 
 
@@ -113,13 +122,33 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
      * @return
      */
     @Override
-    protected boolean checkVerifyParam(JSONObject jsonParam) {
+    protected boolean checkVerifyParam(JSONObject jsonParam) throws BIZException {
         String mobile = jsonParam.getString("mobile");
         if(StringUtils.isNullOrEmpty(mobile)){
             logger.error("智联验证处理--手机号为空");
-            throw  new RuntimeException("智联验证处理--手机号为空");
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_EMPTY_MOBILE);
         }
         return true;
+    }
+
+    @Override
+    protected boolean checkVerifyInfo(JSONObject jsonInfo) throws BIZException {
+        String code = jsonInfo.getString("info");
+        if(StringUtils.isNullOrEmpty(code)){
+            logger.error("智联验证处理--验证码为空");
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_EMPTY_MOBILE_CODE);
+        }
+        return true;
+    }
+
+    @Override
+    public void timeoutHandler(String param) throws BIZException {
+        super.timeoutHandler(param);
+
+        JSONObject jsonObject= JSON.parseObject(param);
+        if(jsonObject.containsKey("paramId")) {
+            verifyHandlerUtil.delParam(jsonObject.getString("paramId"));
+        }
     }
 }
 

@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -228,6 +229,47 @@ public class PositionBS {
     }
 
     /**
+     * 获取缓存验证信息
+     * @param param
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    public Response getVerifyParam(String param) throws BIZException, TException {
+        if(StringUtils.isNullOrEmpty(param)){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
+        JSONObject jsonParamObj=JSON.parseObject(param);
+
+        if(!jsonParamObj.containsKey("paramId")){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
+        String key=jsonParamObj.getString("paramId");
+
+        String jsonParam=verifyHandlerUtil.getParam(key);
+
+        if(StringUtils.isNullOrEmpty(jsonParam)){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
+        }
+
+        JSONObject jsonObject=JSON.parseObject(jsonParam);
+        int channel=jsonObject.getIntValue("channel");
+
+        ChannelType channelType=ChannelType.instaceFromInteger(channel);
+
+        PositionSyncVerifyHandler verifyHandler=positionFactory.getVerifyHandlerInstance(channelType);
+
+        if(verifyHandler.isTimeout(jsonParam)){
+            verifyHandler.timeoutHandler(jsonParam);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
+        }
+
+        return ResultMessage.SUCCESS.toResponse(jsonParam);
+    }
+
+    /**
      * 发送验证完成信息
      * @param jsonParam
      * @return
@@ -246,30 +288,7 @@ public class PositionBS {
         return ResultMessage.SUCCESS.toResponse("");
     }
 
-    /**
-     * 获取缓存验证信息
-     * @param key
-     * @return
-     * @throws BIZException
-     * @throws TException
-     */
-    public Response getVerifyParam(String key) throws BIZException, TException {
-        String jsonParam=verifyHandlerUtil.getParam(key);
 
-        JSONObject jsonObject=JSON.parseObject(jsonParam);
-        int channel=jsonObject.getIntValue("channel");
-
-        ChannelType channelType=ChannelType.instaceFromInteger(channel);
-
-        PositionSyncVerifyHandler verifyHandler=positionFactory.getVerifyHandlerInstance(channelType);
-
-        if(verifyHandler.isTimeout(jsonParam)){
-            verifyHandler.timeoutHandler(jsonParam);
-            return ResponseUtils.fail(1,"验证超时，请重新发布");
-        }
-
-        return ResultMessage.SUCCESS.toResponse(jsonParam);
-    }
 
     /**
      * 刷新职位

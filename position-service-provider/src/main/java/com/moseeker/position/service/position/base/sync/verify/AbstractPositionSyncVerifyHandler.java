@@ -15,6 +15,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import org.slf4j.Logger;
@@ -38,7 +39,11 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
     @Autowired
     HRThirdPartyPositionDao thirdpartyPositionDao;
 
+    @Autowired
+    PositionEmailNotification emailNotification;
+
     protected abstract boolean checkVerifyParam(JSONObject jsonParam) throws BIZException;
+    protected abstract boolean checkVerifyInfo(JSONObject jsonInfo) throws BIZException;
 
     protected abstract void syncVerifyInfo(JSONObject jsonParam) throws BIZException;
 
@@ -56,12 +61,20 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
 
             JsonVerifyParam verifyParam=JsonVerifyParam.newInstance(param);
 
+            //调用渠道自己对信息的验证，例如智联是手机验证，需要手机号码
+            checkVerifyParam(verifyParam);
+
             if(alreadyInRedis(verifyParam)){
                 logger.error("该同步职位已经在验证了：{}",param);
-                throw new RuntimeException("该同步职位已经在验证了");
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_ALREADY_VERIFY);
             }
             verifyHandler(verifyParam);
-        }catch (Exception e){
+        } catch (BIZException e){
+            logger.error("处理爬虫端推送的需要验证的请求失败，错误：{}",e);
+            timeoutHandler(param);
+            throw e;
+        } catch (Exception e){
+            logger.error("处理爬虫端推送的需要验证的请求失败，错误：{}",e);
             timeoutHandler(param);
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -77,11 +90,28 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
         try {
             checkVerifyParam(info);
 
+            //调用渠道自己对验证完成信息的验证，例如智联需要手机验证码
             JsonVerifyParam jsonInfo=JsonVerifyParam.newInstance(info);
+
+            checkVerifyInfo(jsonInfo);
+
+            if(isTimeout(info)){
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
+            }
 
             //调用渠道自己对验证的处理
             syncVerifyInfo(jsonInfo);
-        }catch (Exception e){
+
+            //验证流程完成，删除验证缓存
+            finishVerify(jsonInfo);
+        } catch (BIZException e){
+            logger.error("处理验证完成的消息错误：{}",e);
+            emailNotification.sendVerifyFailureMail(info, null, e);
+            timeoutHandler(info);
+            throw e;
+        } catch (Exception e){
+            logger.error("处理验证完成的消息错误：{}",e);
+            emailNotification.sendVerifyFailureMail(info, null, e);
             timeoutHandler(info);
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -96,6 +126,9 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
     @Override
     public boolean isTimeout(String param){
         JsonVerifyParam verifyParam=JsonVerifyParam.newInstance(param);
+        if(!verifyParam.isValid()){
+            return true;
+        }
         String timeoutKey=redisTimeoutKey(verifyParam);
         boolean exist=redisClient.exists(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.POSITION_SYNC_VERIFY_TIMEOUT.toString(), timeoutKey);
         return !exist;
@@ -118,6 +151,8 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             return;
         }
 
+        finishVerify(verifyParam);
+
         Query query=new Query.QueryBuilder()
                 .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),verifyParam.getPositionId())
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(),verifyParam.getAccountId())
@@ -126,6 +161,11 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
         HrThirdPartyPositionDO thirdPartyPosition = thirdPartyPositionDao.getSimpleData(query);
 
         if(thirdPartyPosition==null){
+            return;
+        }
+
+        //只有正在绑定才能改为3，重新同步
+        if(thirdPartyPosition.getIsSynchronization()!=PositionSync.binding.getValue()){
             return;
         }
 
@@ -147,33 +187,41 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
     }
 
     /**
+     * 获取超时时间，方便子类覆盖
+     * @return
+     */
+    protected int timeoutSeconds(){
+        return 60;
+    }
+
+    /**
      * 验证爬虫端发送的验证信息
      * @param param
      * @return
      * @throws BIZException
      */
-    protected boolean checkVerifyParam(String param) throws BIZException {
+    private boolean checkVerifyParam(String param) throws BIZException {
         if(StringUtils.isNullOrEmpty(param)){
             logger.error("验证处理--参数为空：{}",param);
-            throw new RuntimeException("验证处理--参数为空");
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         JsonVerifyParam verifyParam=JsonVerifyParam.newInstance(param);
 
         if(!verifyParam.isValid()){
             logger.error("验证处理--参数为空：{}",param);
-            throw new RuntimeException("验证处理--参数为空");
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
         ChannelType channelType=ChannelType.instaceFromInteger(verifyParam.getChannel());
         if(channelType==null){
             logger.error("验证处理--渠道错误：{}",param);
-            throw new RuntimeException("验证处理--渠道错误");
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_WRONG_CHANNEL);
         }
 
         JobPositionRecord jobPosition=positionDao.getPositionById(verifyParam.getPositionId());
         if(jobPosition == null){
             logger.error("验证处理--职位不存在：{}",param);
-            throw new RuntimeException("验证处理--职位不存在");
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_NO_POSITION);
         }
 
         Query query=new Query.QueryBuilder()
@@ -185,11 +233,10 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
 
         if(thirdPartyPosition==null){
             logger.error("验证处理--第三方职位不存在：{}",param);
-            throw new RuntimeException("验证处理--第三方职位不存在");
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_NO_THIRD_POSITION);
         }
 
-        //调用渠道自己对信息的验证，例如智联是手机号，需要手机验证码
-        return checkVerifyParam(verifyParam);
+        return true;
     }
 
 
@@ -199,7 +246,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
      * @return
      * @throws BIZException
      */
-    protected boolean alreadyInRedis(JsonVerifyParam verifyParam) throws BIZException {
+    private boolean alreadyInRedis(JsonVerifyParam verifyParam) throws BIZException {
         String timeoutKey=redisTimeoutKey(verifyParam);
         long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.POSITION_SYNC_VERIFY_TIMEOUT.toString(), timeoutKey);
         if (check>1) {
@@ -211,19 +258,22 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
     }
 
     /**
-     * 获取超时时间，方便子类覆盖
-     * @return
+     * 验证流程完成，删除验证缓存
+     * @param verifyParam
      */
-    protected int timeoutSeconds(){
-        return 60;
+    private void finishVerify(JsonVerifyParam verifyParam){
+        String timeoutKey=redisTimeoutKey(verifyParam);
+        redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.POSITION_SYNC_VERIFY_TIMEOUT.toString(), timeoutKey);
     }
+
+
 
     /**
      * 生成redis中超时Key
      * @param verifyParam
      * @return
      */
-    protected String redisTimeoutKey(JsonVerifyParam verifyParam){
+    private String redisTimeoutKey(JsonVerifyParam verifyParam){
         StringBuilder keyBuilder=new StringBuilder();
         keyBuilder.append(verifyParam.getPositionId()).append("_")
                 .append(verifyParam.getChannel()).append("_")
