@@ -3,7 +3,6 @@ package com.moseeker.application.domain;
 import com.moseeker.application.domain.component.state.ApplicationState;
 import com.moseeker.application.domain.component.state.ApplyState;
 import com.moseeker.application.domain.pojo.Application;
-import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.common.exception.CommonException;
@@ -27,9 +26,6 @@ public class ApplicationBatchEntity {
     private ApplicationRepository applicationRepository;    //DAO操作
 
     public ApplicationBatchEntity(ApplicationRepository applicationRepository, List<Application> applicationList) throws CommonException {
-        if (applicationList == null || applicationList.size() == 0 || applicationRepository == null) {
-            throw ApplicationException.APPLICATION_ENTITY_BUILD_FAILED;
-        }
         this.applicationRepository = applicationRepository;
         this.applicationList = applicationList;
     }
