@@ -1,8 +1,9 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.application.context.ApplyContext;
-import com.moseeker.application.context.agreegateid.ViewApplicationAggregateId;
+import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.HREntity;
+import com.moseeker.application.infrastructure.DaoManagement;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
@@ -47,18 +48,19 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -104,7 +106,10 @@ public class JobApplicataionService {
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
     @Autowired
-    private ApplyContext applyContext;
+    DaoManagement daoManagement;
+
+    @Autowired
+    ApplicationContext applicationContext;
 
     /**
      * 创建申请
@@ -935,10 +940,23 @@ public class JobApplicataionService {
         return hrOperationRecordRecord;
     }
 
-    public void viewApplications(int hrId, List<Integer> applicationIdList) {
+    /**
+     * HR查看申请
+     * 查看申请的是为了处理HR查看，导出，下载某一个申请人信息时，将申请人对应的“是否查看申请”（是否查看的标记是在申请记录上，
+     * 但是业务逻辑做过改版，现有的业务逻辑应该在申请人上比较合适）标记为“已经查看”状态。
+     * 查看申请时需要权限的，主账号可以查看公司下的任何简历，子账号只能查看自己发布职位收到的申请人的简历。
+     * 查看简历还会触发发送模板消息和积分添加。如果申请有推荐人，并且该公司存在公司积分配置，
+     * 那么会对推荐人添加对应积分。HR查看申请 对推荐人（申请是员工转发的候选人投递的，
+     * 那么员工就是该申请的推荐人）添加对应积分（需要公司配置了该操作的积分项）。
+     * @param hrId HR编号
+     * @param applicationIdList  申请集合
+     * @throws CommonException 业务异常 (41012,  "请提交正确的HR信息!" )(41013,  "HR账号类型异常!" )(41014,  "申请信息不正确!" )(41010,  "没有权限查看申请信息!" )
+     */
+    public void viewApplications(int hrId, List<Integer> applicationIdList) throws CommonException {
 
-        ViewApplicationAggregateId viewApplicationAggregateId = new ViewApplicationAggregateId(hrId, applicationIdList);
-        applyContext.hrViewApplications(viewApplicationAggregateId);
+        HREntity hrEntity = daoManagement.fetchHREntity(hrId);
+        ApplicationEntity applicationEntity = daoManagement.fetchApplicationEntity(applicationIdList);
+        hrEntity.viewApplication(applicationEntity);
     }
 }
 

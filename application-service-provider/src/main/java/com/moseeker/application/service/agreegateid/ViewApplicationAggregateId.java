@@ -1,4 +1,4 @@
-package com.moseeker.application.context.agreegateid;
+package com.moseeker.application.service.agreegateid;
 
 import java.util.List;
 

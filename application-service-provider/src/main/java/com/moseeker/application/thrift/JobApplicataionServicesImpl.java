@@ -1,16 +1,20 @@
 package com.moseeker.application.thrift;
 
 
+import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.service.impl.JobApplicataionService;
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices.Iface;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,7 +162,21 @@ public class JobApplicataionServicesImpl implements Iface {
      */
     @Override
     public void viewApplications(int hrId, List<Integer> applicationIdList) throws BIZException, TException {
-        service.viewApplications(hrId, applicationIdList);
+        //参数校验
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("HR", hrId, null, null, 0, Integer.MAX_VALUE);
+        vu.addRequiredOneValidate("申请", applicationIdList, null, null);
+        String result = vu.validate();
+        if (StringUtils.isNotBlank(result)) {
+            throw ExceptionConvertUtil.convertCommonException(ApplicationException.validateFailed(result));
+        }
+        try {
+            service.viewApplications(hrId, applicationIdList);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            throw ApplicationException.PROGRAM_EXCEPTION;
+        }
     }
 
     /**

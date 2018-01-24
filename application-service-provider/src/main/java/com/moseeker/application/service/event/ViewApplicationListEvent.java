@@ -1,4 +1,4 @@
-package com.moseeker.application.context.event;
+package com.moseeker.application.service.event;
 
 import org.springframework.context.ApplicationEvent;
 

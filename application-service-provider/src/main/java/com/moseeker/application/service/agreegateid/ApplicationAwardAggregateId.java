@@ -1,6 +1,6 @@
-package com.moseeker.application.context.agreegateid;
+package com.moseeker.application.service.agreegateid;
 
-import com.moseeker.application.context.constant.AwardCondition;
+import com.moseeker.application.service.constant.AwardCondition;
 
 import java.util.List;
 
