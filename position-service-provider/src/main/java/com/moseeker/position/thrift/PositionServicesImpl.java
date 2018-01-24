@@ -521,4 +521,19 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public Response getMiniPositionList(int accountId, String keyword, int page, int pageSize) throws TException {
+        try {
+            List<WechatPositionListData> result=null;
+            if(StringUtils.isEmptyList(result)){
+                return  ResponseUtils.fail(1,"您所查找的推送不存在");
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
 }

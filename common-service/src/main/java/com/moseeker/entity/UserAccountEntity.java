@@ -1,6 +1,9 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -19,6 +22,8 @@ public class UserAccountEntity {
 
     @Autowired
     private UserUserDao userDao;
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     /**
      * 获取用户的称呼
@@ -45,5 +50,13 @@ public class UserAccountEntity {
             log.error(e.getMessage(), e);
         }
         return username;
+    }
+    /*
+     通过id获取user_hr_account
+     */
+    public UserHrAccount getHrAccount(int accountId){
+        Query query=new Query.QueryBuilder().where("id",accountId).and("disable",1).and("activation",1).buildQuery();
+        UserHrAccount record=userHrAccountDao.getData(query,UserHrAccount.class);
+        return record;
     }
 }
