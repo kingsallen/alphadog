@@ -113,13 +113,13 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
      * @return
      */
     @Override
-    protected JSONObject checkVerifyParam(JSONObject jsonParam) {
+    protected boolean checkVerifyParam(JSONObject jsonParam) {
         String mobile = jsonParam.getString("mobile");
         if(StringUtils.isNullOrEmpty(mobile)){
             logger.error("智联验证处理--手机号为空");
             throw  new RuntimeException("智联验证处理--手机号为空");
         }
-        return jsonParam;
+        return true;
     }
 }
 

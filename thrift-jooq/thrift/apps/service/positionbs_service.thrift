@@ -20,5 +20,7 @@ service PositionBS {
 	common_struct.Response refreshThirdPartyParam() throws (1: common_struct.BIZException e);
 	//发送第三方需要的验证信息
     common_struct.Response syncVerifyInfo(1: string info) throws (1: common_struct.BIZException e);
+    //获取缓存验证信息
+    common_struct.Response getVerifyParam(1: string key) throws (1: common_struct.BIZException e);
 }
 

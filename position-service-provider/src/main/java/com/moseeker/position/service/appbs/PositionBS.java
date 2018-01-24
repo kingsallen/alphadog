@@ -9,12 +9,14 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.constants.SyncRequestType;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.ResultMessage;
 import com.moseeker.position.pojo.PositionSyncResultPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.position.service.position.base.PositionFactory;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
+import com.moseeker.position.service.position.base.sync.PositionSyncVerifyHandlerUtil;
 import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
 import com.moseeker.position.service.position.base.sync.TransferCheckUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
@@ -65,6 +67,8 @@ public class PositionBS {
     private PositionEmailNotification emailNotification;
     @Autowired
     private PositionFactory positionFactory;
+    @Autowired
+    private PositionSyncVerifyHandlerUtil verifyHandlerUtil;
 
 
     /**
@@ -223,6 +227,12 @@ public class PositionBS {
         return results;
     }
 
+    /**
+     * 发送验证完成信息
+     * @param jsonParam
+     * @return
+     * @throws BIZException
+     */
     public Response syncVerifyInfo(String jsonParam) throws BIZException {
         JSONObject jsonObject=JSON.parseObject(jsonParam);
         int channel=jsonObject.getIntValue("channel");
@@ -236,6 +246,30 @@ public class PositionBS {
         return ResultMessage.SUCCESS.toResponse("");
     }
 
+    /**
+     * 获取缓存验证信息
+     * @param key
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    public Response getVerifyParam(String key) throws BIZException, TException {
+        String jsonParam=verifyHandlerUtil.getParam(key);
+
+        JSONObject jsonObject=JSON.parseObject(jsonParam);
+        int channel=jsonObject.getIntValue("channel");
+
+        ChannelType channelType=ChannelType.instaceFromInteger(channel);
+
+        PositionSyncVerifyHandler verifyHandler=positionFactory.getVerifyHandlerInstance(channelType);
+
+        if(verifyHandler.isTimeout(jsonParam)){
+            verifyHandler.timeoutHandler(jsonParam);
+            return ResponseUtils.fail(1,"验证超时，请重新发布");
+        }
+
+        return ResultMessage.SUCCESS.toResponse(jsonParam);
+    }
 
     /**
      * 刷新职位

@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -15,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 职位同步验证工具类
@@ -29,6 +34,8 @@ public class PositionSyncVerifyHandlerUtil {
     private LogWxMessageRecordDao wxMessageRecordDao;
     @Autowired
     private HrWxWechatDao wxWechatDao;
+    @Resource(name = "cacheClient")
+    protected RedisClient redisClient;
 
     public String deliveryUrl(){
         String url="";
@@ -39,19 +46,22 @@ public class PositionSyncVerifyHandlerUtil {
 
 
     public String getCodeLink(Map<String,Object> param){
-        StringBuilder link=new StringBuilder(env.getProperty("sync.code.url"));
+        String redisKey=UUID.randomUUID().toString();
 
+        redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.POSITION_SYNC_VERIFY_TIMEOUT.toString(),redisKey,JSON.toJSONString(param));
+
+        StringBuilder url=new StringBuilder(env.getProperty("sync.code.url"));
         if(param!=null && !param.isEmpty()){
-            link.append("?");
+            url.append("?");
         }
 
-        for(Map.Entry<String,Object> entry:param.entrySet()){
-            link.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
-        }
+        url.append("paramId=").append(redisKey);
 
-        link.deleteCharAt(link.lastIndexOf("&"));
+        return url.toString();
+    }
 
-        return link.toString();
+    public String getParam(String redisKey){
+        return redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.POSITION_SYNC_VERIFY_TIMEOUT.toString(),redisKey);
     }
 
     public HrWxWechatDO getMoseekerWxWechat(){

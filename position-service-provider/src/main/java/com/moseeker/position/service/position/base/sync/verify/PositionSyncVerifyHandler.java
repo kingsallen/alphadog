@@ -7,4 +7,8 @@ public interface PositionSyncVerifyHandler<P,I> extends IChannelType {
     void verifyHandler(P param) throws BIZException;
 
     void syncVerifyInfo(I info) throws BIZException;
+
+    boolean isTimeout(P param);
+
+    void timeoutHandler(P param)  throws BIZException;
 }
