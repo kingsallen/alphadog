@@ -457,7 +457,7 @@ public class TalentpoolSearchengine {
         }
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
-        sb.append("){return true}}}}");
+        sb.append("){return true}}}");
         if(StringUtils.isNotNullOrEmpty(origins)){
             int flag=0;
             List<String> list=searchUtil.stringConvertList(origins);
@@ -478,7 +478,7 @@ public class TalentpoolSearchengine {
                 }
                 sb.deleteCharAt(sb.lastIndexOf("|"));
                 sb.deleteCharAt(sb.lastIndexOf("|"));
-                sb.append("){return true}");
+                sb.append("){return true}}}");
             }
         }
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
