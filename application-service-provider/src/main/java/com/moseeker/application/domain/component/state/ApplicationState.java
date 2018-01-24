@@ -1,6 +1,6 @@
 package com.moseeker.application.domain.component.state;
 
-import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.infrastructure.DaoManagement;
 
 /**
@@ -12,11 +12,11 @@ public abstract class ApplicationState {
     //招聘进度流程
     protected ApplicationStatus applicationStatus = null;
 
-    protected ApplicationEntity applicationEntity;
+    protected ApplicationBatchEntity applicationBatchEntity;
     protected DaoManagement daoManagement;
 
-    public ApplicationState(ApplicationEntity applicationEntity, DaoManagement daoManagement) {
-        this.applicationEntity = applicationEntity;
+    public ApplicationState(ApplicationBatchEntity applicationBatchEntity, DaoManagement daoManagement) {
+        this.applicationBatchEntity = applicationBatchEntity;
         this.daoManagement = daoManagement;
     }
 
@@ -51,10 +51,10 @@ public abstract class ApplicationState {
     }
 
     protected ApplicationState getNext() {
-        return applicationStatus.getNextNode(applicationStatus).buildState(applicationEntity, daoManagement);
+        return applicationStatus.getNextNode(applicationStatus).buildState(applicationBatchEntity, daoManagement);
     }
 
     protected ApplicationState getPre() {
-        return applicationStatus.getPreNode(applicationStatus).buildState(applicationEntity, daoManagement);
+        return applicationStatus.getPreNode(applicationStatus).buildState(applicationBatchEntity, daoManagement);
     }
 }

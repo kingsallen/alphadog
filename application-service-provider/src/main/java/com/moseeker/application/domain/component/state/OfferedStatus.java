@@ -1,6 +1,6 @@
 package com.moseeker.application.domain.component.state;
 
-import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.infrastructure.DaoManagement;
 
 /**
@@ -10,8 +10,8 @@ public class OfferedStatus extends ApplicationState {
 
     private ApplicationStatus applicationStatus = ApplicationStatus.Offered;
 
-    public OfferedStatus(ApplicationEntity applicationEntity, DaoManagement daoManagement) {
-        super(applicationEntity, daoManagement);
+    public OfferedStatus(ApplicationBatchEntity applicationBatchEntity, DaoManagement daoManagement) {
+        super(applicationBatchEntity, daoManagement);
     }
 
     @Override

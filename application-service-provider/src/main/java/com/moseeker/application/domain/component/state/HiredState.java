@@ -1,6 +1,6 @@
 package com.moseeker.application.domain.component.state;
 
-import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.infrastructure.DaoManagement;
 
 /**
@@ -10,8 +10,8 @@ public class HiredState extends ApplicationState {
 
     private ApplicationStatus applicationStatus = ApplicationStatus.Hired;
 
-    public HiredState(ApplicationEntity applicationEntity, DaoManagement daoManagement) {
-        super(applicationEntity, daoManagement);
+    public HiredState(ApplicationBatchEntity applicationBatchEntity, DaoManagement daoManagement) {
+        super(applicationBatchEntity, daoManagement);
     }
 
 
