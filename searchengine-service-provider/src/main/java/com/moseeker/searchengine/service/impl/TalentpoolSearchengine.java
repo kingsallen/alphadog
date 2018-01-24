@@ -403,8 +403,10 @@ public class TalentpoolSearchengine {
             return null;
         }
         StringBuffer sb=new StringBuffer();
-        sb.append("origin=0;if(_source.user){upload=_source.user.upload;profiles=_source.user.profiles;if(profiles)" +
-                "{profile=profiles.profile;if(profile){origin=profile.origin}};for ( val in _source.user.applications) {if(");
+        sb.append("origin=0;upload=0;flag=0;if(_source.user){upload=_source.user.upload;profiles=_source.user.profiles;if(profiles)" +
+                "{profile=profiles.profile;if(profile){origin=profile.origin}};if(_source.user.applications){");
+
+        sb.append(" for ( val in _source.user.applications) {if(");
 
         if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
@@ -414,10 +416,6 @@ public class TalentpoolSearchengine {
                 }
             }
         }
-//        else{
-//            sb.append("val.company_id == "+companyId+"&&");
-//        }
-
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
             sb.append("val.candidate_source=="+candidateSource+"&&");
         }
@@ -460,6 +458,29 @@ public class TalentpoolSearchengine {
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
         sb=sb.deleteCharAt(sb.lastIndexOf("&"));
         sb.append("){return true}}}");
+        if(StringUtils.isNotNullOrEmpty(origins)){
+            int flag=0;
+            List<String> list=searchUtil.stringConvertList(origins);
+            for(String origin:list){
+                if("1".equals(origin)||origin.length()>8){
+                    flag=1;
+                    break;
+                }
+            }
+            if(flag==1){
+                sb.append("else{ if(");
+                for(String origin:list){
+                    if("1".equals(origin)){
+                        sb.append("upload==1 ||");
+                    }else if(origin.length()>8){
+                            sb.append(" origin=='"+origin+"'||");
+                    }
+                }
+                sb.deleteCharAt(sb.lastIndexOf("|"));
+                sb.deleteCharAt(sb.lastIndexOf("|"));
+                sb.append("){return true}}}");
+            }
+        }
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         return script;
     }
