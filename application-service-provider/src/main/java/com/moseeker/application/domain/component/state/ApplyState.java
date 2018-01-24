@@ -31,7 +31,6 @@ public class ApplyState extends ApplicationState {
         if (nextState != null) {
             List<ApplicationStatePojo> unViewedApplicationList = applicationBatchEntity.getApplicationList()
                     .stream()
-                    .filter(application -> !application.isViewed())
                     .map(application -> {
                         ApplicationStatePojo applicationState = new ApplicationStatePojo();
                         applicationState.setId(application.getId());
@@ -44,16 +43,8 @@ public class ApplyState extends ApplicationState {
                     })
                     .collect(Collectors.toList());
             if (unViewedApplicationList != null && unViewedApplicationList.size() > 0) {
-                daoManagement.getJobApplicationDao().viewApplication(unViewedApplicationList);
-
-                ViewApplicationListEvent viewApplicationListEvent
-                        = new ViewApplicationListEvent(unViewedApplicationList
-                        .stream()
-                        .map(applicationStatePojo -> applicationStatePojo.getId())
-                        .collect(Collectors.toList()));
-                applicationBatchEntity.getApplicationContext().publishEvent(viewApplicationListEvent); //发布查看申请事件
+                daoManagement.viewApplication(unViewedApplicationList);
             }
-
         }
         return nextState;
     }
