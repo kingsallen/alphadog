@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.thirdpartyaccount.util;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -33,6 +34,14 @@ public class BindUtil {
      */
     public Map<String, String> getBindExtra(UserHrAccountDO userHrAccount, HrThirdPartyAccountDO account) throws BIZException {
         Map<String, String> extras = new HashMap<>();
+        ChannelType channelType=ChannelType.instaceFromInteger(account.getChannel());
+        switch (channelType){
+            case JOB51:
+                extras.put("mobile",userHrAccount.getMobile());
+                break;
+            default:
+                break;
+        }
         return extras;
     }
 
