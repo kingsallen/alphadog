@@ -27,13 +27,13 @@ public abstract class ApplicationState {
 
     /**
      * 通过
-     * @return 下一个状态
+     * @return 下一个进度
      */
     public abstract ApplicationState pass();
 
     /**
      * 回到上一个阶段
-     * @return 上一个状态
+     * @return 上一个进度
      */
     public abstract ApplicationState backTo();
 
@@ -44,17 +44,25 @@ public abstract class ApplicationState {
 
     /**
      * 获取当前进度
-     * @return 申请进度
+     * @return 申请所处的进度
      */
     public ApplicationStatus getStatus() {
         return applicationStatus;
     }
 
-    protected ApplicationState getNext() {
+    /**
+     * 当前进度的下一个进度
+     * @return 当前进度的下一个进度
+     */
+    public ApplicationState getNext() {
         return applicationStatus.getNextNode(applicationStatus).buildState(applicationBatchEntity, daoManagement);
     }
 
-    protected ApplicationState getPre() {
+    /**
+     * 当前进度的上一个进度
+     * @return 当前进度的上一个进度
+     */
+    public ApplicationState getPre() {
         return applicationStatus.getPreNode(applicationStatus).buildState(applicationBatchEntity, daoManagement);
     }
 }

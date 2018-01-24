@@ -4,6 +4,7 @@ import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.domain.constant.ApplicationViewStatus;
 import com.moseeker.application.domain.pojo.Application;
+import com.moseeker.application.domain.pojo.ApplicationStatePojo;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
@@ -170,7 +171,15 @@ public class DaoManagement {
                 this, applicationContext);
     }
 
+    /**
+     * 生成申请实体
+     * @param applicationIdList 申请编号
+     * @return 申请实体
+     * @throws CommonException (41014,  "申请信息不正确!" )
+     */
     public ApplicationBatchEntity fetchApplicationEntity(List<Integer> applicationIdList) throws CommonException {
+
+        //查找申请记录
         List<JobApplication> applicationList = getJobApplicationDao()
                 .fetchActiveApplicationByIdList(applicationIdList);
         if (applicationList == null || applicationList.size() == 0) {
@@ -183,13 +192,43 @@ public class DaoManagement {
                         .map(jobApplication -> jobApplication.getPositionId())
                         .collect(Collectors.toList()));
 
+        //根据公司编号集合查找超级账号与公司的记录 Record2.value1 公司信息， Record2.value2 HR编号
         List<Record2<Integer, Integer>> superAccountList = userHrAccountDao
                 .fetchActiveSuperHRByCompanyIDList(positionList
                         .stream().map(p -> p.getCompanyId())
                         .collect(Collectors.toList()));
 
-        //生成被查看的申请记录
-        List<Application> applications = applicationList.stream().map(jobApplication -> {
+        //组合申请数据
+        List<Application> applications = packageApplication(applicationList, positionList, superAccountList);
+
+        ApplicationBatchEntity applicationBatchEntity = new ApplicationBatchEntity(this, applications);
+
+        return applicationBatchEntity;
+    }
+
+    /**
+     * 将查看申请的业务操作 持久化到数据库中
+     * @param unViewedApplicationList 申请数据
+     */
+    public void viewApplication(List<ApplicationStatePojo> unViewedApplicationList) {
+        jobApplicationDao.viewApplication(unViewedApplicationList);
+    }
+
+    /**
+     * 组合申请数据（申请实体的聚合根）
+     *
+     * 查看申请需要申请编号，申请当前所处的状态，能够处理申请的HR编号集合。其中申请编号和申请当前所处的状态可以直接从申请记录中获取。
+     * 但是申请和可以操作申请的HR编号需要通过申请对应的职位，职位对应的发布者和职位所处公司的超级账号来确定。
+     * 所以在组合申请记录时，还需要查找对应的职位信息（获取职位的发布人和公司编号），以及公司下的超级账号。
+     *
+     * @param applicationList 申请编号集合
+     * @param positionList 职位集合
+     * @param superAccountList 超级账号集合
+     * @return 申请数据
+     */
+    private List<Application> packageApplication(List<JobApplication> applicationList, List<JobPosition> positionList,
+                                                 List<Record2<Integer, Integer>> superAccountList) {
+        return applicationList.stream().map(jobApplication -> {
             Application application = new Application();
             application.setStatus(jobApplication.getAppTplId());
             if (jobApplication.getIsViewed() != null
@@ -220,9 +259,5 @@ public class DaoManagement {
             application.setId(jobApplication.getId());
             return application;
         }).collect(Collectors.toList());
-
-        ApplicationBatchEntity applicationBatchEntity = new ApplicationBatchEntity(this, applications, applicationContext);
-
-        return applicationBatchEntity;
     }
 }

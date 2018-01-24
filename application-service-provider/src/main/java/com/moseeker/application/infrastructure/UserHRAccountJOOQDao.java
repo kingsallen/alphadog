@@ -73,7 +73,7 @@ public class UserHRAccountJOOQDao extends com.moseeker.baseorm.db.userdb.tables.
     /**
      * 根据公司编号查找公司下的主账号
      * @param companyIdList 公司编号集合
-     * @return 公司编号与主账号的集合
+     * @return 公司编号与主账号的集合 Record2.value1 公司信息， Record2.value2 HR编号
      */
     public List<Record2<Integer,Integer>> fetchActiveSuperHRByCompanyIDList(List<Integer> companyIdList) {
         if (companyIdList != null && companyIdList.size() > 0) {
