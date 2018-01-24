@@ -1,6 +1,8 @@
 package com.moseeker.position.service.schedule;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.BindThirdPart;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.position.service.position.base.PositionFactory;
@@ -14,6 +16,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 @Component
 public class PositionSyncVerifyConsumer {
     Logger logger= LoggerFactory.getLogger(PositionSyncVerifyConsumer.class);
@@ -22,9 +26,11 @@ public class PositionSyncVerifyConsumer {
     @Autowired
     PositionEmailNotification emailNotification;
 
-
     @Autowired
     PositionFactory verifyHandlerFactory;
+
+    @Resource(name = "cacheClient")
+    protected RedisClient redisClient;
 
     @RabbitListener(queues = {PositionSyncVerify.MOBILE_VERIFY_QUEUE}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -37,17 +43,30 @@ public class PositionSyncVerifyConsumer {
 
             JSONObject obj=JSONObject.parseObject(json);
 
-            int channel=obj.getIntValue("channel");
+            if(obj.containsKey("positionId")){  //账号同步验证
 
-            ChannelType channelType=ChannelType.instaceFromInteger(channel);
+                logger.info("账号同步验证 推送数据到redis中 json：{}",json);
+                redisClient.set(BindThirdPart.APP_ID, BindThirdPart.KEY_IDENTIFIER,obj.getJSONObject("data").getString(BindThirdPart.CHAOS_ACCOUNTID),json);
+                logger.info("推送数据成功");
 
-            PositionSyncVerifyHandler verifyHandler=verifyHandlerFactory.getVerifyHandlerInstance(channelType);
+            }else{  //职位同步验证
 
-            verifyHandler.verifyHandler(json);
+                logger.info("职位同步验证 json：{}",json);
+                int channel=obj.getIntValue("channel");
+
+                ChannelType channelType=ChannelType.instaceFromInteger(channel);
+
+                PositionSyncVerifyHandler verifyHandler=verifyHandlerFactory.getVerifyHandlerInstance(channelType);
+
+                verifyHandler.verifyHandler(json);
+            }
+
+
+
 
             logger.info("handle json success json: {}",json);
         }catch (Exception e){
-            logger.error("handle refresh result Error : {}, message :{}",e.getMessage(),json);
+            logger.error("handle sync verify Error : {}, message :{}",e.getMessage(),json);
             emailNotification.sendVerifyFailureMail(json, null, e);
         }
     }

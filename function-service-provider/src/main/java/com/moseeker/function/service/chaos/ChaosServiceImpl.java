@@ -59,13 +59,16 @@ public class ChaosServiceImpl {
         return getConfigString("chaos.domain");
     }
 
-
     private String postBind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, Object> extras, String routingKey) throws Exception {
+        return postBind(hrThirdPartyAccount,extras,BindThirdPart.BIND_EXCHANGE_NAME,routingKey);
+    }
+
+    private String postBind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, Object> extras,String exchange, String routingKey) throws Exception {
         //推送需要绑定第三方账号的信息到rabbitMQ中
         String param=ChaosTool.getParams(hrThirdPartyAccount, extras);
         String account_Id=hrThirdPartyAccount.getId()+"";
         logger.info("准备推送"+account_Id+"数据到RabbitMQ的RoutingKey："+routingKey+" {"+param+"}");
-        amqpTemplate.send(BindThirdPart.BIND_EXCHANGE_NAME, routingKey, MessageBuilder.withBody(param.getBytes()).build());
+        amqpTemplate.send(exchange, routingKey, MessageBuilder.withBody(param.getBytes()).build());
         logger.info("推送RabbitMQ成功");
 
         //尝试从从redis中获取绑定结果,超时后推出
@@ -124,7 +127,8 @@ public class ChaosServiceImpl {
         paramsMap.putAll(extras);
         paramsMap.put("code", code);
 
-        String data=postBind(hrThirdPartyAccount,paramsMap, BindThirdPart.BIND_CODE_SEND_ROUTING_KEY);
+        String rountingKey= PositionSyncVerify.MOBILE_VERIFY_RESPONSE_ROUTING_KEY.replace("{}",hrThirdPartyAccount.getId()+"");
+        String data=postBind(hrThirdPartyAccount,paramsMap, PositionSyncVerify.MOBILE_VERIFY_EXCHANGE, rountingKey);
         logger.info("ChaosServiceImpl bindMessage result:"+data);
         return data;
     }
