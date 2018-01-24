@@ -163,6 +163,9 @@ public class MobileVeifyHandler {
 
         url.append("?").append("paramId=").append(redisKey);
 
+        String signature=env.getProperty("wechat.helper.signature");
+        url.append("&").append("wechat_signature=").append(signature);
+
         return url.toString();
     }
 
