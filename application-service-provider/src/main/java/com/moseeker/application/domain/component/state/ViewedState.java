@@ -1,6 +1,6 @@
 package com.moseeker.application.domain.component.state;
 
-import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.infrastructure.DaoManagement;
 
 /**
@@ -8,8 +8,8 @@ import com.moseeker.application.infrastructure.DaoManagement;
  */
 public class ViewedState extends ApplicationState {
 
-    public ViewedState(ApplicationEntity applicationEntity, DaoManagement daoManagement) {
-        super(applicationEntity, daoManagement);
+    public ViewedState(ApplicationBatchEntity applicationBatchEntity, DaoManagement daoManagement) {
+        super(applicationBatchEntity, daoManagement);
     }
 
     @Override
