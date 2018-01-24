@@ -1,6 +1,6 @@
 package com.moseeker.application.infrastructure;
 
-import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.domain.constant.ApplicationViewStatus;
 import com.moseeker.application.domain.pojo.Application;
@@ -170,7 +170,7 @@ public class DaoManagement {
                 this, applicationContext);
     }
 
-    public ApplicationEntity fetchApplicationEntity(List<Integer> applicationIdList) throws CommonException {
+    public ApplicationBatchEntity fetchApplicationEntity(List<Integer> applicationIdList) throws CommonException {
         List<JobApplication> applicationList = getJobApplicationDao()
                 .fetchActiveApplicationByIdList(applicationIdList);
         if (applicationList == null || applicationList.size() == 0) {
@@ -221,8 +221,8 @@ public class DaoManagement {
             return application;
         }).collect(Collectors.toList());
 
-        ApplicationEntity applicationEntity = new ApplicationEntity(this, applications, applicationContext);
+        ApplicationBatchEntity applicationBatchEntity = new ApplicationBatchEntity(this, applications, applicationContext);
 
-        return applicationEntity;
+        return applicationBatchEntity;
     }
 }

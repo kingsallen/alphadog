@@ -1,6 +1,6 @@
 package com.moseeker.application.domain.component.state;
 
-import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.infrastructure.DaoManagement;
 
 /**
@@ -8,8 +8,8 @@ import com.moseeker.application.infrastructure.DaoManagement;
  */
 public class CVCheckedState extends ApplicationState {
 
-    public CVCheckedState(ApplicationEntity applicationEntity, DaoManagement daoManagement) {
-        super(applicationEntity, daoManagement);
+    public CVCheckedState(ApplicationBatchEntity applicationBatchEntity, DaoManagement daoManagement) {
+        super(applicationBatchEntity, daoManagement);
         this.applicationStatus = ApplicationStatus.CVChecked;
     }
 

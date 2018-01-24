@@ -1,7 +1,7 @@
 package com.moseeker.application.domain.component.state;
 
 import com.moseeker.application.service.event.ViewApplicationListEvent;
-import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.pojo.ApplicationStatePojo;
 import com.moseeker.application.infrastructure.DaoManagement;
 
@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
  */
 public class ApplyState extends ApplicationState {
 
-    public ApplyState(ApplicationEntity applicationEntity, DaoManagement daoManagement) {
-        super(applicationEntity, daoManagement);
+    public ApplyState(ApplicationBatchEntity applicationBatchEntity, DaoManagement daoManagement) {
+        super(applicationBatchEntity, daoManagement);
         this.applicationStatus = ApplicationStatus.Apply;
     }
 
@@ -29,7 +29,7 @@ public class ApplyState extends ApplicationState {
 
         ApplicationState nextState = getNext();
         if (nextState != null) {
-            List<ApplicationStatePojo> unViewedApplicationList = applicationEntity.getApplicationList()
+            List<ApplicationStatePojo> unViewedApplicationList = applicationBatchEntity.getApplicationList()
                     .stream()
                     .filter(application -> !application.isViewed())
                     .map(application -> {
@@ -51,7 +51,7 @@ public class ApplyState extends ApplicationState {
                         .stream()
                         .map(applicationStatePojo -> applicationStatePojo.getId())
                         .collect(Collectors.toList()));
-                applicationEntity.getApplicationContext().publishEvent(viewApplicationListEvent); //发布查看申请事件
+                applicationBatchEntity.getApplicationContext().publishEvent(viewApplicationListEvent); //发布查看申请事件
             }
 
         }

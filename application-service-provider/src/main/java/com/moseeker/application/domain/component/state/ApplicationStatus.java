@@ -1,6 +1,6 @@
 package com.moseeker.application.domain.component.state;
 
-import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.infrastructure.DaoManagement;
 
 import java.util.HashMap;
@@ -76,14 +76,14 @@ public enum ApplicationStatus {
         return map.get(state);
     }
 
-    public ApplicationState buildState(ApplicationEntity applicationEntity, DaoManagement daoManagement) {
+    public ApplicationState buildState(ApplicationBatchEntity applicationBatchEntity, DaoManagement daoManagement) {
         ApplicationState applicationState;
         switch (this) {
-            case Apply: applicationState = new ApplyState(applicationEntity, daoManagement);break;
-            case CVChecked: applicationState = new CVCheckedState(applicationEntity, daoManagement); break;
-            case CVPassed: applicationState = new CVPassedState(applicationEntity, daoManagement); break;
-            case Hired:applicationState = new HiredState(applicationEntity, daoManagement); break;
-            case Offered: applicationState = new OfferedStatus(applicationEntity, daoManagement); break;
+            case Apply: applicationState = new ApplyState(applicationBatchEntity, daoManagement);break;
+            case CVChecked: applicationState = new CVCheckedState(applicationBatchEntity, daoManagement); break;
+            case CVPassed: applicationState = new CVPassedState(applicationBatchEntity, daoManagement); break;
+            case Hired:applicationState = new HiredState(applicationBatchEntity, daoManagement); break;
+            case Offered: applicationState = new OfferedStatus(applicationBatchEntity, daoManagement); break;
             default: applicationState = null; break;
         }
         return applicationState;
