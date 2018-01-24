@@ -229,4 +229,5 @@ public final class Constant {
     public static final int FANS_PROFILE_COMPLETION=58;
     public static final int FANS_RECOM_POSITION=59;
     public static final int EMPLOYEE_RECOM_POSITION=57;
+    public static final int POSITION_SYNC_VERIFY_INFO=66;
 }

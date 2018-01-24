@@ -3,18 +3,22 @@ package com.moseeker.position.service.appbs;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.constants.SyncRequestType;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.ResultMessage;
 import com.moseeker.position.pojo.PositionSyncResultPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
+import com.moseeker.position.service.position.base.PositionFactory;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
+import com.moseeker.position.service.position.base.sync.PositionSyncVerifyHandlerUtil;
+import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
 import com.moseeker.position.service.position.base.sync.TransferCheckUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.position.utils.PositionSyncHandler;
@@ -62,6 +66,10 @@ public class PositionBS {
     private TransferCheckUtil transferCheckUtil;
     @Autowired
     private PositionEmailNotification emailNotification;
+    @Autowired
+    private PositionFactory positionFactory;
+    @Autowired
+    private PositionSyncVerifyHandlerUtil verifyHandlerUtil;
 
 
     /**
@@ -219,6 +227,67 @@ public class PositionBS {
         positionSyncHandler.removeRedis(moseekerJobPosition.getId());
         return results;
     }
+
+    /**
+     * 获取缓存验证信息
+     * @param param
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    public Response getVerifyParam(String param) throws BIZException, TException {
+        if(StringUtils.isNullOrEmpty(param)){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
+        JSONObject jsonParamObj=JSON.parseObject(param);
+
+        if(!jsonParamObj.containsKey("paramId")){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
+        String key=jsonParamObj.getString("paramId");
+
+        String jsonParam=verifyHandlerUtil.getParam(key);
+
+        if(StringUtils.isNullOrEmpty(jsonParam)){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
+        }
+
+        JSONObject jsonObject=JSON.parseObject(jsonParam);
+        int channel=jsonObject.getIntValue("channel");
+
+        ChannelType channelType=ChannelType.instaceFromInteger(channel);
+
+        PositionSyncVerifyHandler verifyHandler=positionFactory.getVerifyHandlerInstance(channelType);
+
+        if(verifyHandler.isTimeout(jsonParam)){
+            verifyHandler.timeoutHandler(jsonParam);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
+        }
+
+        return ResultMessage.SUCCESS.toResponse(jsonParam);
+    }
+
+    /**
+     * 发送验证完成信息
+     * @param jsonParam
+     * @return
+     * @throws BIZException
+     */
+    public Response syncVerifyInfo(String jsonParam) throws BIZException {
+        JSONObject jsonObject=JSON.parseObject(jsonParam);
+        int channel=jsonObject.getIntValue("channel");
+
+        ChannelType channelType=ChannelType.instaceFromInteger(channel);
+
+        PositionSyncVerifyHandler verifyHandler=positionFactory.getVerifyHandlerInstance(channelType);
+
+        verifyHandler.syncVerifyInfo(jsonParam);
+
+        return ResultMessage.SUCCESS.toResponse("");
+    }
+
 
 
     /**
