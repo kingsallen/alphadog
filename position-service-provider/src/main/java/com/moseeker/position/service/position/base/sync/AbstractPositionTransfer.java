@@ -3,8 +3,11 @@ package com.moseeker.position.service.position.base.sync;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -17,6 +20,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.apache.commons.lang.time.FastDateFormat;
@@ -40,6 +44,9 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
 
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     /**
      * 将仟寻职位转成第卅方职位
@@ -277,6 +284,13 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
         }
 
         return experience;
+    }
+
+    protected UserHrAccountDO getPublisherAccountInfo(JobPositionDO position){
+        if(position==null){
+            return null;
+        }
+        return userHrAccountDao.getValidAccount(position.getPublisher());
     }
 
     protected String getEmail(JobPositionDO positionDB) throws Exception {

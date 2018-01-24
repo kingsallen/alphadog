@@ -18,5 +18,9 @@ service PositionBS {
 	common_struct.Response refreshPositionQXPlatform(1: list<i32> positionIds) throws (1: common_struct.BIZException e);
 	//刷新第三方信息
 	common_struct.Response refreshThirdPartyParam() throws (1: common_struct.BIZException e);
+	//发送第三方需要的验证信息
+    common_struct.Response syncVerifyInfo(1: string info) throws (1: common_struct.BIZException e);
+    //获取缓存验证信息
+    common_struct.Response getVerifyParam(1: string key) throws (1: common_struct.BIZException e);
 }
 
