@@ -106,7 +106,7 @@ public class MobileVeifyHandler {
         applierTemplate.put("template_id", template.getWxTemplateId());
         applierTemplate.put("url", link);
         applierTemplate.put("topcolor", template.getTopcolor());
-        /*String result=null;
+        String result=null;
         try {
             result  = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
         }catch (ConnectException e){
@@ -121,7 +121,7 @@ public class MobileVeifyHandler {
         if(params!= null && "0".equals(params.get("errcode"))){
             return ;
         }
-        throw new BIZException((int)params.get("errcode"), (String)params.get("errmsg"));*/
+        throw new BIZException((int)params.get("errcode"), (String)params.get("errmsg"));
     }
 
     private HrWxWechatDO getMoseekerWxWechat(){
