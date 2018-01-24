@@ -49,7 +49,10 @@ public class PositionSyncVerifyConsumer {
             if(StringUtils.isNullOrEmpty(positionId)){  //账号同步验证
 
                 logger.info("账号同步验证 推送数据到redis中 json：{}",json);
-                redisClient.set(BindThirdPart.APP_ID, BindThirdPart.KEY_IDENTIFIER,obj.getJSONObject("data").getString(BindThirdPart.CHAOS_ACCOUNTID),json);
+                // 智联改版前，账号同步需要传100给前台，前台会有验证码窗口。
+                // 改版后，逻辑修改，爬虫端不会发送status，为了复用之前的代码，自行添加一个status
+                obj.put("status",100);
+                redisClient.set(BindThirdPart.APP_ID, BindThirdPart.KEY_IDENTIFIER,obj.getString(BindThirdPart.CHAOS_ACCOUNTID),json);
                 logger.info("推送数据成功");
 
             }else{  //职位同步验证
