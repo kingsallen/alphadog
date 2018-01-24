@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount.base;
 
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
@@ -43,16 +44,18 @@ public abstract class AbstractBindState implements BindState{
     public HrThirdPartyAccountDO bind(int hrId, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
         HrThirdPartyAccountDO result=bindOperation.bind(hrId, thirdPartyAccount);
 
-        result.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-        result.setSyncTime(result.getUpdateTime());
-        context.updateBinding(result);
+
+        if(result.getBinding()!= BindingStatus.NEEDCODE.getValue()){
+            result.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            result.setSyncTime(result.getUpdateTime());
+            context.updateBinding(result);
 
 
-        HrThirdPartyAccountDO bindingAccount = thirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, thirdPartyAccount.getChannel());
-        if (bindingAccount == null) {
-            context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
+            HrThirdPartyAccountDO bindingAccount = thirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, thirdPartyAccount.getChannel());
+            if (bindingAccount == null) {
+                context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
+            }
         }
-
 
         return result;
     }
