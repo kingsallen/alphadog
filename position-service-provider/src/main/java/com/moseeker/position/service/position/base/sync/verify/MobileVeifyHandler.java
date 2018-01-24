@@ -61,7 +61,7 @@ public class MobileVeifyHandler {
         HrWxWechatDO hrWxWechatDO=getMoseekerWxWechat();
 
         String openId=userWxUserDO.getOpenid();
-        String url=deliveryUrl();
+        String url=deliveryUrl(hrWxWechatDO);
 
         //把参数缓存在redis中，key为uuid，微信模板的link带的是uuid，再调用/position/getSyncVerifyParam可以获取参数，隐藏参数
         String redisKey=setVerifyParam(param);
@@ -133,9 +133,10 @@ public class MobileVeifyHandler {
         return wxWechatDao.getData(query);
     }
 
-    private String deliveryUrl(){
+    private String deliveryUrl(HrWxWechatDO hrWxWechatDO){
         String url="";
-        url=env.getProperty("message.template.sync.code.url");
+        url=env.getProperty("message.template.delivery.url");
+        url=url.replace("{}",hrWxWechatDO.getAccessToken());
         return url;
 
     }
