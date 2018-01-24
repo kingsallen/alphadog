@@ -657,8 +657,9 @@ public class JobApplicataionService {
                     String.valueOf(userId), String.valueOf(companyId));
 
             UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
-
+            logger.info("userApplyCount使用参数：{}", userApplyCount);
             UserApplyCount conf = getApplicationCountLimit((int) companyId);
+            logger.info("userApplyCount配置参数：{}", conf);
             if (candidateSource == 0) {
                 if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_SOCIAL_COUNT_CHECK);
