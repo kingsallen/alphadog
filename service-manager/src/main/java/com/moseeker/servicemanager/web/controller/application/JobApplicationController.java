@@ -218,9 +218,9 @@ public class JobApplicationController {
 	}
 
 	/**
-	 * 招聘进度同步到第三方
+	 * HR查看申请
 	 */
-	@RequestMapping(value = "/v1/applications/browse", method = RequestMethod.POST)
+	@RequestMapping(value = "/v1/applications/view", method = RequestMethod.POST)
 	@ResponseBody
 	public String viewApplications(HttpServletRequest request) {
 		try {

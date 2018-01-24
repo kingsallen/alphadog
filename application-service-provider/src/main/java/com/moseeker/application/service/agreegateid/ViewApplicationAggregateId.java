@@ -1,4 +1,4 @@
-package com.moseeker.application.context.agreegateid;
+package com.moseeker.application.service.agreegateid;
 
 import javax.swing.text.View;
 import java.util.List;
