@@ -160,7 +160,7 @@ public class SearchengineService {
 
         boolean haskey = false;
 
-        if (!StringUtils.isEmpty(keywords)&!"".equals(keywords.trim())) {
+        if (!StringUtils.isEmpty(keywords)&&!"".equals(keywords.trim())) {
             haskey = true;
             String[] keyword_list = keywords.split(" ");
             QueryBuilder keyand = QueryBuilders.boolQuery();
