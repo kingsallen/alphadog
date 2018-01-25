@@ -1163,7 +1163,18 @@ public class WholeProfileService {
             newUerId=this.saveNewProfile(resume,map);
         }else{
             userRecord=userAccountEntity.combineAccount(userId,newUerId);
+            if(userRecord==null){
+                return ResponseUtils.fail(1,"修改的简历的user_id不存在");
+            }
             newUerId=userRecord.getId();
+            userRecord.setMobile(Long.parseLong(String.valueOf(map.get("mobile"))));
+            if(map.get("name")!=null){
+                userRecord.setName(String.valueOf(map.get("name")));
+            }
+            if(map.get("email")!=null){
+                userRecord.setName(String.valueOf(map.get("email")));
+            }
+
             Response res=this.upsertProfile(resume,userRecord,userId,newUerId);
             if(res.getStatus()!=0){
                 return res;

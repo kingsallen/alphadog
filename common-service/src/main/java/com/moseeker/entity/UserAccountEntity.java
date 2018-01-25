@@ -115,6 +115,9 @@ public class UserAccountEntity {
         if(userUnionid==null){
             return userMobile;
         }
+        if(userId==newUserId){
+            return userMobile;
+        }
         userUnionid.setParentid(userMobile.getId());
         userUnionid.setIsDisable((byte)1);
         if (userDao.updateRecord(userUnionid) > 0) {
