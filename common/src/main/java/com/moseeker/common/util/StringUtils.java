@@ -301,35 +301,93 @@ public class StringUtils {
     public static String filterStringForSearch(String value){
         if(StringUtils.isNotNullOrEmpty(value)){
             if(value.contains("/")){
-                value=value.replaceAll("/","");
+                value=value.replaceAll("/"," ");
             }
             if(value.contains("OR")){
-                value=value.replaceAll("OR","");
+                value=value.replaceAll("OR"," ");
             }
             if(value.contains("AND")){
-                value=value.replaceAll("AND","");
+                value=value.replaceAll("AND"," ");
             }
 
             if(value.contains("(")){
-                value=value.replaceAll("\\(","");
+                value=value.replaceAll("\\("," ");
             }
             if(value.contains(")")){
-                value=value.replaceAll("\\)","");
+                value=value.replaceAll("\\)"," ");
             }
             if(value.contains("+")){
-                value=value.replaceAll("\\+","");
+                value=value.replaceAll("\\+"," ");
             }
             if(value.contains("\\")){
-                value=value.replaceAll("\\\\","");
+                value=value.replaceAll("\\\\"," ");
             }
             if(value.contains("（")){
-                value=value.replaceAll("（","");
+                value=value.replaceAll("（"," ");
             }
             if(value.contains("）")){
-                value=value.replaceAll("）","");
+                value=value.replaceAll("）"," ");
             }
             if(value.contains("-")){
-                value=value.replaceAll("-","");
+                value=value.replaceAll("-"," ");
+            }
+            if(value.contains("&")){
+                value=value.replaceAll("&"," ");
+            }
+            if(value.contains("+")){
+                value=value.replaceAll("\\+"," ");
+            }
+            if(value.contains("-")){
+                value=value.replaceAll("-"," ");
+            }
+
+            if(value.contains("|")){
+                value=value.replaceAll("|"," ");
+            }
+            if(value.contains("!")){
+                value=value.replaceAll("!"," ");
+            }
+            if(value.contains("{")){
+                value=value.replaceAll("\\{"," ");
+            }
+            if(value.contains("}")) {
+                value = value.replaceAll("\\}", " ");
+            }
+            if(value.contains("^")) {
+                value = value.replaceAll("\\^", " ");
+            }
+            if(value.contains("\"")) {
+                value = value.replaceAll("\"", " ");
+            }
+            if(value.contains("~")) {
+                value = value.replaceAll("~", " ");
+            }
+            if(value.contains("*")) {
+                value = value.replaceAll("\\*", " ");
+            }
+            if(value.contains("?")) {
+                value = value.replaceAll("\\?", " ");
+            }
+            if(value.contains(":")) {
+                value = value.replaceAll(":", " ");
+            }
+            if(value.contains("'")) {
+                value = value.replaceAll("'", " ");
+            }
+            if(value.contains("@")) {
+                value = value.replaceAll("@", " ");
+            }
+            if(value.contains("%")) {
+                value = value.replaceAll("%", " ");
+            }
+            if(value.contains("$")) {
+                value = value.replaceAll("\\$", " ");
+            }
+            if(value.contains("#")) {
+                value = value.replaceAll("#", " ");
+            }
+            if(value.contains("=")) {
+                value = value.replaceAll("=", " ");
             }
             if(StringUtils.isNotNullOrEmpty(value)){
                 value=value.trim();
@@ -338,12 +396,6 @@ public class StringUtils {
         return value;
     }
 
-    /**
-     * 转换为下划线
-     *
-     * @param camelCaseName
-     * @return
-     */
     public static String underscoreName(String camelCaseName) {
         StringBuilder result = new StringBuilder();
         if (camelCaseName != null && camelCaseName.length() > 0) {
@@ -421,9 +473,4 @@ public class StringUtils {
         }
         return result;
     }
-
-//    public static void main(String[] args) {
-//        int code=146;
-//        System.out.println((byte)code);
-//    }
 }
