@@ -233,6 +233,8 @@ public class PositionBS {
      * @throws TException
      */
     public Response getVerifyParam(String param) throws BIZException, TException {
+
+        logger.info("get verify param : {}",param);
         if(StringUtils.isNullOrEmpty(param)){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
