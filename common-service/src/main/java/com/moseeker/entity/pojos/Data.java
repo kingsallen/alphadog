@@ -14,6 +14,15 @@ public class Data {
     private List<String> departments;
     private List<City> cities;
     private List<Address> addresses;
+    private List<String> subsites;
+
+    public List<String> getSubsites() {
+        return subsites;
+    }
+
+    public void setSubsites(List<String> subsites) {
+        this.subsites = subsites;
+    }
 
     public List<Address> getAddresses() {
         return addresses;

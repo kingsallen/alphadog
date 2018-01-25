@@ -302,29 +302,33 @@ public class StringUtils {
             if(value.contains("/")){
                 value=value.replaceAll("/","");
             }
-            if(value.toLowerCase().contains("or")){
-                value=value.toLowerCase().replaceAll("or","");
+            if(value.contains("OR")){
+                value=value.replaceAll("OR","");
             }
-            if(value.toLowerCase().contains("and")){
-                value=value.toLowerCase().replaceAll("and","");
+            if(value.contains("AND")){
+                value=value.replaceAll("AND","");
             }
+
             if(value.contains("(")){
-                value=value.toLowerCase().replaceAll("\\(","");
+                value=value.replaceAll("\\(","");
             }
             if(value.contains(")")){
-                value=value.toLowerCase().replaceAll("\\)","");
+                value=value.replaceAll("\\)","");
             }
             if(value.contains("+")){
-                value=value.toLowerCase().replaceAll("\\+","");
+                value=value.replaceAll("\\+","");
             }
             if(value.contains("\\")){
-                value=value.toLowerCase().replaceAll("\\\\","");
+                value=value.replaceAll("\\\\","");
             }
             if(value.contains("（")){
-                value=value.toLowerCase().replaceAll("（","");
+                value=value.replaceAll("（","");
             }
             if(value.contains("）")){
-                value=value.toLowerCase().replaceAll("）","");
+                value=value.replaceAll("）","");
+            }
+            if(value.contains("-")){
+                value=value.replaceAll("-","");
             }
             if(StringUtils.isNotNullOrEmpty(value)){
                 value=value.trim();
