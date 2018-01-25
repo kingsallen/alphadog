@@ -207,7 +207,7 @@ public class SearchUtil {
     }
     //组装prefix关键字查询语句
     public void handleKeyWordForPrefix(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
-    	if(StringUtils.isNotEmpty(keywords)){
+    	if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords.trim())){
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		for(String field:list){
     			QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery(field, keywords);
@@ -220,18 +220,25 @@ public class SearchUtil {
 
 	 //组装query_string关键字查询语句
     public void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
-    	if(StringUtils.isNotEmpty(keywords)){
+    	if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords.trim())){
     		hasKey=true;
     		String words[]=keywords.split(",");
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		StringBuffer sb=new StringBuffer();
     		for(int i=0;i<words.length;i++){
+    		    if(StringUtils.isBlank(words[i])){
+    		        continue;
+                }
     			if(i==words.length-1){
     				sb.append(words[i]);
     			}else{
     				sb.append(words[i]+" or ");
     			}
     		}
+    		if(words.length>1){
+                sb.deleteCharAt(sb.lastIndexOf("r"));
+                sb.deleteCharAt(sb.lastIndexOf("o"));
+            }
     		String condition=sb.toString();
     		QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
     		for(String field:list){
@@ -269,15 +276,22 @@ public class SearchUtil {
     }
     //组装query_string关键字带权重查询语句
     public void keyWordforQueryStringPropery(String keywords,QueryBuilder query,List<String> fieldList,List<Integer> properyList){
-        if(StringUtils.isNotEmpty(keywords)){
+        if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords)){
             String words[]=keywords.split(",");
             StringBuffer sb=new StringBuffer();
             for(int i=0;i<words.length;i++){
+                if(StringUtils.isBlank(words[i])){
+                    continue;
+                }
                 if(i==words.length-1){
                     sb.append(words[i]);
                 }else{
                     sb.append(words[i]+" or ");
                 }
+            }
+            if(words.length>1){
+                sb.deleteCharAt(sb.lastIndexOf("r"));
+                sb.deleteCharAt(sb.lastIndexOf("o"));
             }
             String condition=sb.toString();
             QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
