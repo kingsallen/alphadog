@@ -82,7 +82,7 @@ public class PositionSyncConsumer  {
 
         HrThirdPartyPositionDO dbData=thirdpartyPositionDao.getBindingData(data.getPositionId(),data.getThirdPartyAccountId());
         if(dbData==null) {
-            logger.info(ConstantErrorCodeMessage.POSITION_SYNC_NOT_FIND_THIRD_PARTY_POSITION);
+            logger.info(ConstantErrorCodeMessage.POSITION_SYNC_NOT_FIND_THIRD_PARTY_POSITION+":{}",JSON.toJSONString(pojo));
             syncFailedNotification.sendHandlerFailureMail(JSON.toJSONString(pojo),ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_NOT_FIND_THIRD_PARTY_POSITION));
         }else{  //只有正在绑定的数据才更新同步状态
             data.setId(dbData.getId());
