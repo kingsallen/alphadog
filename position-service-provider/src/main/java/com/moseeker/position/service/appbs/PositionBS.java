@@ -6,10 +6,7 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.PositionRefreshType;
-import com.moseeker.common.constants.SyncRequestType;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.ResultMessage;
@@ -247,6 +244,10 @@ public class PositionBS {
         }
 
         String key=jsonParamObj.getString("paramId");
+
+        if(PositionSyncVerify.MOBILE_VERIFY_SUCCESS.equals(key)){
+            return ResponseUtils.fail(PositionSyncVerify.MOBILE_VERIFY_SUCCESS_MSG);
+        }
 
         String jsonParam=verifyHandlerUtil.getParam(key);
 

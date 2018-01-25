@@ -109,7 +109,7 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
                 , MessageBuilder.withBody(jsonInfo.toJSONString().getBytes()).build());
 
         if(jsonInfo.containsKey("paramId")){
-            verifyHandlerUtil.delParam(jsonInfo.getString("paramId"));
+            verifyHandlerUtil.setParam(jsonInfo.getString("paramId"),PositionSyncVerify.MOBILE_VERIFY_SUCCESS);
         }
 
     }

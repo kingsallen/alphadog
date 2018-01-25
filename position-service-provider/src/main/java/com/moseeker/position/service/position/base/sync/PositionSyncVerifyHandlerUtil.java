@@ -47,4 +47,8 @@ public class PositionSyncVerifyHandlerUtil {
         redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.POSITION_SYNC_VERIFY_TIMEOUT.toString(),redisKey);
     }
 
+    public void setParam(String redisKey,String value){
+        redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.POSITION_SYNC_VERIFY_TIMEOUT.toString(),redisKey,value);
+    }
+
 }
