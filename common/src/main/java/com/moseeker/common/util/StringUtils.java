@@ -465,7 +465,6 @@ public class StringUtils {
                     result.put(newKey,arr);
                 }
 
-
             }else {
                 result.put(newKey, resume.get(key));
             }
@@ -474,3 +473,4 @@ public class StringUtils {
         return result;
     }
 }
+
