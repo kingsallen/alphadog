@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -146,6 +147,16 @@ public class HRThirdPartyPositionDao  {
 
     public List<HrThirdPartyPositionDO> getSimpleDatas(Query query){
         return thirdPartyPositionDao.getDatas(query);
+    }
+
+
+    public HrThirdPartyPositionDO getBindingData(int positionId,int accountId){
+        Query query=new Query.QueryBuilder()
+                .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId)
+                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(),accountId)
+                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), PositionSync.binding.getValue()) //只有正在绑定才能改为3，重新同步
+                .buildQuery();
+        return getSimpleData(query);
     }
 
     public <P> List<TwoParam<HrThirdPartyPositionDO,P>> getDatas(Query query) throws BIZException {

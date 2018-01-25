@@ -161,12 +161,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
 
         finishVerify(verifyParam);
 
-        Query query=new Query.QueryBuilder()
-                .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),verifyParam.getPositionId())
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(),verifyParam.getAccountId())
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),PositionSync.binding.getValue()) //只有正在绑定才能改为3，重新同步
-                .buildQuery();
-        HrThirdPartyPositionDO thirdPartyPosition = thirdPartyPositionDao.getSimpleData(query);
+        HrThirdPartyPositionDO thirdPartyPosition = thirdPartyPositionDao.getBindingData(verifyParam.getPositionId(),verifyParam.getAccountId());
 
         if(thirdPartyPosition==null){
             return;

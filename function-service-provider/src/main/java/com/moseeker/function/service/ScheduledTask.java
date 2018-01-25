@@ -7,6 +7,7 @@ import com.moseeker.common.constants.BindThirdPart;
 import com.moseeker.function.service.chaos.ChaosServiceImpl;
 import com.moseeker.function.service.chaos.PositionForSyncResultPojo;
 import com.moseeker.function.service.chaos.PositionSyncConsumer;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +65,7 @@ public class ScheduledTask {
      */
     @RabbitListener(queues = {BindThirdPart.SYNC_POSITION_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
-    public void positionSyncListener(Message message, Channel channel) throws UnsupportedEncodingException {
+    public void positionSyncListener(Message message, Channel channel) throws UnsupportedEncodingException, BIZException {
         try{
             String data=new String(message.getBody(), "UTF-8");
             logger.info("成功获取同步职位结果数据:"+data);

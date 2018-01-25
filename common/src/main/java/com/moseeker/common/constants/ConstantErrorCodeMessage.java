@@ -133,7 +133,8 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_SYNC_NO_THIRD_POSITION = "{'status':61005,'message':'验证处理--第三方职位不存在'}";
     public static final String POSITION_SYNC_EMPTY_MOBILE = "{'status':61006,'message':'验证处理--手机号为空'}";
     public static final String POSITION_SYNC_SEND_MOBILE_TEMPLATE_ERROR = "{'status':61007,'message':'发送手机验证码模板消息失败'}";
-    public static final String POSITION_SYNC_EMPTY_MOBILE_CODE = "{'status':61007,'message':'验证处理--验证码为空'}";
+    public static final String POSITION_SYNC_EMPTY_MOBILE_CODE = "{'status':61008,'message':'验证处理--验证码为空'}";
+    public static final String POSITION_SYNC_NOT_FIND_THIRD_PARTY_POSITION = "{'status':61009,'message':'找不到第三方职位同步信息'}";
     //APPBS错误代码61000
 
 
