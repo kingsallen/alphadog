@@ -33,7 +33,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
     private String color;
 
     private CVCheckedWXMsgNotice(String positionName, String companyName, String signature,
-                                 int applicationId, int applierId, int companyId) {
+                                 int applicationId, int applierId, int companyId, RedisClient redisClient) {
         this.configId = 9;
         this.remark = "点击查看求职进度详情";
         this.result = "您好，您的简历已被查阅";
@@ -47,6 +47,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
         this.applicationId = applicationId;
         this.applierId = applierId;
         this.companyId = companyId;
+        this.redisClient = redisClient;
     }
 
     @Override
@@ -136,7 +137,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
 
             if (StringUtils.isNotBlank(result)) {
                 CVCheckedWXMsgNotice cvCheckedWXMsgNotice = new CVCheckedWXMsgNotice(positionName, companyName,
-                        signature, applicationId, applierId, companyId);
+                        signature, applicationId, applierId, companyId, redisClient);
                 return cvCheckedWXMsgNotice;
             } else {
                 throw ApplicationException.validateFailed(result);

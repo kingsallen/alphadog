@@ -92,7 +92,7 @@ public class PositionPcServiceTest {
 	  }
 	  @Test
 	  public void testGetAll(){
-		List list=dao.getAll();
+		List list=dao.getAllOccupation();
 		System.out.println(list);
 	  }
 	  @Test

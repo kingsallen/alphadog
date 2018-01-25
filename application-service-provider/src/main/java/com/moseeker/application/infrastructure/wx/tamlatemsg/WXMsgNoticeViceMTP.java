@@ -33,11 +33,10 @@ public abstract class WXMsgNoticeViceMTP {
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
     protected WXTemplateMsgPojo wxTemplateMsg;
-    private RedisClient redisClient;
+    protected RedisClient redisClient;
 
     public WXMsgNoticeViceMTP() {
         serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
-        initTemplateMsg();
     }
 
     /**

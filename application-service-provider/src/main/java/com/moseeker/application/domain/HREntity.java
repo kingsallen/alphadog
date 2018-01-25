@@ -1,11 +1,12 @@
 package com.moseeker.application.domain;
 
+import com.moseeker.application.config.ApplicationContextProvider;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.service.event.ViewApplicationListEvent;
+import com.moseeker.application.service.event.ViewApplicationSource;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.common.exception.CommonException;
-import org.springframework.context.ApplicationContext;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,13 +21,11 @@ public class HREntity {
     private final int companyId;                //公司编号
     private final HRAccountType accountType;    //账号类型
     private final ApplicationRepository applicationRepository;  //dao 层管理
-    private final ApplicationContext applicationContext;
 
-    public HREntity(int id, HRAccountType accountType, int companyId, ApplicationRepository applicationRepository, ApplicationContext applicationContext) {
+    public HREntity(int id, HRAccountType accountType, int companyId, ApplicationRepository applicationRepository) {
         this.id = id;
         this.accountType = accountType;
         this.applicationRepository = applicationRepository;
-        this.applicationContext = applicationContext;
         this.companyId = companyId;
     }
 
@@ -58,12 +57,12 @@ public class HREntity {
         if (operationRecordList != null && operationRecordList.size() > 0) {
 
             //持久化HR操作申请的记录
-            applicationRepository.getHrOperationJOOQDao().insert(operationRecordList);
+            applicationRepository.addHROperationRecordList(operationRecordList);
 
             //发布HR查看申请事件
-            publishEvent(operationRecordList
+            publishEvent(applicationBatchEntity.getExecuteList()
                     .stream()
-                    .map(record -> record.getAppId().intValue())
+                    .map(record -> record.getId())
                     .collect(Collectors.toList()));
         }
     }
@@ -73,8 +72,12 @@ public class HREntity {
      * @param applicationIdList 查看的申请编号
      */
     private void publishEvent(List<Integer> applicationIdList) {
+
+        ViewApplicationSource viewApplicationSource = new ViewApplicationSource(id, applicationIdList);
+
         ViewApplicationListEvent viewApplicationListEvent
-                = new ViewApplicationListEvent(applicationIdList);
-        applicationContext.publishEvent(viewApplicationListEvent); //发布查看申请事件
+                = new ViewApplicationListEvent(viewApplicationSource);
+
+        ApplicationContextProvider.getApplicationContext().publishEvent(viewApplicationListEvent); //发布查看申请事件
     }
 }
