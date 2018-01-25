@@ -245,13 +245,13 @@ public class PositionBS {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
-        String key=jsonParamObj.getString("paramId");
+        String paramId=jsonParamObj.getString("paramId");
 
-        if(PositionSyncVerify.MOBILE_VERIFY_SUCCESS.equals(key)){
+        if(PositionSyncVerify.MOBILE_VERIFY_SUCCESS.equals(paramId)){
             return ResponseUtils.fail(PositionSyncVerify.MOBILE_VERIFY_SUCCESS_MSG);
         }
 
-        String jsonParam=verifyHandlerUtil.getParam(key);
+        String jsonParam=verifyHandlerUtil.getParam(paramId);
 
         if(StringUtils.isNullOrEmpty(jsonParam)){
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
@@ -264,8 +264,9 @@ public class PositionBS {
 
         PositionSyncVerifyHandler verifyHandler=positionFactory.getVerifyHandlerInstance(channelType);
 
-        if(verifyHandler.isTimeout(jsonParam)){
-            verifyHandler.timeoutHandler(jsonParam);
+        jsonObject.put("paramId",paramId);
+        if(verifyHandler.isTimeout(jsonObject.toJSONString())){
+            verifyHandler.timeoutHandler(jsonObject.toJSONString());
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
         }
 
