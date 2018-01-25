@@ -1,7 +1,7 @@
 package com.moseeker.useraccounts.infrastructure;
 
 import com.moseeker.baseorm.db.jobdb.tables.daos.JobPositionDao;
-import com.moseeker.useraccounts.context.constant.PositionStatus;
+import com.moseeker.useraccounts.service.constant.PositionStatus;
 import org.jooq.Configuration;
 import org.jooq.Record2;
 import org.jooq.Result;

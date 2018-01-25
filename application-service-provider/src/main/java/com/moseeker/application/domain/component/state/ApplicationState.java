@@ -1,7 +1,7 @@
 package com.moseeker.application.domain.component.state;
 
 import com.moseeker.application.domain.ApplicationBatchEntity;
-import com.moseeker.application.infrastructure.DaoManagement;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 
 /**
  * 申请状态
@@ -13,11 +13,11 @@ public abstract class ApplicationState {
     protected ApplicationStatus applicationStatus = null;
 
     protected ApplicationBatchEntity applicationBatchEntity;
-    protected DaoManagement daoManagement;
+    protected ApplicationRepository applicationRepository;
 
-    public ApplicationState(ApplicationBatchEntity applicationBatchEntity, DaoManagement daoManagement) {
+    public ApplicationState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
         this.applicationBatchEntity = applicationBatchEntity;
-        this.daoManagement = daoManagement;
+        this.applicationRepository = applicationRepository;
     }
 
     /**
@@ -55,7 +55,7 @@ public abstract class ApplicationState {
      * @return 当前进度的下一个进度
      */
     public ApplicationState getNext() {
-        return applicationStatus.getNextNode(applicationStatus).buildState(applicationBatchEntity, daoManagement);
+        return applicationStatus.getNextNode(applicationStatus).buildState(applicationBatchEntity, applicationRepository);
     }
 
     /**
@@ -63,6 +63,6 @@ public abstract class ApplicationState {
      * @return 当前进度的上一个进度
      */
     public ApplicationState getPre() {
-        return applicationStatus.getPreNode(applicationStatus).buildState(applicationBatchEntity, daoManagement);
+        return applicationStatus.getPreNode(applicationStatus).buildState(applicationBatchEntity, applicationRepository);
     }
 }

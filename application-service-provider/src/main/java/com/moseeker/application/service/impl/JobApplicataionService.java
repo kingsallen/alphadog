@@ -3,7 +3,7 @@ package com.moseeker.application.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
-import com.moseeker.application.infrastructure.DaoManagement;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
@@ -106,7 +106,7 @@ public class JobApplicataionService {
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
     @Autowired
-    DaoManagement daoManagement;
+    ApplicationRepository applicationRepository;
 
     @Autowired
     ApplicationContext applicationContext;
@@ -954,8 +954,8 @@ public class JobApplicataionService {
      */
     public void viewApplications(int hrId, List<Integer> applicationIdList) throws CommonException {
 
-        HREntity hrEntity = daoManagement.fetchHREntity(hrId);
-        ApplicationBatchEntity applicationBatchEntity = daoManagement.fetchApplicationEntity(applicationIdList);
+        HREntity hrEntity = applicationRepository.fetchHREntity(hrId);
+        ApplicationBatchEntity applicationBatchEntity = applicationRepository.fetchApplicationEntity(applicationIdList);
         hrEntity.viewApplication(applicationBatchEntity);
     }
 }

@@ -1,7 +1,7 @@
 package com.moseeker.application.service.listener;
 
 import com.moseeker.application.domain.WXTamplateMsgEntity;
-import com.moseeker.application.infrastructure.DaoManagement;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.baseorm.redis.RedisClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
@@ -24,7 +24,7 @@ public class ViewApplicationWXMsgListener implements SmartApplicationListener {
     RedisClient redisClient;
 
     @Autowired
-    DaoManagement daoManagement;
+    ApplicationRepository applicationRepository;
 
     @Override
     public boolean supportsEventType(Class<? extends ApplicationEvent> eventType) {
@@ -39,7 +39,7 @@ public class ViewApplicationWXMsgListener implements SmartApplicationListener {
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
         List<Integer> applicationIdList = (List<Integer>) event.getSource();
-        WXTamplateMsgEntity wxTamplateMsgEntity = new WXTamplateMsgEntity(applicationIdList, daoManagement, redisClient);
+        WXTamplateMsgEntity wxTamplateMsgEntity = new WXTamplateMsgEntity(applicationIdList, applicationRepository, redisClient);
         wxTamplateMsgEntity.sendMsg();
     }
 

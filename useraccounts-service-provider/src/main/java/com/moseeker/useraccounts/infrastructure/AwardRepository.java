@@ -5,16 +5,16 @@ import com.moseeker.baseorm.db.hrdb.tables.pojos.HrPointsConf;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeePointsRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.useraccounts.context.constant.AwardEvent;
+import com.moseeker.entity.SearchengineEntity;
+import com.moseeker.useraccounts.domain.AwardEntity;
+import com.moseeker.useraccounts.service.aggregate.ApplicationsAggregateId;
+import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import org.jooq.Configuration;
 import org.jooq.Record2;
 import org.jooq.Result;
-import org.jooq.UpdateConditionStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
-import static org.jooq.impl.DSL.currentTimestamp;
 import static org.jooq.impl.DSL.recordType;
 import static org.jooq.impl.DSL.using;
 
@@ -35,9 +34,9 @@ import static org.jooq.impl.DSL.using;
  * Created by jack on 16/01/2018.
  */
 @Component
-public class DaoManagement {
+public class AwardRepository {
 
-    private Logger logger = LoggerFactory.getLogger(DaoManagement.class);
+    private Logger logger = LoggerFactory.getLogger(AwardRepository.class);
 
     private final Configuration configuration;
     private JobApplicationJOOQDao jobApplicationDao;
@@ -47,7 +46,10 @@ public class DaoManagement {
     private UserEmployeePointsRecordJOOQDao employeePointsRecordJOOQDao;
 
     @Autowired
-    public DaoManagement(Configuration configuration) {
+    SearchengineEntity searchengineEntity;
+
+    @Autowired
+    public AwardRepository(Configuration configuration) {
         this.configuration = configuration;
         jobApplicationDao = new JobApplicationJOOQDao(configuration);
         positionJOOQDao = new JobPositionJOOQDao(configuration);
@@ -182,16 +184,16 @@ public class DaoManagement {
 
     /**
      * 修改员工积分
-     * @param employeeAward 员工积分参数
+     * @param employeeList 员工积分参数
      */
-    public void updateEmployeeAwards(Map<Integer, Integer> employeeAward) {
+    public void updateEmployeeAwards(List<UserEmployee> employeeList) {
 
-        if (employeeAward != null && employeeAward.size() > 0) {
-            employeeAward.entrySet().stream().forEach(entry ->
+        if (employeeList != null && employeeList.size() > 0) {
+            employeeList.stream().forEach(userEmployee ->
                 using(configuration)
                         .update(USER_EMPLOYEE)
-                        .set(USER_EMPLOYEE.AWARD, entry.getValue())
-                        .where(USER_EMPLOYEE.ID.eq(entry.getKey()))
+                        .set(USER_EMPLOYEE.AWARD, userEmployee.getAward())
+                        .where(USER_EMPLOYEE.ID.eq(userEmployee.getId()))
                         .and(USER_EMPLOYEE.AWARD.eq(USER_EMPLOYEE.AWARD))
                         .execute()
             );
@@ -205,5 +207,27 @@ public class DaoManagement {
      */
     public List<UserEmployeePointsRecord> addEmployeeAwards(List<UserEmployeePointsRecord> userEmployeePointsRecordList) {
         return employeePointsRecordJOOQDao.addEmployeeAwards(userEmployeePointsRecordList);
+    }
+
+    public AwardEntity loadAwardEntity(ApplicationsAggregateId applicationsAggregateId) {
+        List<UserEmployeePointsRecord> userEmployeePointsRecordList
+                = fetchEmployeePointsByApplicationIdList(applicationsAggregateId.getApplicationIdList(),
+                applicationsAggregateId.getAwardEvent());
+        List<UserEmployee> employeeList
+                = fetchIdAndAwardListById(userEmployeePointsRecordList
+                .stream()
+                .map(p -> p.getEmployeeId().intValue())
+                .collect(Collectors.toList()));
+        AwardEntity awardEntity = new AwardEntity(this, searchengineEntity, userEmployeePointsRecordList, employeeList);
+        return awardEntity;
+    }
+
+    /**
+     * 查找员工与员工当前积分信息
+     * @param idList 员工编号集合
+     * @return 员工编号和积分信息列表
+     */
+    private List<UserEmployee> fetchIdAndAwardListById(List<Integer> idList) {
+        return userEmployeeJOOQDao.fetchIdAndAwardListById(idList);
     }
 }

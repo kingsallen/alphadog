@@ -7,6 +7,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.constants.AbleFlag;
 import org.jooq.Condition;
 import org.jooq.Configuration;
+import org.jooq.Record2;
 import org.jooq.Result;
 
 import java.util.ArrayList;
@@ -55,6 +56,25 @@ public class UserEmployeeJOOQDao extends UserEmployeeDao {
             }
         }
 
+        return new ArrayList<>();
+    }
+
+    /**
+     * 根据员工编号查找员工当前的积分信息
+     * @param idList 员工编号
+     * @return 员工当前信息
+     */
+    public List<UserEmployee> fetchIdAndAwardListById(List<Integer> idList) {
+        if (idList != null && idList.size() > 0) {
+            Result<Record2<Integer, Integer>> result = using(configuration())
+                    .select(USER_EMPLOYEE.ID, USER_EMPLOYEE.AWARD)
+                    .from(USER_EMPLOYEE)
+                    .where(USER_EMPLOYEE.ID.in(idList))
+                    .fetch();
+            if (result != null) {
+                return result.into(UserEmployee.class);
+            }
+        }
         return new ArrayList<>();
     }
 }

@@ -1,4 +1,4 @@
-package com.moseeker.useraccounts.context.constant;
+package com.moseeker.useraccounts.service.constant;
 
 /**
  * 职位状态
