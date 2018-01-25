@@ -8,10 +8,8 @@ import com.moseeker.application.infrastructure.ApplicationRepository;
  */
 public class HiredState extends ApplicationState {
 
-    private ApplicationStatus applicationStatus = ApplicationStatus.Hired;
-
     public HiredState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
-        super(applicationBatchEntity, applicationRepository);
+        super(applicationBatchEntity, applicationRepository, ApplicationStatus.Hired);
     }
 
 

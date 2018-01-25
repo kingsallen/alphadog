@@ -8,10 +8,8 @@ import com.moseeker.application.infrastructure.ApplicationRepository;
  */
 public class CVPassedState extends ApplicationState {
 
-    ApplicationStatus applicationStatus = ApplicationStatus.CVPassed;
-
     public CVPassedState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
-        super(applicationBatchEntity, applicationRepository);
+        super(applicationBatchEntity, applicationRepository, ApplicationStatus.CVPassed);
     }
 
     @Override

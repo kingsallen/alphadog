@@ -17,7 +17,6 @@ public enum ApplicationStatus {
     private ApplicationStatus(int state, String name) {
         this.state = state;
         this.name = name;
-        init();
     }
 
     private int state;
@@ -32,18 +31,18 @@ public enum ApplicationStatus {
     }
 
     private void init() {
-        ApplicationStatus viewedState = ApplicationStatus.CVChecked;
         ApplicationStatus applyState = ApplicationStatus.Apply;
+        ApplicationStatus viewedState = ApplicationStatus.CVChecked;
         ApplicationStatus cvPassedState = ApplicationStatus.CVPassed;
         ApplicationStatus offeredStatus = ApplicationStatus.Offered;
         ApplicationStatus hiredState = ApplicationStatus.Hired;
 
         Node firstNode = new Node();
-        firstNode.setState(viewedState);
+        firstNode.setState(applyState);
 
         Node secondNode = new Node();
         firstNode.setNextNode(secondNode);
-        secondNode.setState(applyState);
+        secondNode.setState(viewedState);
 
         Node thirdNode = new Node();
         secondNode.setNextNode(thirdNode);
@@ -57,8 +56,8 @@ public enum ApplicationStatus {
         thirdNode.setNextNode(fifthNode);
         fifthNode.setState(hiredState);
 
-        path.put(applyState, fifthNode);
-        path.put(applyState, secondNode);
+        path.put(applyState, firstNode);
+        path.put(viewedState, secondNode);
         path.put(cvPassedState, thirdNode);
         path.put(offeredStatus, fourthNode);
         path.put(hiredState, fifthNode);
@@ -94,7 +93,10 @@ public enum ApplicationStatus {
      * @param applicationStatus 申请进度状态
      * @return 下一个状态
      */
-    public ApplicationStatus getNextNode(ApplicationStatus applicationStatus) {
+    public synchronized ApplicationStatus getNextNode(ApplicationStatus applicationStatus) {
+        if (path.size() == 0) {
+            init();
+        }
         if (path.get(applicationStatus) != null) {
             if (path.get(applicationStatus).getNextNode() != null) {
                 return path.get(applicationStatus).getNextNode().getState();
@@ -108,7 +110,10 @@ public enum ApplicationStatus {
      * @param applicationStatus 申请进度状态
      * @return 上一个状态
      */
-    public ApplicationStatus getPreNode(ApplicationStatus applicationStatus) {
+    public synchronized ApplicationStatus getPreNode(ApplicationStatus applicationStatus) {
+        if (path.size() == 0) {
+            init();
+        }
         if (path.get(applicationStatus) != null) {
             if (path.get(applicationStatus).getPreNode() != null) {
                 return path.get(applicationStatus).getPreNode().getState();

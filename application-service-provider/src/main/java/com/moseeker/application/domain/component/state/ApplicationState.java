@@ -2,6 +2,8 @@ package com.moseeker.application.domain.component.state;
 
 import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.infrastructure.ApplicationRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 申请状态
@@ -9,15 +11,18 @@ import com.moseeker.application.infrastructure.ApplicationRepository;
  */
 public abstract class ApplicationState {
 
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+
     //招聘进度流程
-    protected ApplicationStatus applicationStatus = null;
+    protected ApplicationStatus applicationStatus;
 
     protected ApplicationBatchEntity applicationBatchEntity;
     protected ApplicationRepository applicationRepository;
 
-    public ApplicationState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
+    public ApplicationState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository, ApplicationStatus applicationStatus) {
         this.applicationBatchEntity = applicationBatchEntity;
         this.applicationRepository = applicationRepository;
+        this.applicationStatus = applicationStatus;
     }
 
     /**
@@ -55,7 +60,11 @@ public abstract class ApplicationState {
      * @return 当前进度的下一个进度
      */
     public ApplicationState getNext() {
-        return applicationStatus.getNextNode(applicationStatus).buildState(applicationBatchEntity, applicationRepository);
+        ApplicationStatus status = applicationStatus.getNextNode(applicationStatus);
+        if (status != null) {
+            return status.buildState(applicationBatchEntity, applicationRepository);
+        }
+        return null;
     }
 
     /**
@@ -63,6 +72,10 @@ public abstract class ApplicationState {
      * @return 当前进度的上一个进度
      */
     public ApplicationState getPre() {
-        return applicationStatus.getPreNode(applicationStatus).buildState(applicationBatchEntity, applicationRepository);
+        ApplicationStatus status = applicationStatus.getPreNode(applicationStatus);
+        if (status != null) {
+            return status.buildState(applicationBatchEntity, applicationRepository);
+        }
+        return null;
     }
 }

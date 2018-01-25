@@ -58,21 +58,40 @@ public class JobApplicationJOOQDao extends com.moseeker.baseorm.db.jobdb.tables.
     }
 
     /**
+     *
      * 将申请记录标记为已查看状态
-     * @param unViewedApplicationList 需要被标记为已经查看的申请记录
+     * 如果已经浏览过的，浏览次数加一；如果是刚申请未浏览的，那么修改招聘进度，并且浏览次数加一
+     * @param applicationList 需要被标记为已经查看的申请记录
+     * @return 执行的记录
      */
-    public void viewApplication(List<ApplicationStatePojo> unViewedApplicationList) {
-        if (unViewedApplicationList != null && unViewedApplicationList.size() > 0) {
-            unViewedApplicationList.forEach(application -> {
-                using(configuration())
-                        .update(JobApplication.JOB_APPLICATION)
-                        .set(JobApplication.JOB_APPLICATION.IS_VIEWED, (byte) ApplicationViewStatus.VIEWED.getStatus())
-                        .set(JobApplication.JOB_APPLICATION.APP_TPL_ID, application.getState())
-                        .where(JobApplication.JOB_APPLICATION.ID.eq(application.getId()))
-                        .and(JobApplication.JOB_APPLICATION.APP_TPL_ID.eq(application.getPreState()))
-                        .execute();
+    public List<Application> viewApplication(List<Application> applicationList) {
+
+        List<Application> executeList = new ArrayList<>();
+        if (applicationList != null && applicationList.size() > 0) {
+            applicationList.forEach(application -> {
+
+                if (application.isViewOnly()) {
+                    using(configuration())
+                            .update(JobApplication.JOB_APPLICATION)
+                            .set(JobApplication.JOB_APPLICATION.VIEW_COUNT, JobApplication.JOB_APPLICATION.VIEW_COUNT.add(1))
+                            .where(JobApplication.JOB_APPLICATION.ID.eq(application.getId()))
+                            .execute();
+                } else {
+                    int execute = using(configuration())
+                            .update(JobApplication.JOB_APPLICATION)
+                            .set(JobApplication.JOB_APPLICATION.IS_VIEWED, (byte) ApplicationViewStatus.VIEWED.getStatus())
+                            .set(JobApplication.JOB_APPLICATION.APP_TPL_ID, application.getNextStatus().getState())
+                            .set(JobApplication.JOB_APPLICATION.VIEW_COUNT, JobApplication.JOB_APPLICATION.VIEW_COUNT.add(1))
+                            .where(JobApplication.JOB_APPLICATION.ID.eq(application.getId()))
+                            .and(JobApplication.JOB_APPLICATION.APP_TPL_ID.eq(application.getStatus().getState()))
+                            .execute();
+                    if (execute > 0) {
+                        executeList.add(application);
+                    }
+                }
             });
         }
+        return executeList;
     }
 
     /**
