@@ -1,6 +1,6 @@
 package com.moseeker.application.domain;
 
-import com.moseeker.application.infrastructure.DaoManagement;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.service.event.ViewApplicationListEvent;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
@@ -19,13 +19,13 @@ public class HREntity {
     private final int id;                       //编号
     private final int companyId;                //公司编号
     private final HRAccountType accountType;    //账号类型
-    private final DaoManagement daoManagement;  //dao 层管理
+    private final ApplicationRepository applicationRepository;  //dao 层管理
     private final ApplicationContext applicationContext;
 
-    public HREntity(int id, HRAccountType accountType, int companyId, DaoManagement daoManagement, ApplicationContext applicationContext) {
+    public HREntity(int id, HRAccountType accountType, int companyId, ApplicationRepository applicationRepository, ApplicationContext applicationContext) {
         this.id = id;
         this.accountType = accountType;
-        this.daoManagement = daoManagement;
+        this.applicationRepository = applicationRepository;
         this.applicationContext = applicationContext;
         this.companyId = companyId;
     }
@@ -58,7 +58,7 @@ public class HREntity {
         if (operationRecordList != null && operationRecordList.size() > 0) {
 
             //持久化HR操作申请的记录
-            daoManagement.getHrOperationJOOQDao().insert(operationRecordList);
+            applicationRepository.getHrOperationJOOQDao().insert(operationRecordList);
 
             //发布HR查看申请事件
             publishEvent(operationRecordList

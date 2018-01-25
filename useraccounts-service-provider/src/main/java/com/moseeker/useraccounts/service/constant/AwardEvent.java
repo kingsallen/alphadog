@@ -1,4 +1,4 @@
-package com.moseeker.useraccounts.context.constant;
+package com.moseeker.useraccounts.service.constant;
 
 import java.util.HashMap;
 import java.util.Map;

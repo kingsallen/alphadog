@@ -4,7 +4,7 @@ import com.moseeker.application.domain.component.state.ApplicationState;
 import com.moseeker.application.domain.component.state.ApplyState;
 import com.moseeker.application.domain.pojo.Application;
 import com.moseeker.application.exception.ApplicationException;
-import com.moseeker.application.infrastructure.DaoManagement;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.common.exception.CommonException;
 
@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 public class ApplicationBatchEntity {
 
     private volatile List<Application> applicationList;     //申请编号集合
-    private DaoManagement daoManagement;                    //DAO操作
+    private ApplicationRepository applicationRepository;                    //DAO操作
 
-    public ApplicationBatchEntity(DaoManagement daoManagement, List<Application> applicationList) throws CommonException {
-        if (applicationList == null || applicationList.size() == 0 || daoManagement == null) {
+    public ApplicationBatchEntity(ApplicationRepository applicationRepository, List<Application> applicationList) throws CommonException {
+        if (applicationList == null || applicationList.size() == 0 || applicationRepository == null) {
             throw ApplicationException.APPLICATION_ENTITY_BUILD_FAILED;
         }
-        this.daoManagement = daoManagement;
+        this.applicationRepository = applicationRepository;
         this.applicationList = applicationList;
     }
 
@@ -39,7 +39,7 @@ public class ApplicationBatchEntity {
      */
     public List<HrOperationRecord> viewed(HREntity hrEntity) {
 
-        ApplicationState state = new ApplyState(this, daoManagement);
+        ApplicationState state = new ApplyState(this, applicationRepository);
         List<Application> unViewedApplicationList = applicationList
                 .stream()
                 .filter(application -> !application.isViewed())                         //过滤已经查看过的

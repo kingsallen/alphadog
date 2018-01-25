@@ -1,7 +1,7 @@
 package com.moseeker.application.domain;
 
 import com.moseeker.application.domain.pojo.CVCheckedWXMsgPojo;
-import com.moseeker.application.infrastructure.DaoManagement;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.infrastructure.wx.tamlatemsg.CVCheckedWXMsgNotice;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 public class WXTamplateMsgEntity {
 
     private List<Integer> applicationIdList;
-    private DaoManagement daoManagement;
+    private ApplicationRepository applicationRepository;
     private RedisClient redisClient;
 
-    public WXTamplateMsgEntity(List<Integer> applicationIdList, DaoManagement daoManagement, RedisClient redisClient) {
+    public WXTamplateMsgEntity(List<Integer> applicationIdList, ApplicationRepository applicationRepository, RedisClient redisClient) {
         this.applicationIdList = applicationIdList;
-        this.daoManagement = daoManagement;
+        this.applicationRepository = applicationRepository;
         this.redisClient = redisClient;
     }
 
@@ -52,13 +52,13 @@ public class WXTamplateMsgEntity {
      */
     private List<CVCheckedWXMsgPojo> initData() {
 
-        Map<Integer, String> positionNames = daoManagement.getPositionName(applicationIdList);
-        Map<Integer,HrCompany> companyMap = daoManagement.getCompaniesByApplicationIdList(applicationIdList);
+        Map<Integer, String> positionNames = applicationRepository.getPositionName(applicationIdList);
+        Map<Integer,HrCompany> companyMap = applicationRepository.getCompaniesByApplicationIdList(applicationIdList);
 
         List<Integer> companyIdList = companyMap.entrySet().stream().map(m -> m.getValue().getId()).collect(Collectors.toList());
 
-        Map<Integer, String> companySignatures = daoManagement.getSignatureByCompanyId(companyIdList);
-        Map<Integer, Integer> applierIdMap = daoManagement.getAppliers(applicationIdList);
+        Map<Integer, String> companySignatures = applicationRepository.getSignatureByCompanyId(companyIdList);
+        Map<Integer, Integer> applierIdMap = applicationRepository.getAppliers(applicationIdList);
 
         List<CVCheckedWXMsgPojo> msgPojoList = applicationIdList.stream().map(appId -> {
             CVCheckedWXMsgPojo pojo = new CVCheckedWXMsgPojo();
