@@ -100,6 +100,8 @@ service PositionServices {
 
     common_struct.Response getEmployeeRecomPositionByIds(1:i32 recomPushId,2:i32 companyId,3:i32 type,4:i32 pageNum,5: i32 pageSize);
 
+    common_struct.Response updatePosition(1:string param);
+
 }
 /*
 	查询第三方自定义职能

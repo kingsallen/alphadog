@@ -44,6 +44,7 @@ import com.moseeker.position.service.position.*;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
+import com.moseeker.position.utils.ConvertUtils;
 import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -56,8 +57,13 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.position.service.PositionDao;
 import com.moseeker.thrift.gen.position.struct.*;
+import com.moseeker.thrift.gen.position.struct.JobOccupationCustom;
+import com.moseeker.thrift.gen.position.struct.dao.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -2099,6 +2105,33 @@ public class PositionService {
         logger.error("自定义配置为空，positionId:{}, appCvConfId:{}", positionId, appCvConfId);
         return ResponseUtils.fail(1,"自定义配置为空");
     }
+
+    public Response updatePosition(String param) {
+        JSONObject obj = JSONObject.parseObject(param);
+        int position_id = obj.getIntValue("id");
+        int account_id = obj.getIntValue("accountId");
+        Query query = new Query.QueryBuilder().where(JobPosition.JOB_POSITION.ID.getName(), position_id)
+                .and(JobPosition.JOB_POSITION.PUBLISHER.getName(), account_id).buildQuery();
+        JobPositionDO positionDO = jobPositionDao.getData(query);
+
+        if(positionDO != null){
+            try {
+                Query updateQuery = null;
+                Map<String, Object> updateField = obj.getObject("updateField", Map.class);
+                JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
+                jobPositionDao.updateRecord(record);
+                
+                return ResponseUtils.success("SUCCESS");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            }
+        }else{
+            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_UPDATE_FAIL);
+        }
+
+    }
+
 
 
     /**
