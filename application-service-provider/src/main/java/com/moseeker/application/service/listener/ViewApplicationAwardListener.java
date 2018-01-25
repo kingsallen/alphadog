@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.application.service.event.ViewApplicationListEvent;
 import com.moseeker.application.domain.component.state.ApplicationStatus;
 import com.moseeker.application.infrastructure.ApplicationRepository;
+import com.moseeker.application.service.event.ViewApplicationSource;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -47,7 +48,7 @@ public class ViewApplicationAwardListener implements SmartApplicationListener {
 
     @Override
     public boolean supportsSourceType(Class<?> sourceType) {
-        if (sourceType == List.class) {
+        if (sourceType == ViewApplicationSource.class) {
             return true;
         }
         return false;
@@ -58,7 +59,7 @@ public class ViewApplicationAwardListener implements SmartApplicationListener {
 
         logger.info("ViewApplicationAwardListener onApplicationEvent");
 
-        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+        /*try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             List<Integer> applicationIdList = (List<Integer>) event.getSource();
             ApplicationStatus status = ApplicationStatus.CVChecked;
 
@@ -83,7 +84,7 @@ public class ViewApplicationAwardListener implements SmartApplicationListener {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
-        }
+        }*/
     }
 
     @Override

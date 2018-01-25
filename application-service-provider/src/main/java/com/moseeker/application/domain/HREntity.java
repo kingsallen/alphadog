@@ -1,5 +1,6 @@
 package com.moseeker.application.domain;
 
+import com.moseeker.application.config.ApplicationContextProvider;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.service.event.ViewApplicationListEvent;
 import com.moseeker.application.service.event.ViewApplicationSource;
@@ -55,7 +56,7 @@ public class HREntity {
             applicationRepository.addHROperationRecordList(operationRecordList);
 
             //发布HR查看申请事件
-            publishEvent(operationRecordList
+            publishEvent(applicationBatchEntity.getExecuteList()
                     .stream()
                     .map(record -> record.getId())
                     .collect(Collectors.toList()));
