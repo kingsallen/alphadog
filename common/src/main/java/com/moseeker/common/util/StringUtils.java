@@ -301,35 +301,93 @@ public class StringUtils {
     public static String filterStringForSearch(String value){
         if(StringUtils.isNotNullOrEmpty(value)){
             if(value.contains("/")){
-                value=value.replaceAll("/","");
+                value=value.replaceAll("/"," ");
             }
             if(value.contains("OR")){
-                value=value.replaceAll("OR","");
+                value=value.replaceAll("OR"," ");
             }
             if(value.contains("AND")){
-                value=value.replaceAll("AND","");
+                value=value.replaceAll("AND"," ");
             }
 
             if(value.contains("(")){
-                value=value.replaceAll("\\(","");
+                value=value.replaceAll("\\("," ");
             }
             if(value.contains(")")){
-                value=value.replaceAll("\\)","");
+                value=value.replaceAll("\\)"," ");
             }
             if(value.contains("+")){
-                value=value.replaceAll("\\+","");
+                value=value.replaceAll("\\+"," ");
             }
             if(value.contains("\\")){
-                value=value.replaceAll("\\\\","");
+                value=value.replaceAll("\\\\"," ");
             }
             if(value.contains("（")){
-                value=value.replaceAll("（","");
+                value=value.replaceAll("（"," ");
             }
             if(value.contains("）")){
-                value=value.replaceAll("）","");
+                value=value.replaceAll("）"," ");
             }
             if(value.contains("-")){
-                value=value.replaceAll("-","");
+                value=value.replaceAll("-"," ");
+            }
+            if(value.contains("&")){
+                value=value.replaceAll("&"," ");
+            }
+            if(value.contains("+")){
+                value=value.replaceAll("\\+"," ");
+            }
+            if(value.contains("-")){
+                value=value.replaceAll("-"," ");
+            }
+
+            if(value.contains("|")){
+                value=value.replaceAll("|"," ");
+            }
+            if(value.contains("!")){
+                value=value.replaceAll("!"," ");
+            }
+            if(value.contains("{")){
+                value=value.replaceAll("\\{"," ");
+            }
+            if(value.contains("}")) {
+                value = value.replaceAll("\\}", " ");
+            }
+            if(value.contains("^")) {
+                value = value.replaceAll("\\^", " ");
+            }
+            if(value.contains("\"")) {
+                value = value.replaceAll("\"", " ");
+            }
+            if(value.contains("~")) {
+                value = value.replaceAll("~", " ");
+            }
+            if(value.contains("*")) {
+                value = value.replaceAll("\\*", " ");
+            }
+            if(value.contains("?")) {
+                value = value.replaceAll("\\?", " ");
+            }
+            if(value.contains(":")) {
+                value = value.replaceAll(":", " ");
+            }
+            if(value.contains("'")) {
+                value = value.replaceAll("'", " ");
+            }
+            if(value.contains("@")) {
+                value = value.replaceAll("@", " ");
+            }
+            if(value.contains("%")) {
+                value = value.replaceAll("%", " ");
+            }
+            if(value.contains("$")) {
+                value = value.replaceAll("\\$", " ");
+            }
+            if(value.contains("#")) {
+                value = value.replaceAll("#", " ");
+            }
+            if(value.contains("=")) {
+                value = value.replaceAll("=", " ");
             }
             if(StringUtils.isNotNullOrEmpty(value)){
                 value=value.trim();
@@ -338,6 +396,18 @@ public class StringUtils {
         return value;
     }
 
+//    public static void main(String[] args) {
+//        String aa="aaa~!@#$%^&*(){}^~*?:\\+=-aaa";
+//        System.out.println(StringUtils.filterStringForSearch(aa));
+//        String bb="or and or or";
+//        StringBuffer sb=new StringBuffer();
+//        sb.append("or ");
+//        sb.append("aaa ");
+//        sb.append("or  ");
+//        sb.deleteCharAt(sb.lastIndexOf("r"));
+//        sb.deleteCharAt(sb.lastIndexOf("o"));
+//        System.out.println(sb.toString());
+//    }
     /**
      * 转换为下划线
      *
@@ -413,17 +483,4 @@ public class StringUtils {
                     result.put(newKey,arr);
                 }
 
-
-            }else {
-                result.put(newKey, resume.get(key));
-            }
-
-        }
-        return result;
-    }
-
-//    public static void main(String[] args) {
-//        int code=146;
-//        System.out.println((byte)code);
-//    }
 }
