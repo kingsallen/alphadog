@@ -78,6 +78,35 @@ public class PositionServiceTest {
         System.out.println(JSON.toJSONString(result));
     }
 
+    @Test
+	public void testCitys(){
+    	List<City> list=new ArrayList<>();
+    	City city=new City();
+    	city.setType("text");
+    	city.setValue("");
+    	list.add(city);
+
+		city=new City();
+		city.setType("text");
+		list.add(city);
+
+		city=new City();
+		city.setType("text");
+		city.setValue("");
+		list.add(city);
+
+    	city=new City();
+		city.setType("text");
+		city.setValue("北京");
+		list.add(city);
+
+		city=new City();
+		city.setType("text");
+		city.setValue("北京");
+		list.add(city);
+//    	System.out.println(service.citys(list));
+	}
+
     /*@Test
     public void cityCode(){
     	List<City> cities=new ArrayList<>();

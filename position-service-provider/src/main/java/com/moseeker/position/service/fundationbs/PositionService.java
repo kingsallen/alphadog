@@ -968,6 +968,9 @@ public class PositionService {
                         if (specicalCity != null) {
                             city.setValue(specicalCity);
                         }
+                        if (org.apache.commons.lang.StringUtils.isBlank(city.getValue())) {
+                            city.setValue("全国");
+                        }
                         // 判断下是否是中文还是英文
                         if (isChinese(city.getValue())) { // 是中文
                             cityQuery.where("name", city.getValue());
@@ -1047,6 +1050,9 @@ public class PositionService {
             for (City city : list) {
                 Query.QueryBuilder cityCodeQuery = new Query.QueryBuilder();
                 if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode
+                    if(StringUtils.isNullOrEmpty(city.getValue())){
+                        city.setValue("全国");
+                    }
                     // 判断是不是特殊城市中的
                     String specicalCity = SpecialCtiy.specialCtiyMap.get(city.getValue().toLowerCase());
                     if (specicalCity != null) {
