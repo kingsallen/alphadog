@@ -301,6 +301,7 @@ public class PositionService {
         if ("全国".equals(jobPositionPojo.city)) {
             jobPositionPojo.city_flag = 1;
         }
+        searchData.setTitle(jobPositionPojo.title);
         jobPositionPojo.search_data=searchData;
         return ResponseUtils.success(jobPositionPojo);
     }
