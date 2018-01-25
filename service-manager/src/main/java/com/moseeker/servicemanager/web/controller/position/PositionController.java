@@ -1,8 +1,10 @@
 package com.moseeker.servicemanager.web.controller.position;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -11,7 +13,6 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.position.bean.ThirdPartyPositionVO;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
@@ -24,7 +25,6 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
-import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,18 +110,18 @@ public class PositionController {
             query.setPage_from(Integer.valueOf((String) map.getOrDefault("page_from", "0")));
             query.setPage_size(Integer.valueOf((String) map.getOrDefault("page_size", "10")));
 
-            query.setKeywords((String) map.getOrDefault("keywords", ""));
-            query.setCities((String) map.getOrDefault("cities", ""));
-            query.setIndustries((String) map.getOrDefault("industries", ""));
-            query.setOccupations((String) map.getOrDefault("occupations", ""));
+            query.setKeywords(StringUtils.filterStringForSearch((String) map.getOrDefault("keywords", "")));
+            query.setCities(StringUtils.filterStringForSearch((String) map.getOrDefault("cities", "")));
+            query.setIndustries(StringUtils.filterStringForSearch((String) map.getOrDefault("industries", "")));
+            query.setOccupations(StringUtils.filterStringForSearch((String) map.getOrDefault("occupations", "")));
             query.setScale((String) map.getOrDefault("scale", ""));
             query.setCandidate_source((String) map.getOrDefault("candidate_source", ""));
             query.setEmployment_type((String) map.getOrDefault("employment_type", ""));
             query.setExperience((String) map.getOrDefault("experience", ""));
             query.setSalary((String) map.getOrDefault("salary", ""));
-            query.setDegree((String) map.getOrDefault("degree", ""));
-            query.setDepartment((String) map.getOrDefault("department", ""));
-            query.setCustom((String) map.getOrDefault("custom", ""));
+            query.setDegree(StringUtils.filterStringForSearch((String) map.getOrDefault("degree", "")));
+            query.setDepartment(StringUtils.filterStringForSearch((String) map.getOrDefault("department", "")));
+            query.setCustom(StringUtils.filterStringForSearch((String) map.getOrDefault("custom", "")));
             query.setDid(Integer.valueOf((String) map.getOrDefault("did", "0")));
 
             String param_setOrder_by_priority = (String) map.getOrDefault("order_by_priority", "True");
@@ -191,6 +191,28 @@ public class PositionController {
         }
     }
 
+    @RequestMapping(value = "/position/refreshThirdPartyParam", method = RequestMethod.GET)
+    @ResponseBody
+    public String refreshThirdPartyParam(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            if(!"moseeker.com".equals(map.get("refreshKey"))){
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"wrong request param!");
+            }
+            logger.info("-----------refresh Third Party Param start------------");
+            Response result = positionBS.refreshThirdPartyParam();
+            logger.info("result:" + JSON.toJSONString(result));
+            logger.info("-----------refresh Third Party Param end------------");
+            return ResponseLogNotification.success(request, result);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     @RequestMapping(value = "/position/sync", method = RequestMethod.POST)
     @ResponseBody
     public String synchronizePosition(HttpServletRequest request, HttpServletResponse response) {
@@ -208,6 +230,23 @@ public class PositionController {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/jobposition/saveAndSync", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveAndSyncPosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            logger.info("-----------saveAndSyncPosition------------");
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseSyncBatchHandlerJobPostionParam(request);
+            Response res = positonServices.saveAndSync(batchHandlerJobPostion);
+            logger.info("saveAndSyncPosition result:" + JSON.toJSONString(res));
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            //do nothing
         }
     }
 
@@ -240,17 +279,19 @@ public class PositionController {
     public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
         try {
             CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
-            List<HrThirdPartyPositionDO> datas = positonServices.getThirdPartyPositions(qu);
+            List<String> datas = positonServices.getThirdPartyPositions(qu);
 
             if (datas == null) datas = new ArrayList<>();
 
-            List<ThirdPartyPositionVO> vos = new ArrayList<>();
-
-            for (HrThirdPartyPositionDO positionDO : datas) {
-                vos.add(new ThirdPartyPositionVO().copyDO(positionDO));
+            List<Map<String,Object>> mapResult=new ArrayList<>();
+            for (String json : datas) {
+                Map<String,Object> positionDO=JSON.parseObject(json);
+                positionDO.put("position_id",positionDO.get("positionId"));
+                positionDO.put("accountId",positionDO.get("thirdPartyAccountId"));
+                mapResult.add(positionDO);
             }
 
-            Response result = ResponseUtils.success(vos);
+            Response result = ResponseUtils.success(mapResult);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -568,6 +609,7 @@ public class PositionController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
             HrThirdPartyPositionDO thirdPartyPosition = ParamUtils.initModelForm(params, HrThirdPartyPositionDO.class);
+            Map<String,String> extThirdPartyPosition = PositionParamUtils.toExtThirdPartyPosition(params);
 
             if (thirdPartyAccount == null || thirdPartyPosition == null) {
                 throw new CommonException(2201, "参数错误");
@@ -575,7 +617,7 @@ public class PositionController {
 
             thirdPartyAccount.setId(0);
             thirdPartyAccount.unsetId();
-            positonServices.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
+            positonServices.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount,extThirdPartyPosition);
             return ResponseLogNotification.successJson(request, 1);
         } catch (Exception e) {
             logger.error(e.getMessage());

@@ -8,6 +8,9 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCity;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompany;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
 
 import javax.annotation.Generated;
 
@@ -44,4 +47,19 @@ public class Tables {
      * 第三方渠道的所属部门名称
      */
     public static final ThirdpartyAccountDepartment THIRDPARTY_ACCOUNT_DEPARTMENT = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment.THIRDPARTY_ACCOUNT_DEPARTMENT;
+
+    /**
+     * 一览人才的第三方发布网站表
+     */
+    public static final ThirdpartyAccountJob1001Subsite THIRDPARTY_ACCOUNT_JOB1001_SUBSITE = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE;
+
+    /**
+     * 一览人才的第三方职位子表
+     */
+    public static final ThirdpartyJob1001Position THIRDPARTY_JOB1001_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION;
+
+    /**
+     * 最佳东方的第三方职位子表
+     */
+    public static final ThirdpartyVeryeastPosition THIRDPARTY_VERYEAST_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION;
 }

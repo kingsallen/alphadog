@@ -105,8 +105,6 @@ service UserHrAccountService {
     common_struct.Response putResource(1: useraccounts_struct.UserHrAccount userHrAccount);
     //绑定第三方帐号
     hr_third_party_account_struct.HrThirdPartyAccountDO bindThirdPartyAccount(1:i32 hrId,2:hr_third_party_account_struct.HrThirdPartyAccountDO account,3:bool sync) throws (1: common_struct.BIZException e);
-    //同步第三方帐号
-    hr_third_party_account_struct.HrThirdPartyAccountDO syncThirdPartyAccount(1:i32 hrId,2:i32 id,3:bool sync) throws (1: common_struct.BIZException e);
     //猎聘确认发送验证码
     hr_third_party_account_struct.HrThirdPartyAccountDO bindConfirm(1:i32 hrId,2:i32 id,3:bool confirm) throws (1: common_struct.BIZException e);
     //猎聘发送验证码
@@ -202,7 +200,8 @@ service UserCenterService {
 service ThirdPartyUserService {
     //更新账号
     common_struct.Response updateUser(1: useraccounts_struct.ThirdPartyUser user);
-
+    //获取账号
+    common_struct.Response get(1:common_struct.CommonQuery query);
 }
 
 //UserEmployeeDao数据库单表操作
