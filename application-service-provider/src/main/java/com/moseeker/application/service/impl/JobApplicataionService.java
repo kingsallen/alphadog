@@ -108,9 +108,6 @@ public class JobApplicataionService {
     @Autowired
     ApplicationRepository applicationRepository;
 
-    @Autowired
-    ApplicationContext applicationContext;
-
     /**
      * 创建申请
      *

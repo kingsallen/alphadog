@@ -8,10 +8,8 @@ import com.moseeker.application.infrastructure.ApplicationRepository;
  */
 public class OfferedStatus extends ApplicationState {
 
-    private ApplicationStatus applicationStatus = ApplicationStatus.Offered;
-
     public OfferedStatus(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
-        super(applicationBatchEntity, applicationRepository);
+        super(applicationBatchEntity, applicationRepository, ApplicationStatus.Offered);
     }
 
     @Override

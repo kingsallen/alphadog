@@ -1,10 +1,12 @@
 package com.moseeker.application.domain.component.state;
 
 import com.moseeker.application.domain.ApplicationBatchEntity;
+import com.moseeker.application.domain.pojo.Application;
 import com.moseeker.application.domain.pojo.ApplicationStatePojo;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -14,8 +16,7 @@ import java.util.stream.Collectors;
 public class ApplyState extends ApplicationState {
 
     public ApplyState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
-        super(applicationBatchEntity, applicationRepository);
-        this.applicationStatus = ApplicationStatus.Apply;
+        super(applicationBatchEntity, applicationRepository, ApplicationStatus.Apply);
     }
 
     @Override
@@ -28,21 +29,22 @@ public class ApplyState extends ApplicationState {
 
         ApplicationState nextState = getNext();
         if (nextState != null) {
-            List<ApplicationStatePojo> unViewedApplicationList = applicationBatchEntity.getApplicationList()
-                    .stream()
-                    .map(application -> {
-                        ApplicationStatePojo applicationState = new ApplicationStatePojo();
-                        applicationState.setId(application.getId());
-                        applicationState.setPreState(application.getStatus());
-                        applicationState.setState(nextState.getStatus().getState());
-                        applicationState.setView(0);
-                        application.setViewed(true);
-                        application.setStatus(nextState.getStatus().getState());
-                        return applicationState;
-                    })
-                    .collect(Collectors.toList());
-            if (unViewedApplicationList != null && unViewedApplicationList.size() > 0) {
-                applicationRepository.viewApplication(unViewedApplicationList);
+            try {
+                applicationBatchEntity.getApplicationList()
+                        .forEach(application -> {
+                            if (application.getStatus().equals(ApplicationStatus.Apply)) {
+                                application.setNextStatus(nextState.getStatus());
+                                application.setViewOnly(false);
+                            } else {
+                                application.setViewOnly(true);
+                            }
+                        });
+                if (applicationBatchEntity.getApplicationList() != null && applicationBatchEntity.getApplicationList().size() > 0) {
+                    List<Application> realExecuteList = applicationRepository.viewApplication(applicationBatchEntity.getApplicationList());
+                    applicationBatchEntity.setExecuteList(realExecuteList);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
         }
         return nextState;

@@ -9,8 +9,7 @@ import com.moseeker.application.infrastructure.ApplicationRepository;
 public class CVCheckedState extends ApplicationState {
 
     public CVCheckedState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
-        super(applicationBatchEntity, applicationRepository);
-        this.applicationStatus = ApplicationStatus.CVChecked;
+        super(applicationBatchEntity, applicationRepository, ApplicationStatus.CVChecked);
     }
 
     @Override

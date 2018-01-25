@@ -6,10 +6,10 @@ package com.moseeker.application.domain.pojo;
  */
 public class ApplicationStatePojo {
 
-    private int id;             //申请编号
-    private int state;          //当前状态
-    private int preState;       //更改前状态
-    private int view;           //0 查阅，1 未查阅
+    private int id;                 //申请编号
+    private int state;              //当前状态
+    private int preState;           //更改前状态
+    private boolean addViewOnly;    //只增加浏览次数
 
     public int getId() {
         return id;
@@ -35,11 +35,11 @@ public class ApplicationStatePojo {
         this.preState = preState;
     }
 
-    public int getView() {
-        return view;
+    public boolean isAddViewOnly() {
+        return addViewOnly;
     }
 
-    public void setView(int view) {
-        this.view = view;
+    public void setAddViewOnly(boolean addViewOnly) {
+        this.addViewOnly = addViewOnly;
     }
 }
