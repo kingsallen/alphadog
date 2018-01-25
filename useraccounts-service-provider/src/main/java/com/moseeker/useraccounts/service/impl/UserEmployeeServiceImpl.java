@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -14,8 +14,10 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import com.moseeker.useraccounts.context.AwardContext;
 import com.moseeker.useraccounts.domain.AwardEntity;
+import com.moseeker.useraccounts.infrastructure.AwardRepository;
+import com.moseeker.useraccounts.service.aggregate.ApplicationsAggregateId;
+import com.moseeker.useraccounts.service.constant.AwardEvent;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
@@ -24,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,10 +42,10 @@ public class UserEmployeeServiceImpl {
     private UserEmployeeDao userEmployeeDao;
 
     @Autowired
-    private AwardContext awardContext;
+    EmployeeEntity employeeEntity;
 
     @Autowired
-    EmployeeEntity employeeEntity;
+    AwardRepository awardRepository;
 
     public Response getUserEmployee(CommonQuery query) throws TException {
         return getResource(query);
@@ -203,7 +204,17 @@ public class UserEmployeeServiceImpl {
         }
     }
 
-    public void addEmployeeAward(List<Integer> applicationIdList, int eventType) {
-        awardContext.addEmployeeAward(applicationIdList, eventType);
+    /**
+     * 积分事件中，涉及申请的事件出发积分添加
+     * @param applicationIdList 申请编号集合
+     * @param awardEvent 积分事件
+     */
+    public void addEmployeeAward(List<Integer> applicationIdList, AwardEvent awardEvent) {
+        /** 初始化业务编号 */
+        ApplicationsAggregateId applicationsAggregateId = new ApplicationsAggregateId(applicationIdList, awardEvent);
+
+        //添加积分
+        AwardEntity awardEntity = awardRepository.loadAwardEntity(applicationsAggregateId);
+        awardEntity.addAward();
     }
 }

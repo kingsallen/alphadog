@@ -1,15 +1,15 @@
 package com.moseeker.application.domain.component.state;
 
 import com.moseeker.application.domain.ApplicationBatchEntity;
-import com.moseeker.application.infrastructure.DaoManagement;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 
 /**
  * Created by jack on 18/01/2018.
  */
 public class CVCheckedState extends ApplicationState {
 
-    public CVCheckedState(ApplicationBatchEntity applicationBatchEntity, DaoManagement daoManagement) {
-        super(applicationBatchEntity, daoManagement);
+    public CVCheckedState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
+        super(applicationBatchEntity, applicationRepository);
         this.applicationStatus = ApplicationStatus.CVChecked;
     }
 

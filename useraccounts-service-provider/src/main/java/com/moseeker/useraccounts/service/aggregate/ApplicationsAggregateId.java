@@ -1,6 +1,6 @@
-package com.moseeker.useraccounts.context.aggregate;
+package com.moseeker.useraccounts.service.aggregate;
 
-import com.moseeker.useraccounts.context.constant.AwardEvent;
+import com.moseeker.useraccounts.service.constant.AwardEvent;
 
 import java.util.List;
 

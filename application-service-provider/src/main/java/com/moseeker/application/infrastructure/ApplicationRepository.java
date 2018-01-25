@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * Created by jack on 16/01/2018.
  */
 @Component
-public class DaoManagement {
+public class ApplicationRepository {
 
     private final Configuration configuration;
     private JobApplicationJOOQDao jobApplicationDao;
@@ -39,7 +39,7 @@ public class DaoManagement {
     ApplicationContext applicationContext;
 
     @Autowired
-    public DaoManagement(Configuration configuration) {
+    public ApplicationRepository(Configuration configuration) {
         this.configuration = configuration;
         jobApplicationDao = new JobApplicationJOOQDao(configuration);
         userHrAccountDao = new UserHRAccountJOOQDao(configuration);

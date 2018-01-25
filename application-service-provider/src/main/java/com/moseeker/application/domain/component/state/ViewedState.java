@@ -1,15 +1,15 @@
 package com.moseeker.application.domain.component.state;
 
 import com.moseeker.application.domain.ApplicationBatchEntity;
-import com.moseeker.application.infrastructure.DaoManagement;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 
 /**
  * Created by jack on 16/01/2018.
  */
 public class ViewedState extends ApplicationState {
 
-    public ViewedState(ApplicationBatchEntity applicationBatchEntity, DaoManagement daoManagement) {
-        super(applicationBatchEntity, daoManagement);
+    public ViewedState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
+        super(applicationBatchEntity, applicationRepository);
     }
 
     @Override

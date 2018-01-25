@@ -1,9 +1,8 @@
 package com.moseeker.application.domain.component.state;
 
-import com.moseeker.application.service.event.ViewApplicationListEvent;
 import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.pojo.ApplicationStatePojo;
-import com.moseeker.application.infrastructure.DaoManagement;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,8 +13,8 @@ import java.util.stream.Collectors;
  */
 public class ApplyState extends ApplicationState {
 
-    public ApplyState(ApplicationBatchEntity applicationBatchEntity, DaoManagement daoManagement) {
-        super(applicationBatchEntity, daoManagement);
+    public ApplyState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
+        super(applicationBatchEntity, applicationRepository);
         this.applicationStatus = ApplicationStatus.Apply;
     }
 
@@ -43,7 +42,7 @@ public class ApplyState extends ApplicationState {
                     })
                     .collect(Collectors.toList());
             if (unViewedApplicationList != null && unViewedApplicationList.size() > 0) {
-                daoManagement.viewApplication(unViewedApplicationList);
+                applicationRepository.viewApplication(unViewedApplicationList);
             }
         }
         return nextState;
