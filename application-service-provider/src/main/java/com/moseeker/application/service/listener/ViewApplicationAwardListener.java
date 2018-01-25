@@ -3,7 +3,7 @@ package com.moseeker.application.service.listener;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.application.service.event.ViewApplicationListEvent;
 import com.moseeker.application.domain.component.state.ApplicationStatus;
-import com.moseeker.application.infrastructure.DaoManagement;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -30,7 +30,7 @@ import java.util.List;
 public class ViewApplicationAwardListener implements SmartApplicationListener {
 
     @Autowired
-    DaoManagement daoManagement;
+    ApplicationRepository applicationRepository;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

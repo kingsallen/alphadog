@@ -1,6 +1,5 @@
 package com.moseeker.application.domain;
 
-import com.moseeker.application.config.ApplicationContextProvider;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.service.event.ViewApplicationListEvent;
 import com.moseeker.application.service.event.ViewApplicationSource;

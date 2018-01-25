@@ -2,21 +2,18 @@ package com.moseeker.application.infrastructure;
 
 import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
-import com.moseeker.application.domain.component.state.ApplicationStatus;
 import com.moseeker.application.domain.constant.ApplicationViewStatus;
 import com.moseeker.application.domain.pojo.Application;
+import com.moseeker.application.domain.pojo.ApplicationStatePojo;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.common.exception.CommonException;
 import org.jooq.Configuration;
 import org.jooq.Record2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -29,8 +26,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class ApplicationRepository {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final Configuration configuration;
     private JobApplicationJOOQDao jobApplicationDao;
@@ -51,7 +46,6 @@ public class ApplicationRepository {
         positionJOOQDao = new JobPositionJOOQDao(configuration);
         hrOperationJOOQDao = new HrOperationJOOQDao(configuration);
         companyJOOQDao = new HrCompanyJOOQDao(configuration);
-        wechatJOOQDao = new WechatJOOQDao(configuration);
     }
 
     public JobApplicationJOOQDao getJobApplicationDao() {
@@ -64,6 +58,10 @@ public class ApplicationRepository {
 
     public JobPositionJOOQDao getPositionJOOQDao() {
         return positionJOOQDao;
+    }
+
+    public HrOperationJOOQDao getHrOperationJOOQDao() {
+        return hrOperationJOOQDao;
     }
 
     /**
@@ -170,7 +168,7 @@ public class ApplicationRepository {
         }
 
         return new HREntity(userHrAccount.getId(), hrAccountType, userHrAccount.getCompanyId(),
-                this);
+                this, applicationContext);
     }
 
     /**
@@ -210,11 +208,10 @@ public class ApplicationRepository {
 
     /**
      * 将查看申请的业务操作 持久化到数据库中
-     * @param applicationList 申请数据
-     * @return 执行申请状态转变的记录
+     * @param unViewedApplicationList 申请数据
      */
-    public List<Application> viewApplication(List<Application> applicationList) {
-        return jobApplicationDao.viewApplication(applicationList);
+    public void viewApplication(List<ApplicationStatePojo> unViewedApplicationList) {
+        jobApplicationDao.viewApplication(unViewedApplicationList);
     }
 
     /**
@@ -233,11 +230,7 @@ public class ApplicationRepository {
                                                  List<Record2<Integer, Integer>> superAccountList) {
         return applicationList.stream().map(jobApplication -> {
             Application application = new Application();
-            ApplicationStatus status = ApplicationStatus.initFromState(jobApplication.getAppTplId());
-            if (status == null) {
-                logger.error("ApplicationRepository status is null! application:{}", application);
-            }
-            application.setStatus(status);
+            application.setStatus(jobApplication.getAppTplId());
             if (jobApplication.getIsViewed() != null
                     && jobApplication.getIsViewed() == ApplicationViewStatus.VIEWED.getStatus()) {
                 application.setViewed(true);
@@ -266,9 +259,5 @@ public class ApplicationRepository {
             application.setId(jobApplication.getId());
             return application;
         }).collect(Collectors.toList());
-    }
-
-    public void addHROperationRecordList(List<HrOperationRecord> operationRecordList) {
-        hrOperationJOOQDao.insert(operationRecordList);
     }
 }

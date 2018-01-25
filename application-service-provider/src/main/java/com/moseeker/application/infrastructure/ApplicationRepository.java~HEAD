@@ -2,18 +2,21 @@ package com.moseeker.application.infrastructure;
 
 import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
+import com.moseeker.application.domain.component.state.ApplicationStatus;
 import com.moseeker.application.domain.constant.ApplicationViewStatus;
 import com.moseeker.application.domain.pojo.Application;
-import com.moseeker.application.domain.pojo.ApplicationStatePojo;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.common.exception.CommonException;
 import org.jooq.Configuration;
 import org.jooq.Record2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -25,7 +28,9 @@ import java.util.stream.Collectors;
  * Created by jack on 16/01/2018.
  */
 @Component
-public class DaoManagement {
+public class ApplicationRepository {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final Configuration configuration;
     private JobApplicationJOOQDao jobApplicationDao;
@@ -39,13 +44,14 @@ public class DaoManagement {
     ApplicationContext applicationContext;
 
     @Autowired
-    public DaoManagement(Configuration configuration) {
+    public ApplicationRepository(Configuration configuration) {
         this.configuration = configuration;
         jobApplicationDao = new JobApplicationJOOQDao(configuration);
         userHrAccountDao = new UserHRAccountJOOQDao(configuration);
         positionJOOQDao = new JobPositionJOOQDao(configuration);
         hrOperationJOOQDao = new HrOperationJOOQDao(configuration);
         companyJOOQDao = new HrCompanyJOOQDao(configuration);
+        wechatJOOQDao = new WechatJOOQDao(configuration);
     }
 
     public JobApplicationJOOQDao getJobApplicationDao() {
@@ -58,10 +64,6 @@ public class DaoManagement {
 
     public JobPositionJOOQDao getPositionJOOQDao() {
         return positionJOOQDao;
-    }
-
-    public HrOperationJOOQDao getHrOperationJOOQDao() {
-        return hrOperationJOOQDao;
     }
 
     /**
@@ -168,7 +170,7 @@ public class DaoManagement {
         }
 
         return new HREntity(userHrAccount.getId(), hrAccountType, userHrAccount.getCompanyId(),
-                this, applicationContext);
+                this);
     }
 
     /**
@@ -208,10 +210,11 @@ public class DaoManagement {
 
     /**
      * 将查看申请的业务操作 持久化到数据库中
-     * @param unViewedApplicationList 申请数据
+     * @param applicationList 申请数据
+     * @return 执行申请状态转变的记录
      */
-    public void viewApplication(List<ApplicationStatePojo> unViewedApplicationList) {
-        jobApplicationDao.viewApplication(unViewedApplicationList);
+    public List<Application> viewApplication(List<Application> applicationList) {
+        return jobApplicationDao.viewApplication(applicationList);
     }
 
     /**
@@ -230,7 +233,11 @@ public class DaoManagement {
                                                  List<Record2<Integer, Integer>> superAccountList) {
         return applicationList.stream().map(jobApplication -> {
             Application application = new Application();
-            application.setStatus(jobApplication.getAppTplId());
+            ApplicationStatus status = ApplicationStatus.initFromState(jobApplication.getAppTplId());
+            if (status == null) {
+                logger.error("ApplicationRepository status is null! application:{}", application);
+            }
+            application.setStatus(status);
             if (jobApplication.getIsViewed() != null
                     && jobApplication.getIsViewed() == ApplicationViewStatus.VIEWED.getStatus()) {
                 application.setViewed(true);
@@ -259,5 +266,9 @@ public class DaoManagement {
             application.setId(jobApplication.getId());
             return application;
         }).collect(Collectors.toList());
+    }
+
+    public void addHROperationRecordList(List<HrOperationRecord> operationRecordList) {
+        hrOperationJOOQDao.insert(operationRecordList);
     }
 }
