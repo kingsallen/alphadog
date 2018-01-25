@@ -164,21 +164,45 @@ public class SearchengineService {
                                           String employment_type, String candidate_source, String experience, String degree, String salary,
                                           String company_name, int page_from, int page_size, String child_company_name, String department,
                                           boolean order_by_priority, String custom){
-
+        TransportClient client= EsClientInstance.getClient();
         if (page_from == 0) {
             page_from = 0;
         }
         if (page_size == 0) {
             page_size = 20;
         }
-        TransportClient client= EsClientInstance.getClient();
+        boolean haskey = false;
+        if (!StringUtils.isEmpty(keywords)){
+            haskey =true;
+        }
+        if(!StringUtils.isEmpty(industries)){
+            haskey =true;
+        }
+        QueryBuilder query=this.getPositionQueryBuilder(keywords,cities,industries,occupations, scale,
+                employment_type, candidate_source, experience, degree,  salary, company_name,
+                child_company_name, department, custom);
+        QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
+        ((BoolQueryBuilder) query).must(status_filter);
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index1").setTypes("fulltext")
+                .setQuery(query);
+
+        responseBuilder.setFrom(page_from).setSize(page_size);
+        responseBuilder.setTrackScores(true);
+        logger.info(responseBuilder.toString());
+        SearchResponse response = responseBuilder.execute().actionGet();
+        return response;
+
+    }
+    /*
+     封装一下对职位列表的查询语句
+     */
+    private QueryBuilder getPositionQueryBuilder(String keywords,String cities, String industries, String occupations, String scale,
+                                                 String employment_type, String candidate_source, String experience, String degree, String salary,
+                                                 String company_name, String child_company_name, String department,
+                                                 String custom){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-
-        boolean haskey = false;
-
         if (!StringUtils.isEmpty(keywords)) {
-            haskey = true;
             String[] keyword_list = keywords.split(" ");
             QueryBuilder keyand = QueryBuilders.boolQuery();
             for (int i = 0; i < keyword_list.length; i++) {
@@ -197,8 +221,6 @@ public class SearchengineService {
             }
             ((BoolQueryBuilder) query).must(keyand);
         }
-
-
         if (!StringUtils.isEmpty(cities)) {
             String[] city_list = cities.split(",");
             QueryBuilder cityor = QueryBuilders.boolQuery();
@@ -216,7 +238,6 @@ public class SearchengineService {
         }
 
         if (!StringUtils.isEmpty(industries)) {
-            haskey = true;
             String[] industry_list = industries.split(",");
             QueryBuilder industryor = QueryBuilders.boolQuery();
             for (int i = 0; i < industry_list.length; i++) {
@@ -226,7 +247,6 @@ public class SearchengineService {
             }
             ((BoolQueryBuilder) query).must(industryor);
         }
-
         if (!StringUtils.isEmpty(occupations)) {
             String[] occupation_list = occupations.split(",");
             QueryBuilder occupationor = QueryBuilders.boolQuery();
@@ -312,16 +332,14 @@ public class SearchengineService {
             QueryBuilder custom_filter = QueryBuilders.termQuery("search_data.custom", custom);
             ((BoolQueryBuilder) query).must(custom_filter);
         }
+        return query;
+    }
 
-        QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
-        ((BoolQueryBuilder) query).must(status_filter);
-
-
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index1").setTypes("fulltext")
-                .setQuery(query);
-
+    /*
+     封装一下对排序的语句
+     */
+    private void positionIndexOrder(SearchRequestBuilder responseBuilder,boolean order_by_priority,boolean haskey,String cities){
         if (order_by_priority) {
-
             if (haskey) {
                 responseBuilder.addSort("priority", SortOrder.ASC);
                 if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
@@ -352,13 +370,13 @@ public class SearchengineService {
                 responseBuilder.addSort("_score", SortOrder.DESC);
             }
         }
-        responseBuilder.setFrom(page_from).setSize(page_size);
-        responseBuilder.setTrackScores(true);
-        logger.info(responseBuilder.toString());
-        SearchResponse response = responseBuilder.execute().actionGet();
-        return response;
-
     }
+
+    /*
+     继续对排序进行细分
+     */
+
+
     /*
       按照被命中的城市是否是全国。来重新处理顺序问题，只有全国的，或者是全国命中的沉底
      */

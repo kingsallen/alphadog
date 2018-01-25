@@ -10,8 +10,10 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.position.pojo.CompanyAccount;
+import com.moseeker.position.pojo.PositionMiniBean;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
@@ -19,7 +21,9 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,6 +37,9 @@ public class PositionMiniService {
     private HrCompanyAccountDao hrCompanyAccountDao;
     @Autowired
     private HrCompanyDao hrCompanyDao;
+
+    @Autowired
+    private TalentPoolEntity talentPoolEntity;
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
     @CounterIface
@@ -92,6 +99,30 @@ public class PositionMiniService {
         }
         return companyAccountBean;
     }
+    /*
+     获取所有的再招和下架
+     */
+   public PositionMiniBean getResultBean(){
+
+       return null;
+   }
+   /*
+    获取所有的hr信息，并转成UserHrAccount
+    */
+   public List<UserHrAccount> getCompanyHr(int companyId){
+       List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
+       if(StringUtils.isEmptyList(hrList)){
+           return null;
+       }
+       List<UserHrAccount> result=new ArrayList<>();
+       for(Map<String,Object> map:hrList){
+           Map<String,Object> hrMap=StringUtils.convertUnderKeyToCamel(map);
+           UserHrAccount account=JSON.parseObject(JSON.toJSONString(hrMap),UserHrAccount.class);
+           result.add(account);
+       }
+       return result;
+   }
+
     /*
      获取HrCompanyAccount
      */
