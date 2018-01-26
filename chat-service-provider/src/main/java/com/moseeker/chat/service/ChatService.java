@@ -7,6 +7,7 @@ import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.utils.Page;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ChatMsgType;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.chat.struct.*;
@@ -503,6 +504,7 @@ public class ChatService {
         if(resultOfSaveRoomVO.getPosition() != null) {
             chatDO.setPid(resultOfSaveRoomVO.getPosition().getPositionId());
         }
+        chatDO.setMsgType(ChatMsgType.HTML.value());
         chaoDao.saveChat(chatDO);
         logger.info("createChat result:{}", chatDO);
         return chatDO;
