@@ -116,4 +116,14 @@ public class PositionServiceTest {
 		list.add(city);
 //    	System.out.println(service.citys(list));
 	}
+
+    /*@Test
+    public void cityCode(){
+    	List<City> cities=new ArrayList<>();
+    	City city=new City();
+    	city.setType("text");
+    	city.setValue("九龙城区");
+    	cities.add(city);
+    	service.cityCode(cities,1909944);
+	}*/
 }
