@@ -92,12 +92,13 @@ public class MessageTemplateEntity {
         HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
         int weChatId=DO.getId();
         String wxSignture=DO.getSignature();
+        List<Integer> pidList=new ArrayList<>();
         if(type==1){
             url=url.replace("{}",wxSignture);
         }else if(type==2){
             //校验推送职位是否下架
-            String pids=this.handleEmployeeRecomPosition(userId,companyId,0);
-            if(StringUtils.isNullOrEmpty(pids)){
+            pidList=this.handleEmployeeRecomPosition(userId,companyId,0);
+            if(StringUtils.isEmptyList(pidList)){
                 return null;
             }
             url=url.replace("{}",wxSignture);
@@ -105,16 +106,20 @@ public class MessageTemplateEntity {
             url=url.replace("{}",wxSignture);
         }else if(type==3){
             //校验推送职位是否下架,以及将数据加入推送的表中
-           String pids=this.handleEmployeeRecomPosition(userId,companyId,1);
-           if(StringUtils.isNullOrEmpty(pids)){
+            pidList=this.handleEmployeeRecomPosition(userId,companyId,1);
+           if(StringUtils.isEmptyList(pidList)){
                return null;
            }
-           int recomId=this.addCampaignRecomPositionlist(companyId,pids);
+           String  positionIds=convertListToString(pidList);
+           /*
+            这么写感觉特别不好，没水平，添添补补，但是这是特殊的，因为这块的职位推荐要一直能看并且可传播
+            */
+           int recomId=this.addCampaignRecomPositionlist(companyId,positionIds);
            url=url.replace("{recomPushId}",recomId+"").replace("{}",wxSignture);
 
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId,weChatId);
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId,weChatId,pidList);
         if(colMap==null||colMap.isEmpty()){
             return null;
         }
@@ -145,6 +150,16 @@ public class MessageTemplateEntity {
         }
         return jobName;
     }
+    public String getJobNameRecom(List<Integer> pid){
+        Query query=new Query.QueryBuilder().where(new Condition("id",pid.toArray(),ValueOp.IN)).and("status",0).buildQuery();
+        List<JobPositionDO> jobPositionDO=jobPositionDao.getDatas(query);
+        if(StringUtils.isEmptyList(jobPositionDO)){
+            return null;
+        }else{
+            String jobName=jobPositionDO.get(0).getTitle();
+            return jobName;
+        }
+    }
     //获取公司的名称
     private String getCompanyName(int companyId) {
         String companyName = null;
@@ -158,14 +173,14 @@ public class MessageTemplateEntity {
     /*
         处理发送完善简历消息模板
      */
-    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int type,int companyId,int weChatId){
+    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int type,int companyId,int weChatId,List<Integer> pidList){
 
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         if(type==1){
             colMap=this.handleDataForuestion(userId,weChatId);
         }else if(type==2||type==3){
 
-            colMap=this.handleDataRecommendTemplate(userId,companyId,type,weChatId);
+            colMap=this.handleDataRecommendTemplate(userId,companyId,type,weChatId,pidList);
         }else if(type==4){
             colMap=this.handleDataProfileTemplate(userId,companyId,weChatId);
         }
@@ -214,7 +229,7 @@ public class MessageTemplateEntity {
     /*
         推荐职位列表消息数据
      */
-    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId,int companyId,int type,int weChatId){
+    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId,int companyId,int type,int weChatId,List<Integer> pidList){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         String jobName="";
         String companyName=this.getCompanyName(companyId);
@@ -239,7 +254,7 @@ public class MessageTemplateEntity {
             colMap.put("remark",remark);
         }
         if(type==3){
-            jobName = this.getJobName(userId,companyId,1);
+            jobName = this.getJobNameRecom(pidList);
             MessageTplDataCol first=new MessageTplDataCol();
             first.setColor("#173177");
             HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.EMPLOYEE_RECOM_POSITION);
@@ -489,15 +504,14 @@ public class MessageTemplateEntity {
     /*
      处理获取推送的数据
      */
-    private String handleEmployeeRecomPosition(int userId,int companyId,int type){
-        List<CampaignPersonaRecomRecord> list=this.getCampaignPersonaRecomRecordList(userId,companyId,type,1,20);
+    private List<Integer> handleEmployeeRecomPosition(int userId,int companyId,int type){
+        List<CampaignPersonaRecomRecord> list=this.getCampaignPersonaRecomRecordList(userId,companyId,type,0,20);
         List<Integer> pids=this.getPidListByCampaignPersonaRecomRecord(list);
         int count=this.getPositionCount(pids);
         if(count>0){
-            String  positionIds=convertListToString(pids);
-            return positionIds;
+            return pids;
         }
-        return "";
+        return null;
     }
 
     private int addCampaignRecomPositionlist(int companyId,String positionIds){
