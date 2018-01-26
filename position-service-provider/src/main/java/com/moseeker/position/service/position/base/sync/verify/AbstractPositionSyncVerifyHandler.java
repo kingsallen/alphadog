@@ -173,7 +173,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
 
         data.setIsSynchronization((byte) PositionSync.failed.getValue());
 
-        data.setSyncFailReason("手机验证码超时");
+        data.setSyncFailReason("手机验证失败");
 
         try {
             thirdpartyPositionDao.updateData(data,EmptyExtThirdPartyPosition.EMPTY);
