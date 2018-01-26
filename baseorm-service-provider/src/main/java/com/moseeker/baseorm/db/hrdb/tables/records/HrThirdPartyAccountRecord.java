@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyAccountRecord> implements Record13<Integer, Short, String, String, Short, Integer, Integer, Timestamp, Timestamp, Timestamp, Integer, String, String> {
 
-    private static final long serialVersionUID = -766099615;
+    private static final long serialVersionUID = -1369302501;
 
     /**
      * Setter for <code>hrdb.hr_third_party_account.id</code>. 编号
@@ -89,14 +89,14 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定,2=绑定中，3=绑定失败
+     * Setter for <code>hrdb.hr_third_party_account.binding</code>. 0：未绑定，1:绑定成功，2：绑定中，3：刷新中，4：用户名密码错误，5：绑定或刷新失败，6：绑定程序发生错误（前端和2状态一致），7：刷新程序发生错误（前端和3状态一致）8:绑定成功，正在获取信息，9：解绑状态
      */
     public void setBinding(Short value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定,2=绑定中，3=绑定失败
+     * Getter for <code>hrdb.hr_third_party_account.binding</code>. 0：未绑定，1:绑定成功，2：绑定中，3：刷新中，4：用户名密码错误，5：绑定或刷新失败，6：绑定程序发生错误（前端和2状态一致），7：刷新程序发生错误（前端和3状态一致）8:绑定成功，正在获取信息，9：解绑状态
      */
     public Short getBinding() {
         return (Short) get(4);
