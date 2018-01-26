@@ -10,6 +10,7 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
@@ -21,6 +22,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -44,7 +46,6 @@ import com.moseeker.position.service.position.*;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
-import com.moseeker.position.utils.ConvertUtils;
 import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -57,13 +58,18 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.position.service.PositionDao;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.position.struct.*;
-import com.moseeker.thrift.gen.position.struct.JobOccupationCustom;
-import com.moseeker.thrift.gen.position.struct.dao.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.thrift.TBase;
+import static java.lang.Math.round;
+import static java.lang.Math.toIntExact;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -71,17 +77,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static java.lang.Math.round;
-import static java.lang.Math.toIntExact;
 
 @Service
 @Transactional
@@ -137,6 +132,8 @@ public class PositionService {
     private CampaignPersonaRecomDao campaignPersonaRecomDao;
     @Autowired
     private CampaignRecomPositionlistDao campaignRecomPositionlistDao;
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
     @Autowired
     private HrAppCvConfDao hrAppCvConfDao;
     @Resource(name = "cacheClient")
@@ -2110,13 +2107,18 @@ public class PositionService {
         JSONObject obj = JSONObject.parseObject(param);
         int position_id = obj.getIntValue("id");
         int account_id = obj.getIntValue("accountId");
-        Query query = new Query.QueryBuilder().where(JobPosition.JOB_POSITION.ID.getName(), position_id)
-                .and(JobPosition.JOB_POSITION.PUBLISHER.getName(), account_id).buildQuery();
-        JobPositionDO positionDO = jobPositionDao.getData(query);
+        Query accountQuery =  new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), account_id).buildQuery();
+        UserHrAccountDO accountDO = userHrAccountDao.getData(accountQuery);
+        JobPositionDO positionDO = null;
+        if(accountDO != null && accountDO.getAccountType() != 0) {
+            Query query = new Query.QueryBuilder().where(JobPosition.JOB_POSITION.ID.getName(), position_id)
+                    .and(JobPosition.JOB_POSITION.PUBLISHER.getName(), account_id).buildQuery();
+            positionDO = jobPositionDao.getData(query);
+        }
 
-        if(positionDO != null){
+        if((accountDO != null && accountDO.getAccountType() != 0) || positionDO != null){
             try {
-                Query updateQuery = null;
+
                 Map<String, Object> updateField = obj.getObject("updateField", Map.class);
                 JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
                 jobPositionDao.updateRecord(record);
