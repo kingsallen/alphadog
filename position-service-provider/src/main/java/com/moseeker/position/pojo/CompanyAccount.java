@@ -25,4 +25,5 @@ public class CompanyAccount {
     public void setUserHrAccount(UserHrAccount userHrAccount) {
         this.userHrAccount = userHrAccount;
     }
+
 }

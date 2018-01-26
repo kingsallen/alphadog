@@ -145,15 +145,29 @@ public class SearchengineService {
      */
     @CounterIface
     public Map<String,Object> searchPositionMini(Map<String,String> params){
+        TransportClient client= EsClientInstance.getClient();
+
         String pageFrom=params.get("page");
         String pageSize=params.get("pageSize");
-        String childCompany=params.get("childCompanyId");
+        String childCompanyId=params.get("childCompanyId");
         String motherCompanyId=params.get("motherCompanyId");
-        String keyWord=params.get("keyword");
-        SearchResponse response=this.getSearchIndex(keyWord,null,null,null,null,null,
-                null,null,null,null,motherCompanyId,Integer.parseInt(pageFrom),
-                Integer.parseInt(pageSize),childCompany,null,true,null);
-
+        String keywords=params.get("keyword");
+        if (StringUtils.isBlank(pageFrom)||"0".equals(pageFrom)) {
+            pageFrom = "0";
+        }
+        if (StringUtils.isBlank(pageSize)||"0".equals(pageSize)) {
+            pageSize = "20";
+        }
+        QueryBuilder query=this.getPositionQueryBuilder(keywords,null,null,null, null,
+                null, null, null, null,  null, motherCompanyId,
+                childCompanyId, null, null);
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index1").setTypes("fulltext")
+                .setQuery(query);
+        this.handlerOrderByPriorityCityOrTime(responseBuilder,null);
+        responseBuilder.setFrom(Integer.parseInt(pageFrom)).setSize(Integer.parseInt(pageSize));
+        responseBuilder.setTrackScores(true);
+        logger.info(responseBuilder.toString());
+        SearchResponse response = responseBuilder.execute().actionGet();
         Map<String,Object> result=searchUtil.handleData(response,"positionList");
         return result;
     }
@@ -185,7 +199,7 @@ public class SearchengineService {
         ((BoolQueryBuilder) query).must(status_filter);
         SearchRequestBuilder responseBuilder = client.prepareSearch("index1").setTypes("fulltext")
                 .setQuery(query);
-
+        this.positionIndexOrder(responseBuilder,order_by_priority,haskey,cities);
         responseBuilder.setFrom(page_from).setSize(page_size);
         responseBuilder.setTrackScores(true);
         logger.info(responseBuilder.toString());
@@ -341,42 +355,54 @@ public class SearchengineService {
     private void positionIndexOrder(SearchRequestBuilder responseBuilder,boolean order_by_priority,boolean haskey,String cities){
         if (order_by_priority) {
             if (haskey) {
-                responseBuilder.addSort("priority", SortOrder.ASC);
-                if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
-                    SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
-                    builder.order(SortOrder.DESC);
-                    responseBuilder.addSort(builder);
-                } else {
-                    responseBuilder.addSort("_score", SortOrder.DESC);
-                }
+                this.handlerOrderByPriorityCityOrScore(responseBuilder,cities);
             } else {
-                responseBuilder.addSort("priority", SortOrder.ASC);
-                if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
-                    SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 1), "number");
-                    builder.order(SortOrder.DESC);
-                    responseBuilder.addSort(builder);
-                } else {
-                    responseBuilder.addSort("update_time", SortOrder.DESC);
-                }
-
+                this.handlerOrderByPriorityCityOrTime(responseBuilder,cities);
             }
-
         } else {
-            if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
-                SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
-                builder.order(SortOrder.DESC);
-                responseBuilder.addSort(builder);
-            } else {
-                responseBuilder.addSort("_score", SortOrder.DESC);
-            }
+            this.handlerOrderByCityOrScore(responseBuilder,cities);
         }
     }
 
     /*
-     继续对排序进行细分
+     继续对排序进行细分1,按照priority排序，再按照城市或者得分排序
      */
+   private void handlerOrderByPriorityCityOrScore(SearchRequestBuilder responseBuilder,String cities){
+       responseBuilder.addSort("priority", SortOrder.ASC);
+       if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+           SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
+           builder.order(SortOrder.DESC);
+           responseBuilder.addSort(builder);
+       } else {
+           responseBuilder.addSort("_score", SortOrder.DESC);
+       }
+   }
 
-
+   /*
+    继续对排序进行细分2,按照城市或者排序
+     */
+    private void handlerOrderByPriorityCityOrTime(SearchRequestBuilder responseBuilder,String cities){
+        responseBuilder.addSort("priority", SortOrder.ASC);
+        if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+            SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 1), "number");
+            builder.order(SortOrder.DESC);
+            responseBuilder.addSort(builder);
+        } else {
+            responseBuilder.addSort("update_time", SortOrder.DESC);
+        }
+    }
+    /*
+        继续对排序进行细分3,按照城市或者得分排序
+         */
+    private void handlerOrderByCityOrScore(SearchRequestBuilder responseBuilder,String cities){
+        if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+            SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
+            builder.order(SortOrder.DESC);
+            responseBuilder.addSort(builder);
+        } else {
+            responseBuilder.addSort("_score", SortOrder.DESC);
+        }
+    }
     /*
       按照被命中的城市是否是全国。来重新处理顺序问题，只有全国的，或者是全国命中的沉底
      */

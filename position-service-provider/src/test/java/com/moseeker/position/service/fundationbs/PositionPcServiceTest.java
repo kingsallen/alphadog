@@ -91,11 +91,6 @@ public class PositionPcServiceTest {
 		 System.out.println(list);
 	  }
 	  @Test
-	  public void testGetAll(){
-		List list=dao.getAll();
-		System.out.println(list);
-	  }
-	  @Test
       public void testAdvertisement() throws TException {
           List<Map<String,Object>> list=service.getAdvertisement(1,10);
           System.out.println(list);

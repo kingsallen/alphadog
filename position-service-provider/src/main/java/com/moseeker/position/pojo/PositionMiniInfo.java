@@ -16,6 +16,16 @@ public class PositionMiniInfo {
     private String updateTime;
     private UserHrAccount account;
     private int status;
+    private int publisher;
+
+    public int getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(int publisher) {
+        this.publisher = publisher;
+    }
+
     public int getId() {
         return id;
     }

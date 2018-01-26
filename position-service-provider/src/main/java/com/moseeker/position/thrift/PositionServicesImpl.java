@@ -10,6 +10,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.pojo.JobPostionResponse;
+import com.moseeker.position.pojo.PositionMiniBean;
 import com.moseeker.position.pojo.PositionSyncResultPojo;
 import com.moseeker.position.pojo.SyncFailMessPojo;
 import com.moseeker.position.service.appbs.PositionBS;
@@ -67,6 +68,8 @@ public class PositionServicesImpl implements Iface {
     private PositionThridService positionThridService;
     @Autowired
     private PositionBS positionBS;
+    @Autowired
+    private PositionMiniService positionMiniService;
 
     /**
      * 获取推荐职位
@@ -525,8 +528,8 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response getMiniPositionList(int accountId, String keyword, int page, int pageSize) throws TException {
         try {
-            List<WechatPositionListData> result=null;
-            if(StringUtils.isEmptyList(result)){
+            PositionMiniBean  result=positionMiniService.getPositionMiniList(accountId,keyword,page,pageSize);
+            if(result==null){
                 return  ResponseUtils.fail(1,"您所查找的推送不存在");
             }
             return  ResponseUtils.success(result);
