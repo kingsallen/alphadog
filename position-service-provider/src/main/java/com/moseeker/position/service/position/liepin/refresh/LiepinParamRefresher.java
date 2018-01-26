@@ -5,9 +5,11 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.position.service.position.base.refresh.AbstractRabbitMQParamRefresher;
 import com.moseeker.position.service.position.liepin.refresh.handler.LiepinResultHandlerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class LiepinParamRefresher extends AbstractRabbitMQParamRefresher {
 
     @Autowired

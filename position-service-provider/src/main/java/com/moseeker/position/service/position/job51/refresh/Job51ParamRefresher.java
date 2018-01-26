@@ -7,9 +7,11 @@ import com.moseeker.position.service.position.job51.refresh.handler.Job51ResultH
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class Job51ParamRefresher extends AbstractRabbitMQParamRefresher {
     Logger logger= LoggerFactory.getLogger(this.getClass());
 
