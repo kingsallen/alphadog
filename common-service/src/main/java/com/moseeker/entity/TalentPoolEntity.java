@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.moseeker.common.util.query.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -764,32 +765,188 @@ public class TalentPoolEntity {
     /*
      上传简历成为收藏人才
      */
+    @Transactional
     public void addUploadTalent(int userId,int newuserId,int hrId,int companyId,String fileName){
-        int flagResult=0;
         if(userId!=0&&newuserId!=0&&userId!=newuserId){
-            if(this.isHrtalent(userId,hrId)>0){
-                flagResult=1;
-                Set<Integer> userIds=new HashSet<>();
-                userIds.add(userId);
-                this.cancleTalents(userIds,hrId,companyId,1);
-            }
+            this.updateTalentRelationShip(userId,newuserId);
         }
         if(this.isHrtalent(newuserId,hrId)==0){
-            flagResult=1;
             Set<Integer> userSet=new HashSet<>();
             userSet.add(newuserId);
-            this.addTalents(userSet,hrId,companyId,1);
-
+            this.addTalentsItems(userSet,hrId,companyId,1);
             if(StringUtils.isNotNullOrEmpty(fileName)){
                 this.saveUploadProfileName(fileName,hrId,companyId);
             }
+        }
+    }
+    /*
+     修改原有的userid之间的关系
+     */
+    private void updateTalentRelationShip(int userId,int newUserId){
+        this.handlerUploadTalentpoolHrTalent(userId,newUserId);
+        this.handlerUploadTalentpooluserTag(userId,newUserId);
+        this.handlerUploadTalentpoolComment(userId,newUserId);
+        this.handlerDelOriginTalentpool(userId);
+        this.realTimeDelUploadIndex(userId);
+    }
+    public void realTimeDelUploadIndex(int userId){
+        List<Integer>deluserList=new ArrayList<>();
+        deluserList.add(userId);
+        realTimeUpdateUploadDel(deluserList);
+    }
+    /*
+     处理修改上传简历时人才库备注的合并
+     */
+    public  void handlerUploadTalentpoolComment(int userId,int newUserId){
+        //处理备注
+        List<TalentpoolCommentRecord> commentList=getTalentpoolCommentByUserId(userId);
+        if(!StringUtils.isEmptyList(commentList)){
+            for(TalentpoolCommentRecord comment:commentList){
+                comment.setId(null);
+                comment.setUserId(newUserId);
+            }
+            talentpoolCommentDao.addAllRecord(commentList);
+        }
+    }
+    /*
+     处理修改上传简历时人才库标签关系的合并
+     */
+    public  void handlerUploadTalentpooluserTag(int userId,int newUserId){
+        //处理标签
+        List<TalentpoolUserTagRecord> userTagList=this.getTalentpoolUserTagByUserId(userId);
+        if(!StringUtils.isEmptyList(userTagList)){
+            List<TalentpoolUserTagRecord> newtagList=new ArrayList<>();
+            List<TalentpoolUserTagRecord> newUserTagList=this.getTalentpoolUserTagByUserId(userId);
+            if(!StringUtils.isEmptyList(newUserTagList)){
+                for(TalentpoolUserTagRecord tagRecord:userTagList){
+                    int tagId=tagRecord.getTagId();
+                    for(TalentpoolUserTagRecord record:newUserTagList){
+                        int id=record.getTagId();
+                        if(id==tagId){
+                            continue;
+                        }
+                    }
+                    newtagList.add(tagRecord);
 
+                }
+            }else{
+                newtagList=userTagList;
+            }
+            if(!StringUtils.isEmptyList(newtagList)){
+                for(TalentpoolUserTagRecord record:newtagList){
+                    record.setUserId(newUserId);
+                }
+                talentpoolUserTagDao.updateRecords(newtagList);
+            }
         }
-        if(flagResult==0&&newuserId!=0){
-            Set<Integer> userSet=new HashSet<>();
-            userSet.add(newuserId);
-            this.realTimeUpdateUpload(this.converSetToList(userSet));
+    }
+    /*
+     处理修改上传简历时人才库的合并
+     */
+    public void handlerUploadTalentpoolHrTalent(int userId,int newUserId){
+        List<TalentpoolHrTalentRecord> list=this.getTalentpooHrTalentByUserIdAndNew(userId,newUserId);
+        List<TalentpoolHrTalentRecord> recordList=this.getTalentpooHrTalentPubByUserIdAndNew(userId,newUserId);
+        if(StringUtils.isEmptyList(list)){
+            if(!StringUtils.isEmptyList(recordList)){
+                this.handlerUploadTalentPoolTalent(newUserId,recordList.size(),0);
+            }
+        }else{
+            if(!StringUtils.isEmptyList(recordList)){
+                this.handlerUploadTalentPoolTalent(newUserId,recordList.size(),list.size());
+            }else{
+                this.handlerUploadTalentPoolTalent(newUserId,0,list.size());
+            }
         }
+    }
+    /*
+     删除原有的存在的记录
+     */
+    public void handlerDelOriginTalentpool(int userId){
+        List<TalentpoolHrTalentRecord> list=getTalentpooHrTalentByUserId(userId);
+        if(!StringUtils.isEmptyList(list)){
+            talentpoolHrTalentDao.deleteRecords(list);
+        }
+        TalentpoolTalentRecord record=getTalentpooTalentByUser(userId);
+        if(record!=null){
+            talentpoolTalentDao.deleteRecord(record);
+        }
+//        List<TalentpoolUserTagRecord> userTagList=this.getTalentpoolUserTagByUserId(userId);
+//        if(!StringUtils.isEmptyList(list)){
+//            talentpoolUserTagDao.deleteRecords(userTagList);
+//        }
+        List<TalentpoolCommentRecord> commentList=getTalentpoolCommentByUserId(userId);
+        if(!StringUtils.isEmptyList(commentList)){
+            talentpoolCommentDao.deleteRecords(commentList);
+        }
+    }
+    /*
+     修改上传简历是TalentPoolTalent的变化
+     */
+    public void handlerUploadTalentPoolTalent(int newUserId,int pubnum,int collectNum){
+        TalentpoolTalentRecord record=getTalentpooTalentByUser(newUserId);
+        if(pubnum>0){
+            record.setPublicNum(record.getPublicNum()+pubnum);
+        }
+        if(collectNum>0){
+            record.setCollectNum(record.getCollectNum()+collectNum);
+        }
+        talentpoolTalentDao.updateRecord(record);
+    }
+    /*
+     根据userId获取所有收藏这个人的talentpooldb.talentpool_hr_talent,但是没有收藏newuserId
+     */
+    public List<TalentpoolHrTalentRecord> getTalentpooHrTalentByUserIdAndNew(int userId,int newUserId){
+        List<Integer> userList=new ArrayList<>();
+        userList.add(newUserId);
+        Query query=new Query.QueryBuilder().where("use_id",userId).and(new Condition("user_id",userList.toArray(),ValueOp.NEQ)).buildQuery();
+        List<TalentpoolHrTalentRecord> list=talentpoolHrTalentDao.getRecords(query);
+        return list;
+    }
+    public List<TalentpoolHrTalentRecord> getTalentpooHrTalentPubByUserIdAndNew(int userId,int newUserId){
+        List<Integer> userList=new ArrayList<>();
+        userList.add(newUserId);
+        Query query=new Query.QueryBuilder().where("use_id",userId).and("public",1).and(new Condition("user_id",userList.toArray(),ValueOp.NEQ)).buildQuery();
+        List<TalentpoolHrTalentRecord> list=talentpoolHrTalentDao.getRecords(query);
+        return list;
+    }
+    public List<TalentpoolHrTalentRecord> getTalentpooHrTalentByUserId(int userId){
+        Query query=new Query.QueryBuilder().where("use_id",userId).buildQuery();
+        List<TalentpoolHrTalentRecord> list=talentpoolHrTalentDao.getRecords(query);
+        return list;
+    }
+    /*
+     根据userId获取所有收藏这个人的talentpooldb.talentpool_talent,但是没有收藏newuserId
+     */
+    public List<TalentpoolTalentRecord> getTalentpooTalentByUserIdAndNew(int userId,int newUserId){
+        List<Integer> userList=new ArrayList<>();
+        userList.add(newUserId);
+        Query query=new Query.QueryBuilder().where("use_id",userId).and(new Condition("user_id",userList.toArray(),ValueOp.NEQ)).buildQuery();
+        List<TalentpoolTalentRecord> list=talentpoolTalentDao.getRecords(query);
+        return list;
+    }
+    /*
+    根据userId获取所有收藏这个人的talentpooldb.talentpool_talent,但是没有收藏newuserId
+    */
+    public TalentpoolTalentRecord getTalentpooTalentByUser(int userId){
+        Query query=new Query.QueryBuilder().where("use_id",userId).buildQuery();
+        TalentpoolTalentRecord list=talentpoolTalentDao.getRecord(query);
+        return list;
+    }
+    /*
+     根据userId获取所有收藏这个人的talentpooldb.talentpool_user_tag,但是没有收藏newuserId
+     */
+    public List<TalentpoolUserTagRecord> getTalentpoolUserTagByUserId(int userId){
+        Query query=new Query.QueryBuilder().where("use_id",userId).buildQuery();
+        List<TalentpoolUserTagRecord> list=talentpoolUserTagDao.getRecords(query);
+        return list;
+    }
+    /*
+     根据userId获取所有收藏这个人的talentpooldb.talentpool_commit
+     */
+    public List<TalentpoolCommentRecord> getTalentpoolCommentByUserId(int userId){
+        Query query=new Query.QueryBuilder().where("use_id",userId).buildQuery();
+        List<TalentpoolCommentRecord> list=talentpoolCommentDao.getRecords(query);
+        return list;
     }
     /*
      记录上传的简历
@@ -802,9 +959,9 @@ public class TalentPoolEntity {
         talentpoolUploadDao.addRecord(record);
     }
     /*
-     添加人才
+     继续分离添加人才库的入库操作和实时更新操作
      */
-    public void addTalents(Set<Integer> idList,int hrId,int companyId,int flag){
+    private void addTalentsItems(Set<Integer> idList,int hrId,int companyId,int flag){
         if(!StringUtils.isEmptySet(idList)){
             List<TalentpoolHrTalentRecord> recordList=new ArrayList<>();
             for(Integer id:idList){
@@ -817,19 +974,31 @@ public class TalentPoolEntity {
             for(Integer id:idList){
                 this.handlerTalentpoolTalent(id,companyId,flag,0,1);
             }
-            if(flag==1){
-                this.realTimeUpdateUpload(this.converSetToList(idList));
-            }else{
-                this.realTimeUpdate(this.converSetToList(idList));
-            }
-
         }
     }
-
     /*
-     删除人才
+    实时更新
      */
-    public void cancleTalents(Set<Integer> idList,int hrId,int companyId,int flag){
+    public void realTimeUpload(Set<Integer> idList,int flag){
+        if(flag==1){
+            this.realTimeUpdateUpload(this.converSetToList(idList));
+        }else{
+            this.realTimeUpdate(this.converSetToList(idList));
+        }
+    }
+    /*
+     添加人才
+     */
+    public void addTalents(Set<Integer> idList,int hrId,int companyId,int flag){
+        if(!StringUtils.isEmptySet(idList)){
+            this.addTalentsItems(idList,hrId,companyId,flag);
+            this.realTimeUpload(idList,flag);
+        }
+    }
+    /*
+     继续分离删除人才，分离入库操作和实时更新
+     */
+    private  void cancleTalentItems(Set<Integer> idList,int hrId,int companyId,int flag){
         List<TalentpoolHrTalentRecord> pubTalentList=getHrPublicTalent(hrId);
         List<TalentpoolHrTalentRecord> recordList=new ArrayList<>();
         for(Integer userId:idList){
@@ -859,12 +1028,15 @@ public class TalentPoolEntity {
         //取消收藏时删除标签，并且计算标签数
 //            this.handleCancleTag(hrId,idList);
         this.handlerPublicTag(idList,companyId);
+    }
+
+    /*
+    删除人才
+    */
+    public void cancleTalents(Set<Integer> idList,int hrId,int companyId,int flag){
+        this.cancleTalentItems(idList,hrId,companyId,flag);
         logger.debug("执行实时更新的id========="+idList.toString());
-        if(flag==1){
-            this.realTimeUpdateUpload(this.converSetToList(idList));
-        }else{
-            this.realTimeUpdate(this.converSetToList(idList));
-        }
+        this.realTimeUpload(idList,flag);
     }
 
 
@@ -879,6 +1051,7 @@ public class TalentPoolEntity {
         client.lpush(Constant.APPID_ALPHADOG,
                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
     }
+
     public void realTimeUpdateUpload(List<Integer> userIdList){
 
         Map<String,Object> result=new HashMap<>();
@@ -887,8 +1060,14 @@ public class TalentPoolEntity {
         client.lpush(Constant.APPID_ALPHADOG,
                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
     }
+    public void realTimeUpdateUploadDel(List<Integer> userIdList){
 
-
+        Map<String,Object> result=new HashMap<>();
+        result.put("tableName","talentpool_upload_del");
+        result.put("user_id",userIdList);
+        client.lpush(Constant.APPID_ALPHADOG,
+                "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+    }
     /*
     将set转换为list
     */

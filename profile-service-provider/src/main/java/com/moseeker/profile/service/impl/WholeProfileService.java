@@ -1136,7 +1136,6 @@ public class WholeProfileService {
     /*
      保存上传的简历
      */
-    @Transactional
     public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId) throws TException {
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
@@ -1178,11 +1177,12 @@ public class WholeProfileService {
             if(res.getStatus()!=0){
                 return res;
             }
-
         }
         //此处应该考虑账号合并导致的问题
         talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName);
-
+        Set<Integer> userIdList=new HashSet<>();
+        userIdList.add(newUerId);
+        talentPoolEntity.realTimeUpload(userIdList,1);
         return ResponseUtils.success("success");
     }
 
@@ -1220,6 +1220,7 @@ public class WholeProfileService {
     /*
       保存上传简历
       */
+    @Transactional
     private int saveNewProfile(Map<String, Object> resume,Map<String, Object> map) throws TException {
         UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
         logger.info("talentpool upload new  user:{}", user1);
@@ -1246,6 +1247,7 @@ public class WholeProfileService {
     /*
      更新上传简历
      */
+    @Transactional
     private Response upsertProfile(Map<String, Object> resume,UserUserRecord userRecord,int userId,int newUserId){
 
         ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
