@@ -17,7 +17,6 @@ import java.util.List;
  *
  * Created by jack on 20/01/2018.
  */
-@Component
 public class AwardEntity {
 
     private Logger logger = LoggerFactory.getLogger(AwardEntity.class);

@@ -59,13 +59,13 @@ public class ViewApplicationAwardListener implements SmartApplicationListener {
 
         logger.info("ViewApplicationAwardListener onApplicationEvent");
 
-        /*try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            List<Integer> applicationIdList = (List<Integer>) event.getSource();
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            ViewApplicationSource viewApplicationSource = (ViewApplicationSource) event.getSource();
             ApplicationStatus status = ApplicationStatus.CVChecked;
 
             HttpPost post = new HttpPost(url);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("application_ids", applicationIdList);
+            jsonObject.put("application_ids", viewApplicationSource.getApplicationIdList());
             jsonObject.put("event_type", status.getState());
             StringEntity entity = new StringEntity(jsonObject.toString());
             post.setEntity(entity);
@@ -84,7 +84,9 @@ public class ViewApplicationAwardListener implements SmartApplicationListener {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
-        }*/
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     @Override
