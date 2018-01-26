@@ -1170,7 +1170,7 @@ public class WholeProfileService {
                 userRecord.setName(String.valueOf(map.get("name")));
             }
             if(map.get("email")!=null){
-                userRecord.setName(String.valueOf(map.get("email")));
+                userRecord.setEmail(String.valueOf(map.get("email")));
             }
 
             Response res=this.upsertProfile(resume,userRecord,userId,newUerId);
