@@ -1137,7 +1137,6 @@ public class WholeProfileService {
     /*
      保存上传的简历
      */
-    @Transactional
     public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId) throws TException {
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);

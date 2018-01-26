@@ -742,15 +742,13 @@ public class TalentPoolEntity {
      */
     @Transactional
     public void addUploadTalent(int userId,int newuserId,int hrId,int companyId,String fileName){
-        int flagResult=0;
         if(userId!=0&&newuserId!=0&&userId!=newuserId){
             this.updateTalentRelationShip(userId,newuserId);
         }
         if(this.isHrtalent(newuserId,hrId)==0){
-            flagResult=1;
             Set<Integer> userSet=new HashSet<>();
             userSet.add(newuserId);
-            this.addTalents(userSet,hrId,companyId,1);
+            this.addTalentsItems(userSet,hrId,companyId,1);
             if(StringUtils.isNotNullOrEmpty(fileName)){
                 this.saveUploadProfileName(fileName,hrId,companyId);
             }
@@ -763,6 +761,7 @@ public class TalentPoolEntity {
         this.handlerUploadTalentpoolHrTalent(userId,newUserId);
         this.handlerUploadTalentpooluserTag(userId,newUserId);
         this.handlerUploadTalentpoolComment(userId,newUserId);
+        this.handlerDelOriginTalentpool(userId);
         this.realTimeDelUploadIndex(userId);
     }
     public void realTimeDelUploadIndex(int userId){
@@ -777,7 +776,6 @@ public class TalentPoolEntity {
         //处理备注
         List<TalentpoolCommentRecord> commentList=getTalentpoolCommentByUserId(userId);
         if(!StringUtils.isEmptyList(commentList)){
-            talentpoolCommentDao.deleteRecords(commentList);
             for(TalentpoolCommentRecord comment:commentList){
                 comment.setId(null);
                 comment.setUserId(newUserId);
@@ -813,6 +811,7 @@ public class TalentPoolEntity {
                 for(TalentpoolUserTagRecord record:newtagList){
                     record.setUserId(newUserId);
                 }
+                talentpoolUserTagDao.updateRecords(newtagList);
             }
         }
     }
@@ -832,6 +831,27 @@ public class TalentPoolEntity {
             }else{
                 this.handlerUploadTalentPoolTalent(newUserId,0,list.size());
             }
+        }
+    }
+    /*
+     删除原有的存在的记录
+     */
+    public void handlerDelOriginTalentpool(int userId){
+        List<TalentpoolHrTalentRecord> list=getTalentpooHrTalentByUserId(userId);
+        if(!StringUtils.isEmptyList(list)){
+            talentpoolHrTalentDao.deleteRecords(list);
+        }
+        TalentpoolTalentRecord record=getTalentpooTalentByUser(userId);
+        if(record!=null){
+            talentpoolTalentDao.deleteRecord(record);
+        }
+//        List<TalentpoolUserTagRecord> userTagList=this.getTalentpoolUserTagByUserId(userId);
+//        if(!StringUtils.isEmptyList(list)){
+//            talentpoolUserTagDao.deleteRecords(userTagList);
+//        }
+        List<TalentpoolCommentRecord> commentList=getTalentpoolCommentByUserId(userId);
+        if(!StringUtils.isEmptyList(commentList)){
+            talentpoolCommentDao.deleteRecords(commentList);
         }
     }
     /*
@@ -861,6 +881,11 @@ public class TalentPoolEntity {
         List<Integer> userList=new ArrayList<>();
         userList.add(newUserId);
         Query query=new Query.QueryBuilder().where("use_id",userId).and("public",1).and(new Condition("user_id",userList.toArray(),ValueOp.NEQ)).buildQuery();
+        List<TalentpoolHrTalentRecord> list=talentpoolHrTalentDao.getRecords(query);
+        return list;
+    }
+    public List<TalentpoolHrTalentRecord> getTalentpooHrTalentByUserId(int userId){
+        Query query=new Query.QueryBuilder().where("use_id",userId).buildQuery();
         List<TalentpoolHrTalentRecord> list=talentpoolHrTalentDao.getRecords(query);
         return list;
     }
