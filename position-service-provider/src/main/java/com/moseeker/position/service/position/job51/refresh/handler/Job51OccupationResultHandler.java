@@ -47,7 +47,7 @@ public class Job51OccupationResultHandler extends AbstractOccupationResultHandle
         logger.info("job51 insert success");
     }
 
-    @Override
+    /*@Override
     protected List<Occupation> toList(JSONObject msg) {
         TypeReference<List<List<String>>> typeRef
                 = new TypeReference<List<List<String>>>() {};
@@ -66,5 +66,5 @@ public class Job51OccupationResultHandler extends AbstractOccupationResultHandle
 
         return result;
 
-    }
+    }*/
 }
