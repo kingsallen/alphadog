@@ -1,5 +1,6 @@
 package com.moseeker.company.utils;
 
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrTalentRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolUserTagRecord;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -86,6 +87,16 @@ public class ValidateTalentTag {
             unUseList=validateData.getUnuseId();
             pubTalentIdList=validateData.getUseId();
         }
+        /*
+         添加unuserId是否是该hr收藏的上传简历
+         */
+        Set<Integer> uploadTalentIdList=new HashSet<>();
+        if(!StringUtils.isEmptySet(unUseList)){
+            ValidateCommonBean uploadValidate=filterHrUpload(talentPoolEntity.converSetToList(unUseList),hrId,companyId);
+            uploadTalentIdList=uploadValidate.getUseId();
+            unUseList=uploadValidate.getUnuseId();
+        }
+
         if(!StringUtils.isEmptySet(pubTalentIdList)){
             if(StringUtils.isEmptySet(applierIdList)){
                 applierIdList=pubTalentIdList;
@@ -93,9 +104,65 @@ public class ValidateTalentTag {
                 applierIdList.addAll(pubTalentIdList);
             }
         }
+        if(!StringUtils.isEmptySet(uploadTalentIdList)){
+            if(StringUtils.isEmptySet(applierIdList)){
+                applierIdList=uploadTalentIdList;
+            }else{
+                applierIdList.addAll(uploadTalentIdList);
+            }
+        }
         result.setUnuseId(unUseList);
         result.setUseId(applierIdList);
         return result;
+    }
+    /*
+     添加unuserId是否是该hr收藏的上传简历
+     */
+    private ValidateCommonBean filterHrUpload(List<Integer> unUseList,int hrId,int companyId){
+        ValidateCommonBean bean=new ValidateCommonBean();
+        int count=talentPoolEntity.valiadteMainAccount(hrId,companyId);
+        Set<Integer> userIdList=new HashSet<>();
+        Set<Integer> unUserIdList=new HashSet<>();
+        if(count>0){
+            List<TalentpoolTalentRecord> list=talentPoolEntity.getTalentByUserIdAndCompanyUpload(unUseList,companyId);
+            if(StringUtils.isEmptyList(list)){
+                bean.setUnuseId(talentPoolEntity.converListToSet(unUseList));
+            }else{
+                for(Integer userId:unUseList ){
+                    for(TalentpoolTalentRecord record:list){
+                        int id=record.getUserId();
+                        if(id==userId){
+                            userIdList.add(userId);
+                            break;
+                        }
+                    }
+                    unUserIdList.add(userId);
+                }
+
+            }
+            bean.setUnuseId(unUserIdList);
+            bean.setUseId(userIdList);
+        }else{
+            List<TalentpoolHrTalentRecord> list=talentPoolEntity.getTalentByUserIdAndHrId(unUseList,hrId);
+            if(StringUtils.isEmptyList(list)){
+                bean.setUnuseId(talentPoolEntity.converListToSet(unUseList));
+            }else{
+                for(Integer userId:unUseList ){
+                    for(TalentpoolHrTalentRecord record:list){
+                        int id=record.getUserId();
+                        if(id==userId){
+                            userIdList.add(userId);
+                            break;
+                        }
+                    }
+                    unUserIdList.add(userId);
+                }
+                bean.setUnuseId(unUserIdList);
+                bean.setUseId(userIdList);
+
+            }
+        }
+        return bean;
     }
     /*
     判断是否可以打标签
