@@ -1053,6 +1053,17 @@ public class TalentPoolEntity {
         }
         return userIdList;
     }
+    /*
+    将set转换为list
+    */
+    public Set<Integer> converListToSet(List<Integer> userIdSet){
+        Set<Integer> userIdList=new HashSet<>();
+        for(Integer id:userIdSet){
+            userIdList.add(id);
+        }
+        return userIdList;
+    }
+
 
     /*
      获取上传简历的user_id
@@ -1069,11 +1080,11 @@ public class TalentPoolEntity {
             return null;
         }
         List<Integer> userIdList=this.getUserIdByRecord(list);
-        TalentpoolTalentRecord record=this.getTalentByUserIdAndCompanyUpload(userIdList,companyId);
-        if(record==null){
+        List<TalentpoolTalentRecord> record=this.getTalentByUserIdAndCompanyUpload(userIdList,companyId);
+        if(StringUtils.isEmptyList(record)){
             return null;
         }
-        UserUserRecord userRecord=handleTalentAndUser(record,list);
+        UserUserRecord userRecord=handleTalentAndUser(record.get(0),list);
         return userRecord;
     }
 
@@ -1084,7 +1095,7 @@ public class TalentPoolEntity {
     public int ValidateUploadProfileIsHr(int userId,int companyId,int hrId){
         List<Integer> userIdList=new ArrayList<>();
         userIdList.add(userId);
-        TalentpoolTalentRecord record=this.getTalentByUserIdAndCompanyUpload(userIdList,companyId);
+        List<TalentpoolTalentRecord> record=this.getTalentByUserIdAndCompanyUpload(userIdList,companyId);
         if(record==null){
             return 0;
         }
@@ -1119,12 +1130,23 @@ public class TalentPoolEntity {
     /*
      在人才库中获取这个公司下所有hr关于这份上传的简历的user_id
      */
-    public TalentpoolTalentRecord getTalentByUserIdAndCompanyUpload(List<Integer> userIdList,int companyId){
+    public List<TalentpoolTalentRecord> getTalentByUserIdAndCompanyUpload(List<Integer> userIdList,int companyId){
         Query query=new Query.QueryBuilder().where("upload",1).and(new Condition("user_id",userIdList.toArray(),ValueOp.IN))
                 .and("company_id",companyId).buildQuery();
-        TalentpoolTalentRecord record=talentpoolTalentDao.getRecord(query);
+        List<TalentpoolTalentRecord> record=talentpoolTalentDao.getRecords(query);
         return record;
     }
+
+    /*
+     在人才库中获取这个公司下所有hr关于这份上传的简历的user_id
+     */
+    public List<TalentpoolHrTalentRecord> getTalentByUserIdAndHrId(List<Integer> userIdList,int hrId){
+        Query query=new Query.QueryBuilder().where(new Condition("user_id",userIdList.toArray(),ValueOp.IN))
+                .and("hr_id",hrId).buildQuery();
+        List<TalentpoolHrTalentRecord> record=talentpoolHrTalentDao.getRecords(query);
+        return record;
+    }
+
     /*
      处理usersuserrecord和talentpoolTalentRecord，获取user
      */

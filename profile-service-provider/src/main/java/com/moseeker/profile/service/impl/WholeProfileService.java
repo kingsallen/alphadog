@@ -1143,6 +1143,7 @@ public class WholeProfileService {
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         Map<String,Object> basic=(Map<String, Object>)resume.get("basic");
         map=this.handlerBasicAndUser(basic,map);
+        this.handleWorkExps(resume);
         String mobile = String.valueOf(map.get("mobile")) ;
         if(StringUtils.isNullOrEmpty(mobile)){
             return ResponseUtils.fail(1,"手机号不能为空");
@@ -1185,6 +1186,36 @@ public class WholeProfileService {
         userIdList.add(newUerId);
         talentPoolEntity.realTimeUpload(userIdList,1);
         return ResponseUtils.success("success");
+    }
+    /*
+     将工作经历进行格式转换
+     */
+    private void handleWorkExps(Map<String,Object> resume){
+        List<Map<String,Object>> workExps= (List<Map<String, Object>>) resume.get("workexps");
+        if(!StringUtils.isEmptyList(workExps)){
+            for(Map<String,Object> map:workExps){
+                Map<String,Object> company=new HashMap<>();
+                if(map.get("company_name")!=null){
+                    company.put("company_name",map.get("company_name"));
+                }
+                if(map.get("company_industry")!=null){
+                    company.put("company_industry",map.get("company_industry"));
+                }
+                if(map.get("company_introduction")!=null){
+                    company.put("company_introduction",map.get("company_introduction"));
+                }
+                if(map.get("scale")!=null){
+                    company.put("scale",map.get("scale"));
+                }
+                if(map.get("company_property")!=null){
+                    company.put("company_property",map.get("company_property"));
+                }
+                map.put("company",company);
+                if(map.get("position_name")!=null&&map.get("job")==null){
+                    map.put("job",map.get("position_name"));
+                }
+            }
+        }
     }
 
     /*
