@@ -92,8 +92,8 @@ public class PositionPcServiceTest {
 	  }
 	  @Test
 	  public void testGetAll(){
-		List list=dao.getAll();
-		System.out.println(list);
+//		List list=dao.getAll();
+//		System.out.println(list);
 	  }
 	  @Test
       public void testAdvertisement() throws TException {

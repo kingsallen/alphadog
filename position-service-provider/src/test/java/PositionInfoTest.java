@@ -4,7 +4,6 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfo;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfoParam;
 import org.apache.thrift.TException;
-import org.jooq.util.derby.sys.Sys;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

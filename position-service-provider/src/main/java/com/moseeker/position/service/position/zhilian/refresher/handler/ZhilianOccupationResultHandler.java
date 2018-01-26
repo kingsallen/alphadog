@@ -26,7 +26,7 @@ public class ZhilianOccupationResultHandler extends AbstractOccupationResultHand
     protected DictZhilianOccupationDO buildOccupation(List<String> texts, List<String> codes, Map<String, Integer> newCode, JSONObject msg) {
         DictZhilianOccupationDO temp=new DictZhilianOccupationDO();
 
-        temp.setCodeOther(Integer.valueOf(codes.get(codes.size()-1)));
+        temp.setCodeOther(codes.get(codes.size()-1));
         temp.setCode(newCode.get(temp.getCodeOther()));
         temp.setLevel((short)codes.size());
         temp.setName(PositionRefreshUtils.lastString(texts));
