@@ -119,7 +119,6 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
     }
 
     protected void setOccupation(ThirdPartyPosition positionForm, Position51 position) {
-        DecimalFormat df = new DecimalFormat("0000");
         List<String> list=new ArrayList<>();
 
         Query query=new Query.QueryBuilder().
