@@ -2,13 +2,18 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileSkillDao;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileSkill;
+import com.moseeker.baseorm.tool.RecordTool;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileSkillRecord;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
@@ -26,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @CounterIface
@@ -71,12 +77,34 @@ public class ProfileSkillService {
     }
 
     @Transactional
-    public Response putResources(List<Skill> structs) throws TException {
-        int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileSkillRecord.class));
-        if (ArrayUtils.contains(result, 1)) {
-            structs.forEach(struct -> {
-                profileEntity.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
-            });
+    public Response putResources(List<Skill> structs) throws CommonException {
+
+        List<ProfileSkillRecord> originSkillRecordList = BeanUtils.structToDB(structs, ProfileSkillRecord.class);
+        List<Integer> skillIdList = originSkillRecordList.stream()
+                .map(profileSkillRecord -> profileSkillRecord.getId())
+                .collect(Collectors.toList());
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(new Condition(ProfileSkill.PROFILE_SKILL.ID.getName(), skillIdList, ValueOp.IN));
+        List<ProfileSkillRecord> descSkillRecordList = dao.getRecords(queryBuilder.buildQuery());
+        if (descSkillRecordList != null) {
+            Iterator<ProfileSkillRecord> iterator = descSkillRecordList.iterator();
+            while (iterator.hasNext()) {
+                ProfileSkillRecord descSkillRecord = iterator.next();
+                Optional<ProfileSkillRecord> optional = originSkillRecordList.stream()
+                        .filter(profileSkillRecord -> profileSkillRecord.getId().intValue() == descSkillRecord.getId())
+                        .findAny();
+                if (optional.isPresent()) {
+                    RecordTool.recordToRecord(descSkillRecord, optional.get());
+                }
+                ValidationMessage<ProfileSkillRecord> validationMessage = ProfileValidation.verifySkill(descSkillRecord);
+                if (!validationMessage.isPass()) {
+                    iterator.remove();
+                }
+            }
+            dao.updateRecords(descSkillRecordList);
+            descSkillRecordList
+                    .forEach(profileSkillRecord ->
+                            profileEntity.reCalculateProfileSkill(profileSkillRecord.getProfileId(), profileSkillRecord.getId()));
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -131,11 +159,23 @@ public class ProfileSkillService {
 
     @Transactional
     public Response putResource(Skill struct) throws TException {
-        int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileSkillRecord.class));
-        if (result > 0) {
-            updateUpdateTime(struct);
-            profileEntity.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
-            return ResponseUtils.success("1");
+
+        ProfileSkillRecord originProfileSkillRecord = BeanUtils.structToDB(struct, ProfileSkillRecord.class);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(ProfileSkill.PROFILE_SKILL.ID.getName(), originProfileSkillRecord.getId());
+        ProfileSkillRecord descProfileSkillRecord = dao.getRecord(queryBuilder.buildQuery());
+        if (descProfileSkillRecord != null) {
+            RecordTool.recordToRecord(descProfileSkillRecord, originProfileSkillRecord);
+            ValidationMessage<ProfileSkillRecord> validationMessage = ProfileValidation.verifySkill(descProfileSkillRecord);
+            if (!validationMessage.isPass()) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", validationMessage.getResult()));
+            }
+            int result = dao.updateRecord(descProfileSkillRecord);
+            if (result > 0) {
+                updateProfileUpdateTime(descProfileSkillRecord);
+                profileEntity.reCalculateProfileSkill(descProfileSkillRecord.getProfileId(), descProfileSkillRecord.getId());
+                return ResponseUtils.success("1");
+            }
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
@@ -180,6 +220,10 @@ public class ProfileSkillService {
         List<Skill> skills = new ArrayList<>();
         skills.add(skill);
         updateUpdateTime(skills);
+    }
+
+    private void updateProfileUpdateTime(ProfileSkillRecord originProfileSkillRecord) {
+        dao.updateProfileUpdateTime(new HashSet<Integer>(){{add(originProfileSkillRecord.getId());}});
     }
 
     public Response getResource(Query query) throws TException {

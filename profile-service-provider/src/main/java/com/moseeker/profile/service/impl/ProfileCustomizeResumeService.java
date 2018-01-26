@@ -2,9 +2,12 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
+import com.moseeker.baseorm.tool.RecordTool;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -14,6 +17,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
+import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
@@ -24,10 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,19 +85,36 @@ public class ProfileCustomizeResumeService {
     @Transactional
     public int[] putResources(List<CustomizeResume> structs) throws TException {
         if (structs != null && structs.size() > 0) {
-            int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileOtherRecord.class));
+            List<ProfileOtherRecord> origOtherRecordList = BeanUtils.structToDB(structs, ProfileOtherRecord.class);
+            List<Integer> profileIdList = structs.stream().map(struct -> struct.getProfile_id()).collect(Collectors.toList());
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(new Condition(ProfileOther.PROFILE_OTHER.PROFILE_ID.getName(), profileIdList, ValueOp.IN));
 
-            List<CustomizeResume> updatedDatas = new ArrayList<>();
-
-            for (int i = 0; i < result.length; i++) {
-                if (result[i] > 0) updatedDatas.add(structs.get(i));
+            List<ProfileOtherRecord> descOtherRecordList = dao.getRecords(queryBuilder.buildQuery());
+            if (descOtherRecordList != null) {
+                Iterator<ProfileOtherRecord> iterator = descOtherRecordList.iterator();
+                while (iterator.hasNext()) {
+                    ProfileOtherRecord profileOtherRecord = iterator.next();
+                    Optional<ProfileOtherRecord> optional = origOtherRecordList
+                            .stream()
+                            .filter(origOtherRecord -> origOtherRecord.getProfileId().intValue() == profileOtherRecord.getProfileId())
+                            .findAny();
+                    if (optional.isPresent()) {
+                        RecordTool.recordToRecord(profileOtherRecord, optional.get());
+                        ValidationMessage<ProfileOtherRecord> validationMessage = ProfileValidation.verifyCustomizeResume(profileOtherRecord);
+                        if (!validationMessage.isPass()) {
+                            iterator.remove();
+                        }
+                    }
+                }
+                if (descOtherRecordList.size() > 0) {
+                    int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileOtherRecord.class));
+                    updateProfileUpdateTime(descOtherRecordList);
+                    return result;
+                }
             }
-
-            updateUpdateTime(updatedDatas);
-            return result;
-        } else {
-            return new int[0];
         }
+        return new int[0];
     }
 
     @Transactional
@@ -147,19 +165,18 @@ public class ProfileCustomizeResumeService {
     }
 
     @Transactional
-    public CustomizeResume postResource(CustomizeResume struct) throws TException {
+    public CustomizeResume postResource(CustomizeResume struct) throws CommonException {
         CustomizeResume result = null;
         if (struct != null) {
             ValidationMessage<CustomizeResume> vm = ProfileValidation.verifyCustomizeResume(struct);
             if (!vm.isPass()) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
+                throw ProfileException.validateFailed(vm.getResult());
             }
-
-            QueryUtil qu = new QueryUtil();
-            qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
-            ProfileOtherRecord repeat = dao.getRecord(qu);
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(ProfileOther.PROFILE_OTHER.PROFILE_ID.getName(), struct.getProfile_id());
+            ProfileOtherRecord repeat = dao.getRecord(queryBuilder.buildQuery());
             if (repeat != null) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
+                throw ProfileException.PROFILE_REPEAT_DATA;
             }
             result = dao.addRecord(BeanUtils.structToDB(struct, ProfileOtherRecord.class)).into(CustomizeResume.class);
             updateUpdateTime(result);
@@ -168,9 +185,13 @@ public class ProfileCustomizeResumeService {
     }
 
     @Transactional
-    public int putResource(CustomizeResume struct) throws TException {
+    public int putResource(CustomizeResume struct) throws CommonException {
         int result = 0;
         if (struct != null) {
+            ValidationMessage<CustomizeResume> vm = ProfileValidation.verifyCustomizeResume(struct);
+            if (!vm.isPass()) {
+                throw ProfileException.validateFailed(vm.getResult());
+            }
             result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileOtherRecord.class));
             if (result > 0) {
                 updateUpdateTime(struct);
@@ -189,7 +210,8 @@ public class ProfileCustomizeResumeService {
     }
 
     private void updateUpdateTime(List<CustomizeResume> customizeResumes) {
-        if (customizeResumes == null || customizeResumes.size() == 0) return;
+        if (customizeResumes == null || customizeResumes.size() == 0)
+            return;
 
         HashSet<Integer> profileIds = new HashSet<>();
 
@@ -197,5 +219,16 @@ public class ProfileCustomizeResumeService {
             profileIds.add(customizeResume.getProfile_id());
         });
         profileDao.updateUpdateTime(profileIds);
+    }
+
+    private void updateProfileUpdateTime(List<ProfileOtherRecord> descOtherRecordList) {
+        if (descOtherRecordList == null || descOtherRecordList.size() == 0) {
+            return;
+        }
+        Set<Integer> profileIdSet = descOtherRecordList
+                .stream()
+                .map(profileOtherRecord -> profileOtherRecord.getProfileId())
+                .collect(Collectors.toSet());
+        profileDao.updateUpdateTime(profileIdSet);
     }
 }

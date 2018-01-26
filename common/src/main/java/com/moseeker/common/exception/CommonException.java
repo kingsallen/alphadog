@@ -57,6 +57,10 @@ public class CommonException extends RuntimeException {
         return new CommonException(code, message);
     }
 
+    public static CommonException validateFailed(String message) {
+        return new CommonException(90014, message);
+    }
+
     private int code;
     private String message;
 }

@@ -10,7 +10,9 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorkexpRecord;
+import com.moseeker.baseorm.tool.RecordTool;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -18,9 +20,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Order;
-import com.moseeker.common.util.query.OrderBy;
-import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.*;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
@@ -36,13 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @CounterIface
@@ -295,19 +290,32 @@ public class ProfileWorkExpService {
             }
         }
 
-        int result = dao.updateRecord(structToDB(struct));
+        ProfileWorkexpRecord originProfileWorkexpRecord = structToDB(struct);
 
-        if (result > 0) {
-            updateUpdateTime(struct);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(ProfileWorkexp.PROFILE_WORKEXP.ID.getName(), originProfileWorkexpRecord.getId());
+        ProfileWorkexpRecord descProfileWorkexpRecord = dao.getRecord(queryBuilder.buildQuery());
+        if (descProfileWorkexpRecord != null) {
+            RecordTool.recordToRecord(descProfileWorkexpRecord, originProfileWorkexpRecord);
+            ValidationMessage<ProfileWorkexpRecord> validationMessage = ProfileValidation.verifyWorkExp(descProfileWorkexpRecord);
+            if (!validationMessage.isPass()) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", validationMessage.getResult()));
+            }
+            int result = dao.updateRecord(descProfileWorkexpRecord);
+
+            if (result > 0) {
+                updateUpdateTime(descProfileWorkexpRecord);
                 /* 计算用户基本信息的简历完整度 */
-            profileEntity.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
-            return ResponseUtils.success("1");
+                profileEntity.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+                return ResponseUtils.success("1");
+            }
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
     @Transactional
     public Response postResources(List<WorkExp> structs) throws TException {
+
         if (structs != null && structs.size() > 0) {
             Iterator<WorkExp> wei = structs.iterator();
             while (wei.hasNext()) {
@@ -335,13 +343,32 @@ public class ProfileWorkExpService {
 
     @Transactional
     public Response putResources(List<WorkExp> structs) throws TException {
-        int[] result = dao.updateRecords(structsToDBs(structs));
-        if (ArrayUtils.contains(result, 1)) {
-            for (WorkExp struct : structs) {
-                updateUpdateTime(structs);
-                /* 计算用户基本信息的简历完整度 */
-                profileEntity.reCalculateProfileWorkExpUseWorkExpId(struct.getId());
+
+        List<ProfileWorkexpRecord> originProfileWorkexpRecordList = BeanUtils.structToDB(structs, ProfileWorkexpRecord.class);
+        List<Integer> workexpIdList = originProfileWorkexpRecordList.stream()
+                .map(profileWorkexpRecord -> profileWorkexpRecord.getId())
+                .collect(Collectors.toList());
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(new Condition(ProfileWorkexp.PROFILE_WORKEXP.ID.getName(), workexpIdList, ValueOp.IN));
+        List<ProfileWorkexpRecord> descProfileWorkExpRecordList = dao.getRecords(queryBuilder.buildQuery());
+        if (descProfileWorkExpRecordList != null) {
+            Iterator<ProfileWorkexpRecord> iterator = descProfileWorkExpRecordList.iterator();
+            while (iterator.hasNext()) {
+                ProfileWorkexpRecord profileWorkexpRecord = iterator.next();
+                Optional<ProfileWorkexpRecord> optional = originProfileWorkexpRecordList.stream()
+                        .filter(profileWorkexpRecord1 -> profileWorkexpRecord1.getId().intValue() == profileWorkexpRecord.getId())
+                        .findAny();
+                if (optional.isPresent()) {
+                    RecordTool.recordToRecord(profileWorkexpRecord, optional.get());
+                    ValidationMessage<ProfileWorkexpRecord> vm = ProfileValidation.verifyWorkExp(profileWorkexpRecord);
+                    if (!vm.isPass()) {
+                        iterator.remove();
+                    }
+                }
             }
+            dao.updateRecords(descProfileWorkExpRecordList);
+            descProfileWorkExpRecordList.forEach(profileWorkexpRecord
+                    -> profileEntity.reCalculateProfileWorkExpUseWorkExpId(profileWorkexpRecord.getId()));
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -441,6 +468,12 @@ public class ProfileWorkExpService {
         List<WorkExp> workExps = new ArrayList<>();
         workExps.add(workExp);
         updateUpdateTime(workExps);
+    }
+
+    private void updateUpdateTime(ProfileWorkexpRecord descProfileWorkexpRecord) {
+        if (descProfileWorkexpRecord != null) {
+            dao.updateProfileUpdateTime(new HashSet<Integer>(){{add(descProfileWorkexpRecord.getId());}});
+        }
     }
 
     public Response getPagination(Query query) throws TException {

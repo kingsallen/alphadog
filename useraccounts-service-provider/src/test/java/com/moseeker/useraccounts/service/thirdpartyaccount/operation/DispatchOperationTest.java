@@ -15,14 +15,14 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
 public class DispatchOperationTest {
-    /*@Autowired
+    @Autowired
     DispatchOperation operation;
 
     @Test
     public void test() throws Exception {
-        List<Integer> hrIds= Arrays.asList(82690, 83323, 83324);
-        int accountId=538;
+        List<Integer> hrIds= Arrays.asList(82752);
+        int accountId=560;
 
         operation.dispatch(accountId,hrIds);
-    }*/
+    }
 }

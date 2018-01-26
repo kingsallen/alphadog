@@ -6,11 +6,14 @@ import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysCvTplRecord;
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.profile.service.ProfileOtherService;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -51,12 +54,14 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     @Autowired
     private ProfileService profileService;
 
+    @Autowired
+    private ProfileOtherService otherService;
+
     @Override
     public List<ProfileOtherDO> getResources(CommonQuery query) throws TException {
         try {
             return ResponseUtils.getNotNullValue(dao.getDatas(QueryConvert.commonQueryConvertToQuery(query)), new ArrayList<ProfileOtherDO>());
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             if (e instanceof BIZException) {
                 throw (BIZException) e;
@@ -71,7 +76,6 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             return ResponseUtils.getNotNullValue(dao.getData(QueryConvert.commonQueryConvertToQuery(query)), new ProfileOtherDO());
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             if (e instanceof BIZException) {
                 throw (BIZException) e;
@@ -84,9 +88,9 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     @Override
     public List<ProfileOtherDO> postResources(List<ProfileOtherDO> Others) throws TException {
         try {
-            return ResponseUtils.getNotNullValue(dao.addAllData(Others), new ArrayList<ProfileOtherDO>());
+            List<ProfileOtherDO> otherDOList = otherService.addOthers(Others);
+            return ResponseUtils.getNotNullValue(otherDOList, new ArrayList<ProfileOtherDO>());
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             if (e instanceof BIZException) {
                 throw (BIZException) e;
@@ -99,9 +103,11 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     @Override
     public ProfileOtherDO postResource(ProfileOtherDO Other) throws TException {
         try {
-            return ResponseUtils.getNotNullValue(dao.addData(Other), new ProfileOtherDO());
+            ProfileOtherDO otherDO = otherService.addOther(Other);
+            return ResponseUtils.getNotNullValue(otherDO, new ProfileOtherDO());
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             if (e instanceof BIZException) {
                 throw (BIZException) e;
@@ -114,7 +120,8 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     @Override
     public List<Integer> putResources(List<ProfileOtherDO> Others) throws TException {
         try {
-            return Arrays.asList(ArrayUtils.toObject(dao.updateDatas(Others)));
+            int[] others = otherService.putOthers(Others);
+            return Arrays.asList(ArrayUtils.toObject(others));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -129,7 +136,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     @Override
     public int putResource(ProfileOtherDO Other) throws TException {
         try {
-            return dao.updateData(Other);
+            return otherService.putOther(Other);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);

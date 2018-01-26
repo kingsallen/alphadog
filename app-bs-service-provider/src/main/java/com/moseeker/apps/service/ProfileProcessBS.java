@@ -350,7 +350,7 @@ public class ProfileProcessBS {
             templateNoticeStruct.setCompany_id(companyId);
             templateNoticeStruct.setData(data);
             templateNoticeStruct.setUser_id(userId);
-            templateNoticeStruct.setSys_template_id(tm.getSystemlateId());
+            templateNoticeStruct.setSys_template_id(msInfo.getConfig_id());
             String signature = "";
             try {
                 Response wechat = companyService.getWechat(companyId, 0);
@@ -363,7 +363,7 @@ public class ProfileProcessBS {
                 log.error(e1.getMessage(), e1);
             }
             templateNoticeStruct.setUrl(MessageFormat.format(
-                    tm.getUrl(),
+                    msInfo.getUrl(),
                     ConfigPropertiesUtil.getInstance().get("platform.url",
                             String.class), signature,
                     String.valueOf(applicationId)));

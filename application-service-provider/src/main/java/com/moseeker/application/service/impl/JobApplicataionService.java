@@ -1,7 +1,6 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
@@ -46,6 +45,12 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,14 +58,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author ltf 申请服务 2016年11月3日
@@ -112,17 +109,13 @@ public class JobApplicataionService {
      */
     @SuppressWarnings("serial")
     @CounterIface
-    public Response postApplication(JobApplication jobApplication) throws TException {
+    public Response postApplication(JobApplication jobApplication) throws  TException {
         logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
 
         appIDToSource(jobApplication);
         // 获取该申请的职位
         Query query = new QueryBuilder().where("id", jobApplication.getPosition_id()).buildQuery();
         JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
-
-        if (jobPositionRecord == null) {
-            throw ApplicationException.APPLICATION_POSITION_NOTEXIST;
-        }
         //JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int) jobApplication.position_id);
         //校验申请来源的有效性
         if (jobApplication.getOrigin() == 0) {
@@ -133,47 +126,34 @@ public class JobApplicataionService {
         if (responseJob.status > 0) {
             return responseJob;
         }
-
-        // 初始化参数
-        initJobApplication(jobApplication, jobPositionRecord);
-
-        if (checkApplicationCountAtCompany(jobApplication.getApplier_id(),
-                jobPositionRecord.getCompanyId(), jobPositionRecord.getCandidateSource())) {
+        Response responseCheck = checkApplicationCountAtCompany(jobApplication.getApplier_id(),
+                jobPositionRecord.getCompanyId(), jobPositionRecord.getCandidateSource());
+        if (responseCheck != null && responseCheck.getStatus() != 0) {
             updateOrigin(jobApplication);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
+            return responseCheck;
         }
-
-        // 添加申请
-        logger.info("JobApplicataionService postApplication ");
-        JobApplicationRecord jobApplicationRecord = BeanUtils.structToDB(jobApplication,
-                JobApplicationRecord.class);
-        logger.info("JobApplicataionService postApplication jobApplicationRecord:{}", jobApplicationRecord);
-        if (jobApplicationRecord.getWechatId() == null) {
-            jobApplicationRecord.setWechatId(0);
-        }
-        int application_id = this.postApplication(jobApplication, jobPositionRecord);
-        if (application_id> 0) {
-            // proxy 0: 正常投递, 1: 代理投递, null:默认为0
+        int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
+        if (jobApplicationId > 0) {
             MessageEmailStruct messageEmailStruct = new MessageEmailStruct();
-            messageEmailStruct.setApplication_id(application_id);
-            messageEmailStruct.setPosition_id((int)jobApplication.getPosition_id());
+            messageEmailStruct.setApplication_id(jobApplicationId);
+            messageEmailStruct.setPosition_id((int) jobApplication.getPosition_id());
             messageEmailStruct.setApply_type(jobApplication.getApply_type());
             messageEmailStruct.setEmail_status(jobApplication.getEmail_status());
-            messageEmailStruct.setRecommender_user_id((int)jobApplication.getRecommender_user_id());
-            messageEmailStruct.setApplier_id((int)jobApplication.getApplier_id());
+            messageEmailStruct.setRecommender_user_id((int) jobApplication.getRecommender_user_id());
+            messageEmailStruct.setApplier_id((int) jobApplication.getApplier_id());
             messageEmailStruct.setOrigin(jobApplication.getOrigin());
             sendMessageAndEmailThread(messageEmailStruct);
             // 返回 jobApplicationId
             return ResponseUtils.success(new HashMap<String, Object>() {
                                              {
-                                                 put("jobApplicationId", application_id);
+                                                 put("jobApplicationId", jobApplicationId);
                                              }
                                          }
             );
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-    }
 
+    }
     @Transactional
     public int postApplication(JobApplication jobApplication, JobPositionRecord jobPositionRecord) throws TException {
         try {
@@ -187,16 +167,16 @@ public class JobApplicataionService {
             if (jobApplicationRecord.getWechatId() == null) {
                 jobApplicationRecord.setWechatId(0);
             }
-            ApplicationSaveResultVO resultVO = this.saveJobApplication(jobApplicationRecord, jobPositionRecord);
-            if (resultVO.getApplicationId() > 0) {
+            ApplicationSaveResultVO jobApplicationVO = this.saveJobApplication(jobApplicationRecord, jobPositionRecord);
+            if (jobApplicationVO.isCreate()) {
                 // proxy 0: 正常投递, 1: 代理投递, null:默认为0
                 // 代理投递不能增加用户的申请限制次数
                 if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
                     // 添加该人该公司的申请次数
-                    addApplicationCountAtCompany(jobApplication, jobPositionRecord.getCandidateSource());
+                    addApplicationCountAtCompany(jobApplication,jobPositionRecord.getCandidateSource());
                 }
             }
-            return resultVO.getApplicationId();
+            return jobApplicationVO.getApplicationId();
         }  catch (Exception e) {
             logger.error("postResources JobApplication error: ", e);
             throw new TException();
@@ -205,19 +185,16 @@ public class JobApplicataionService {
         }
     }
 
-    private void sendMessageAndEmailThread (MessageEmailStruct messageEmailStruct) {
+    private void sendMessageAndEmailThread (MessageEmailStruct messageEmailStruct){
         logger.info("sendMessageAndEmailThread messageEmailStruct{}", messageEmailStruct);
         //发送模板消息，短信，邮件
         tp.startTast(() -> {
-            try {
-                Response resppnse = mqServer.sendMessageAndEmailToDelivery(messageEmailStruct);
-                logger.info("JobApplicataionService response {}", JSON.toJSONString(resppnse));
-                return resppnse;
-            }catch (TException e){
-                return ResponseUtils.fail(e.getMessage());
-            }
+            Response resppnse = mqServer.sendMessageAndEmailToDelivery(messageEmailStruct);
+            logger.info("JobApplicataionService response {}", JSON.toJSONString(resppnse));
+            return resppnse;
         });
     }
+
     /**
      * 合并申请来源
      * @param jobApplication
@@ -231,29 +208,10 @@ public class JobApplicataionService {
 
         if (record != null && jobApplication.getOrigin() > 0 && jobApplication.getOrigin() != record.getOrigin()) {
             record.setOrigin(jobApplication.getOrigin() | record.getOrigin());
+            record.setUpdateTime(new Timestamp(new Date().getTime()));
             jobApplicationDao.updateRecord(record);
         }
     }
-
-    private void appIDToSource(JobApplication jobApplication) {
-        if (jobApplication.getOrigin() == 0) {
-            switch (jobApplication.getAppid()) {
-                case 1:
-                    jobApplication.setOrigin(1);
-                    break;
-                case 5:
-                case 2:
-                    jobApplication.setOrigin(4);
-                    break;
-                case 6:
-                case 3:
-                    jobApplication.setOrigin(2);
-                    break;
-                default:
-            }
-        }
-    }
-
     /**
      * 更新申请数据
      *
@@ -288,6 +246,26 @@ public class JobApplicataionService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
+    private void appIDToSource(JobApplication jobApplication) {
+        if (jobApplication.getOrigin() == 0) {
+            switch (jobApplication.getAppid()) {
+                case 1:
+                    jobApplication.setOrigin(1);
+                    break;
+                case 5:
+                case 2:
+                    jobApplication.setOrigin(4);
+                    break;
+                case 6:
+                case 3:
+                    jobApplication.setOrigin(2);
+                    break;
+                default:
+            }
+        }
+    }
+
+
     /**
      * 更新申请
      *
@@ -321,13 +299,13 @@ public class JobApplicataionService {
             updateStatus = jobApplicationDao.updateRecord(jobApplicationRecord);
             if(updateStatus>0 && bool){
                 MessageEmailStruct messageEmailStruct = new MessageEmailStruct();
-                messageEmailStruct.setApplication_id(updateStatus);
-                messageEmailStruct.setPosition_id((int)jobApplication.getPosition_id());
-                messageEmailStruct.setApply_type(jobApplication.getApply_type());
+                messageEmailStruct.setApplication_id((int)jobApplication.getId());
+                messageEmailStruct.setPosition_id(jobApplicationDO.getPositionId());
+                messageEmailStruct.setApply_type(jobApplicationDO.getApplyType());
                 messageEmailStruct.setEmail_status(jobApplication.getEmail_status());
-                messageEmailStruct.setRecommender_user_id((int)jobApplication.getRecommender_user_id());
-                messageEmailStruct.setApplier_id((int)jobApplication.getApplier_id());
-                messageEmailStruct.setOrigin(jobApplication.getOrigin());
+                messageEmailStruct.setRecommender_user_id(jobApplicationDO.getRecommenderUserId());
+                messageEmailStruct.setApplier_id(jobApplicationDO.getApplierId());
+                messageEmailStruct.setOrigin(jobApplicationDO.getOrigin());
                 sendMessageAndEmailThread(messageEmailStruct);
             }
         }
@@ -517,8 +495,13 @@ public class JobApplicataionService {
         try {
             Query query = new QueryBuilder().where("id", positionId).buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
-            return ResponseUtils.success(this.checkApplicationCountAtCompany(userId, jobPositionRecord.getCompanyId(),
-                    jobPositionRecord.getCandidateSource()));
+            Response response = this.checkApplicationCountAtCompany(userId, jobPositionRecord.getCompanyId(),
+                    jobPositionRecord.getCandidateSource());
+            if(response!= null && response.getStatus() == 0){
+                return ResponseUtils.success(false);
+            }else{
+                return ResponseUtils.success(true);
+            }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             logger.error("validateUserApplicationCheckCountAtCompany error: ", e);
@@ -526,6 +509,40 @@ public class JobApplicataionService {
             //do nothing
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+
+
+
+    /**
+     * 一个用户在一家公司的每月的申请次数校验 超出申请次数限制, 每月每家公司一个人只能申请10次 <p>
+     *
+     * @param userId    用户id
+     * @param companyId 公司id
+     */
+    @CounterIface
+    public Response validateUserApplicationTypeCheckCountAtCompany(long userId, long companyId) {
+        Map<String, Boolean> params = new HashMap<>();
+        try {
+            String applicationCountCheck = redisClient.get(
+                    Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
+                    String.valueOf(userId), String.valueOf(companyId));
+
+            UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
+            UserApplyCount conf = getApplicationCountLimit((int) companyId);
+            if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
+                params.put("socialApply", false);
+            }else{
+                params.put("socialApply", true);
+            }
+            if (userApplyCount.getSchoolApplyCount() >= conf.getSchoolApplyCount()) {
+                params.put("schoolApply", false);
+            }else{
+                params.put("schoolApply", true);
+            }
+        } catch (RedisException e) {
+            WarnService.notify(e);
+        }
+        return ResponseUtils.success(params);
     }
 
     /**
@@ -613,7 +630,7 @@ public class JobApplicataionService {
      * @param companyId 公司id
      * @param candidateSource
      */
-    private boolean checkApplicationCountAtCompany(long userId, long companyId, byte candidateSource) {
+    private Response checkApplicationCountAtCompany(long userId, long companyId, byte candidateSource) {
 
         try {
             String applicationCountCheck = redisClient.get(
@@ -625,18 +642,19 @@ public class JobApplicataionService {
             UserApplyCount conf = getApplicationCountLimit((int) companyId);
             if (candidateSource == 0) {
                 if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
-                    return true;
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_SOCIAL_COUNT_CHECK);
                 }
             } else {
                 if (userApplyCount.getSchoolApplyCount() >= conf.getSchoolApplyCount()) {
-                    return true;
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_SCHOOL_COUNT_CHECK);
                 }
             }
         } catch (RedisException e) {
             WarnService.notify(e);
         }
-        return false;
+        return ResponseUtils.success("SUCCESS");
     }
+
 
     /**
      * 清除一个公司一个人申请次数限制的redis key 给sysplat用
@@ -911,5 +929,5 @@ public class JobApplicataionService {
         hrOperationRecordRecord.setOperateTplId(jobApplicationRecord.getAppTplId().intValue());
         return hrOperationRecordRecord;
     }
-
 }
+

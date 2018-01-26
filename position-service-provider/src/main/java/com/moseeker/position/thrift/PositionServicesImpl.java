@@ -236,6 +236,8 @@ public class PositionServicesImpl implements Iface {
             form.setRequestType(SyncRequestType.ATS.code());
         }
 
+        logger.info("syncDatas: "+JSON.toJSONString(syncDatas));
+
         try {
             List<PositionSyncResultPojo> syncResults = positionBS.syncPositionToThirdParty(syncDatas);
             for (PositionSyncResultPojo result : syncResults) {

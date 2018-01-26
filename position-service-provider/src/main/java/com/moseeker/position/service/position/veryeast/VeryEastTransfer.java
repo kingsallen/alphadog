@@ -64,7 +64,7 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         positionInfo.setCompany(positionForm.getCompanyName());
         positionInfo.setTitle(positionDB.getTitle());
         positionInfo.setRegion(getCities(positionDB));
-        positionInfo.setQuantity(getQuantity(positionForm.getQuantity(),(int)positionDB.getCount()));
+        positionInfo.setQuantity(getQuantity(positionForm.getCount(),(int)positionDB.getCount()));
         positionInfo.setIndate(positionForm.getIndate());
         positionInfo.setSalary(transferSalary((int)positionDB.getSalaryTop()));
         positionInfo.setOccupation(positionForm.getOccupation());
@@ -190,6 +190,7 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         }
         data.setCompanyName(position.getCompanyName());
         data.setCompanyId(position.getCompanyId());
+        data.setCount(position.getCount());
 
         logger.info("回写到第三方职位对象:{}",data);
         return data;
@@ -235,6 +236,7 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
 
         JSONObject result= JSON.parseObject(JSON.toJSONString(form));
 
+        result.put("quantity",thirdPartyPosition.getCount());
         result.putAll(JSON.parseObject(JSON.toJSONString(thirdPartyPosition)));
 
         return result;

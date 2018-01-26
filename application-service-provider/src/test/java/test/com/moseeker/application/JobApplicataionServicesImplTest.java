@@ -50,7 +50,7 @@
 //            e.printStackTrace();
 //        }
 //    }
-//    
+//
 //    public static JobApplication getJobApplication(){
 //        JobApplication application = new JobApplication();
 //        application.setApplier_id(4);

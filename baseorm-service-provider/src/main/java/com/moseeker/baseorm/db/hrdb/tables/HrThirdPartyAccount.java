@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-    private static final long serialVersionUID = 59546196;
+    private static final long serialVersionUID = 1390435110;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -72,9 +72,9 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
     public final TableField<HrThirdPartyAccountRecord, String> PASSWORD = createField("password", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "密码");
 
     /**
-     * The column <code>hrdb.hr_third_party_account.binding</code>. 0：未绑定，1:绑定成功，2：绑定中，3：刷新中，4：用户名密码错误，5：绑定或刷新失败，6：绑定程序发生错误（前端和2状态一致），7：刷新程序发生错误（前端和3状态一致）8:绑定成功，正在获取信息，9：解绑状态
+     * The column <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定,2=绑定中，3=绑定失败
      */
-    public final TableField<HrThirdPartyAccountRecord, Short> BINDING = createField("binding", org.jooq.impl.SQLDataType.SMALLINT, this, "0：未绑定，1:绑定成功，2：绑定中，3：刷新中，4：用户名密码错误，5：绑定或刷新失败，6：绑定程序发生错误（前端和2状态一致），7：刷新程序发生错误（前端和3状态一致）8:绑定成功，正在获取信息，9：解绑状态");
+    public final TableField<HrThirdPartyAccountRecord, Short> BINDING = createField("binding", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "0=未绑定,1=绑定,2=绑定中，3=绑定失败");
 
     /**
      * The column <code>hrdb.hr_third_party_account.company_id</code>. hrdb.hr_company.id
@@ -181,7 +181,6 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
     /**
      * Rename this table
      */
-    @Override
     public HrThirdPartyAccount rename(String name) {
         return new HrThirdPartyAccount(name, null);
     }

@@ -4,8 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -31,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +37,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -114,18 +110,18 @@ public class PositionController {
             query.setPage_from(Integer.valueOf((String) map.getOrDefault("page_from", "0")));
             query.setPage_size(Integer.valueOf((String) map.getOrDefault("page_size", "10")));
 
-            query.setKeywords((String) map.getOrDefault("keywords", ""));
-            query.setCities((String) map.getOrDefault("cities", ""));
-            query.setIndustries((String) map.getOrDefault("industries", ""));
-            query.setOccupations((String) map.getOrDefault("occupations", ""));
+            query.setKeywords(StringUtils.filterStringForSearch((String) map.getOrDefault("keywords", "")));
+            query.setCities(StringUtils.filterStringForSearch((String) map.getOrDefault("cities", "")));
+            query.setIndustries(StringUtils.filterStringForSearch((String) map.getOrDefault("industries", "")));
+            query.setOccupations(StringUtils.filterStringForSearch((String) map.getOrDefault("occupations", "")));
             query.setScale((String) map.getOrDefault("scale", ""));
             query.setCandidate_source((String) map.getOrDefault("candidate_source", ""));
             query.setEmployment_type((String) map.getOrDefault("employment_type", ""));
             query.setExperience((String) map.getOrDefault("experience", ""));
             query.setSalary((String) map.getOrDefault("salary", ""));
-            query.setDegree((String) map.getOrDefault("degree", ""));
-            query.setDepartment((String) map.getOrDefault("department", ""));
-            query.setCustom((String) map.getOrDefault("custom", ""));
+            query.setDegree(StringUtils.filterStringForSearch((String) map.getOrDefault("degree", "")));
+            query.setDepartment(StringUtils.filterStringForSearch((String) map.getOrDefault("department", "")));
+            query.setCustom(StringUtils.filterStringForSearch((String) map.getOrDefault("custom", "")));
             query.setDid(Integer.valueOf((String) map.getOrDefault("did", "0")));
 
             String param_setOrder_by_priority = (String) map.getOrDefault("order_by_priority", "True");
@@ -344,7 +340,7 @@ public class PositionController {
             if (hbConfigId == null) {
                 throw new Exception("红包活动 id 不正确!");
             }
-            String pageNum=(String)params.get("page_num");
+            String pageNum=(String)params.get("page_from");
             String pageSize=(String)params.get("page_size");
             if(StringUtils.isNullOrEmpty(pageNum)){
                 pageNum="1";
@@ -485,7 +481,7 @@ public class PositionController {
      */
     @RequestMapping(value = "/positions/companyhotpositiondetailslist", method = RequestMethod.GET)
     @ResponseBody
-    public PositionDetailsListVO companyHotPositionDetailsList(HttpServletRequest request, HttpServletResponse response) {
+    public PositionDetailsListVO companyHotPositionDetailsList(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer companyId = params.getInt("company_id");
@@ -505,6 +501,7 @@ public class PositionController {
     @RequestMapping(value = "/positions/similaritypositiondetailslist", method = RequestMethod.GET)
     @ResponseBody
     public PositionDetailsListVO similarityPositionDetailsList(HttpServletRequest request, HttpServletResponse response) {
+
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer pid = params.getInt("position_id");
@@ -859,7 +856,7 @@ public class PositionController {
             String recomPushId=params.getString("recomPushId");
             String companyId=params.getString("companyId");
             String type=params.getString("type");
-            String pageNum=(String)params.get("page_num");
+            String pageNum=(String)params.get("page_from");
             String pageSize=(String)params.get("page_size");
             if(StringUtils.isNullOrEmpty(pageNum)){
                 pageNum="1";

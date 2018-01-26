@@ -147,7 +147,7 @@ public class Job1001Transfer extends AbstractPositionTransfer<PositionJob1001For
     @Override
     public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, ThirdpartyJob1001PositionDO extPosition) {
         PositionJob1001Form form=new PositionJob1001Form();
-        form.setSubsite(form.getSubsite());
+        form.setSubsite(extPosition.getSubsite());
 
         JSONObject result= JSON.parseObject(JSON.toJSONString(form));
 
