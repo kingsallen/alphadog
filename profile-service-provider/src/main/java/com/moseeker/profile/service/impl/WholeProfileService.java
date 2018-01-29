@@ -1151,9 +1151,9 @@ public class WholeProfileService {
         if(!org.apache.commons.lang.StringUtils.isNumeric(mobile)){
             return ResponseUtils.fail(1,"手机号必须全部为数字");
         }
-        if(mobile.length()!=11){
-            return ResponseUtils.fail(1,"手机号必须为11位");
-        }
+//        if(mobile.length()!=11){
+//            return ResponseUtils.fail(1,"手机号必须为11位");
+//        }
         UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
         int newUerId=0;
         if(userRecord!=null){
