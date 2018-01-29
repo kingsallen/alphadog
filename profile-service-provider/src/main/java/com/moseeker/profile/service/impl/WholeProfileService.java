@@ -1434,7 +1434,7 @@ public class WholeProfileService {
             List<Map<String,Object>> intentionsList=(List)resume.get("intentions");
             if(intentionsList.size()==1){
                 Map<String,Object> map=intentionsList.get(0);
-                if(map==null||map.isEmpty()){
+                if(this.isCombineIntention(map)){
                     resume.put("intentions",this.getIntentions(profileId));
                 }
             }
@@ -1457,7 +1457,7 @@ public class WholeProfileService {
             List<Map<String,Object>> awardsList=(List)resume.get("awards");
             if(awardsList.size()==1){
                 Map<String,Object> map=awardsList.get(0);
-                if(isCombineIntention(map)){
+                if(map==null||map.isEmpty()){
                     resume.put("awards",this.getAwardsById(profileId));
                 }
             }
