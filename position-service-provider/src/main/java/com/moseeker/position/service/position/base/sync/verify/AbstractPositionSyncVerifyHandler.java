@@ -100,6 +100,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
 
             if(isTimeout(info)){
                 logger.info("syncVerifyInfo timeout info:{}",info);
+                timeoutHandler(info);
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
             }
 
@@ -111,13 +112,10 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             logger.info("syncVerifyInfo success:{}",info);
         } catch (BIZException e){
             logger.error("处理验证完成的消息错误：{}",e);
-            emailNotification.sendVerifyFailureMail(info, null, e);
-            timeoutHandler(info);
             throw e;
         } catch (Exception e){
             logger.error("处理验证完成的消息错误：{}",e);
             emailNotification.sendVerifyFailureMail(info, null, e);
-            timeoutHandler(info);
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
 
