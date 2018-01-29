@@ -1339,6 +1339,7 @@ public class WholeProfileService {
     /*
      channelType.value和origin之间的关系
      */
+
     private String convertToChannelString(String origin,String origin1){
         int type=0;
         if(origin1.length()==20){
@@ -1360,7 +1361,6 @@ public class WholeProfileService {
         ChannelType channelType = ChannelType.instaceFromInteger(type);
         return channelType.getOrigin(origin);
     }
-
     /*
       合并简历
      */
@@ -1434,11 +1434,12 @@ public class WholeProfileService {
             List<Map<String,Object>> intentionsList=(List)resume.get("intentions");
             if(intentionsList.size()==1){
                 Map<String,Object> map=intentionsList.get(0);
-                if(map==null||map.isEmpty()){
+                if(this.isCombineIntention(map)){
                     resume.put("intentions",this.getIntentions(profileId));
                 }
             }
         }
+
         if(resume.get("credentials")==null||StringUtils.isEmptyList((List)resume.get("credentials"))){
             resume.put("credentials",this.getCredentialsById(profileId));
         }else{
@@ -1473,6 +1474,25 @@ public class WholeProfileService {
             }
         }
 
+    }
+    /*
+     判断是否需要合并库中的求职意向
+     */
+    private boolean isCombineIntention(Map<String,Object> intention){
+        if(intention==null||intention.isEmpty()){
+            return true;
+        }
+        int flag=0;
+        for(String key:intention.keySet()){
+            if(!"workstate".equals(key)&&!"worktype".equals(key)){
+                flag=1;
+                break;
+            }
+        }
+        if(flag==0){
+            return false;
+        }
+        return true;
     }
     /*
      根据id获取ProjectExp
