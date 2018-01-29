@@ -248,7 +248,7 @@ public class PositionBS {
         String paramId=jsonParamObj.getString("paramId");
 
         if(PositionSyncVerify.MOBILE_VERIFY_SUCCESS.equals(paramId)){
-            return ResponseUtils.fail(PositionSyncVerify.MOBILE_VERIFY_SUCCESS_MSG);
+            return ResponseUtils.success(PositionSyncVerify.MOBILE_VERIFY_SUCCESS_MSG);
         }
 
         String jsonParam=verifyHandlerUtil.getParam(paramId);
