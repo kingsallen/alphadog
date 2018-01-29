@@ -1439,6 +1439,7 @@ public class WholeProfileService {
                 }
             }
         }
+
         if(resume.get("credentials")==null||StringUtils.isEmptyList((List)resume.get("credentials"))){
             resume.put("credentials",this.getCredentialsById(profileId));
         }else{
@@ -1456,7 +1457,7 @@ public class WholeProfileService {
             List<Map<String,Object>> awardsList=(List)resume.get("awards");
             if(awardsList.size()==1){
                 Map<String,Object> map=awardsList.get(0);
-                if(map==null||map.isEmpty()){
+                if(isCombineIntention(map)){
                     resume.put("awards",this.getAwardsById(profileId));
                 }
             }
@@ -1473,6 +1474,25 @@ public class WholeProfileService {
             }
         }
 
+    }
+    /*
+     判断是否需要合并库中的求职意向
+     */
+    private boolean isCombineIntention(Map<String,Object> intention){
+        if(intention==null||intention.isEmpty()){
+            return false;
+        }
+        int flag=0;
+        for(String key:intention.keySet()){
+            if(!"workstate".equals(key)&&!"worktype".equals(key)){
+                flag=1;
+                break;
+            }
+        }
+        if(flag==0){
+            return false;
+        }
+        return true;
     }
     /*
      根据id获取ProjectExp
