@@ -1,4 +1,4 @@
-package com.moseeker.application.service.constant;
+package com.moseeker.application.domain.constant;
 
 import java.util.HashMap;
 import java.util.Map;

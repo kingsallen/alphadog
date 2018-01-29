@@ -1,6 +1,5 @@
-package com.moseeker.application.service.agreegateid;
+package com.moseeker.application.domain.agreegateid;
 
-import javax.swing.text.View;
 import java.util.List;
 
 /**

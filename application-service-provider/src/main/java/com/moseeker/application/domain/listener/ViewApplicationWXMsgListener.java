@@ -1,9 +1,9 @@
-package com.moseeker.application.service.listener;
+package com.moseeker.application.domain.listener;
 
 import com.moseeker.application.domain.WXTamplateMsgEntity;
 import com.moseeker.application.infrastructure.ApplicationRepository;
-import com.moseeker.application.service.event.ViewApplicationListEvent;
-import com.moseeker.application.service.event.ViewApplicationSource;
+import com.moseeker.application.domain.event.ViewApplicationListEvent;
+import com.moseeker.application.domain.event.ViewApplicationSource;
 import com.moseeker.baseorm.redis.RedisClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

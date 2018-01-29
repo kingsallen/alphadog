@@ -2,8 +2,8 @@ package com.moseeker.application.domain;
 
 import com.moseeker.application.config.ApplicationContextProvider;
 import com.moseeker.application.infrastructure.ApplicationRepository;
-import com.moseeker.application.service.event.ViewApplicationListEvent;
-import com.moseeker.application.service.event.ViewApplicationSource;
+import com.moseeker.application.domain.event.ViewApplicationListEvent;
+import com.moseeker.application.domain.event.ViewApplicationSource;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.common.exception.CommonException;
