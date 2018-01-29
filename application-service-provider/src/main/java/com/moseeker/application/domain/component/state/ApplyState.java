@@ -26,23 +26,19 @@ public class ApplyState extends ApplicationState {
 
         ApplicationState nextState = getNext();
         if (nextState != null) {
-            try {
-                applicationBatchEntity.getApplicationList()
-                        .forEach(application -> {
-                            if (application.getStatus().equals(ApplicationStatus.Apply)) {
-                                application.setNextStatus(nextState.getStatus());
-                                application.setViewOnly(false);
-                            } else {
-                                application.setViewOnly(true);
-                            }
-                        });
-                if (applicationBatchEntity.getApplicationList() != null && applicationBatchEntity.getApplicationList().size() > 0) {
-                    List<Application> realExecuteList = applicationRepository.viewApplication(applicationBatchEntity.getApplicationList());
-                    applicationBatchEntity.setExecuteList(realExecuteList);
+            applicationBatchEntity.getApplicationList()
+                    .forEach(application -> {
+                        if (application.getStatus().equals(ApplicationStatus.Apply)) {
+                            application.setNextStatus(nextState.getStatus());
+                            application.setViewOnly(false);
+                        } else {
+                            application.setViewOnly(true);
+                        }
+                    });
+            if (applicationBatchEntity.getApplicationList() != null && applicationBatchEntity.getApplicationList().size() > 0) {
+                List<Application> realExecuteList = applicationRepository.viewApplication(applicationBatchEntity.getApplicationList());
+                applicationBatchEntity.setExecuteList(realExecuteList);
                 }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
         }
         return nextState;
     }

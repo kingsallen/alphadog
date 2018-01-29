@@ -49,29 +49,25 @@ public class ApplicationBatchEntity {
     public List<HrOperationRecord> viewed(HREntity hrEntity) {
 
         applicationList = applicationList
-                .stream()
-                .filter(application -> validateAuthority(hrEntity, application))    //过滤没有权限的申请记录
-                .collect(Collectors.toList());
+            .stream()
+            .filter(application -> validateAuthority(hrEntity, application))    //过滤没有权限的申请记录
+            .collect(Collectors.toList());
 
         ApplicationState state = new ApplyState(this, applicationRepository);
         state.pass();
         //生成HR操作申请的操作记录
         List<HrOperationRecord> operationRecordList = null;
-        try {
-            operationRecordList = executeList
-                    .stream()
-                    .map(application -> {
-                        HrOperationRecord hrOperationRecord = new HrOperationRecord();
-                        hrOperationRecord.setAdminId((long) hrEntity.getId());
-                        hrOperationRecord.setCompanyId((long) hrEntity.getCompanyId());
-                        hrOperationRecord.setAppId((long) application.getId());
-                        hrOperationRecord.setOperateTplId(state.getNext().getStatus().getState());
-                        return hrOperationRecord;
-                    })
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+        operationRecordList = executeList
+                .stream()
+                .map(application -> {
+                    HrOperationRecord hrOperationRecord = new HrOperationRecord();
+                    hrOperationRecord.setAdminId((long) hrEntity.getId());
+                    hrOperationRecord.setCompanyId((long) hrEntity.getCompanyId());
+                    hrOperationRecord.setAppId((long) application.getId());
+                    hrOperationRecord.setOperateTplId(state.getNext().getStatus().getState());
+                    return hrOperationRecord;
+                })
+                .collect(Collectors.toList());
         return operationRecordList;
     }
 
