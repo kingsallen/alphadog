@@ -1339,20 +1339,21 @@ public class WholeProfileService {
     /*
      channelType.value和origin之间的关系
      */
+
     private String convertToChannelString(String origin,String origin1){
         int type=0;
         if(origin1.length()==20){
-            type=6;
+            type=20;
         }else if(origin1.length()==21){
-            type=7;
+            type=21;
         }else if(origin1.length()==22){
-            type=8;
+            type=22;
         }else if(origin1.length()==23){
-            type=9;
+            type=23;
         }else if(origin1.length()==24){
-            type=10;
+            type=24;
         }else if(origin1.length()==25){
-            type=11;
+            type=25;
         }
         if(type==0){
             return origin;
@@ -1360,7 +1361,6 @@ public class WholeProfileService {
         ChannelType channelType = ChannelType.instaceFromInteger(type);
         return channelType.getOrigin(origin);
     }
-
     /*
       合并简历
      */

@@ -103,7 +103,7 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	},UPLOAD51(6,"upload51","51上传","talent_upload"){
+	},UPLOAD51(20,"upload51","51上传","talent_upload"){
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -114,7 +114,7 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	},UPLOADZP(7,"uploadZP","智联上传","talent_upload"){
+	},UPLOADZP(21,"uploadZP","智联上传","talent_upload"){
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -125,7 +125,7 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	},UPLOADLIEP(8,"uploadLieP","猎聘上传","talent_upload"){
+	},UPLOADLIEP(22,"uploadLieP","猎聘上传","talent_upload"){
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -136,7 +136,7 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	},UPLOADEARST(9,"uploadEarst","最佳东方","talent_upload"){
+	},UPLOADEARST(23,"uploadEarst","最佳东方","talent_upload"){
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -147,7 +147,7 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	},UPLOADLINK(10,"uploadlink","英领上传","talent_upload"){
+	},UPLOADLINK(24,"uploadlink","英领上传","talent_upload"){
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -158,7 +158,7 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	},UPLOADPROFILE(11,"uploadprofile","简历上传","talent_upload"){
+	},UPLOADPROFILE(25,"uploadprofile","简历上传","talent_upload"){
 		@Override
 		public String getOrigin(String origin) {
 			String result;
