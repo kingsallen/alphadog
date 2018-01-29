@@ -517,4 +517,9 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public Response updatePosition(String param) throws TException {
+        return service.updatePosition(param);
+    }
 }
