@@ -1342,6 +1342,9 @@ public class WholeProfileService {
 
     private String convertToChannelString(String origin,String origin1){
         int type=0;
+        if(StringUtils.isNullOrEmpty(origin1)){
+            return origin;
+        }
         if(origin1.length()==20){
             type=20;
         }else if(origin1.length()==21){
