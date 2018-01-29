@@ -155,7 +155,12 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
 
         JSONObject jsonObject= JSON.parseObject(param);
         if(jsonObject.containsKey("paramId")) {
-            verifyHandlerUtil.delParam(jsonObject.getString("paramId"));
+            String paramId=jsonObject.getString("paramId");
+            String val=verifyHandlerUtil.getParam(paramId);
+
+            if(!PositionSyncVerify.MOBILE_VERIFY_SUCCESS.equals(val)){
+                verifyHandlerUtil.delParam(paramId);
+            }
         }
     }
 }
