@@ -6,11 +6,16 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrRecruitStatisticsDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrRecruitStatisticsRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -37,7 +42,7 @@ import java.util.*;
 @Service
 public class PositionMiniService {
     @Autowired
-    public UserAccountEntity userAccountEntity;
+    public UserHrAccountDao userHrAccountDao;
     @Autowired
     public HrCompanyAccountDao hrCompanyAccountDao;
     @Autowired
@@ -264,12 +269,12 @@ public class PositionMiniService {
      */
     public CompanyAccount getAccountInfo(int accountId){
         CompanyAccount companyAccountBean=new CompanyAccount();
-        UserHrAccount account=userAccountEntity.getHrAccount(accountId);
+        UserHrAccount account=userHrAccountDao.getHrAccount(accountId);
         if(account!=null){
-            HrCompanyAccount companyAccount=getHrCompanyAccount(accountId);
+            HrCompanyAccountRecord companyAccount=getHrCompanyAccount(accountId);
             if(companyAccount!=null){
                 int companyId=companyAccount.getCompanyId();
-                HrCompany hrCompany=this.getHrCompanyById(companyId);
+                HrCompany hrCompany=hrCompanyDao.getHrCompanyById(companyId);
                 if(hrCompany!=null){
                     int parentId=hrCompany.getParentId();
                     int disable=hrCompany.getDisable();
@@ -288,6 +293,9 @@ public class PositionMiniService {
         }
         return companyAccountBean;
     }
+    /*
+
+     */
     /*
      获取所有的再招和下架
      */
@@ -315,17 +323,9 @@ public class PositionMiniService {
     /*
      获取HrCompanyAccount
      */
-    public HrCompanyAccount getHrCompanyAccount(int accountId){
+    public HrCompanyAccountRecord getHrCompanyAccount(int accountId){
         Query query=new Query.QueryBuilder().where("account_id",accountId).buildQuery();
-        HrCompanyAccount companyAccount=hrCompanyAccountDao.getData(query,HrCompanyAccount.class);
+        HrCompanyAccountRecord companyAccount=hrCompanyAccountDao.getRecord(query);
         return companyAccount;
-    }
-    /*
-     获取公司信息
-     */
-    public HrCompany getHrCompanyById(int companyId){
-        Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
-        HrCompany hrCompany=hrCompanyDao.getData(query,HrCompany.class);
-        return hrCompany;
     }
 }

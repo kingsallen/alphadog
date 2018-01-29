@@ -26,4 +26,22 @@ public class CompanyAccount {
         this.userHrAccount = userHrAccount;
     }
 
+    @Override
+    public String toString() {
+        StringBuffer sb=new StringBuffer();
+        sb.append("CompanyAccount{");
+
+        if(hrCompany!=null){
+            sb.append("hrCompany=" + hrCompany.toString());
+        }else{
+            sb.append("hrCompany=null");
+        }
+        if(userHrAccount!=null){
+         sb.append(", userHrAccount=" + userHrAccount.toString() );
+        }else{
+         sb.append(", userHrAccount=null");
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 }

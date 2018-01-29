@@ -51,12 +51,5 @@ public class UserAccountEntity {
         }
         return username;
     }
-    /*
-     通过id获取user_hr_account
-     */
-    public UserHrAccount getHrAccount(int accountId){
-        Query query=new Query.QueryBuilder().where("id",accountId).and("disable",1).and("activation",1).buildQuery();
-        UserHrAccount record=userHrAccountDao.getData(query,UserHrAccount.class);
-        return record;
-    }
+
 }
