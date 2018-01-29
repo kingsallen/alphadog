@@ -127,7 +127,7 @@ public final class ConstantErrorCodeMessage {
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
     //职位同步
-    public static final String POSITION_SYNC_VERIFY_TIMEOUT = "{'status':61001,'message':'验证超时'}";
+    public static final String POSITION_SYNC_VERIFY_TIMEOUT = "{'status':61001,'message':'验证已超时，职位同步失败'}";
     public static final String POSITION_SYNC_ALREADY_VERIFY = "{'status':61002,'message':'该同步职位已经在验证了'}";
     public static final String POSITION_SYNC_WRONG_CHANNEL = "{'status':61003,'message':'验证处理--渠道错误'}";
     public static final String POSITION_SYNC_NO_POSITION = "{'status':61004,'message':'验证处理--职位不存在'}";
