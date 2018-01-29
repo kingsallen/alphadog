@@ -20,6 +20,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.UserSource;
@@ -1151,9 +1152,9 @@ public class WholeProfileService {
         if(!org.apache.commons.lang.StringUtils.isNumeric(mobile)){
             return ResponseUtils.fail(1,"手机号必须全部为数字");
         }
-        if(mobile.length()!=11){
-            return ResponseUtils.fail(1,"手机号必须为11位");
-        }
+//        if(mobile.length()!=11){
+//            return ResponseUtils.fail(1,"手机号必须为11位");
+//        }
         UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
         int newUerId=0;
         if(userRecord!=null){
@@ -1172,7 +1173,7 @@ public class WholeProfileService {
                 userRecord.setName(String.valueOf(map.get("name")));
             }
             if(map.get("email")!=null){
-                userRecord.setName(String.valueOf(map.get("email")));
+                userRecord.setEmail(String.valueOf(map.get("email")));
             }
 
             Response res=this.upsertProfile(resume,userRecord,userId,newUerId);
@@ -1289,13 +1290,21 @@ public class WholeProfileService {
             }else{
                 Map<String,Object> profileMap=new HashMap<>();
                 profileMap.put("user_id",newUserId);
-                profileMap.put("origin",resume.get("origin"));
+                profileMap.put("origin",0);
                 resume.put("profile",profileMap);
             }
         }
         ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
+
         if (profileDB != null) {
+            String origin1=profileRecord.getOrigin();
+            String origin=profileDB.getOrigin();
+            String originResult=convertToChannelString(origin,origin1);
             ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+            /*
+             合并profile_profile.origin
+             */
+            profilePojo.getProfileRecord().setOrigin(originResult);
             int profileId = profileDB.getId().intValue();
             profileEntity.improveUser(userRecord);
             profileEntity.upsertProfileProfile(profilePojo.getProfileRecord(), profileId);
@@ -1326,6 +1335,30 @@ public class WholeProfileService {
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
         }
+    }
+    /*
+     channelType.value和origin之间的关系
+     */
+    private String convertToChannelString(String origin,String origin1){
+        int type=0;
+        if(origin1.length()==20){
+            type=20;
+        }else if(origin1.length()==21){
+            type=21;
+        }else if(origin1.length()==22){
+            type=22;
+        }else if(origin1.length()==23){
+            type=23;
+        }else if(origin1.length()==24){
+            type=24;
+        }else if(origin1.length()==25){
+            type=25;
+        }
+        if(type==0){
+            return origin;
+        }
+        ChannelType channelType = ChannelType.instaceFromInteger(type);
+        return channelType.getOrigin(origin);
     }
 
     /*
