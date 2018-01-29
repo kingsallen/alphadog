@@ -530,7 +530,7 @@ public class PositionServicesImpl implements Iface {
         try {
             PositionMiniBean  result=positionMiniService.getPositionMiniList(accountId,keyword,page,pageSize);
             if(result==null){
-                return  ResponseUtils.fail(1,"您所查找的推送不存在");
+                return  ResponseUtils.fail(1,"您所查找的职位推送不存在");
             }
             return  ResponseUtils.success(result);
         }catch (Exception e){

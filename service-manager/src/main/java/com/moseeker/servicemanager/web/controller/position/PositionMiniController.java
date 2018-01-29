@@ -8,6 +8,7 @@ import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.DelePostion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,6 +20,7 @@ import java.util.Map;
 /**
  * Created by zztaiwll on 18/1/24.
  */
+@Controller
 public class PositionMiniController {
     private Logger logger = LoggerFactory.getLogger(PositionController.class);
     private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
