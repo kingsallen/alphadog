@@ -1480,7 +1480,7 @@ public class WholeProfileService {
      */
     private boolean isCombineIntention(Map<String,Object> intention){
         if(intention==null||intention.isEmpty()){
-            return false;
+            return true;
         }
         int flag=0;
         for(String key:intention.keySet()){
