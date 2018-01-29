@@ -105,7 +105,7 @@ public class ProfileValidation {
 			vm.addFailedElement("时间", "开始时间大于结束时间");
 		}
 		logger.info("education经历开始时间：{}，islowerNow：{}", education.getStart_date(),lowerNow(education.getStart_date()));
-		if (!lowerNow(education.getStart_date())) {
+		if (lowerNow(education.getStart_date())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
 		}
 		if (org.apache.commons.lang.StringUtils.isNotBlank(education.getEnd_date())
@@ -137,7 +137,8 @@ public class ProfileValidation {
 			vm.addFailedElement("时间", "开始时间大于结束时间");
 		}
         logger.info("profile resume education ：{}，islowerNow：{}", education.getStart(),lowerNow(education.getStart()));
-		if (!lowerNow(education.getStart().getTime())) {
+
+		if (education.getStart()!= null && !lowerNow(education.getStart().getTime())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
 		}
 		if (education.getEnd() != null && !legalDate(education.getEnd())) {
@@ -182,7 +183,7 @@ public class ProfileValidation {
 			vm.addFailedElement("项目时间", "开始时间大于结束时间");
 		}
 
-		if (!lowerNow(projectExp.getStart_date())) {
+		if ( !lowerNow(projectExp.getStart_date())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
 		}
 		if (org.apache.commons.lang.StringUtils.isNotBlank(projectExp.getEnd_date())
@@ -210,7 +211,7 @@ public class ProfileValidation {
 				|| projectExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("项目时间", "开始时间大于结束时间");
 		}
-		if (!lowerNow(projectExp.getStart().getTime())) {
+		if (projectExp.getStart()!=null && !lowerNow(projectExp.getStart().getTime())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
 		}
 		if (projectExp.getEnd() != null && !lowerNow(projectExp.getEnd())) {
@@ -286,7 +287,9 @@ public class ProfileValidation {
 				|| workExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
-		if (!lowerNow(workExp.getStart().getTime())) {
+
+		if (workExp.getStart() != null && !lowerNow(workExp.getStart().getTime())) {
+
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
 		}
 		if (workExp.getEnd() != null && !lowerNow(workExp.getEnd())) {
@@ -317,7 +320,8 @@ public class ProfileValidation {
 				|| workExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
-		if (!lowerNow(workExp.getStart().getTime())) {
+
+		if (workExp.getStart() != null && !lowerNow(workExp.getStart().getTime())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
 		}
 		if (workExp.getEnd() != null && !lowerNow(workExp.getEnd())) {
