@@ -1,6 +1,8 @@
-package com.moseeker.position.service.position.base.refresh;
+package com.moseeker.position.service.position.base;
 
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.position.service.position.base.refresh.AbstractRabbitMQParamRefresher;
+import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class RefresherFactory {
+public class PositionFactory {
 
-    Logger logger= LoggerFactory.getLogger(RefresherFactory.class);
+    Logger logger= LoggerFactory.getLogger(PositionFactory.class);
 
     @Autowired
     private List<AbstractRabbitMQParamRefresher> refreshList=new ArrayList<>();
@@ -34,6 +36,19 @@ public class RefresherFactory {
             }
         }
         throw new RuntimeException("no matched RabbitMQParamRefresher");
+    }
+
+
+    @Autowired
+    private List<PositionSyncVerifyHandler> handlers;
+
+    public PositionSyncVerifyHandler getVerifyHandlerInstance(ChannelType channelType){
+        for(PositionSyncVerifyHandler handler:handlers){
+            if(handler.getChannelType()==channelType){
+                return handler;
+            }
+        }
+        throw new RuntimeException("no matched PositionSyncVerifyHandler");
     }
 
 }
