@@ -1297,7 +1297,7 @@ public class WholeProfileService {
         ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
 
         if (profileDB != null) {
-            String origin1=profileRecord.getOrigin();
+            String origin1=(String)resume.get("origin");
             String origin=profileDB.getOrigin();
             String originResult=convertToChannelString(origin,origin1);
             ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
