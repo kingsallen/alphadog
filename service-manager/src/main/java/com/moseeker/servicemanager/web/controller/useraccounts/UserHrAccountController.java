@@ -1053,8 +1053,8 @@ public class UserHrAccountController {
         try {
             ValidateUtil vu = new ValidateUtil();
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int account_id = params.getInt("account_id",0);
-            int wechat_id = params.getInt("wechat_id", 41);
+            int account_id = params.getInt("accountId",0);
+            int wechat_id = params.getInt("wechatId", 41);
             String unionId = params.getString("unionId");
             Response res = userHrAccountService.getHrCompanyInfo(wechat_id,unionId,account_id);
             return ResponseLogNotification.success(request, res);
