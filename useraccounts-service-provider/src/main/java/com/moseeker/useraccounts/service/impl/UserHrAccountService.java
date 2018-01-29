@@ -267,10 +267,7 @@ public class UserHrAccountService {
      */
     public boolean ifAddSubAccountAllowed(int hrId) throws CommonException {
 
-        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
-        if (hrAccountDO == null) {
-            throw HRException.USER_NOT_EXISTS;
-        }
+        UserHrAccountDO hrAccountDO = requiresNotNullAccount(hrId);
 
         return allowAddSubAccount(hrAccountDO.getCompanyId());
 
@@ -1611,6 +1608,7 @@ public class UserHrAccountService {
         return hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
     }
 
+
     /**
      * 获取HR账号信息以及公司信息
      * @param wechat_id 微信公众号编号
@@ -1687,4 +1685,12 @@ public class UserHrAccountService {
     }
 
 
+
+    public UserHrAccountDO requiresNotNullAccount(int hrId){
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
+        if (hrAccountDO == null) {
+            throw HRException.USER_NOT_EXISTS;
+        }
+        return hrAccountDO;
+    }
 }

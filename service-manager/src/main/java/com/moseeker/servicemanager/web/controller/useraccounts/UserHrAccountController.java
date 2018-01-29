@@ -213,7 +213,6 @@ public class UserHrAccountController {
         resultMap.put("channel", struct.getChannel());
         resultMap.put("username", struct.getUsername());
         resultMap.put("company_id", struct.getCompanyId());
-        resultMap.put("member_name", struct.getMembername());
         resultMap.put("bound", struct.getBinding());
         resultMap.put("create_time", struct.getCreateTime());
         resultMap.put("update_time", struct.getCreateTime());
@@ -231,9 +230,6 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             HrThirdPartyAccountDO struct = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
-            if (params.get("member_name") != null) {
-                struct.setMembername(params.get("member_name").toString());
-            }
             logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
             struct = userHrAccountService.bindThirdPartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", true));
             if (struct.getBinding() == 100) {
@@ -315,9 +311,10 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "user_id不能为空");
             }
 
-            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdPartyAccount(userId, id, params.getBoolean("sync", false));
+            throw new UnsupportedOperationException("Abandoned function!!!");
+//            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdPartyAccount(userId, id, params.getBoolean("sync", false));
 
-            return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
+//            return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -359,12 +356,15 @@ public class UserHrAccountController {
             }
 
             List<Integer> hrIds = (List<Integer>) params.get("hr_ids");
+            logger.info("dispath account_id : {},hr_ids : {}",accountId,hrIds);
 
             if (hrIds == null) {
                 return ResponseLogNotification.fail(request, "hr_ids不能为空");
             }
 
             ThirdPartyAccountInfo accountInfo = userHrAccountService.dispatchThirdPartyAccount(accountId, hrIds);
+
+            logger.info("dispatch result : {}",accountInfo);
 
             return ResponseLogNotification.successJson(request, accountInfo);
         } catch (Exception e) {

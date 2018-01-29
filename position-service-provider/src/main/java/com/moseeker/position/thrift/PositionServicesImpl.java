@@ -1,45 +1,41 @@
 package com.moseeker.position.thrift;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.position.service.fundationbs.*;
-import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.position.struct.RpExtInfo;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
-import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
-import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
-import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
-import com.moseeker.thrift.gen.position.struct.WechatShareData;
-import com.moseeker.thrift.gen.position.struct.*;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.position.pojo.JobPostionResponse;
+import com.moseeker.position.pojo.PositionMiniBean;
+import com.moseeker.position.pojo.PositionSyncResultPojo;
+import com.moseeker.position.pojo.SyncFailMessPojo;
 import com.moseeker.position.service.JobOccupationService;
-import com.moseeker.position.service.fundationbs.PositionQxService;
+import com.moseeker.position.service.appbs.PositionBS;
+import com.moseeker.position.service.fundationbs.*;
 import com.moseeker.position.service.third.ThirdPositionService;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
+import com.moseeker.thrift.gen.position.struct.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class PositionServicesImpl implements Iface {
@@ -59,6 +55,10 @@ public class PositionServicesImpl implements Iface {
     private PositionPcService positionPcService;
     @Autowired
     private PositionThridService positionThridService;
+    @Autowired
+    private PositionBS positionBS;
+    @Autowired
+    private PositionMiniService positionMiniService;
 
     /**
      * 获取推荐职位
@@ -118,34 +118,12 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
-                                                                                 JobPositionDO position) throws TException {
-        return service.changeToThirdPartyPosition(forms, position);
-    }
-
-    @Override
-    public ThirdPartyPositionForSynchronization changeOneToThirdPartyPosition(ThirdPartyPosition form, JobPositionDO position) throws TException {
-        return service.changeToThirdPartyPosition(form, position);
-    }
-
-    @Override
     public boolean ifAllowRefresh(int positionId, int account_id) {
         try {
-            return service.ifAllowRefresh(positionId, account_id);
+            return false;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return false;
-        }
-    }
-
-    @Override
-    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id)
-            throws TException {
-        try {
-            return service.createRefreshPosition(positionId, account_id);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return new ThirdPartyPositionForSynchronizationWithAccount();
         }
     }
 
@@ -212,7 +190,7 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public List<HrThirdPartyPositionDO> getThirdPartyPositions(CommonQuery query) throws TException {
+    public List<String> getThirdPartyPositions(CommonQuery query) throws TException {
         try {
             return service.getThirdPartyPositions(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
@@ -225,11 +203,51 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         try {
-            return service.batchHandlerJobPostion(batchHandlerJobPostion);
+            return ResponseUtils.success(service.batchHandlerJobPostion(batchHandlerJobPostion));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
+    }
+
+    @Override
+    public Response saveAndSync(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
+        JobPostionResponse response=service.batchHandlerJobPostion(batchHandlerJobPostion);
+
+        List<SyncFailMessPojo> syncFailMessPojolistList=new ArrayList<>();
+        int syncingCounts=0;
+
+        List<ThirdPartyPositionForm> syncDatas=response.getSyncData();
+        for (ThirdPartyPositionForm form:syncDatas){
+            if(form.getPositionId()==0 || StringUtils.isEmptyList(form.getChannels())){
+                continue;
+            }
+
+            form.setAppid(batchHandlerJobPostion.getAppid());
+            //设置请求端类型为ATS端
+            form.setRequestType(SyncRequestType.ATS.code());
+        }
+
+        logger.info("syncDatas: "+JSON.toJSONString(syncDatas));
+
+        try {
+            List<PositionSyncResultPojo> syncResults = positionBS.syncPositionToThirdParty(syncDatas);
+            for (PositionSyncResultPojo result : syncResults) {
+                if (result.getSync_status() == PositionSyncResultPojo.SUCCESS) {
+                    syncingCounts++;
+                } else {
+                    syncFailMessPojolistList.add(new SyncFailMessPojo(result.getPosition_id(), result.getChannel(), result.getSync_fail_reason()));
+                }
+            }
+        } catch (Exception e) {
+            logger.info("save and sync error exception:",e);
+        }
+
+        response.setSyncFailMessPojolist(syncFailMessPojolistList);
+        response.setSyncingCounts(syncingCounts);
+        response.setSyncData(null);
+
+        return ResponseUtils.success(response);
     }
 
     @Override
@@ -367,18 +385,18 @@ public class PositionServicesImpl implements Iface {
 
 
     @Override
-    public int updateThirdPartyPosition(HrThirdPartyPositionDO thirdPartyPosition) throws BIZException, TException {
+    public int updateThirdPartyPosition(HrThirdPartyPositionDO thirdPartyPosition,Map<String,String> extData) throws BIZException, TException {
         try {
-            return thirdPositionService.updateThirdPartyPosition(thirdPartyPosition);
+            return thirdPositionService.updateThirdPartyPosition(thirdPartyPosition,extData);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
     }
 
     @Override
-    public int updateThirdPartyPositionWithAccount(HrThirdPartyPositionDO thirdPartyPosition, HrThirdPartyAccountDO thirdPartyAccount) throws BIZException, TException {
+    public int updateThirdPartyPositionWithAccount(HrThirdPartyPositionDO thirdPartyPosition, HrThirdPartyAccountDO thirdPartyAccount,Map<String,String> extData) throws BIZException, TException {
         try {
-            return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
+            return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount,extData);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -499,5 +517,18 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response updatePosition(String param) throws TException {
         return service.updatePosition(param);
+    }
+    @Override
+    public Response getMiniPositionList(int accountId, String keyword, int page, int pageSize) throws TException {
+        try {
+            PositionMiniBean  result=positionMiniService.getPositionMiniList(accountId,keyword,page,pageSize);
+            if(result==null){
+                return  ResponseUtils.fail(1,"您所查找的职位推送不存在");
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
     }
 }

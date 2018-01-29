@@ -26,7 +26,8 @@ struct ThirdPartyPositionInfo{
     2:optional hr_third_party_account_struct.HrThirdPartyAccountDO thirdAccount,
     3:optional hr_third_party_position_struct.HrThirdPartyPositionDO thirdPosition,
     4:optional user_hr_account_struct.UserHrAccountDO hr,
-    5:optional hr_company_struct.HrCompanyDO company
+    5:optional hr_company_struct.HrCompanyDO company,
+    6:optional string extThirdPosition
 }
 
 struct ThirdPartyPositionResult{
