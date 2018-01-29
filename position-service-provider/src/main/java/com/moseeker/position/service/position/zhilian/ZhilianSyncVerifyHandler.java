@@ -95,6 +95,17 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
     }
 
     @Override
+    protected boolean isFinished(JSONObject jsonObject) throws BIZException {
+        if(jsonObject.containsKey("paramId")) {
+            String paramId = jsonObject.getString("paramId");
+            String val = verifyHandlerUtil.getParam(paramId);
+
+            return PositionSyncVerify.MOBILE_VERIFY_SUCCESS.equals(val);
+        }
+        return false;
+    }
+
+    @Override
     public void syncVerifyInfo(JSONObject jsonInfo) throws BIZException{
         logger.info("zhilian syncVerifyInfo jsonInfo:{}",jsonInfo.toJSONString());
         //同一信息都是info，但是智联需要code
@@ -155,7 +166,12 @@ public class ZhilianSyncVerifyHandler extends AbstractPositionSyncVerifyHandler{
 
         JSONObject jsonObject= JSON.parseObject(param);
         if(jsonObject.containsKey("paramId")) {
-            verifyHandlerUtil.delParam(jsonObject.getString("paramId"));
+            String paramId=jsonObject.getString("paramId");
+            String val=verifyHandlerUtil.getParam(paramId);
+
+            if(!PositionSyncVerify.MOBILE_VERIFY_SUCCESS.equals(val)){
+                verifyHandlerUtil.delParam(paramId);
+            }
         }
     }
 }

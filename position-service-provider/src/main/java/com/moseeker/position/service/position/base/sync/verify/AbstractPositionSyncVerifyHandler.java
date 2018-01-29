@@ -49,6 +49,8 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
 
     protected abstract void verifyHandler(JSONObject jsonParam) throws BIZException;
 
+    protected abstract boolean isFinished(JSONObject jsonParam) throws BIZException;
+
     /**
      * 处理爬虫端推送的需要验证的请求
      * @param param
@@ -72,12 +74,11 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             verifyHandler(verifyParam);
             logger.info("verifyHandler success ,param:{}",param);
         } catch (BIZException e){
-            logger.error("处理爬虫端推送的需要验证的请求失败，错误：{}",e);
-            timeoutHandler(param);
+            logger.error("处理爬虫端推送的需要验证的请求失败，参数：{}，错误：{}",param,e);
             throw e;
         } catch (Exception e){
-            logger.error("处理爬虫端推送的需要验证的请求失败，错误：{}",e);
-            timeoutHandler(param);
+            logger.error("处理爬虫端推送的需要验证的请求失败，参数：{}，错误：{}",param,e);
+            emailNotification.sendVerifyFailureMail(param, null, e);
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
@@ -98,8 +99,13 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
 
             checkVerifyInfo(jsonInfo);
 
+            if(isFinished(jsonInfo)){
+                return;
+            }
+
             if(isTimeout(info)){
                 logger.info("syncVerifyInfo timeout info:{}",info);
+                timeoutHandler(info);
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
             }
 
@@ -110,14 +116,11 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             finishVerify(jsonInfo);
             logger.info("syncVerifyInfo success:{}",info);
         } catch (BIZException e){
-            logger.error("处理验证完成的消息错误：{}",e);
-            emailNotification.sendVerifyFailureMail(info, null, e);
-            timeoutHandler(info);
+            logger.error("处理验证完成的消息失败 参数：{}，错误：{}",info,e);
             throw e;
         } catch (Exception e){
-            logger.error("处理验证完成的消息错误：{}",e);
+            logger.error("处理验证完成的消息失败 参数：{}，错误：{}",info,e);
             emailNotification.sendVerifyFailureMail(info, null, e);
-            timeoutHandler(info);
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
 
