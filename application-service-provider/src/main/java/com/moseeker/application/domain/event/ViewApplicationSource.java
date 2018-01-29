@@ -1,4 +1,4 @@
-package com.moseeker.application.service.event;
+package com.moseeker.application.domain.event;
 
 import java.util.List;
 

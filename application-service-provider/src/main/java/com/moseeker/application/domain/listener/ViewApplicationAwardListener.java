@@ -1,10 +1,10 @@
-package com.moseeker.application.service.listener;
+package com.moseeker.application.domain.listener;
 
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.application.service.event.ViewApplicationListEvent;
+import com.moseeker.application.domain.event.ViewApplicationListEvent;
 import com.moseeker.application.domain.component.state.ApplicationStatus;
 import com.moseeker.application.infrastructure.ApplicationRepository;
-import com.moseeker.application.service.event.ViewApplicationSource;
+import com.moseeker.application.domain.event.ViewApplicationSource;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 /**
  * HR浏览申请积分添加监听器
