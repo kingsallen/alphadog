@@ -100,7 +100,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             checkVerifyInfo(jsonInfo);
 
             if(isFinished(jsonInfo)){
-                return;
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_ALREADY_VERIFY);
             }
 
             if(isTimeout(info)){
