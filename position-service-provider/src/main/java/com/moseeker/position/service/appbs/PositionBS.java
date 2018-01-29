@@ -247,11 +247,11 @@ public class PositionBS {
 
         String paramId=jsonParamObj.getString("paramId");
 
-        if(PositionSyncVerify.MOBILE_VERIFY_SUCCESS.equals(paramId)){
+        String jsonParam=verifyHandlerUtil.getParam(paramId);
+
+        if(PositionSyncVerify.MOBILE_VERIFY_SUCCESS.equals(jsonParam)){
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_INFO_SENDED);
         }
-
-        String jsonParam=verifyHandlerUtil.getParam(paramId);
 
         if(StringUtils.isNullOrEmpty(jsonParam)){
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
