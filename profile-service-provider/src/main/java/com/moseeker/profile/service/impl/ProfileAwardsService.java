@@ -181,7 +181,7 @@ public class ProfileAwardsService {
                 ProfileAwardsRecord param = BeanUtils.structToDB(struct, ProfileAwardsRecord.class);
                 RecordTool.recordToRecord(profileAwardsRecord, param);
                 ValidationMessage<ProfileAwardsRecord> validationMessage = ProfileValidation.verifyAward(profileAwardsRecord);
-                if (!validationMessage.isPass()) {
+                if (validationMessage.isPass()) {
                     updateResult = dao.updateRecord(BeanUtils.structToDB(struct, ProfileAwardsRecord.class));
 
                     /* 计算profile完成度 */
