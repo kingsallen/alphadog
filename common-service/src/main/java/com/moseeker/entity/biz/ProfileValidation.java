@@ -105,7 +105,7 @@ public class ProfileValidation {
 			vm.addFailedElement("时间", "开始时间大于结束时间");
 		}
 		logger.info("education经历开始时间：{}，islowerNow：{}", education.getStart_date(),lowerNow(education.getStart_date()));
-		if (lowerNow(education.getStart_date())) {
+		if (!lowerNow(education.getStart_date())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
 		}
 		if (org.apache.commons.lang.StringUtils.isNotBlank(education.getEnd_date())
