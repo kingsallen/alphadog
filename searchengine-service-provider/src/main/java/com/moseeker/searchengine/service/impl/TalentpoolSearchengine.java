@@ -528,8 +528,10 @@ public class TalentpoolSearchengine {
                 sb.deleteCharAt(sb.lastIndexOf("|"));
                 sb.append("){return true}}}");
             }
+        }else{
+            sb.append("}");
         }
-        sb.append("}");
+
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         return script;
     }
