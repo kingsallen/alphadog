@@ -211,14 +211,14 @@ public class PositionMiniService {
             Response res=searchengineServices.queryPositionMini(params);
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData(),Map.class);
-                long total=(long)data.get("totalNum");
+                int total=(int)data.get("totalNum");
                 bean.setTrickTotal((int)total);
             }
             params.put("status","1");
             Response res1=searchengineServices.queryPositionMini(params);
             if(res1.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res1.getData(),Map.class);
-                long total=(long)data.get("totalNum");
+                int total=(int)data.get("totalNum");
                 bean.setUnderTatal((int)total);
             }
 
@@ -233,14 +233,14 @@ public class PositionMiniService {
             Response res=searchengineServices.queryPositionMini(params);
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData(),Map.class);
-                long total=(long)data.get("totalNum");
+                int total=(int)data.get("totalNum");
                 bean.setTrickTotal((int)total);
             }
             params.put("status","1");
             Response res1=searchengineServices.queryPositionMini(params);
             if(res1.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res1.getData(),Map.class);
-                long total=(long)data.get("totalNum");
+                int total=(int)data.get("totalNum");
                 bean.setUnderTatal((int)total);
             }
         }
