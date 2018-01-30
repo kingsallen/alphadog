@@ -1,6 +1,9 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -20,6 +23,8 @@ public class UserAccountEntity {
 
     @Autowired
     private UserUserDao userDao;
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     /**
      * 获取用户的称呼

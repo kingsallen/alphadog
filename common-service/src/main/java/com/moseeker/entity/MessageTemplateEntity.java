@@ -19,6 +19,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrWxTemplateMessageRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -85,7 +86,6 @@ public class MessageTemplateEntity {
 
     @Autowired
     private CampaignRecomPositionlistDao campaignRecomPositionlistDao;
-
 
     public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url){
 

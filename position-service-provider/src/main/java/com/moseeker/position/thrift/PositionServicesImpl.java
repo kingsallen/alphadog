@@ -10,6 +10,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.pojo.JobPostionResponse;
+import com.moseeker.position.pojo.PositionMiniBean;
 import com.moseeker.position.pojo.PositionSyncResultPojo;
 import com.moseeker.position.pojo.SyncFailMessPojo;
 import com.moseeker.position.service.appbs.PositionBS;
@@ -67,6 +68,8 @@ public class PositionServicesImpl implements Iface {
     private PositionThridService positionThridService;
     @Autowired
     private PositionBS positionBS;
+    @Autowired
+    private PositionMiniService positionMiniService;
 
     /**
      * 获取推荐职位
@@ -481,7 +484,11 @@ public class PositionServicesImpl implements Iface {
 
     }
     /*
-      获取只能回阿香推送的职位，用于在微信端展示
+      @auth zzt
+      @param userId用户id
+      @param companyId 公司id
+      @param type职位的类型
+      功能：获取推送的职位，用于在微信端展示
      */
 
     @Override
@@ -517,6 +524,21 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public Response getMiniPositionList(int accountId, String keyword, int page, int pageSize) throws TException {
+        try {
+            PositionMiniBean  result=positionMiniService.getPositionMiniList(accountId,keyword,page,pageSize);
+            if(result==null){
+                return  ResponseUtils.fail(1,"您所查找的职位推送不存在");
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
 
     @Override
     public Response updatePosition(String param) throws TException {

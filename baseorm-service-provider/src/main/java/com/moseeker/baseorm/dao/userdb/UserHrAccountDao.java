@@ -502,4 +502,20 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
 
         return id;
     }
+
+    /*
+    通过id获取user_hr_account
+    */
+    public com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount getHrAccount(int accountId){
+        List<com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount> accounts=
+        create.selectFrom(UserHrAccount.USER_HR_ACCOUNT)
+                .where(UserHrAccount.USER_HR_ACCOUNT.ID.equal(accountId))
+                .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.eq(1))
+                .and(UserHrAccount.USER_HR_ACCOUNT.ACTIVATION.eq((byte)1))
+                .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount.class);
+        if(com.moseeker.common.util.StringUtils.isEmptyList(accounts)){
+            return null;
+        }
+        return accounts.get(0);
+    }
 }

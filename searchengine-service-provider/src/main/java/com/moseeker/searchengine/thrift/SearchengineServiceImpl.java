@@ -146,4 +146,18 @@ public class SearchengineServiceImpl implements Iface {
 		return service.queryPositionIndex(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size, child_company_name, department, order_by_priority, custom);
 	}
 
+	@Override
+	public Response queryPositionMini(Map<String, String> params) throws TException {
+		try{
+			Map<String,Object> res=service.searchPositionMini(params);
+			if(res==null||res.isEmpty()){
+				return ResponseUtils.success("");
+			}
+			return ResponseUtils.success(res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
 }
