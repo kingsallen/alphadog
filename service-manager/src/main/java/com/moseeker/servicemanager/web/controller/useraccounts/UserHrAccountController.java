@@ -1040,4 +1040,29 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 获取自定义申请导出字段
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/company/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getHrAccountCompanyInfo(HttpServletRequest request) {
+        try {
+            ValidateUtil vu = new ValidateUtil();
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int account_id = params.getInt("accountId",0);
+            int wechat_id = params.getInt("wechatId", 41);
+            String unionId = params.getString("unionId");
+            Response res = userHrAccountService.getHrCompanyInfo(wechat_id,unionId,account_id);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }
