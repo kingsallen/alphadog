@@ -94,12 +94,13 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     /**
      * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
      */
-    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "消息类型");
+
+    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "消息类型");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url
      */
-    public final TableField<HrWxHrChatRecord, String> PIC_URL = createField("pic_url", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "图片url");
+    public final TableField<HrWxHrChatRecord, String> PIC_URL = createField("pic_url", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "图片url");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息

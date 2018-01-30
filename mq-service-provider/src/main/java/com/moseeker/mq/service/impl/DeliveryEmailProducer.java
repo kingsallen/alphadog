@@ -9,6 +9,10 @@ import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileWorkexpDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileBasic;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileEducation;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
@@ -77,24 +81,27 @@ public class DeliveryEmailProducer {
      */
     public  Map<String, Object> emailBady(HrCompanyDO company, JobPositionDO position, UserUserDO user){
 
-        ProfileProfileDO profileDO = profileDao.getData(new Query.QueryBuilder().where("user_id",
+        ProfileProfileDO profileDO = profileDao.getData(new Query.QueryBuilder().where(ProfileProfile.PROFILE_PROFILE.USER_ID.getName(),
                 user.getId()).buildQuery());
-        ProfileBasicDO basicDO = basicDao.getData(new Query.QueryBuilder().where("profile_id",
+        ProfileBasicDO basicDO = basicDao.getData(new Query.QueryBuilder().where(ProfileBasic.PROFILE_BASIC.PROFILE_ID.getName(),
                 profileDO.getId()).buildQuery());
-        List<ProfileWorkexpDO> workexpDOList = workexpDao.getDatas(new Query.QueryBuilder().where("profile_id",
-                profileDO.getId()).orderBy("start", Order.DESC).buildQuery());
-        List<ProfileEducationDO> educationDOList = educationDao.getDatas(new Query.QueryBuilder().where("profile_id",
-                profileDO.getId()).orderBy("start", Order.DESC).buildQuery());
+        List<ProfileWorkexpDO> workexpDOList = workexpDao.getDatas(new Query.QueryBuilder().where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.getName(),
+                profileDO.getId()).orderBy(ProfileWorkexp.PROFILE_WORKEXP.START.getName(), Order.DESC).buildQuery());
+        List<ProfileEducationDO> educationDOList = educationDao.getDatas(new Query.QueryBuilder().where(ProfileEducation.PROFILE_EDUCATION.PROFILE_ID.getName(),
+                profileDO.getId()).orderBy(ProfileEducation.PROFILE_EDUCATION.START.getName(), Order.DESC).buildQuery());
 
         //获取学历字典
         List<DictConstantDO> degree = dictConstantDao.getDatas(new Query.QueryBuilder().
-                where("parent_code", Constant.DICT_CONSTANT_DEGREE_USER).orderBy("priority",Order.ASC).buildQuery());
+                where(DictConstant.DICT_CONSTANT.PARENT_CODE.getName(), Constant.DICT_CONSTANT_DEGREE_USER)
+                .orderBy(DictConstant.DICT_CONSTANT.PRIORITY.getName(),Order.ASC).buildQuery());
         //性别字典
         List<DictConstantDO> gender = dictConstantDao.getDatas(new Query.QueryBuilder().
-                where("parent_code", Constant.DICT_CONSTANT_GENDER_USER).orderBy("priority",Order.ASC).buildQuery());
+                where(DictConstant.DICT_CONSTANT.PARENT_CODE.getName(), Constant.DICT_CONSTANT_GENDER_USER)
+                .orderBy(DictConstant.DICT_CONSTANT.PRIORITY.getName(),Order.ASC).buildQuery());
         //语言字典
         List<DictConstantDO> language = dictConstantDao.getDatas(new Query.QueryBuilder().
-                where("parent_code", Constant.DICT_CONSTANT_LANGUAGE_FRUENCY).orderBy("priority",Order.ASC).buildQuery());
+                where(DictConstant.DICT_CONSTANT.PARENT_CODE.getName(), Constant.DICT_CONSTANT_LANGUAGE_FRUENCY)
+                .orderBy(DictConstant.DICT_CONSTANT.PRIORITY.getName(),Order.ASC).buildQuery());
         Map<String, Object> map = new HashMap<>();
         map.put("company_name", company.getAbbreviation());
         map.put("position_name", position.getTitle());
