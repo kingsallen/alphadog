@@ -142,23 +142,18 @@ public class PositionMiniService {
 
     public List<PositionMiniInfo> getSearchdata(String keyWord,int page,int pageSize,CompanyAccount account) throws TException {
         String motherCompanyId="";
-        String childCompanyId="";
         HrCompany company=account.getHrCompany();
-        if(company==null){
-            ResponseUtils.fail(1,"account_id已失效");
-        }
-        int parentId=company.getParentId();
-        if(parentId==0){
-            motherCompanyId=String.valueOf(company.getId());
-        }else{
-            childCompanyId=String.valueOf(company.getId());
-        }
+        UserHrAccount userHrAccount=account.getUserHrAccount();
         Map<String,String> params=new HashMap<>();
+        if(userHrAccount.getAccountType()==0){
+            params.put("motherCompanyId", String.valueOf(company.getId()));
+        }else{
+            params.put("publisher",String.valueOf(userHrAccount.getId()));
+        }
         params.put("keyword",keyWord);
         params.put("page",String.valueOf(page));
         params.put("pageSize",String.valueOf(pageSize));
-        params.put("childCompanyId",childCompanyId);
-        params.put("motherCompanyId",motherCompanyId);
+
         Response res=searchengineServices.queryPositionMini(params);
         if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
             Map<String,Object> data= JSON.parseObject(res.getData(),Map.class);
