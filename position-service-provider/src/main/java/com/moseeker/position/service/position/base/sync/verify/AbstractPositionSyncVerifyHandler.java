@@ -193,7 +193,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
      * @return
      */
     protected int timeoutSeconds(){
-        return 120;
+        return 300;
     }
 
     /**
