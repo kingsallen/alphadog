@@ -60,7 +60,7 @@ public class HREntity {
             applicationRepository.addHROperationRecordList(operationRecordList);
 
             //发布HR查看申请事件
-            publishEvent(applicationBatchEntity.getExecuteList()
+            publishEvent(operationRecordList
                     .stream()
                     .map(record -> record.getId())
                     .collect(Collectors.toList()));

@@ -1,7 +1,6 @@
 package com.moseeker.application.domain.component.state;
 
-import com.moseeker.application.domain.ApplicationBatchEntity;
-import com.moseeker.application.infrastructure.ApplicationRepository;
+import com.moseeker.application.domain.ApplicationEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +11,7 @@ import java.util.Map;
  */
 public enum ApplicationStatus {
 
-    Apply(1, "简历提交成功"), Hired(3, "入职"), CVChecked(6, "简历被HR查看/简历被下载"), CVPassed(10, "简历评审合格"), Offered(12, "面试通过");
+    Apply(1, "简历提交成功"), CVChecked(6, "简历被HR查看/简历被下载"), CVPassed(10, "简历评审合格"), Offered(12, "面试通过"), Hired(3, "入职");
 
     private ApplicationStatus(int state, String name) {
         this.state = state;
@@ -75,14 +74,14 @@ public enum ApplicationStatus {
         return map.get(state);
     }
 
-    public ApplicationState buildState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
+    public ApplicationState buildState(ApplicationEntity applicationEntity) {
         ApplicationState applicationState;
         switch (this) {
-            case Apply: applicationState = new ApplyState(applicationBatchEntity, applicationRepository);break;
-            case CVChecked: applicationState = new CVCheckedState(applicationBatchEntity, applicationRepository); break;
-            case CVPassed: applicationState = new CVPassedState(applicationBatchEntity, applicationRepository); break;
-            case Hired:applicationState = new HiredState(applicationBatchEntity, applicationRepository); break;
-            case Offered: applicationState = new OfferedStatus(applicationBatchEntity, applicationRepository); break;
+            case Apply: applicationState = new ApplyState(applicationEntity);break;
+            case CVChecked: applicationState = new CVCheckedState(applicationEntity); break;
+            case CVPassed: applicationState = new CVPassedState(applicationEntity); break;
+            case Hired:applicationState = new HiredState(applicationEntity); break;
+            case Offered: applicationState = new OfferedStatus(applicationEntity); break;
             default: applicationState = null; break;
         }
         return applicationState;

@@ -4,7 +4,7 @@ import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.domain.component.state.ApplicationStatus;
 import com.moseeker.application.domain.constant.ApplicationViewStatus;
-import com.moseeker.application.domain.pojo.Application;
+import com.moseeker.application.domain.ApplicationEntity;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
@@ -201,20 +201,11 @@ public class ApplicationRepository {
                         .collect(Collectors.toList()));
 
         //组合申请数据
-        List<Application> applications = packageApplication(applicationList, positionList, superAccountList);
+        List<ApplicationEntity> applications = packageApplication(applicationList, positionList, superAccountList);
 
         ApplicationBatchEntity applicationBatchEntity = new ApplicationBatchEntity(this, applications);
 
         return applicationBatchEntity;
-    }
-
-    /**
-     * 将查看申请的业务操作 持久化到数据库中
-     * @param applicationList 申请数据
-     * @return 执行申请状态转变的记录
-     */
-    public List<Application> viewApplication(List<Application> applicationList) {
-        return jobApplicationDao.viewApplication(applicationList);
     }
 
     /**
@@ -229,27 +220,24 @@ public class ApplicationRepository {
      * @param superAccountList 超级账号集合
      * @return 申请数据
      */
-    private List<Application> packageApplication(List<JobApplication> applicationList, List<JobPosition> positionList,
-                                                 List<Record2<Integer, Integer>> superAccountList) {
+    private List<ApplicationEntity> packageApplication(List<JobApplication> applicationList, List<JobPosition> positionList,
+                                                       List<Record2<Integer, Integer>> superAccountList) {
         return applicationList.stream().map(jobApplication -> {
-            Application application = new Application();
+
+            int id = jobApplication.getId();
             ApplicationStatus status = ApplicationStatus.initFromState(jobApplication.getAppTplId());
             if (status == null) {
-                logger.error("ApplicationRepository status is null! application:{}", application);
+                logger.error("ApplicationRepository status is null! application:{}", jobApplication);
             }
-            application.setStatus(status);
-            if (jobApplication.getIsViewed() != null
-                    && jobApplication.getIsViewed() == ApplicationViewStatus.VIEWED.getStatus()) {
-                application.setViewed(true);
-            } else {
-                application.setViewed(false);
-            }
+            int state = status.getState();
+            int viewNumber = jobApplication.getViewCount();
+            List<Integer> hrIdList = new ArrayList<>();
             if (positionList != null && positionList.size() > 0) {
                 Optional<JobPosition> jobPositionOptional = positionList
                         .stream()
                         .filter(jobPosition -> jobApplication.getPositionId().intValue()
                                 == jobPosition.getId()).findAny();
-                List<Integer> hrIdList = new ArrayList<>();
+
                 if (jobPositionOptional.isPresent()) {
                     hrIdList.add(jobPositionOptional.get().getPublisher());
                     Optional<Record2<Integer, Integer>> optional
@@ -261,14 +249,56 @@ public class ApplicationRepository {
                         hrIdList.add(optional.get().value2());
                     }
                 }
-                application.setHrId(hrIdList);
             }
-            application.setId(jobApplication.getId());
+            ApplicationEntity application = new ApplicationEntity(id, state, hrIdList, viewNumber);
             return application;
         }).collect(Collectors.toList());
     }
 
     public void addHROperationRecordList(List<HrOperationRecord> operationRecordList) {
         hrOperationJOOQDao.insert(operationRecordList);
+    }
+
+    /**
+     * 修改申请实体
+     * @param applicationList 申请实体列表
+     * @return 被持久化的申请实体列表
+     */
+    public List<ApplicationEntity> updateApplications(List<ApplicationEntity> applicationList) {
+
+        /** 申请的浏览次数加一 */
+        List<ApplicationEntity> addViewList = applicationList
+                .stream()
+                .filter(applicationEntity ->
+                        applicationEntity.getViewNumber() != applicationEntity.getInitViewNumber()
+                                && applicationEntity.getState().getStatus()
+                                .equals(applicationEntity.getInitState().getStatus()))
+                .collect(Collectors.toList());
+        jobApplicationDao.updateViewNumber(addViewList);
+
+        /** 修改申请的状态 */
+        List<ApplicationEntity> changeStateList = applicationList
+                .stream()
+                .filter(applicationEntity
+                        -> applicationEntity.getViewNumber()
+                        == applicationEntity.getInitViewNumber()
+                        && !applicationEntity.getState().getStatus().equals(applicationEntity.getInitState().getStatus()))
+                .collect(Collectors.toList());
+        List<ApplicationEntity> changeStateResult = jobApplicationDao.changeState(changeStateList);
+
+        /** 修改申请状态，并且浏览次数加一 */
+        List<ApplicationEntity> addViewAndChangeStateList = applicationList
+                .stream()
+                .filter(applicationEntity
+                        -> !applicationEntity.getState().getStatus()
+                        .equals(applicationEntity.getInitState().getStatus())
+                        && applicationEntity.getViewNumber() != applicationEntity.getInitViewNumber())
+                .collect(Collectors.toList());
+
+        List<ApplicationEntity> addViewAndChangeStateResult = jobApplicationDao.changeViewNumberAndState(addViewAndChangeStateList);
+
+        changeStateList.addAll(addViewAndChangeStateResult);
+
+        return changeStateList;
     }
 }
