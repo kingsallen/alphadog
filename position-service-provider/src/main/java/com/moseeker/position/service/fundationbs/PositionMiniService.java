@@ -85,7 +85,7 @@ public class PositionMiniService {
                                 Map<String,Object> newMap=StringUtils.convertUnderKeyToCamel(map);
                                 UserHrAccount hrAccount=JSON.parseObject(JSON.toJSONString(newMap),UserHrAccount.class);
                                 info.setAccount(hrAccount);
-                                continue;
+                                break;
                             }
                         }
                     }
