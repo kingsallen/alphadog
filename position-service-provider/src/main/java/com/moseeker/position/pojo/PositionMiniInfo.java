@@ -17,6 +17,7 @@ public class PositionMiniInfo {
     private UserHrAccount account;
     private int status;
     private int publisher;
+    private String cities;
 
     public int getId() {
         return id;
@@ -96,5 +97,13 @@ public class PositionMiniInfo {
 
     public void setPublisher(int publisher) {
         this.publisher = publisher;
+    }
+
+    public String getCities() {
+        return cities;
+    }
+
+    public void setCities(String cities) {
+        this.cities = cities;
     }
 }
