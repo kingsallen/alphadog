@@ -123,35 +123,83 @@ public class TalentpoolSearchengine {
         String publisherIds=params.get("publisher");
         List<Integer> publisherIdList=convertStringToList(publisherIds);
         String hrId=params.get("hr_account_id");
+        String companyId=params.get("company_id");
         if(!this.isUseFieldorder(params)){
             builder.addSort(this.handlerScoreOrderScript(publisherIds));
-            if (publisherIdList.size() > 1) {
-                builder.addSort("user.hr_all_" + hrId + "_last_submit_time", SortOrder.DESC);
-            }else{
-                if(this.isMianHr(Integer.parseInt(hrId))){
-                    builder.addSort("user.hr_" + publisherIdList.get(0) + "_last_submit_time", SortOrder.DESC);
-                }else{
-                    builder.addSort("user.hr_" + hrId + "_last_submit_time", SortOrder.DESC);
+            if(this.isOrderTalent(params)){
+                this.orderByTalent(publisherIdList,hrId,companyId,builder);
+            }else {
+                if (publisherIdList.size() > 1) {
+                    builder.addSort("user.hr_all_" + hrId + "_last_submit_time", SortOrder.DESC);
+                } else {
+                    if (this.isMianHr(Integer.parseInt(hrId))) {
+                        builder.addSort("user.hr_" + publisherIdList.get(0) + "_last_submit_time", SortOrder.DESC);
+                    } else {
+                        builder.addSort("user.hr_" + hrId + "_last_submit_time", SortOrder.DESC);
+                    }
                 }
             }
         }else{
+            if(this.isOrderTalent(params)){
+                this.orderByTalent(publisherIdList,hrId,companyId,builder);
+            }else{
+                this.orderByApp(publisherIdList,hrId,companyId,builder);
+            }
             //如果查询多个。注解按照hr_all_+主账号_order
 
 
-            if (publisherIdList.size() > 1) {
-                builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+        }
+    }
+    /*
+     根据处理好的收藏时间排序
+     */
+    private void orderByTalent(List<Integer> publisherIdList,String hrId,String companyId,SearchRequestBuilder builder){
+        if (publisherIdList.size() > 1) {
+            builder.addSort("user.field_talent_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+        }else{
+            if(this.isMianHr(Integer.parseInt(hrId))){
+                logger.info("==============================");
+                builder.addSort("user.field_talent_order.hr_all_" + hrId + "_order", SortOrder.DESC);
             }else{
-                if(this.isMianHr(Integer.parseInt(hrId))){
-                    logger.info("==============================");
-                    builder.addSort("user.field_order.hr_all_" + hrId + "_order", SortOrder.DESC);
-                }else{
-                    String companyId=params.get("company_id");
-                    UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
-                    logger.info("++++++++++++++++++++++++++++++++");
-                    builder.addSort("user.field_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
-                }
+//              UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
+//              builder.addSort("user.field_talent_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+                logger.info("++++++++++++++++++++++++++++++++");
+                builder.addSort("user.field_talent_order.hr_" + hrId + "_order", SortOrder.DESC);
+
+
             }
         }
+    }
+    /*
+     根据处理好的申请时间排序
+     */
+    private void orderByApp(List<Integer> publisherIdList,String hrId,String companyId,SearchRequestBuilder builder){
+
+        if (publisherIdList.size() > 1) {
+            builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+        }else{
+            if(this.isMianHr(Integer.parseInt(hrId))){
+                logger.info("==============================");
+                builder.addSort("user.field_order.hr_all_" + hrId + "_order", SortOrder.DESC);
+            }else{
+//                UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
+                logger.info("++++++++++++++++++++++++++++++++");
+//                builder.addSort("user.field_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+                builder.addSort("user.field_order.hr_" + hrId + "_order", SortOrder.DESC);
+            }
+        }
+    }
+    /*
+     按照收藏时间排序
+     */
+    private boolean isOrderTalent(Map<String,String>params){
+        String tagIds=params.get("tag_ids");
+        String favoriteHrs=params.get("favorite_hrs");
+        String isPublic=params.get("is_public");
+        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
+            return false;
+        }
+        return true;
     }
     /*
      处理统计
