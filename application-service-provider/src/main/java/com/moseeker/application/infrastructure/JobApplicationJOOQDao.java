@@ -150,6 +150,7 @@ public class JobApplicationJOOQDao extends com.moseeker.baseorm.db.jobdb.tables.
                 using(configuration())
                         .update(JobApplication.JOB_APPLICATION)
                         .set(JobApplication.JOB_APPLICATION.VIEW_COUNT, JobApplication.JOB_APPLICATION.VIEW_COUNT.add(1))
+                        .set(JobApplication.JOB_APPLICATION.IS_VIEWED, (byte)ApplicationViewStatus.VIEWED.getStatus())
                         .where(JobApplication.JOB_APPLICATION.ID.eq(applicationEntity.getId()))
                         .execute();
             });
@@ -198,6 +199,7 @@ public class JobApplicationJOOQDao extends com.moseeker.baseorm.db.jobdb.tables.
                         .update(JobApplication.JOB_APPLICATION)
                         .set(JobApplication.JOB_APPLICATION.VIEW_COUNT, JobApplication.JOB_APPLICATION.VIEW_COUNT.add(1))
                         .set(JobApplication.JOB_APPLICATION.APP_TPL_ID, applicationEntity.getState().getStatus().getState())
+                        .set(JobApplication.JOB_APPLICATION.IS_VIEWED, (byte)ApplicationViewStatus.VIEWED.getStatus())
                         .where(JobApplication.JOB_APPLICATION.ID.eq(applicationEntity.getId()))
                         .and(JobApplication.JOB_APPLICATION.APP_TPL_ID.eq(applicationEntity.getInitState().getStatus().getState()))
                         .execute();

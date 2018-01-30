@@ -4,19 +4,16 @@ import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.common.exception.CommonException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 申请实体
+ * 批量申请实体
  * Created by jack on 17/01/2018.
  */
 public class ApplicationBatchEntity {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private volatile List<ApplicationEntity> applicationList;     //申请编号集合
     private ApplicationRepository applicationRepository;    //DAO操作
@@ -34,8 +31,9 @@ public class ApplicationBatchEntity {
     }
 
     /**
-     * 简历被查看
-     * @param hrEntity
+     * HR查看批量申请
+     * @param hrEntity HR
+     * @return HR查看申请的操作记录
      */
     public List<HrOperationRecord> viewed(HREntity hrEntity) {
 

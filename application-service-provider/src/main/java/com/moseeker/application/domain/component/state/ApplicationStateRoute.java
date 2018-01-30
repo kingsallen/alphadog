@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 招聘进度状态
+ * 招聘进度状态路线图
  * Created by jack on 18/01/2018.
  */
-public enum ApplicationStatus {
+public enum ApplicationStateRoute {
 
     Apply(1, "简历提交成功"), CVChecked(6, "简历被HR查看/简历被下载"), CVPassed(10, "简历评审合格"), Offered(12, "面试通过"), Hired(3, "入职");
 
-    private ApplicationStatus(int state, String name) {
+    private ApplicationStateRoute(int state, String name) {
         this.state = state;
         this.name = name;
     }
@@ -21,20 +21,20 @@ public enum ApplicationStatus {
     private int state;
     private String name;
 
-    private static Map<Integer, ApplicationStatus> map = new HashMap<>();
-    private static Map<ApplicationStatus, Node> path = new HashMap<>();
+    private static Map<Integer, ApplicationStateRoute> map = new HashMap<>();
+    private static Map<ApplicationStateRoute, Node> path = new HashMap<>();
     static {
-        for (ApplicationStatus applicationStatus:ApplicationStatus.values()) {
-            map.put(applicationStatus.getState(), applicationStatus);
+        for (ApplicationStateRoute applicationStateRoute : ApplicationStateRoute.values()) {
+            map.put(applicationStateRoute.getState(), applicationStateRoute);
         }
     }
 
     private void init() {
-        ApplicationStatus applyState = ApplicationStatus.Apply;
-        ApplicationStatus viewedState = ApplicationStatus.CVChecked;
-        ApplicationStatus cvPassedState = ApplicationStatus.CVPassed;
-        ApplicationStatus offeredStatus = ApplicationStatus.Offered;
-        ApplicationStatus hiredState = ApplicationStatus.Hired;
+        ApplicationStateRoute applyState = ApplicationStateRoute.Apply;
+        ApplicationStateRoute viewedState = ApplicationStateRoute.CVChecked;
+        ApplicationStateRoute cvPassedState = ApplicationStateRoute.CVPassed;
+        ApplicationStateRoute offeredStatus = ApplicationStateRoute.Offered;
+        ApplicationStateRoute hiredState = ApplicationStateRoute.Hired;
 
         Node firstNode = new Node();
         firstNode.setState(applyState);
@@ -70,7 +70,7 @@ public enum ApplicationStatus {
         return name;
     }
 
-    public static ApplicationStatus initFromState(int state) {
+    public static ApplicationStateRoute initFromState(int state) {
         return map.get(state);
     }
 
@@ -89,16 +89,16 @@ public enum ApplicationStatus {
 
     /**
      * 获取流程定义中，当前状态的下一个状态
-     * @param applicationStatus 申请进度状态
+     * @param applicationStateRoute 申请进度状态
      * @return 下一个状态
      */
-    public synchronized ApplicationStatus getNextNode(ApplicationStatus applicationStatus) {
+    public synchronized ApplicationStateRoute getNextNode(ApplicationStateRoute applicationStateRoute) {
         if (path.size() == 0) {
             init();
         }
-        if (path.get(applicationStatus) != null) {
-            if (path.get(applicationStatus).getNextNode() != null) {
-                return path.get(applicationStatus).getNextNode().getState();
+        if (path.get(applicationStateRoute) != null) {
+            if (path.get(applicationStateRoute).getNextNode() != null) {
+                return path.get(applicationStateRoute).getNextNode().getState();
             }
         }
         return null;
@@ -106,16 +106,16 @@ public enum ApplicationStatus {
 
     /**
      * 获取流程定义中的当前状态的上一个状态
-     * @param applicationStatus 申请进度状态
+     * @param applicationStateRoute 申请进度状态
      * @return 上一个状态
      */
-    public synchronized ApplicationStatus getPreNode(ApplicationStatus applicationStatus) {
+    public synchronized ApplicationStateRoute getPreNode(ApplicationStateRoute applicationStateRoute) {
         if (path.size() == 0) {
             init();
         }
-        if (path.get(applicationStatus) != null) {
-            if (path.get(applicationStatus).getPreNode() != null) {
-                return path.get(applicationStatus).getPreNode().getState();
+        if (path.get(applicationStateRoute) != null) {
+            if (path.get(applicationStateRoute).getPreNode() != null) {
+                return path.get(applicationStateRoute).getPreNode().getState();
             }
         }
         return null;
@@ -124,14 +124,14 @@ public enum ApplicationStatus {
     public class Node {
 
         private Node preNode;               //上一个节点
-        private ApplicationStatus state;     //当前节点
+        private ApplicationStateRoute state;     //当前节点
         private Node nextNode;              //下一个节点
 
-        public ApplicationStatus getState() {
+        public ApplicationStateRoute getState() {
             return state;
         }
 
-        public void setState(ApplicationStatus state) {
+        public void setState(ApplicationStateRoute state) {
             this.state = state;
         }
 

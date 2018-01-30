@@ -8,7 +8,7 @@ import com.moseeker.application.domain.ApplicationEntity;
 public class CVPassedState extends ApplicationState {
 
     public CVPassedState(ApplicationEntity applicationEntity) {
-        super(applicationEntity, ApplicationStatus.CVPassed);
+        super(applicationEntity, ApplicationStateRoute.CVPassed);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class CVPassedState extends ApplicationState {
     }
 
     @Override
-    public ApplicationStatus getStatus() {
+    public ApplicationStateRoute getStatus() {
         return null;
     }
 

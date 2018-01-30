@@ -2,8 +2,6 @@ package com.moseeker.application.domain.component.state;
 
 import com.moseeker.application.domain.ApplicationEntity;
 
-import java.util.List;
-
 /**
  * 投递申请，申请的初始状态
  * Created by jack on 16/01/2018.
@@ -11,7 +9,7 @@ import java.util.List;
 public class ApplyState extends ApplicationState {
 
     public ApplyState(ApplicationEntity applicationEntity) {
-        super(applicationEntity, ApplicationStatus.Apply);
+        super(applicationEntity, ApplicationStateRoute.Apply);
     }
 
     @Override
@@ -22,8 +20,7 @@ public class ApplyState extends ApplicationState {
     @Override
     public ApplicationState pass() {
 
-        this.applicationEntity.addViewNumber();
-        if (applicationEntity.getState().getStatus().equals(ApplicationStatus.Apply)) {
+        if (applicationEntity.getState().getStatus().equals(ApplicationStateRoute.Apply)) {
             ApplicationState nextSate = this.getNext();
             applicationEntity.setState(nextSate);
             return nextSate;
@@ -42,7 +39,7 @@ public class ApplyState extends ApplicationState {
     }
 
     @Override
-    public ApplicationStatus getStatus() {
-        return applicationStatus;
+    public ApplicationStateRoute getStatus() {
+        return applicationStateRoute;
     }
 }

@@ -1,8 +1,8 @@
 package com.moseeker.application.domain.listener;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.application.domain.component.state.ApplicationStateRoute;
 import com.moseeker.application.domain.event.ViewApplicationListEvent;
-import com.moseeker.application.domain.component.state.ApplicationStatus;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.domain.event.ViewApplicationSource;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -60,7 +60,7 @@ public class ViewApplicationAwardListener implements SmartApplicationListener {
 
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             ViewApplicationSource viewApplicationSource = (ViewApplicationSource) event.getSource();
-            ApplicationStatus status = ApplicationStatus.CVChecked;
+            ApplicationStateRoute status = ApplicationStateRoute.CVChecked;
 
             HttpPost post = new HttpPost(url);
             JSONObject jsonObject = new JSONObject();

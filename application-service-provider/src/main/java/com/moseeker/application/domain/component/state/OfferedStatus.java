@@ -8,7 +8,7 @@ import com.moseeker.application.domain.ApplicationEntity;
 public class OfferedStatus extends ApplicationState {
 
     public OfferedStatus(ApplicationEntity applicationEntity) {
-        super(applicationEntity, ApplicationStatus.Offered);
+        super(applicationEntity, ApplicationStateRoute.Offered);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class OfferedStatus extends ApplicationState {
     }
 
     @Override
-    public ApplicationStatus getStatus() {
+    public ApplicationStateRoute getStatus() {
         return null;
     }
 }
