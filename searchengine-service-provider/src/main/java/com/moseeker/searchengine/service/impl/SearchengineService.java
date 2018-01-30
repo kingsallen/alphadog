@@ -152,6 +152,8 @@ public class SearchengineService {
         String childCompanyId=params.get("childCompanyId");
         String motherCompanyId=params.get("motherCompanyId");
         String keywords=params.get("keyword");
+        String status=params.get("status");
+        String publisher=params.get("publisher");
         if (StringUtils.isBlank(pageFrom)||"0".equals(pageFrom)) {
             pageFrom = "0";
         }
@@ -161,10 +163,20 @@ public class SearchengineService {
         QueryBuilder query=this.getPositionQueryBuilder(keywords,null,null,null, null,
                 null, null, null, null,  null, motherCompanyId,
                 childCompanyId, null, null);
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+        if(StringUtils.isNotBlank(status)){
+            searchUtil.handleMatch(Integer.parseInt(status),query,"status");
+        }
+        if(StringUtils.isNotBlank(publisher)){
+            searchUtil.handleMatch(Integer.parseInt(publisher),query,"publisher");
+        }
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index1").setTypes("fulltext")
                 .setQuery(query);
-        this.handlerOrderByPriorityCityOrTime(responseBuilder,null);
-        responseBuilder.setFrom(Integer.parseInt(pageFrom)).setSize(Integer.parseInt(pageSize));
+        this.handlerOrderByPriorityCityOrTimeOrStatus(responseBuilder,null);
+        if(StringUtils.isNotBlank(status)){
+            responseBuilder.setSize(0);
+        }else{
+            responseBuilder.setFrom(Integer.parseInt(pageFrom)).setSize(Integer.parseInt(pageSize));
+        }
         responseBuilder.setTrackScores(true);
         logger.info(responseBuilder.toString());
         SearchResponse response = responseBuilder.execute().actionGet();
@@ -208,7 +220,7 @@ public class SearchengineService {
         SearchResponse response = responseBuilder.execute().actionGet();
         return response;
 
-        }
+    }
     /*
      封装一下对职位列表的查询语句
      */
@@ -403,6 +415,20 @@ public class SearchengineService {
             responseBuilder.addSort(builder);
         } else {
             responseBuilder.addSort("_score", SortOrder.DESC);
+        }
+    }
+    /*
+   继续对排序进行细分2,按照城市或者排序
+    */
+    private void handlerOrderByPriorityCityOrTimeOrStatus(SearchRequestBuilder responseBuilder,String cities){
+        responseBuilder.addSort("status", SortOrder.ASC);
+        responseBuilder.addSort("priority", SortOrder.ASC);
+        if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+            SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 1), "number");
+            builder.order(SortOrder.DESC);
+            responseBuilder.addSort(builder);
+        } else {
+            responseBuilder.addSort("update_time", SortOrder.DESC);
         }
     }
     /*

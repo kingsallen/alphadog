@@ -41,6 +41,7 @@ import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
+import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
@@ -987,6 +988,7 @@ public class WholeProfileService {
             map.put("mobile", userRecord.getMobile());
             map.put("email", userRecord.getEmail());
             map.put("name", userRecord.getName());
+            map.put("nickname",userRecord.getNickname());
         }
         if (lastWorkExp != null) {
             if (company != null) {
@@ -1025,6 +1027,8 @@ public class WholeProfileService {
             map.put("motto", basicRecord.getMotto());
             if (basicRecord.getBirth() != null) {
                 map.put("birth", DateUtils.dateToNormalDate(basicRecord.getBirth()));
+                String constellation = ConstellationUtil.getConstellation(basicRecord.getBirth());
+                map.put("constellation",constellation);
             }
             map.put("self_introduction", basicRecord.getSelfIntroduction());
 

@@ -161,7 +161,6 @@ public class UserHrAccountServiceImpl implements Iface {
         }
     }
 
-    @Override
     public HrThirdPartyAccountDO syncThirdPartyAccount(int hrId, int id, boolean sync) throws BIZException, TException {
         return null;
     }

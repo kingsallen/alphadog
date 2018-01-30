@@ -1621,6 +1621,7 @@ public class UserHrAccountService {
         return hrAccountDO;
     }
 
+
     /**
      * 获取HR账号信息以及公司信息
      * @param wechat_id 微信公众号编号
@@ -1691,9 +1692,11 @@ public class UserHrAccountService {
                 logo = Constant.CDN_URL+companyDO.getLogo();
             }
         }
+        if(userWxUserDO.getHeadimgurl().indexOf("http")>=0 && userWxUserDO.getHeadimgurl().indexOf("https")<0){
+            logo = logo.replace("http", "https");
+        }
         params.put("headImgUrl",logo);
         return ResponseUtils.success(params);
 
     }
-
 }

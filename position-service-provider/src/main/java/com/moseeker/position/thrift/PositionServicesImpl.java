@@ -1,52 +1,41 @@
 package com.moseeker.position.thrift;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.moseeker.common.constants.SyncRequestType;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.position.pojo.JobPostionResponse;
-import com.moseeker.position.pojo.PositionMiniBean;
-import com.moseeker.position.pojo.PositionSyncResultPojo;
-import com.moseeker.position.pojo.SyncFailMessPojo;
-import com.moseeker.position.service.appbs.PositionBS;
-import com.moseeker.position.service.fundationbs.*;
-import com.moseeker.position.utils.PositionEmailNotification;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
-import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.position.struct.RpExtInfo;
-import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
-import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
-import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
-import com.moseeker.thrift.gen.position.struct.WechatShareData;
-import com.moseeker.thrift.gen.position.struct.*;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.position.pojo.JobPostionResponse;
+import com.moseeker.position.pojo.PositionMiniBean;
+import com.moseeker.position.pojo.PositionSyncResultPojo;
+import com.moseeker.position.pojo.SyncFailMessPojo;
 import com.moseeker.position.service.JobOccupationService;
-import com.moseeker.position.service.fundationbs.PositionQxService;
+import com.moseeker.position.service.appbs.PositionBS;
+import com.moseeker.position.service.fundationbs.*;
 import com.moseeker.position.service.third.ThirdPositionService;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
+import com.moseeker.thrift.gen.position.struct.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class PositionServicesImpl implements Iface {
@@ -526,6 +515,10 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
+    public Response updatePosition(String param) throws TException {
+        return service.updatePosition(param);
+    }
+    @Override
     public Response getMiniPositionList(int accountId, String keyword, int page, int pageSize) throws TException {
         try {
             PositionMiniBean  result=positionMiniService.getPositionMiniList(accountId,keyword,page,pageSize);
@@ -537,11 +530,5 @@ public class PositionServicesImpl implements Iface {
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
         }
-    }
-
-
-    @Override
-    public Response updatePosition(String param) throws TException {
-        return service.updatePosition(param);
     }
 }

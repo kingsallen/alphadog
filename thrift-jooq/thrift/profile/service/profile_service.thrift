@@ -42,6 +42,8 @@ service WholeProfileServices {
     common_struct.Response preserveProfile(1:string params, 2:i32 hrId,3:i32 companyId,4:string fileName,5: i32 userId) throws (1: common_struct.BIZException e);
     common_struct.Response validateHrAndUploaduser(1:i32 hrId,2:i32 companyId,3: i32 userId) throws (1: common_struct.BIZException e);
     common_struct.Response getUploadProfile(1: i32 userId) throws (1: common_struct.BIZException e);
+
+    common_struct.Response getProfileInfo(1:i32 userId, 2:i32 profileId) throws (1: common_struct.BIZException e);
 }
 
 service ProfileServices {

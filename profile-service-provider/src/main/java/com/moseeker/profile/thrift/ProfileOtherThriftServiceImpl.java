@@ -233,4 +233,6 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     public Response otherFieldsCheck(int positionId, String fields) throws BIZException, TException {
         return profileService.otherFieldsCheck(positionId, fields);
     }
+
+
 }

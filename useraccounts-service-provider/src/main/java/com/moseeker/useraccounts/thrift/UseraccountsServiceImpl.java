@@ -475,7 +475,7 @@ public class UseraccountsServiceImpl implements Iface {
 			throw new SysBIZException();
 		}
 	}
-
+	@Override
 	public Response setScanResult(int wechatId, long sceneId, String value) throws TException {
 		try {
 			return service.setScanResult(wechatId, sceneId, value);
