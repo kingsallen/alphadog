@@ -59,7 +59,7 @@ public class PositionMiniService {
     @CounterIface
     public PositionMiniBean getPositionMiniList(int accountId,String keyWord,int page,int pageSize) throws TException {
         CompanyAccount account=this.getAccountInfo(accountId);
-        PositionMiniBean result=this.getAccountStatus(account);
+        PositionMiniBean result=this.getAccountStatus(keyWord,page,pageSize,account);
         List<PositionMiniInfo> list=getSearchdata(keyWord,page,pageSize,account);
         this.handlerPositionMiniInfoList(list);
         result.setPositionList(list);
@@ -192,24 +192,56 @@ public class PositionMiniService {
         return result;
     }
 
-    public PositionMiniBean getAccountStatus(CompanyAccount account){
+    public PositionMiniBean getAccountStatus(String keyWord,int page,int pageSize,CompanyAccount account) throws TException {
         PositionMiniBean bean=new PositionMiniBean();
         UserHrAccount account1=account.getUserHrAccount();
         bean.setAccount(account1);
         int accountType=account1.getAccountType();
         if(accountType==0){
             int companyId=account1.getCompanyId();
-            Set<Integer> hrSet=this.gethrIdByCompanyId(companyId);
-            int useNum=this.getPositionUsedByHrIdSet(hrSet);
-            int unUseNum=this.getPositionUnUsedByHrIdSet(hrSet);
-            bean.setTrickTotal(useNum);
-            bean.setTrickTotal(unUseNum);
+            Map<String,String> params=new HashMap<>();
+            params.put("keyword",keyWord);
+            params.put("page",String.valueOf(page));
+            params.put("pageSize",String.valueOf(pageSize));
+            params.put("motherCompanyId",String.valueOf(companyId));
+            params.put("status","0");
+            Response res=searchengineServices.queryPositionMini(params);
+            if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
+                Map<String,Object> data= JSON.parseObject(res.getData(),Map.class);
+                long total=(long)data.get("totalNum");
+                bean.setTrickTotal((int)total);
+            }
+            params.put("status","1");
+            Response res1=searchengineServices.queryPositionMini(params);
+            if(res1.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
+                Map<String,Object> data= JSON.parseObject(res1.getData(),Map.class);
+                long total=(long)data.get("totalNum");
+                bean.setTrickTotal((int)total);
+                bean.setUnderTatal((int)total);
+            }
+
         }else{
             int accountId=account1.getId();
-            int useNum=this.getPositionUsedByHrId(accountId);
-            int unUseNum=this.getPositionUnUsedByHrId(accountId);
-            bean.setTrickTotal(useNum);
-            bean.setTrickTotal(unUseNum);
+            Map<String,String> params=new HashMap<>();
+            params.put("keyword",keyWord);
+            params.put("page",String.valueOf(page));
+            params.put("pageSize",String.valueOf(pageSize));
+            params.put("publisher",String.valueOf(accountId));
+            params.put("status","0");
+            Response res=searchengineServices.queryPositionMini(params);
+            if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
+                Map<String,Object> data= JSON.parseObject(res.getData(),Map.class);
+                long total=(long)data.get("totalNum");
+                bean.setTrickTotal((int)total);
+            }
+            params.put("status","1");
+            Response res1=searchengineServices.queryPositionMini(params);
+            if(res1.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
+                Map<String,Object> data= JSON.parseObject(res1.getData(),Map.class);
+                long total=(long)data.get("totalNum");
+                bean.setTrickTotal((int)total);
+                bean.setUnderTatal((int)total);
+            }
         }
         return bean;
     }
@@ -225,45 +257,45 @@ public class PositionMiniService {
         Set<Integer> result=talentPoolEntity.getIdListByUserHrAccountList(list);
         return result;
     }
-    /*
-     获取主账号下所有的有效值位
-     */
-    public int getPositionUsedByHrIdSet(Set<Integer> hrSet){
-        if(StringUtils.isEmptySet(hrSet)){
-            return 0;
-        }
-        Query query=new Query.QueryBuilder().where(new Condition("publisher",hrSet.toArray(), ValueOp.IN)).and("status",0).buildQuery();
-        int count=jobPositionDao.getCount(query);
-        return count;
-    }
-    /*
-         获取主账号下所有的无效值位
-         */
-    public int getPositionUnUsedByHrIdSet(Set<Integer> hrSet){
-        if(StringUtils.isEmptySet(hrSet)){
-            return 0;
-        }
-        Query query=new Query.QueryBuilder().where(new Condition("publisher",hrSet.toArray(), ValueOp.IN)).and("status",1).buildQuery();
-        int count=jobPositionDao.getCount(query);
-        return count;
-    }
-    /*
-     获取主账号下所有的有效值位
-     */
-    public int getPositionUsedByHrId(int hrId){
-        Query query=new Query.QueryBuilder().where("publisher",hrId).and("status",0).buildQuery();
-        int count=jobPositionDao.getCount(query);
-        return count;
-    }
-    /*
-         获取主账号下所有的无效值位
-         */
-    public int getPositionUnUsedByHrId(int hrId){
-
-        Query query=new Query.QueryBuilder().where("publisher",hrId).and("status",1).buildQuery();
-        int count=jobPositionDao.getCount(query);
-        return count;
-    }
+//    /*
+//     获取主账号下所有的有效值位
+//     */
+//    public int getPositionUsedByHrIdSet(Set<Integer> hrSet){
+//        if(StringUtils.isEmptySet(hrSet)){
+//            return 0;
+//        }
+//        Query query=new Query.QueryBuilder().where(new Condition("publisher",hrSet.toArray(), ValueOp.IN)).and("status",0).buildQuery();
+//        int count=jobPositionDao.getCount(query);
+//        return count;
+//    }
+//    /*
+//         获取主账号下所有的无效值位
+//         */
+//    public int getPositionUnUsedByHrIdSet(Set<Integer> hrSet){
+//        if(StringUtils.isEmptySet(hrSet)){
+//            return 0;
+//        }
+//        Query query=new Query.QueryBuilder().where(new Condition("publisher",hrSet.toArray(), ValueOp.IN)).and("status",1).buildQuery();
+//        int count=jobPositionDao.getCount(query);
+//        return count;
+//    }
+//    /*
+//     获取主账号下所有的有效值位
+//     */
+//    public int getPositionUsedByHrId(int hrId){
+//        Query query=new Query.QueryBuilder().where("publisher",hrId).and("status",0).buildQuery();
+//        int count=jobPositionDao.getCount(query);
+//        return count;
+//    }
+//    /*
+//         获取主账号下所有的无效值位
+//         */
+//    public int getPositionUnUsedByHrId(int hrId){
+//
+//        Query query=new Query.QueryBuilder().where("publisher",hrId).and("status",1).buildQuery();
+//        int count=jobPositionDao.getCount(query);
+//        return count;
+//    }
     /*
      校验账号是是否可用,并且获取账号信息和公司信息
      */

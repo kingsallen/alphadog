@@ -9,6 +9,15 @@ public class SearchData {
     private String degree_name;
     private String custom;
     private String department;
+    private String title;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getDepartment() {
         return department;
