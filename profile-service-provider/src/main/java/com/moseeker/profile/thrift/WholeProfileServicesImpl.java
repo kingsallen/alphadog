@@ -3,6 +3,7 @@ package com.moseeker.profile.thrift;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.profile.service.ProfileOtherService;
 import com.moseeker.profile.service.impl.WholeProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -21,6 +22,9 @@ public class WholeProfileServicesImpl implements Iface {
 
     @Autowired
     private WholeProfileService service;
+
+    @Autowired
+    private ProfileOtherService otherService;
 
     @Override
     public Response getResource(int userId, int profileId, String uuid) throws TException {
@@ -115,7 +119,16 @@ public class WholeProfileServicesImpl implements Iface {
 
     @Override
     public Response getProfileInfo(int userId, int profileId) throws BIZException, TException {
-        return null;
+        Response  response = null;
+        try {
+            response = service.getResource(userId, profileId, "");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+        return response;
     }
 
 }
