@@ -47,12 +47,16 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
 
     protected abstract void receive(JSONObject jsonParam) throws BIZException;
 
-
     protected abstract boolean checkVerifyParam(JSONObject jsonParam) throws BIZException;
+
     protected abstract boolean checkVerifyInfo(JSONObject jsonInfo) throws BIZException;
 
-
-
+    /**
+     * 验证流程是否完成
+     * @param jsonInfo
+     * @return
+     * @throws BIZException
+     */
     protected abstract boolean isFinished(JSONObject jsonInfo) throws BIZException;
 
     /**
