@@ -529,6 +529,7 @@ public class TalentpoolSearchengine {
                 sb.append("){return true}}}");
             }
         }
+        sb.append("}");
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         return script;
     }
