@@ -161,7 +161,7 @@ public class SearchengineService {
         QueryBuilder query=this.getPositionQueryBuilder(keywords,null,null,null, null,
                 null, null, null, null,  null, motherCompanyId,
                 childCompanyId, null, null);
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index1").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query);
         this.handlerOrderByPriorityCityOrTime(responseBuilder,null);
         responseBuilder.setFrom(Integer.parseInt(pageFrom)).setSize(Integer.parseInt(pageSize));
@@ -199,7 +199,7 @@ public class SearchengineService {
                 child_company_name, department, custom);
         QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
         ((BoolQueryBuilder) query).must(status_filter);
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index1").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query);
         this.positionIndexOrder(responseBuilder, order_by_priority, haskey, cities);
         responseBuilder.setFrom(page_from).setSize(page_size);
