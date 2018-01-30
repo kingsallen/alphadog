@@ -1,7 +1,6 @@
 package com.moseeker.application.domain.component.state;
 
-import com.moseeker.application.domain.ApplicationBatchEntity;
-import com.moseeker.application.infrastructure.ApplicationRepository;
+import com.moseeker.application.domain.ApplicationEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,12 +15,10 @@ public abstract class ApplicationState {
     //招聘进度流程
     protected ApplicationStatus applicationStatus;
 
-    protected ApplicationBatchEntity applicationBatchEntity;
-    protected ApplicationRepository applicationRepository;
+    protected ApplicationEntity applicationEntity;
 
-    public ApplicationState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository, ApplicationStatus applicationStatus) {
-        this.applicationBatchEntity = applicationBatchEntity;
-        this.applicationRepository = applicationRepository;
+    public ApplicationState(ApplicationEntity applicationEntity, ApplicationStatus applicationStatus) {
+        this.applicationEntity = applicationEntity;
         this.applicationStatus = applicationStatus;
     }
 
@@ -62,7 +59,7 @@ public abstract class ApplicationState {
     public ApplicationState getNext() {
         ApplicationStatus status = applicationStatus.getNextNode(applicationStatus);
         if (status != null) {
-            return status.buildState(applicationBatchEntity, applicationRepository);
+            return status.buildState(applicationEntity);
         }
         return null;
     }
@@ -74,7 +71,7 @@ public abstract class ApplicationState {
     public ApplicationState getPre() {
         ApplicationStatus status = applicationStatus.getPreNode(applicationStatus);
         if (status != null) {
-            return status.buildState(applicationBatchEntity, applicationRepository);
+            return status.buildState(applicationEntity);
         }
         return null;
     }

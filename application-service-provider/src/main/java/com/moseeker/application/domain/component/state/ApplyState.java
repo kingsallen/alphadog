@@ -1,10 +1,6 @@
 package com.moseeker.application.domain.component.state;
 
-import com.moseeker.application.domain.ApplicationBatchEntity;
-import com.moseeker.application.domain.pojo.Application;
-import com.moseeker.application.infrastructure.ApplicationRepository;
-
-import java.util.List;
+import com.moseeker.application.domain.ApplicationEntity;
 
 /**
  * 投递申请，申请的初始状态
@@ -12,8 +8,8 @@ import java.util.List;
  */
 public class ApplyState extends ApplicationState {
 
-    public ApplyState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
-        super(applicationBatchEntity, applicationRepository, ApplicationStatus.Apply);
+    public ApplyState(ApplicationEntity applicationEntity) {
+        super(applicationEntity, ApplicationStatus.Apply);
     }
 
     @Override
@@ -24,23 +20,13 @@ public class ApplyState extends ApplicationState {
     @Override
     public ApplicationState pass() {
 
-        ApplicationState nextState = getNext();
-        if (nextState != null) {
-            applicationBatchEntity.getApplicationList()
-                    .forEach(application -> {
-                        if (application.getStatus().equals(ApplicationStatus.Apply)) {
-                            application.setNextStatus(nextState.getStatus());
-                            application.setViewOnly(false);
-                        } else {
-                            application.setViewOnly(true);
-                        }
-                    });
-            if (applicationBatchEntity.getApplicationList() != null && applicationBatchEntity.getApplicationList().size() > 0) {
-                List<Application> realExecuteList = applicationRepository.viewApplication(applicationBatchEntity.getApplicationList());
-                applicationBatchEntity.setExecuteList(realExecuteList);
-                }
+        this.applicationEntity.addViewNumber();
+        if (applicationEntity.getState().getStatus().equals(ApplicationStatus.Apply)) {
+            ApplicationState nextSate = this.getNext();
+            applicationEntity.setState(nextSate);
+            return nextSate;
         }
-        return nextState;
+        return null;
     }
 
     @Override

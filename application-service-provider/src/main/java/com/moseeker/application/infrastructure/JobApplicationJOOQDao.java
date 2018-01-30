@@ -1,7 +1,6 @@
 package com.moseeker.application.infrastructure;
 
-import com.moseeker.application.domain.constant.ApplicationViewStatus;
-import com.moseeker.application.domain.pojo.Application;
+import com.moseeker.application.domain.ApplicationEntity;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.common.constants.AbleFlag;
 import org.jooq.Configuration;
@@ -57,43 +56,6 @@ public class JobApplicationJOOQDao extends com.moseeker.baseorm.db.jobdb.tables.
     }
 
     /**
-     *
-     * 将申请记录标记为已查看状态
-     * 如果已经浏览过的，浏览次数加一；如果是刚申请未浏览的，那么修改招聘进度，并且浏览次数加一
-     * @param applicationList 需要被标记为已经查看的申请记录
-     * @return 执行的记录
-     */
-    public List<Application> viewApplication(List<Application> applicationList) {
-
-        List<Application> executeList = new ArrayList<>();
-        if (applicationList != null && applicationList.size() > 0) {
-            applicationList.forEach(application -> {
-
-                if (application.isViewOnly()) {
-                    using(configuration())
-                            .update(JobApplication.JOB_APPLICATION)
-                            .set(JobApplication.JOB_APPLICATION.VIEW_COUNT, JobApplication.JOB_APPLICATION.VIEW_COUNT.add(1))
-                            .where(JobApplication.JOB_APPLICATION.ID.eq(application.getId()))
-                            .execute();
-                } else {
-                    int execute = using(configuration())
-                            .update(JobApplication.JOB_APPLICATION)
-                            .set(JobApplication.JOB_APPLICATION.IS_VIEWED, (byte) ApplicationViewStatus.VIEWED.getStatus())
-                            .set(JobApplication.JOB_APPLICATION.APP_TPL_ID, application.getNextStatus().getState())
-                            .set(JobApplication.JOB_APPLICATION.VIEW_COUNT, JobApplication.JOB_APPLICATION.VIEW_COUNT.add(1))
-                            .where(JobApplication.JOB_APPLICATION.ID.eq(application.getId()))
-                            .and(JobApplication.JOB_APPLICATION.APP_TPL_ID.eq(application.getStatus().getState()))
-                            .execute();
-                    if (execute > 0) {
-                        executeList.add(application);
-                    }
-                }
-            });
-        }
-        return executeList;
-    }
-
-    /**
      * 根据ID集合查找申请信息
      * 只返回 ID，app_tpl_id, company_id, is_viewed, position_id, view_count
      * @param applicationIds 申请编号
@@ -108,6 +70,7 @@ public class JobApplicationJOOQDao extends com.moseeker.baseorm.db.jobdb.tables.
                     .from(JobApplication.JOB_APPLICATION)
                     .where(JobApplication.JOB_APPLICATION.ID.in(applicationIds))
                     .and(JobApplication.JOB_APPLICATION.DISABLE.eq(AbleFlag.OLDENABLE.getValue()))
+
                     .fetchInto(com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication.class);
         } else {
             return new ArrayList<>();
@@ -175,5 +138,74 @@ public class JobApplicationJOOQDao extends com.moseeker.baseorm.db.jobdb.tables.
             }
         }
         return new ArrayList<>();
+    }
+
+    /**
+     * 添加浏览次数
+     * @param applicationEntityList
+     */
+    public void updateViewNumber(List<ApplicationEntity> applicationEntityList) {
+        if (applicationEntityList != null && applicationEntityList.size() > 0) {
+            applicationEntityList.forEach(applicationEntity -> {
+                using(configuration())
+                        .update(JobApplication.JOB_APPLICATION)
+                        .set(JobApplication.JOB_APPLICATION.VIEW_COUNT, JobApplication.JOB_APPLICATION.VIEW_COUNT.add(1))
+                        .where(JobApplication.JOB_APPLICATION.ID.eq(applicationEntity.getId()))
+                        .execute();
+            });
+        }
+    }
+
+    /***
+     * 修改申请状态
+     * 利用状态做乐观锁修改，避免重复更新
+     * @param applicationEntityList 申请实体集合
+     * @return 利用乐观锁修改，确实修改的结果
+     */
+    public List<ApplicationEntity> changeState(List<ApplicationEntity> applicationEntityList) {
+        List<ApplicationEntity> result = new ArrayList<>();
+        if (applicationEntityList != null && applicationEntityList.size() > 0) {
+            applicationEntityList.forEach(applicationEntity -> {
+
+                int count = using(configuration())
+                        .update(JobApplication.JOB_APPLICATION)
+                        .set(JobApplication.JOB_APPLICATION.APP_TPL_ID, applicationEntity.getState().getStatus().getState())
+                        .where(JobApplication.JOB_APPLICATION.ID.eq(applicationEntity.getId()))
+                        .and(JobApplication.JOB_APPLICATION.APP_TPL_ID.eq(applicationEntity.getInitState().getStatus().getState()))
+                        .execute();
+                if (count > 0) {
+                    result.add(applicationEntity);
+                }
+            });
+        }
+        return result;
+    }
+
+    /**
+     *
+     * 修改申请的状态，并且浏览次数加一
+     * 利用状态做乐观锁修改，避免重复更新
+     *
+     * @param applicationEntityList 申请实体集合
+     * @return 确实修改的实体
+     */
+    public List<ApplicationEntity> changeViewNumberAndState(List<ApplicationEntity> applicationEntityList) {
+        List<ApplicationEntity> result = new ArrayList<>();
+        if (applicationEntityList != null && applicationEntityList.size() > 0) {
+            applicationEntityList.forEach(applicationEntity -> {
+
+                int count = using(configuration())
+                        .update(JobApplication.JOB_APPLICATION)
+                        .set(JobApplication.JOB_APPLICATION.VIEW_COUNT, JobApplication.JOB_APPLICATION.VIEW_COUNT.add(1))
+                        .set(JobApplication.JOB_APPLICATION.APP_TPL_ID, applicationEntity.getState().getStatus().getState())
+                        .where(JobApplication.JOB_APPLICATION.ID.eq(applicationEntity.getId()))
+                        .and(JobApplication.JOB_APPLICATION.APP_TPL_ID.eq(applicationEntity.getInitState().getStatus().getState()))
+                        .execute();
+                if (count > 0) {
+                    result.add(applicationEntity);
+                }
+            });
+        }
+        return result;
     }
 }

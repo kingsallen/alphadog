@@ -1,15 +1,14 @@
 package com.moseeker.application.domain.component.state;
 
-import com.moseeker.application.domain.ApplicationBatchEntity;
-import com.moseeker.application.infrastructure.ApplicationRepository;
+import com.moseeker.application.domain.ApplicationEntity;
 
 /**
  * Created by jack on 18/01/2018.
  */
 public class CVCheckedState extends ApplicationState {
 
-    public CVCheckedState(ApplicationBatchEntity applicationBatchEntity, ApplicationRepository applicationRepository) {
-        super(applicationBatchEntity, applicationRepository, ApplicationStatus.CVChecked);
+    public CVCheckedState(ApplicationEntity applicationEntity) {
+        super(applicationEntity, ApplicationStatus.CVChecked);
     }
 
     @Override
