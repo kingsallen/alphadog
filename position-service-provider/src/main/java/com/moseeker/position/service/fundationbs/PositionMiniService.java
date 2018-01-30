@@ -34,6 +34,7 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -71,12 +72,12 @@ public class PositionMiniService {
     public void handlerData(PositionMiniBean result,CompanyAccount account){
         UserHrAccount userHrAccount=account.getUserHrAccount();
         if(userHrAccount.getAccountType()==0){
-           int companyId= userHrAccount.getCompanyId();
-           List<Map<String,Object>> list=getHrByCompanyId(companyId);
-           if(!StringUtils.isEmptyList(list)){
-               List<PositionMiniInfo> positionList=result.getPositionList();
-               if(!StringUtils.isEmptyList(positionList)){
-                   for(PositionMiniInfo info:positionList){
+            int companyId= userHrAccount.getCompanyId();
+            List<Map<String,Object>> list=getHrByCompanyId(companyId);
+            if(!StringUtils.isEmptyList(list)){
+                List<PositionMiniInfo> positionList=result.getPositionList();
+                if(!StringUtils.isEmptyList(positionList)){
+                    for(PositionMiniInfo info:positionList){
                         int publisher=info.getPublisher();
                         for(Map<String,Object> map:list){
                             int id=(int)map.get("id");
@@ -87,9 +88,9 @@ public class PositionMiniService {
                                 continue;
                             }
                         }
-                   }
-               }
-           }
+                    }
+                }
+            }
 
         }
     }
@@ -131,7 +132,7 @@ public class PositionMiniService {
      */
     public List<Integer> getPositionIdByPositionMiniInfoList(List<PositionMiniInfo> list){
         if(StringUtils.isEmptyList(list)){
-           return null;
+            return null;
         }
         List<Integer> result=new ArrayList<>();
         for(PositionMiniInfo info:list){
@@ -175,16 +176,18 @@ public class PositionMiniService {
         List<PositionMiniInfo> result=new ArrayList<>();
         if(data!=null&&!data.isEmpty()){
             List<Map<String,Object>> list= (List<Map<String, Object>>) data.get("positionList");
+            SimpleDateFormat ff=new SimpleDateFormat("yyyy-mm-dd HH:MM:SS");
             if(!StringUtils.isEmptyList(list)){
                 for(Map<String,Object> map:list){
                     PositionMiniInfo info=new PositionMiniInfo();
                     info.setDepartment((String)map.get("department"));
                     info.setId((int)map.get("id"));
                     info.setPageView((int)map.get("visitnum"));
-                    info.setPriority((boolean)map.get("priority"));
+                    info.setPriority((int)map.get("priority"));
                     info.setStatus((int)map.get("status"));
                     info.setTitle((String)map.get("title"));
-                    info.setUpdateTime((String)map.get("update_time"));
+                    Date date=new Date((long)map.get("update_time"));
+                    info.setUpdateTime(ff.format(date));
                     result.add(info);
                 }
             }
@@ -208,15 +211,14 @@ public class PositionMiniService {
             Response res=searchengineServices.queryPositionMini(params);
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData(),Map.class);
-                long total=(long)data.get("totalNum");
+                int total=(int)data.get("totalNum");
                 bean.setTrickTotal((int)total);
             }
             params.put("status","1");
             Response res1=searchengineServices.queryPositionMini(params);
             if(res1.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res1.getData(),Map.class);
-                long total=(long)data.get("totalNum");
-                bean.setTrickTotal((int)total);
+                int total=(int)data.get("totalNum");
                 bean.setUnderTatal((int)total);
             }
 
@@ -231,15 +233,14 @@ public class PositionMiniService {
             Response res=searchengineServices.queryPositionMini(params);
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData(),Map.class);
-                long total=(long)data.get("totalNum");
+                int total=(int)data.get("totalNum");
                 bean.setTrickTotal((int)total);
             }
             params.put("status","1");
             Response res1=searchengineServices.queryPositionMini(params);
             if(res1.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res1.getData(),Map.class);
-                long total=(long)data.get("totalNum");
-                bean.setTrickTotal((int)total);
+                int total=(int)data.get("totalNum");
                 bean.setUnderTatal((int)total);
             }
         }
@@ -257,7 +258,7 @@ public class PositionMiniService {
         Set<Integer> result=talentPoolEntity.getIdListByUserHrAccountList(list);
         return result;
     }
-//    /*
+    //    /*
 //     获取主账号下所有的有效值位
 //     */
 //    public int getPositionUsedByHrIdSet(Set<Integer> hrSet){
@@ -331,26 +332,26 @@ public class PositionMiniService {
     /*
      获取所有的再招和下架
      */
-   public PositionMiniBean getResultBean(){
+    public PositionMiniBean getResultBean(){
 
-       return null;
-   }
-   /*
-    获取所有的hr信息，并转成UserHrAccount
-    */
-   public List<UserHrAccount> getCompanyHr(int companyId){
-       List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
-       if(StringUtils.isEmptyList(hrList)){
-           return null;
-       }
-       List<UserHrAccount> result=new ArrayList<>();
-       for(Map<String,Object> map:hrList){
-           Map<String,Object> hrMap=StringUtils.convertUnderKeyToCamel(map);
-           UserHrAccount account=JSON.parseObject(JSON.toJSONString(hrMap),UserHrAccount.class);
-           result.add(account);
-       }
-       return result;
-   }
+        return null;
+    }
+    /*
+     获取所有的hr信息，并转成UserHrAccount
+     */
+    public List<UserHrAccount> getCompanyHr(int companyId){
+        List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
+        if(StringUtils.isEmptyList(hrList)){
+            return null;
+        }
+        List<UserHrAccount> result=new ArrayList<>();
+        for(Map<String,Object> map:hrList){
+            Map<String,Object> hrMap=StringUtils.convertUnderKeyToCamel(map);
+            UserHrAccount account=JSON.parseObject(JSON.toJSONString(hrMap),UserHrAccount.class);
+            result.add(account);
+        }
+        return result;
+    }
 
     /*
      获取HrCompanyAccount

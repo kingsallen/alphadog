@@ -8,7 +8,7 @@ import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
  */
 public class PositionMiniInfo {
     private int id;
-    private boolean priority;
+    private int priority;
     private String title;
     private String department;
     private int resumeNum;
@@ -18,14 +18,6 @@ public class PositionMiniInfo {
     private int status;
     private int publisher;
 
-    public int getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(int publisher) {
-        this.publisher = publisher;
-    }
-
     public int getId() {
         return id;
     }
@@ -34,11 +26,11 @@ public class PositionMiniInfo {
         this.id = id;
     }
 
-    public boolean isPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(boolean priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
@@ -96,5 +88,13 @@ public class PositionMiniInfo {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public int getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(int publisher) {
+        this.publisher = publisher;
     }
 }
