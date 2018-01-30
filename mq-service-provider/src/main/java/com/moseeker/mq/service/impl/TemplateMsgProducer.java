@@ -1,5 +1,10 @@
 package com.moseeker.mq.service.impl;
 
+import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
@@ -9,14 +14,18 @@ import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.mq.service.WarnService;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import java.util.UUID;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,6 +42,12 @@ public class TemplateMsgProducer {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
+    @Autowired
+    private HrWxWechatDao hrWxWechatDao;
+
+    @Autowired
+    private HrWxNoticeMessageDao noticeMessageDao;
+
 	/**
 	 * 消息模板通知接口
 	 *
@@ -47,6 +62,20 @@ public class TemplateMsgProducer {
 			if (response.status > 0) {
 				return response;
 			}
+            Query query = new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),messageTemplateNoticeStruct.getCompany_id())
+                    .buildQuery();
+            HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(query);
+            if(hrWxWechatDO == null )
+                return ResponseUtils.fail("公众号信息不存在");
+            Query noticeQuery = new Query.QueryBuilder().where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.getName(),hrWxWechatDO.getId())
+                    .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.getName(),messageTemplateNoticeStruct.getSys_template_id())
+                    .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE.getName(),"0")
+                    .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.STATUS.getName(),"0")
+                    .buildQuery();
+            HrWxNoticeMessageDO noticeMessageDO = noticeMessageDao.getData(noticeQuery);
+            if(noticeMessageDO != null){
+                return  ResponseUtils.fail("模板开关关闭");
+            }
 			messageTemplateNoticeStruct.setId(UUID.randomUUID().toString()+System.currentTimeMillis());
 			String json = BeanUtils.convertStructToJSON(messageTemplateNoticeStruct);
 			if (messageTemplateNoticeStruct.getDelay() > 0) {
