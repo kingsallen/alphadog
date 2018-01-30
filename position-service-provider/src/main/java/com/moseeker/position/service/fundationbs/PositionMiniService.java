@@ -64,6 +64,7 @@ public class PositionMiniService {
         List<PositionMiniInfo> list=getSearchdata(keyWord,page,pageSize,account);
         this.handlerPositionMiniInfoList(list);
         result.setPositionList(list);
+        this.handlerData(result,account);
         return result;
     }
     /*
