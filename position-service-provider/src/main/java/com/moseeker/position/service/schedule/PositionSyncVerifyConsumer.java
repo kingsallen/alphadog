@@ -8,6 +8,7 @@ import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.base.PositionFactory;
 import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
+import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyReceiver;
 import com.moseeker.position.utils.PositionEmailNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,9 +63,9 @@ public class PositionSyncVerifyConsumer {
 
                 ChannelType channelType=ChannelType.instaceFromInteger(channel);
 
-                PositionSyncVerifyHandler verifyHandler=verifyHandlerFactory.getVerifyHandlerInstance(channelType);
+                PositionSyncVerifyReceiver verifyHandler=verifyHandlerFactory.getVerifyReceiverInstance(channelType);
 
-                verifyHandler.verifyHandler(json);
+                verifyHandler.receive(json);
             }
 
             logger.info("handle json success json: {}",json);

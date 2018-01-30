@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 
-public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncVerifyHandler<String,String> {
+public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncVerifyHandler<String>,PositionSyncVerifyReceiver<String> {
     Logger logger= LoggerFactory.getLogger(AbstractPositionSyncVerifyHandler.class);
 
     @Autowired
@@ -37,19 +37,23 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
     protected RedisClient redisClient;
 
     @Autowired
-    HRThirdPartyPositionDao thirdpartyPositionDao;
+    private HRThirdPartyPositionDao thirdpartyPositionDao;
 
     @Autowired
-    PositionEmailNotification emailNotification;
+    private PositionEmailNotification emailNotification;
+
+
+    protected abstract void handler(JSONObject jsonInfo) throws BIZException;
+
+    protected abstract void receive(JSONObject jsonParam) throws BIZException;
+
 
     protected abstract boolean checkVerifyParam(JSONObject jsonParam) throws BIZException;
     protected abstract boolean checkVerifyInfo(JSONObject jsonInfo) throws BIZException;
 
-    protected abstract void syncVerifyInfo(JSONObject jsonParam) throws BIZException;
 
-    protected abstract void verifyHandler(JSONObject jsonParam) throws BIZException;
 
-    protected abstract boolean isFinished(JSONObject jsonParam) throws BIZException;
+    protected abstract boolean isFinished(JSONObject jsonInfo) throws BIZException;
 
     /**
      * 处理爬虫端推送的需要验证的请求
@@ -57,7 +61,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
      * @throws BIZException
      */
     @Override
-    public void verifyHandler(String param) throws BIZException {
+    public void receive(String param) throws BIZException {
         logger.info("verifyHandler param:{}",param);
         try {
             checkVerifyParam(param);
@@ -71,7 +75,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
                 logger.error("该同步职位已经在验证了：{}",param);
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_ALREADY_VERIFY);
             }
-            verifyHandler(verifyParam);
+            receive(verifyParam);
             logger.info("verifyHandler success ,param:{}",param);
         } catch (BIZException e){
             logger.error("处理爬虫端推送的需要验证的请求失败，参数：{}，错误：{}",param,e);
@@ -89,7 +93,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
      * @throws BIZException
      */
     @Override
-    public void syncVerifyInfo(String info) throws BIZException {
+    public void handler(String info) throws BIZException {
         logger.info("syncVerifyInfo info:{}",info);
         try {
             checkVerifyParam(info);
@@ -110,7 +114,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             }
 
             //调用渠道自己对验证的处理
-            syncVerifyInfo(jsonInfo);
+            handler(jsonInfo);
 
             //验证流程完成，删除验证缓存
             finishVerify(jsonInfo);
@@ -131,8 +135,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
      * @param param
      * @return
      */
-    @Override
-    public boolean isTimeout(String param){
+    protected boolean isTimeout(String param){
         logger.info("isTimeout param:{}",param);
         JsonVerifyParam verifyParam=JsonVerifyParam.newInstance(param);
         if(!verifyParam.isValid()){
@@ -146,17 +149,16 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
 
     /**
      * 超时修改第三方职位，让用户再次同步
-     * @param param
+     * @param info
      * @throws BIZException
      */
-    @Override
-    public void timeoutHandler(String param) throws BIZException {
-        logger.info("timeoutHandler param:{}",param);
-        if(StringUtils.isNullOrEmpty(param)){
+    protected void timeoutHandler(String info) throws BIZException {
+        logger.info("timeoutHandler param:{}",info);
+        if(StringUtils.isNullOrEmpty(info)){
             return;
         }
 
-        JsonVerifyParam verifyParam=JsonVerifyParam.newInstance(param);
+        JsonVerifyParam verifyParam=JsonVerifyParam.newInstance(info);
 
         if(!verifyParam.isValid()){
             return;
@@ -185,7 +187,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             logger.error("读取职位同步队列后无法更新到数据库:{}", JSON.toJSONString(data));
             throw e;
         }
-        logger.info("timeoutHandler success param:{}",param);
+        logger.info("timeoutHandler success param:{}",info);
     }
 
     /**
