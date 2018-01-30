@@ -1,14 +1,15 @@
 package com.moseeker.function.service.chaos;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
-import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -51,7 +52,7 @@ public class PositionSyncConsumer  {
      * @param pojo
      */
     @CounterIface
-    public void positionSyncComplete(PositionForSyncResultPojo pojo) {
+    public void positionSyncComplete(PositionForSyncResultPojo pojo) throws BIZException {
 
         if (pojo == null) return;
 
@@ -67,7 +68,7 @@ public class PositionSyncConsumer  {
             data.setIsSynchronization((byte) PositionSync.bindingError.getValue());
         } else {
             data.setIsSynchronization((byte) PositionSync.failed.getValue());
-    }
+        }
 
         data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()));
 
@@ -79,33 +80,44 @@ public class PositionSyncConsumer  {
             return;
         }
 
-        HrThirdPartyPositionDO thirdPartyPositionDO = null;
+        HrThirdPartyPositionDO dbData=thirdpartyPositionDao.getBindingData(data.getPositionId(),data.getThirdPartyAccountId());
+        if(dbData==null) {
+            logger.info(ConstantErrorCodeMessage.POSITION_SYNC_NOT_FIND_THIRD_PARTY_POSITION+":{}",JSON.toJSONString(pojo));
+            syncFailedNotification.sendHandlerFailureMail(JSON.toJSONString(pojo),ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_NOT_FIND_THIRD_PARTY_POSITION));
+        }else{  //只有正在绑定的数据才更新同步状态
+            data.setId(dbData.getId());
 
-        try {
-            thirdPartyPositionDO = thirdpartyPositionDao.upsertThirdPartyPosition(data);
-        } catch (BIZException e) {
-            e.printStackTrace();
-            logger.error("读取职位同步队列后无法更新到数据库:{}", JSON.toJSONString(data));
-        }
-
-        if (pojo.getStatus() == 2) {
-            logger.info("发送同步失败的邮件:{}", pojo.getStatus());
+            TwoParam<HrThirdPartyPositionDO,Object> thirdPartyPositionDO = new TwoParam<>(data, EmptyExtThirdPartyPosition.EMPTY);
             try {
-                //发送邮件，表示这个职位无法判断是否成功同步到对应的平台，需要确认一下。
-                syncFailedNotification.sendUnKnowResultMail(positionDO, thirdPartyPositionDO, pojo);
-            } catch (Exception e) {
+                thirdPartyPositionDO = thirdpartyPositionDao.upsertThirdPartyPosition(thirdPartyPositionDO);
+            } catch (BIZException e) {
                 e.printStackTrace();
-                logger.error(e.getMessage(), e);
+                logger.error("读取职位同步队列后无法更新到数据库:{}", JSON.toJSONString(data));
+                throw e;
+            }
+
+            if (pojo.getStatus() == 2) {
+                logger.info("发送同步失败的邮件:{}", pojo.getStatus());
+                try {
+                    //发送邮件，表示这个职位无法判断是否成功同步到对应的平台，需要确认一下。
+                    syncFailedNotification.sendUnKnowResultMail(positionDO, thirdPartyPositionDO.getR1(),thirdPartyPositionDO.getR2(), pojo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
+                    throw e;
+                }
+            }
+
+            if (pojo.getStatus() == 0) {
+                HrThirdPartyAccountDO thirdPartyAccount = new HrThirdPartyAccountDO();
+                thirdPartyAccount.setChannel(Short.valueOf(pojo.getData().getChannel().trim()));
+                thirdPartyAccount.setId(pojo.getData().getAccountId());
+                logger.info("同步完成队列中更新第三方帐号信息:{}", JSON.toJSONString(thirdPartyAccount));
+                thirdPartyAccountDao.updateData(thirdPartyAccount);
             }
         }
 
-        if (pojo.getStatus() == 0) {
-            HrThirdPartyAccountDO thirdPartyAccount = new HrThirdPartyAccountDO();
-            thirdPartyAccount.setChannel(Short.valueOf(pojo.getData().getChannel().trim()));
-            thirdPartyAccount.setId(pojo.getData().getAccountId());
-            logger.info("同步完成队列中更新第三方帐号信息:{}", JSON.toJSONString(thirdPartyAccount));
-            thirdPartyAccountDao.updateData(thirdPartyAccount);
-        }
+
     }
 
 }

@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.thirdPartyAccount;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -26,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 @CounterIface
 public class ThirdPartyAccountInfoController {
 
-    private Logger logger = LoggerFactory.getLogger(ThirdPartyAccountInfoController.class);
+    Logger logger = LoggerFactory.getLogger(ThirdPartyAccountInfoController.class);
 
     private ThirdPartyAccountInfoService.Iface thirdPartyAccountInfoServices = ServiceManager.SERVICEMANAGER.getService(ThirdPartyAccountInfoService.Iface.class);
 
@@ -34,9 +35,12 @@ public class ThirdPartyAccountInfoController {
     @ResponseBody
     public String getAllInfo(HttpServletRequest request, HttpServletResponse response) {
         try{
+            logger.info("getAllInfo start===============");
             ThirdPartyAccountInfoParam param=ParamUtils.initModelForm(request, ThirdPartyAccountInfoParam.class);
+            logger.info("getAllInfo start param channel:{},hrId:{}",param.channel,param.hrId);
             ThirdPartyAccountInfo info=thirdPartyAccountInfoServices.getAllInfo(param);
-            return ResponseLogNotification.successJson(request,info);
+            logger.info("getAllInfo data:{}",info);
+            return ResponseLogNotification.successJson(request, JSONObject.parseObject(info.getJson()));
         }catch (Exception e){
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.failJson(request, e);

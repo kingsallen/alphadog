@@ -86,7 +86,7 @@ public final class ConstantErrorCodeMessage {
     public static final String APPLICATION_VALIDATE_SOCIAL_COUNT_CHECK = "{'status':41009,'message':'本月您申请社招已达到投递次数上限!'}";
 
     //HR帐号
-    public static final String HRACCOUNT_ALREADY_BOUND = "{'status':42001,'message':'该帐号已被其他人绑定！'}";
+    public static final String HRACCOUNT_ALREADY_BOUND_BYOTHER = "{'status':42001,'message':'该帐号已被其他人绑定！'}";
     public static final String HRACCOUNT_ELLEGLE_DATA = "{'status':42002,'message':'数据格式错误！'}";
     public static final String HRACCOUNT_BINDING = "{'status':42003,'message':'绑定中！'}";
     public static final String HRACCOUNT_BINDING_TIMEOUT = "{'status':42004,'message':'绑定超时！'}";
@@ -94,7 +94,16 @@ public final class ConstantErrorCodeMessage {
     public static final String THIRD_PARTY_POSITION_UPSERT_FAILED = "{'status':42004,'message':'添加或者修改操作失败！'}";
     public static final String COMPANY_ID_ISNOTEXIST = "{'status':42005,'message':'公司不存在！'}";
     public static final String PERMISSION_DENIED = "{'status':42010, 'message':'员工ID和公司ID不匹配！'}";
-
+    public static final String HRACCOUNT_ALREADY_BOUND = "{'status':42011, 'message':'已经绑定该帐号了！'}";
+    public static final String HRACCOUNT_ALREADY_BOUNDIND = "{'status':42012, 'message':'该帐号已经在绑定中了！'}";
+    public static final String BIND_STATUS_WRONG = "{'status':42013, 'message':'账号绑定状态错误！'}";
+    public static final String DISPATCH_ACCOUNT_INVALID ="{'status': 42014,'message':'无效的帐号!'}";
+    public static final String DISPATCH_ACCOUNT_BINDING ="{'status': 42015,'message':'帐号正在同步中,无法分配，请稍后再试！'}";
+    public static final String DISPATCH_ACCOUNT_REFRESHING ="{'status': 42016,'message':'帐号正在刷新中，无法分配，请稍后再试'}";
+    public static final String DISPATCH_ACCOUNT_INFOWRONG ="{'status': 42017,'message':'用户名密码错误,无法分配，请稍后再试！'}";
+    public static final String DISPATCH_ACCOUNT_GETINGINFO ="{'status':42018,'message':'帐号正在同步第三方信息中,无法分配，请稍后再试!'}";
+    public static final String DISPATCH_ACCOUNT_ERROR ="{'status':42019,'message':'帐号绑定程序发生错误,无法分配，请稍后再试!'}";
+    public static final String SUBACCOUNT_REBIND_ERROR ="{'status':42020,'message':'子账号不能重新绑定第三方账号!'}";
 
     //Position服务提示信息说明
     public static final String POSITION_NODELETE_BLANK = "{'status':51001,'message':'参数nodelete不能为空！'}";
@@ -116,7 +125,17 @@ public final class ConstantErrorCodeMessage {
     public static final String CITY_TOO_LONG = "{'status':51017,'message':'城市信息太长，无法入库'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
-
+    //职位同步
+    public static final String POSITION_SYNC_VERIFY_TIMEOUT = "{'status':61001,'message':'验证已超时，职位同步失败'}";
+    public static final String POSITION_SYNC_ALREADY_VERIFY = "{'status':61002,'message':'该同步职位已经在验证了'}";
+    public static final String POSITION_SYNC_WRONG_CHANNEL = "{'status':61003,'message':'验证处理--渠道错误'}";
+    public static final String POSITION_SYNC_NO_POSITION = "{'status':61004,'message':'验证处理--职位不存在'}";
+    public static final String POSITION_SYNC_NO_THIRD_POSITION = "{'status':61005,'message':'验证处理--第三方职位不存在'}";
+    public static final String POSITION_SYNC_EMPTY_MOBILE = "{'status':61006,'message':'验证处理--手机号为空'}";
+    public static final String POSITION_SYNC_SEND_MOBILE_TEMPLATE_ERROR = "{'status':61007,'message':'发送手机验证码模板消息失败'}";
+    public static final String POSITION_SYNC_EMPTY_MOBILE_CODE = "{'status':61008,'message':'验证处理--验证码为空'}";
+    public static final String POSITION_SYNC_NOT_FIND_THIRD_PARTY_POSITION = "{'status':61009,'message':'找不到第三方职位同步信息'}";
+    public static final String POSITION_SYNC_INFO_SENDED = "{'status':61010,'message':'验证信息发送成功'}";
     //APPBS错误代码61000
 
 

@@ -160,7 +160,7 @@ public class SearchengineService {
 
         boolean haskey = false;
 
-        if (!StringUtils.isEmpty(keywords)) {
+        if (!StringUtils.isEmpty(keywords)&&!"".equals(keywords.trim())) {
             haskey = true;
             String[] keyword_list = keywords.split(" ");
             QueryBuilder keyand = QueryBuilders.boolQuery();
@@ -215,7 +215,7 @@ public class SearchengineService {
             QueryBuilder occupationor = QueryBuilders.boolQuery();
             for (int i = 0; i < occupation_list.length; i++) {
                 String occupation = occupation_list[i];
-                QueryBuilder occupationfilter = QueryBuilders.matchPhraseQuery("occupation", occupation);
+                QueryBuilder occupationfilter = QueryBuilders.termQuery("search_data.occupation", occupation);
                 ((BoolQueryBuilder) occupationor).should(occupationfilter);
             }
             ((BoolQueryBuilder) query).must(occupationor);
@@ -239,7 +239,7 @@ public class SearchengineService {
         }
 
         if (!StringUtils.isEmpty(department)) {
-            QueryBuilder departmentfilter = QueryBuilders.matchPhraseQuery("team_name", department);
+            QueryBuilder departmentfilter = QueryBuilders.termQuery("search_data.team_name", department);
             ((BoolQueryBuilder) query).must(departmentfilter);
         }
 
@@ -254,7 +254,7 @@ public class SearchengineService {
             QueryBuilder degreeor = QueryBuilders.boolQuery();
             for (int i = 0; i < degree_list.length; i++) {
                 String degree_name = degree_list[i];
-                QueryBuilder degreefilter = QueryBuilders.matchPhraseQuery("degree_name", degree_name);
+                QueryBuilder degreefilter = QueryBuilders.termQuery("search_data.degree_name", degree_name);
                 ((BoolQueryBuilder) degreeor).should(degreefilter);
             }
             ((BoolQueryBuilder) query).must(degreeor);
@@ -292,7 +292,7 @@ public class SearchengineService {
         }
 
         if (!StringUtils.isEmpty(custom)) {
-            QueryBuilder custom_filter = QueryBuilders.matchPhraseQuery("custom", custom);
+            QueryBuilder custom_filter = QueryBuilders.termQuery("search_data.custom", custom);
             ((BoolQueryBuilder) query).must(custom_filter);
         }
 
