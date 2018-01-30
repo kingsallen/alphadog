@@ -181,7 +181,7 @@ public class PositionMiniService {
                     info.setDepartment((String)map.get("department"));
                     info.setId((int)map.get("id"));
                     info.setPageView((int)map.get("visitnum"));
-                    info.setPriority((boolean)map.get("priority"));
+                    info.setPriority((int)map.get("priority"));
                     info.setStatus((int)map.get("status"));
                     info.setTitle((String)map.get("title"));
                     info.setUpdateTime((String)map.get("update_time"));
@@ -209,7 +209,7 @@ public class PositionMiniService {
             int useNum=this.getPositionUsedByHrId(accountId);
             int unUseNum=this.getPositionUnUsedByHrId(accountId);
             bean.setTrickTotal(useNum);
-            bean.setTrickTotal(unUseNum);
+            bean.setUnderTatal(unUseNum);
         }
         return bean;
     }
