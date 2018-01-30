@@ -113,4 +113,9 @@ public class WholeProfileServicesImpl implements Iface {
         }
     }
 
+    @Override
+    public Response getProfileInfo(int userId, int profileId) throws BIZException, TException {
+        return null;
+    }
+
 }
