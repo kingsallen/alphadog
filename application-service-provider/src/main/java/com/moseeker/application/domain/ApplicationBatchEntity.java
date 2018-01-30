@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 申请实体
+ * 批量申请实体
  * Created by jack on 17/01/2018.
  */
 public class ApplicationBatchEntity {
@@ -30,8 +30,9 @@ public class ApplicationBatchEntity {
     }
 
     /**
-     * 简历被查看
-     * @param hrEntity
+     * HR查看批量申请
+     * @param hrEntity HR
+     * @return HR查看申请的操作记录
      */
     public List<HrOperationRecord> viewed(HREntity hrEntity) {
 

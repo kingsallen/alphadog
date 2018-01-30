@@ -8,7 +8,7 @@ import com.moseeker.application.domain.ApplicationEntity;
 public class HiredState extends ApplicationState {
 
     public HiredState(ApplicationEntity applicationEntity) {
-        super(applicationEntity, ApplicationStatus.Hired);
+        super(applicationEntity, ApplicationStateRoute.Hired);
     }
 
 
@@ -34,7 +34,7 @@ public class HiredState extends ApplicationState {
     }
 
     @Override
-    public ApplicationStatus getStatus() {
+    public ApplicationStateRoute getStatus() {
         return null;
     }
 }

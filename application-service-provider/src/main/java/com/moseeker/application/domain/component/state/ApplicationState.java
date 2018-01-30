@@ -13,13 +13,13 @@ public abstract class ApplicationState {
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     //招聘进度流程
-    protected ApplicationStatus applicationStatus;
+    protected ApplicationStateRoute applicationStateRoute;
 
     protected ApplicationEntity applicationEntity;
 
-    public ApplicationState(ApplicationEntity applicationEntity, ApplicationStatus applicationStatus) {
+    public ApplicationState(ApplicationEntity applicationEntity, ApplicationStateRoute applicationStateRoute) {
         this.applicationEntity = applicationEntity;
-        this.applicationStatus = applicationStatus;
+        this.applicationStateRoute = applicationStateRoute;
     }
 
     /**
@@ -48,8 +48,8 @@ public abstract class ApplicationState {
      * 获取当前进度
      * @return 申请所处的进度
      */
-    public ApplicationStatus getStatus() {
-        return applicationStatus;
+    public ApplicationStateRoute getStatus() {
+        return applicationStateRoute;
     }
 
     /**
@@ -57,7 +57,7 @@ public abstract class ApplicationState {
      * @return 当前进度的下一个进度
      */
     public ApplicationState getNext() {
-        ApplicationStatus status = applicationStatus.getNextNode(applicationStatus);
+        ApplicationStateRoute status = applicationStateRoute.getNextNode(applicationStateRoute);
         if (status != null) {
             return status.buildState(applicationEntity);
         }
@@ -69,7 +69,7 @@ public abstract class ApplicationState {
      * @return 当前进度的上一个进度
      */
     public ApplicationState getPre() {
-        ApplicationStatus status = applicationStatus.getPreNode(applicationStatus);
+        ApplicationStateRoute status = applicationStateRoute.getPreNode(applicationStateRoute);
         if (status != null) {
             return status.buildState(applicationEntity);
         }

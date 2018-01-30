@@ -1,7 +1,7 @@
 package com.moseeker.application.domain;
 
 import com.moseeker.application.domain.component.state.ApplicationState;
-import com.moseeker.application.domain.component.state.ApplicationStatus;
+import com.moseeker.application.domain.component.state.ApplicationStateRoute;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.common.exception.CommonException;
@@ -27,8 +27,8 @@ public class ApplicationEntity {
 
     public ApplicationEntity(int id, int state, List<Integer> hrIdList, int viewNumber) {
         this.id = id;
-        this.state = ApplicationStatus.initFromState(state).buildState(this);
-        this.initState = ApplicationStatus.initFromState(state).buildState(this);
+        this.state = ApplicationStateRoute.initFromState(state).buildState(this);
+        this.initState = ApplicationStateRoute.initFromState(state).buildState(this);
         this.hrIdList = hrIdList;
         this.viewNumber = viewNumber;
         this.initViewNumber = viewNumber;
@@ -41,9 +41,10 @@ public class ApplicationEntity {
      * @throws CommonException
      */
     public HrOperationRecord view(HREntity hrEntity) throws CommonException {
-        if (validateAuthority(hrEntity)) {
+        if (!validateAuthority(hrEntity)) {
             throw ApplicationException.APPLICATION_HAVE_NO_PERMISSION;
         }
+        addViewNumber();
         state.pass();
         HrOperationRecord hrOperationRecord = new HrOperationRecord();
         hrOperationRecord.setAdminId((long) hrEntity.getId());
@@ -78,7 +79,7 @@ public class ApplicationEntity {
         return hrIdList;
     }
 
-    public void addViewNumber() {
+    private void addViewNumber() {
         this.viewNumber ++;
     }
 

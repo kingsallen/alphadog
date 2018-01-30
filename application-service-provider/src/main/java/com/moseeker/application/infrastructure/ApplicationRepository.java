@@ -2,8 +2,7 @@ package com.moseeker.application.infrastructure;
 
 import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
-import com.moseeker.application.domain.component.state.ApplicationStatus;
-import com.moseeker.application.domain.constant.ApplicationViewStatus;
+import com.moseeker.application.domain.component.state.ApplicationStateRoute;
 import com.moseeker.application.domain.ApplicationEntity;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.baseorm.config.HRAccountType;
@@ -225,7 +224,7 @@ public class ApplicationRepository {
         return applicationList.stream().map(jobApplication -> {
 
             int id = jobApplication.getId();
-            ApplicationStatus status = ApplicationStatus.initFromState(jobApplication.getAppTplId());
+            ApplicationStateRoute status = ApplicationStateRoute.initFromState(jobApplication.getAppTplId());
             if (status == null) {
                 logger.error("ApplicationRepository status is null! application:{}", jobApplication);
             }
@@ -297,8 +296,8 @@ public class ApplicationRepository {
 
         List<ApplicationEntity> addViewAndChangeStateResult = jobApplicationDao.changeViewNumberAndState(addViewAndChangeStateList);
 
-        changeStateList.addAll(addViewAndChangeStateResult);
+        changeStateResult.addAll(addViewAndChangeStateResult);
 
-        return changeStateList;
+        return changeStateResult;
     }
 }

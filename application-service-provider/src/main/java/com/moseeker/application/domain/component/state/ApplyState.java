@@ -9,7 +9,7 @@ import com.moseeker.application.domain.ApplicationEntity;
 public class ApplyState extends ApplicationState {
 
     public ApplyState(ApplicationEntity applicationEntity) {
-        super(applicationEntity, ApplicationStatus.Apply);
+        super(applicationEntity, ApplicationStateRoute.Apply);
     }
 
     @Override
@@ -20,8 +20,7 @@ public class ApplyState extends ApplicationState {
     @Override
     public ApplicationState pass() {
 
-        this.applicationEntity.addViewNumber();
-        if (applicationEntity.getState().getStatus().equals(ApplicationStatus.Apply)) {
+        if (applicationEntity.getState().getStatus().equals(ApplicationStateRoute.Apply)) {
             ApplicationState nextSate = this.getNext();
             applicationEntity.setState(nextSate);
             return nextSate;
@@ -40,7 +39,7 @@ public class ApplyState extends ApplicationState {
     }
 
     @Override
-    public ApplicationStatus getStatus() {
-        return applicationStatus;
+    public ApplicationStateRoute getStatus() {
+        return applicationStateRoute;
     }
 }
