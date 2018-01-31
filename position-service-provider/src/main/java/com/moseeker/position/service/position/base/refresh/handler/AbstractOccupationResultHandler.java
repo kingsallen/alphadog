@@ -93,7 +93,18 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
         }
     }
 
-    public abstract boolean changeCheck(T oldDatas, T newDatas);
+    public boolean changeCheck(T oldData, T newData){
+        JSONObject jsonOldData=JSON.parseObject(JSON.toJSONString(oldData));
+        JSONObject jsonNewData=JSON.parseObject(JSON.toJSONString(newData));
+        for(Map.Entry<String,Object> entry:jsonOldData.entrySet()){
+            String key=entry.getKey();
+
+            if(!jsonOldData.get(key).equals(jsonNewData.get(key))){
+                return false;
+            }
+        }
+        return true;
+    }
 
 
     //职位在json中对应的key
