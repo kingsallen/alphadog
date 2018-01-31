@@ -95,6 +95,8 @@ public class ReceiverHandler {
             int type=jsonObject.getIntValue("type");
             int templateId;
             logVo.setReq_params(jsonObject);
+            logVo.setAppid(4);
+            logVo.setUser_id(userId);
             if(type!=0){
                 switch (type) {
                     case 1: templateId = Constant.FANS_PROFILE_COMPLETION; break;
@@ -204,6 +206,7 @@ public class ReceiverHandler {
         log.setAppid(10);
         log.setReq_uri(this.getClass().getName()+"handlerMessageTemplate");
         log.setReq_time(new Date());
+        log.setEvent(this.getClass().getName()+"handlerMessageTemplate");
         log.setRefer("weChatMessage");
         return log;
     }
