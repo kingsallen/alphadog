@@ -1300,6 +1300,9 @@ public class ProfileService {
     public Response talentpoolUploadParse(String fileName,String fileData,int companyId) throws TException, IOException {
         Map<String,Object> result=new HashMap<>();
         ResumeObj resumeObj = profileEntity.profileParser(fileName, fileData);
+        logger.info("==============**********************");
+        logger.info(JSON.toJSONString(resumeObj));
+        logger.info("==============**********************");
         result.put("resumeObj",resumeObj);
         if(resumeObj.getStatus().getCode() == 200){
             String phone=resumeObj.getResult().getPhone();
