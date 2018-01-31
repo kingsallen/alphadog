@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition implements Serializable {
 
-    private static final long serialVersionUID = 1546327635;
+    private static final long serialVersionUID = 2049888218;
 
     private Integer   id;
     private Integer   positionId;
@@ -54,6 +54,7 @@ public class HrThirdPartyPosition implements Serializable {
     private String    companyName;
     private String    addressName;
     private String    departmentName;
+    private Integer   count;
 
     public HrThirdPartyPosition() {}
 
@@ -87,6 +88,7 @@ public class HrThirdPartyPosition implements Serializable {
         this.companyName = value.companyName;
         this.addressName = value.addressName;
         this.departmentName = value.departmentName;
+        this.count = value.count;
     }
 
     public HrThirdPartyPosition(
@@ -118,7 +120,8 @@ public class HrThirdPartyPosition implements Serializable {
         Integer   departmentId,
         String    companyName,
         String    addressName,
-        String    departmentName
+        String    departmentName,
+        Integer   count
     ) {
         this.id = id;
         this.positionId = positionId;
@@ -149,6 +152,7 @@ public class HrThirdPartyPosition implements Serializable {
         this.companyName = companyName;
         this.addressName = addressName;
         this.departmentName = departmentName;
+        this.count = count;
     }
 
     public Integer getId() {
@@ -383,6 +387,14 @@ public class HrThirdPartyPosition implements Serializable {
         this.departmentName = departmentName;
     }
 
+    public Integer getCount() {
+        return this.count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrThirdPartyPosition (");
@@ -416,6 +428,7 @@ public class HrThirdPartyPosition implements Serializable {
         sb.append(", ").append(companyName);
         sb.append(", ").append(addressName);
         sb.append(", ").append(departmentName);
+        sb.append(", ").append(count);
 
         sb.append(")");
         return sb.toString();

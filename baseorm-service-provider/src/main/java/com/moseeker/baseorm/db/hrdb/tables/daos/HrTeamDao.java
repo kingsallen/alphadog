@@ -162,4 +162,11 @@ public class HrTeamDao extends DAOImpl<HrTeamRecord, com.moseeker.baseorm.db.hrd
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> fetchBySubTitle(String... values) {
         return fetch(HrTeam.HR_TEAM.SUB_TITLE, values);
     }
+
+    /**
+     * Fetch records that have <code>res_attrs IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> fetchByResAttrs(String... values) {
+        return fetch(HrTeam.HR_TEAM.RES_ATTRS, values);
+    }
 }
