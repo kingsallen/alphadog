@@ -47,10 +47,6 @@ public class HREntity {
      * @throws CommonException APPLICATION_HAVE_NO_PERMISSION(41010)
      */
     public void viewApplication(ApplicationBatchEntity applicationBatchEntity) throws CommonException {
-        if (applicationBatchEntity == null || applicationBatchEntity.getApplicationList() == null
-                || applicationBatchEntity.getApplicationList().size() == 0) {
-            return;
-        }
         //申请被查阅
         List<HrOperationRecord> operationRecordList = applicationBatchEntity.viewed(this);
 
