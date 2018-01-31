@@ -161,10 +161,10 @@ public class TalentpoolSearchengine {
                 logger.info("==============================");
                 builder.addSort("user.field_talent_order.hr_all_" + hrId + "_order", SortOrder.DESC);
             }else{
-//              UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
-//              builder.addSort("user.field_talent_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+                UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
                 logger.info("++++++++++++++++++++++++++++++++");
-                builder.addSort("user.field_talent_order.hr_" + hrId + "_order", SortOrder.DESC);
+                builder.addSort("user.field_talent_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+//                builder.addSort("user.field_talent_order.hr_" + hrId + "_order", SortOrder.DESC);
 
 
             }
