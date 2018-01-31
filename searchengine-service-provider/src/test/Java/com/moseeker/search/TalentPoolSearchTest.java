@@ -89,8 +89,9 @@
 //        map.put("page_size","20");
 //        map.put("hr_id","82752");
 //        map.put("submit_time","1");
-//        Map<String,Object> result= talentpoolSearchengine.talentSearch(map);
-//        System.out.println(result);
+//        map.put("origins","1000000,100000000");
+//        ScriptQueryBuilder result= talentpoolSearchengine.queryScript(map);
+//        System.out.println(result.toString());
 //    }
 //
 //    @Test
