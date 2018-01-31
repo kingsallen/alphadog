@@ -1101,7 +1101,8 @@ public class WholeProfileService {
         if (profileProfileMap != null&&!profileProfileMap.isEmpty()) {
             int profileId = (int)profileProfileMap.get("id");
             this.combinationProfile(resume,profileId);
-            handleResumeMap(resume);
+            this.handlerWorkExpData(resume);
+            this.handleResumeMap(resume);
             resume=StringUtils.underscoreNameMap(resume);
             return ResponseUtils.success(resume);
         }
@@ -1114,6 +1115,25 @@ public class WholeProfileService {
         Query query=new Query.QueryBuilder().where("user_id",userId).buildQuery();
         Map<String,Object> result=profileDao.getMap(query);
         return result;
+    }
+
+    /*
+     修改工作经历中公司的数据格式
+     */
+    private void handlerWorkExpData(Map<String,Object> resume){
+        if(resume!=null&&!resume.isEmpty()){
+            List<Map<String,Object>> workExps= (List<Map<String, Object>>) resume.get("workexps");
+            if(!StringUtils.isEmptyList(workExps)){
+                for(Map<String,Object> map:workExps){
+                    Map<String,Object> company= (Map<String, Object>) map.get("company");
+                    if(company!=null&&!company.isEmpty()){
+                        for(String key:company.keySet()){
+                            map.put(key,company.get(key));
+                        }
+                    }
+                }
+            }
+        }
     }
     /*
      将user的一些信息放到basic中
