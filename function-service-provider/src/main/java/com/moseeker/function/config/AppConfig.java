@@ -1,6 +1,6 @@
 package com.moseeker.function.config;
 
-import com.moseeker.function.constants.BindThirdPart;
+import com.moseeker.common.constants.BindThirdPart;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -24,11 +24,9 @@ import java.util.List;
 @Configuration
 @EnableRabbit
 @ComponentScan({"com.moseeker.function", "com.moseeker.common.aop.iface", "com.moseeker.entity"})
-@Import(com.moseeker.baseorm.config.AppConfig.class)
+@Import({com.moseeker.baseorm.config.AppConfig.class})
 @PropertySource("classpath:common.properties")
 public class AppConfig {
-
-
     @Autowired
     private Environment env;
 
@@ -41,8 +39,6 @@ public class AppConfig {
         cf.setPassword(env.getProperty("rabbitmq.password").trim());
         return cf;
     }
-
-
 
     @Bean
     public RabbitTemplate rabbitTemplate() {

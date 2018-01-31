@@ -24,9 +24,6 @@ import java.util.List;
 @Repository
 public class ThirdpartyAccountCityDao extends JooqCrudImpl<ThirdpartyAccountCityDO, ThirdpartyAccountCityRecord> {
 
-    @Autowired
-    HRThirdPartyAccountHrDao hrThirdPartyAccountHrDao;
-
     public ThirdpartyAccountCityDao() {
         super(ThirdpartyAccountCity.THIRDPARTY_ACCOUNT_CITY, ThirdpartyAccountCityDO.class);
     }

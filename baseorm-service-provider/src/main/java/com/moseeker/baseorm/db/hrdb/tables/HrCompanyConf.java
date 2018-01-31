@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = -739503945;
+    private static final long serialVersionUID = 1969257771;
 
     /**
      * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -166,9 +166,9 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public final TableField<HrCompanyConfRecord, String> DISPLAY_LOCALE = createField("display_locale", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("zh_CN", org.jooq.impl.SQLDataType.VARCHAR)), this, "公司页面语言，格式:IETF language tag");
 
     /**
-     * The column <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启';
+     * The column <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启
      */
-    public final TableField<HrCompanyConfRecord, Byte> TALENTPOOL_STATUS = createField("talentpool_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "'人才库状态表 0未开启，1开启';");
+    public final TableField<HrCompanyConfRecord, Byte> TALENTPOOL_STATUS = createField("talentpool_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "人才库状态表 0未开启，1开启");
 
     /**
      * Create a <code>hrdb.hr_company_conf</code> table reference

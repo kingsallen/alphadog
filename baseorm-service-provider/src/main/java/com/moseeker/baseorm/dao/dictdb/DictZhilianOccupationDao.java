@@ -1,16 +1,22 @@
 package com.moseeker.baseorm.dao.dictdb;
 
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.base.AbstractDictOccupationDao;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictZhilianOccupationRecord;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictZhilianOccupationDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author xxx
@@ -18,7 +24,7 @@ import java.util.List;
  *         2017-03-21
  */
 @Repository
-public class DictZhilianOccupationDao extends JooqCrudImpl<DictZhilianOccupationDO, DictZhilianOccupationRecord> {
+public class DictZhilianOccupationDao extends AbstractDictOccupationDao<DictZhilianOccupationDO, DictZhilianOccupationRecord> {
 
     public DictZhilianOccupationDao() {
         super(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION, DictZhilianOccupationDO.class);
@@ -28,37 +34,38 @@ public class DictZhilianOccupationDao extends JooqCrudImpl<DictZhilianOccupation
         super(table, dictZhilianOccupationDOClass);
     }
 
-    public List<DictZhilianOccupationDO> getFullOccupations(String occupation) {
-        List<DictZhilianOccupationDO> fullOccupations = new ArrayList<>();
+    @Override
+    protected Condition statusCondition() {
+        return new Condition(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.STATUS.getName(), 1);
+    }
 
-        if (StringUtils.isNullOrEmpty(occupation)) return fullOccupations;
+    @Override
+    protected Map<String, Object> queryEQParam(JSONObject obj) {
+        Map<String, Object> map=new HashMap<>();
+        map.put(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE.getName(), obj.getIntValue("code"));
+        map.put(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.PARENT_ID.getName(), obj.getIntValue("parent_id"));
+        map.put(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.LEVEL.getName(), obj.getIntValue("level"));
+        return map;
+    }
 
-        String currentField = DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE_OTHER.getName();
-        Object currentValue = occupation;
 
-        Query query = null;
+    @Override
+    protected boolean isTopOccupation(DictZhilianOccupationDO dictZhilianOccupationDO) {
+        return dictZhilianOccupationDO!=null && dictZhilianOccupationDO.getParentId()==0;
+    }
 
-        DictZhilianOccupationDO dictZhilianOccupationDO;
+    @Override
+    protected Condition conditionToSearchFather(DictZhilianOccupationDO dictZhilianOccupationDO) {
+        return new Condition(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE.getName(),dictZhilianOccupationDO.getParentId());
+    }
 
-        for (int i = 0; i < 4; i++) {
+    @Override
+    protected String otherCodeName() {
+        return DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE_OTHER.getName();
+    }
 
-            query = new Query.QueryBuilder().where(currentField, currentValue).buildQuery();
-
-            dictZhilianOccupationDO = getData(query);
-
-            if (dictZhilianOccupationDO == null) {
-                break;
-            } else {
-                fullOccupations.add(0, dictZhilianOccupationDO);
-                if (dictZhilianOccupationDO.getParentId() == 0) {
-                    break;
-                }
-                currentField = DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE.getName();
-                currentValue = dictZhilianOccupationDO.getParentId();
-            }
-        }
-
-        return fullOccupations;
-
+    @Override
+    public ChannelType getChannelType() {
+        return ChannelType.ZHILIAN;
     }
 }

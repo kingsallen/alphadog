@@ -103,7 +103,17 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	},UPLOAD51(20,"upload51","51上传","talent_upload"){
+	}, VERYEAST(6, "veryeast","最佳东方","common_retrieval_flow") {
+        @Override
+        public String getOrigin(String origin) {
+            return null;
+        }
+    }, JOB1001(7,"job1001","一览英才","common_retrieval_flow"){
+        @Override
+        public String getOrigin(String origin) {
+            return null;
+        }
+    },UPLOAD51(20,"upload51","51上传","talent_upload"){
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -246,6 +256,10 @@ public enum ChannelType {
 	}
 
 
+
+	public static boolean containsChannelType(int value) {
+		return intToEnum.containsKey(value);
+	}
 
 	public static ChannelType instaceFromInteger(int value) {
 		return intToEnum.get(value);

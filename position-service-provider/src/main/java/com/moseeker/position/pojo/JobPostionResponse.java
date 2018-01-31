@@ -1,6 +1,11 @@
 package com.moseeker.position.pojo;
 
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by YYF
@@ -19,6 +24,43 @@ public class JobPostionResponse {
     private Integer deleteCounts;
     private Integer totalCounts;
 
+    private List<SyncFailMessPojo> syncFailMessPojolist;
+    private Integer syncingCounts;
+    private Integer notNeedSyncCounts;
+
+    private List<ThirdPartyPositionForm> syncData;
+
+    public List<ThirdPartyPositionForm> getSyncData() {
+        return syncData;
+    }
+
+    public void setSyncData(List<ThirdPartyPositionForm> syncData) {
+        this.syncData = syncData;
+    }
+
+    public List<SyncFailMessPojo> getSyncFailMessPojolist() {
+        return syncFailMessPojolist;
+    }
+
+    public void setSyncFailMessPojolist(List<SyncFailMessPojo> syncFailMessPojolist) {
+        this.syncFailMessPojolist = syncFailMessPojolist;
+    }
+
+    public Integer getSyncingCounts() {
+        return syncingCounts;
+    }
+
+    public void setSyncingCounts(Integer syncingCounts) {
+        this.syncingCounts = syncingCounts;
+    }
+
+    public Integer getNotNeedSyncCounts() {
+        return notNeedSyncCounts;
+    }
+
+    public void setNotNeedSyncCounts(Integer notNeedSyncCounts) {
+        this.notNeedSyncCounts = notNeedSyncCounts;
+    }
 
     public Integer getTotalCounts() {
         return totalCounts;

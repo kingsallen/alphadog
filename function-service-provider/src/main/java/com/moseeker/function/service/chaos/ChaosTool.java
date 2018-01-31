@@ -40,8 +40,15 @@ public class ChaosTool {
         pramas.put("password", accountDO.getPassword());
         pramas.put("channel", accountDO.getChannel());
 
-        if (accountDO.getChannel() == ChannelType.JOB51.getValue()) {
-            pramas.put("member_name", accountDO.getMembername());
+        ChannelType channelType=ChannelType.instaceFromInteger(accountDO.getChannel());
+
+        switch (channelType){
+            case JOB51:
+                pramas.put("member_name", accountDO.getExt());
+                break;
+            case JOB1001:
+                pramas.put("safe_code", accountDO.getExt());
+                break;
         }
 
         if (extras != null) {

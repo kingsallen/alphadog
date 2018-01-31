@@ -1,7 +1,9 @@
 package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.useraccounts.service.ThirdPartyUserService.Iface;
@@ -35,5 +37,10 @@ public class ThirdPartyUserServiceImpl implements Iface {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
         }
+    }
+
+    @Override
+    public Response get(CommonQuery query) throws TException {
+        return service.get(QueryConvert.commonQueryConvertToQuery(query));
     }
 }

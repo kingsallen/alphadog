@@ -83,7 +83,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -439950387;
+    private static final long serialVersionUID = 300339899;
 
     /**
      * The reference instance of <code>hrdb</code>

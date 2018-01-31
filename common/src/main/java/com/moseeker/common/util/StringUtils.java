@@ -377,4 +377,121 @@ public class StringUtils {
         return result;
     }
 
+
+    /**
+     * 去掉字符串的特殊字符
+     * @param
+     * @return
+     */
+    public static String filterStringForSearch(String value){
+        if(StringUtils.isNotNullOrEmpty(value)){
+            if(value.contains("/")){
+                value=value.replaceAll("/"," ");
+            }
+            if(value.contains("OR")){
+                value=value.replaceAll("OR"," ");
+            }
+            if(value.contains("AND")){
+                value=value.replaceAll("AND"," ");
+            }
+
+            if(value.contains("(")){
+                value=value.replaceAll("\\("," ");
+            }
+            if(value.contains(")")){
+                value=value.replaceAll("\\)"," ");
+            }
+            if(value.contains("+")){
+                value=value.replaceAll("\\+"," ");
+            }
+            if(value.contains("\\")){
+                value=value.replaceAll("\\\\"," ");
+            }
+            if(value.contains("（")){
+                value=value.replaceAll("（"," ");
+            }
+            if(value.contains("）")){
+                value=value.replaceAll("）"," ");
+            }
+            if(value.contains("-")){
+                value=value.replaceAll("-"," ");
+            }
+            if(value.contains("&")){
+                value=value.replaceAll("&"," ");
+            }
+            if(value.contains("+")){
+                value=value.replaceAll("\\+"," ");
+            }
+            if(value.contains("-")){
+                value=value.replaceAll("-"," ");
+            }
+
+            if(value.contains("|")){
+                value=value.replaceAll("|"," ");
+            }
+            if(value.contains("!")){
+                value=value.replaceAll("!"," ");
+            }
+            if(value.contains("{")){
+                value=value.replaceAll("\\{"," ");
+            }
+            if(value.contains("}")) {
+                value = value.replaceAll("\\}", " ");
+            }
+            if(value.contains("^")) {
+                value = value.replaceAll("\\^", " ");
+            }
+            if(value.contains("\"")) {
+                value = value.replaceAll("\"", " ");
+            }
+            if(value.contains("~")) {
+                value = value.replaceAll("~", " ");
+            }
+            if(value.contains("*")) {
+                value = value.replaceAll("\\*", " ");
+            }
+            if(value.contains("?")) {
+                value = value.replaceAll("\\?", " ");
+            }
+            if(value.contains(":")) {
+                value = value.replaceAll(":", " ");
+            }
+            if(value.contains("'")) {
+                value = value.replaceAll("'", " ");
+            }
+            if(value.contains("@")) {
+                value = value.replaceAll("@", " ");
+            }
+            if(value.contains("%")) {
+                value = value.replaceAll("%", " ");
+            }
+            if(value.contains("$")) {
+                value = value.replaceAll("\\$", " ");
+            }
+            if(value.contains("#")) {
+                value = value.replaceAll("#", " ");
+            }
+            if(value.contains("=")) {
+                value = value.replaceAll("=", " ");
+            }
+            if(StringUtils.isNotNullOrEmpty(value)){
+                value=value.trim();
+            }
+        }
+        return value;
+    }
+
+//    public static void main(String[] args) {
+//        String aa="aaa~!@#$%^&*(){}^~*?:\\+=-aaa";
+//        System.out.println(StringUtils.filterStringForSearch(aa));
+//        String bb="or and or or";
+//        StringBuffer sb=new StringBuffer();
+//        sb.append("or ");
+//        sb.append("aaa ");
+//        sb.append("or  ");
+//        sb.deleteCharAt(sb.lastIndexOf("r"));
+//        sb.deleteCharAt(sb.lastIndexOf("o"));
+//        System.out.println(sb.toString());
+//    }
+
 }

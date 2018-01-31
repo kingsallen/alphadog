@@ -9,6 +9,7 @@ import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,5 +59,34 @@ public class ProfileAwardsDao extends JooqCrudImpl<ProfileAwardsDO, ProfileAward
                 .execute();
 
         return count;
+    }
+
+    /**
+     * 根据编号集合获取获奖记录集合
+     * @param idList 编号集合
+     * @return 记录集合 如果没有找到任何记录则返回空集合
+     */
+    public List<ProfileAwardsRecord> fetchByIdList(List<Integer> idList) {
+        if (idList != null && idList.size() > 0) {
+            List<ProfileAwardsRecord> awardsRecordList = create
+                    .selectFrom(ProfileAwards.PROFILE_AWARDS)
+                    .where(ProfileAwards.PROFILE_AWARDS.ID.in(idList))
+                    .fetch();
+            if (awardsRecordList != null) {
+                return awardsRecordList;
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * 根据编号获取获奖信息
+     * @param id 编号
+     * @return 获奖信息。如果不存在则返回null
+     */
+    public ProfileAwardsRecord fetchById(int id) {
+        return create.selectFrom(ProfileAwards.PROFILE_AWARDS)
+                .where(ProfileAwards.PROFILE_AWARDS.ID.eq(id))
+                .fetchOne();
     }
 }

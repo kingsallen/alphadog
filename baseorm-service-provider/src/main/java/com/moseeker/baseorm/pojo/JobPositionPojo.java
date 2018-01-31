@@ -96,5 +96,4 @@ public class JobPositionPojo {
     public String  team_name="";
     public int city_flag=0;//1代表只是全国,0代表还含有其他城市
     public SearchData search_data;
-
 }
