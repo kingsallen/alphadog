@@ -188,6 +188,8 @@ public class PositionMiniService {
                     info.setTitle((String)map.get("title"));
                     Date date=new Date((long)map.get("update_time"));
                     info.setUpdateTime(ff.format(date));
+                    info.setCities((String)map.get("city"));
+                    info.setPublisher((int)map.get("publisher"));
                     result.add(info);
                 }
             }
