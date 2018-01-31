@@ -5,15 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonResultHandler {
+public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonResultHandler implements JsonResultChangeCheck<T> {
     Logger logger= LoggerFactory.getLogger(AbstractOccupationResultHandler.class);
 
     //
@@ -22,7 +20,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
     protected abstract void persistent(List<T> data);
 
     /**
-     * 处理最佳东方职位信息
+     * 处理职位信息
      * @param msg
      */
     @Override
@@ -62,6 +60,41 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
         //持久化操作
         persistent(forInsert);
     }
+
+
+    /**
+     * 检测职位是否有变化
+     * @param oldDatas  数据看数据
+     * @param newDatas  要入库的数据
+     */
+    @Override
+    public void changeCheck(List<T> oldDatas, List<T> newDatas) {
+        List<T> notIntOldDatas=new ArrayList<>();
+        List<T> notInNewDatas=new ArrayList<>();
+
+        out:for(T oldData:oldDatas){
+
+            for(T newData:newDatas){
+                if(changeCheck(oldData,newData)){
+                    break out;
+                }
+            }
+            notInNewDatas.add(oldData);
+        }
+
+        out:for(T newData:newDatas){
+
+            for(T oldData:oldDatas){
+                if(changeCheck(oldData,newData)){
+                    break out;
+                }
+            }
+            notIntOldDatas.add(newData);
+        }
+    }
+
+    public abstract boolean changeCheck(T oldDatas, T newDatas);
+
 
     //职位在json中对应的key
     protected String occupationKey(){
