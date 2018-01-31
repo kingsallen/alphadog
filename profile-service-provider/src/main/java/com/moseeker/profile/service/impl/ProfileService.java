@@ -7,20 +7,33 @@ import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.logdb.LogResumeDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -33,7 +46,6 @@ import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.profile.*;
-import com.moseeker.entity.pojo.profile.User;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
@@ -43,8 +55,13 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
@@ -62,14 +79,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static com.moseeker.baseorm.util.BeanUtils.jooqMapfilter;
-import static com.moseeker.baseorm.util.BeanUtils.profilter;
 
 @Service
 @CounterIface
 public class ProfileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     @Autowired
     protected ProfileProfileDao dao;
@@ -79,6 +97,15 @@ public class ProfileService {
 
     @Autowired
     protected ProfileCompletenessDao completenessDao;
+
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
+
+    @Autowired
+    private JobPositionDao jobPositionDao;
+
+    @Autowired
+    private JobApplicationDao jobApplicationDao;
 
     @Autowired
     private UserSettingsDao settingDao;
@@ -108,6 +135,9 @@ public class ProfileService {
     private ConfigSysCvTplDao configSysCvTplDao;
     @Autowired
     private TalentPoolEntity talentPoolEntity;
+
+    @Autowired
+    private HrCompanyAccountDao hrCompanyAccountDao;
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
@@ -1229,6 +1259,115 @@ public class ProfileService {
             }
         });
         return ResponseUtils.success(paramsStream);
+    }
+
+    public List<Map<String, Object>> getProfileOther(List<Integer> positionIds, int profileId) throws CommonException{
+        List<Map<String, Object>> parentValues = new ArrayList<>();
+        if(positionIds != null && positionIds.size()>0 && profileId > 0) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(ProfileOther.PROFILE_OTHER.PROFILE_ID.getName(), profileId);
+            ProfileOtherDO profileOtherDO = profileOtherDao.getData(queryBuilder.buildQuery());
+            Map<Integer, String> profileOtherMap = new HashMap<>();
+            if(profileOtherDO == null ){
+                throw CommonException.PROGRAM_PARAM_NOTEXIST;
+            }
+            profileOtherMap.put(profileId, profileOtherDO.getOther());
+            Map<Integer, Integer> positionCustomConfigMap = positionEntity.getAppCvConfigIdByPositions(positionIds);
+            queryBuilder.clear();
+            queryBuilder.where(new Condition("id", new ArrayList<>(positionCustomConfigMap.values()), ValueOp.IN));
+            List<HrAppCvConfDO> hrAppCvConfDOList = hrAppCvConfDao.getDatas(queryBuilder.buildQuery());
+            Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
+                    hrAppCvConfDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
+            List<String> otherList = new ArrayList<>();
+            positionIds.stream().forEach(positionId -> {
+                try {
+                    if (positionCustomConfigMap.containsKey(positionId)) {
+                        JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
+                        if (profileOtherJson != null) {
+                            Map<String, Object> parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
+                                    .stream()
+                                    .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
+                                            map(m -> JSONObject.parseObject(String.valueOf(m)))
+                                    .filter(f -> f.getIntValue("parent_id") == 0)
+                                    .collect(Collectors.toMap(k -> "value", v -> {
+                                        return org.apache.commons.lang.StringUtils
+                                                .defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
+                                    }, (oldKey, newKey) -> newKey));
+                            Map<String, Object> parentName = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
+                                    .stream()
+                                    .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
+                                            map(m -> JSONObject.parseObject(String.valueOf(m)))
+                                    .filter(f -> f.getIntValue("parent_id") == 0)
+                                    .collect(Collectors.toMap(k -> "name", v -> v.getString("field_title"), (oldKey, newKey) -> newKey));
+
+                            if(parentName.get("name") != null && !otherList.contains((String)parentName.get("name"))){
+                                otherList.add((String) parentName.get("name"));
+                                parentValue.putAll(parentName);
+                                parentValues.add(parentValue);
+                            }
+
+                        }
+                    }
+                } catch (Exception e1) {
+                    logger.error(e1.getMessage(), e1);
+                }
+            });
+        }
+        return parentValues;
+    }
+
+  public List<Map<String, Object>> getApplicationOther(int userId, int accountId) throws CommonException{
+        Query query = new Query.QueryBuilder().where(ProfileProfile.PROFILE_PROFILE.USER_ID.getName(), userId).buildQuery();
+        ProfileProfileDO profileDO = dao.getData(query);
+        if(profileDO == null)
+            throw  CommonException.PROGRAM_PARAM_NOTEXIST;
+        Integer profileId = profileDO.getId();
+        Query accountQuery = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), accountId).buildQuery();
+        UserHrAccountDO accountDO = userHrAccountDao.getData(accountQuery);
+        if(accountDO == null)
+            throw  CommonException.PROGRAM_PARAM_NOTEXIST;
+        Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), accountDO.getId()).buildQuery();
+        HrCompanyAccountDO companyAccountDO = hrCompanyAccountDao.getData(companyAccountQuery);
+        if(companyAccountDO == null)
+            throw  CommonException.PROGRAM_PARAM_NOTEXIST;
+        Query companyQuery = null;
+        Query positionQuery = null;
+        List<JobApplicationDO> applicationDOS = null;
+        if(accountDO.getAccountType() == 0 ){
+            companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.PARENT_ID.getName(), companyAccountDO.getCompanyId()).or("id", companyAccountDO.getCompanyId()).buildQuery();
+            List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(companyQuery);
+            if(companyDOList!= null && companyDOList.size()>0){
+                List<Integer> companyIdList = companyDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
+                Query applicationQuery = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.COMPANY_ID.getName(), companyIdList.toArray(),ValueOp.IN))
+                        .andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
+                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1)
+                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
+                        .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
+                applicationDOS = jobApplicationDao.getDatas(applicationQuery);
+            }
+        }else{
+            companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(), companyAccountDO.getCompanyId()).buildQuery();
+            HrCompanyDO companyDO = hrCompanyDao.getData(companyQuery);
+            if(companyDO == null)
+                throw  CommonException.PROGRAM_PARAM_NOTEXIST;
+            positionQuery =  new Query.QueryBuilder().where(JobPosition.JOB_POSITION.COMPANY_ID.getName(), companyDO.getId()).and(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountDO.getId()).buildQuery();
+            List<JobPositionDO> positionDOList = jobPositionDao.getDatas(positionQuery);
+            if(positionDOList != null && positionDOList.size()>0){
+                List<Integer> positionIdList = positionDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
+                Query applicationQuery = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(),ValueOp.IN))
+                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1).andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
+                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1).and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
+                        .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
+                applicationDOS = jobApplicationDao.getDatas(applicationQuery);
+
+            }
+        }
+        List<Integer> positionList = null;
+        if(applicationDOS != null && applicationDOS.size()>0){
+            positionList = applicationDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
+            return  getProfileOther(positionList, profileId);
+        }
+        return  null;
     }
 
     /**

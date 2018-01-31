@@ -518,6 +518,7 @@ public class ProfileController {
         }
     }
 
+
     /**
      * 人才库简历上传解析，也可以用在其他位置
      */
@@ -606,7 +607,25 @@ public class ProfileController {
             // GET方法 通用参数解析并赋值
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
             Response result = profileService.getUploadProfile(Integer.parseInt(String.valueOf(params.get("user_id"))));
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
 
+    @RequestMapping(value = "/api/mini/profile/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getProfileInfo(HttpServletRequest request, HttpServletResponse response) {
+        // PrintWriter writer = null;
+        try {
+            // GET方法 通用参数解析并赋值
+            Params<String, Object> form = ParamUtils.parseRequestParam(request);
+            int accountId = form.getInt("accountId", 0);
+            int userId = form.getInt("userId");
+            Response result = profileService.getProfileInfo(userId, accountId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
