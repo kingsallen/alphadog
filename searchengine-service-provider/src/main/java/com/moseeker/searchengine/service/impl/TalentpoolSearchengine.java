@@ -482,7 +482,7 @@ public class TalentpoolSearchengine {
             List<String> list=searchUtil.stringConvertList(origins);
             sb.append("(");
             for(String origin:list){
-                if("-99".equals(origin)){
+                if("-99".equals(origin)||"99".equals(origin)){
                     sb.append(" (val.origin==1 ||val.origin==2 ||val.origin==4 ||val.origin==128 || val.origin==256 ||val.origin==512 ||val.origin==1024) ||");
                 }else{
                     if(origin.length()>8){
@@ -502,7 +502,7 @@ public class TalentpoolSearchengine {
             List<String> list=searchUtil.stringConvertList(origins);
             int flag=0;
             for(String origin:list){
-                if(!"-99".equals(origin)){
+                if(!"-99".equals(origin)&&!"99".equals(origin)){
                     if(flag==0){
                         sb.append("else{if(");
                         flag=1;

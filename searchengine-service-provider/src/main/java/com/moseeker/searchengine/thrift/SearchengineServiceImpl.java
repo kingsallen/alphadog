@@ -117,9 +117,9 @@ public class SearchengineServiceImpl implements Iface {
 	@Override
 	public Response userQuery(Map<String, String> params) throws TException {
 		try{
-			logger.info("+++++++++++++++++++");
-			logger.info(JSON.toJSONString(params));
-			logger.info("+++++++++++++++++++");
+//			logger.info("+++++++++++++++++++");
+//			logger.info(JSON.toJSONString(params));
+//			logger.info("+++++++++++++++++++");
 			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
 			if(res==null||res.isEmpty()){
 				return ResponseUtils.success("");

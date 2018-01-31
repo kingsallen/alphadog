@@ -332,9 +332,9 @@ public class SearchengineController {
             for(String key:reqParams.keySet()){
                 params.put(key,String.valueOf(reqParams.get(key)));
             }
-            logger.info("+++++++++++++++++++");
-            logger.info(JSON.toJSONString(params));
-            logger.info("+++++++++++++++++++");
+//            logger.info("+++++++++++++++++++");
+//            logger.info(JSON.toJSONString(params));
+//            logger.info("+++++++++++++++++++");
             Response res=searchengineServices.userQuery(params);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
