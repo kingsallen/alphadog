@@ -948,6 +948,7 @@ public class JobApplicataionService {
      * @param applicationIdList  申请集合
      * @throws CommonException 业务异常 (41012,  "请提交正确的HR信息!" )(41013,  "HR账号类型异常!" )(41014,  "申请信息不正确!" )(41010,  "没有权限查看申请信息!" )
      */
+    @Transactional
     public void viewApplications(int hrId, List<Integer> applicationIdList) throws CommonException {
 
         HREntity hrEntity = applicationRepository.fetchHREntity(hrId);
