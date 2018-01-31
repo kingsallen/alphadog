@@ -328,7 +328,7 @@ public class ProfileProcessBS {
                 Map<String, Object> wechatData = JSON.parseObject(wechat
                         .getData());
                 signature = String.valueOf(wechatData.get("signature"));
-                wechatId = Integer.parseInt((String)wechatData.get("id"));
+                wechatId = (Integer)wechatData.get("id");
                 Query query = new Query.QueryBuilder().where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.getName(), wechatId)
                         .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.getName(), msInfo.getConfig_id())
                         .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE.getName(), "0")
