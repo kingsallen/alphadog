@@ -1804,6 +1804,9 @@ public class WholeProfileService {
                 company.put("company_name",map.get("company_name"));
             }
             map.put("company",company);
+            if((map.get("position_name")==null||StringUtils.isNullOrEmpty(String.valueOf(map.get("position_name"))))&&map.get("job")!=null){
+                map.put("position_name",map.get("job"));
+            }
 
         }
 
