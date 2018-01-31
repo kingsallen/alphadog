@@ -320,11 +320,12 @@ public class ProfileProcessBS {
             return;
         }
         MsInfo msInfo = tm.processStatus(status, userName);
+        logger.info("msInfo: {}", msInfo);
         String signature = "";
         int wechatId = 0;
         try {
             Response wechat = companyService.getWechat(companyId, 0);
-            if (wechat.getStatus() == 0) {
+            if (wechat.getStatus() == 0 && msInfo!=null) {
                 Map<String, Object> wechatData = JSON.parseObject(wechat
                         .getData());
                 signature = String.valueOf(wechatData.get("signature"));
