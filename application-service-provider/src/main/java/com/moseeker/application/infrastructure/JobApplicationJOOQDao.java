@@ -1,6 +1,7 @@
 package com.moseeker.application.infrastructure;
 
 import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.constant.ApplicationViewStatus;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.common.constants.AbleFlag;
 import org.jooq.Configuration;
