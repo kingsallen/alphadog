@@ -1131,6 +1131,9 @@ public class WholeProfileService {
                             map.put(key,company.get(key));
                         }
                     }
+                    if((map.get("position_name")==null||StringUtils.isNullOrEmpty(String.valueOf(map.get("position_name"))))&&map.get("job")!=null){
+                        map.put("position_name",map.get("job"));
+                    }
                 }
             }
         }
@@ -1231,7 +1234,7 @@ public class WholeProfileService {
                     company.put("company_property",map.get("company_property"));
                 }
                 map.put("company",company);
-                if(map.get("position_name")!=null&&map.get("job")==null){
+                if(map.get("position_name")!=null){
                     map.put("job",map.get("position_name"));
                 }
             }
