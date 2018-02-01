@@ -2103,7 +2103,7 @@ public class PositionService {
                 Map<String, Object> updateField = obj.getObject("updateField", Map.class);
                 JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
                 jobPositionDao.updateRecord(record);
-                
+
                 return ResponseUtils.success("SUCCESS");
             } catch (Exception e) {
                 e.printStackTrace();

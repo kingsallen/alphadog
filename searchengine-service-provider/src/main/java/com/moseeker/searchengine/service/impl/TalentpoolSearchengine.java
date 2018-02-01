@@ -161,10 +161,10 @@ public class TalentpoolSearchengine {
                 logger.info("==============================");
                 builder.addSort("user.field_talent_order.hr_all_" + hrId + "_order", SortOrder.DESC);
             }else{
-//              UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
-//              builder.addSort("user.field_talent_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+                UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
                 logger.info("++++++++++++++++++++++++++++++++");
-                builder.addSort("user.field_talent_order.hr_" + hrId + "_order", SortOrder.DESC);
+                builder.addSort("user.field_talent_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+//                builder.addSort("user.field_talent_order.hr_" + hrId + "_order", SortOrder.DESC);
 
 
             }
@@ -451,10 +451,7 @@ public class TalentpoolSearchengine {
             return null;
         }
         StringBuffer sb=new StringBuffer();
-        sb.append("origin=0;upload=0;flag=0;if(_source.user){upload=_source.user.upload;profiles=_source.user.profiles;if(profiles)" +
-                "{profile=profiles.profile;if(profile){origin=profile.origin}};if(_source.user.applications){");
-
-        sb.append(" for ( val in _source.user.applications) {if(");
+        sb.append("user=_source.user;if(user){applications=user.applications;;origins=user.origin_data;if(applications){for(val in applications){if(");
 
         if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
@@ -470,28 +467,6 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(recommend)){
             sb.append("val.recommender_user_id>0 &&");
         }
-        if(StringUtils.isNotNullOrEmpty(origins)){
-            List<String> list=searchUtil.stringConvertList(origins);
-            sb.append("(");
-            for(String origin:list){
-                if("1".equals(origin)){
-                    sb.append("upload==1 ||");
-                }else if("-99".equals(origin)){
-                    sb.append(" val.origin==1 ||val.origin==2 ||val.origin==4 ||val.origin==128 || val.origin==256 ||val.origin==512 ||val.origin==1024 ||");
-                }else{
-                    if(origin.length()>8){
-                        sb.append(" origin=='"+origin+"'||");
-                    }else{
-                        sb.append(" val.origin=="+origin+"||");
-                    }
-                }
-            }
-            sb.deleteCharAt(sb.lastIndexOf("|"));
-            sb.deleteCharAt(sb.lastIndexOf("|"));
-            sb.append(")&&");
-
-        }
-
         if(StringUtils.isNotNullOrEmpty(submitTime)){
             long longTime=this.getLongTime(submitTime);
             sb.append(" val.submit_time>'"+longTime+"'&&");
@@ -503,33 +478,47 @@ public class TalentpoolSearchengine {
             List<Integer> positionIdList=this.convertStringToList(positionId);
             sb.append(" val.position_id in "+positionIdList.toString()+"&&");
         }
-        sb=sb.deleteCharAt(sb.lastIndexOf("&"));
-        sb=sb.deleteCharAt(sb.lastIndexOf("&"));
-        sb.append("){return true}}}");
         if(StringUtils.isNotNullOrEmpty(origins)){
-            int flag=0;
             List<String> list=searchUtil.stringConvertList(origins);
+            sb.append("(");
             for(String origin:list){
-                if("1".equals(origin)||origin.length()>8){
-                    flag=1;
-                    break;
+                if("-99".equals(origin)||"99".equals(origin)){
+                    sb.append(" (val.origin==1 ||val.origin==2 ||val.origin==4 ||val.origin==128 || val.origin==256 ||val.origin==512 ||val.origin==1024) ||");
+                }else{
+                    if(origin.length()>8){
+                        sb.append("('"+origin+"' in origins)||");
+                    }else{
+                        sb.append(" (val.origin=="+origin+")||");
+                    }
+                }
+            }
+            sb.deleteCharAt(sb.lastIndexOf("|"));
+            sb.deleteCharAt(sb.lastIndexOf("|"));
+            sb.append(")");
+        }
+        sb.append("){return true}}}");
+
+        if(StringUtils.isNotNullOrEmpty(origins)){
+            List<String> list=searchUtil.stringConvertList(origins);
+            int flag=0;
+            for(String origin:list){
+                if(!"-99".equals(origin)&&!"99".equals(origin)){
+                    if(flag==0){
+                        sb.append("else{if(");
+                        flag=1;
+                    }
+                    sb.append("('"+origin+"' in origins)||");
                 }
             }
             if(flag==1){
-                sb.append("else{ if(");
-                for(String origin:list){
-                    if("1".equals(origin)){
-                        sb.append("upload==1 ||");
-                    }else if(origin.length()>8){
-                            sb.append(" origin=='"+origin+"'||");
-                    }
-                }
                 sb.deleteCharAt(sb.lastIndexOf("|"));
                 sb.deleteCharAt(sb.lastIndexOf("|"));
-                sb.append("){return true}}}");
+                sb.append("){return true;}}");
+                sb.append("}");
             }else{
                 sb.append("}");
             }
+
         }else{
             sb.append("}");
         }

@@ -17,7 +17,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * 人才库人HR与标签的关系
+ * 人才库人HR与备注的关系
  */
 @Generated(
     value = {
@@ -87,6 +87,13 @@ public class TalentpoolCommentDao extends DAOImpl<TalentpoolCommentRecord, com.m
     }
 
     /**
+     * Fetch records that have <code>company_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolComment> fetchByCompanyId(Integer... values) {
+        return fetch(TalentpoolComment.TALENTPOOL_COMMENT.COMPANY_ID, values);
+    }
+
+    /**
      * Fetch records that have <code>create_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolComment> fetchByCreateTime(Timestamp... values) {
@@ -98,12 +105,5 @@ public class TalentpoolCommentDao extends DAOImpl<TalentpoolCommentRecord, com.m
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolComment> fetchByUpdateTime(Timestamp... values) {
         return fetch(TalentpoolComment.TALENTPOOL_COMMENT.UPDATE_TIME, values);
-    }
-
-    /**
-     * Fetch records that have <code>company_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolComment> fetchByCompanyId(Integer... values) {
-        return fetch(TalentpoolComment.TALENTPOOL_COMMENT.COMPANY_ID, values);
     }
 }
