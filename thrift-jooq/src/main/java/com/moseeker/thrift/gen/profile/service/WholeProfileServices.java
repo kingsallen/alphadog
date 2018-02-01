@@ -28,7 +28,7 @@ public class WholeProfileServices {
 
         public boolean retrieveProfile(java.lang.String parameter) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-        public com.moseeker.thrift.gen.common.struct.Response getProfileInfo(int userId, int profileId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+        public com.moseeker.thrift.gen.common.struct.Response getProfileInfo(int userId, int accountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
         public com.moseeker.thrift.gen.common.struct.Response getProfileMiniList(java.util.Map<java.lang.String,java.lang.String> params) throws org.apache.thrift.TException;
 
@@ -52,7 +52,7 @@ public class WholeProfileServices {
 
         public void retrieveProfile(java.lang.String parameter, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException;
 
-        public void getProfileInfo(int userId, int profileId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+        public void getProfileInfo(int userId, int accountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
         public void getProfileMiniList(java.util.Map<java.lang.String,java.lang.String> params, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -292,17 +292,17 @@ public class WholeProfileServices {
             throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "retrieveProfile failed: unknown result");
         }
 
-        public com.moseeker.thrift.gen.common.struct.Response getProfileInfo(int userId, int profileId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+        public com.moseeker.thrift.gen.common.struct.Response getProfileInfo(int userId, int accountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
         {
-            send_getProfileInfo(userId, profileId);
+            send_getProfileInfo(userId, accountId);
             return recv_getProfileInfo();
         }
 
-        public void send_getProfileInfo(int userId, int profileId) throws org.apache.thrift.TException
+        public void send_getProfileInfo(int userId, int accountId) throws org.apache.thrift.TException
         {
             getProfileInfo_args args = new getProfileInfo_args();
             args.setUserId(userId);
-            args.setProfileId(profileId);
+            args.setAccountId(accountId);
             sendBase("getProfileInfo", args);
         }
 
@@ -634,27 +634,27 @@ public class WholeProfileServices {
             }
         }
 
-        public void getProfileInfo(int userId, int profileId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        public void getProfileInfo(int userId, int accountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
             checkReady();
-            getProfileInfo_call method_call = new getProfileInfo_call(userId, profileId, resultHandler, this, ___protocolFactory, ___transport);
+            getProfileInfo_call method_call = new getProfileInfo_call(userId, accountId, resultHandler, this, ___protocolFactory, ___transport);
             this.___currentMethod = method_call;
             ___manager.call(method_call);
         }
 
         public static class getProfileInfo_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
             private int userId;
-            private int profileId;
-            public getProfileInfo_call(int userId, int profileId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+            private int accountId;
+            public getProfileInfo_call(int userId, int accountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
                 super(client, protocolFactory, transport, resultHandler, false);
                 this.userId = userId;
-                this.profileId = profileId;
+                this.accountId = accountId;
             }
 
             public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
                 prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getProfileInfo", org.apache.thrift.protocol.TMessageType.CALL, 0));
                 getProfileInfo_args args = new getProfileInfo_args();
                 args.setUserId(userId);
-                args.setProfileId(profileId);
+                args.setAccountId(accountId);
                 args.write(prot);
                 prot.writeMessageEnd();
             }
@@ -936,7 +936,7 @@ public class WholeProfileServices {
             public getProfileInfo_result getResult(I iface, getProfileInfo_args args) throws org.apache.thrift.TException {
                 getProfileInfo_result result = new getProfileInfo_result();
                 try {
-                    result.success = iface.getProfileInfo(args.userId, args.profileId);
+                    result.success = iface.getProfileInfo(args.userId, args.accountId);
                 } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
                     result.e = e;
                 }
@@ -1572,7 +1572,7 @@ public class WholeProfileServices {
             }
 
             public void start(I iface, getProfileInfo_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-                iface.getProfileInfo(args.userId, args.profileId,resultHandler);
+                iface.getProfileInfo(args.userId, args.accountId,resultHandler);
             }
         }
 
@@ -8896,18 +8896,18 @@ public class WholeProfileServices {
         private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getProfileInfo_args");
 
         private static final org.apache.thrift.protocol.TField USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("userId", org.apache.thrift.protocol.TType.I32, (short)1);
-        private static final org.apache.thrift.protocol.TField PROFILE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("profileId", org.apache.thrift.protocol.TType.I32, (short)2);
+        private static final org.apache.thrift.protocol.TField ACCOUNT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("accountId", org.apache.thrift.protocol.TType.I32, (short)2);
 
         private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getProfileInfo_argsStandardSchemeFactory();
         private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getProfileInfo_argsTupleSchemeFactory();
 
         public int userId; // required
-        public int profileId; // required
+        public int accountId; // required
 
         /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             USER_ID((short)1, "userId"),
-            PROFILE_ID((short)2, "profileId");
+            ACCOUNT_ID((short)2, "accountId");
 
             private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -8924,8 +8924,8 @@ public class WholeProfileServices {
                 switch(fieldId) {
                     case 1: // USER_ID
                         return USER_ID;
-                    case 2: // PROFILE_ID
-                        return PROFILE_ID;
+                    case 2: // ACCOUNT_ID
+                        return ACCOUNT_ID;
                     default:
                         return null;
                 }
@@ -8967,14 +8967,14 @@ public class WholeProfileServices {
 
         // isset id assignments
         private static final int __USERID_ISSET_ID = 0;
-        private static final int __PROFILEID_ISSET_ID = 1;
+        private static final int __ACCOUNTID_ISSET_ID = 1;
         private byte __isset_bitfield = 0;
         public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
         static {
             java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
             tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-            tmpMap.put(_Fields.PROFILE_ID, new org.apache.thrift.meta_data.FieldMetaData("profileId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+            tmpMap.put(_Fields.ACCOUNT_ID, new org.apache.thrift.meta_data.FieldMetaData("accountId", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
             metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
             org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getProfileInfo_args.class, metaDataMap);
@@ -8985,13 +8985,13 @@ public class WholeProfileServices {
 
         public getProfileInfo_args(
                 int userId,
-                int profileId)
+                int accountId)
         {
             this();
             this.userId = userId;
             setUserIdIsSet(true);
-            this.profileId = profileId;
-            setProfileIdIsSet(true);
+            this.accountId = accountId;
+            setAccountIdIsSet(true);
         }
 
         /**
@@ -9000,7 +9000,7 @@ public class WholeProfileServices {
         public getProfileInfo_args(getProfileInfo_args other) {
             __isset_bitfield = other.__isset_bitfield;
             this.userId = other.userId;
-            this.profileId = other.profileId;
+            this.accountId = other.accountId;
         }
 
         public getProfileInfo_args deepCopy() {
@@ -9011,8 +9011,8 @@ public class WholeProfileServices {
         public void clear() {
             setUserIdIsSet(false);
             this.userId = 0;
-            setProfileIdIsSet(false);
-            this.profileId = 0;
+            setAccountIdIsSet(false);
+            this.accountId = 0;
         }
 
         public int getUserId() {
@@ -9038,27 +9038,27 @@ public class WholeProfileServices {
             __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
         }
 
-        public int getProfileId() {
-            return this.profileId;
+        public int getAccountId() {
+            return this.accountId;
         }
 
-        public getProfileInfo_args setProfileId(int profileId) {
-            this.profileId = profileId;
-            setProfileIdIsSet(true);
+        public getProfileInfo_args setAccountId(int accountId) {
+            this.accountId = accountId;
+            setAccountIdIsSet(true);
             return this;
         }
 
-        public void unsetProfileId() {
-            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PROFILEID_ISSET_ID);
+        public void unsetAccountId() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __ACCOUNTID_ISSET_ID);
         }
 
-        /** Returns true if field profileId is set (has been assigned a value) and false otherwise */
-        public boolean isSetProfileId() {
-            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PROFILEID_ISSET_ID);
+        /** Returns true if field accountId is set (has been assigned a value) and false otherwise */
+        public boolean isSetAccountId() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __ACCOUNTID_ISSET_ID);
         }
 
-        public void setProfileIdIsSet(boolean value) {
-            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PROFILEID_ISSET_ID, value);
+        public void setAccountIdIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ACCOUNTID_ISSET_ID, value);
         }
 
         public void setFieldValue(_Fields field, java.lang.Object value) {
@@ -9071,11 +9071,11 @@ public class WholeProfileServices {
                     }
                     break;
 
-                case PROFILE_ID:
+                case ACCOUNT_ID:
                     if (value == null) {
-                        unsetProfileId();
+                        unsetAccountId();
                     } else {
-                        setProfileId((java.lang.Integer)value);
+                        setAccountId((java.lang.Integer)value);
                     }
                     break;
 
@@ -9087,8 +9087,8 @@ public class WholeProfileServices {
                 case USER_ID:
                     return getUserId();
 
-                case PROFILE_ID:
-                    return getProfileId();
+                case ACCOUNT_ID:
+                    return getAccountId();
 
             }
             throw new java.lang.IllegalStateException();
@@ -9103,8 +9103,8 @@ public class WholeProfileServices {
             switch (field) {
                 case USER_ID:
                     return isSetUserId();
-                case PROFILE_ID:
-                    return isSetProfileId();
+                case ACCOUNT_ID:
+                    return isSetAccountId();
             }
             throw new java.lang.IllegalStateException();
         }
@@ -9133,12 +9133,12 @@ public class WholeProfileServices {
                     return false;
             }
 
-            boolean this_present_profileId = true;
-            boolean that_present_profileId = true;
-            if (this_present_profileId || that_present_profileId) {
-                if (!(this_present_profileId && that_present_profileId))
+            boolean this_present_accountId = true;
+            boolean that_present_accountId = true;
+            if (this_present_accountId || that_present_accountId) {
+                if (!(this_present_accountId && that_present_accountId))
                     return false;
-                if (this.profileId != that.profileId)
+                if (this.accountId != that.accountId)
                     return false;
             }
 
@@ -9151,7 +9151,7 @@ public class WholeProfileServices {
 
             hashCode = hashCode * 8191 + userId;
 
-            hashCode = hashCode * 8191 + profileId;
+            hashCode = hashCode * 8191 + accountId;
 
             return hashCode;
         }
@@ -9174,12 +9174,12 @@ public class WholeProfileServices {
                     return lastComparison;
                 }
             }
-            lastComparison = java.lang.Boolean.valueOf(isSetProfileId()).compareTo(other.isSetProfileId());
+            lastComparison = java.lang.Boolean.valueOf(isSetAccountId()).compareTo(other.isSetAccountId());
             if (lastComparison != 0) {
                 return lastComparison;
             }
-            if (isSetProfileId()) {
-                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.profileId, other.profileId);
+            if (isSetAccountId()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.accountId, other.accountId);
                 if (lastComparison != 0) {
                     return lastComparison;
                 }
@@ -9208,8 +9208,8 @@ public class WholeProfileServices {
             sb.append(this.userId);
             first = false;
             if (!first) sb.append(", ");
-            sb.append("profileId:");
-            sb.append(this.profileId);
+            sb.append("accountId:");
+            sb.append(this.accountId);
             first = false;
             sb.append(")");
             return sb.toString();
@@ -9264,10 +9264,10 @@ public class WholeProfileServices {
                                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                             }
                             break;
-                        case 2: // PROFILE_ID
+                        case 2: // ACCOUNT_ID
                             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                                struct.profileId = iprot.readI32();
-                                struct.setProfileIdIsSet(true);
+                                struct.accountId = iprot.readI32();
+                                struct.setAccountIdIsSet(true);
                             } else {
                                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                             }
@@ -9290,8 +9290,8 @@ public class WholeProfileServices {
                 oprot.writeFieldBegin(USER_ID_FIELD_DESC);
                 oprot.writeI32(struct.userId);
                 oprot.writeFieldEnd();
-                oprot.writeFieldBegin(PROFILE_ID_FIELD_DESC);
-                oprot.writeI32(struct.profileId);
+                oprot.writeFieldBegin(ACCOUNT_ID_FIELD_DESC);
+                oprot.writeI32(struct.accountId);
                 oprot.writeFieldEnd();
                 oprot.writeFieldStop();
                 oprot.writeStructEnd();
@@ -9314,15 +9314,15 @@ public class WholeProfileServices {
                 if (struct.isSetUserId()) {
                     optionals.set(0);
                 }
-                if (struct.isSetProfileId()) {
+                if (struct.isSetAccountId()) {
                     optionals.set(1);
                 }
                 oprot.writeBitSet(optionals, 2);
                 if (struct.isSetUserId()) {
                     oprot.writeI32(struct.userId);
                 }
-                if (struct.isSetProfileId()) {
-                    oprot.writeI32(struct.profileId);
+                if (struct.isSetAccountId()) {
+                    oprot.writeI32(struct.accountId);
                 }
             }
 
@@ -9335,8 +9335,8 @@ public class WholeProfileServices {
                     struct.setUserIdIsSet(true);
                 }
                 if (incoming.get(1)) {
-                    struct.profileId = iprot.readI32();
-                    struct.setProfileIdIsSet(true);
+                    struct.accountId = iprot.readI32();
+                    struct.setAccountIdIsSet(true);
                 }
             }
         }
