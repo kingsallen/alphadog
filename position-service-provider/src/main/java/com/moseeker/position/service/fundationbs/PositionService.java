@@ -560,13 +560,29 @@ public class PositionService {
                     logger.info("----部门ID为---:" + hrTeamRecord.getId());
                     team_id = hrTeamRecord.getId();
                 } else {
-                    logger.info("-----未取到TeamId-------");
-                    logger.info("--部门名称为--:" + record.getDepartment());
-                    logger.info("--company_id--:" + record.getCompanyId());
-                    logger.info("--JobPositionRecord数据--:" + record.toString());
-                    logger.info("--提交的数据--:" + jobPositionHandlerDate.toString());
-                    handlerFailMess(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR, jobPositionFailMessPojos, jobPositionHandlerDate);
-                    continue;
+                    //部分公司在部门不存在时，直接插入新部门
+                    if(batchHandlerJobPosition.isCreateDeparment) {
+                        logger.info("-----未取到TeamId,需要插入部门-------");
+
+                        HrTeamRecord team = new HrTeamRecord();
+                        team.setName(record.getDepartment());
+                        team.setCompanyId(record.getCompanyId());
+
+                        HrTeamRecord teamTemp=hrTeamDao.addRecord(team);
+                        logger.info("----插入的部门ID为---:" + teamTemp.getId());
+
+                        team_id = teamTemp.getId();
+
+                        hashMapHrTeam.put(department,teamTemp);
+                    }else {
+                        logger.info("-----未取到TeamId-------");
+                        logger.info("--部门名称为--:" + record.getDepartment());
+                        logger.info("--company_id--:" + record.getCompanyId());
+                        logger.info("--JobPositionRecord数据--:" + record.toString());
+                        logger.info("--提交的数据--:" + jobPositionHandlerDate.toString());
+                        handlerFailMess(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR, jobPositionFailMessPojos, jobPositionHandlerDate);
+                        continue;
+                    }
                 }
             } else {
                 record.setDepartment("");

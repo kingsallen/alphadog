@@ -214,7 +214,8 @@ struct BatchHandlerJobPostion{
     2:list<JobPostrionObj> data,
     3:string fields_nooverwrite,
     4:bool nodelete,
-    5:string fields_nohash
+    5:string fields_nohash,
+    6:bool isCreateDeparment    //是否创建未找到的部门
 }
 
 struct JobPostrionObj{
