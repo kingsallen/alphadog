@@ -257,6 +257,10 @@ public enum ChannelType {
 
 
 
+	public static boolean containsChannelType(int value) {
+		return intToEnum.containsKey(value);
+	}
+
 	public static ChannelType instaceFromInteger(int value) {
 		return intToEnum.get(value);
 	}

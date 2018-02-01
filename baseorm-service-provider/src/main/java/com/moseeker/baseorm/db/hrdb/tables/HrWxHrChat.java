@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 
-    private static final long serialVersionUID = 465938950;
+    private static final long serialVersionUID = -1718262903;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_hr_chat</code>
@@ -94,7 +94,6 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     /**
      * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
      */
-
     public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "消息类型");
 
     /**

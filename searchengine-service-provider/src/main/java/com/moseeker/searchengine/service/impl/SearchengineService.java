@@ -169,7 +169,7 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleMatch(Integer.parseInt(publisher),query,"publisher");
         }
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index1").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query);
         this.handlerOrderByPriorityCityOrTimeOrStatus(responseBuilder,null);
         if(StringUtils.isNotBlank(status)){
