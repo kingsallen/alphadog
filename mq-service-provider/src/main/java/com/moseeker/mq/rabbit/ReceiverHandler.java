@@ -94,7 +94,7 @@ public class ReceiverHandler {
             int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");
             int templateId;
-            logVo.setReq_params(jsonObject);
+            logVo.setReq_params(jsonObject.toJSONString());
             logVo.setAppid(4);
             logVo.setUser_id(userId);
             if(type!=0){
