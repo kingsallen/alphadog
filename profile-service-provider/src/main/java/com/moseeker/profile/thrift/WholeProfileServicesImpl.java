@@ -6,6 +6,8 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.JsonToMap;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.profile.service.ProfileOtherService;
+import com.moseeker.profile.service.impl.ProfileMiniService;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.profile.service.impl.WholeProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -20,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class WholeProfileServicesImpl implements Iface {
 
@@ -30,6 +34,9 @@ public class WholeProfileServicesImpl implements Iface {
 
     @Autowired
     private ProfileService profileService;
+
+    @Autowired
+    private ProfileMiniService profileMiniService;
 
     @Override
     public Response getResource(int userId, int profileId, String uuid) throws TException {
@@ -142,6 +149,23 @@ public class WholeProfileServicesImpl implements Iface {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
         return response;
+    }
+
+    @Override
+    public Response getProfileMiniList(Map<String, String> params) throws TException {
+        try{
+            Map<String,Object> result=profileMiniService.getProfileMini(params);
+            if(result==null||result.isEmpty()){
+                return ResponseUtils.fail("查找失败");
+            }
+            return ResponseUtils.success(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+
     }
 
     @Override

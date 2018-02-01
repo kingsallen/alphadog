@@ -96,6 +96,7 @@ public class TalentPoolEntity {
         return 1;
     }
 
+
     /*
      通过TalentpoolHrTalentRecord 的集合获取User_id的list
      */
