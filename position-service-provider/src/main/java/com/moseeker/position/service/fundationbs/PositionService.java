@@ -307,6 +307,9 @@ public class PositionService {
         }
         searchData.setTitle(jobPositionPojo.title);
         jobPositionPojo.search_data=searchData;
+        if(jobPositionPojo.salary_bottom==0&&jobPositionPojo.salary_top==0){
+            jobPositionPojo.salary="薪资面议";
+        }
         return ResponseUtils.success(jobPositionPojo);
     }
 
@@ -2103,7 +2106,7 @@ public class PositionService {
                 Map<String, Object> updateField = obj.getObject("updateField", Map.class);
                 JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
                 jobPositionDao.updateRecord(record);
-                
+
                 return ResponseUtils.success("SUCCESS");
             } catch (Exception e) {
                 e.printStackTrace();

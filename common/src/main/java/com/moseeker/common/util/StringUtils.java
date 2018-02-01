@@ -294,6 +294,91 @@ public class StringUtils {
         }
     }
     /**
+     * 转换为下划线
+     *
+     * @param camelCaseName
+     * @return
+     */
+    public static String underscoreName(String camelCaseName) {
+        StringBuilder result = new StringBuilder();
+        if (camelCaseName != null && camelCaseName.length() > 0) {
+            result.append(camelCaseName.substring(0, 1).toLowerCase());
+            for (int i = 1; i < camelCaseName.length(); i++) {
+                char ch = camelCaseName.charAt(i);
+                if (Character.isUpperCase(ch)) {
+                    result.append("_");
+                    result.append(Character.toLowerCase(ch));
+                } else {
+                    result.append(ch);
+                }
+            }
+        }
+        return result.toString();
+    }
+    /*
+     将驼峰转成下划线
+     */
+    public static Map<String,Object> underscoreNameMap(Map<String,Object> resume){
+        if(resume==null||resume.isEmpty()){
+            return null;
+        }
+        Map<String,Object> result=new HashMap<>();
+        for(String key:resume.keySet()){
+            String newKey=underscoreName(key);
+            if(StringUtils.isNullOrEmpty(newKey)){
+                newKey=key;
+            }
+            if(resume.get(key)==null){
+                result.put(newKey, resume.get(key));
+            }else if(resume.get(key) instanceof Map){
+                Map<String,Object> map=(Map<String,Object>)resume.get(key);
+                Map<String,Object> result1=new HashMap<>();
+                if(map!=null&&!map.isEmpty()){
+                    result1 =underscoreNameMap(map);
+                }
+                result.put(newKey,result1);
+            }else if(resume.get(key) instanceof List){
+                List<Object> list= (List<Object>) resume.get(key);
+                List tempList = new ArrayList();
+                if(!StringUtils.isEmptyList(list)){
+                    for(Object ss :list){
+                        if(ss instanceof Map){
+                            tempList.add(underscoreNameMap((Map<String,Object>)ss));
+                        }else{
+                            tempList.add(ss);
+                        }
+                    }
+                }
+                result.put(newKey,tempList);
+            }else if(resume.get(key).getClass().isArray()){
+                int length=Array.getLength(resume.get(key));
+                if(length!=0){
+                    result.put(newKey,new Object[1]);
+                }else{
+                    Object[] arr=new Object[length];
+                    for (int i = 0; i < Array.getLength(resume.get(key)); i++) {
+                        Object value = Array.get(resume.get(key), i);
+                        if (value instanceof Map) {
+                            Map<String,Object> result2=underscoreNameMap((Map) value);
+                            arr[i]=result2;
+                        }else{
+                            arr[i]=value;
+                        }
+                    }
+                    result.put(newKey,arr);
+                }
+
+
+            }else {
+                result.put(newKey, resume.get(key));
+            }
+
+        }
+        return result;
+    }
+
+
+    /**
      * 去掉字符串的特殊字符
      * @param
      * @return
@@ -396,86 +481,18 @@ public class StringUtils {
         return value;
     }
 
-    public static String underscoreName(String camelCaseName) {
-        StringBuilder result = new StringBuilder();
-        if (camelCaseName != null && camelCaseName.length() > 0) {
-            result.append(camelCaseName.substring(0, 1).toLowerCase());
-            for (int i = 1; i < camelCaseName.length(); i++) {
-                char ch = camelCaseName.charAt(i);
-                if (Character.isUpperCase(ch)) {
-                    result.append("_");
-                    result.append(Character.toLowerCase(ch));
-                } else {
-                    result.append(ch);
-                }
-            }
-        }
-        return result.toString();
-    }
-    /*
-     将驼峰转成下划线
-     */
-    public static Map<String,Object> underscoreNameMap(Map<String,Object> resume){
-        if(resume==null||resume.isEmpty()){
-            return null;
-        }
-        Map<String,Object> result=new HashMap<>();
-        for(String key:resume.keySet()){
-            String newKey=underscoreName(key);
-            if(StringUtils.isNullOrEmpty(newKey)){
-                newKey=key;
-            }
-            if(resume.get(key)==null){
-                result.put(newKey, resume.get(key));
-            }else if(resume.get(key) instanceof Map){
-                Map<String,Object> map=(Map<String,Object>)resume.get(key);
-                Map<String,Object> result1=new HashMap<>();
-                if(map!=null&&!map.isEmpty()){
-                    result1 =underscoreNameMap(map);
-                }
-                result.put(newKey,result1);
-            }else if(resume.get(key) instanceof List){
-                List<Object> list= (List<Object>) resume.get(key);
-                List tempList = new ArrayList();
-                if(!StringUtils.isEmptyList(list)){
-                    for(Object ss :list){
-                        if(ss instanceof Map){
-                            tempList.add(underscoreNameMap((Map<String,Object>)ss));
-                        }else{
-                            tempList.add(ss);
-                        }
-                    }
-                }
-                result.put(newKey,tempList);
-            }else if(resume.get(key).getClass().isArray()){
-                int length=Array.getLength(resume.get(key));
-                if(length!=0){
-                    result.put(newKey,new Object[1]);
-                }else{
-                    Object[] arr=new Object[length];
-                    for (int i = 0; i < Array.getLength(resume.get(key)); i++) {
-                        Object value = Array.get(resume.get(key), i);
-                        if (value instanceof Map) {
-                            Map<String,Object> result2=underscoreNameMap((Map) value);
-                            arr[i]=result2;
-                        }else{
-                            arr[i]=value;
-                        }
-                    }
-                    result.put(newKey,arr);
-                }
-
-            }else {
-                result.put(newKey, resume.get(key));
-            }
-
-        }
-        return result;
-    }
-
 //    public static void main(String[] args) {
-//        int code=146;
-//        System.out.println((byte)code);
+//        String aa="aaa~!@#$%^&*(){}^~*?:\\+=-aaa";
+//        System.out.println(StringUtils.filterStringForSearch(aa));
+//        String bb="or and or or";
+//        StringBuffer sb=new StringBuffer();
+//        sb.append("or ");
+//        sb.append("aaa ");
+//        sb.append("or  ");
+//        sb.deleteCharAt(sb.lastIndexOf("r"));
+//        sb.deleteCharAt(sb.lastIndexOf("o"));
+//        System.out.println(sb.toString());
 //    }
+
 }
 

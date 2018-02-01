@@ -1089,11 +1089,13 @@ public class WholeProfileService {
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         String mobile = ((String) map.get("mobile"));
         if(StringUtils.isNullOrEmpty(mobile)){
+            this.handlerWorkExpData(resume);
             handleResumeMap(resume);
             return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
         UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
         if(userRecord==null){
+            this.handlerWorkExpData(resume);
             handleResumeMap(resume);
             return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
@@ -1106,7 +1108,8 @@ public class WholeProfileService {
         if (profileProfileMap != null&&!profileProfileMap.isEmpty()) {
             int profileId = (int)profileProfileMap.get("id");
             this.combinationProfile(resume,profileId);
-            handleResumeMap(resume);
+            this.handlerWorkExpData(resume);
+            this.handleResumeMap(resume);
             resume=StringUtils.underscoreNameMap(resume);
             return ResponseUtils.success(resume);
         }
@@ -1119,6 +1122,28 @@ public class WholeProfileService {
         Query query=new Query.QueryBuilder().where("user_id",userId).buildQuery();
         Map<String,Object> result=profileDao.getMap(query);
         return result;
+    }
+
+    /*
+     修改工作经历中公司的数据格式
+     */
+    private void handlerWorkExpData(Map<String,Object> resume){
+        if(resume!=null&&!resume.isEmpty()){
+            List<Map<String,Object>> workExps= (List<Map<String, Object>>) resume.get("workexps");
+            if(!StringUtils.isEmptyList(workExps)){
+                for(Map<String,Object> map:workExps){
+                    Map<String,Object> company= (Map<String, Object>) map.get("company");
+                    if(company!=null&&!company.isEmpty()){
+                        for(String key:company.keySet()){
+                            map.put(key,company.get(key));
+                        }
+                    }
+                    if((map.get("position_name")==null||StringUtils.isNullOrEmpty(String.valueOf(map.get("position_name"))))&&map.get("job")!=null){
+                        map.put("position_name",map.get("job"));
+                    }
+                }
+            }
+        }
     }
     /*
      将user的一些信息放到basic中
@@ -1216,7 +1241,7 @@ public class WholeProfileService {
                     company.put("company_property",map.get("company_property"));
                 }
                 map.put("company",company);
-                if(map.get("position_name")!=null&&map.get("job")==null){
+                if(map.get("position_name")!=null){
                     map.put("job",map.get("position_name"));
                 }
             }
@@ -1786,6 +1811,9 @@ public class WholeProfileService {
                 company.put("company_name",map.get("company_name"));
             }
             map.put("company",company);
+            if((map.get("position_name")==null||StringUtils.isNullOrEmpty(String.valueOf(map.get("position_name"))))&&map.get("job")!=null){
+                map.put("position_name",map.get("job"));
+            }
 
         }
 
