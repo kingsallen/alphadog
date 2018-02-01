@@ -1089,11 +1089,13 @@ public class WholeProfileService {
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         String mobile = ((String) map.get("mobile"));
         if(StringUtils.isNullOrEmpty(mobile)){
+            this.handlerWorkExpData(resume);
             handleResumeMap(resume);
             return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
         UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
         if(userRecord==null){
+            this.handlerWorkExpData(resume);
             handleResumeMap(resume);
             return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
