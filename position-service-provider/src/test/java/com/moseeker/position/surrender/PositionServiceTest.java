@@ -1,24 +1,23 @@
 package com.moseeker.position.surrender;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.position.service.third.ThirdPositionService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.position.struct.City;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionInfoForm;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionResult;
+import com.moseeker.thrift.gen.position.struct.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import com.moseeker.position.config.AppConfig;
 import com.moseeker.position.service.fundationbs.PositionService;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes =AppConfig.class)
@@ -116,4 +115,72 @@ public class PositionServiceTest {
     	cities.add(city);
     	service.cityCode(cities,1909944);
 	}*/
+
+	@Test
+	@Commit
+	public void batchHandlerJobPostion() throws BIZException {
+		BatchHandlerJobPostion batchHandlerJobPostion=new BatchHandlerJobPostion();
+
+		JobPostrionObj jobPostrionObj=JSON.toJavaObject(JSON.parseObject(position),JobPostrionObj.class);
+
+		batchHandlerJobPostion.setData(Arrays.asList(jobPostrionObj));
+		batchHandlerJobPostion.setFields_nooverwrite("");
+		batchHandlerJobPostion.setNodelete(true);
+		batchHandlerJobPostion.setFields_nohash("");
+
+
+		service.batchHandlerJobPostion(batchHandlerJobPostion);
+	}
+
+	private String position="{\n" +
+			"  'degree': 0,\n" +
+			"  'keyword': '',\n" +
+			"  'language': '',\n" +
+			"  'reporting_to': '',\n" +
+			"  'business_group': '',\n" +
+			"  'district': '',\n" +
+			"  'major_required': '',\n" +
+			"  'employment_type': 0,\n" +
+			"  'stop_date': 'None',\n" +
+			"  'source_id': 10,\n" +
+			"  'source': 9,\n" +
+			"  'app_cv_config_id': 0,\n" +
+			"  'department': '上海研发',\n" +
+			"  'custom': '银弹奖金',\n" +
+			"  'experience_above': false,\n" +
+			"  'hr_email': 'huanqing.chen@uisee.com',\n" +
+			"  'experience': '',\n" +
+			"  'candidate_source': 0,\n" +
+			"  'age': 0,\n" +
+			"  'work_address': '',\n" +
+			"  'position_code': 0,\n" +
+			"  'title': '智能驾驶软件工程师',\n" +
+			"  'management_experience': 1,\n" +
+			"  'underlings': 0,\n" +
+			"  'email_notice': 1,\n" +
+			"  'company_id': 39978,\n" +
+			"  'is_hiring': false,\n" +
+			"  'city': [\n" +
+			"    {\n" +
+			"      'type': 'text',\n" +
+			"      'value': '上海'\n" +
+			"    }\n" +
+			"  ],\n" +
+			"  'industry': '',\n" +
+			"  'email_resume_conf': 0,\n" +
+			"  'occupation': '正式岗位',\n" +
+			"  'degree_above': false,\n" +
+			"  'team_id': 0,\n" +
+			"  'extra': null,\n" +
+			"  'feature': '',\n" +
+			"  'jobnumber': '07cd6a55-76a8-42ab-89da-33c083630d80',\n" +
+			"  'salary_top': 0,\n" +
+			"  'priority': 0,\n" +
+			"  'publisher': 91342,\n" +
+			"  'count': 2,\n" +
+			"  'language_required': 0,\n" +
+			"  'salary_bottom': 0,\n" +
+			"  'gender': 2,\n" +
+			"  'province': ''\n" +
+			"}";
 }
