@@ -266,12 +266,12 @@ public class TalentpoolSearchengine {
         String pastPosition=params.get("past_position");
         String intentionCity=params.get("intention_city_name");
         if(
-            StringUtils.isNotNullOrEmpty(keyword)||
-            StringUtils.isNotNullOrEmpty(cityName)||
-            StringUtils.isNotNullOrEmpty(companyName)||
-            StringUtils.isNotNullOrEmpty(pastPosition)||
-            StringUtils.isNotNullOrEmpty(intentionCity)
-         ){
+                StringUtils.isNotNullOrEmpty(keyword)||
+                        StringUtils.isNotNullOrEmpty(cityName)||
+                        StringUtils.isNotNullOrEmpty(companyName)||
+                        StringUtils.isNotNullOrEmpty(pastPosition)||
+                        StringUtils.isNotNullOrEmpty(intentionCity)
+                ){
             if(StringUtils.isNotNullOrEmpty(intentionCity)){
                 this.queryByIntentionCity(intentionCity,query);
             }
