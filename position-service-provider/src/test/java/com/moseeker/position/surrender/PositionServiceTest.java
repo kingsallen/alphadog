@@ -133,10 +133,11 @@ public class PositionServiceTest {
 
 		JobPostrionObj jobPostrionObj=JSON.toJavaObject(JSON.parseObject(position),JobPostrionObj.class);
 
-		batchHandlerJobPostion.setData(Arrays.asList(jobPostrionObj));
+		batchHandlerJobPostion.setData(Arrays.asList(jobPostrionObj,jobPostrionObj));
 		batchHandlerJobPostion.setFields_nooverwrite("");
 		batchHandlerJobPostion.setNodelete(true);
 		batchHandlerJobPostion.setFields_nohash("");
+		batchHandlerJobPostion.setIsCreateDeparment(true);
 
 
 		service.batchHandlerJobPostion(batchHandlerJobPostion);
@@ -155,7 +156,7 @@ public class PositionServiceTest {
 			"  'source_id': 10,\n" +
 			"  'source': 9,\n" +
 			"  'app_cv_config_id': 0,\n" +
-			"  'department': '上海研发',\n" +
+			"  'department': '上海研发6',\n" +
 			"  'custom': '银弹奖金',\n" +
 			"  'experience_above': false,\n" +
 			"  'hr_email': 'huanqing.chen@uisee.com',\n" +
