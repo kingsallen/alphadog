@@ -38,8 +38,8 @@ service WholeProfileServices {
     common_struct.Response improveProfile(1:string profile) throws (1: common_struct.BIZException e);
     common_struct.Response moveProfile(1:i32 destUserId, 2:i32 originUserId) throws (1: common_struct.BIZException e);
     bool retrieveProfile(1:string parameter)throws (1: common_struct.BIZException e);
-
     common_struct.Response getProfileInfo(1:i32 userId, 2:i32 profileId) throws (1: common_struct.BIZException e);
+    common_struct.Response getProfileMiniList(1:map<string,string> params);
 }
 
 service ProfileServices {

@@ -49,7 +49,7 @@ public class TalentpoolSearchengine {
             Map<String, Object> aggInfo = new HashMap<>();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
-            this.handlerAggs(params, builder, client, aggInfo);
+//            this.handlerAggs(params, builder, client, aggInfo);
             this.handlerSortOrder(params, builder);
             this.handlerPage(params, builder);
             this.handlerReturn(params, builder);

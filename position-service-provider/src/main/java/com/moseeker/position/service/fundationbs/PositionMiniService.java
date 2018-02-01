@@ -176,7 +176,7 @@ public class PositionMiniService {
         List<PositionMiniInfo> result=new ArrayList<>();
         if(data!=null&&!data.isEmpty()){
             List<Map<String,Object>> list= (List<Map<String, Object>>) data.get("positionList");
-            SimpleDateFormat ff=new SimpleDateFormat("yyyy-mm-dd HH:MM:SS");
+            SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             if(!StringUtils.isEmptyList(list)){
                 for(Map<String,Object> map:list){
                     PositionMiniInfo info=new PositionMiniInfo();
@@ -311,18 +311,8 @@ public class PositionMiniService {
                 int companyId=companyAccount.getCompanyId();
                 HrCompany hrCompany=hrCompanyDao.getHrCompanyById(companyId);
                 if(hrCompany!=null){
-                    int parentId=hrCompany.getParentId();
-                    int disable=hrCompany.getDisable();
-
-                    if(parentId==0){
-                        companyAccountBean.setHrCompany(hrCompany);
-                        companyAccountBean.setUserHrAccount(account);
-                    }else{
-                        if(disable==1){
-                            companyAccountBean.setHrCompany(hrCompany);
-                            companyAccountBean.setUserHrAccount(account);
-                        }
-                    }
+                    companyAccountBean.setHrCompany(hrCompany);
+                    companyAccountBean.setUserHrAccount(account);
                 }
             }
         }
