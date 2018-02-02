@@ -25,7 +25,7 @@ import java.util.Map;
 public class ProfileMiniController {
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER
             .getService(WholeProfileServices.Iface.class);
-    @RequestMapping(value = "/profile/mini/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/mini/profile/list", method = RequestMethod.GET)
     @ResponseBody
     public String get(HttpServletRequest request, HttpServletResponse response) {
         try {

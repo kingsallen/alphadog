@@ -40,7 +40,7 @@ public class ProfileMiniService {
             pageNumber="0";
         }
         if(StringUtils.isNullOrEmpty(pageSize)){
-            pageSize="15";
+            pageSize="10";
         }
         String publisher=this.handlerAccountData(accountId);
         Map<String,String> map=this.handlerParamsData(pageNumber,pageSize,keyword,accountId,publisher);
