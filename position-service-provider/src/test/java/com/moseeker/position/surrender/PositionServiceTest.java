@@ -186,7 +186,7 @@ public class PositionServiceTest {
 			"  'feature': '',\n" +
 			"  'jobnumber': '07cd6a55-76a8-42ab-89da-33c083630d80',\n" +
 			"  'salary_top': 0,\n" +
-			"  'priority': 0,\n" +
+			"  'priority': '',\n" +
 			"  'publisher': 91342,\n" +
 			"  'count': 2,\n" +
 			"  'language_required': 0,\n" +
