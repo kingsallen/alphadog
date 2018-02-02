@@ -1,5 +1,6 @@
 package com.moseeker.function.service.chaos;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -58,13 +59,16 @@ public class ChaosServiceImpl {
         return getConfigString("chaos.domain");
     }
 
-
     private String postBind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, Object> extras, String routingKey) throws Exception {
+        return postBind(hrThirdPartyAccount,extras,BindThirdPart.BIND_EXCHANGE_NAME,routingKey);
+    }
+
+    private String postBind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, Object> extras,String exchange, String routingKey) throws Exception {
         //推送需要绑定第三方账号的信息到rabbitMQ中
         String param=ChaosTool.getParams(hrThirdPartyAccount, extras);
         String account_Id=hrThirdPartyAccount.getId()+"";
         logger.info("准备推送"+account_Id+"数据到RabbitMQ的RoutingKey："+routingKey+" {"+param+"}");
-        amqpTemplate.send(BindThirdPart.BIND_EXCHANGE_NAME, routingKey, MessageBuilder.withBody(param.getBytes()).build());
+        amqpTemplate.send(exchange, routingKey, MessageBuilder.withBody(param.getBytes()).build());
         logger.info("推送RabbitMQ成功");
 
         //尝试从从redis中获取绑定结果,超时后推出
@@ -87,7 +91,7 @@ public class ChaosServiceImpl {
      * @return
      */
     public String bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
-        logger.info("ChaosServiceImpl bind account:{},extras:{}",hrThirdPartyAccount,extras);
+        logger.info("ChaosServiceImpl bind account:{},extras:{}",hrThirdPartyAccount, JSON.toJSONString(extras));
         String data=postBind(hrThirdPartyAccount,new HashMap<>(extras), BindThirdPart.BIND_SEND_ROUTING_KEY);
         logger.info("ChaosServiceImpl bind result:"+data);
         return data;
@@ -101,7 +105,7 @@ public class ChaosServiceImpl {
      * @return
      */
     public String bindConfirm(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, boolean confirm) throws Exception {
-        logger.info("ChaosServiceImpl bindConfirm account:{},extras:{},confirm:{}",hrThirdPartyAccount,extras,confirm);
+        logger.info("ChaosServiceImpl bindConfirm account:{},extras:{},confirm:{}",hrThirdPartyAccount,JSON.toJSONString(extras),confirm);
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("confirm", confirm);
@@ -118,12 +122,13 @@ public class ChaosServiceImpl {
      * @return
      */
     public String bindMessage(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, String code) throws Exception {
-        logger.info("ChaosServiceImpl bindMessage account:{},extras:{},code:{}",hrThirdPartyAccount,extras,code);
+        logger.info("ChaosServiceImpl bindMessage account:{},extras:{},code:{}",hrThirdPartyAccount,JSON.toJSONString(extras),code);
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("code", code);
 
-        String data=postBind(hrThirdPartyAccount,paramsMap, BindThirdPart.BIND_CODE_SEND_ROUTING_KEY);
+        String rountingKey= PositionSyncVerify.MOBILE_VERIFY_RESPONSE_ROUTING_KEY.replace("{}",hrThirdPartyAccount.getId()+"");
+        String data=postBind(hrThirdPartyAccount,paramsMap, PositionSyncVerify.MOBILE_VERIFY_EXCHANGE, rountingKey);
         logger.info("ChaosServiceImpl bindMessage result:"+data);
         return data;
     }

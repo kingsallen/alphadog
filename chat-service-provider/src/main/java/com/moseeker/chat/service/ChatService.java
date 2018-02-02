@@ -1,22 +1,16 @@
 package com.moseeker.chat.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.chat.constant.ChatOrigin;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.utils.Page;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ChatMsgType;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.chat.struct.ChatVO;
-import com.moseeker.thrift.gen.chat.struct.ChatsVO;
-import com.moseeker.thrift.gen.chat.struct.HRChatRoomVO;
-import com.moseeker.thrift.gen.chat.struct.HRChatRoomsVO;
-import com.moseeker.thrift.gen.chat.struct.HrVO;
-import com.moseeker.thrift.gen.chat.struct.PositionVO;
-import com.moseeker.thrift.gen.chat.struct.ResultOfSaveRoomVO;
-import com.moseeker.thrift.gen.chat.struct.UserChatRoomVO;
-import com.moseeker.thrift.gen.chat.struct.UserChatRoomsVO;
-import com.moseeker.thrift.gen.chat.struct.UserVO;
+import com.moseeker.thrift.gen.chat.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
@@ -31,10 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -270,6 +261,11 @@ public class ChatService {
                     chatVO.setId(chatDO.getId());
                     chatVO.setContent(chatDO.getContent());
                     chatVO.setCreate_time(chatDO.getCreateTime());
+
+                    chatVO.setMsgType(chatDO.getMsgType());
+                    chatVO.setPicUrl(chatDO.getPicUrl());
+                    chatVO.setBtnContent(chatDO.getBtnContent());
+
                     byte speaker = chatDO.getSpeaker();
                     chatVO.setSpeaker(speaker);
 
@@ -281,6 +277,8 @@ public class ChatService {
                         chatVO.setOrigin(ChatOrigin.Human.getValue());
                         chatVO.setOrigin_str(ChatOrigin.Human.getName());
                     }
+
+
 
                     chatVOList.add(chatVO);
                 });
@@ -297,29 +295,34 @@ public class ChatService {
 
     /**
      * 添加聊天内容，并修改未读消息数量
-     * @param roomId 聊天室编号
-     * @param content 聊天内容
-     * @param positionId 职位编号
-     * @param speaker 消息发送人标记
-     * @param origin 来源
+     * @param chat 聊天信息
      */
-    public void saveChat(int roomId, String content, int positionId, byte speaker, byte origin) {
-        logger.info("saveChat roomId:{} content:{}, positionId:{} speaker:{}", roomId, content, positionId, speaker);
+    public int saveChat(ChatVO chat) {
+        logger.info("saveChat chat:{}", JSON.toJSONString(chat));
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
         String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         chatDO.setCreateTime(date);
-        chatDO.setContent(content);
-        chatDO.setPid(positionId);
-        chatDO.setSpeaker(speaker);
-        chatDO.setChatlistId(roomId);
-        chatDO.setOrigin(origin);
+        chatDO.setPid(chat.getPositionId());
+        chatDO.setSpeaker(chat.getSpeaker());
+        chatDO.setChatlistId(chat.getRoomId());
+        chatDO.setOrigin(chat.getOrigin());
+        chatDO.setMsgType(chat.getMsgType());
+        chatDO.setContent(chat.getContent());
+        chatDO.setPicUrl(chat.getPicUrl());
+        chatDO.setBtnContent(JSON.toJSONString(chat.getBtnContent()));
+
         logger.info("saveChat before saveChat chatDO:{}", chatDO);
-        chaoDao.saveChat(chatDO);
+        int result=0;
+        chatDO=chaoDao.saveChat(chatDO);
+        if(chatDO!=null){
+            result=1;
+        }
         logger.info("saveChat after saveChat chatDO:{}", chatDO);
         chaoDao.addChatTOChatRoom(chatDO);
 
         //修改未读消息数量
-        pool.startTast(() -> chaoDao.addUnreadCount(roomId, speaker, date));
+        pool.startTast(() -> chaoDao.addUnreadCount(chat.getRoomId(), chat.getSpeaker(), date));
+        return result;
     }
 
     /**
@@ -502,6 +505,7 @@ public class ChatService {
         if(resultOfSaveRoomVO.getPosition() != null) {
             chatDO.setPid(resultOfSaveRoomVO.getPosition().getPositionId());
         }
+        chatDO.setMsgType(ChatMsgType.HTML.value());
         chaoDao.saveChat(chatDO);
         logger.info("createChat result:{}", chatDO);
         return chatDO;

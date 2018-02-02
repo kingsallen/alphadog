@@ -24,6 +24,11 @@ import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,7 +107,6 @@ public class ProfileController {
 
             ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
             Response result = profileService.postResource(form.getProfile(), form.getUser_id());
-
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -477,4 +481,102 @@ public class ProfileController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 人才库简历上传解析，也可以用在其他位置
+     */
+    @RequestMapping(value = "/profile/upload/parser", method = RequestMethod.POST)
+    @ResponseBody
+    public String talentUploadParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseequestParameter(request);
+            String  companyId=(String)params.get("company_id");
+            String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
+            Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,Integer.parseInt(companyId));
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/profile/upload/combine", method = RequestMethod.POST)
+    @ResponseBody
+    public String profileCombine(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String,Object> profile= (Map<String, Object>) params.get("profile");
+            int companyId=(int)params.get("company_id");
+            Response res = profileService.combinationProfile(JSON.toJSONString(profile),companyId);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/profile/talent/preserve", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveProfile(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String,Object> profile= (Map<String, Object>) params.get("profile");
+            int hrId=(int)params.get("hr_id");
+            int userId=(int)params.get("user_id");
+            int companyId=(int)params.get("company_id");
+            String fileName=(String)params.get("file_name");
+            Response res = profileService.preserveProfile(JSON.toJSONString(profile),hrId,companyId,fileName,userId);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/profile/upload/validate", method = RequestMethod.GET)
+    @ResponseBody
+    public String ValidateUploadHr(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=(String)params.get("hr_id");
+            String userId=(String)params.get("user_id");
+            String companyId=(String)params.get("company_id");
+            if("0".equals(hrId)||StringUtils.isNullOrEmpty(hrId)){
+                return ResponseLogNotification.fail(request, "hr_id不能为0或者为空");
+            }
+            if("0".equals(userId)||StringUtils.isNullOrEmpty(userId)){
+                return ResponseLogNotification.fail(request, "userId不能为0或者为空");
+            }
+            if("0".equals(companyId)||StringUtils.isNullOrEmpty(companyId)){
+                return ResponseLogNotification.fail(request, "companyId不能为0或者为空");
+            }
+            Response res = profileService.validateHrAndUploaduser(Integer.parseInt(hrId),Integer.parseInt(companyId),Integer.parseInt(userId));
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/profile/upload", method = RequestMethod.GET)
+    @ResponseBody
+    public String getUploadprofile(HttpServletRequest request, HttpServletResponse response) {
+        // PrintWriter writer = null;
+        try {
+            // GET方法 通用参数解析并赋值
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Response result = profileService.getUploadProfile(Integer.parseInt(String.valueOf(params.get("user_id"))));
+
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
+
 }

@@ -125,7 +125,17 @@ public final class ConstantErrorCodeMessage {
     public static final String CITY_TOO_LONG = "{'status':51017,'message':'城市信息太长，无法入库'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
-
+    //职位同步
+    public static final String POSITION_SYNC_VERIFY_TIMEOUT = "{'status':61001,'message':'验证已超时，职位同步失败'}";
+    public static final String POSITION_SYNC_ALREADY_VERIFY = "{'status':61002,'message':'该同步职位已经在验证了'}";
+    public static final String POSITION_SYNC_WRONG_CHANNEL = "{'status':61003,'message':'验证处理--渠道错误'}";
+    public static final String POSITION_SYNC_NO_POSITION = "{'status':61004,'message':'验证处理--职位不存在'}";
+    public static final String POSITION_SYNC_NO_THIRD_POSITION = "{'status':61005,'message':'验证处理--第三方职位不存在'}";
+    public static final String POSITION_SYNC_EMPTY_MOBILE = "{'status':61006,'message':'验证处理--手机号为空'}";
+    public static final String POSITION_SYNC_SEND_MOBILE_TEMPLATE_ERROR = "{'status':61007,'message':'发送手机验证码模板消息失败'}";
+    public static final String POSITION_SYNC_EMPTY_MOBILE_CODE = "{'status':61008,'message':'验证处理--验证码为空'}";
+    public static final String POSITION_SYNC_NOT_FIND_THIRD_PARTY_POSITION = "{'status':61009,'message':'找不到第三方职位同步信息'}";
+    public static final String POSITION_SYNC_INFO_SENDED = "{'status':61010,'message':'验证信息发送成功'}";
     //APPBS错误代码61000
 
 

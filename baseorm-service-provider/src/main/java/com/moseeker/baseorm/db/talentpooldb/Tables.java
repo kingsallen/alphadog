@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUserTag;
 
 import javax.annotation.Generated;
@@ -33,7 +34,7 @@ public class Tables {
     public static final TalentpoolApplication TALENTPOOL_APPLICATION = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication.TALENTPOOL_APPLICATION;
 
     /**
-     * 人才库人HR与标签的关系
+     * 人才库人HR与备注的关系
      */
     public static final TalentpoolComment TALENTPOOL_COMMENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment.TALENTPOOL_COMMENT;
 
@@ -51,6 +52,11 @@ public class Tables {
      * 人才库人才表
      */
     public static final TalentpoolTalent TALENTPOOL_TALENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent.TALENTPOOL_TALENT;
+
+    /**
+     * 人才库简历上传记录表
+     */
+    public static final TalentpoolUpload TALENTPOOL_UPLOAD = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload.TALENTPOOL_UPLOAD;
 
     /**
      * 人才标签表
