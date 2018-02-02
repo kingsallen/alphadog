@@ -107,7 +107,7 @@ public class ProfileMiniService {
         for(Integer aid:idSet){
             accountIds+=aid+",";
         }
-        accountIds=accountIds.substring(accountIds.lastIndexOf(","));
+        accountIds=accountIds.substring(0,accountIds.lastIndexOf(","));
         return accountIds;
     }
 }
