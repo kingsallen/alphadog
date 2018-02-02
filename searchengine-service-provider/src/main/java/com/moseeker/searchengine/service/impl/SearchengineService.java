@@ -877,7 +877,7 @@ public class SearchengineService {
         TransportClient client=null;
         Map<String,Object> map=new HashMap<String,Object>();
         try {
-            client = searchUtil.getEsClient();
+            client = searchUtil.getEsClient1();
             SearchResponse hits=this.searchPrefix(keyWord,companyIds,publisherCompanyId,Integer.parseInt(flag),publisher,returnParams,Integer.parseInt(page),Integer.parseInt(pageSize),client);
             long hitNum=hits.getHits().getTotalHits();
             if(hitNum==0){
@@ -887,7 +887,7 @@ public class SearchengineService {
                 map=searchUtil.handleData(hits,"suggest");
             }
         }catch(Exception e){
-
+            e.printStackTrace();
         }
 
         return map;

@@ -94,7 +94,7 @@ public class PositionMiniService {
         }else{
             map.put("publisher",String.valueOf(accountId));
         }
-        map.put("keyword",keyword);
+        map.put("keyWord",keyword);
         map.put("page_from",String.valueOf(pageNum));
         map.put("page_size",String.valueOf(pageSize));
         map.put("return_params","title");
