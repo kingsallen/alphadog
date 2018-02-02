@@ -11,6 +11,8 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ import java.util.Set;
  */
 @Service
 public class ProfileMiniService {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private UserHrAccountDao userHrAccountDao;
     @Autowired
@@ -37,7 +40,7 @@ public class ProfileMiniService {
         String keyword=params.get("keyword");
         String accountId=params.get("accountId");
         if(StringUtils.isNullOrEmpty(pageNumber)){
-            pageNumber="0";
+            pageNumber="1";
         }
         if(StringUtils.isNullOrEmpty(pageSize)){
             pageSize="15";
@@ -53,7 +56,8 @@ public class ProfileMiniService {
     private Map<String,Object> getProfileByEs(Map<String,String> params) throws TException {
         Response  res=searchengineServices.userQuery(params);
         if(res.getStatus()==0&&res.getData()!=null&&StringUtils.isNotNullOrEmpty(res.getData())){
-            Map<String,Object> result= JSON.parseObject(res.getData());
+            logger.info(res.getData());
+            Map<String,Object> result= JSON.parseObject(res.getData(),Map.class);
             result=StringUtils.convertUnderKeyToCamel(result);
             return result;
         }
@@ -107,7 +111,7 @@ public class ProfileMiniService {
         for(Integer aid:idSet){
             accountIds+=aid+",";
         }
-        accountIds=accountIds.substring(accountIds.lastIndexOf(","));
+        accountIds=accountIds.substring(0,accountIds.lastIndexOf(","));
         return accountIds;
     }
 }
