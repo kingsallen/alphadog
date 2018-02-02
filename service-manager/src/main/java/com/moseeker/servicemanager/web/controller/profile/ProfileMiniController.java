@@ -8,6 +8,8 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +25,8 @@ import java.util.Map;
  */
 @Controller
 public class ProfileMiniController {
+
+    Logger logger = LoggerFactory.getLogger(ProfileController.class);
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER
             .getService(WholeProfileServices.Iface.class);
     @RequestMapping(value = "/api/mini/profile/list", method = RequestMethod.GET)
@@ -44,6 +48,26 @@ public class ProfileMiniController {
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/mini/profile/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getProfileInfo(HttpServletRequest request, HttpServletResponse response) {
+        // PrintWriter writer = null;
+        try {
+            // GET方法 通用参数解析并赋值
+            Params<String, Object> form = ParamUtils.parseRequestParam(request);
+            int accountId = form.getInt("accountId", 0);
+            int userId = form.getInt("userId");
+            Response result = profileService.getProfileInfo(userId, accountId);
+
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
         }
     }
 }
