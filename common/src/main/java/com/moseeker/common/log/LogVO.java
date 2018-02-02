@@ -24,7 +24,7 @@ public class LogVO implements Serializable {
     private String remote_ip;
     private String cookie;
     private String useragent;
-    private Object req_params;
+    private String req_params;
     private Object customs;
 
     public Date getReq_time() {
@@ -147,11 +147,11 @@ public class LogVO implements Serializable {
         this.useragent = useragent;
     }
 
-    public Object getReq_params() {
+    public String getReq_params() {
         return req_params;
     }
 
-    public void setReq_params(Object req_params) {
+    public void setReq_params(String req_params) {
         this.req_params = req_params;
     }
 
