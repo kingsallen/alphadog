@@ -110,6 +110,11 @@ public class PositionParamUtils extends ParamUtils {
         } else {
             batchHandlerDate.setNodelete((Boolean) data.get("nodelete"));
         }
+        if (StringUtils.isEmptyObject(data.get("isCreateDeparment"))) {
+            batchHandlerDate.setIsCreateDeparment(false);
+        } else {
+            batchHandlerDate.setIsCreateDeparment((Boolean) data.get("isCreateDeparment"));
+        }
         return batchHandlerDate;
     }
 
