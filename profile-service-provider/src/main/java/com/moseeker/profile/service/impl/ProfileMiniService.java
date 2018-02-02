@@ -37,7 +37,7 @@ public class ProfileMiniService {
         String keyword=params.get("keyword");
         String accountId=params.get("accountId");
         if(StringUtils.isNullOrEmpty(pageNumber)){
-            pageNumber="0";
+            pageNumber="1";
         }
         if(StringUtils.isNullOrEmpty(pageSize)){
             pageSize="15";
@@ -53,7 +53,7 @@ public class ProfileMiniService {
     private Map<String,Object> getProfileByEs(Map<String,String> params) throws TException {
         Response  res=searchengineServices.userQuery(params);
         if(res.getStatus()==0&&res.getData()!=null&&StringUtils.isNotNullOrEmpty(res.getData())){
-            Map<String,Object> result= JSON.parseObject(res.getData());
+            Map<String,Object> result= JSON.parseObject(res.getData(),Map.class);
             result=StringUtils.convertUnderKeyToCamel(result);
             return result;
         }
