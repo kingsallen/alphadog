@@ -64,8 +64,47 @@ public class PositionMiniService {
         List<PositionMiniInfo> list=getSearchdata(keyWord,page,pageSize,account);
         this.handlerPositionMiniInfoList(list);
         result.setPositionList(list);
+        this.handlerData(result,account);
         return result;
     }
+
+    @CounterIface
+    public  Map<String,Object> getPositionMiniSug(int accountId,String keyword,int page,int pageSize) throws TException {
+        Map<String,String> params=this.handlerParams(accountId,keyword,page,pageSize);
+        Response res=searchengineServices.searchPositionSuggest(params);
+        if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
+            Map<String,Object> result=JSON.parseObject(res.getData(),Map.class);
+            return result;
+        }
+        return null;
+    }
+    /*
+     获取es的数据并处理
+     */
+
+
+    /*
+      获取请求es的参数
+     */
+    private Map<String,String> handlerParams(int accountId,String keyword,int pageNum,int pageSize){
+        Map<String,String> map=new HashMap<>();
+        UserHrAccount account=userHrAccountDao.getHrAccount(accountId);
+        if(account.getAccountType()==0){
+            map.put("company_id",String.valueOf(account.getCompanyId()));
+        }else{
+            map.put("publisher",String.valueOf(accountId));
+        }
+        map.put("keyWord",keyword);
+        map.put("page_from",String.valueOf(pageNum));
+        map.put("page_size",String.valueOf(pageSize));
+        map.put("return_params","title");
+        map.put("flag","1");
+        return map;
+    }
+
+
+
+
     /*
     将userHrAccount的数据存放到PositionMiniInfo中
      */
@@ -85,7 +124,7 @@ public class PositionMiniService {
                                 Map<String,Object> newMap=StringUtils.convertUnderKeyToCamel(map);
                                 UserHrAccount hrAccount=JSON.parseObject(JSON.toJSONString(newMap),UserHrAccount.class);
                                 info.setAccount(hrAccount);
-                                continue;
+                                break;
                             }
                         }
                     }
@@ -140,26 +179,20 @@ public class PositionMiniService {
         }
         return result;
     }
-
+    /*
+     根据条件，获取es数据
+     */
     public List<PositionMiniInfo> getSearchdata(String keyWord,int page,int pageSize,CompanyAccount account) throws TException {
-        String motherCompanyId="";
-        String childCompanyId="";
-        HrCompany company=account.getHrCompany();
-        if(company==null){
-            ResponseUtils.fail(1,"account_id已失效");
-        }
-        int parentId=company.getParentId();
-        if(parentId==0){
-            motherCompanyId=String.valueOf(company.getId());
-        }else{
-            childCompanyId=String.valueOf(company.getId());
-        }
         Map<String,String> params=new HashMap<>();
         params.put("keyword",keyWord);
         params.put("page",String.valueOf(page));
         params.put("pageSize",String.valueOf(pageSize));
-        params.put("childCompanyId",childCompanyId);
-        params.put("motherCompanyId",motherCompanyId);
+        UserHrAccount userHrAccount=account.getUserHrAccount();
+        if(userHrAccount.getAccountType()==0){
+            params.put("motherCompanyId",String.valueOf(userHrAccount.getCompanyId()));
+        }else{
+            params.put("publisher",String.valueOf(userHrAccount.getId()));
+        }
         Response res=searchengineServices.queryPositionMini(params);
         if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
             Map<String,Object> data= JSON.parseObject(res.getData(),Map.class);
