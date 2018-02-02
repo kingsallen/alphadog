@@ -268,7 +268,8 @@ struct JobPostrionObj{
     47:i32 id,
     48:string requirement,
     49:string custom,
-    50:string thirdParty_position
+    50:string thirdParty_position,
+    51:i8 priority  //是否置顶
 }
 
 struct City{
