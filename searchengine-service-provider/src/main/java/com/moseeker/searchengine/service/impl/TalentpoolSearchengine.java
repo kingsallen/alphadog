@@ -45,8 +45,8 @@ public class TalentpoolSearchengine {
         Map<String, Object> result=new HashMap<>();
         TransportClient client=null;
         try {
-//            client = searchUtil.getEsClient();
-            client = searchUtil.getEsClient1();
+            client = searchUtil.getEsClient();
+//            client = searchUtil.getEsClient1();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
             this.handlerSortOrder(params, builder);

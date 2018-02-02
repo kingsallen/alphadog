@@ -39,30 +39,30 @@ public class SearchUtil {
         return EsClientInstance.getClient();
     }
 
-    public TransportClient getEsClient1() {
-        TransportClient client=null;
-        try {
-            ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-            propertiesReader.loadResource("es.properties");
-            String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-            String es_connection = propertiesReader.get("es.connection", String.class);
-            Integer es_port = propertiesReader.get("es.port", Integer.class);
-            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                    .put("client.transport.sniff", true)
-                    .build();
-            List<String> esList = stringConvertList(es_connection);
-            for (int i = 0; i < esList.size(); i++) {
-                if (i == 0) {
-                    client = TransportClient.builder().settings(settings).build()
-                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(esList.get(i)), es_port));
-                }
-                client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(esList.get(i)), es_port));
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return client;
-    }
+//    public TransportClient getEsClient1() {
+//        TransportClient client=null;
+//        try {
+//            ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+//            propertiesReader.loadResource("es.properties");
+//            String cluster_name = propertiesReader.get("es.cluster.name", String.class);
+//            String es_connection = propertiesReader.get("es.connection", String.class);
+//            Integer es_port = propertiesReader.get("es.port", Integer.class);
+//            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+//                    .put("client.transport.sniff", true)
+//                    .build();
+//            List<String> esList = stringConvertList(es_connection);
+//            for (int i = 0; i < esList.size(); i++) {
+//                if (i == 0) {
+//                    client = TransportClient.builder().settings(settings).build()
+//                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(esList.get(i)), es_port));
+//                }
+//                client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(esList.get(i)), es_port));
+//            }
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
+//        return client;
+//    }
     /*
      * 拼接city
      */
