@@ -14,10 +14,7 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by zztaiwll on 18/2/1.
@@ -42,10 +39,35 @@ public class ProfileMiniService {
         if(StringUtils.isNullOrEmpty(pageSize)){
             pageSize="15";
         }
-        String publisher=this.handlerAccountData(accountId);
+        UserHrAccountRecord record=this.getAccountById(Integer.parseInt(accountId));
+        if(record==null){
+            return null;
+        }
+        String publisher=this.handlerAccountData(record);
         Map<String,String> map=this.handlerParamsData(pageNumber,pageSize,keyword,accountId,publisher);
         Map<String,Object> result=this.getProfileByEs(map);
+        this.filterApplication(result,record.getCompanyId());
         return result;
+    }
+    /*
+     处理数据，过滤掉无用的申请
+     */
+    private void filterApplication(Map<String,Object> result,int companyId){
+        if(result!=null&&!result.isEmpty()){
+            List<Map<String,Object>> userList= (List<Map<String, Object>>) result.get("users");
+            List<Map<String,Object>> applistNew=new ArrayList<>();
+            for(Map<String,Object> user:userList){
+                List<Map<String,Object>> appList= (List<Map<String, Object>>) user.get("applications");
+                for(Map<String,Object> app:appList){
+                    int appCompanyId = (int) app.get("companyId");
+                    if(appCompanyId==companyId){
+                        applistNew.add(app);
+                    }
+                }
+                user.put("applications",applistNew);
+            }
+        }
+
     }
     /*
      请求es，获取参数
@@ -75,8 +97,8 @@ public class ProfileMiniService {
     /*
      处理小程序传的账号的数据
      */
-    public String handlerAccountData(String accountId){
-        UserHrAccountRecord record=this.getAccountById(Integer.parseInt(accountId));
+    public String handlerAccountData(UserHrAccountRecord record){
+
         if(record==null){
             return "";
         }
@@ -84,7 +106,7 @@ public class ProfileMiniService {
         if(accountType==0){
             return this.getAccountIdByCompanyId(record.getCompanyId());
         }
-        return accountId;
+        return record.getId()+"";
     }
     /*
      根据传入的id查询账号的内容
