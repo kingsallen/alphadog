@@ -90,6 +90,7 @@ public class ReceiverHandler {
         try{
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("rabitmq的参数是========"+jsonObject.toJSONString());
             int userId=jsonObject.getIntValue("user_id");
             int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");
@@ -99,10 +100,10 @@ public class ReceiverHandler {
             logVo.setUser_id(userId);
             if(type!=0){
                 switch (type) {
-                    case 1: templateId = Constant.FANS_PROFILE_COMPLETION; break;
-                    case 2: templateId = Constant.FANS_RECOM_POSITION; break;
-                    case 3: templateId = Constant.EMPLOYEE_RECOM_POSITION; break;
-                    case 4: templateId = Constant.EMPLOYEE_PROFILE_COMPLETION; break;
+                    case 1: templateId = Constant.FANS_PROFILE_COMPLETION;logVo.setEvent("FANS_PROFILE_COMPLETION"); break;
+                    case 2: templateId = Constant.FANS_RECOM_POSITION;logVo.setEvent("FANS_RECOM_POSITION"); break;
+                    case 3: templateId = Constant.EMPLOYEE_RECOM_POSITION;logVo.setEvent("EMPLOYEE_RECOM_POSITION"); break;
+                    case 4: templateId = Constant.EMPLOYEE_PROFILE_COMPLETION;logVo.setEvent("EMPLOYEE_PROFILE_COMPLETION"); break;
                     default: templateId = 0;
                 }
                 String url=jsonObject.getString("url");
@@ -124,20 +125,21 @@ public class ReceiverHandler {
                         personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,1,20);
                     }
                     logVo.setStatus_code(0);
-                    long endTime=new Date().getTime();
-                    logVo.setOpt_time(endTime-startTime);
                 }else{
                     this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
                     logVo.setStatus_code(1);
-                    long endTime=new Date().getTime();
-                    logVo.setOpt_time(endTime-startTime);
+
                 }
+            }else{
+                logVo.setStatus_code(2);
             }
         }catch(Exception e){
             this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
             log.error(e.getMessage(), e);
             logVo.setStatus_code(1);
         }finally{
+            long endTime=new Date().getTime();
+            logVo.setOpt_time(endTime-startTime);
             ELKLog.ELK_LOG.log(logVo);
         }
     }
@@ -203,11 +205,10 @@ public class ReceiverHandler {
 
     private LogVO handlerLogVO(){
         LogVO log=new LogVO();
-        log.setAppid(10);
-        log.setReq_uri(this.getClass().getName()+"handlerMessageTemplate");
+        log.setAppid(4);
+        log.setReq_uri(this.getClass().getName()+"_handlerMessageTemplate");
         log.setReq_time(new Date());
-        log.setEvent(this.getClass().getName()+"handlerMessageTemplate");
-        log.setRefer("weChatMessage");
+        log.setRefer("wechat_template_message");
         return log;
     }
 
