@@ -7,6 +7,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.useraccounts.form.ApplyTypeAwardFrom;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -16,10 +17,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -135,6 +133,17 @@ public class UserEmployeeController {
             UserEmployeeStruct userEmployee=ParamUtils.initModelForm(request, UserEmployeeStruct.class);
             Response res=service.putUserEmployee(userEmployee);
             return ResponseLogNotification.success(request,res);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value="/employee/award", method = RequestMethod.POST)
+    @ResponseBody
+    public String addAward(HttpServletRequest request, @RequestBody ApplyTypeAwardFrom form) {
+        try {
+            service.addEmployeeAward(form.getApplicationIds(), form.getEventType());
+            return ResponseLogNotification.successJson(request,"success");
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
