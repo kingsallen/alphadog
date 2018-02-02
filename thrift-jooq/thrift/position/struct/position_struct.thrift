@@ -214,7 +214,8 @@ struct BatchHandlerJobPostion{
     2:list<JobPostrionObj> data,
     3:string fields_nooverwrite,
     4:bool nodelete,
-    5:string fields_nohash
+    5:string fields_nohash,
+    6:bool isCreateDeparment    //是否创建未找到的部门
 }
 
 struct JobPostrionObj{
@@ -267,7 +268,8 @@ struct JobPostrionObj{
     47:i32 id,
     48:string requirement,
     49:string custom,
-    50:string thirdParty_position
+    50:string thirdParty_position,
+    51:i8 priority  //是否置顶
 }
 
 struct City{
