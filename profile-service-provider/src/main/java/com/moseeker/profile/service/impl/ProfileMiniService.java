@@ -40,7 +40,7 @@ public class ProfileMiniService {
         String keyword=params.get("keyword");
         String accountId=params.get("accountId");
         if(StringUtils.isNullOrEmpty(pageNumber)){
-            pageNumber="0";
+            pageNumber="1";
         }
         if(StringUtils.isNullOrEmpty(pageSize)){
             pageSize="15";
