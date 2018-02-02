@@ -495,6 +495,9 @@ public class TalentpoolSearchengine {
             sb.deleteCharAt(sb.lastIndexOf("|"));
             sb.deleteCharAt(sb.lastIndexOf("|"));
             sb.append(")");
+        }else{
+            sb.deleteCharAt(sb.lastIndexOf("&"));
+            sb.deleteCharAt(sb.lastIndexOf("&"));
         }
         sb.append("){return true}}}");
 
