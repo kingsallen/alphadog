@@ -907,6 +907,7 @@ public class SearchengineService {
                  .setSize(pageSize)
                  .setTrackScores(true);
          this.handlerReturnParams(returnParams,responseBuilder);
+         logger.info(responseBuilder.toString());
          SearchResponse res=responseBuilder.execute().actionGet();
          return res;
      }
@@ -923,7 +924,9 @@ public class SearchengineService {
                 .setFrom((page-1)*pageSize)
                 .setSize(pageSize)
                 .setTrackScores(true);
+
         this.handlerReturnParams(returnParams,responseBuilder);
+        logger.info(responseBuilder.toString());
         SearchResponse res=responseBuilder.execute().actionGet();
         return res;
     }
