@@ -22,6 +22,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
@@ -68,6 +69,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
@@ -971,6 +973,7 @@ public class ProfileService {
         Query companyQuery = null;
         Query positionQuery = null;
         List<JobApplicationDO> applicationDOS = null;
+        List<JobApplicationRecord> updateList = null;
         if(accountDO.getAccountType() == 0 ){
             companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.PARENT_ID.getName(), companyAccountDO.getCompanyId()).or("id", companyAccountDO.getCompanyId()).buildQuery();
             List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(companyQuery);
@@ -982,6 +985,13 @@ public class ProfileService {
                         .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
                         .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
                 applicationDOS = jobApplicationDao.getDatas(applicationQuery);
+                Query queryUpdate  = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.COMPANY_ID.getName(), companyIdList.toArray(),ValueOp.IN))
+                        .and(JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1)
+                        .andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
+                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1)
+                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
+                        .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
+                updateList = jobApplicationDao.getRecords(queryUpdate);
             }
         }else{
             companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(), companyAccountDO.getCompanyId()).buildQuery();
@@ -997,14 +1007,27 @@ public class ProfileService {
                         .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1).and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
                         .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
                 applicationDOS = jobApplicationDao.getDatas(applicationQuery);
-
+                Query queryUpdate  = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(),ValueOp.IN))
+                        .and(JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1)
+                        .andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
+                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1)
+                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
+                        .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
+                updateList =  jobApplicationDao.getRecords(queryUpdate);
             }
         }
+      if(updateList != null && updateList.size()>0){
+          for(JobApplicationRecord record : updateList){
+              record.setIsViewed((byte)0);
+          }
+          jobApplicationDao.updateRecords(updateList);
+      }
         List<Integer> positionList = null;
         if(applicationDOS != null && applicationDOS.size()>0){
             positionList = applicationDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
             return  getProfileOther(positionList, profileId);
         }
+
         return  null;
     }
 
