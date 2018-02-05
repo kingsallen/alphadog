@@ -1,6 +1,9 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.application.domain.ApplicationBatchEntity;
+import com.moseeker.application.domain.HREntity;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
@@ -64,8 +67,15 @@ import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -114,6 +124,9 @@ public class JobApplicataionService {
     @Autowired
     EmployeeEntity employeeEntity;
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+
+    @Autowired
+    ApplicationRepository applicationRepository;
 
     /**
      * 创建申请
@@ -950,57 +963,76 @@ public class JobApplicataionService {
         return hrOperationRecordRecord;
     }
 
-
-    public Response getHrApplicationNum(int user_id){
+    public Response getHrApplicationNum(int user_id) {
         int num = 0;
         Query accountQuery = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), user_id).buildQuery();
         UserHrAccountDO accountDO = userHrAccountDao.getData(accountQuery);
-        if(accountDO == null)
+        if (accountDO == null)
             return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
         Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), accountDO.getId()).buildQuery();
         HrCompanyAccountDO companyAccountDO = hrCompanyAccountDao.getData(companyAccountQuery);
-        if(companyAccountDO == null)
+        if (companyAccountDO == null)
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         Query companyQuery = null;
         Query positionQuery = null;
         List<JobApplicationDO> isViewCountList = null;
-        if(accountDO.getAccountType() == 0 ){
+        if (accountDO.getAccountType() == 0) {
             companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.PARENT_ID.getName(), companyAccountDO.getCompanyId()).or("id", companyAccountDO.getCompanyId()).buildQuery();
             List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(companyQuery);
-            if(companyDOList!= null && companyDOList.size()>0){
+            if (companyDOList != null && companyDOList.size() > 0) {
                 List<Integer> companyIdList = companyDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
                 Query applicationQuery = new Query.QueryBuilder().select(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLIER_ID.getName())
-                        .where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.COMPANY_ID.getName(), companyIdList.toArray(),ValueOp.IN))
-                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1)
-                        .andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
-                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1)
+                        .where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.COMPANY_ID.getName(), companyIdList.toArray(), ValueOp.IN))
+                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.IS_VIEWED.getName(), 1)
+                        .andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(), 0)
+                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(), 1)
                         .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
                         .groupBy(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLIER_ID.getName()).buildQuery();
                 isViewCountList = jobApplicationDao.getDatas(applicationQuery);
             }
-        }else{
+        } else {
             companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(), companyAccountDO.getCompanyId()).buildQuery();
             HrCompanyDO companyDO = hrCompanyDao.getData(companyQuery);
-            if(companyDO == null)
+            if (companyDO == null)
                 return ResponseUtils.fail(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
-            positionQuery =  new Query.QueryBuilder().where(JobPosition.JOB_POSITION.COMPANY_ID.getName(), companyDO.getId()).and(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountDO.getId()).buildQuery();
+            positionQuery = new Query.QueryBuilder().where(JobPosition.JOB_POSITION.COMPANY_ID.getName(), companyDO.getId()).and(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountDO.getId()).buildQuery();
             List<JobPositionDO> positionDOList = jobPositionDao.getDatas(positionQuery);
-            if(positionDOList != null && positionDOList.size()>0){
+            if (positionDOList != null && positionDOList.size() > 0) {
                 List<Integer> positionIdList = positionDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
                 Query applicationQuery = new Query.QueryBuilder().select(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLIER_ID.getName())
-                        .where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(),ValueOp.IN))
-                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1).andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
-                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1).and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
+                        .where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(), ValueOp.IN))
+                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.IS_VIEWED.getName(), 1).andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(), 0)
+                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(), 1).and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
                         .groupBy(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLIER_ID.getName()).buildQuery();
                 logger.info("applicationQuery SQL :{}", applicationQuery);
                 isViewCountList = jobApplicationDao.getDatas(applicationQuery);
 
             }
         }
-        if(isViewCountList!=null)
+        if (isViewCountList != null)
             num = isViewCountList.size();
         logger.info("HR账号未读申请数量：{}", num);
         return ResponseUtils.success(num);
+    }
+
+    /**
+     * HR查看申请
+     * 查看申请的是为了处理HR查看，导出，下载某一个申请人信息时，将申请人对应的“是否查看申请”（是否查看的标记是在申请记录上，
+     * 但是业务逻辑做过改版，现有的业务逻辑应该在申请人上比较合适）标记为“已经查看”状态。
+     * 查看申请时需要权限的，主账号可以查看公司下的任何简历，子账号只能查看自己发布职位收到的申请人的简历。
+     * 查看简历还会触发发送模板消息和积分添加。如果申请有推荐人，并且该公司存在公司积分配置，
+     * 那么会对推荐人添加对应积分。HR查看申请 对推荐人（申请是员工转发的候选人投递的，
+     * 那么员工就是该申请的推荐人）添加对应积分（需要公司配置了该操作的积分项）。
+     * @param hrId HR编号
+     * @param applicationIdList  申请集合
+     * @throws CommonException 业务异常 (41012,  "请提交正确的HR信息!" )(41013,  "HR账号类型异常!" )(41014,  "申请信息不正确!" )(41010,  "没有权限查看申请信息!" )
+     */
+    @Transactional
+    public void viewApplications(int hrId, List<Integer> applicationIdList) throws CommonException {
+
+        HREntity hrEntity = applicationRepository.fetchHREntity(hrId);
+        ApplicationBatchEntity applicationBatchEntity = applicationRepository.fetchApplicationEntity(applicationIdList);
+        hrEntity.viewApplication(applicationBatchEntity);
     }
 }
 
