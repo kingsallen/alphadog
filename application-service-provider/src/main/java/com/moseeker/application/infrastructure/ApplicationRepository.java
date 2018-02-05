@@ -1,5 +1,7 @@
 package com.moseeker.application.infrastructure;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.domain.component.state.ApplicationStateRoute;
@@ -11,6 +13,8 @@ import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import org.jooq.Configuration;
 import org.jooq.Record2;
@@ -20,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +43,14 @@ public class ApplicationRepository {
     private HrOperationJOOQDao hrOperationJOOQDao;
     private HrCompanyJOOQDao companyJOOQDao;
     private WechatJOOQDao wechatJOOQDao;
+
+    /**
+     * es数据模板，tableName: 表名， user_id: 用户id
+     */
+    private final String ms = "{'tableName':'%s'}";
+
+    @Resource(name = "cacheClient")
+    private RedisClient client;
 
     @Autowired
     ApplicationContext applicationContext;
@@ -297,6 +310,16 @@ public class ApplicationRepository {
         List<ApplicationEntity> addViewAndChangeStateResult = jobApplicationDao.changeViewNumberAndState(addViewAndChangeStateList);
 
         changeStateResult.addAll(addViewAndChangeStateResult);
+
+
+        JSONObject jsb = JSONObject.parseObject(ms);
+        jsb.put("application_id", applicationList
+                .stream()
+                .map(applicationEntity -> applicationEntity.getId())
+                .collect(Collectors.toList()));
+        client.lpush(Constant.APPID_ALPHADOG,
+                "ES_REALTIME_UPDATE_INDEX_USER_IDS", jsb.toJSONString());
+        logger.info("lpush ES_REALTIME_UPDATE_INDEX_USER_IDS:{} success", jsb.toJSONString());
 
         return changeStateResult;
     }
