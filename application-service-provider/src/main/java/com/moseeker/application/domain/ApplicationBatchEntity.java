@@ -42,6 +42,7 @@ public class ApplicationBatchEntity {
 
         List<ApplicationEntity> result = applicationRepository.updateApplications(applicationList);
 
+
         //生成HR操作申请的操作记录
         List<HrOperationRecord> operationRecordList = result
                 .stream()
