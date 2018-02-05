@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
@@ -901,8 +902,9 @@ public class ProfileService {
         return ResponseUtils.success(paramsStream);
     }
 
-    public List<Map<String, Object>> getProfileOther(List<Integer> positionIds, int profileId) throws CommonException{
-        List<Map<String, Object>> parentValues = new ArrayList<>();
+    public Map<String, Object> getProfileOther(List<Integer> positionIds, int profileId) throws CommonException{
+        Map<String, Object> otherMap = new HashMap<>();
+        Map<String, Object> parentValues = new HashMap<>();
         if(positionIds != null && positionIds.size()>0 && profileId > 0) {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.where(ProfileOther.PROFILE_OTHER.PROFILE_ID.getName(), profileId);
@@ -929,23 +931,11 @@ public class ProfileService {
                                     .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
                                             map(m -> JSONObject.parseObject(String.valueOf(m)))
                                     .filter(f -> f.getIntValue("parent_id") == 0)
-                                    .collect(Collectors.toMap(k -> "value", v -> {
+                                    .collect(Collectors.toMap(k -> k.getString("field_title"), v -> {
                                         return org.apache.commons.lang.StringUtils
                                                 .defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
                                     }, (oldKey, newKey) -> newKey));
-                            Map<String, Object> parentName = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
-                                    .stream()
-                                    .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
-                                            map(m -> JSONObject.parseObject(String.valueOf(m)))
-                                    .filter(f -> f.getIntValue("parent_id") == 0)
-                                    .collect(Collectors.toMap(k -> "name", v -> v.getString("field_title"), (oldKey, newKey) -> newKey));
-
-                            if(parentName.get("name") != null && !otherList.contains((String)parentName.get("name"))){
-                                otherList.add((String) parentName.get("name"));
-                                parentValue.putAll(parentName);
-                                parentValues.add(parentValue);
-                            }
-
+                            parentValues.putAll(parentValue);
                         }
                     }
                 } catch (Exception e1) {
@@ -953,10 +943,35 @@ public class ProfileService {
                 }
             });
         }
-        return parentValues;
+        List<Map<String, Object>> otherList = new ArrayList<>();
+        Set<Map.Entry<String, Object>> entries = parentValues.entrySet();
+        for(Map.Entry<String, Object> entry : entries){
+
+            if(!entry.getValue().toString().startsWith("[")) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("key", entry.getKey());
+                map.put("values", entry.getValue());
+                otherList.add(map);
+            }else {
+                TypeReference<List<Map<String,Object>>> typeRef
+                        = new TypeReference<List<Map<String,Object>>>() {};
+                List<Map<String , Object>> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
+                if(infoList!=null && infoList.size()>0){
+                    Map<String, Object> infoMap = infoList.get(0);
+                    Set<Map.Entry<String, Object>> infoEntries = infoMap.entrySet();
+                    for(Map.Entry<String, Object> infoEntry : infoEntries){
+                        String info = infoEntry.getKey().split("_")[0];
+                        otherMap.put(info, infoList);
+                        break;
+                    }
+                }
+            }
+        }
+        otherMap.put("keyvalues", otherList);
+        return otherMap;
     }
 
-  public List<Map<String, Object>> getApplicationOther(int userId, int accountId) throws CommonException{
+  public Map<String, Object> getApplicationOther(int userId, int accountId) throws CommonException{
         Query query = new Query.QueryBuilder().where(ProfileProfile.PROFILE_PROFILE.USER_ID.getName(), userId).buildQuery();
         ProfileProfileDO profileDO = dao.getData(query);
         if(profileDO == null)
