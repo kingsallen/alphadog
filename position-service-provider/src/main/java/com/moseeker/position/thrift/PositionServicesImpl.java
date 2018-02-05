@@ -531,4 +531,18 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public Response getMiniPositionSuggest(int accountId, String keyword, int page, int pageSize) throws TException {
+        try {
+            Map<String,Object>  result=positionMiniService.getPositionMiniSug(accountId,keyword,page,pageSize);
+            if(result==null||result.isEmpty()){
+                return  ResponseUtils.fail(1,"您所查找关键字不存在");
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }

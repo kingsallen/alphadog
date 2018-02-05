@@ -16,10 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by zztaiwll on 18/2/1.
@@ -43,12 +40,40 @@ public class ProfileMiniService {
             pageNumber="1";
         }
         if(StringUtils.isNullOrEmpty(pageSize)){
-            pageSize="15";
+            pageSize="10";
         }
-        String publisher=this.handlerAccountData(accountId);
+        UserHrAccountRecord record=this.getAccountById(Integer.parseInt(accountId));
+        if(record==null){
+            return null;
+        }
+        String publisher=this.handlerAccountData(record);
         Map<String,String> map=this.handlerParamsData(pageNumber,pageSize,keyword,accountId,publisher);
         Map<String,Object> result=this.getProfileByEs(map);
+        this.filterApplication(result,record);
         return result;
+    }
+    /*
+     处理数据，过滤掉无用的申请
+     */
+    private void filterApplication(Map<String,Object> result,UserHrAccountRecord record){
+        if(result!=null&&!result.isEmpty()){
+            int companyId=record.getCompanyId();
+            List<Map<String,Object>> userList= (List<Map<String, Object>>) result.get("users");
+            List<Map<String,Object>> applistNew=new ArrayList<>();
+            for(Map<String,Object> user:userList){
+                Map<String,Object> userMap= (Map<String, Object>) user.get("user");
+                List<Map<String,Object>> appList= (List<Map<String, Object>>) userMap.get("applications");
+                for(Map<String,Object> app:appList){
+                    int appCompanyId = (int) app.get("companyId");
+                    if(appCompanyId==companyId){
+                        applistNew.add(app);
+                    }
+                }
+                userMap.put("applications",applistNew);
+            }
+            result.put("accountType",record.getAccountType());
+        }
+
     }
     /*
      请求es，获取参数
@@ -71,7 +96,9 @@ public class ProfileMiniService {
         Map<String,String> pofileMiniParams=new HashMap<>();
         pofileMiniParams.put("page_number",pageNumber);
         pofileMiniParams.put("page_size",pageSize);
-        pofileMiniParams.put("keyword",keyword);
+        if(StringUtils.isNotNullOrEmpty(keyword)){
+            pofileMiniParams.put("keyword",keyword);
+        }
         pofileMiniParams.put("publisher",publisher);
         pofileMiniParams.put("hr_account_id",accountId);
         return pofileMiniParams;
@@ -79,8 +106,8 @@ public class ProfileMiniService {
     /*
      处理小程序传的账号的数据
      */
-    public String handlerAccountData(String accountId){
-        UserHrAccountRecord record=this.getAccountById(Integer.parseInt(accountId));
+    public String handlerAccountData(UserHrAccountRecord record){
+
         if(record==null){
             return "";
         }
@@ -88,7 +115,7 @@ public class ProfileMiniService {
         if(accountType==0){
             return this.getAccountIdByCompanyId(record.getCompanyId());
         }
-        return accountId;
+        return record.getId()+"";
     }
     /*
      根据传入的id查询账号的内容
