@@ -902,6 +902,14 @@ public class ProfileService {
         return ResponseUtils.success(paramsStream);
     }
 
+    /**
+     * 根据申请者的简历编号和申请的有效职位获取申请者自定义简历的自定义数据结构
+     *
+     * @param positionIds   申请的有效职位
+     * @param profileId     申请者的简历编号
+     * @return
+     * @throws CommonException
+     */
     public Map<String, Object> getProfileOther(List<Integer> positionIds, int profileId) throws CommonException{
         Map<String, Object> otherMap = new HashMap<>();
         Map<String, Object> parentValues = new HashMap<>();
@@ -918,9 +926,10 @@ public class ProfileService {
             queryBuilder.clear();
             queryBuilder.where(new Condition("id", new ArrayList<>(positionCustomConfigMap.values()), ValueOp.IN));
             List<HrAppCvConfDO> hrAppCvConfDOList = hrAppCvConfDao.getDatas(queryBuilder.buildQuery());
+            //获取申请职位的自定义简历字段
             Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
                     hrAppCvConfDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
-            List<String> otherList = new ArrayList<>();
+            //遍历职位获取职位与人自定义字段交集
             positionIds.stream().forEach(positionId -> {
                 try {
                     if (positionCustomConfigMap.containsKey(positionId)) {
@@ -943,6 +952,7 @@ public class ProfileService {
                 }
             });
         }
+        //组装所需要的数据结构
         List<Map<String, Object>> otherList = new ArrayList<>();
         Set<Map.Entry<String, Object>> entries = parentValues.entrySet();
         for(Map.Entry<String, Object> entry : entries){
@@ -971,7 +981,16 @@ public class ProfileService {
         return otherMap;
     }
 
+    /**
+     *查询申请者申请HR账号下的自定义简历
+     *
+     * @param userId    申请者编号
+     * @param accountId HR编号
+     * @return
+     * @throws CommonException
+     */
   public Map<String, Object> getApplicationOther(int userId, int accountId) throws CommonException{
+        // 根据HR编号获取公司对象
         Query query = new Query.QueryBuilder().where(ProfileProfile.PROFILE_PROFILE.USER_ID.getName(), userId).buildQuery();
         ProfileProfileDO profileDO = dao.getData(query);
         if(profileDO == null)
@@ -989,6 +1008,7 @@ public class ProfileService {
         Query positionQuery = null;
         List<JobApplicationDO> applicationDOS = null;
         List<JobApplicationRecord> updateList = null;
+        //根据账号类型来获取申请者的有效申请
         if(accountDO.getAccountType() == 0 ){
             companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.PARENT_ID.getName(), companyAccountDO.getCompanyId()).or("id", companyAccountDO.getCompanyId()).buildQuery();
             List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(companyQuery);
@@ -1031,12 +1051,14 @@ public class ProfileService {
                 updateList =  jobApplicationDao.getRecords(queryUpdate);
             }
         }
+      //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
       if(updateList != null && updateList.size()>0){
           for(JobApplicationRecord record : updateList){
               record.setIsViewed((byte)0);
           }
           jobApplicationDao.updateRecords(updateList);
       }
+
         List<Integer> positionList = null;
         if(applicationDOS != null && applicationDOS.size()>0){
             positionList = applicationDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
