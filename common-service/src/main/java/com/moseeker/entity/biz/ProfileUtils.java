@@ -863,6 +863,7 @@ public class ProfileUtils {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("id", record.getId().intValue());
 					map.put("worktype", record.getWorktype().intValue());
+					map.put("worktype_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
 						if (constantRecord.getParentCode().intValue() == 3105
 								&& constantRecord.getCode().intValue() == record.getWorktype().intValue()) {
@@ -871,6 +872,7 @@ public class ProfileUtils {
 						}
 					}
 					map.put("workstate", record.getWorkstate().intValue());
+					map.put("workstate_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
 						if (constantRecord.getParentCode().intValue() == 3102
 								&& constantRecord.getCode().intValue() == record.getWorkstate().intValue()) {
@@ -879,6 +881,7 @@ public class ProfileUtils {
 						}
 					}
 					map.put("salary_code", record.getSalaryCode().intValue());
+					map.put("salary_code_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
 						if (constantRecord.getParentCode().intValue() == 3114
 								&& constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
@@ -889,6 +892,7 @@ public class ProfileUtils {
 					map.put("tag", record.getTag());
 					map.put("consider_venture_company_opportunities",
 							record.getConsiderVentureCompanyOpportunities().intValue());
+					map.put("consider_venture_company_opportunities_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
 						if (constantRecord.getParentCode().intValue() == 3120
 								&& constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
