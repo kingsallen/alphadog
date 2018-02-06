@@ -56,8 +56,8 @@ public class ProfileMiniService {
         if(result!=null&&!result.isEmpty()){
             int companyId=record.getCompanyId();
             List<Map<String,Object>> userList= (List<Map<String, Object>>) result.get("users");
-            List<Map<String,Object>> applistNew=new ArrayList<>();
             for(Map<String,Object> user:userList){
+                List<Map<String,Object>> applistNew=new ArrayList<>();
                 Map<String,Object> userMap= (Map<String, Object>) user.get("user");
                 List<Map<String,Object>> appList= (List<Map<String, Object>>) userMap.get("applications");
                 for(Map<String,Object> app:appList){
