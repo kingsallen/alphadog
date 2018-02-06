@@ -1313,7 +1313,7 @@ public class PositionPcService {
 	 */
 	private int getPositionNumByCompanyId(int cid){
 		Query query=new Query.QueryBuilder().where("company_id",cid).and("status",0).buildQuery();
-		int count=hrCompanyDao.getCount(query);
+		int count=jobPositionDao.getCount(query);
 		return count;
 	}
 	/*
