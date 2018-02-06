@@ -2,9 +2,11 @@ package com.moseeker.profile.thrift;
 
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.profile.service.impl.ProfileBasicService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -105,10 +107,10 @@ public class ProfileBasicServicesImpl implements Iface {
         try {
             logger.info("basic postResource ");
 
-            String name=struct.getName();
-            if(StringUtils.isNotNullOrEmpty(name)&&name.length()>100){
-                String message=ConstantErrorCodeMessage.VALIDATE_FAILED;
-                message.replace("{MESSAGE}","不能超过100个英文字母或者50个汉字");
+            String name = struct.getName();
+            if (StringUtils.isNotNullOrEmpty(name) && name.length() > 100) {
+                String message = ConstantErrorCodeMessage.VALIDATE_FAILED;
+                message.replace("{MESSAGE}", "不能超过100个英文字母或者50个汉字");
                 return ResponseUtils.fail(message);
             }
             Basic result = service.postResource(struct);
@@ -117,8 +119,9 @@ public class ProfileBasicServicesImpl implements Iface {
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
             }
+        } catch (CommonException e) {
+            return ResponseUtils.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             if (e instanceof BIZException) {
                 return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());

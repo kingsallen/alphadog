@@ -105,7 +105,6 @@ public class ProfileEntity {
         HttpResponse response = httpclient.execute(httpPost);
         // 处理返回结果
         String resCont = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
-        logger.info(resCont);
         // 参考博客：http://loveljy119.iteye.com/blog/2366623  反序列化的ASM代码问题：https://github.com/alibaba/fastjson/issues/383
         ParserConfig.getGlobalInstance().setAsmEnable(false);
         ResumeObj res = JSONObject.parseObject(resCont, ResumeObj.class);
@@ -138,7 +137,38 @@ public class ProfileEntity {
             }
         }
     }
+    @Transactional
+    public void upsertProfileProfile(ProfileProfileRecord profileRecord, int  profileId) {
+        if (profileRecord != null) {
+            profileRecord.setId(profileId);
+            profileRecord.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+            profileDao.updateRecord(profileRecord);
+        }
+    }
+    @Transactional
+    public void upsertProfileBasic(ProfileBasicRecord profileBasicRecord, int  profileId) {
+        if (profileBasicRecord != null) {
+            Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+            ProfileBasicRecord basic = profileBasicDao.getRecord(query);
+            profileBasicRecord.setProfileId(profileId);
+            if(basic!=null){
+                profileBasicRecord.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                profileBasicDao.updateRecord(profileBasicRecord);
+            }else{
+                profileBasicDao.addRecord(profileBasicRecord);
+            }
 
+        }
+    }
+    @Transactional
+    public void upsertProfileOther(ProfileOtherRecord record, int  profileId) {
+        if (record != null) {
+            otherDao.delOtherByProfileId(profileId);
+            record.setProfileId(profileId);
+            otherDao.addRecord(record);
+
+        }
+    }
     /**
      * 完善基本信息
      *

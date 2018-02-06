@@ -1,5 +1,6 @@
 package com.moseeker.position.config;
 
+import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.constants.RefreshConstant;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
@@ -114,6 +115,28 @@ public class AppConfig {
     public List<Binding> bindingParamQueue() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(paramQueue()).to(exchange()).with(RefreshConstant.PARAM_GET_ROUTING_KEY));
+        }};
+    }
+
+
+    //手机验证码Exchange
+    @Bean
+    public DirectExchange positionSyncMobileExchange(){
+        DirectExchange exchange=new DirectExchange(PositionSyncVerify.MOBILE_VERIFY_EXCHANGE,true,false);
+
+        return exchange;
+    }
+
+    @Bean
+    public Queue positionSyncMobileQueue(){
+        Queue queue=new Queue(PositionSyncVerify.MOBILE_VERIFY_QUEUE,true,false,false);
+        return queue;
+    }
+
+    @Bean
+    public List<Binding> bindPositionSyncMobileQueue(){
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(positionSyncMobileQueue()).to(positionSyncMobileExchange()).with(PositionSyncVerify.MOBILE_VERIFY_ROUTING_KEY));
         }};
     }
 }

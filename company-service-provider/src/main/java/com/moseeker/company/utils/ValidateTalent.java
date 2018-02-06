@@ -24,10 +24,14 @@ public class ValidateTalent {
         int flag= talentPoolEntity.valiadteMainAccount(hrId,companyId);
         Set<Integer> unUsedApplierIdList=new HashSet<>();
         Set<Integer> applierIdList=new HashSet<>();
+         /*
+         上传的简历没有任何求职申请，所以肯定不在这种逻辑之内，所以在取消收藏时自动过滤
+         */
         if(flag==0){
             List<JobApplicationRecord> list=this.getJobApplicationByPublisherAndApplierId(userIdList,hrId);
             applierIdList=this.getIdListByApplicationList(list);
         }else{
+
             List<JobApplicationRecord> list=talentPoolEntity.getJobApplicationByCompanyIdAndApplierId(userIdList,companyId);
             applierIdList=this.getIdListByApplicationList(list);
         }
@@ -101,4 +105,5 @@ public class ValidateTalent {
         }
         return UserIdList;
     }
+
 }

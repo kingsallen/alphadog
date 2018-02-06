@@ -18,26 +18,38 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.OrderBy;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.*;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import org.apache.thrift.TException;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +57,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -57,6 +70,106 @@ public class WholeProfileService {
     ProfileExtUtils profileUtils = new ProfileExtUtils();
 
     ThreadPool pool = ThreadPool.Instance;
+    @Autowired
+    ProfileEntity profileEntity;
+
+    @Autowired
+    private UserAccountEntity userAccountEntity;
+
+    @Autowired
+    private TalentPoolEntity talentPoolEntity;
+
+    @Autowired
+    private DictIndustryDao dictIndustryDao;
+
+    @Autowired
+    private DictPositionDao dictPositionDao;
+
+    @Autowired
+    private DictCityDao dictCityDao;
+
+    @Autowired
+    private UserWxUserDao wxuserDao;
+
+    @Autowired
+    private DictConstantDao constantDao;
+
+    @Autowired
+    private ProfileOtherDao customizeResumeDao;
+
+    @Autowired
+    private JobPositionDao jobPositionDao;
+
+    @Autowired
+    private UserSettingsDao userSettingsDao;
+
+    @Autowired
+    private ProfileIntentionCityDao intentionCityDao;
+
+    @Autowired
+    private HrCompanyDao companyDao;
+
+    @Autowired
+    private ProfileIntentionPositionDao intentionPositionDao;
+
+    @Autowired
+    private ProfileIntentionIndustryDao intentionIndustryDao;
+
+    @Autowired
+    private ProfileAwardsDao awardsDao;
+
+    @Autowired
+    private DictCollegeDao collegeDao;
+
+    @Autowired
+    private ProfileCredentialsDao credentialsDao;
+
+    @Autowired
+    private DictCountryDao countryDao;
+
+    @Autowired
+    private UserUserDao userDao;
+
+    @Autowired
+    private ProfileAttachmentDao attachmentDao;
+
+    @Autowired
+    private ProfileWorksDao worksDao;
+
+    @Autowired
+    private ProfileEducationDao educationDao;
+
+    @Autowired
+    private ProfileIntentionDao intentionDao;
+
+    @Autowired
+    private ProfileLanguageDao languageDao;
+
+    @Autowired
+    private ProfileOtherDao otherDao;
+
+    @Autowired
+    private ProfileBasicDao profileBasicDao;
+
+    @Autowired
+    private ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileImportDao profileImportDao;
+
+    @Autowired
+    private ProfileProjectexpDao projectExpDao;
+
+    @Autowired
+    private ProfileSkillDao skillDao;
+
+    @Autowired
+    private ProfileWorkexpDao workExpDao;
+
+    @Autowired
+    RetriveProfile retriveProfile;
+
+    UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
 
     private Query getProfileQuery(int profileId){
         return new Query.QueryBuilder().where("profile_id",profileId).setPageSize(Integer.MAX_VALUE).buildQuery();
@@ -415,10 +528,20 @@ public class WholeProfileService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
         }
         UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
-        if (userRecord == null) {
+        int id=this.createProfileItem(userRecord,resume,profile);
+        if(id==-1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
+        }else if(id==0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+        }else{
+            return ResponseUtils.success(id);
         }
+    }
 
+    private int createProfileItem(UserUserRecord userRecord,Map<String, Object> resume,String profile){
+        if (userRecord == null) {
+            return -1;
+        }
         ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
 
         int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
@@ -438,9 +561,9 @@ public class WholeProfileService {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-            return ResponseUtils.success(id);
+            return id;
         } else {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            return 0;
         }
     }
 
@@ -481,7 +604,6 @@ public class WholeProfileService {
             profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
             profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
             profileEntity.improveWorks(profilePojo.getWorksRecords(), profileId);
-//            profileEntity.getCompleteness(0, null, profileId);
             profileEntity.reCalculateProfileCompleteness(profileId);
 
             try {
@@ -955,96 +1077,744 @@ public class WholeProfileService {
         return map;
     }
 
-    @Autowired
-    ProfileEntity profileEntity;
+    /*
+     合并上传的简历
+     */
+    @CounterIface
+    public Response combinationProfile(String params,int companyId ) throws TException {
+        params = EmojiFilter.filterEmoji1(params);
+        Map<String, Object> resume = JSON.parseObject(params);
+        Map<String, Object> map = (Map<String, Object>) resume.get("user");
+        String mobile = ((String) map.get("mobile"));
+        if(StringUtils.isNullOrEmpty(mobile)){
+            this.handlerWorkExpData(resume);
+            handleResumeMap(resume);
+            return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
+        }
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
+        if(userRecord==null){
+            this.handlerWorkExpData(resume);
+            handleResumeMap(resume);
+            return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
+        }
+        Map<String, Object> profileMap = (Map<String, Object>) resume.get("profile");
+        Map<String, Object> profileProfileMap=getProfileByUserId(userRecord.getId());
+        if(profileMap==null||profileMap.isEmpty()){
+            resume.put("profile",profileProfileMap);
+        }
 
-    @Autowired
-    private DictIndustryDao dictIndustryDao;
+        if (profileProfileMap != null&&!profileProfileMap.isEmpty()) {
+            int profileId = (int)profileProfileMap.get("id");
+            this.combinationProfile(resume,profileId);
+            this.handlerWorkExpData(resume);
+            this.handleResumeMap(resume);
+            resume=StringUtils.underscoreNameMap(resume);
+            return ResponseUtils.success(resume);
+        }
+        return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
+    }
+    /*
+    通过userId获取profileId
+    */
+    private Map<String,Object> getProfileByUserId(int userId){
+        Query query=new Query.QueryBuilder().where("user_id",userId).buildQuery();
+        Map<String,Object> result=profileDao.getMap(query);
+        return result;
+    }
 
-    @Autowired
-    private DictPositionDao dictPositionDao;
+    /*
+     修改工作经历中公司的数据格式
+     */
+    private void handlerWorkExpData(Map<String,Object> resume){
+        if(resume!=null&&!resume.isEmpty()){
+            List<Map<String,Object>> workExps= (List<Map<String, Object>>) resume.get("workexps");
+            if(!StringUtils.isEmptyList(workExps)){
+                for(Map<String,Object> map:workExps){
+                    Map<String,Object> company= (Map<String, Object>) map.get("company");
+                    if(company!=null&&!company.isEmpty()){
+                        for(String key:company.keySet()){
+                            map.put(key,company.get(key));
+                        }
+                    }
+                    if((map.get("position_name")==null||StringUtils.isNullOrEmpty(String.valueOf(map.get("position_name"))))&&map.get("job")!=null){
+                        map.put("position_name",map.get("job"));
+                    }
+                }
+            }
+        }
+    }
+    /*
+     将user的一些信息放到basic中
+     */
+    public void handleResumeMap( Map<String,Object> result){
+        if(result!=null&&!result.isEmpty()){
+            Map<String,Object> basic= (Map<String, Object>) result.get("basic");
+            if(basic==null){
+                basic=new HashMap<>();
+            }
+            Map<String,Object> user= (Map<String, Object>) result.get("user");
+            if(user!=null&&!user.isEmpty()){
+                for(String key :user.keySet()){
+                    basic.put(key,user.get(key));
+                }
+            }
 
-    @Autowired
-    private DictCityDao dictCityDao;
+        }
+    }
 
-    @Autowired
-    private UserWxUserDao wxuserDao;
+    /*
+     保存上传的简历
+     */
+    public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId) throws TException {
+        params = EmojiFilter.filterEmoji1(params);
+        Map<String, Object> resume = JSON.parseObject(params);
+        Map<String, Object> map = (Map<String, Object>) resume.get("user");
+        Map<String,Object> basic=(Map<String, Object>)resume.get("basic");
+        map=this.handlerBasicAndUser(basic,map);
+        this.handleWorkExps(resume);
+        String mobile = String.valueOf(map.get("mobile")) ;
+        if(StringUtils.isNullOrEmpty(mobile)){
+            return ResponseUtils.fail(1,"手机号不能为空");
+        }
+        if(!org.apache.commons.lang.StringUtils.isNumeric(mobile)){
+            return ResponseUtils.fail(1,"手机号必须全部为数字");
+        }
+//        if(mobile.length()!=11){
+//            return ResponseUtils.fail(1,"手机号必须为11位");
+//        }
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
+        int newUerId=0;
+        if(userRecord!=null){
+            newUerId=userRecord.getId();
+        }
+        if(userId==0&&newUerId==0){
+            newUerId=this.saveNewProfile(resume,map);
+        }else{
+            userRecord=userAccountEntity.combineAccount(userId,newUerId);
+            if(userRecord==null){
+                return ResponseUtils.fail(1,"修改的简历的user_id不存在");
+            }
+            newUerId=userRecord.getId();
+            userRecord.setMobile(Long.parseLong(String.valueOf(map.get("mobile"))));
+            if(map.get("name")!=null){
+                userRecord.setName(String.valueOf(map.get("name")));
+            }
+            if(map.get("email")!=null){
+                userRecord.setEmail(String.valueOf(map.get("email")));
+            }
 
-    @Autowired
-    private DictConstantDao constantDao;
+            Response res=this.upsertProfile(resume,userRecord,userId,newUerId);
+            if(res.getStatus()!=0){
+                return res;
+            }
+        }
+        //此处应该考虑账号合并导致的问题
+        talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName);
+        Set<Integer> userIdList=new HashSet<>();
+        userIdList.add(newUerId);
+        talentPoolEntity.realTimeUpload(userIdList,1);
+        return ResponseUtils.success("success");
+    }
+    /*
+     将工作经历进行格式转换
+     */
+    private void handleWorkExps(Map<String,Object> resume){
+        List<Map<String,Object>> workExps= (List<Map<String, Object>>) resume.get("workexps");
+        if(!StringUtils.isEmptyList(workExps)){
+            for(Map<String,Object> map:workExps){
+                Map<String,Object> company=new HashMap<>();
+                if(map.get("company_name")!=null){
+                    company.put("company_name",map.get("company_name"));
+                }
+                if(map.get("company_industry")!=null){
+                    company.put("company_industry",map.get("company_industry"));
+                }
+                if(map.get("company_introduction")!=null){
+                    company.put("company_introduction",map.get("company_introduction"));
+                }
+                if(map.get("scale")!=null){
+                    company.put("scale",map.get("scale"));
+                }
+                if(map.get("company_property")!=null){
+                    company.put("company_property",map.get("company_property"));
+                }
+                map.put("company",company);
+                if(map.get("position_name")!=null){
+                    map.put("job",map.get("position_name"));
+                }
+            }
+        }
+    }
 
-    @Autowired
-    private ProfileOtherDao customizeResumeDao;
+    /*
+     将上传的basic的内容组合到user当中
+     */
+    private Map<String,Object> handlerBasicAndUser(Map<String,Object> basicMap,Map<String,Object> userMap){
+        if(userMap==null||userMap.isEmpty()){
+            userMap=new HashMap<>();
+        }
+        if(basicMap==null||basicMap.isEmpty()){
+            return null;
+        }
+        if(basicMap.get("name")!=null){
+            userMap.put("name",basicMap.get("name"));
+        }
+        if(basicMap.get("mobile")!=null){
+            userMap.put("mobile",String.valueOf(basicMap.get("mobile")));
+        }
+        if(basicMap.get("nationality_code")!=null){
+            userMap.put("national_code_id",basicMap.get("nationality_code"));
+        }
+        if(basicMap.get("email")!=null){
+            userMap.put("email",basicMap.get("email"));
+        }
+        if(basicMap.get("country_code")!=null){
+            userMap.put("country_code",basicMap.get("country_code"));
+        }else{
+            userMap.put("country_code","86");
+        }
+        userMap.put("source",UserSource.TALENT_UPLOAD.getValue());
+        return userMap;
+    }
 
-    @Autowired
-    private JobPositionDao jobPositionDao;
+    /*
+      保存上传简历
+      */
+    @Transactional
+    private int saveNewProfile(Map<String, Object> resume,Map<String, Object> map) throws TException {
+        UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
+        logger.info("talentpool upload new  user:{}", user1);
+        user1.setSource((byte) UserSource.TALENT_UPLOAD.getValue());
+        int userId = useraccountsServices.createRetrieveProfileUser(user1);
+        logger.info("talentpool userId:{}", userId);
+        if (userId > 0) {
+            map.put("id", userId);
+            HashMap<String, Object> profileProfile = new HashMap<String, Object>();
+            profileProfile.put("user_id", userId);
+            profileProfile.put("origin", resume.get("origin"));
+            resume.put("profile", profileProfile);
+            user1.setId(userId);
+            UserUserRecord userRecord=BeanUtils.structToDB(user1,UserUserRecord.class);
+            int id= this.createProfileItem(userRecord,resume,JSON.toJSONString(resume));
+            if(id==0){
+                throw new TException();
+            }
+            return userId;
+        }else{
+            throw new TException();
+        }
+    }
+    /*
+     更新上传简历
+     */
+    @Transactional
+    private Response upsertProfile(Map<String, Object> resume,UserUserRecord userRecord,int userId,int newUserId){
 
-    @Autowired
-    private UserSettingsDao userSettingsDao;
+        ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
+        if (profileRecord == null) {
+            if(userId!=0){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
+            }else{
+                Map<String,Object> profileMap=new HashMap<>();
+                profileMap.put("user_id",newUserId);
+                profileMap.put("origin",0);
+                resume.put("profile",profileMap);
+            }
+        }
+        ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
 
-    @Autowired
-    private ProfileIntentionCityDao intentionCityDao;
+        if (profileDB != null) {
+            String origin1=(String)resume.get("origin");
+            String origin=profileDB.getOrigin();
+            String originResult=convertToChannelString(origin,origin1);
+            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+            /*
+             合并profile_profile.origin
+             */
+            profilePojo.getProfileRecord().setOrigin(originResult);
+            int profileId = profileDB.getId().intValue();
+            profileEntity.improveUser(userRecord);
+            profileEntity.upsertProfileProfile(profilePojo.getProfileRecord(), profileId);
+            profileEntity.upsertProfileBasic(profilePojo.getBasicRecord(), profileId);
+            profileEntity.improveAttachment(profilePojo.getAttachmentRecords(), profileId);
+            profileEntity.improveAwards(profilePojo.getAwardsRecords(), profileId);
+            profileEntity.improveCredentials(profilePojo.getCredentialsRecords(), profileId);
+            profileEntity.improveEducation(profilePojo.getEducationRecords(), profileId);
+            profileEntity.improveIntention(profilePojo.getIntentionRecords(), profileId);
+            profileEntity.improveLanguage(profilePojo.getLanguageRecords(), profileId);
+            profileEntity.upsertProfileOther(profilePojo.getOtherRecord(), profileId);
+            profileEntity.improveProjectexp(profilePojo.getProjectExps(), profileId);
+            profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
+            profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
+            profileEntity.improveWorks(profilePojo.getWorksRecords(), profileId);
+            profileEntity.reCalculateProfileCompleteness(profileId);
 
-    @Autowired
-    private HrCompanyDao companyDao;
+            try {
+                StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(profileDB.getId().intValue(), profileDB.getUserId().intValue(), (byte) 2,
+                        profilePojo.getImportRecords());
+                profileUtils.logForStatistics("upsertProfile", new JSONObject() {{
+                    this.put("profile", resume);
+                }}.toJSONString(), statisticsForChannelmportVO);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            return ResponseUtils.success("");
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
+        }
+    }
+    /*
+     channelType.value和origin之间的关系
+     */
 
-    @Autowired
-    private ProfileIntentionPositionDao intentionPositionDao;
+    private String convertToChannelString(String origin,String origin1){
+        int type=0;
+        if(StringUtils.isNullOrEmpty(origin1)){
+            return origin;
+        }
+        if(origin1.length()==20){
+            type=20;
+        }else if(origin1.length()==21){
+            type=21;
+        }else if(origin1.length()==22){
+            type=22;
+        }else if(origin1.length()==23){
+            type=23;
+        }else if(origin1.length()==24){
+            type=24;
+        }else if(origin1.length()==25){
+            type=25;
+        }
+        if(type==0){
+            return origin;
+        }
+        ChannelType channelType = ChannelType.instaceFromInteger(type);
+        return channelType.getOrigin(origin);
+    }
+    /*
+      合并简历
+     */
+    private void combinationProfile(Map<String,Object> resume,int profileId) throws TException {
+        Map<String,Object> profileBasic=this.combinationBasic((Map<String,Object>) resume.get("basic"),profileId);
+        if(profileBasic!=null){
+            resume.put("basic",profileBasic);
+        }
+        Map<String,Object> profileOtherRecord=this.combinationProfileOther((Map<String,Object>)profileBasic.get("others"),profileId);
+        if(profileOtherRecord!=null){
+            resume.put("others",profileOtherRecord);
+        }
+        if(resume.get("projectexps")==null||StringUtils.isEmptyList((List)resume.get("projectexps"))){
+            resume.put("projectexps",this.getProjectExpById(profileId));
+        }else{
+            List<Map<String,Object>> projectList=(List)resume.get("projectexps");
+            if(projectList.size()==1){
+                Map<String,Object> map=projectList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("projectexps",this.getProjectExpById(profileId));
+                }
+            }
+        }
+        if(resume.get("skills")==null||StringUtils.isEmptyList((List)resume.get("skills"))){
+            resume.put("skills",this.getSkillExpById(profileId));
+        }else{
+            List<Map<String,Object>> skillList=(List)resume.get("skills");
+            if(skillList.size()==1){
+                Map<String,Object> map=skillList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("skills",this.getSkillExpById(profileId));
+                }
+            }
+        }
+        if(resume.get("workexps")==null||StringUtils.isEmptyList((List)resume.get("workexps"))){
+            resume.put("workexps",this.getWorkExpsById(profileId));
+        }else{
+            List<Map<String,Object>> workExpsList=(List)resume.get("workexps");
+            if(workExpsList.size()==1){
+                Map<String,Object> map=workExpsList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("workexps",this.getWorkExpsById(profileId));
+                }
+            }
+        }
+        if(resume.get("educations")==null||StringUtils.isEmptyList((List)resume.get("educations"))){
+            resume.put("educations",this.getEducationsById(profileId));
+        }else{
+            List<Map<String,Object>> educationsList=(List)resume.get("educations");
+            if(educationsList.size()==1){
+                Map<String,Object> map=educationsList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("educations",this.getEducationsById(profileId));
+                }
+            }
+        }
+        if(resume.get("languages")==null||StringUtils.isEmptyList((List)resume.get("languages"))){
+            resume.put("languages",this.getLanguagesById(profileId));
+        }else{
+            List<Map<String,Object>> languagesList=(List)resume.get("languages");
+            if(languagesList.size()==1){
+                Map<String,Object> map=languagesList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("languages",this.getLanguagesById(profileId));
+                }
+            }
+        }
+        if(resume.get("intentions")==null||StringUtils.isEmptyList((List)resume.get("intentions"))){
+            resume.put("intentions",this.getIntentions(profileId));
+        }else{
+            List<Map<String,Object>> intentionsList=(List)resume.get("intentions");
+            if(intentionsList.size()==1){
+                Map<String,Object> map=intentionsList.get(0);
+                if(this.isCombineIntention(map)){
+                    resume.put("intentions",this.getIntentions(profileId));
+                }
+            }
+        }
 
-    @Autowired
-    private ProfileIntentionIndustryDao intentionIndustryDao;
+        if(resume.get("credentials")==null||StringUtils.isEmptyList((List)resume.get("credentials"))){
+            resume.put("credentials",this.getCredentialsById(profileId));
+        }else{
+            List<Map<String,Object>> credentialsList=(List)resume.get("credentials");
+            if(credentialsList.size()==1){
+                Map<String,Object> map=credentialsList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("credentials",this.getCredentialsById(profileId));
+                }
+            }
+        }
+        if(resume.get("awards")==null||StringUtils.isEmptyList((List)resume.get("awards"))){
+            resume.put("awards",this.getAwardsById(profileId));
+        }else{
+            List<Map<String,Object>> awardsList=(List)resume.get("awards");
+            if(awardsList.size()==1){
+                Map<String,Object> map=awardsList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("awards",this.getAwardsById(profileId));
+                }
+            }
+        }
+        if(resume.get("works")==null||StringUtils.isEmptyList((List)resume.get("works"))){
+            resume.put("works",this.getWorksById(profileId));
+        }else{
+            List<Map<String,Object>> getWorksByIdList=(List)resume.get("works");
+            if(getWorksByIdList.size()==1){
+                Map<String,Object> map=getWorksByIdList.get(0);
+                if(map==null||map.isEmpty()){
+                    resume.put("works",this.getWorksById(profileId));
+                }
+            }
+        }
 
-    @Autowired
-    private ProfileAwardsDao awardsDao;
+    }
+    /*
+     判断是否需要合并库中的求职意向
+     */
+    private boolean isCombineIntention(Map<String,Object> intention){
+        if(intention==null||intention.isEmpty()){
+            return true;
+        }
+        int flag=0;
+        for(String key:intention.keySet()){
+            if(!"workstate".equals(key)&&!"worktype".equals(key)){
+                flag=1;
+                break;
+            }
+        }
+        if(flag==0){
+            return false;
+        }
+        return true;
+    }
+    /*
+     根据id获取ProjectExp
+     */
+    private List<Map<String,Object>> getProjectExpById(int profileId) throws TException {
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<ProfileProjectexpDO> list=projectExpDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileProjectexpDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
+    }
+    /*
+     根据id获取Skill
+     */
+    private List<Map<String,Object>> getSkillExpById(int profileId) throws TException {
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<ProfileSkillDO> list=skillDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileSkillDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
+    }
+    /*
+     根据id获取WorkExps
+     */
+    private List<Map<String,Object>> getWorkExpsById(int profileId) throws TException {
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<ProfileWorkexpDO> list=workExpDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileWorkexpDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
+    }
+    /*
+     根据id获取Languages
+     */
+    private List<Map<String,Object>> getLanguagesById(int profileId) throws TException {
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<ProfileLanguageDO> list=languageDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileLanguageDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
+    }
+    /*
+     根据id获取Educations
+     */
+    private List<Map<String,Object>> getEducationsById(int profileId) throws TException {
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<ProfileEducationDO> list=educationDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileEducationDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
+    }
+    /*
+     根据id获取Credentials
+     */
+    private List<Map<String,Object>> getCredentialsById(int profileId) throws TException {
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<ProfileCredentialsDO> list=credentialsDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileCredentialsDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
+    }
+    /*
+     根据id获取Awards
+     */
+    private List<Map<String,Object>> getAwardsById(int profileId) throws TException {
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<ProfileAwardsDO> list=awardsDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileAwardsDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
+    }
+    /*
+    根据id获取Works
+    */
+    private List<Map<String,Object>> getWorksById(int profileId) throws TException {
+        Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+        List<ProfileWorksDO> list=worksDao.getDatas(query);
+        List<Map<String,Object>> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(ProfileWorksDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+                data.remove("id");
+                result.add(data);
+            }
+        }
+        return result;
+    }
+    /*
+     根据id获取Intention
+     */
+    private List<Map<String,Object>> getIntentions(int profileId){
+        List<DictConstantRecord> constantRecords = constantDao
+                .getCitiesByParentCodes(Arrays.asList(3109, 3105, 3102, 2105, 3120, 3115, 3114, 3119, 3120));
+        ProfileProfileRecord profileRecord=profileDao.getProfileByIdOrUserIdOrUUID(0,profileId,null);
+        List<Map<String, Object>> list=profileUtils.buildsIntentions(profileRecord, getProfileQuery(profileId),
+                constantRecords, intentionDao, intentionCityDao, intentionIndustryDao, intentionPositionDao,
+                dictCityDao, dictIndustryDao, dictPositionDao);
+        return list;
+    }
+    /*
+     合并profile_basic
+     */
+    public Map<String,Object>  combinationBasic(Map<String,Object> basicMap, int profileId) throws TException {
+        if (basicMap != null) {
+            Query query=new Query.QueryBuilder().where("profile_id",profileId).buildQuery();
+            ProfileBasicDO basic = profileBasicDao.getData(query,ProfileBasicDO.class);
+            if (basic != null) {
+                if (StringUtils.isNotNullOrEmpty((String)basicMap.get("name")) && StringUtils.isNullOrEmpty(basic.getName())) {
+                    basic.setName((String)basicMap.get("name"));
+                }
+                if (basicMap.get("gender") != null && basic.getGender()==0) {
+                    int gender=Integer.parseInt(String.valueOf(basicMap.get("gender")));
+                    basic.setGender((byte)gender);
+                }
+                if(basicMap.get("nationalityCode") != null&& basic.getNationalityCode()==0){
+                    int nationalityCode=Integer.parseInt(String.valueOf(basicMap.get("nationalityCode")));
+                    basic.setNationalityCode(nationalityCode);
+                }
+                if (basicMap.get("nationalityName") != null && StringUtils.isNullOrEmpty(basic.getNationalityName())) {
+                    basic.setNationalityName((String)basicMap.get("nationalityName"));
+                }
+                if (basicMap.get("citycode") != null && basic.getCityCode()==0) {
+                    int citycode=Integer.parseInt(String.valueOf(basicMap.get("citycode")));
+                    basic.setCityCode(citycode);
+                }
+                if (basicMap.get("cityName") != null && StringUtils.isNullOrEmpty(basic.getCityName())) {
+                    basic.setCityName((String)basicMap.get("cityName"));
+                }
+                if (basicMap.get("birth") != null && StringUtils.isNullOrEmpty(basic.getBirth())) {
+                    basic.setBirth((String)basicMap.get("birth") );
+                }
+                if (basicMap.get("weixin") != null && StringUtils.isNullOrEmpty(basic.getWeixin())) {
+                    basic.setWeixin((String)basicMap.get("weixin") );
+                }
+                if (basicMap.get("qq") != null && StringUtils.isNullOrEmpty(basic.getQq())) {
+                    basic.setQq((String)basicMap.get("qq"));
+                }
+                if (basicMap.get("motto") != null && StringUtils.isNullOrEmpty(basic.getMotto())) {
+                    basic.setMotto((String)basicMap.get("motto"));
+                }
+                if (basicMap.get("selfIntroduction") != null &&  StringUtils.isNullOrEmpty(basic.getSelfIntroduction())) {
+                    basic.setSelfIntroduction((String)basicMap.get("selfIntroduction"));
+                }
+                String basicDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(basic);
+                Map<String,Object> basicData= JSON.parseObject(basicDOs, Map.class);
+                return basicData;
+            } else {
+                return basicMap;
+            }
+        }
+        return null;
+    }
 
-    @Autowired
-    private DictCollegeDao collegeDao;
+    /*
+     合并Profile_Other
+     */
+    public Map<String,Object> combinationProfileOther(Map<String,Object> otherRecord, int profileId) {
+        if (otherRecord != null &&otherRecord.get("other")!=null) {
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("profile_id", String.valueOf(profileId));
+            ProfileOtherRecord record = otherDao.getRecord(query.buildQuery());
+            if (record == null && otherRecord != null) {
+                otherRecord.put("profileId",profileId);
+            } else if (record != null && otherRecord != null) {
+                /**
+                 * 自定义合并逻辑：oldOther没有或为空的字段且存在newOther中 -> 将newOther中的字段补填到oldOther里
+                 */
+                Map<String, Object> oldOtherMap = (Map<String, Object>) otherRecord.get("other");
+                Map<String, Object> newOtherMap = JSONObject.parseObject(record.getOther(), Map.class);
+                oldOtherMap.entrySet().stream().filter(f -> (StringUtils.isNullOrEmpty(String.valueOf(f.getValue())) || "[]".equals(String.valueOf(f.getValue())))  && newOtherMap.containsKey(f.getKey())).forEach(e -> e.setValue(newOtherMap.get(e.getKey())));
+                newOtherMap.putAll(oldOtherMap);
+                otherRecord.put("other",JSONObject.toJSONString(newOtherMap));
 
-    @Autowired
-    private ProfileCredentialsDao credentialsDao;
+            }
+        }
+        return otherRecord;
+    }
 
-    @Autowired
-    private DictCountryDao countryDao;
+    @CounterIface
+    public Response validateUpLoadHr(int companyId,int hrId,int userId){
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            return ResponseUtils.fail(1,"该hr不属于该公司");
+        }
+        int result=talentPoolEntity.ValidateUploadProfileIsHr(userId,companyId,hrId);
+        if(result==0){
+            return ResponseUtils.success(false);
+        }
+        return  ResponseUtils.success(true);
+    }
 
-    @Autowired
-    private UserUserDao userDao;
+    @CounterIface
+    public Response getProfileUpload(int userId) throws Exception {
+        Response res=this.getResource(userId,0,null);
+        if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
+            String result=res.getData();
+            Map<String,Object> resume=JSON.parseObject(result);
+            Map<String,Object> userMap=this.getUserUserMap(userId);
+            resume.put("user",userMap);
+            resume.put("workexps",this.addCompanyMap((List<Map<String,Object>>)resume.get("workexps")));
+            return ResponseUtils.success(resume);
 
-    @Autowired
-    private ProfileAttachmentDao attachmentDao;
+        }
+        return res;
 
-    @Autowired
-    private ProfileWorksDao worksDao;
+    }
+    /*
+     获取个人信息
+     */
+    private Map<String,Object> getUserUserMap(int userId){
+        Query query=new Query.QueryBuilder().where("id",userId).and("is_disable",0).and("source",UserSource.TALENT_UPLOAD.getValue()).buildQuery();
+        Map<String,Object>  result=userDao.getMap(query);
+        return result;
+    }
+    /*
+     处理公司信息
+     */
+    private List<Map<String,Object>> addCompanyMap(List<Map<String,Object>> workExp){
+        if(StringUtils.isEmptyList(workExp)){
+            return null;
+        }
+        for(Map<String,Object> map:workExp){
+            Map<String,Object> company=new HashMap<>();
+            if(map.get("company_property")!=null){
+                company.put("company_property",map.get("company_property"));
+            }
+            if(map.get("company_industry")!=null){
+                company.put("company_industry",map.get("company_property"));
+            }
+            if(map.get("company_scale")!=null){
+                company.put("company_scale",map.get("company_scale"));
+            }
+            if(map.get("company_name")!=null){
+                company.put("company_name",map.get("company_name"));
+            }
+            map.put("company",company);
+            if((map.get("position_name")==null||StringUtils.isNullOrEmpty(String.valueOf(map.get("position_name"))))&&map.get("job")!=null){
+                map.put("position_name",map.get("job"));
+            }
 
-    @Autowired
-    private ProfileEducationDao educationDao;
+        }
 
-    @Autowired
-    private ProfileIntentionDao intentionDao;
-
-    @Autowired
-    private ProfileLanguageDao languageDao;
-
-    @Autowired
-    private ProfileOtherDao otherDao;
-
-    @Autowired
-    private ProfileBasicDao profileBasicDao;
-
-    @Autowired
-    private ProfileProfileDao profileDao;
-
-    @Autowired
-    private ProfileImportDao profileImportDao;
-
-    @Autowired
-    private ProfileProjectexpDao projectExpDao;
-
-    @Autowired
-    private ProfileSkillDao skillDao;
-
-    @Autowired
-    private ProfileWorkexpDao workExpDao;
-
-    @Autowired
-    RetriveProfile retriveProfile;
+        return workExp;
+    }
 }

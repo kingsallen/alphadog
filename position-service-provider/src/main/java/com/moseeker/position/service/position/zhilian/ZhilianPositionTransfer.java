@@ -18,9 +18,11 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
@@ -29,7 +31,6 @@ import java.util.*;
 @Service
 public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdPartyPosition,PositionZhilianWithAccount,PositionZhilian,EmptyExtThirdPartyPosition> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
-
 
 
     @Override
@@ -51,6 +52,13 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
         position51WithAccount.setPosition_id(String.valueOf(positionDB.getId()));
         position51WithAccount.setChannel(String.valueOf(positionForm.getChannel()));
         position51WithAccount.setAccount_id(String.valueOf(account.getId()));
+
+        //智联有手机验证，所以加上手机号
+        UserHrAccountDO userHrAccountDO=getPublisherAccountInfo(positionDB);
+
+        if(userHrAccountDO!=null){
+            position51WithAccount.setMobile(userHrAccountDO.getMobile());
+        }
         return position51WithAccount;
     }
 

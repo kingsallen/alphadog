@@ -1,9 +1,11 @@
 package com.moseeker.baseorm.pojo;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.DateUtils;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Map;
 
 /**
  * 职位表Pojo类
@@ -93,6 +95,5 @@ public class JobPositionPojo {
     //团队名称
     public String  team_name="";
     public int city_flag=0;//1代表只是全国,0代表还含有其他城市
-
     public SearchData search_data;
 }

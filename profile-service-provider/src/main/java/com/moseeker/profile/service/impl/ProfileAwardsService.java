@@ -3,16 +3,22 @@ package com.moseeker.profile.service.impl;
 import com.moseeker.baseorm.dao.profiledb.ProfileAwardsDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAwardsRecord;
+import com.moseeker.baseorm.tool.RecordTool;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.biz.ProfileValidation;
+import com.moseeker.entity.biz.ValidationMessage;
+import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAwardsDO;
 import com.moseeker.thrift.gen.profile.struct.Awards;
+import com.moseeker.thrift.gen.profile.struct.Profile;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,24 +59,35 @@ public class ProfileAwardsService {
 
         if (structs != null && structs.size() > 0) {
 
-            List<ProfileAwardsRecord> records = BeanUtils.structToDB(structs, ProfileAwardsRecord.class);
+            /** 对参数做校验，如果校验不通过，不予添加 */
+            Iterator<Awards> iterator = structs.iterator();
+            while (iterator.hasNext()) {
+                Awards awards = iterator.next();
+                ValidationMessage<Awards> validationMessage = ProfileValidation.verifyAward(awards);
+                if (!validationMessage.isPass()) {
+                    iterator.remove();
+                }
+            }
+            if (structs.size() > 0) {
+                List<ProfileAwardsRecord> records = BeanUtils.structToDB(structs, ProfileAwardsRecord.class);
 
-            records = dao.addAllRecord(records);
+                records = dao.addAllRecord(records);
 
-            datas = BeanUtils.DBToStruct(Awards.class, records);
+                datas = BeanUtils.DBToStruct(Awards.class, records);
 
-        /* 计算profile完成度 */
-            Set<Integer> profileIds = new HashSet<>();
+                /* 计算profile完成度 */
+                Set<Integer> profileIds = new HashSet<>();
 
-            structs.forEach(struct -> {
-                profileIds.add(struct.getProfile_id());
-            });
+                structs.forEach(struct -> {
+                    profileIds.add(struct.getProfile_id());
+                });
 
-            profileDao.updateUpdateTime(profileIds);
+                profileDao.updateUpdateTime(profileIds);
 
-            profileIds.forEach(profileId -> {
-                profileEntity.reCalculateProfileAward(profileId, 0);
-            });
+                profileIds.forEach(profileId -> {
+                    profileEntity.reCalculateProfileAward(profileId, 0);
+                });
+            }
         }
         return datas;
     }
@@ -81,32 +95,61 @@ public class ProfileAwardsService {
     @Transactional
     public int[] putResources(List<Awards> structs) throws TException {
         if (structs != null && structs.size() > 0) {
-            int[] updateResult = dao.updateRecords(BeanUtils.structToDB(structs, ProfileAwardsRecord.class));
-        /* 计算profile完成度 */
 
-            List<Awards> updatedList = new ArrayList<>();
+            List<Integer> idList = structs.stream().map(awards -> awards.getId()).collect(Collectors.toList());
 
-            for (int i = 0; i < updateResult.length; i++) {
-                if (updateResult[i] > 0) updatedList.add(structs.get(i));
+            /** 参数和数据中的数据合并，并对合并后结果做数据校验。如果检验不通过，不予修改 */
+            List<ProfileAwardsRecord> awardsRecordList = dao.fetchByIdList(idList);
+            if (awardsRecordList.size() > 0) {
+                List<ProfileAwardsRecord> params = BeanUtils.structToDB(structs, ProfileAwardsRecord.class);
+                Iterator<ProfileAwardsRecord> iterator = awardsRecordList.iterator();
+                while (iterator.hasNext()) {
+                    ProfileAwardsRecord awardsRecord = iterator.next();
+                    Optional<ProfileAwardsRecord> awardsRecordOptional = params.
+                            stream()
+                            .filter(param -> param.getId().intValue() == awardsRecord.getId().intValue())
+                            .findAny();
+                    if (awardsRecordOptional.isPresent()) {
+                        RecordTool.recordToRecord(awardsRecord, awardsRecordOptional.get());
+                        ValidationMessage<ProfileAwardsRecord> validationMessage = ProfileValidation.verifyAward(awardsRecord);
+                        if (!validationMessage.isPass()) {
+                            iterator.remove();
+                        }
+                    } else {
+                        iterator.remove();
+                    }
+                }
+
+                int[] updateResult = dao.updateRecords(awardsRecordList);
+
+                /* 计算profile完成度 */
+                List<Awards> updatedList = new ArrayList<>();
+
+                for (int i = 0; i < updateResult.length; i++) {
+                    if (updateResult[i] > 0) updatedList.add(structs.get(i));
+                }
+
+                updateUpdateTime(updatedList);
+
+                updatedList.forEach(struct -> {
+                    profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+                });
+
+                return updateResult;
             }
-
-            updateUpdateTime(updatedList);
-
-            updatedList.forEach(struct -> {
-                profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
-            });
-
-            return updateResult;
-        } else {
-            return new int[0];
         }
+        return new int[0];
     }
 
     @Transactional
-    public Awards postResource(Awards struct) throws TException {
+    public Awards postResource(Awards struct) throws CommonException {
 
         Awards data = null;
 
+        ValidationMessage<Awards> validationMessage = ProfileValidation.verifyAward(struct);
+        if (!validationMessage.isPass()) {
+            throw ProfileException.validateFailed(validationMessage.getResult());
+        }
         if (struct != null) {
 
             ProfileAwardsRecord record = BeanUtils.structToDB(struct, ProfileAwardsRecord.class);
@@ -132,13 +175,21 @@ public class ProfileAwardsService {
 
         if (struct != null) {
 
-            updateResult = dao.updateRecord(BeanUtils.structToDB(struct, ProfileAwardsRecord.class));
+            /** 将参数和数据库中的数据合并之后，对数据做校验，如果数据校验不通过，不让修改 */
+            ProfileAwardsRecord profileAwardsRecord = dao.fetchById(struct.getId());
+            if (profileAwardsRecord != null) {
+                ProfileAwardsRecord param = BeanUtils.structToDB(struct, ProfileAwardsRecord.class);
+                RecordTool.recordToRecord(profileAwardsRecord, param);
+                ValidationMessage<ProfileAwardsRecord> validationMessage = ProfileValidation.verifyAward(profileAwardsRecord);
+                if (validationMessage.isPass()) {
+                    updateResult = dao.updateRecord(BeanUtils.structToDB(struct, ProfileAwardsRecord.class));
 
-
-        /* 计算profile完成度 */
-            if (updateResult > 0) {
-                updateUpdateTime(struct);
-                profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+                    /* 计算profile完成度 */
+                    if (updateResult > 0) {
+                        updateUpdateTime(struct);
+                        profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+                    }
+                }
             }
         }
         return updateResult;
