@@ -1196,6 +1196,10 @@ public class PositionPcService {
 			return list;
 		}
 		List<String> industryNameList=this.getIndustryName(companyList);
+		Map<Integer,Integer> companyIdPositionNum=this.getCompanyPositionNum(companyList,companyPulisher);
+		if(companyIdPositionNum==null||companyIdPositionNum.isEmpty()){
+			companyIdPositionNum=new HashMap<>();
+		}
 		List<DictIndustryDO> industryList=this.getDictIndustryListByName(industryNameList);
 		for(int i=0;i<companyList.size();i++){
 			map=new HashMap<String,Object>();
@@ -1216,14 +1220,20 @@ public class PositionPcService {
 					}
 				}
 			}
-			if(companyPulisher!=null&&!companyPulisher.isEmpty()){
-				List<Integer> publisherIds=companyPulisher.get(companyId);
-				if(publisherIds!=null&&publisherIds.size()>0){
-					int num=this.getPositionNum(publisherIds);
-					map.put("positionNum", num);
-				}else{
-					map.put("positionNum", 0);
-				}
+//			if(companyPulisher!=null&&!companyPulisher.isEmpty()){
+//				List<Integer> publisherIds=companyPulisher.get(companyId);
+//				if(publisherIds!=null&&publisherIds.size()>0){
+//					int num=this.getPositionNum(publisherIds);
+//					map.put("positionNum", num);
+//				}else{
+//					map.put("positionNum", 0);
+//				}
+//			}else{
+//				map.put("positionNum", 0);
+//			}
+			Integer positionNum=companyIdPositionNum.get(companyId);
+			if(positionNum!=null){
+				map.put("positionNum", positionNum);
 			}else{
 				map.put("positionNum", 0);
 			}
@@ -1259,6 +1269,53 @@ public class PositionPcService {
 		return list;
 	}
 
+	/*
+	 获取推荐公司下的职位数量
+	 */
+	private Map<Integer,Integer> getCompanyPositionNum(List<HrCompanyDO> companyList,Map<Integer,List<Integer>> companyPulisher){
+		Map<Integer,Integer> result=new HashMap<>();
+		List<Integer> motherCompanyIdList=new ArrayList<>();
+		List<Integer> childCompanyIdList=new ArrayList<>();
+		for(HrCompanyDO DO:companyList){
+			if(DO.getParentId()==0){
+				motherCompanyIdList.add(DO.getId());
+			}else{
+				childCompanyIdList.add(DO.getId());
+			}
+		}
+		for(Integer cid:motherCompanyIdList){
+			int count=this.getPositionNumByCompanyId(cid);
+			result.put(cid,count);
+		}
+		for(Integer cid:childCompanyIdList){
+			int flag=0;
+			for(Integer key:companyPulisher.keySet()){
+				if(cid.intValue()==key.intValue()){
+					List<Integer> publisherlist=companyPulisher.get(key);
+					if(StringUtils.isEmptyList(publisherlist)){
+						result.put(cid,0);
+					}else {
+						int count = this.getPositionNum(publisherlist);
+						result.put(cid, count);
+					}
+					flag=1;
+					break;
+				}
+			}
+			if(flag==0){
+				result.put(cid,0);
+			}
+		}
+		return result;
+	}
+	/*
+	 通过公司Id获取公司再招职位数量
+	 */
+	private int getPositionNumByCompanyId(int cid){
+		Query query=new Query.QueryBuilder().where("company_id",cid).and("status",0).buildQuery();
+		int count=hrCompanyDao.getCount(query);
+		return count;
+	}
 	/*
      * 删除已经删除的公司
      */
