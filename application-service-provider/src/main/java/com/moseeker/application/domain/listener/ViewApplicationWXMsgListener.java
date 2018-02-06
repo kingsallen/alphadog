@@ -52,6 +52,8 @@ public class ViewApplicationWXMsgListener implements SmartApplicationListener {
         logger.info("ViewApplicationWXMsgListener onApplicationEvent:{}", event);
         try {
             ViewApplicationSource viewApplicationSource = (ViewApplicationSource) event.getSource();
+            logger.info("viewApplicationSource applicationId:{}", viewApplicationSource.getApplicationIdList());
+            logger.info("viewApplicationSource hrId:{}", viewApplicationSource.getHrId());
             WXTamplateMsgEntity wxTamplateMsgEntity = new WXTamplateMsgEntity(viewApplicationSource.getApplicationIdList(), applicationRepository, redisClient);
             wxTamplateMsgEntity.sendMsg();
         } catch (Exception e) {
