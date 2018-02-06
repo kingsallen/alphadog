@@ -1675,7 +1675,7 @@ public class UserHrAccountService {
                 logo = Constant.CDN_URL+companyDO.getLogo();
             }
         }
-        if(!userWxUserDO.getHeadimgurl().startsWith("https") && userWxUserDO.getHeadimgurl().startsWith("http")){
+        if(!logo.startsWith("https") && logo.startsWith("http")){
             logo = logo.replace("http", "https");
         }
         params.put("headImgUrl",logo);
