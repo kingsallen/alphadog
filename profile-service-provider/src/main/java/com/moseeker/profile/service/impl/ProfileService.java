@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
@@ -22,6 +23,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
@@ -71,6 +73,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
@@ -1261,8 +1264,18 @@ public class ProfileService {
         return ResponseUtils.success(paramsStream);
     }
 
-    public List<Map<String, Object>> getProfileOther(List<Integer> positionIds, int profileId) throws CommonException{
-        List<Map<String, Object>> parentValues = new ArrayList<>();
+    /**
+     * 根据申请者的简历编号和申请的有效职位获取申请者自定义简历的自定义数据结构
+     *
+     * @param positionIds   申请的有效职位
+     * @param profileId     申请者的简历编号
+     * @return
+     * @throws CommonException
+     */
+    public Map<String, Object> getProfileOther(List<Integer> positionIds, int profileId) throws CommonException{
+        Map<String, Object> otherMap = new HashMap<>();
+        Map<String, Object> parentValues = new HashMap<>();
+        Map<String, Object> parentkeys = new HashMap<>();
         if(positionIds != null && positionIds.size()>0 && profileId > 0) {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.where(ProfileOther.PROFILE_OTHER.PROFILE_ID.getName(), profileId);
@@ -1276,9 +1289,10 @@ public class ProfileService {
             queryBuilder.clear();
             queryBuilder.where(new Condition("id", new ArrayList<>(positionCustomConfigMap.values()), ValueOp.IN));
             List<HrAppCvConfDO> hrAppCvConfDOList = hrAppCvConfDao.getDatas(queryBuilder.buildQuery());
+            //获取申请职位的自定义简历字段
             Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
                     hrAppCvConfDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
-            List<String> otherList = new ArrayList<>();
+            //遍历职位获取职位与人自定义字段交集
             positionIds.stream().forEach(positionId -> {
                 try {
                     if (positionCustomConfigMap.containsKey(positionId)) {
@@ -1289,23 +1303,18 @@ public class ProfileService {
                                     .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
                                             map(m -> JSONObject.parseObject(String.valueOf(m)))
                                     .filter(f -> f.getIntValue("parent_id") == 0)
-                                    .collect(Collectors.toMap(k -> "value", v -> {
+                                    .collect(Collectors.toMap(k -> k.getString("field_title"), v -> {
                                         return org.apache.commons.lang.StringUtils
                                                 .defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
                                     }, (oldKey, newKey) -> newKey));
-                            Map<String, Object> parentName = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
+                            parentValues.putAll(parentValue);
+                            Map<String, Object> parentkey = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
                                     .stream()
                                     .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
                                             map(m -> JSONObject.parseObject(String.valueOf(m)))
                                     .filter(f -> f.getIntValue("parent_id") == 0)
-                                    .collect(Collectors.toMap(k -> "name", v -> v.getString("field_title"), (oldKey, newKey) -> newKey));
-
-                            if(parentName.get("name") != null && !otherList.contains((String)parentName.get("name"))){
-                                otherList.add((String) parentName.get("name"));
-                                parentValue.putAll(parentName);
-                                parentValues.add(parentValue);
-                            }
-
+                                    .collect(Collectors.toMap(k -> k.getString("field_name"),v -> v.getString("field_title"), (oldKey, newKey) -> newKey));
+                            parentkeys.putAll(parentkey);
                         }
                     }
                 } catch (Exception e1) {
@@ -1313,10 +1322,59 @@ public class ProfileService {
                 }
             });
         }
-        return parentValues;
+        //组装所需要的数据结构
+        List<Map<String, Object>> otherList = new ArrayList<>();
+        Set<Map.Entry<String, Object>> entries = parentValues.entrySet();
+        Set<Map.Entry<String, Object>> keyEntries = parentkeys.entrySet();
+        for(Map.Entry<String, Object> entry : entries){
+
+            if(!entry.getValue().toString().startsWith("[{") && !entry.getValue().toString().startsWith("[")) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("key", entry.getKey());
+                if(entry.getValue() != null && !"".equals(entry.getValue())) {
+                    map.put("value", entry.getValue());
+                    otherList.add(map);
+                }
+            }else if(entry.getValue().toString().startsWith("[{")){
+                TypeReference<List<Map<String,Object>>> typeRef
+                        = new TypeReference<List<Map<String,Object>>>() {};
+                List<Map<String , Object>> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
+                if(infoList!=null && infoList.size()>0) {
+                    for (Map.Entry<String, Object> key : keyEntries) {
+                        if (entry.getKey().equals(key.getValue())) {
+                            otherMap.put(key.getKey(), infoList);
+                            break;
+                        }
+                    }
+                }
+            }else if(entry.getValue().toString().startsWith("[")){
+                TypeReference<List<String>> typeRef
+                        = new TypeReference<List<String>>() {};
+                List<String> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
+                if(infoList!=null && infoList.size()>0){
+                    for(Map.Entry<String, Object> key : keyEntries){
+                        if(entry.getKey().equals(key.getValue())){
+                            otherMap.put(key.getKey(), infoList);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        otherMap.put("keyvalues", otherList);
+        return otherMap;
     }
 
-  public List<Map<String, Object>> getApplicationOther(int userId, int accountId) throws CommonException{
+    /**
+     *查询申请者申请HR账号下的自定义简历
+     *
+     * @param userId    申请者编号
+     * @param accountId HR编号
+     * @return
+     * @throws CommonException
+     */
+  public Map<String, Object> getApplicationOther(int userId, int accountId) throws CommonException{
+        // 根据HR编号获取公司对象
         Query query = new Query.QueryBuilder().where(ProfileProfile.PROFILE_PROFILE.USER_ID.getName(), userId).buildQuery();
         ProfileProfileDO profileDO = dao.getData(query);
         if(profileDO == null)
@@ -1333,6 +1391,8 @@ public class ProfileService {
         Query companyQuery = null;
         Query positionQuery = null;
         List<JobApplicationDO> applicationDOS = null;
+        List<JobApplicationRecord> updateList = null;
+        //根据账号类型来获取申请者的有效申请
         if(accountDO.getAccountType() == 0 ){
             companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.PARENT_ID.getName(), companyAccountDO.getCompanyId()).or("id", companyAccountDO.getCompanyId()).buildQuery();
             List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(companyQuery);
@@ -1344,6 +1404,13 @@ public class ProfileService {
                         .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
                         .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
                 applicationDOS = jobApplicationDao.getDatas(applicationQuery);
+                Query queryUpdate  = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.COMPANY_ID.getName(), companyIdList.toArray(),ValueOp.IN))
+                        .and(JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1)
+                        .andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
+                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1)
+                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
+                        .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
+                updateList = jobApplicationDao.getRecords(queryUpdate);
             }
         }else{
             companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(), companyAccountDO.getCompanyId()).buildQuery();
@@ -1359,14 +1426,29 @@ public class ProfileService {
                         .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1).and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
                         .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
                 applicationDOS = jobApplicationDao.getDatas(applicationQuery);
-
+                Query queryUpdate  = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(),ValueOp.IN))
+                        .and(JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1)
+                        .andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
+                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1)
+                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
+                        .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
+                updateList =  jobApplicationDao.getRecords(queryUpdate);
             }
         }
+      //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
+      if(updateList != null && updateList.size()>0){
+          for(JobApplicationRecord record : updateList){
+              record.setIsViewed((byte)0);
+          }
+          jobApplicationDao.updateRecords(updateList);
+      }
+
         List<Integer> positionList = null;
         if(applicationDOS != null && applicationDOS.size()>0){
             positionList = applicationDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
             return  getProfileOther(positionList, profileId);
         }
+
         return  null;
     }
 

@@ -133,8 +133,9 @@ public class WholeProfileServicesImpl implements Iface {
     public Response getProfileInfo(int userId, int accountId) throws BIZException, TException {
         Response  response = null;
         try {
+
             response = service.getResource(userId, -1, "");
-            List<Map<String, Object>> others = profileService.getApplicationOther(userId, accountId);
+            Map<String, Object> others = profileService.getApplicationOther(userId, accountId);
             if(response != null && response.getData() != null) {
                 Map<String, Object> profile = (Map<String, Object>) JsonToMap.parseJSON2Map(response.getData());
                 if(profile != null ){

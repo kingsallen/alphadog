@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.position;
 
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -34,9 +35,43 @@ public class PositionMiniController {
             Map<String, Object> map = ParamUtils.parseRequestParam(request);
             String page= (String) map.get("pageNum");
             String pageSize=(String)map.get("pageSize");
+            if(StringUtils.isNullOrEmpty(page)||"0".equals(page)){
+                page="1";
+            }
+            if(StringUtils.isNullOrEmpty(pageSize)){
+                pageSize="10";
+            }
             String accountId=(String)map.get("accountId");
             String keyWords=(String)map.get("keyword");
             Response res = positonServices.getMiniPositionList(Integer.parseInt(accountId),keyWords,Integer.parseInt(page),Integer.parseInt(pageSize));
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /**
+     * 小程序职位列表
+     */
+    @RequestMapping(value = "/api/mini/position/suggest", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionSuggest(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            String page= (String) map.get("pageNum");
+            if(StringUtils.isNullOrEmpty(page)||"0".equals(page)){
+                page="1";
+            }
+            String pageSize=(String)map.get("pageSize");
+            if(StringUtils.isNullOrEmpty(pageSize)){
+                pageSize="10";
+            }
+            String accountId=(String)map.get("accountId");
+            if(StringUtils.isNullOrEmpty(accountId)||"0".equals(accountId)){
+                return ResponseLogNotification.fail(request,"accountId不能为空");
+            }
+            String keyWords=(String)map.get("keyword");
+            Response res = positonServices.getMiniPositionSuggest(Integer.parseInt(accountId),keyWords,Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

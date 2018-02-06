@@ -2116,14 +2116,17 @@ public class PositionService {
             positionDO = jobPositionDao.getData(query);
         }
 
-        if((accountDO != null && accountDO.getAccountType() != 0) || positionDO != null){
+        if((accountDO != null && accountDO.getAccountType() == 0) || positionDO != null){
             try {
 
                 Map<String, Object> updateField = obj.getObject("updateField", Map.class);
+                Date date = new Date();
+                String dateStr = DateUtils.dateToShortTime(date);
+                updateField.put("updateTime", new Timestamp(date.getTime()));
                 JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
                 jobPositionDao.updateRecord(record);
-
-                return ResponseUtils.success("SUCCESS");
+                updateField.put("updateTime", dateStr);
+                return ResponseUtils.success(updateField);
             } catch (Exception e) {
                 e.printStackTrace();
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

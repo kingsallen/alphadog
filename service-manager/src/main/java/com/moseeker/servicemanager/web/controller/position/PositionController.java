@@ -680,8 +680,12 @@ public class PositionController {
     public String updatePosition(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            positonServices.updatePosition(JSONObject.toJSONString(params));
-            return ResponseLogNotification.successJson(request, 1);
+            Response result = positonServices.updatePosition(JSONObject.toJSONString(params));
+            if(result.getStatus()==0) {
+                return ResponseLogNotification.successJson(request, result.getData());
+            }else{
+                return ResponseLogNotification.failJson(request, result.getStatus(), result.getMessage(), result.getData());
+            }
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseLogNotification.failJson(request, e);
