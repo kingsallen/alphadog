@@ -27,6 +27,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -372,9 +373,6 @@ public class TalentpoolSearchengine {
                     this.queryByPublisher(publisherIds, query);
                 }
             }
-//            else{
-//                this.queryByComapnyId(companyId, query);
-//            }
 
             if (StringUtils.isNotNullOrEmpty(candidateSource)) {
                 this.queryByCandidateSource(Integer.parseInt(candidateSource), query);
@@ -468,7 +466,7 @@ public class TalentpoolSearchengine {
             sb.append("val.recommender_user_id>0 &&");
         }
         if(StringUtils.isNotNullOrEmpty(submitTime)){
-            long longTime=this.getLongTime(submitTime);
+            String longTime=this.getLongTime(submitTime);
             sb.append(" val.submit_time>'"+longTime+"'&&");
         }
         if(StringUtils.isNotNullOrEmpty(progressStatus)){
@@ -571,8 +569,8 @@ public class TalentpoolSearchengine {
      */
     private void queryByProfileUpDateTime(String updateTime,QueryBuilder queryBuilder){
 
-        long time=this.getLongTime(updateTime);
-        this.searchUtil.hanleRangeFilter(String.valueOf(time),queryBuilder,"user.profiles.profile.update_time");
+        String time=this.getLongTime(updateTime);
+        this.searchUtil.hanleRangeFilter(time,queryBuilder,"user.profiles.profile.update_time");
     }
 
     /*
@@ -711,11 +709,12 @@ public class TalentpoolSearchengine {
       按照投递时间查询
      */
     private void queryBySubmitTime(String submitTime,QueryBuilder queryBuilder){
-        long time=this.getLongTime(submitTime);
-        searchUtil.hanleRangeFilter(String.valueOf(time),queryBuilder,"user.applications.submit_time");
+        String dataTime=this.getLongTime(submitTime);
+        searchUtil.hanleRangeFilter(dataTime,queryBuilder,"user.applications.submit_time");
     }
 
-    private Long getLongTime(String submitTime){
+    private String getLongTime(String submitTime){
+        SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date date=new Date();
         long time=Long.parseLong(submitTime);
         if(time==1){
@@ -728,7 +727,10 @@ public class TalentpoolSearchengine {
         long datetime=date.getTime();
         long preTime=time*3600*24*1000;
         long longTime=datetime-preTime;
-        return longTime;
+        Date nowTime=new Date(longTime);
+        String nowDate=ff.format(nowTime);
+        nowDate=nowDate.replace(" ","T");
+        return nowDate;
     }
     /*
       按照工作年限查新
@@ -957,7 +959,7 @@ public class TalentpoolSearchengine {
             sb.append("val.progress_status=="+progressStatus+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(submitTime)){
-            long time=this.getLongTime(submitTime);
+            String time=this.getLongTime(submitTime);
             sb.append("val.submit_time>'"+time+"'&&");
         }
         if(StringUtils.isNotNullOrEmpty(positionIds)){
