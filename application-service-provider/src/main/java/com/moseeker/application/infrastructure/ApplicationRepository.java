@@ -47,7 +47,7 @@ public class ApplicationRepository {
     /**
      * es数据模板，tableName: 表名， user_id: 用户id
      */
-    private final String ms = "{'tableName':'%s'}";
+    private final String ms = "{'tableName':'job_application'}";
 
     @Resource(name = "cacheClient")
     private RedisClient client;
