@@ -1049,7 +1049,7 @@ public class ProfileService {
       positionQuery =  new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountIdList.toArray(),ValueOp.IN)).buildQuery();
       List<JobPositionDO> positionDOList = jobPositionDao.getDatas(positionQuery);
       List<JobApplicationDO> applicationDOS = null;
-      List<JobApplicationRecord> updateList = null;
+      List<JobApplicationDO> updateList = null;
       if(positionDOList != null && positionDOList.size()>0){
           List<Integer> positionIdList = positionDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
           Query applicationQuery = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(),ValueOp.IN))
@@ -1057,21 +1057,17 @@ public class ProfileService {
                 .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1).and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
                 .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
           applicationDOS = jobApplicationDao.getDatas(applicationQuery);
-          Query queryUpdate  = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(),ValueOp.IN))
-                .and(JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1)
-                .andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
-                .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1)
-                .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
-                .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
-          updateList =  jobApplicationDao.getRecords(queryUpdate);
-        }
+          for(JobApplicationDO applicationDO : applicationDOS){
+              if(((int)applicationDO.getIsViewed())==1){
+                  applicationDO.setIsViewed(0);
+                  updateList.add(applicationDO);
+              }
+          }
+      }
 
       //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
       if(updateList != null && updateList.size()>0){
-          for(JobApplicationRecord record : updateList){
-              record.setIsViewed((byte)0);
-          }
-          jobApplicationDao.updateRecords(updateList);
+          jobApplicationDao.updateDatas(updateList);
       }
 
         List<Integer> positionList = null;
