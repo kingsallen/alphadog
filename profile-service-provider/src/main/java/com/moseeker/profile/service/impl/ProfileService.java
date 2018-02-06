@@ -1036,7 +1036,7 @@ public class ProfileService {
           List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(companyQuery);
           if(companyDOList!= null && companyDOList.size()>0){
               List<Integer> companyIdList = companyDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
-              Query companyAccountQuery1 = new Query.QueryBuilder().where(new Condition(HrCompanyAccount.HR_COMPANY_ACCOUNT.COMPANY_ID.getName(), companyIdList.toArray(), ValueOp.IN)).and(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountDO.getId()).buildQuery();
+              Query companyAccountQuery1 = new Query.QueryBuilder().where(new Condition(HrCompanyAccount.HR_COMPANY_ACCOUNT.COMPANY_ID.getName(), companyIdList.toArray(), ValueOp.IN)).buildQuery();
               List<HrCompanyAccountDO> companyAccountList = hrCompanyAccountDao.getDatas(companyAccountQuery1);
               accountIdList = companyAccountList.stream().map(m -> m.getAccountId()).collect(Collectors.toList());
           }else {
