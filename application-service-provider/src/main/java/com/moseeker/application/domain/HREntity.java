@@ -58,7 +58,7 @@ public class HREntity {
             //发布HR查看申请事件
             publishEvent(operationRecordList
                     .stream()
-                    .map(record -> record.getId())
+                    .map(record -> record.getAppId().intValue())
                     .collect(Collectors.toList()));
         }
     }
