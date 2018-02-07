@@ -229,7 +229,6 @@ public class SearchengineService {
         ((BoolQueryBuilder) query).must(status_filter);
         SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query);
-        responseBuilder.addSort("status", SortOrder.ASC);
         this.positionIndexOrder(responseBuilder,order_by_priority,haskey,cities);
         responseBuilder.setFrom(page_from).setSize(page_size);
         responseBuilder.setTrackScores(true);
