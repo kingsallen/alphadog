@@ -236,33 +236,38 @@ public class ApplicationRepository {
                                                        List<Record2<Integer, Integer>> superAccountList) {
         return applicationList.stream().map(jobApplication -> {
 
-            int id = jobApplication.getId();
-            ApplicationStateRoute status = ApplicationStateRoute.initFromState(jobApplication.getAppTplId());
-            if (status == null) {
-                logger.error("ApplicationRepository status is null! application:{}", jobApplication);
-            }
-            int state = status.getState();
-            int viewNumber = jobApplication.getViewCount();
-            List<Integer> hrIdList = new ArrayList<>();
-            if (positionList != null && positionList.size() > 0) {
-                Optional<JobPosition> jobPositionOptional = positionList
-                        .stream()
-                        .filter(jobPosition -> jobApplication.getPositionId().intValue()
-                                == jobPosition.getId()).findAny();
-
-                if (jobPositionOptional.isPresent()) {
-                    hrIdList.add(jobPositionOptional.get().getPublisher());
-                    Optional<Record2<Integer, Integer>> optional
-                            = superAccountList
+            ApplicationEntity application = null;
+            try {
+                int id = jobApplication.getId();
+                ApplicationStateRoute status = ApplicationStateRoute.initFromState(jobApplication.getAppTplId());
+                if (status == null) {
+                    logger.error("ApplicationRepository status is null! application:{}", jobApplication);
+                }
+                int state = status.getState();
+                int viewNumber = jobApplication.getViewCount();
+                List<Integer> hrIdList = new ArrayList<>();
+                if (positionList != null && positionList.size() > 0) {
+                    Optional<JobPosition> jobPositionOptional = positionList
                             .stream()
-                            .filter(record -> record.value1().intValue() == jobPositionOptional.get().getCompanyId().intValue())
-                            .findAny();
-                    if (optional.isPresent()) {
-                        hrIdList.add(optional.get().value2());
+                            .filter(jobPosition -> jobApplication.getPositionId().intValue()
+                                    == jobPosition.getId()).findAny();
+
+                    if (jobPositionOptional.isPresent()) {
+                        hrIdList.add(jobPositionOptional.get().getPublisher());
+                        Optional<Record2<Integer, Integer>> optional
+                                = superAccountList
+                                .stream()
+                                .filter(record -> record.value1().intValue() == jobPositionOptional.get().getCompanyId().intValue())
+                                .findAny();
+                        if (optional.isPresent()) {
+                            hrIdList.add(optional.get().value2());
+                        }
                     }
                 }
+                application = new ApplicationEntity(id, state, hrIdList, viewNumber);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
-            ApplicationEntity application = new ApplicationEntity(id, state, hrIdList, viewNumber);
             return application;
         }).collect(Collectors.toList());
     }
