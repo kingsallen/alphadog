@@ -35,7 +35,7 @@ public class PositionMiniController {
             Map<String, Object> map = ParamUtils.parseRequestParam(request);
             String page= (String) map.get("pageNum");
             String pageSize=(String)map.get("pageSize");
-            if(StringUtils.isNullOrEmpty(page)){
+            if(StringUtils.isNullOrEmpty(page)||"0".equals(page)){
                 page="0";
             }
             if(StringUtils.isNullOrEmpty(pageSize)){

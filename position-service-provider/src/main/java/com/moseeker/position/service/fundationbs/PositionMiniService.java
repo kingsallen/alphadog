@@ -255,7 +255,7 @@ public class PositionMiniService {
                 int total=(int)data.get("totalNum");
                 bean.setTrickTotal((int)total);
             }
-            params.put("status","1");
+            params.put("status","2");
             Response res1=searchengineServices.queryPositionMini(params);
             if(res1.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res1.getData(),Map.class);
@@ -277,7 +277,7 @@ public class PositionMiniService {
                 int total=(int)data.get("totalNum");
                 bean.setTrickTotal((int)total);
             }
-            params.put("status","1");
+            params.put("status","2");
             Response res1=searchengineServices.queryPositionMini(params);
             if(res1.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res1.getData(),Map.class);
