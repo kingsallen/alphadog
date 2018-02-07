@@ -32,12 +32,15 @@ public class ApplicationEntity {
 
     public ApplicationEntity(int id, int state, boolean refuse, List<Integer> hrIdList, int viewNumber) {
         this.id = id;
+        logger.info("ApplicationEntity param state:{}, ", state);
         this.state = ApplicationStateRoute.initFromState(state).buildState(this);
+        logger.info("ApplicationEntity state:{}, ", this.state);
         this.initState = ApplicationStateRoute.initFromState(state).buildState(this);
         this.hrIdList = hrIdList;
         this.viewNumber = viewNumber;
         this.initViewNumber = viewNumber;
         this.refuse = refuse;
+        logger.info("ApplicationEntity refuse:{}, ", this.refuse);
     }
 
     /**
