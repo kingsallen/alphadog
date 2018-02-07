@@ -82,8 +82,11 @@ public class ProfileMiniService {
                 userMap.put("applications",applistNew);
             }
             result.put("accountType",record.getAccountType());
+        }else{
+            result=new HashMap<>();
+            result.put("totalNum",0);
         }
-
+        result.put("accountType",record.getAccountType());
     }
     /*
      请求es，获取参数
