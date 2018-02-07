@@ -13,6 +13,8 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices.Iface;
+
+import java.util.HashMap;
 import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -150,7 +152,7 @@ public class WholeProfileServicesImpl implements Iface {
         try{
             Map<String,Object> result=profileMiniService.getProfileMini(params);
             if(result==null||result.isEmpty()){
-                return ResponseUtils.fail("查找失败");
+                return ResponseUtils.success(new HashMap<>());
             }
             return ResponseUtils.success(result);
 

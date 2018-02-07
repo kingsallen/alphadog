@@ -73,6 +73,9 @@ public class PositionMiniService {
         Map<String,String> params=this.handlerParams(accountId,keyword,page,pageSize);
         Response res=searchengineServices.searchPositionSuggest(params);
         if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
+            if("\"\"".equals(res.getData().trim())){
+                return null;
+            }
             Map<String,Object> result=JSON.parseObject(res.getData(),Map.class);
             return result;
         }
@@ -195,6 +198,9 @@ public class PositionMiniService {
         }
         Response res=searchengineServices.queryPositionMini(params);
         if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
+            if("\"\"".equals(res.getData().trim())){
+                return null;
+            }
             Map<String,Object> data= JSON.parseObject(res.getData(),Map.class);
             List<PositionMiniInfo> result=this.handlerDatoToresult(data);
             return result;
@@ -249,7 +255,7 @@ public class PositionMiniService {
                 int total=(int)data.get("totalNum");
                 bean.setTrickTotal((int)total);
             }
-            params.put("status","1");
+            params.put("status","2");
             Response res1=searchengineServices.queryPositionMini(params);
             if(res1.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res1.getData(),Map.class);
@@ -271,7 +277,7 @@ public class PositionMiniService {
                 int total=(int)data.get("totalNum");
                 bean.setTrickTotal((int)total);
             }
-            params.put("status","1");
+            params.put("status","2");
             Response res1=searchengineServices.queryPositionMini(params);
             if(res1.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res1.getData(),Map.class);
