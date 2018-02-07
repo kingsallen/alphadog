@@ -43,10 +43,10 @@ public class ELKLogTest {
         logVO.setAppid(Constant.APPID_ALPHADOG);
         logVO.setEvent("WholeProfileService_test");
         logVO.setStatus_code(0);
-        logVO.setReq_params(new HashMap<String, Object>(){{
-            this.put("id", 1);
-            this.put("name", 2);
-        }});
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", 1);
+        jsonObject.put("name", 2);
+        logVO.setReq_params(jsonObject.toJSONString());
         logVO.setCustoms(statisticsForChannelmportVO);
         ELKLog.ELK_LOG.log(logVO);
     }

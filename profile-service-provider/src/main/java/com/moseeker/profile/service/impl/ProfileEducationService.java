@@ -140,8 +140,10 @@ public class ProfileEducationService {
     public Education postResource(Education education) throws CommonException {
         Education result = null;
         if (education != null) {
+            logger.info("education start：{}", education.getStart_date());
             //添加信息校验
             ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
+            logger.info("education vm:{}",vm);
             if (!vm.isPass()) {
                 throw ProfileException.validateFailed(vm.getResult());
             }

@@ -14,6 +14,15 @@ public class PositionZhilianWithAccount implements Serializable {
     public PositionZhilian position_info;
     public String company;
     public String account_id;
+    public String mobile;
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
 
     public String getUser_name() {
         return user_name;

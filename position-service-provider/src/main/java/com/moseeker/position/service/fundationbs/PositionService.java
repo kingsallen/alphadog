@@ -301,6 +301,7 @@ public class PositionService {
         if ("全国".equals(jobPositionPojo.city)) {
             jobPositionPojo.city_flag = 1;
         }
+        searchData.setTitle(jobPositionPojo.title);
         jobPositionPojo.search_data=searchData;
         if(jobPositionPojo.salary_bottom==0&&jobPositionPojo.salary_top==0){
             jobPositionPojo.salary="薪资面议";
@@ -562,13 +563,29 @@ public class PositionService {
                     logger.info("----部门ID为---:" + hrTeamRecord.getId());
                     team_id = hrTeamRecord.getId();
                 } else {
-                    logger.info("-----未取到TeamId-------");
-                    logger.info("--部门名称为--:" + record.getDepartment());
-                    logger.info("--company_id--:" + record.getCompanyId());
-                    logger.info("--JobPositionRecord数据--:" + record.toString());
-                    logger.info("--提交的数据--:" + jobPositionHandlerDate.toString());
-                    handlerFailMess(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR, jobPositionFailMessPojos, jobPositionHandlerDate);
-                    continue;
+                    //部分公司在部门不存在时，直接插入新部门
+                    if(batchHandlerJobPosition.isCreateDeparment) {
+                        logger.info("-----未取到TeamId,需要插入部门-------");
+
+                        HrTeamRecord team = new HrTeamRecord();
+                        team.setName(record.getDepartment());
+                        team.setCompanyId(record.getCompanyId());
+
+                        HrTeamRecord teamTemp=hrTeamDao.addRecord(team);
+                        logger.info("----插入的部门ID为---:" + teamTemp.getId());
+
+                        team_id = teamTemp.getId();
+
+                        hashMapHrTeam.put(department,teamTemp);
+                    }else {
+                        logger.info("-----未取到TeamId-------");
+                        logger.info("--部门名称为--:" + record.getDepartment());
+                        logger.info("--company_id--:" + record.getCompanyId());
+                        logger.info("--JobPositionRecord数据--:" + record.toString());
+                        logger.info("--提交的数据--:" + jobPositionHandlerDate.toString());
+                        handlerFailMess(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR, jobPositionFailMessPojos, jobPositionHandlerDate);
+                        continue;
+                    }
                 }
             } else {
                 record.setDepartment("");
@@ -970,6 +987,9 @@ public class PositionService {
                         if (specicalCity != null) {
                             city.setValue(specicalCity);
                         }
+                        if (org.apache.commons.lang.StringUtils.isBlank(city.getValue())) {
+                            city.setValue("全国");
+                        }
                         // 判断下是否是中文还是英文
                         if (isChinese(city.getValue())) { // 是中文
                             cityQuery.where("name", city.getValue());
@@ -1049,6 +1069,9 @@ public class PositionService {
             for (City city : list) {
                 Query.QueryBuilder cityCodeQuery = new Query.QueryBuilder();
                 if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode
+                    if(StringUtils.isNullOrEmpty(city.getValue())){
+                        city.setValue("全国");
+                    }
                     // 判断是不是特殊城市中的
                     String specicalCity = SpecialCtiy.specialCtiyMap.get(city.getValue().toLowerCase());
                     if (specicalCity != null) {
