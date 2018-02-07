@@ -92,7 +92,7 @@ public class ProfileMiniService {
         String data=res.getData();
         if(res.getStatus()==0&&data!=null&&org.apache.commons.lang.StringUtils.isNotBlank(data)){
             logger.info(res.getData());
-            if("".equals(data)){
+            if("\"\"".equals(data)){
                 return null;
             }
             Map<String,Object> result= JSON.parseObject(res.getData(),Map.class);
