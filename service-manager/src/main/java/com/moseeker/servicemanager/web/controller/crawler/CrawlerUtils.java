@@ -155,6 +155,9 @@ public class CrawlerUtils {
 					profile.put("user_id", user_id);
 				}
 			} else {
+				if(resume==null){
+					resume=new HashMap<>();
+				}
 				Map<String, Object> profile = new HashMap<>();
 				profile.put("lang", lang);
 				int sourceResult = createSource(source, appid, ua);
