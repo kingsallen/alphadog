@@ -175,6 +175,7 @@ public class JobApplicataionServicesImpl implements Iface {
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             throw ApplicationException.PROGRAM_EXCEPTION;
         }
     }
