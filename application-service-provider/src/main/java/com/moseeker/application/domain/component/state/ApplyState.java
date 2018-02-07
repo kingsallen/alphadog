@@ -37,9 +37,4 @@ public class ApplyState extends ApplicationState {
     public void recover() {
 
     }
-
-    @Override
-    public ApplicationStateRoute getStatus() {
-        return applicationStateRoute;
-    }
 }

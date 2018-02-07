@@ -30,9 +30,4 @@ public class OfferedStatus extends ApplicationState {
     void recover() {
 
     }
-
-    @Override
-    public ApplicationStateRoute getStatus() {
-        return null;
-    }
 }
