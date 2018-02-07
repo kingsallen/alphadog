@@ -345,7 +345,12 @@ public class ApplicationRepository {
         int state = 0;
 
         if (application.getAppTplId() == ApplicationRefuseState.Refuse.getState()) {
-            state = stateMap.get(application.getId());
+            try {
+                state = stateMap.get(application.getId());
+            } catch (Exception e) {
+                logger.error("application.id:{}", application.getId());
+                logger.error(e.getMessage(),e);
+            }
         } else {
             state = application.getAppTplId();
         }
