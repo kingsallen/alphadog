@@ -214,12 +214,19 @@ public class ApplicationRepository {
                         .collect(Collectors.toList()));
 
         //如果当前的申请状态是拒绝的状态，那么需要查找拒绝之前是什么状态
+        logger.info("ApplicationRepository fetchApplicationEntity applicationList:{}", applicationList
+                .stream()
+                .filter(jobApplication -> jobApplication.getAppTplId() != null
+                        && jobApplication.getAppTplId() == ApplicationRefuseState.Refuse.getState())
+                .map(jobApplication -> jobApplication.getId())
+                .collect(Collectors.toList()));
         Map<Integer, Integer> stateMap = hrOperationJOOQDao.fetchStatesByAppIds(applicationList
                 .stream()
                 .filter(jobApplication -> jobApplication.getAppTplId() != null
                         && jobApplication.getAppTplId() == ApplicationRefuseState.Refuse.getState())
                 .map(jobApplication -> jobApplication.getId())
                 .collect(Collectors.toList()));
+        logger.info("ApplicationRepository fetchApplicationEntity stateMap:{}", stateMap);
 
         //组合申请数据
         List<ApplicationEntity> applications = packageApplication(applicationList, positionList, superAccountList, stateMap);

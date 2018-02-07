@@ -3,6 +3,8 @@ package com.moseeker.application.infrastructure;
 import com.moseeker.baseorm.db.hrdb.tables.daos.HrOperationRecordDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import org.jooq.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,6 +18,8 @@ import static org.jooq.impl.DSL.using;
  * Created by jack on 17/01/2018.
  */
 public class HrOperationJOOQDao extends HrOperationRecordDao {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public HrOperationJOOQDao(Configuration configuration) {
         super(configuration);
@@ -80,15 +84,18 @@ public class HrOperationJOOQDao extends HrOperationRecordDao {
                     .and(HR_OPERATION_RECORD.OPERATE_TPL_ID.ne(4))
                     .fetch();
 
+            logger.info("HrOperationJOOQDao fetchStatesByAppIds result: {}", result);
             if (result != null && result.size() > 0) {
                 List<Integer> max = result.stream().map(record -> record.value1()).collect(Collectors.toList());
 
+                logger.info("HrOperationJOOQDao fetchStatesByAppIds max: {}", max);
                 Result<Record2<Long, Integer>> operationRecordResult = using(configuration())
                         .select(HR_OPERATION_RECORD.APP_ID, HR_OPERATION_RECORD.OPERATE_TPL_ID)
                         .from(HR_OPERATION_RECORD)
                         .where(HR_OPERATION_RECORD.ID.in(max))
                         .fetch();
 
+                logger.info("HrOperationJOOQDao fetchStatesByAppIds operationRecordResult: {}", operationRecordResult);
                 if (operationRecordResult != null && operationRecordResult.size() > 0) {
                     operationRecordResult.forEach(record2 -> {
                         map.put(record2.value1().intValue(), record2.value2());
@@ -98,6 +105,7 @@ public class HrOperationJOOQDao extends HrOperationRecordDao {
 
         }
 
+        logger.info("HrOperationJOOQDao fetchStatesByAppIds map: {}", map);
         return map;
     }
 }
