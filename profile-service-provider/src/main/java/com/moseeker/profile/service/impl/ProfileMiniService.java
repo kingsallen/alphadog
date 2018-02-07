@@ -50,13 +50,13 @@ public class ProfileMiniService {
         String publisher=this.handlerAccountData(record);
         Map<String,String> map=this.handlerParamsData(pageNumber,pageSize,keyword,accountId,publisher);
         Map<String,Object> result=this.getProfileByEs(map);
-        this.filterApplication(result,record);
+        result=this.filterApplication(result,record);
         return result;
     }
     /*
      处理数据，过滤掉无用的申请
      */
-    private void filterApplication(Map<String,Object> result,UserHrAccountRecord record){
+    private Map<String,Object> filterApplication(Map<String,Object> result,UserHrAccountRecord record){
         if(result!=null&&!result.isEmpty()){
             int companyId=record.getCompanyId();
             int accountId=record.getId();
@@ -87,7 +87,7 @@ public class ProfileMiniService {
             result.put("totalNum",0);
         }
         result.put("accountType",record.getAccountType());
-
+        return result;
     }
     /*
      请求es，获取参数
