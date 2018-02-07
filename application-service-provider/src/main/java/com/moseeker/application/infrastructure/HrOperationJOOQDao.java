@@ -82,6 +82,7 @@ public class HrOperationJOOQDao extends HrOperationRecordDao {
                     .from(HR_OPERATION_RECORD)
                     .where(HR_OPERATION_RECORD.APP_ID.in(applicationIdList))
                     .and(HR_OPERATION_RECORD.OPERATE_TPL_ID.ne(4))
+                    .groupBy(HR_OPERATION_RECORD.APP_ID)
                     .fetch();
 
             logger.info("HrOperationJOOQDao fetchStatesByAppIds result: {}", result);
