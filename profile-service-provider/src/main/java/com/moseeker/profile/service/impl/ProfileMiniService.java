@@ -11,6 +11,8 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ import java.util.*;
  */
 @Service
 public class ProfileMiniService {
+
+    private static Logger logger = LoggerFactory.getLogger(ProfileMiniService.class);
     @Autowired
     private UserHrAccountDao userHrAccountDao;
     @Autowired
@@ -86,7 +90,12 @@ public class ProfileMiniService {
      */
     private Map<String,Object> getProfileByEs(Map<String,String> params) throws TException {
         Response  res=searchengineServices.userQuery(params);
-        if(res.getStatus()==0&&res.getData()!=null&&StringUtils.isNotNullOrEmpty(res.getData())){
+        String data=res.getData();
+        if(res.getStatus()==0&&data!=null&&org.apache.commons.lang.StringUtils.isNotBlank(data)){
+            logger.info(res.getData());
+            if("\"\"".equals(data)){
+                return null;
+            }
             Map<String,Object> result= JSON.parseObject(res.getData(),Map.class);
             result=StringUtils.convertUnderKeyToCamel(result);
             return result;
