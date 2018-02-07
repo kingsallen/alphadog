@@ -6,6 +6,7 @@ import com.moseeker.application.domain.event.ViewApplicationListEvent;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.domain.event.ViewApplicationSource;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
