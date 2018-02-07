@@ -963,6 +963,8 @@ public class SearchengineService {
         }
         if(flag==0){
             searchUtil.handleMatch(0,query,"status");
+        }else{
+            this.handlerStatusQuery(query);
         }
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleTerms(publisher,query,"publisher");
