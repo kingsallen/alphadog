@@ -140,8 +140,14 @@ public class CrawlerUtils {
 		 * */
 		if (messagBean.get("status") != null && (Integer) messagBean.get("status") == 0) {
 			List<Map<String, Object>> resumes = (List<Map<String, Object>>) messagBean.get("resumes");
+			if(resumes==null || resumes.isEmpty()){
+				return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_RESUME_EMPTY);
+			}
 			Map<String, Object> resume = resumes.get(0);
-			if (resume != null && resume.get("profile") != null) {
+			if(resume==null || resume.isEmpty()){
+				return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_RESUME_EMPTY);
+			}
+			if (resume.get("profile") != null) {
 				Map<String, Object> profile = (Map<String, Object>) resume.get("profile");
 				if (lang != 0) {
 					profile.put("lang", lang);
@@ -155,9 +161,6 @@ public class CrawlerUtils {
 					profile.put("user_id", user_id);
 				}
 			} else {
-				if(resume==null){
-					resume=new HashMap<>();
-				}
 				Map<String, Object> profile = new HashMap<>();
 				profile.put("lang", lang);
 				int sourceResult = createSource(source, appid, ua);
