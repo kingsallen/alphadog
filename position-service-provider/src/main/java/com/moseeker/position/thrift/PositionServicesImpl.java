@@ -524,7 +524,7 @@ public class PositionServicesImpl implements Iface {
         try {
             PositionMiniBean  result=positionMiniService.getPositionMiniList(accountId,keyword,page,pageSize);
             if(result==null){
-                return  ResponseUtils.success(new PositionMiniBean());
+                return  ResponseUtils.success(new HashMap<>());
             }
             return  ResponseUtils.success(result);
         }catch (Exception e){
