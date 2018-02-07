@@ -143,6 +143,22 @@ public class SearchUtil {
         ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
         ((BoolQueryBuilder) query).filter(keyand);
     }
+    /*
+     处理一个字段多个值的查询
+     */
+    public void handleShouldMatchFilter(Map<String,List<String>> params, QueryBuilder query ){
+        QueryBuilder keyand = QueryBuilders.boolQuery();
+        for(String key:params.keySet()){
+            List<String> list=params.get(key);
+            for(String param:list){
+                QueryBuilder fullf = QueryBuilders.matchQuery(key, param);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+
+        }
+        ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+        ((BoolQueryBuilder) query).filter(keyand);
+    }
     public void hanleRange(int conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
         ((BoolQueryBuilder) query).must(cityfilter);

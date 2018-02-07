@@ -163,8 +163,11 @@ public class SearchengineService {
         QueryBuilder query=this.getPositionQueryBuilder(keywords,null,null,null, null,
                 null, null, null, null,  null, motherCompanyId,
                 childCompanyId, null, null);
+
         if(StringUtils.isNotBlank(status)){
             searchUtil.handleMatch(Integer.parseInt(status),query,"status");
+        }else{
+            this.handlerStatusQuery(query);
         }
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleMatch(Integer.parseInt(publisher),query,"publisher");
@@ -182,6 +185,15 @@ public class SearchengineService {
         SearchResponse response = responseBuilder.execute().actionGet();
         Map<String,Object> result=searchUtil.handleData(response,"positionList");
         return result;
+    }
+
+    private void handlerStatusQuery(QueryBuilder query){
+        List<String> statusList=new ArrayList<>();
+        statusList.add("0");
+        statusList.add("2");
+        Map<String,List<String>> params=new HashMap<>();
+        params.put("status",statusList);
+        searchUtil.handleShouldMatchFilter(params,query);
     }
     /*
      将查询elasticsearch index的逻辑独立出来
@@ -416,11 +428,12 @@ public class SearchengineService {
         }
     }
     /*
-   继续对排序进行细分2,按照城市或者排序
+   继续对排序进行细分4,按照城市或者排序
     */
     private void handlerOrderByPriorityCityOrTimeOrStatus(SearchRequestBuilder responseBuilder,String cities){
         responseBuilder.addSort("status", SortOrder.ASC);
         responseBuilder.addSort("priority", SortOrder.ASC);
+        responseBuilder.addSort("_score", SortOrder.DESC);
         if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
             SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 1), "number");
             builder.order(SortOrder.DESC);
