@@ -172,9 +172,14 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleMatch(Integer.parseInt(publisher),query,"publisher");
         }
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index1").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query);
-        this.handlerOrderByPriorityCityOrTimeOrStatus(responseBuilder,null);
+        boolean haskey=false;
+        if(StringUtils.isNotBlank(keywords)){
+            haskey=true;
+        }
+        this.positionIndexOrder(responseBuilder,true,haskey,null);
+//        this.handlerOrderByPriorityCityOrTimeOrStatus(responseBuilder,null);
         if(StringUtils.isNotBlank(status)){
             responseBuilder.setSize(0);
         }else{
@@ -221,7 +226,7 @@ public class SearchengineService {
                 child_company_name, department, custom);
         QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
         ((BoolQueryBuilder) query).must(status_filter);
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index1").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query);
         this.positionIndexOrder(responseBuilder,order_by_priority,haskey,cities);
         responseBuilder.setFrom(page_from).setSize(page_size);
