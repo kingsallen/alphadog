@@ -58,16 +58,25 @@ public class ProfileMiniService {
     private void filterApplication(Map<String,Object> result,UserHrAccountRecord record){
         if(result!=null&&!result.isEmpty()){
             int companyId=record.getCompanyId();
+            int accountId=record.getId();
             List<Map<String,Object>> userList= (List<Map<String, Object>>) result.get("users");
-            List<Map<String,Object>> applistNew=new ArrayList<>();
             for(Map<String,Object> user:userList){
+                List<Map<String,Object>> applistNew=new ArrayList<>();
                 Map<String,Object> userMap= (Map<String, Object>) user.get("user");
                 List<Map<String,Object>> appList= (List<Map<String, Object>>) userMap.get("applications");
                 for(Map<String,Object> app:appList){
-                    int appCompanyId = (int) app.get("companyId");
-                    if(appCompanyId==companyId){
-                        applistNew.add(app);
+                    if(record.getAccountType()==0){
+                        int appCompanyId = (int) app.get("companyId");
+                        if(appCompanyId==companyId){
+                            applistNew.add(app);
+                        }
+                    }else{
+                        int publisher=(int)app.get("publisher");
+                        if(publisher==accountId){
+                            applistNew.add(app);
+                        }
                     }
+
                 }
                 userMap.put("applications",applistNew);
             }
@@ -80,8 +89,12 @@ public class ProfileMiniService {
      */
     private Map<String,Object> getProfileByEs(Map<String,String> params) throws TException {
         Response  res=searchengineServices.userQuery(params);
-        if(res.getStatus()==0&&res.getData()!=null&&StringUtils.isNotNullOrEmpty(res.getData())){
+        String data=res.getData();
+        if(res.getStatus()==0&&data!=null&&org.apache.commons.lang.StringUtils.isNotBlank(data)){
             logger.info(res.getData());
+            if("".equals(data)){
+                return null;
+            }
             Map<String,Object> result= JSON.parseObject(res.getData(),Map.class);
             result=StringUtils.convertUnderKeyToCamel(result);
             return result;

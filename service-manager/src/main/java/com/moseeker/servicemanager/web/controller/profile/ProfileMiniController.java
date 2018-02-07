@@ -41,7 +41,11 @@ public class ProfileMiniController {
             }
             Map<String,String> requestParams=new HashMap<>();
             for(String key:map.keySet()){
-                requestParams.put(key,String.valueOf(map.get(key)));
+                String value=String.valueOf(map.get(key));
+                if(StringUtils.isNotNullOrEmpty(value)){
+                    value=StringUtils.filterStringForSearch(value);
+                }
+                requestParams.put(key,value);
             }
             Response res=profileService.getProfileMiniList(requestParams);
             return ResponseLogNotification.success(request, res);
