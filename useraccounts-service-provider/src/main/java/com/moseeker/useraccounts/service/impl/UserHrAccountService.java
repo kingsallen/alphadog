@@ -1671,25 +1671,25 @@ public class UserHrAccountService {
             params.put("type", true);
         String logo = "";
         if(StringUtils.isNotNullOrEmpty(accountDO.getHeadimgurl())){
-            if(accountDO.getHeadimgurl().indexOf("http")>=0){
+            if(accountDO.getHeadimgurl().startsWith("http")){
                 logo = accountDO.getHeadimgurl();
             }else{
                 logo = Constant.CDN_URL+accountDO.getHeadimgurl();
             }
         }else if(StringUtils.isNotNullOrEmpty(userWxUserDO.getHeadimgurl())){
-            if(userWxUserDO.getHeadimgurl().indexOf("http")>=0){
+            if(userWxUserDO.getHeadimgurl().startsWith("http")){
                 logo = userWxUserDO.getHeadimgurl();
             }else{
                 logo = Constant.CDN_URL+userWxUserDO.getHeadimgurl();
             }
         }else if(StringUtils.isNotNullOrEmpty(companyDO.getLogo())){
-            if(companyDO.getLogo().indexOf("http")>=0){
+            if(companyDO.getLogo().startsWith("http")){
                 logo = companyDO.getLogo();
             }else{
                 logo = Constant.CDN_URL+companyDO.getLogo();
             }
         }
-        if(userWxUserDO.getHeadimgurl().indexOf("http")>=0 && userWxUserDO.getHeadimgurl().indexOf("https")<0){
+        if(!logo.startsWith("https") && logo.startsWith("http")){
             logo = logo.replace("http", "https");
         }
         params.put("headImgUrl",logo);

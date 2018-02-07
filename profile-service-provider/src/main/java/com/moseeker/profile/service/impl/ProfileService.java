@@ -1379,68 +1379,56 @@ public class ProfileService {
         ProfileProfileDO profileDO = dao.getData(query);
         if(profileDO == null)
             throw  CommonException.PROGRAM_PARAM_NOTEXIST;
+
         Integer profileId = profileDO.getId();
         Query accountQuery = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), accountId).buildQuery();
         UserHrAccountDO accountDO = userHrAccountDao.getData(accountQuery);
         if(accountDO == null)
             throw  CommonException.PROGRAM_PARAM_NOTEXIST;
-        Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), accountDO.getId()).buildQuery();
-        HrCompanyAccountDO companyAccountDO = hrCompanyAccountDao.getData(companyAccountQuery);
-        if(companyAccountDO == null)
-            throw  CommonException.PROGRAM_PARAM_NOTEXIST;
-        Query companyQuery = null;
-        Query positionQuery = null;
-        List<JobApplicationDO> applicationDOS = null;
-        List<JobApplicationRecord> updateList = null;
-        //根据账号类型来获取申请者的有效申请
-        if(accountDO.getAccountType() == 0 ){
-            companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.PARENT_ID.getName(), companyAccountDO.getCompanyId()).or("id", companyAccountDO.getCompanyId()).buildQuery();
-            List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(companyQuery);
-            if(companyDOList!= null && companyDOList.size()>0){
-                List<Integer> companyIdList = companyDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
-                Query applicationQuery = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.COMPANY_ID.getName(), companyIdList.toArray(),ValueOp.IN))
-                        .andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
-                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1)
-                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
-                        .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
-                applicationDOS = jobApplicationDao.getDatas(applicationQuery);
-                Query queryUpdate  = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.COMPANY_ID.getName(), companyIdList.toArray(),ValueOp.IN))
-                        .and(JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1)
-                        .andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
-                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1)
-                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
-                        .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
-                updateList = jobApplicationDao.getRecords(queryUpdate);
-            }
-        }else{
-            companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(), companyAccountDO.getCompanyId()).buildQuery();
-            HrCompanyDO companyDO = hrCompanyDao.getData(companyQuery);
-            if(companyDO == null)
-                throw  CommonException.PROGRAM_PARAM_NOTEXIST;
-            positionQuery =  new Query.QueryBuilder().where(JobPosition.JOB_POSITION.COMPANY_ID.getName(), companyDO.getId()).and(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountDO.getId()).buildQuery();
-            List<JobPositionDO> positionDOList = jobPositionDao.getDatas(positionQuery);
-            if(positionDOList != null && positionDOList.size()>0){
-                List<Integer> positionIdList = positionDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
-                Query applicationQuery = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(),ValueOp.IN))
-                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1).andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
-                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1).and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
-                        .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
-                applicationDOS = jobApplicationDao.getDatas(applicationQuery);
-                Query queryUpdate  = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(),ValueOp.IN))
-                        .and(JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1)
-                        .andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
-                        .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1)
-                        .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
-                        .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
-                updateList =  jobApplicationDao.getRecords(queryUpdate);
-            }
-        }
+      Query companyQuery = null;
+      Query positionQuery = null;
+      List<Integer> accountIdList = new ArrayList<>();
+      if(accountDO.getAccountType() == 0 ){
+          Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), accountDO.getId()).buildQuery();
+          HrCompanyAccountDO companyAccountDO = hrCompanyAccountDao.getData(companyAccountQuery);
+          if(companyAccountDO == null)
+              return null;
+          companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.PARENT_ID.getName(), companyAccountDO.getCompanyId()).or("id", companyAccountDO.getCompanyId()).buildQuery();
+          List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(companyQuery);
+          if(companyDOList!= null && companyDOList.size()>0){
+              List<Integer> companyIdList = companyDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
+              Query companyAccountQuery1 = new Query.QueryBuilder().where(new Condition(HrCompanyAccount.HR_COMPANY_ACCOUNT.COMPANY_ID.getName(), companyIdList.toArray(), ValueOp.IN)).buildQuery();
+              List<HrCompanyAccountDO> companyAccountList = hrCompanyAccountDao.getDatas(companyAccountQuery1);
+              accountIdList = companyAccountList.stream().map(m -> m.getAccountId()).collect(Collectors.toList());
+          }else {
+              accountIdList.add(accountDO.getId());
+          }
+
+      }else{
+          accountIdList.add(accountDO.getId());
+      }
+      positionQuery =  new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountIdList.toArray(),ValueOp.IN)).buildQuery();
+      List<JobPositionDO> positionDOList = jobPositionDao.getDatas(positionQuery);
+      List<JobApplicationDO> applicationDOS = null;
+      List<JobApplicationDO> updateList = null;
+      if(positionDOList != null && positionDOList.size()>0){
+          List<Integer> positionIdList = positionDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
+          Query applicationQuery = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(),ValueOp.IN))
+                .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1).andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
+                .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1).and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
+                .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
+          applicationDOS = jobApplicationDao.getDatas(applicationQuery);
+          for(JobApplicationDO applicationDO : applicationDOS){
+              if(((int)applicationDO.getIsViewed())==1){
+                  applicationDO.setIsViewed(0);
+                  updateList.add(applicationDO);
+              }
+          }
+      }
+
       //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
       if(updateList != null && updateList.size()>0){
-          for(JobApplicationRecord record : updateList){
-              record.setIsViewed((byte)0);
-          }
-          jobApplicationDao.updateRecords(updateList);
+          jobApplicationDao.updateDatas(updateList);
       }
 
         List<Integer> positionList = null;
