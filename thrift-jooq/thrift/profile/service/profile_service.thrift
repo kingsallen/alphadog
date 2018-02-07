@@ -25,6 +25,7 @@ service ProfileOtherThriftService {
     common_struct.Response checkProfileOther(1: i32 userId, 2: i32 positionId) throws (1: common_struct.BIZException e);
     common_struct.Response getProfileOther(1: string params) throws (1: common_struct.BIZException e);
     common_struct.Response otherFieldsCheck(1: i32 profileId, 2: string fields) throws(1: common_struct.BIZException e);
+    common_struct.Response getProfileOtherByPosition(1:i32 userId, 2:i32 accountId) throws (1: common_struct.BIZException e);
 }
 
 service WholeProfileServices {
@@ -38,7 +39,7 @@ service WholeProfileServices {
     common_struct.Response improveProfile(1:string profile) throws (1: common_struct.BIZException e);
     common_struct.Response moveProfile(1:i32 destUserId, 2:i32 originUserId) throws (1: common_struct.BIZException e);
     bool retrieveProfile(1:string parameter)throws (1: common_struct.BIZException e);
-    common_struct.Response getProfileInfo(1:i32 userId, 2:i32 profileId) throws (1: common_struct.BIZException e);
+    common_struct.Response getProfileInfo(1:i32 userId, 2:i32 accountId) throws (1: common_struct.BIZException e);
     common_struct.Response getProfileMiniList(1:map<string,string> params);
 }
 
