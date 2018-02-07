@@ -23,7 +23,8 @@ import java.util.*;
  */
 @Service
 public class ProfileMiniService {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private static Logger logger = LoggerFactory.getLogger(ProfileMiniService.class);
     @Autowired
     private UserHrAccountDao userHrAccountDao;
     @Autowired

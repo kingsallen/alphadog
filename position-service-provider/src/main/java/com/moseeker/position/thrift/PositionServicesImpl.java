@@ -29,6 +29,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import com.moseeker.thrift.gen.position.struct.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.thrift.TException;
@@ -523,7 +524,7 @@ public class PositionServicesImpl implements Iface {
         try {
             PositionMiniBean  result=positionMiniService.getPositionMiniList(accountId,keyword,page,pageSize);
             if(result==null){
-                return  ResponseUtils.fail(1,"您所查找的职位推送不存在");
+                return  ResponseUtils.success(new HashMap<>());
             }
             return  ResponseUtils.success(result);
         }catch (Exception e){
@@ -537,7 +538,7 @@ public class PositionServicesImpl implements Iface {
         try {
             Map<String,Object>  result=positionMiniService.getPositionMiniSug(accountId,keyword,page,pageSize);
             if(result==null||result.isEmpty()){
-                return  ResponseUtils.fail(1,"您所查找关键字不存在");
+                return  ResponseUtils.success(new HashMap<>());
             }
             return  ResponseUtils.success(result);
         }catch (Exception e){
