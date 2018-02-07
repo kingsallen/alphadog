@@ -178,6 +178,7 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(keywords)){
             haskey=true;
         }
+        responseBuilder.addSort("status", SortOrder.ASC);
         this.positionIndexOrder(responseBuilder,true,haskey,null);
 //        this.handlerOrderByPriorityCityOrTimeOrStatus(responseBuilder,null);
         if(StringUtils.isNotBlank(status)){
@@ -230,7 +231,6 @@ public class SearchengineService {
         ((BoolQueryBuilder) query).must(status_filter);
         SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query);
-        responseBuilder.addSort("status", SortOrder.ASC);
         this.positionIndexOrder(responseBuilder, order_by_priority, haskey, cities);
         responseBuilder.setFrom(page_from).setSize(page_size);
         responseBuilder.setTrackScores(true);
