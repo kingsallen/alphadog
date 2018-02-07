@@ -51,7 +51,8 @@ public class ApplicationEntity {
             throw ApplicationException.APPLICATION_HAVE_NO_PERMISSION;
         }
         addViewNumber();
-        logger.info("ApplicationEntity view state:{}", state);
+        logger.info("ApplicationEntity view state:{}", state.getStatus().getName());
+        logger.info("ApplicationEntity view state:{}", state.getStatus().getState());
         if (!refuse) {
             state.pass();
         }
@@ -59,7 +60,8 @@ public class ApplicationEntity {
         hrOperationRecord.setAdminId((long) hrEntity.getId());
         hrOperationRecord.setCompanyId((long) hrEntity.getCompanyId());
         hrOperationRecord.setAppId((long) id);
-        logger.info("ApplicationEntity view state:{}", state);
+        logger.info("ApplicationEntity view state:{}", state.getStatus().getName());
+        logger.info("ApplicationEntity view state:{}", state.getStatus().getState());
         hrOperationRecord.setOperateTplId(this.state.getStatus().getState());
         return hrOperationRecord;
     }
