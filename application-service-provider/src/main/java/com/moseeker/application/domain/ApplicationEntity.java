@@ -24,14 +24,16 @@ public class ApplicationEntity {
     private List<Integer> hrIdList;                 //有权限修改招聘进度、查看申请的HR集合
     private int viewNumber;                         //查看次数
     private final int initViewNumber;               //申请初始化时的浏览次数
+    private boolean refuse;                         //true 表示申请被拒绝
 
-    public ApplicationEntity(int id, int state, List<Integer> hrIdList, int viewNumber) {
+    public ApplicationEntity(int id, int state, boolean refuse, List<Integer> hrIdList, int viewNumber) {
         this.id = id;
         this.state = ApplicationStateRoute.initFromState(state).buildState(this);
         this.initState = ApplicationStateRoute.initFromState(state).buildState(this);
         this.hrIdList = hrIdList;
         this.viewNumber = viewNumber;
         this.initViewNumber = viewNumber;
+        this.refuse = refuse;
     }
 
     /**
@@ -45,7 +47,9 @@ public class ApplicationEntity {
             throw ApplicationException.APPLICATION_HAVE_NO_PERMISSION;
         }
         addViewNumber();
-        state.pass();
+        if (!refuse) {
+            state.pass();
+        }
         HrOperationRecord hrOperationRecord = new HrOperationRecord();
         hrOperationRecord.setAdminId((long) hrEntity.getId());
         hrOperationRecord.setCompanyId((long) hrEntity.getCompanyId());
@@ -101,5 +105,9 @@ public class ApplicationEntity {
 
     public int getInitViewNumber() {
         return initViewNumber;
+    }
+
+    public boolean isRefuse() {
+        return refuse;
     }
 }

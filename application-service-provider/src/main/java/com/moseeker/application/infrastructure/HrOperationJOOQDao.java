@@ -2,14 +2,13 @@ package com.moseeker.application.infrastructure;
 
 import com.moseeker.baseorm.db.hrdb.tables.daos.HrOperationRecordDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
-import org.jooq.Condition;
-import org.jooq.Configuration;
+import org.jooq.*;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord.HR_OPERATION_RECORD;
+import static org.jooq.impl.DSL.max;
 import static org.jooq.impl.DSL.using;
 
 /**
@@ -65,4 +64,40 @@ public class HrOperationJOOQDao extends HrOperationRecordDao {
         }
     }
 
+    /**
+     * 查找拒绝申请的招聘进度是在哪个状态被拒绝的
+     * @param applicationIdList 申请编号列表
+     * @return 当前处于拒绝状态的申请，在拒绝之前是什么状态 key是申请的编号，value是申请的状态值
+     */
+    public Map<Integer, Integer> fetchStatesByAppIds(List<Integer> applicationIdList) {
+
+        Map<Integer, Integer> map = new HashMap<>();
+        if (applicationIdList != null && applicationIdList.size() > 0) {
+            Result<Record1<Integer>> result = using(configuration())
+                    .select(max(HR_OPERATION_RECORD.ID))
+                    .from(HR_OPERATION_RECORD)
+                    .where(HR_OPERATION_RECORD.APP_ID.in(applicationIdList))
+                    .and(HR_OPERATION_RECORD.OPERATE_TPL_ID.ne(4))
+                    .fetch();
+
+            if (result != null && result.size() > 0) {
+                List<Integer> max = result.stream().map(record -> record.value1()).collect(Collectors.toList());
+
+                Result<Record2<Long, Integer>> operationRecordResult = using(configuration())
+                        .select(HR_OPERATION_RECORD.APP_ID, HR_OPERATION_RECORD.OPERATE_TPL_ID)
+                        .from(HR_OPERATION_RECORD)
+                        .where(HR_OPERATION_RECORD.ID.in(max))
+                        .fetch();
+
+                if (operationRecordResult != null && operationRecordResult.size() > 0) {
+                    operationRecordResult.forEach(record2 -> {
+                        map.put(record2.value1().intValue(), record2.value2());
+                    });
+                }
+            }
+
+        }
+
+        return map;
+    }
 }

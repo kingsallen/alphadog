@@ -6,6 +6,7 @@ import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.domain.component.state.ApplicationStateRoute;
 import com.moseeker.application.domain.ApplicationEntity;
+import com.moseeker.application.domain.constant.ApplicationRefuseState;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
@@ -212,8 +213,16 @@ public class ApplicationRepository {
                         .stream().map(p -> p.getCompanyId())
                         .collect(Collectors.toList()));
 
+        //如果当前的申请状态是拒绝的状态，那么需要查找拒绝之前是什么状态
+        Map<Integer, Integer> stateMap = hrOperationJOOQDao.fetchStatesByAppIds(applicationList
+                .stream()
+                .filter(jobApplication -> jobApplication.getAppTplId() != null
+                        && jobApplication.getAppTplId() == ApplicationRefuseState.Refuse.getState())
+                .map(jobApplication -> jobApplication.getId())
+                .collect(Collectors.toList()));
+
         //组合申请数据
-        List<ApplicationEntity> applications = packageApplication(applicationList, positionList, superAccountList);
+        List<ApplicationEntity> applications = packageApplication(applicationList, positionList, superAccountList, stateMap);
 
         ApplicationBatchEntity applicationBatchEntity = new ApplicationBatchEntity(this, applications);
 
@@ -230,44 +239,42 @@ public class ApplicationRepository {
      * @param applicationList 申请编号集合
      * @param positionList 职位集合
      * @param superAccountList 超级账号集合
+     * @param stateMap 拒绝的申请具体的状态 key是申请的编号，value是申请的状态值
      * @return 申请数据
      */
     private List<ApplicationEntity> packageApplication(List<JobApplication> applicationList, List<JobPosition> positionList,
-                                                       List<Record2<Integer, Integer>> superAccountList) {
+                                                       List<Record2<Integer, Integer>> superAccountList, Map<Integer, Integer> stateMap) {
         return applicationList.stream().map(jobApplication -> {
 
-            ApplicationEntity application = null;
-            try {
-                int id = jobApplication.getId();
-                ApplicationStateRoute status = ApplicationStateRoute.initFromState(jobApplication.getAppTplId());
-                if (status == null) {
-                    logger.error("ApplicationRepository status is null! application:{}", jobApplication);
-                }
-                int state = status.getState();
-                int viewNumber = jobApplication.getViewCount();
-                List<Integer> hrIdList = new ArrayList<>();
-                if (positionList != null && positionList.size() > 0) {
-                    Optional<JobPosition> jobPositionOptional = positionList
-                            .stream()
-                            .filter(jobPosition -> jobApplication.getPositionId().intValue()
-                                    == jobPosition.getId()).findAny();
+            int id = jobApplication.getId();
 
-                    if (jobPositionOptional.isPresent()) {
-                        hrIdList.add(jobPositionOptional.get().getPublisher());
-                        Optional<Record2<Integer, Integer>> optional
-                                = superAccountList
-                                .stream()
-                                .filter(record -> record.value1().intValue() == jobPositionOptional.get().getCompanyId().intValue())
-                                .findAny();
-                        if (optional.isPresent()) {
-                            hrIdList.add(optional.get().value2());
-                        }
+            int state = calculateSate(jobApplication, stateMap);
+            ApplicationStateRoute status = ApplicationStateRoute.initFromState(jobApplication.getAppTplId());
+            if (status == null) {
+                logger.error("ApplicationRepository status is null! application:{}", jobApplication);
+            }
+            int viewNumber = jobApplication.getViewCount();
+            List<Integer> hrIdList = new ArrayList<>();
+            if (positionList != null && positionList.size() > 0) {
+                Optional<JobPosition> jobPositionOptional = positionList
+                        .stream()
+                        .filter(jobPosition -> jobApplication.getPositionId().intValue()
+                                == jobPosition.getId()).findAny();
+
+                if (jobPositionOptional.isPresent()) {
+                    hrIdList.add(jobPositionOptional.get().getPublisher());
+                    Optional<Record2<Integer, Integer>> optional
+                            = superAccountList
+                            .stream()
+                            .filter(record -> record.value1().intValue() == jobPositionOptional.get().getCompanyId().intValue())
+                            .findAny();
+                    if (optional.isPresent()) {
+                        hrIdList.add(optional.get().value2());
                     }
                 }
-                application = new ApplicationEntity(id, state, hrIdList, viewNumber);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
             }
+            boolean refuse = jobApplication.getAppTplId() == ApplicationRefuseState.Refuse.getState();
+            ApplicationEntity application = new ApplicationEntity(id, state, refuse, hrIdList, viewNumber);
             return application;
         }).collect(Collectors.toList());
     }
@@ -327,5 +334,22 @@ public class ApplicationRepository {
         logger.info("lpush ES_REALTIME_UPDATE_INDEX_USER_IDS:{} success", jsb.toJSONString());
 
         return changeStateResult;
+    }
+
+    /**
+     * 计算当前申请的状态值
+     * @param stateMap 拒绝的申请具体的状态 key是申请的编号，value是申请的状态值
+     * @return 当前申请的状态
+     */
+    private int calculateSate(JobApplication application, Map<Integer, Integer> stateMap) {
+        int state = 0;
+
+        if (application.getAppTplId() == ApplicationRefuseState.Refuse.getState()) {
+            state = stateMap.get(application.getId());
+        } else {
+            state = application.getAppTplId();
+        }
+
+        return state;
     }
 }
