@@ -1634,7 +1634,9 @@ public class UserHrAccountService {
         UserWxUserDO userWxUserDO = null;
         //当HR编号不存在时使用unionid获取Hr账号信息
         if(account_id<=0) {
-            Query query = new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), wechat_id).and(UserWxUser.USER_WX_USER.UNIONID.getName(), unionId).buildQuery();
+            Query query = new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), wechat_id)
+                    .and(UserWxUser.USER_WX_USER.UNIONID.getName(), unionId)
+                    .and(UserWxUser.USER_WX_USER.IS_SUBSCRIBE.getName(), "1").buildQuery();
             userWxUserDO = userWxUserDao.getData(query);
             if (userWxUserDO == null)
                 return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);

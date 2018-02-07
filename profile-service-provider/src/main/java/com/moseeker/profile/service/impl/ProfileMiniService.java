@@ -23,7 +23,8 @@ import java.util.*;
  */
 @Service
 public class ProfileMiniService {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private static Logger logger = LoggerFactory.getLogger(ProfileMiniService.class);
     @Autowired
     private UserHrAccountDao userHrAccountDao;
     @Autowired
@@ -49,13 +50,13 @@ public class ProfileMiniService {
         String publisher=this.handlerAccountData(record);
         Map<String,String> map=this.handlerParamsData(pageNumber,pageSize,keyword,accountId,publisher);
         Map<String,Object> result=this.getProfileByEs(map);
-        this.filterApplication(result,record);
+        result=this.filterApplication(result,record);
         return result;
     }
     /*
      处理数据，过滤掉无用的申请
      */
-    private void filterApplication(Map<String,Object> result,UserHrAccountRecord record){
+    private Map<String,Object> filterApplication(Map<String,Object> result,UserHrAccountRecord record){
         if(result!=null&&!result.isEmpty()){
             int companyId=record.getCompanyId();
             int accountId=record.getId();
@@ -81,8 +82,12 @@ public class ProfileMiniService {
                 userMap.put("applications",applistNew);
             }
             result.put("accountType",record.getAccountType());
+        }else{
+            result=new HashMap<>();
+            result.put("totalNum",0);
         }
-
+        result.put("accountType",record.getAccountType());
+        return result;
     }
     /*
      请求es，获取参数
@@ -92,7 +97,7 @@ public class ProfileMiniService {
         String data=res.getData();
         if(res.getStatus()==0&&data!=null&&org.apache.commons.lang.StringUtils.isNotBlank(data)){
             logger.info(res.getData());
-            if("".equals(data)){
+            if("\"\"".equals(data)){
                 return null;
             }
             Map<String,Object> result= JSON.parseObject(res.getData(),Map.class);
