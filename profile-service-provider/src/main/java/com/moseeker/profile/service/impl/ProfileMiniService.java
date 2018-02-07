@@ -89,8 +89,12 @@ public class ProfileMiniService {
      */
     private Map<String,Object> getProfileByEs(Map<String,String> params) throws TException {
         Response  res=searchengineServices.userQuery(params);
-        if(res.getStatus()==0&&res.getData()!=null&&StringUtils.isNotNullOrEmpty(res.getData())){
+        String data=res.getData();
+        if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(data)){
             logger.info(res.getData());
+            if(StringUtils.isNullOrEmpty(data)){
+                return null;
+            }
             Map<String,Object> result= JSON.parseObject(res.getData(),Map.class);
             result=StringUtils.convertUnderKeyToCamel(result);
             return result;
