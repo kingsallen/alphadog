@@ -178,6 +178,7 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(keywords)){
             haskey=true;
         }
+        responseBuilder.addSort("status", SortOrder.ASC);
         this.positionIndexOrder(responseBuilder,true,haskey,null);
 //        this.handlerOrderByPriorityCityOrTimeOrStatus(responseBuilder,null);
         if(StringUtils.isNotBlank(status)){
