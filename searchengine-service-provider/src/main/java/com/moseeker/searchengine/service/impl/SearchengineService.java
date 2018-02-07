@@ -174,7 +174,12 @@ public class SearchengineService {
         }
         SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query);
-        this.handlerOrderByPriorityCityOrTimeOrStatus(responseBuilder,null);
+        boolean haskey=false;
+        if(StringUtils.isNotBlank(keywords)){
+            haskey=true;
+        }
+        this.positionIndexOrder(responseBuilder,true,haskey,null);
+//        this.handlerOrderByPriorityCityOrTimeOrStatus(responseBuilder,null);
         if(StringUtils.isNotBlank(status)){
             responseBuilder.setSize(0);
         }else{

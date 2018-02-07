@@ -87,6 +87,7 @@ public class ProfileMiniService {
             result.put("totalNum",0);
         }
         result.put("accountType",record.getAccountType());
+
     }
     /*
      请求es，获取参数
