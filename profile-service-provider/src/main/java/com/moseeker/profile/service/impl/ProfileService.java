@@ -1025,7 +1025,6 @@ public class ProfileService {
             throw  CommonException.PROGRAM_PARAM_NOTEXIST;
       Query companyQuery = null;
       Query positionQuery = null;
-      List<JobApplicationDO> isViewCountList = null;
       List<Integer> accountIdList = new ArrayList<>();
       if(accountDO.getAccountType() == 0 ){
           Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), accountDO.getId()).buildQuery();

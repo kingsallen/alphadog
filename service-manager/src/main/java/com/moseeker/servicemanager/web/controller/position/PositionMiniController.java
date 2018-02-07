@@ -43,6 +43,9 @@ public class PositionMiniController {
             }
             String accountId=(String)map.get("accountId");
             String keyWords=(String)map.get("keyword");
+            if(StringUtils.isNotNullOrEmpty(keyWords)){
+                keyWords=StringUtils.filterStringForSearch(keyWords);
+            }
             Response res = positonServices.getMiniPositionList(Integer.parseInt(accountId),keyWords,Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
@@ -71,6 +74,9 @@ public class PositionMiniController {
                 return ResponseLogNotification.fail(request,"accountId不能为空");
             }
             String keyWords=(String)map.get("keyword");
+            if(StringUtils.isNotNullOrEmpty(keyWords)){
+                keyWords=StringUtils.filterStringForSearch(keyWords);
+            }
             Response res = positonServices.getMiniPositionSuggest(Integer.parseInt(accountId),keyWords,Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
