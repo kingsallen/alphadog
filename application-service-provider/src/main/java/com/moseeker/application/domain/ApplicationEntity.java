@@ -50,19 +50,25 @@ public class ApplicationEntity {
         if (!validateAuthority(hrEntity)) {
             throw ApplicationException.APPLICATION_HAVE_NO_PERMISSION;
         }
-        addViewNumber();
-        logger.info("ApplicationEntity view state:{}", state.getStatus().getName());
-        logger.info("ApplicationEntity view state:{}", state.getStatus().getState());
-        if (!refuse) {
-            state.pass();
+        HrOperationRecord hrOperationRecord = null;
+        try {
+            addViewNumber();
+            logger.info("ApplicationEntity view state:{}", state.getStatus());
+            logger.info("ApplicationEntity view state:{}", state.getStatus().getName());
+            logger.info("ApplicationEntity view state:{}", state.getStatus().getState());
+            if (!refuse) {
+                state.pass();
+            }
+            hrOperationRecord = new HrOperationRecord();
+            hrOperationRecord.setAdminId((long) hrEntity.getId());
+            hrOperationRecord.setCompanyId((long) hrEntity.getCompanyId());
+            hrOperationRecord.setAppId((long) id);
+            logger.info("ApplicationEntity view state:{}", state.getStatus().getName());
+            logger.info("ApplicationEntity view state:{}", state.getStatus().getState());
+            hrOperationRecord.setOperateTplId(this.state.getStatus().getState());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
-        HrOperationRecord hrOperationRecord = new HrOperationRecord();
-        hrOperationRecord.setAdminId((long) hrEntity.getId());
-        hrOperationRecord.setCompanyId((long) hrEntity.getCompanyId());
-        hrOperationRecord.setAppId((long) id);
-        logger.info("ApplicationEntity view state:{}", state.getStatus().getName());
-        logger.info("ApplicationEntity view state:{}", state.getStatus().getState());
-        hrOperationRecord.setOperateTplId(this.state.getStatus().getState());
         return hrOperationRecord;
     }
 
