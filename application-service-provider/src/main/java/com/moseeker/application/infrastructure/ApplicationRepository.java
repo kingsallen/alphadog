@@ -300,10 +300,19 @@ public class ApplicationRepository {
         /** 申请的浏览次数加一 */
         List<ApplicationEntity> addViewList = applicationList
                 .stream()
-                .filter(applicationEntity ->
-                        applicationEntity.getViewNumber() != applicationEntity.getInitViewNumber()
+                .filter(applicationEntity -> {
+                    try {
+                        boolean flag = applicationEntity.getViewNumber() != applicationEntity.getInitViewNumber()
                                 && applicationEntity.getState().getStatus()
-                                .equals(applicationEntity.getInitState().getStatus()))
+                                .equals(applicationEntity.getInitState().getStatus());
+
+                        return flag;
+                    } catch (Exception e) {
+                        logger.error("updateApplications id:{}, state:{}, initState:{}", applicationEntity.getId(), applicationEntity.getState(), applicationEntity.getInitState());
+                        logger.error(e.getMessage(), e);
+                        throw e;
+                    }
+                })
                 .collect(Collectors.toList());
         jobApplicationDao.updateViewNumber(addViewList);
 
