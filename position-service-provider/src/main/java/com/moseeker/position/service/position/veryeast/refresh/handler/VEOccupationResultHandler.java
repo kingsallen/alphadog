@@ -43,4 +43,16 @@ public class VEOccupationResultHandler extends AbstractOccupationResultHandler<D
         occupationDao.addAllData(data);
         logger.info("veryeast insert success");
     }
+
+    @Override
+    public List<DictVeryEastOccupationDO> getAll() {
+        return occupationDao.getAllOccupation();
+    }
+
+    @Override
+    public boolean equals(DictVeryEastOccupationDO oldData, DictVeryEastOccupationDO newData) {
+        return oldData.getName().equals(newData.getName())
+                && oldData.getCodeOther().equals(newData.getCodeOther())
+                && oldData.getLevel() == newData.getLevel();
+    }
 }

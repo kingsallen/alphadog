@@ -2,22 +2,53 @@ package com.moseeker.position.service.position.base.refresh.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.iface.IChannelType;
+import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonResultHandler implements JsonResultChangeCheck<T> {
+public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonResultHandler implements IChannelType {
     Logger logger= LoggerFactory.getLogger(AbstractOccupationResultHandler.class);
 
-    //
+    @Autowired
+    private PositionEmailNotification emailNotification;
+
+    /**
+     * 创建occupation,每个渠道根据texts,codes,额外信息msg,来构建自己的occupation实体
+     * @param texts 职能文字链
+     * @param codes 职能code链
+     * @param newCode   用来查找parent_id
+     * @param msg   一些额外信息，一览需要subsite
+     * @return
+     */
     protected abstract T buildOccupation(List<String> texts,List<String> codes,Map<String, Integer> newCode,JSONObject msg);
-    //持久化数据,需要加上@Transactional注解
+
+    /**
+     * 持久化数据,需要加上@Transactional注解!!!
+     * @param data  持久化的list
+     */
     protected abstract void persistent(List<T> data);
+
+    /**
+     * 获取所有职能，为了和新插入职能做对比
+     * @return
+     */
+    public abstract List<T> getAll();
+
+    /**
+     * 新旧职能对比，某几个字段对比相同
+     * @param oldData   数据库职能
+     * @param newData   新推送职能
+     * @return
+     */
+    public abstract boolean equals(T oldData, T newData);
 
     /**
      * 处理职位信息
@@ -26,7 +57,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
     @Override
     public void handle(JSONObject msg) {
         if(!msg.containsKey(occupationKey())){
-            logger.info("very east param does not has occupation!");
+            logger.info("{} param does not has occupation!",getChannelType().getAlias());
             return;
         }
         //把json中的职能转换成List<Occupation>
@@ -56,6 +87,9 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
             }
         }
 
+        //检测是否有变化
+        changeCheck(forInsert);
+
         logger.info("occupation for persistent : {}", JSON.toJSONString(forInsert));
         //持久化操作
         persistent(forInsert);
@@ -64,48 +98,40 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
 
     /**
      * 检测职位是否有变化
-     * @param oldDatas  数据看数据
      * @param newDatas  要入库的数据
      */
-    @Override
-    public void changeCheck(List<T> oldDatas, List<T> newDatas) {
-        List<T> notIntOldDatas=new ArrayList<>();
+    protected void changeCheck( List<T> newDatas) {
+        List<T> oldDatas=getAll();  //数据库数据
+
+        List<T> notInOldDatas=new ArrayList<>();
         List<T> notInNewDatas=new ArrayList<>();
 
+        //查找出数据库存在，但本次刷新不存在，即本次删除的数据
         out:for(T oldData:oldDatas){
 
             for(T newData:newDatas){
-                if(changeCheck(oldData,newData)){
-                    break out;
+                if(equals(oldData,newData)){
+                    continue out;
                 }
             }
             notInNewDatas.add(oldData);
         }
 
+        //查找出数据库不存在，但本次刷新存在，即本次新增的数据
         out:for(T newData:newDatas){
 
             for(T oldData:oldDatas){
-                if(changeCheck(oldData,newData)){
-                    break out;
+                if(equals(oldData,newData)){
+                    continue out;
                 }
             }
-            notIntOldDatas.add(newData);
+            notInOldDatas.add(newData);
+        }
+
+        if(!notInNewDatas.isEmpty()|| !notInOldDatas.isEmpty()){
+            emailNotification.sendUnMatchOccupationMail(notInOldDatas,notInNewDatas,getChannelType());
         }
     }
-
-    public boolean changeCheck(T oldData, T newData){
-        JSONObject jsonOldData=JSON.parseObject(JSON.toJSONString(oldData));
-        JSONObject jsonNewData=JSON.parseObject(JSON.toJSONString(newData));
-        for(Map.Entry<String,Object> entry:jsonOldData.entrySet()){
-            String key=entry.getKey();
-
-            if(!jsonOldData.get(key).equals(jsonNewData.get(key))){
-                return false;
-            }
-        }
-        return true;
-    }
-
 
     //职位在json中对应的key
     protected String occupationKey(){

@@ -44,4 +44,16 @@ public class LiepinOccupationResultHandler extends AbstractOccupationResultHandl
         occupationDao.addAllData(data);
         logger.info("liepin insert success");
     }
+
+    @Override
+    public List<DictLiepinOccupationDO> getAll() {
+        return occupationDao.getAllOccupation();
+    }
+
+    @Override
+    public boolean equals(DictLiepinOccupationDO oldData, DictLiepinOccupationDO newData) {
+        return oldData.getName().equals(newData.getName())
+                && oldData.getOtherCode().equals(newData.getOtherCode())
+                && oldData.getLevel() == newData.getLevel();
+    }
 }

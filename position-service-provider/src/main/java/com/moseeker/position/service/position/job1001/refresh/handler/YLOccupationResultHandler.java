@@ -62,6 +62,19 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
     }
 
     @Override
+    public List<DictJob1001OccupationDO> getAll() {
+        return occupationDao.getAllOccupation();
+    }
+
+    @Override
+    public boolean equals(DictJob1001OccupationDO oldData, DictJob1001OccupationDO newData) {
+        return oldData.getName().equals(newData.getName())
+                && oldData.getCodeOther().equals(newData.getCodeOther())
+                && oldData.getLevel() == newData.getLevel()
+                && oldData.getSubsite().equals(newData.getSubsite());
+    }
+
+    @Override
     protected List<Occupation> toList(JSONObject msg) {
         TypeReference<List<List<String>>> typeRef
                 = new TypeReference<List<List<String>>>() {};

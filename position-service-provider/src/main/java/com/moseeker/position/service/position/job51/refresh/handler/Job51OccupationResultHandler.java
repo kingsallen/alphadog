@@ -47,6 +47,18 @@ public class Job51OccupationResultHandler extends AbstractOccupationResultHandle
         logger.info("job51 insert success");
     }
 
+    @Override
+    public List<Dict51jobOccupationDO> getAll() {
+        return occupationDao.getAllOccupation();
+    }
+
+    @Override
+    public boolean equals(Dict51jobOccupationDO oldData, Dict51jobOccupationDO newData) {
+        return oldData.getName().equals(newData.getName())
+                && oldData.getCodeOther().equals(newData.getCodeOther())
+                && oldData.getLevel() == newData.getLevel();
+    }
+
     /*@Override
     protected List<Occupation> toList(JSONObject msg) {
         TypeReference<List<List<String>>> typeRef

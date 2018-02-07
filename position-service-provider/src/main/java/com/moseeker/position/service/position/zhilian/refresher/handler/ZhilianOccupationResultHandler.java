@@ -43,4 +43,16 @@ public class ZhilianOccupationResultHandler extends AbstractOccupationResultHand
         occupationDao.addAllData(data);
         logger.info("zhilian insert success");
     }
+
+    @Override
+    public List<DictZhilianOccupationDO> getAll() {
+        return occupationDao.getAllOccupation();
+    }
+
+    @Override
+    public boolean equals(DictZhilianOccupationDO oldData, DictZhilianOccupationDO newData) {
+        return oldData.getName().equals(newData.getName())
+                && oldData.getCodeOther().equals(newData.getCodeOther())
+                && oldData.getLevel() == newData.getLevel();
+    }
 }
