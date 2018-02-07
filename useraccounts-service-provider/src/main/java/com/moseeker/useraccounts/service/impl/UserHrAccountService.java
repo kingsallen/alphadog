@@ -71,6 +71,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,6 +123,9 @@ public class UserHrAccountService {
 
     @Autowired
     private EmployeeEntity employeeEntity;
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     private HrImporterMonitorDao hrImporterMonitorDao;
@@ -1670,23 +1674,24 @@ public class UserHrAccountService {
         if(companyDO.getType() == 0)
             params.put("type", true);
         String logo = "";
+        String cdn = env.getProperty("cdn.url");
         if(StringUtils.isNotNullOrEmpty(accountDO.getHeadimgurl())){
             if(accountDO.getHeadimgurl().startsWith("http")){
                 logo = accountDO.getHeadimgurl();
             }else{
-                logo = Constant.CDN_URL+accountDO.getHeadimgurl();
+                logo = cdn+accountDO.getHeadimgurl();
             }
         }else if(StringUtils.isNotNullOrEmpty(userWxUserDO.getHeadimgurl())){
             if(userWxUserDO.getHeadimgurl().startsWith("http")){
                 logo = userWxUserDO.getHeadimgurl();
             }else{
-                logo = Constant.CDN_URL+userWxUserDO.getHeadimgurl();
+                logo = cdn+userWxUserDO.getHeadimgurl();
             }
         }else if(StringUtils.isNotNullOrEmpty(companyDO.getLogo())){
             if(companyDO.getLogo().startsWith("http")){
                 logo = companyDO.getLogo();
             }else{
-                logo = Constant.CDN_URL+companyDO.getLogo();
+                logo = cdn +companyDO.getLogo();
             }
         }
         if(!logo.startsWith("https") && logo.startsWith("http")){
