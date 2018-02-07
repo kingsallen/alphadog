@@ -36,7 +36,7 @@ public class PositionMiniController {
             String page= (String) map.get("pageNum");
             String pageSize=(String)map.get("pageSize");
             if(StringUtils.isNullOrEmpty(page)||"0".equals(page)){
-                page="1";
+                page="0";
             }
             if(StringUtils.isNullOrEmpty(pageSize)){
                 pageSize="10";
