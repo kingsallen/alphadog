@@ -90,7 +90,7 @@ public class ProfileMiniService {
     private Map<String,Object> getProfileByEs(Map<String,String> params) throws TException {
         Response  res=searchengineServices.userQuery(params);
         String data=res.getData();
-        if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(data)){
+        if(res.getStatus()==0&&data!=null&&org.apache.commons.lang.StringUtils.isNotBlank(data)){
             logger.info(res.getData());
             if(StringUtils.isNullOrEmpty(data)){
                 return null;
