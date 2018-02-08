@@ -33,21 +33,20 @@ public class PositionMiniController {
     public String getPositionList(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> map = ParamUtils.parseRequestParam(request);
-
-            String pageSize=String.valueOf(map.get("pageSize"));
-            String page= String.valueOf(map.get("pageNum")) ;
-            if(StringUtils.isNullOrEmpty(page)||"0".equals(page)){
-                page="0";
+            int page= 0;
+            int pageSize=20;
+            if(map.get("pageNum")!=null){
+                page=(int)map.get("pageNum");
             }
-            if(StringUtils.isNullOrEmpty(pageSize)){
-                pageSize="20";
+            if(map.get("pageSize")!=null){
+                pageSize=(int)map.get("pageSize");
             }
             int accountId=(int)map.get("accountId");
             String keyWords=(String)map.get("keyword");
             if(StringUtils.isNotNullOrEmpty(keyWords)){
                 keyWords=StringUtils.filterStringForSearch(keyWords);
             }
-            Response res = positonServices.getMiniPositionList(accountId,keyWords,Integer.parseInt(page),Integer.parseInt(pageSize));
+            Response res = positonServices.getMiniPositionList(accountId,keyWords,page,pageSize);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -62,13 +61,13 @@ public class PositionMiniController {
     public String getPositionSuggest(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> map = ParamUtils.parseRequestParam(request);
-            String page= String.valueOf(map.get("pageNum")) ;
-            if(StringUtils.isNullOrEmpty(page)||"0".equals(page)){
-                page="1";
+            int page= 1;
+            int pageSize=20;
+            if(map.get("pageNum")!=null){
+                page=(int)map.get("pageNum");
             }
-            String pageSize=String.valueOf(map.get("pageSize")) ;;
-            if(StringUtils.isNullOrEmpty(pageSize)){
-                pageSize="20";
+            if(map.get("pageSize")!=null){
+                pageSize=(int)map.get("pageSize");
             }
             int accountId=(int)map.get("accountId");
             String keyWords=(String)map.get("keyword");
