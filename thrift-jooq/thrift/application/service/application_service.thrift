@@ -29,7 +29,10 @@ service JobApplicationServices {
     common_struct.Response deleteRedisKeyApplicationCheckCount(1: i64 userId, 2: i64 companyId);
 
     // 校验超出申请次数限制, 每月每家公司一个人只能申请3次
-    common_struct.Response validateUserApplicationCheckCountAtCompany(1: i64 userId, 2: i64 companyId);
+    common_struct.Response validateUserApplicationCheckCountAtCompany(1: i64 userId, 2: i64 companyId, 3: i64 poisiotnId);
+
+    // 校验社招和校招类型的申请是否可用
+    common_struct.Response validateUserApplicationTypeCheckCountAtCompany(1: i64 userId, 2: i64 companyId);
 
     // 通过application获取accout_id 和company_id
     application_struct.ApplicationResponse  getAccountIdAndCompanyId(1:i64 jobApplicationId);

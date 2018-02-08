@@ -23,7 +23,7 @@ public class ChatThriftService implements Iface {
     ChatService chatService;
 
     @Override
-    public HRChatRoomsVO listHRChatRoom(int hrId, int pageNo, int pageSize) throws CURDException, TException {
+    public HRChatRoomsVO listHRChatRoom(int hrId, int pageNo, int pageSize) throws  TException {
         try {
             return chatService.listHRChatRoom(hrId, pageNo, pageSize);
         } catch (Exception e) {
@@ -33,7 +33,7 @@ public class ChatThriftService implements Iface {
     }
 
     @Override
-    public UserChatRoomsVO listUserChatRoom(int userId, int pageNo, int pageSize) throws CURDException, TException {
+    public UserChatRoomsVO listUserChatRoom(int userId, int pageNo, int pageSize) throws  TException {
         try {
             return chatService.listUserChatRoom(userId, pageNo, pageSize);
         } catch (Exception e) {
@@ -44,7 +44,7 @@ public class ChatThriftService implements Iface {
     }
 
     @Override
-    public ChatsVO listChatLogs(int roomId, int pageNo, int pageSize) throws CURDException, TException {
+    public ChatsVO listChatLogs(int roomId, int pageNo, int pageSize) throws  TException {
         try {
             return chatService.listChatLogs(roomId, pageNo, pageSize);
         } catch (Exception e) {
@@ -54,22 +54,23 @@ public class ChatThriftService implements Iface {
     }
 
     @Override
-    public void saveChat(int roomId, String content, int positionId, byte speaker) throws CURDException, TException {
+    public int saveChat(ChatVO chat) throws  TException {
         try {
-            chatService.saveChat(roomId, content, positionId, speaker);
+            return chatService.saveChat(chat);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
         }
     }
 
+
     @Override
-    public ResultOfSaveRoomVO enterRoom(int userId, int hrId, int positionId, int roomId, boolean is_gamma) throws CURDException, TException {
+    public ResultOfSaveRoomVO enterRoom(int userId, int hrId, int positionId, int roomId, boolean is_gamma) throws TException {
         return chatService.enterChatRoom(userId, hrId, positionId, roomId, is_gamma);
     }
 
     @Override
-    public ChatVO getChat(int roomId, byte speaker) throws CURDException, TException {
+    public ChatVO getChat(int roomId, byte speaker) throws  TException {
         try {
             return chatService.getChat(roomId, speaker);
         } catch (Exception e) {

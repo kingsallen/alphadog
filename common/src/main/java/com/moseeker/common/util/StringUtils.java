@@ -1,5 +1,7 @@
 package com.moseeker.common.util;
 
+import com.alibaba.fastjson.JSON;
+
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -60,7 +62,16 @@ public class StringUtils {
             return true;
         }
     }
-
+    /*
+     判断set是否为空
+     */
+    public static boolean isEmptySet(Set set) {
+        if (set != null && set.size() > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     /**
      * 生成随机字符串， 作为密码等。
      *
@@ -246,4 +257,241 @@ public class StringUtils {
         }
         return false;
     }
+
+    /**
+     * 校验是否是JSON中的空字符
+     * @param obj
+     * @return
+     */
+    public static boolean isJsonNullOrEmpty(Object obj) {
+        if (obj instanceof String) {
+            if (org.apache.commons.lang.StringUtils.isNotBlank((String) obj) && !obj.equals("[]") && !obj.equals("{}") && !obj.equals("null")) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return obj == null;
+        }
+    }
+
+    /**
+     * 将 xx_yy 命名转为驼峰命名 xxYy
+     *
+     * @param strName
+     * @return
+     */
+    public static String humpName(String strName) {
+        String[] strs = strName.split("_");
+        if (strs.length > 1) {
+            String name = strs[0];
+            for (int i = 1; i < strs.length; i++) {
+                name += strs[i].substring(0, 1).toUpperCase() + strs[i].substring(1);
+            }
+            return name;
+        } else {
+            return strName;
+        }
+    }
+    /**
+     * 转换为下划线
+     *
+     * @param camelCaseName
+     * @return
+     */
+    public static String underscoreName(String camelCaseName) {
+        StringBuilder result = new StringBuilder();
+        if (camelCaseName != null && camelCaseName.length() > 0) {
+            result.append(camelCaseName.substring(0, 1).toLowerCase());
+            for (int i = 1; i < camelCaseName.length(); i++) {
+                char ch = camelCaseName.charAt(i);
+                if (Character.isUpperCase(ch)) {
+                    result.append("_");
+                    result.append(Character.toLowerCase(ch));
+                } else {
+                    result.append(ch);
+                }
+            }
+        }
+        return result.toString();
+    }
+    /*
+     将驼峰转成下划线
+     */
+    public static Map<String,Object> underscoreNameMap(Map<String,Object> resume){
+        if(resume==null||resume.isEmpty()){
+            return null;
+        }
+        Map<String,Object> result=new HashMap<>();
+        for(String key:resume.keySet()){
+            String newKey=underscoreName(key);
+            if(StringUtils.isNullOrEmpty(newKey)){
+                newKey=key;
+            }
+            if(resume.get(key)==null){
+                result.put(newKey, resume.get(key));
+            }else if(resume.get(key) instanceof Map){
+                Map<String,Object> map=(Map<String,Object>)resume.get(key);
+                Map<String,Object> result1=new HashMap<>();
+                if(map!=null&&!map.isEmpty()){
+                    result1 =underscoreNameMap(map);
+                }
+                result.put(newKey,result1);
+            }else if(resume.get(key) instanceof List){
+                List<Object> list= (List<Object>) resume.get(key);
+                List tempList = new ArrayList();
+                if(!StringUtils.isEmptyList(list)){
+                    for(Object ss :list){
+                        if(ss instanceof Map){
+                            tempList.add(underscoreNameMap((Map<String,Object>)ss));
+                        }else{
+                            tempList.add(ss);
+                        }
+                    }
+                }
+                result.put(newKey,tempList);
+            }else if(resume.get(key).getClass().isArray()){
+                int length=Array.getLength(resume.get(key));
+                if(length!=0){
+                    result.put(newKey,new Object[1]);
+                }else{
+                    Object[] arr=new Object[length];
+                    for (int i = 0; i < Array.getLength(resume.get(key)); i++) {
+                        Object value = Array.get(resume.get(key), i);
+                        if (value instanceof Map) {
+                            Map<String,Object> result2=underscoreNameMap((Map) value);
+                            arr[i]=result2;
+                        }else{
+                            arr[i]=value;
+                        }
+                    }
+                    result.put(newKey,arr);
+                }
+
+
+            }else {
+                result.put(newKey, resume.get(key));
+            }
+
+        }
+        return result;
+    }
+
+
+    /**
+     * 去掉字符串的特殊字符
+     * @param
+     * @return
+     */
+    public static String filterStringForSearch(String value){
+        if(StringUtils.isNotNullOrEmpty(value)){
+            if(value.contains("/")){
+                value=value.replaceAll("/"," ");
+            }
+            if(value.contains("OR")){
+                value=value.replaceAll("OR"," ");
+            }
+            if(value.contains("AND")){
+                value=value.replaceAll("AND"," ");
+            }
+
+            if(value.contains("(")){
+                value=value.replaceAll("\\("," ");
+            }
+            if(value.contains(")")){
+                value=value.replaceAll("\\)"," ");
+            }
+            if(value.contains("+")){
+                value=value.replaceAll("\\+"," ");
+            }
+            if(value.contains("\\")){
+                value=value.replaceAll("\\\\"," ");
+            }
+            if(value.contains("（")){
+                value=value.replaceAll("（"," ");
+            }
+            if(value.contains("）")){
+                value=value.replaceAll("）"," ");
+            }
+            if(value.contains("-")){
+                value=value.replaceAll("-"," ");
+            }
+            if(value.contains("&")){
+                value=value.replaceAll("&"," ");
+            }
+            if(value.contains("+")){
+                value=value.replaceAll("\\+"," ");
+            }
+            if(value.contains("-")){
+                value=value.replaceAll("-"," ");
+            }
+
+            if(value.contains("|")){
+                value=value.replaceAll("|"," ");
+            }
+            if(value.contains("!")){
+                value=value.replaceAll("!"," ");
+            }
+            if(value.contains("{")){
+                value=value.replaceAll("\\{"," ");
+            }
+            if(value.contains("}")) {
+                value = value.replaceAll("\\}", " ");
+            }
+            if(value.contains("^")) {
+                value = value.replaceAll("\\^", " ");
+            }
+            if(value.contains("\"")) {
+                value = value.replaceAll("\"", " ");
+            }
+            if(value.contains("~")) {
+                value = value.replaceAll("~", " ");
+            }
+            if(value.contains("*")) {
+                value = value.replaceAll("\\*", " ");
+            }
+            if(value.contains("?")) {
+                value = value.replaceAll("\\?", " ");
+            }
+            if(value.contains(":")) {
+                value = value.replaceAll(":", " ");
+            }
+            if(value.contains("'")) {
+                value = value.replaceAll("'", " ");
+            }
+            if(value.contains("@")) {
+                value = value.replaceAll("@", " ");
+            }
+            if(value.contains("%")) {
+                value = value.replaceAll("%", " ");
+            }
+            if(value.contains("$")) {
+                value = value.replaceAll("\\$", " ");
+            }
+            if(value.contains("#")) {
+                value = value.replaceAll("#", " ");
+            }
+            if(value.contains("=")) {
+                value = value.replaceAll("=", " ");
+            }
+            if(StringUtils.isNotNullOrEmpty(value)){
+                value=value.trim();
+            }
+        }
+        return value;
+    }
+
+//    public static void main(String[] args) {
+//        String aa="aaa~!@#$%^&*(){}^~*?:\\+=-aaa";
+//        System.out.println(StringUtils.filterStringForSearch(aa));
+//        String bb="or and or or";
+//        StringBuffer sb=new StringBuffer();
+//        sb.append("or ");
+//        sb.append("aaa ");
+//        sb.append("or  ");
+//        sb.deleteCharAt(sb.lastIndexOf("r"));
+//        sb.deleteCharAt(sb.lastIndexOf("o"));
+//        System.out.println(sb.toString());
+//    }
+
 }

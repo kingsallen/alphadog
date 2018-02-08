@@ -100,7 +100,11 @@ struct WechatPositionListData {
     14: optional bool is_new,
     15: optional string city,
     16: optional i32 priority,
-    17: optional i32 publisher
+    17: optional i32 publisher,
+    18: optional string accountabilities,
+    19: optional i32 totalNum,
+    20: optional i32 candidate_source,
+    21: optional string requirement
 }
 
 // 微信端职位列表的附加红包信息
@@ -128,7 +132,10 @@ struct WechatRpPositionListData {
     14: optional bool is_new
     15: optional i32 remain,
     16: optional bool employee_only,
-    17: optional string city
+    17: optional string city,
+    18: optional i32 candidate_source,
+    19: optional string requirement,
+    20: optional i32 totalNum
 }
 
 // 微信端获取红包分享信息
@@ -207,7 +214,8 @@ struct BatchHandlerJobPostion{
     2:list<JobPostrionObj> data,
     3:string fields_nooverwrite,
     4:bool nodelete,
-    5:string fields_nohash
+    5:string fields_nohash,
+    6:bool isCreateDeparment    //是否创建未找到的部门
 }
 
 struct JobPostrionObj{
@@ -259,7 +267,9 @@ struct JobPostrionObj{
     46:string extra,
     47:i32 id,
     48:string requirement,
-    49:string custom
+    49:string custom,
+    50:string thirdParty_position,
+    51:i8 priority  //是否置顶
 }
 
 struct City{

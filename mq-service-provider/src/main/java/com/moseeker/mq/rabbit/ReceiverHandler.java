@@ -2,9 +2,13 @@ package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.log.ELKLog;
+import com.moseeker.common.log.LogVO;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
+import com.moseeker.entity.pojos.Data;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -20,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 /**
  * Created by lucky8987 on 17/8/3.
@@ -47,9 +53,6 @@ public class ReceiverHandler {
 
     @Autowired
     private PersonaRecomEntity personaRecomEntity;
-
-
-
 
 
     @RabbitListener(queues = "#{addAwardQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
@@ -81,6 +84,8 @@ public class ReceiverHandler {
     @RabbitHandler
     public void handlerMessageTemplate(Message message, Channel channel){
         String msgBody = "{}";
+        long startTime=new Date().getTime();
+        LogVO logVo=this.handlerLogVO();
         try{
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
@@ -89,12 +94,15 @@ public class ReceiverHandler {
             int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");
             int templateId;
+            logVo.setReq_params(jsonObject.toJSONString());
+            logVo.setAppid(4);
+            logVo.setUser_id(userId);
             if(type!=0){
                 switch (type) {
-                    case 1: templateId = 58; break;
-                    case 2: templateId = 57; break;
-                    case 3: templateId = 57; break;
-                    case 4: templateId = 56; break;
+                    case 1: templateId = Constant.FANS_PROFILE_COMPLETION;logVo.setEvent("FANS_PROFILE_COMPLETION"); break;
+                    case 2: templateId = Constant.FANS_RECOM_POSITION;logVo.setEvent("FANS_RECOM_POSITION"); break;
+                    case 3: templateId = Constant.EMPLOYEE_RECOM_POSITION;logVo.setEvent("EMPLOYEE_RECOM_POSITION"); break;
+                    case 4: templateId = Constant.EMPLOYEE_PROFILE_COMPLETION;logVo.setEvent("EMPLOYEE_PROFILE_COMPLETION"); break;
                     default: templateId = 0;
                 }
                 String url=jsonObject.getString("url");
@@ -115,15 +123,23 @@ public class ReceiverHandler {
                     if(type==3){
                         personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,1,20);
                     }
-
-
+                    logVo.setStatus_code(0);
                 }else{
                     this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
+                    logVo.setStatus_code(1);
+
                 }
+            }else{
+                logVo.setStatus_code(2);
             }
         }catch(Exception e){
             this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
             log.error(e.getMessage(), e);
+            logVo.setStatus_code(1);
+        }finally{
+            long endTime=new Date().getTime();
+            logVo.setOpt_time(endTime-startTime);
+            ELKLog.ELK_LOG.log(logVo);
         }
     }
     /*
@@ -178,9 +194,21 @@ public class ReceiverHandler {
             url=env.getProperty("message.template.new.employee.url");
         }else if(type==3){
             url=env.getProperty("message.template.recom.employee.url");
+        }else if(type==5){
+            url=env.getProperty("message.template.delivery.applier.url");
         }
         return url;
 
+    }
+
+
+    private LogVO handlerLogVO(){
+        LogVO log=new LogVO();
+        log.setAppid(4);
+        log.setReq_uri(this.getClass().getName()+"_handlerMessageTemplate");
+        log.setReq_time(new Date());
+        log.setRefer("wechat_template_message");
+        return log;
     }
 
 }

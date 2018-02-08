@@ -21,18 +21,16 @@ service PositionServices {
     common_struct.Response getPositionById(1:i32 positionId);  
     //获取公司两种自定义的字段
     common_struct.Response CustomField(1:string param);    
-    //转成第三方同步职位数据
-    list<position_struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(1:list<appbs_struct.ThirdPartyPosition> form, 2:job_position_struct.JobPositionDO position);
-    //转成第三方同步职位数据
-    position_struct.ThirdPartyPositionForSynchronization changeOneToThirdPartyPosition(1:appbs_struct.ThirdPartyPosition form, 2:job_position_struct.JobPositionDO position);
-    //生成第三方同步职位数据
-    position_struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(1: i32 positionId, 2: i32 account_id);
     //是否可以刷新
     bool ifAllowRefresh(1:i32 positionId, 2: i32 account_id);
-    list<hr_third_party_position_struct.HrThirdPartyPositionDO> getThirdPartyPositions(1: common_struct.CommonQuery query);
+    list<string> getThirdPartyPositions(1: common_struct.CommonQuery query);
 
     // 批量修改职位
     common_struct.Response batchHandlerJobPostion(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);
+
+    // 批量修改职位并且同步
+    common_struct.Response saveAndSync(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);
+
     // 删除职位
     common_struct.Response deleteJobposition(1:position_struct.DelePostion delePostion);
     // 通过companyId和部门名获取TeamId
@@ -51,7 +49,7 @@ service PositionServices {
     list<position_struct.RpExtInfo> getPositionListRpExt(1: list<i32> pids);
 
     //微信红包职位列表
-    list<position_struct.WechatRpPositionListData> getRpPositionList(1: i32 hb_config_id);
+    list<position_struct.WechatRpPositionListData> getRpPositionList(1: i32 hb_config_id,2:i32 pageNum,3:i32 pageSize);
 
     //微信获取红包转发信息
     position_struct.WechatShareData getShareInfo(1: i32 hb_config_id);
@@ -69,9 +67,9 @@ service PositionServices {
 
     third_position_struct.ThirdPartyPositionResult getThirdPartyPositionInfo(1:third_position_struct.ThirdPartyPositionInfoForm infoForm ) throws (1: common_struct.BIZException e);
 
-    i32 updateThirdPartyPosition(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition) throws (1: common_struct.BIZException e);
+    i32 updateThirdPartyPosition(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition,2:map<string,string> extData) throws (1: common_struct.BIZException e);
 
-    i32 updateThirdPartyPositionWithAccount(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition,2:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount) throws (1: common_struct.BIZException e);
+    i32 updateThirdPartyPositionWithAccount(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition,2:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount,3:map<string,string> extData) throws (1: common_struct.BIZException e);
 
     //获取pc端职位推荐
     common_struct.Response getPcRecommand(1:i32 page,2:i32 pageSize);
@@ -98,7 +96,7 @@ service PositionServices {
 
     common_struct.Response positionCvConf(1:i32 positionId);
 
-    common_struct.Response getEmployeeRecomPositionByIds(1:i32 recomPushId,2:i32 companyId,3:i32 type);
+    common_struct.Response getEmployeeRecomPositionByIds(1:i32 recomPushId,2:i32 companyId,3:i32 type,4:i32 pageNum,5: i32 pageSize);
 
 }
 /*

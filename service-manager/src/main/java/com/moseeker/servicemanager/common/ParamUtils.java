@@ -1,8 +1,6 @@
 package com.moseeker.servicemanager.common;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,7 +14,9 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.exception.CommonException;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -202,6 +202,9 @@ public class ParamUtils {
         Map<String, Object> param = new HashMap<>();
 
         Map<String, String[]> reqParams = request.getParameterMap();
+        logger.info("=============================");
+        logger.info(JSON.toJSONString(reqParams));
+        logger.info("=============================");
         if (reqParams != null) {
             for (Entry<String, String[]> entry : reqParams.entrySet()) {
                 if (entry.getValue() != null && entry.getValue().length > 1) {
@@ -285,4 +288,46 @@ public class ParamUtils {
 
         return jb.toString();
     }
+    /*
+     将字符串转化为List
+     */
+    public static List<Integer> convertIntList(String params){
+        List<Integer> list=new ArrayList<>();
+        if(StringUtils.isNotBlank(params)&&params.startsWith("[")&&params.endsWith("]")&&params.length()>2){
+            params=params.replace("[","").replace("]","");
+            String []arr=params.split(",");
+            for(String items:arr){
+                list.add(Integer.parseInt(items.trim()));
+            }
+        }
+        return list;
+    }
+    /*
+        文件转换成byte
+     */
+    public static byte[] file2Byte(String filePath)
+    {
+        byte[] buffer = null;
+        try
+        {
+            File file = new File(filePath);
+            FileInputStream fis = new FileInputStream(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] b = new byte[1024];
+            int n;
+            while ((n = fis.read(b)) != -1)
+            {
+                bos.write(b, 0, n);
+            }
+            fis.close();
+            bos.close();
+            buffer = bos.toByteArray();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return buffer;
+    }
+
 }

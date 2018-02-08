@@ -16,6 +16,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConverTools;
+import com.moseeker.common.util.EsClientInstance;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -24,7 +25,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -52,8 +52,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -85,12 +85,68 @@ public class SearchengineService {
 
     @Autowired
     private UserEmployeePointsDao userEmployeePointsDao;
-
+    @CounterIface
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
                           String employment_type, String candidate_source, String experience, String degree, String salary,
-                          String company_name, int page_from, int page_size, String child_company_name, String department, boolean order_by_priority, String custom) throws TException {
-
+                          String company_name, int page_from, int page_size, String child_company_name, String department,
+                          boolean order_by_priority, String custom) throws TException {
         List listOfid = new ArrayList();
+        try{
+            SearchResponse response=this.getSearchIndex(keywords, cities,industries,occupations, scale,
+                     employment_type, candidate_source, experience, degree,  salary, company_name, page_from, page_size,
+                     child_company_name, department,order_by_priority,  custom);
+            for (SearchHit hit : response.getHits()) {
+                String id = ConverTools.converToString(hit.getSource().get("id"));
+                listOfid.add(id);
+            }
+        } catch (Exception e) {
+            logger.error("error in search", e);
+
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
+        Map<String, List> res = new HashMap<String, List>();
+        res.put("jd_id_list", listOfid);
+        return ResponseUtils.success(res);
+    }
+
+    @CounterIface
+    public Response queryPositionIndex(String keywords, String cities, String industries, String occupations, String scale,
+                                       String employment_type, String candidate_source, String experience, String degree, String salary,
+                                       String company_name, int page_from, int page_size, String child_company_name, String department,
+                                       boolean order_by_priority, String custom){
+
+        Map<String,Object> result=new HashMap<>();
+        try{
+            SearchResponse response=this.getSearchIndex(keywords, cities,industries,occupations, scale,
+                    employment_type, candidate_source, experience, degree,  salary, company_name, page_from, page_size,
+                    child_company_name, department,order_by_priority,  custom);
+            List listOfid = new ArrayList();
+            SearchHits hits=response.getHits();
+            long totalNum=hits.getTotalHits();
+            if(totalNum>0) {
+                for (SearchHit hit :hits) {
+                    String id = ConverTools.converToString(hit.getSource().get("id"));
+                    listOfid.add(id);
+                }
+            }
+            result.put("jd_id_list",listOfid);
+            result.put("total",totalNum);
+        } catch (Exception e) {
+            logger.error("error in search", e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
+        if(result.isEmpty()){
+            return ResponseUtils.success("");
+        }
+        return ResponseUtils.success(result);
+    }
+    /*
+     将查询elasticsearch index的逻辑独立出来
+     */
+    private SearchResponse getSearchIndex(String keywords, String cities, String industries, String occupations, String scale,
+                                          String employment_type, String candidate_source, String experience, String degree, String salary,
+                                          String company_name, int page_from, int page_size, String child_company_name, String department,
+                                          boolean order_by_priority, String custom){
 
         if (page_from == 0) {
             page_from = 0;
@@ -98,226 +154,192 @@ public class SearchengineService {
         if (page_size == 0) {
             page_size = 20;
         }
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        TransportClient client= EsClientInstance.getClient();
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+
+        boolean haskey = false;
+
+        if (!StringUtils.isEmpty(keywords)&&!"".equals(keywords.trim())) {
+            haskey = true;
+            String[] keyword_list = keywords.split(" ");
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (int i = 0; i < keyword_list.length; i++) {
+                String keyword = keyword_list[i];
+                if(StringUtils.isBlank(keyword)){
+                    continue;
+                }
+                BoolQueryBuilder keyor = QueryBuilders.boolQuery();
+                QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
+                        .field("title", 20.0f)
+                        .field("city", 10.0f)
+                        .field("team_name", 5.0f)
+                        .field("custom", 4.0f)
+                        .field("occupation", 3.0f);
+                ((BoolQueryBuilder) keyand).must(fullf);
+            }
+            ((BoolQueryBuilder) query).must(keyand);
         }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
 
-        TransportClient client = null;
-        try {
 
-            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                    .build();
+        if (!StringUtils.isEmpty(cities)) {
+            String[] city_list = cities.split(",");
+            QueryBuilder cityor = QueryBuilders.boolQuery();
+            for (int i = 0; i < city_list.length; i++) {
+                String city = city_list[i];
+                System.out.println(city);
+                QueryBuilder cityfilter = QueryBuilders.matchPhraseQuery("city", city);
+                QueryBuilder cityboosting = QueryBuilders.boostingQuery()
+                        .positive(cityfilter)
+                        .negative(QueryBuilders.matchPhraseQuery("title", city)).negativeBoost(0.5f);
 
-            client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-
-            QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
-            QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-
-            boolean haskey = false;
-
-            if (!StringUtils.isEmpty(keywords)) {
-                haskey = true;
-                String[] keyword_list = keywords.split(" ");
-                QueryBuilder keyand = QueryBuilders.boolQuery();
-                for (int i = 0; i < keyword_list.length; i++) {
-                    String keyword = keyword_list[i];
-                    BoolQueryBuilder keyor = QueryBuilders.boolQuery();
-                    QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
-//                            .field("_all", 1.0f)
-                            .field("title", 20.0f)
-                            .field("city", 10.0f)
-//                            .field("company_name", 5.0f)
-                            .field("team_name",5.0f)
-                            .field("custom",4.0f)
-                            .field("occupation",3.0f);
-                    ((BoolQueryBuilder) keyand).must(fullf);
-                }
-                ((BoolQueryBuilder) query).must(keyand);
+                ((BoolQueryBuilder) cityor).should(cityboosting);
             }
+            ((BoolQueryBuilder) query).must(cityor);
+        }
 
-
-            if (!StringUtils.isEmpty(cities)) {
-                String[] city_list = cities.split(",");
-                QueryBuilder cityor = QueryBuilders.boolQuery();
-                for (int i = 0; i < city_list.length; i++) {
-                    String city = city_list[i];
-                    System.out.println(city);
-                    QueryBuilder cityfilter = QueryBuilders.matchPhraseQuery("city", city);
-                    QueryBuilder cityboosting = QueryBuilders.boostingQuery()
-                            .positive(cityfilter)
-                            .negative(QueryBuilders.matchPhraseQuery("title", city)).negativeBoost(0.5f);
-
-                    ((BoolQueryBuilder) cityor).should(cityboosting);
-                }
-                ((BoolQueryBuilder) query).must(cityor);
+        if (!StringUtils.isEmpty(industries)) {
+            haskey = true;
+            String[] industry_list = industries.split(",");
+            QueryBuilder industryor = QueryBuilders.boolQuery();
+            for (int i = 0; i < industry_list.length; i++) {
+                String industry = industry_list[i];
+                QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("industry", industry);
+                ((BoolQueryBuilder) industryor).should(industryfilter);
             }
+            ((BoolQueryBuilder) query).must(industryor);
+        }
 
-            if (!StringUtils.isEmpty(industries)) {
-                haskey = true;
-                String[] industry_list = industries.split(",");
-                QueryBuilder industryor = QueryBuilders.boolQuery();
-                for (int i = 0; i < industry_list.length; i++) {
-                    String industry = industry_list[i];
-                    QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("industry", industry);
-                    ((BoolQueryBuilder) industryor).should(industryfilter);
-                }
-                ((BoolQueryBuilder) query).must(industryor);
+        if (!StringUtils.isEmpty(occupations)) {
+            String[] occupation_list = occupations.split(",");
+            QueryBuilder occupationor = QueryBuilders.boolQuery();
+            for (int i = 0; i < occupation_list.length; i++) {
+                String occupation = occupation_list[i];
+                QueryBuilder occupationfilter = QueryBuilders.termQuery("search_data.occupation", occupation);
+                ((BoolQueryBuilder) occupationor).should(occupationfilter);
             }
+            ((BoolQueryBuilder) query).must(occupationor);
+        }
 
-            if (!StringUtils.isEmpty(occupations)) {
-                String[] occupation_list = occupations.split(",");
-                QueryBuilder occupationor = QueryBuilders.boolQuery();
-                for (int i = 0; i < occupation_list.length; i++) {
-                    String occupation = occupation_list[i];
-                    QueryBuilder occupationfilter = QueryBuilders.matchPhraseQuery("occupation", occupation);
-                    ((BoolQueryBuilder) occupationor).should(occupationfilter);
-                }
-                ((BoolQueryBuilder) query).must(occupationor);
+        if (!StringUtils.isEmpty(scale)) {
+
+            QueryBuilder scalefilter = QueryBuilders.matchPhraseQuery("scale", scale);
+            ((BoolQueryBuilder) query).must(scalefilter);
+        }
+
+        if (!StringUtils.isEmpty(employment_type)) {
+            QueryBuilder employmentfilter = QueryBuilders.matchPhraseQuery("employment_type_name", employment_type);
+            ((BoolQueryBuilder) query).must(employmentfilter);
+        }
+
+        if (!StringUtils.isEmpty(candidate_source)) {
+
+            QueryBuilder candidatefilter = QueryBuilders.matchPhraseQuery("candidate_source_name", candidate_source);
+            ((BoolQueryBuilder) query).must(candidatefilter);
+        }
+
+        if (!StringUtils.isEmpty(department)) {
+            QueryBuilder departmentfilter = QueryBuilders.termQuery("search_data.team_name", department);
+            ((BoolQueryBuilder) query).must(departmentfilter);
+        }
+
+        if (!StringUtils.isEmpty(experience)) {
+            QueryBuilder experiencefilter = QueryBuilders.matchPhraseQuery("experience", experience);
+            ((BoolQueryBuilder) query).must(experiencefilter);
+        }
+
+
+        if (!StringUtils.isEmpty(degree)) {
+            String[] degree_list = degree.split(",");
+            QueryBuilder degreeor = QueryBuilders.boolQuery();
+            for (int i = 0; i < degree_list.length; i++) {
+                String degree_name = degree_list[i];
+                QueryBuilder degreefilter = QueryBuilders.termQuery("search_data.degree_name", degree_name);
+                ((BoolQueryBuilder) degreeor).should(degreefilter);
             }
+            ((BoolQueryBuilder) query).must(degreeor);
+        }
 
-            if (!StringUtils.isEmpty(scale)) {
 
-                QueryBuilder scalefilter = QueryBuilders.matchPhraseQuery("scale", scale);
-                ((BoolQueryBuilder) query).must(scalefilter);
+        if (!StringUtils.isEmpty(company_name)) {
+            String[] company_list = company_name.split(",");
+            QueryBuilder companyor = QueryBuilders.boolQuery();
+            for (int i = 0; i < company_list.length; i++) {
+                String company_id = company_list[i];
+                QueryBuilder companyfilter = QueryBuilders.matchPhraseQuery("company_id", company_id);
+                ((BoolQueryBuilder) companyor).should(companyfilter);
             }
-
-            if (!StringUtils.isEmpty(employment_type)) {
-                QueryBuilder employmentfilter = QueryBuilders.matchPhraseQuery("employment_type_name", employment_type);
-                ((BoolQueryBuilder) query).must(employmentfilter);
-            }
-
-            if (!StringUtils.isEmpty(candidate_source)) {
-
-                QueryBuilder candidatefilter = QueryBuilders.matchPhraseQuery("candidate_source_name", candidate_source);
-                ((BoolQueryBuilder) query).must(candidatefilter);
-            }
-
-            if (!StringUtils.isEmpty(department)) {
-                QueryBuilder departmentfilter = QueryBuilders.matchPhraseQuery("team_name", department);
-                ((BoolQueryBuilder) query).must(departmentfilter);
-            }
-
-            if (!StringUtils.isEmpty(experience)) {
-                QueryBuilder experiencefilter = QueryBuilders.matchPhraseQuery("experience", experience);
-                ((BoolQueryBuilder) query).must(experiencefilter);
-            }
+            ((BoolQueryBuilder) query).must(companyor);
+        }
 
 
-            if (!StringUtils.isEmpty(degree)) {
-                String[] degree_list = degree.split(",");
-                QueryBuilder degreeor = QueryBuilders.boolQuery();
-                for (int i = 0; i < degree_list.length; i++) {
-                    String degree_name = degree_list[i];
-                    QueryBuilder degreefilter = QueryBuilders.matchPhraseQuery("degree_name", degree_name);
-                    ((BoolQueryBuilder) degreeor).should(degreefilter);
-                }
-                ((BoolQueryBuilder) query).must(degreeor);
-            }
+        if (!StringUtils.isEmpty(salary)) {
+            String[] salary_list = salary.split(",");
+            String salary_from = salary_list[0];
+            String salary_to = salary_list[1];
+            QueryBuilder salary_bottom_filter = QueryBuilders.rangeQuery("salary_bottom").from(salary_from).to(salary_to);
+            QueryBuilder salary_top_filter = QueryBuilders.rangeQuery("salary_top").from(salary_from).to(salary_to);
+            QueryBuilder salaryor = QueryBuilders.boolQuery();
+
+            ((BoolQueryBuilder) salaryor).should(salary_bottom_filter);
+            ((BoolQueryBuilder) salaryor).should(salary_top_filter);
+            ((BoolQueryBuilder) query).must(salaryor);
+        }
+
+        if (!StringUtils.isEmpty(child_company_name)) {
+            QueryBuilder child_company_filter = QueryBuilders.matchPhraseQuery("publisher_company_id", child_company_name);
+            ((BoolQueryBuilder) query).must(child_company_filter);
+        }
+
+        if (!StringUtils.isEmpty(custom)) {
+            QueryBuilder custom_filter = QueryBuilders.termQuery("search_data.custom", custom);
+            ((BoolQueryBuilder) query).must(custom_filter);
+        }
+
+        QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
+        ((BoolQueryBuilder) query).must(status_filter);
 
 
-            if (!StringUtils.isEmpty(company_name)) {
-                String[] company_list = company_name.split(",");
-                QueryBuilder companyor = QueryBuilders.boolQuery();
-                for (int i = 0; i < company_list.length; i++) {
-                    String company_id = company_list[i];
-                    QueryBuilder companyfilter = QueryBuilders.matchPhraseQuery("company_id", company_id);
-                    ((BoolQueryBuilder) companyor).should(companyfilter);
-                }
-                ((BoolQueryBuilder) query).must(companyor);
-            }
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+                .setQuery(query);
 
+        if (order_by_priority) {
 
-            if (!StringUtils.isEmpty(salary)) {
-                String[] salary_list = salary.split(",");
-                String salary_from = salary_list[0];
-                String salary_to = salary_list[1];
-                QueryBuilder salary_bottom_filter = QueryBuilders.rangeQuery("salary_bottom").from(salary_from).to(salary_to);
-                QueryBuilder salary_top_filter = QueryBuilders.rangeQuery("salary_top").from(salary_from).to(salary_to);
-                QueryBuilder salaryor = QueryBuilders.boolQuery();
-
-                ((BoolQueryBuilder) salaryor).should(salary_bottom_filter);
-                ((BoolQueryBuilder) salaryor).should(salary_top_filter);
-                ((BoolQueryBuilder) query).must(salaryor);
-            }
-
-            if (!StringUtils.isEmpty(child_company_name)) {
-                QueryBuilder child_company_filter = QueryBuilders.matchPhraseQuery("publisher_company_id", child_company_name);
-                ((BoolQueryBuilder) query).must(child_company_filter);
-            }
-
-            if (!StringUtils.isEmpty(custom)) {
-                QueryBuilder custom_filter = QueryBuilders.matchPhraseQuery("custom", custom);
-                ((BoolQueryBuilder) query).must(custom_filter);
-            }
-
-            QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
-            ((BoolQueryBuilder) query).must(status_filter);
-
-
-            SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
-                    .setQuery(query);
-
-            if (order_by_priority) {
-
-                if (haskey) {
-                    responseBuilder.addSort("priority", SortOrder.ASC);
-                    if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
-                        SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
-                        builder.order(SortOrder.DESC);
-                        responseBuilder.addSort(builder);
-                    }else{
-                        responseBuilder.addSort("_score", SortOrder.DESC);
-                    }
-                } else {
-                    responseBuilder.addSort("priority", SortOrder.ASC);
-                    if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
-                        SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,1),"number");
-                        builder.order(SortOrder.DESC);
-                        responseBuilder.addSort(builder);
-                    }else{
-                        responseBuilder.addSort("update_time", SortOrder.DESC);
-                    }
-
-                }
-
-            } else {
-                if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
-                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
+            if (haskey) {
+                responseBuilder.addSort("priority", SortOrder.ASC);
+                if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+                    SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
                     builder.order(SortOrder.DESC);
                     responseBuilder.addSort(builder);
-                }else{
-                    responseBuilder .addSort("_score", SortOrder.DESC);
+                } else {
+                    responseBuilder.addSort("_score", SortOrder.DESC);
                 }
-            }
-            responseBuilder .setFrom(page_from).setSize(page_size);
-            responseBuilder.setTrackScores(true);
-            logger.info(responseBuilder.toString());
-            SearchResponse response = responseBuilder.execute().actionGet();
-            for (SearchHit hit : response.getHits()) {
-                //Handle the hit...
-                String id = ConverTools.converToString(hit.getSource().get("id"));
-                listOfid.add(id);
+            } else {
+                responseBuilder.addSort("priority", SortOrder.ASC);
+                if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+                    SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 1), "number");
+                    builder.order(SortOrder.DESC);
+                    responseBuilder.addSort(builder);
+                } else {
+                    responseBuilder.addSort("update_time", SortOrder.DESC);
+                }
+
             }
 
-        } catch (Exception e) {
-            logger.error("error in search", e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        } finally {
-            client.close();
+        } else {
+            if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+                SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
+                builder.order(SortOrder.DESC);
+                responseBuilder.addSort(builder);
+            } else {
+                responseBuilder.addSort("_score", SortOrder.DESC);
+            }
         }
-
-        Map<String, List> res = new HashMap<String, List>();
-        res.put("jd_id_list", listOfid);
-
-        return ResponseUtils.success(res);
+        responseBuilder.setFrom(page_from).setSize(page_size);
+        responseBuilder.setTrackScores(true);
+        logger.info(responseBuilder.toString());
+        SearchResponse response = responseBuilder.execute().actionGet();
+        return response;
 
     }
     /*
@@ -349,37 +371,19 @@ public class SearchengineService {
     }
 
 
-
+    @CounterIface
     public Response updateposition(String position, int id) throws TException {
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        logger.info(cluster_name);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                .build();
+
         String idx = "" + id;
         TransportClient client = null;
         try {
-            client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-            IndexResponse response = client.prepareIndex("index", "fulltext", idx)
-                    .setSource(position)
-                    .execute()
-                    .actionGet();
-        } catch (UnknownHostException e) {
+            client=searchUtil.getEsClient();
+            IndexResponse response = client.prepareIndex("index", "fulltext", idx).setSource(position).execute().actionGet();
+        } catch (Exception e) {
             logger.error("error in update", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         } catch (Error error) {
             logger.error(error.getMessage());
-        } finally {
-            client.close();
         }
 
         return ResponseUtils.success("");
@@ -394,18 +398,7 @@ public class SearchengineService {
      * @throws TException
      */
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws TException {
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            logger.error(e1.getMessage());
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        logger.info(cluster_name);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                .build();
+
         TransportClient client = null;
         BulkRequestBuilder bulkRequest = null;
         if (employeeIds != null && employeeIds.size() > 0) {
@@ -435,8 +428,7 @@ public class SearchengineService {
             userUerMap.putAll(userUserDOS.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity())));
             try {
                 // 连接ES
-                client = TransportClient.builder().settings(settings).build()
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+                client=searchUtil.getEsClient();
                 bulkRequest = client.prepareBulk();
                 // 更新数据
                 for (UserEmployeeDO userEmployeeDO : userEmployeeDOList) {
@@ -519,13 +511,12 @@ public class SearchengineService {
                 if (bulkResponse.buildFailureMessage() != null) {
                     return ResponseUtils.fail(9999, bulkResponse.buildFailureMessage());
                 }
-            } catch (UnknownHostException e) {
+            } catch (Exception e) {
                 logger.error("error in update", e);
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             } catch (Error error) {
                 logger.error(error.getMessage());
-            } finally {
-                client.close();
+
             }
         }
         return ResponseUtils.success("");
@@ -539,25 +530,12 @@ public class SearchengineService {
      * @throws TException
      */
     public Response deleteEmployeeDO(List<Integer> employeeIds) throws TException {
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            logger.error(e1.getMessage());
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        logger.info(cluster_name);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                .build();
         TransportClient client = null;
         BulkRequestBuilder bulkRequest = null;
         BulkResponse bulkResponse = null;
         try {
             // 连接ES
-            client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+            client=searchUtil.getEsClient();
             bulkRequest = client.prepareBulk();
             if (employeeIds != null && employeeIds.size() > 0) {
                 for (Integer id : employeeIds) {
@@ -570,10 +548,8 @@ public class SearchengineService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            client.close();
-        }
 
+        }
         return ResponseUtils.success("");
     }
 
@@ -692,7 +668,9 @@ public class SearchengineService {
 
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum, String keyword, int filter) {
         Map<String, Object> object = new HashMap<>();
-        try (TransportClient searchClient = searchUtil.getEsClient()) {
+        TransportClient searchClient =null;
+        try {
+            searchClient=searchUtil.getEsClient();
             StringBuffer activation = new StringBuffer();
             if (filter == 0) {
                 activation.append("");
@@ -727,8 +705,10 @@ public class SearchengineService {
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
         // 保证插入有序，使用linkedhashMap˚
         Map<Integer, JSONObject> data = new LinkedHashMap<>();
-        try (TransportClient searchClient = searchUtil.getEsClient()) {
-            // 查找所有员工的积分排行
+        TransportClient searchClient =null;
+        try {
+            searchClient =searchUtil.getEsClient();
+                    // 查找所有员工的积分排行
             SearchResponse response = getSearchRequestBuilder(searchClient, companyIds, null, "0", 20, 1, timespan).execute().actionGet();
             int index = 1;
             for (SearchHit searchHit : response.getHits().getHits()) {
@@ -786,4 +766,78 @@ public class SearchengineService {
         return ResponseUtils.success(data);
     }
 
+    public Map<String,Object> getPositionSuggest(Map<String,String> params){
+        String keyWord=params.get("keyWord");
+        String companyIds=params.get("company_id");
+        if(StringUtils.isBlank(keyWord)||StringUtils.isBlank(companyIds)){
+            return null;
+        }
+        String publisherCompanyId=params.get("did");
+        String page=params.get("page_from");
+        String pageSize=params.get("page_size");
+        if(StringUtils.isBlank(page)){
+            page="1";
+        }
+        if(StringUtils.isBlank(pageSize)){
+            pageSize="15";
+        }
+        TransportClient client=null;
+        Map<String,Object> map=new HashMap<String,Object>();
+        try {
+            client = searchUtil.getEsClient();
+            SearchResponse hits=this.searchPrefix(keyWord,companyIds,publisherCompanyId,Integer.parseInt(page),Integer.parseInt(pageSize),client);
+            long hitNum=hits.getHits().getTotalHits();
+            if(hitNum==0){
+                hits=this.searchQueryString(keyWord,companyIds,publisherCompanyId,Integer.parseInt(page),Integer.parseInt(pageSize),client);
+                map=searchUtil.handleData(hits,"suggest");
+            }else{
+                map=searchUtil.handleData(hits,"suggest");
+            }
+        }catch(Exception e){
+
+        }
+
+        return map;
+
+    }
+    //通过Prefix方式搜索
+     private SearchResponse searchPrefix(String keyWord,String companyIds,String publisherCompanyId,int page,int pageSize,TransportClient client){
+         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+         List<String> list=new ArrayList<>();
+         list.add("title");
+         searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
+         searchUtil.handleTerms(companyIds,query,"company_id");
+         if(StringUtils.isNotBlank(publisherCompanyId)){
+             searchUtil.handleTerms(companyIds,query,"publisher_company_id");
+         }
+         searchUtil.handleMatch(0,query,"status");
+         SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
+                 .setQuery(query)
+                 .setFrom((page-1)*pageSize)
+                 .setSize(pageSize)
+                 .setTrackScores(true);
+         SearchResponse res=responseBuilder.execute().actionGet();
+         return res;
+     }
+    //通过QueryString搜索
+    private SearchResponse searchQueryString(String keyWord,String companyIds,String publisherCompanyId,int page,int pageSize,TransportClient client){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        List<String> list=new ArrayList<>();
+        list.add("title");
+        searchUtil.handleKeyWordforQueryString(keyWord, false, query, list);
+        searchUtil.handleTerms(companyIds,query,"company_id");
+        if(StringUtils.isNotBlank(publisherCompanyId)){
+            searchUtil.handleTerms(companyIds,query,"publisher_company_id");
+        }
+        searchUtil.handleMatch(0,query,"status");
+        SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
+                .setQuery(query)
+                .setFrom((page-1)*pageSize)
+                .setSize(pageSize)
+                .setTrackScores(true);
+        SearchResponse res=responseBuilder.execute().actionGet();
+        return res;
+    }
 }

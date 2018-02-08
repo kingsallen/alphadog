@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -33,7 +34,7 @@ public class ProfileEducationDao extends JooqCrudImpl<ProfileEducationDO, Profil
         super(table, profileEducationDOClass);
     }
 
-    public int updateProfileUpdateTime(HashSet<Integer> educationIds) {
+    public int updateProfileUpdateTime(Set<Integer> educationIds) {
         int status = 0;
 
         List<Integer> profileIdList = create.select(ProfileEducation.PROFILE_EDUCATION.PROFILE_ID)

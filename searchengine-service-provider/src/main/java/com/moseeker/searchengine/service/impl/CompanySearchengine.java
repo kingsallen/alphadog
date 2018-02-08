@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.common.util.EsClientInstance;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
@@ -53,17 +54,11 @@ public class CompanySearchengine {
 			if(hitNum==0&&StringUtils.isNotEmpty(keywords)){
 				SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize,client);
 				map=searchUtil.handleData(hitsData,"companies");
-//				logger.info(map.toString());
-
 			}else{
 				map=searchUtil.handleData(hits,"companies");
-//				logger.info(map.toString());
 			}
-		}finally{
-			if(client!=null){
-				client.close();
-				client=null;
-			}
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
 		}
 		return map;
 
@@ -196,9 +191,9 @@ public class CompanySearchengine {
 	//做行业的统计
 	private AbstractAggregationBuilder handleAggIndustry(){
 		StringBuffer sb=new StringBuffer();
-		sb.append("industry=_source.company.industry_data;");
+		sb.append("company=_source.company;if(company){industry=company.industry_data;if(industry){");
 		sb.append("if(industry  in _agg['transactions'] || !industry){}");
-		sb.append("else{_agg['transactions'].add(industry)};");
+		sb.append("else{_agg['transactions'].add(industry)}}};");
 		String mapScript=sb.toString();
 		StringBuffer sb1=new StringBuffer();
 		sb1.append("jsay=[];");
@@ -223,10 +218,10 @@ public class CompanySearchengine {
 	//做city的统计
 	private AbstractAggregationBuilder handleAggPositionCity(){
 		StringBuffer sb=new StringBuffer();
-		sb.append("city=_source.position_city;");
+		sb.append("city=_source.position_city;if(city){");
 		sb.append("for(ss in city){");
 		sb.append("if(ss  in _agg['transactions'] || !ss ){}");
-		sb.append("else{_agg['transactions'].add(ss)};}");
+		sb.append("else{_agg['transactions'].add(ss)};}}");
 		String mapScript=sb.toString();
 		StringBuffer sb1=new StringBuffer();
 		sb1.append("jsay=[];");
@@ -252,9 +247,9 @@ public class CompanySearchengine {
 	//做scale的统计
 	private AbstractAggregationBuilder handleAggScale(){
 		StringBuffer sb=new StringBuffer();
-		sb.append("scale=_source.company.scale;");
+		sb.append("company=_source.company;if(company){scale=company.scale;if(scale){");
 		sb.append("if(scale  in _agg['transactions'] ){}");
-		sb.append("else{_agg['transactions'].add(scale)};");
+		sb.append("else{_agg['transactions'].add(scale)}}};");
 		String mapScript=sb.toString();
 		StringBuffer sb1=new StringBuffer();
 		sb1.append("jsay=[];");

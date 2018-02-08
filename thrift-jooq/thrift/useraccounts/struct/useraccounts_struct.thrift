@@ -133,8 +133,8 @@ struct BindAccountStruct {
 struct SearchCondition {
 	1: i32 id,
 	2: string name, // 名称
-	3: i32 publisher, // 发布人
-	4: i32 position_id, // 职位id
+	3: string publisher, // 发布人
+	4: string position_id, // 职位id
 	5: string keyword, // 关键字
 	6: string submit_time, // 发布时间
 	7: string work_years, // 工作年限
@@ -151,7 +151,13 @@ struct SearchCondition {
    18: i32 in_last_job_search_company, // 是否只在最近一份工作中搜索公司名称（0:否，1:是）
    19: i32 hr_account_id, // 创建人id(user_hr_account.id)
    20: i32 update_time, // 简历更新时间选项（0：不限，1：最近一周，2：最近两周，3：最近一个月）
-   21: i32 type // 类型（0：候选人列表筛选条件，1：人才库列表筛选条件）
+   21: i32 type,// 类型（0：候选人列表筛选条件，1：人才库列表筛选条件）
+   22: string candidate_source,//招聘类型（0，社招，1，校招，2定向招聘）
+   23: i32 is_public,//是否公开  1 公开
+   24: string origins,//简历来源，
+   25: i32 is_recommend,//是否内推  1是内推
+   26: string tag_id,//标签id
+   27: string favorite_hrs//收藏人id
 }
 
 struct UserEmployeeStruct {
@@ -252,7 +258,8 @@ struct ApplicationRecordsForm {
     2: optional string position_title,
     3: optional string company_name,
     4: optional string status_name,
-    5: optional Timestamp time
+    5: optional Timestamp time,
+    6: optional string signature
 }
 /*
  * 个人中心职位收藏列表
@@ -463,7 +470,7 @@ struct ThirdPartyAccountInfo{
     2: optional i32 bound,
     3: optional i32 channel,
     4: optional string username,
-    5: optional string membername,
+    5: optional string ext,
     6: optional i32 remain_profile_num,
     7: optional i32 remain_num,
     8: optional string sync_time,

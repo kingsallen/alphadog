@@ -168,9 +168,10 @@ public class JobApplicationController {
 
 			long userId = Long.valueOf(paramMap.get("user_id").toString());
 			long companyId = Long.valueOf(paramMap.get("company_id").toString());
+			long poisiotnId = Long.valueOf(paramMap.get("position_id").toString());
 			logger.info("JobApplicationController userId:{}, companyId:{}", userId, companyId);
 			// 创建申请记录
-			Response result = applicationService.validateUserApplicationCheckCountAtCompany(userId, companyId);
+			Response result = applicationService.validateUserApplicationCheckCountAtCompany(userId, companyId, poisiotnId);
 			logger.info("JobApplicationController result:{}", result);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
@@ -178,6 +179,26 @@ public class JobApplicationController {
 		}
 	}
 
+
+
+    @RequestMapping(value = "/application/type/count/check", method = RequestMethod.POST)
+    @ResponseBody
+    public String validateUserApplicationTypeCheckCountAtCompany(HttpServletRequest request, HttpServletResponse response) {
+        try {
+
+            Map<String, Object> paramMap = ParamUtils.parseRequestParam(request);
+
+            long userId = Long.valueOf(paramMap.get("user_id").toString());
+            long companyId = Long.valueOf(paramMap.get("company_id").toString());
+            logger.info("JobApplicationController userId:{}, companyId:{}", userId, companyId);
+            // 创建申请记录
+            Response result = applicationService.validateUserApplicationTypeCheckCountAtCompany(userId, companyId);
+            logger.info("JobApplicationController result:{}", result);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 	/**
 	 * 招聘进度同步到第三方
 	 */

@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -610,5 +613,10 @@ public class ChatDao {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    @Test
+    public void testSha1() {
+        System.out.println(DigestUtils.sha1Hex("liugongyi@moseeker.com"));
     }
 }

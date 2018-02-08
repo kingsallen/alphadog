@@ -6,6 +6,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountHrRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.*;
@@ -51,12 +52,42 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         return getData(query);
     }
 
+    public List<HrThirdPartyAccountDO> getAccountsById(List<Integer> accountIds){
+        Query query = new Query.QueryBuilder()
+                .where(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.getName(), accountIds, ValueOp.IN))
+                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), 0, ValueOp.NEQ))
+                .buildQuery();
+        return getDatas(query);
+    }
+
+    public HrThirdPartyAccountDO getEQThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount){
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.where("company_id", thirdPartyAccount.getCompanyId());
+        qu.and("channel", thirdPartyAccount.getChannel());
+        qu.and("username", thirdPartyAccount.getUsername());
+        qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
+
+        List<HrThirdPartyAccountDO> datas = getDatas(qu.buildQuery());
+
+        HrThirdPartyAccountDO data = null;
+
+        for (HrThirdPartyAccountDO d : datas) {
+            ///数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
+            if (d.getUsername().equals(thirdPartyAccount.getUsername())) {
+                data = d;
+                break;
+            }
+        }
+
+        return data;
+    }
+
     public int upsertResource(HrThirdPartyAccountRecord record) {
         logger.info("HRThirdPartyAccountDao upsertResource");
         logger.info("HRThirdPartyAccountDao upsertResource channel:{}, company_id:{}", record.getChannel(), record.getCompanyId());
         logger.info("HRThirdPartyAccountDao upsertResource record:{}", record);
         int count = create.execute(UPSERT_SQL, record.getChannel(), record.getUsername(), record.getPassword(),
-                record.getMembername(), record.getBinding(), record.getCompanyId().intValue(),
+                record.getBinding(), record.getCompanyId().intValue(),
                 record.getRemainNum().intValue(), record.getSyncTime(), record.getChannel(),
                 record.getCompanyId().intValue());
         logger.info("HRThirdPartyAccountDao count:{}", count);
@@ -68,7 +99,6 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
                     .fetchOne();
             dbrecord.setUsername(record.getUsername());
             dbrecord.setPassword(record.getPassword());
-            dbrecord.setMembername(record.getMembername());
             dbrecord.setBinding(record.getBinding());
             dbrecord.setRemainNum(record.getRemainNum());
             dbrecord.setSyncTime(record.getSyncTime());
@@ -87,7 +117,6 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
             record.setCompanyId(account.getCompanyId());
             Timestamp now = new Timestamp(System.currentTimeMillis());
             record.setCreateTime(now);
-            record.setMembername(account.getMembername());
             record.setPassword(account.getPassword());
             record.setRemainNum((int) (account.getRemainNum()));
             record.setSyncTime(now);
@@ -143,7 +172,11 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 
     public HrThirdPartyAccountDO getThirdPartyAccountByUserId(int user_id, int channel) {
         logger.info("getThirdPartyAccountByUserId:user_id{},channel:{}", user_id, channel);
-        Query query = new Query.QueryBuilder().where("hr_account_id", user_id).and("status", 1).and("channel", channel).buildQuery();
+        Query query = new Query.QueryBuilder()
+                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.getName(), user_id)
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.getName(), 1)
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.CHANNEL.getName(), channel)
+                .buildQuery();
         List<HrThirdPartyAccountHrDO> hrThirdPartyAccountHrDOList = thirdPartyAccountHrDao.getDatas(query);
         if (hrThirdPartyAccountHrDOList != null && hrThirdPartyAccountHrDOList.size() > 0) {
 
@@ -154,10 +187,10 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 
             logger.info("getThirdPartyAccountByUserId thirdPartyAccountIdList:{}", thirdPartyAccountIdList);
 
-            Condition condition = new Condition("id", thirdPartyAccountIdList, ValueOp.IN);
+            Condition condition = new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.getName(), thirdPartyAccountIdList, ValueOp.IN);
             query = new Query.QueryBuilder()
                     .where(condition)
-                    .and(new Condition("binding", 0, ValueOp.NEQ))
+                    .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), BindingStatus.UNBIND.getValue(), ValueOp.NEQ))
                     .buildQuery();
             HrThirdPartyAccountDO accountDO =  getData(query);
             if (accountDO != null) {
@@ -170,9 +203,12 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         return null;
     }
 
-    public List<HrThirdPartyAccountDO> getThirdPartyAccountsByUserId(int user_id) {
-        logger.info("getThirdPartyAccountsByUserId:" + user_id);
-        Query query = new Query.QueryBuilder().select("third_party_account_id").where("hr_account_id", user_id).and("status", 1).buildQuery();
+    public List<HrThirdPartyAccountDO> getThirdPartyAccountsByUserId(List<Integer> user_ids) {
+        logger.info("getThirdPartyAccountsByUserId:" + user_ids);
+        Query query = new Query.QueryBuilder()
+                .where(new Condition(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.getName(), user_ids,ValueOp.IN))
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.getName(), 1)
+                .buildQuery();
 
         //所有绑定的第三方帐号的ID的合集
         List<HrThirdPartyAccountHrDO> thirdPartyAccounts = thirdPartyAccountHrDao.getDatas(query);
@@ -187,11 +223,9 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
             thirdPartyAccountIds.add(thirdPartyAccountHrDO.getThirdPartyAccountId());
         }
 
-        Short[] valiableBinding = new Short[]{(short) 1, (short) 3, (short) 7};//有效的状态:已绑定，刷新中，刷新程序错误
-
         query = new Query.QueryBuilder()
-                .where(new Condition("id", thirdPartyAccountIds, ValueOp.IN))
-                .and(new Condition("binding", Arrays.asList(valiableBinding), ValueOp.IN))
+                .where(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.getName(), thirdPartyAccountIds, ValueOp.IN))
+                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), BindingStatus.UNBIND.getValue(), ValueOp.NEQ))
                 .buildQuery();
 
         List<HrThirdPartyAccountDO> hrThirdPartyAccountDOS = getDatas(query);
