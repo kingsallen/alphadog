@@ -877,13 +877,14 @@ public class SearchengineService {
     public Map<String,Object> getPositionSuggest(Map<String,String> params){
         String keyWord=params.get("keyWord");
         String companyIds=params.get("company_id");
-        if(StringUtils.isBlank(keyWord)||StringUtils.isBlank(companyIds)){
+        String publisher=params.get("publisher");
+        if(StringUtils.isBlank(keyWord)&&StringUtils.isBlank(companyIds)&&StringUtils.isBlank(publisher)){
             return null;
         }
         String publisherCompanyId=params.get("did");
         String page=params.get("page_from");
         String pageSize=params.get("page_size");
-        String publisher=params.get("publisher");
+
         String flag=params.get("flag");
         String returnParams=params.get("return_params");
         if(StringUtils.isBlank(flag)){

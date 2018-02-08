@@ -54,7 +54,7 @@ public class PositionMiniController {
         }
     }
     /**
-     * 小程序职位列表
+     * 小程序获取sug提示词
      */
     @RequestMapping(value = "/api/mini/position/suggest", method = RequestMethod.GET)
     @ResponseBody
@@ -67,7 +67,7 @@ public class PositionMiniController {
             }
             String pageSize=(String)map.get("pageSize");
             if(StringUtils.isNullOrEmpty(pageSize)){
-                pageSize="10";
+                pageSize="20";
             }
             String accountId=(String)map.get("accountId");
             if(StringUtils.isNullOrEmpty(accountId)||"0".equals(accountId)){
