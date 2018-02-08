@@ -303,6 +303,9 @@ public class PositionService {
         }
         searchData.setTitle(jobPositionPojo.title);
         jobPositionPojo.search_data=searchData;
+        if(jobPositionPojo.salary_bottom==0&&jobPositionPojo.salary_top==0){
+            jobPositionPojo.salary="薪资面议";
+        }
         return ResponseUtils.success(jobPositionPojo);
     }
 
