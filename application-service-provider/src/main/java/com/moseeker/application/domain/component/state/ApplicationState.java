@@ -17,9 +17,12 @@ public abstract class ApplicationState {
 
     protected ApplicationEntity applicationEntity;
 
+    protected boolean refuse;             //拒绝 true 表示当前处于拒绝状态；false 表示当前处于非拒绝状态
+
     public ApplicationState(ApplicationEntity applicationEntity, ApplicationStateRoute applicationStateRoute) {
         this.applicationEntity = applicationEntity;
         this.applicationStateRoute = applicationStateRoute;
+        this.refuse = applicationEntity.isRefuse();
     }
 
     /**

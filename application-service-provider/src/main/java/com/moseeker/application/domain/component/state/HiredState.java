@@ -32,9 +32,4 @@ public class HiredState extends ApplicationState {
     void recover() {
 
     }
-
-    @Override
-    public ApplicationStateRoute getStatus() {
-        return null;
-    }
 }

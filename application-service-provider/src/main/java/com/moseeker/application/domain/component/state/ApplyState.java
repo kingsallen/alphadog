@@ -20,7 +20,7 @@ public class ApplyState extends ApplicationState {
     @Override
     public ApplicationState pass() {
 
-        if (applicationEntity.getState().getStatus().equals(ApplicationStateRoute.Apply)) {
+        if (applicationEntity.getState().getStatus().equals(ApplicationStateRoute.Apply) && !refuse) {
             ApplicationState nextSate = this.getNext();
             applicationEntity.setState(nextSate);
             return nextSate;
@@ -36,10 +36,5 @@ public class ApplyState extends ApplicationState {
     @Override
     public void recover() {
 
-    }
-
-    @Override
-    public ApplicationStateRoute getStatus() {
-        return applicationStateRoute;
     }
 }

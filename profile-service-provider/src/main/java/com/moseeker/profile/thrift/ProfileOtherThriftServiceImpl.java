@@ -12,6 +12,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.service.ProfileOtherService;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
@@ -22,6 +23,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
@@ -234,6 +236,15 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         return profileService.otherFieldsCheck(positionId, fields);
     }
 
+    @Override
+    public Response getProfileOtherByPosition(int userId, int accountId) throws BIZException, TException {
+        long start = System.currentTimeMillis();
+        Map<String, Object> others = profileService.getApplicationOther(userId, accountId);
+        Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(others);
+        long end = System.currentTimeMillis();
+        logger.info("getProfileOtherByPosition others time :{}", end-start);
+        return ResponseUtils.success(profilrCamle);
+    }
 
 
 }
