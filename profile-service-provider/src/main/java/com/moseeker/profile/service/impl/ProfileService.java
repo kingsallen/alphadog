@@ -52,6 +52,8 @@ import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.profile.utils.DictCode;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
@@ -142,6 +144,9 @@ public class ProfileService {
 
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
+
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+            .getService(JobApplicationServices.Iface.class);
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
@@ -1424,14 +1429,13 @@ public class ProfileService {
       applicationDOList = jobApplicationDao.getDatas(applicationQuery);
       long appTime = System.currentTimeMillis();
       logger.info("getApplicationOther others appTime  time:{}", appTime -infoTime);
-      List<JobApplicationDO> updateList = new ArrayList<>();
+      List<Integer> updateList = new ArrayList<>();
       if(accountDO.getAccountType() == 0){
           for(JobApplicationDO applicationDO : applicationDOList){
               if(applicationDO.getApplyType() == 0 || (applicationDO.getApplyType() == 1 && applicationDO.getEmailStatus() == 0)){
                   applicationDOS.add(applicationDO);
                   if(((int)applicationDO.getIsViewed())==1){
-                      applicationDO.setIsViewed(0);
-                      updateList.add(applicationDO);
+                      updateList.add(applicationDO.getId());
                   }
               }
           }
@@ -1443,8 +1447,7 @@ public class ProfileService {
               if(applicationDO.getApplyType() == 0 || (applicationDO.getApplyType() == 1 && applicationDO.getEmailStatus() == 0)){
                   applicationDOS.add(applicationDO);
                   if(positionIdList.contains(applicationDO.getPositionId())){
-                      applicationDO.setIsViewed(0);
-                      updateList.add(applicationDO);
+                      updateList.add(applicationDO.getId());
                   }
               }
 
@@ -1455,7 +1458,11 @@ public class ProfileService {
       logger.info("getApplicationOther others position  time:{}", positionTime-appTime);
       //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
       if(updateList != null && updateList.size()>0){
-          jobApplicationDao.updateDatas(updateList);
+//          try {
+//              applicationService.viewApplications(accountId, applicationIdList);
+//          } catch (TException e) {
+//              logger.info("申请查看状态更新以及发送模板消息出错");
+//          }
       }
         List<Integer> positionList = null;
         if(applicationDOS != null && applicationDOS.size()>0){
