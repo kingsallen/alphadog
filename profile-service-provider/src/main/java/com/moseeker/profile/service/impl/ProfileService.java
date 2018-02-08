@@ -1458,11 +1458,11 @@ public class ProfileService {
       logger.info("getApplicationOther others position  time:{}", positionTime-appTime);
       //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
       if(updateList != null && updateList.size()>0){
-//          try {
-//              applicationService.viewApplications(accountId, applicationIdList);
-//          } catch (TException e) {
-//              logger.info("申请查看状态更新以及发送模板消息出错");
-//          }
+          try {
+              applicationService.viewApplications(accountId, updateList);
+          } catch (TException e) {
+              logger.info("申请查看状态更新以及发送模板消息出错");
+          }
       }
         List<Integer> positionList = null;
         if(applicationDOS != null && applicationDOS.size()>0){
