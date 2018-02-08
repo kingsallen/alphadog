@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 89189004;
+    private static final long serialVersionUID = 693969032;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -195,6 +195,11 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
      * The column <code>hrdb.hr_third_party_position.department_name</code>. 绑定第三方账号对应部门的名称
      */
     public final TableField<HrThirdPartyPositionRecord, String> DEPARTMENT_NAME = createField("department_name", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "绑定第三方账号对应部门的名称");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.count</code>. 招聘人数
+     */
+    public final TableField<HrThirdPartyPositionRecord, Integer> COUNT = createField("count", org.jooq.impl.SQLDataType.INTEGER, this, "招聘人数");
 
     /**
      * Create a <code>hrdb.hr_third_party_position</code> table reference

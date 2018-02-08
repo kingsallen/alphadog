@@ -138,11 +138,9 @@ public class ProfileBS {
                 logger.info("ProfileBS retrieveProfile profile not exist");
                 //如果不存在profile，进行profile创建
                 Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
+                logger.info("ProfileBS retrieveProfile response:{}",response);
                 if (response.getStatus() == 0) {
-                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
-                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
-                        applicationService.postApplication(application);
-                    }
+                    applicationService.postApplication(application);
                     return ResultMessage.SUCCESS.toResponse(new JSONObject());
                 } else {
                     return response;

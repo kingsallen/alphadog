@@ -1,6 +1,12 @@
 package com.moseeker.entity.biz;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
+import com.moseeker.baseorm.util.BeanUtils;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,6 +20,35 @@ import static org.junit.Assert.*;
  * Created by jack on 09/11/2017.
  */
 public class ProfileUtilsTest {
+    @Test
+    public void test(){
+
+        String json="[\n" +
+                "    {\n" +
+                "      \"end_date\": \"2018-02-01\",\n" +
+                "      \"end_until_now\": 1,\n" +
+                "      \"responsibility\": \"\",\n" +
+                "      \"company_name\": \"上海天天有限公司\",\n" +
+                "      \"name\": \"项目天天有\",\n" +
+                "      \"description\": \"发生的发>生的发生的\",\n" +
+                "      \"start_date\": \"2006-03-01\"\n" +
+                "    }\n" +
+                "  ]";
+
+        TypeReference<List<Map<String, Object>>> typeReference=new TypeReference<List<Map<String, Object>>>(){};
+
+        List<Map<String, Object>> array=JSON.parseObject(json,typeReference);;
+
+        List<ProfileProjectexpRecord> list=new ProfileUtils().mapToProjectExpsRecords(array);
+
+        System.out.println(list);
+
+        /*Map<String, Object> basic=new HashMap<>();
+        basic.put("birth","1988/03/26");
+        ProfileBasicRecord result=BeanUtils.MapToRecord(basic, ProfileBasicRecord.class);
+        System.out.println(result);*/
+    }
+
 
     private static List<Map<String, Object>> workexps = new ArrayList<Map<String, Object>>(){{
         Map<String, Object> workExp = new HashMap<>();

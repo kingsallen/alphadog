@@ -38,6 +38,10 @@ service WholeProfileServices {
     common_struct.Response improveProfile(1:string profile) throws (1: common_struct.BIZException e);
     common_struct.Response moveProfile(1:i32 destUserId, 2:i32 originUserId) throws (1: common_struct.BIZException e);
     bool retrieveProfile(1:string parameter)throws (1: common_struct.BIZException e);
+    common_struct.Response combinationProfile(1:string params, 2:i32 companyId) throws (1: common_struct.BIZException e);
+    common_struct.Response preserveProfile(1:string params, 2:i32 hrId,3:i32 companyId,4:string fileName,5: i32 userId) throws (1: common_struct.BIZException e);
+    common_struct.Response validateHrAndUploaduser(1:i32 hrId,2:i32 companyId,3: i32 userId) throws (1: common_struct.BIZException e);
+    common_struct.Response getUploadProfile(1: i32 userId) throws (1: common_struct.BIZException e);
 }
 
 service ProfileServices {
@@ -57,6 +61,7 @@ service ProfileServices {
     common_struct.Response resumeProfile(1:i32 uid,2:string fileName,3:string file)throws (1: common_struct.BIZException e);
     common_struct.Response parseProfileAttachment(1:string fileName,2:string file) throws (1: common_struct.BIZException e);
     i32 upsertProfile(1:i32 userId, 2:string profile)throws (1: common_struct.BIZException e);
+    common_struct.Response resumeTalentProfile(1:string fileName,2:string file,3: i32 companyId)throws (1: common_struct.BIZException e);
 }
 
 service AttachmentServices {

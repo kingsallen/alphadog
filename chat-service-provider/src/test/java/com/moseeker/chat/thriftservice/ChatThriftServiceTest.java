@@ -77,7 +77,7 @@ public class ChatThriftServiceTest {
 
     ////@Test
     public void saveChat() throws Exception {
-        chatService.saveChat(28559, "answer", 61107, (byte) 1, (byte)1);
+        //chatService.saveChat(28559, "answer", 61107, (byte) 1, (byte)0);
     }
 
     ////@Test

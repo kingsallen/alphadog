@@ -146,25 +146,21 @@ public class SearchUtil {
     public void hanleRange(int conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
         ((BoolQueryBuilder) query).must(cityfilter);
-        logger.info("组合的条件是==================" + query.toString() + "===========");
     }
 
     public void hanleRange(long conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
         ((BoolQueryBuilder) query).must(cityfilter);
-        logger.info("组合的条件是==================" + query.toString() + "===========");
     }
 
     public void hanleRangeFilter(String conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
         ((BoolQueryBuilder) query).filter(cityfilter);
-        logger.info("组合的条件是==================" + query.toString() + "===========");
     }
 
     public void hanleRangeFilter(long conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
         ((BoolQueryBuilder) query).filter(cityfilter);
-        logger.info("组合的条件是==================" + query.toString() + "===========");
     }
 
     //处理聚合的结果
@@ -211,7 +207,7 @@ public class SearchUtil {
     }
     //组装prefix关键字查询语句
     public void handleKeyWordForPrefix(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
-    	if(StringUtils.isNotEmpty(keywords)){
+    	if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords.trim())){
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		for(String field:list){
     			QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery(field, keywords);
@@ -224,18 +220,25 @@ public class SearchUtil {
 
 	 //组装query_string关键字查询语句
     public void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
-    	if(StringUtils.isNotEmpty(keywords)){
+    	if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords.trim())){
     		hasKey=true;
     		String words[]=keywords.split(",");
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		StringBuffer sb=new StringBuffer();
     		for(int i=0;i<words.length;i++){
+    		    if(StringUtils.isBlank(words[i])){
+    		        continue;
+                }
     			if(i==words.length-1){
     				sb.append(words[i]);
     			}else{
     				sb.append(words[i]+" or ");
     			}
     		}
+    		if(words.length>1){
+                sb.deleteCharAt(sb.lastIndexOf("r"));
+                sb.deleteCharAt(sb.lastIndexOf("o"));
+            }
     		String condition=sb.toString();
     		QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
     		for(String field:list){
@@ -245,10 +248,12 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
    }
-    //组装query_string关键字带权重查询语句
-    public void keyWordforQueryStringPropery(String keywords,QueryBuilder query,List<String> fieldList,List<Integer> properyList){
+    //组装query_string关键字查询语句,重载方法
+    public void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query,Map<String,Float> fieldBootMap){
         if(StringUtils.isNotEmpty(keywords)){
+            hasKey=true;
             String words[]=keywords.split(",");
+            QueryBuilder keyand = QueryBuilders.boolQuery();
             StringBuffer sb=new StringBuffer();
             for(int i=0;i<words.length;i++){
                 if(i==words.length-1){
@@ -256,6 +261,37 @@ public class SearchUtil {
                 }else{
                     sb.append(words[i]+" or ");
                 }
+            }
+            String condition=sb.toString();
+            QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
+            if(fieldBootMap!=null&&!fieldBootMap.isEmpty()){
+                for(String key:fieldBootMap.keySet()){
+                    fullf.field(key,fieldBootMap.get(key));
+                }
+            }
+
+            ((BoolQueryBuilder) keyand).must(fullf);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+    //组装query_string关键字带权重查询语句
+    public void keyWordforQueryStringPropery(String keywords,QueryBuilder query,List<String> fieldList,List<Integer> properyList){
+        if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords)){
+            String words[]=keywords.split(",");
+            StringBuffer sb=new StringBuffer();
+            for(int i=0;i<words.length;i++){
+                if(StringUtils.isBlank(words[i])){
+                    continue;
+                }
+                if(i==words.length-1){
+                    sb.append(words[i]);
+                }else{
+                    sb.append(words[i]+" or ");
+                }
+            }
+            if(words.length>1){
+                sb.deleteCharAt(sb.lastIndexOf("r"));
+                sb.deleteCharAt(sb.lastIndexOf("o"));
             }
             String condition=sb.toString();
             QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);

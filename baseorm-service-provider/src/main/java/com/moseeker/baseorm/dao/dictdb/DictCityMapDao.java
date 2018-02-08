@@ -1,5 +1,7 @@
 package com.moseeker.baseorm.dao.dictdb;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityMapRecord;
@@ -66,8 +68,8 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
 
         if (moseekerCodes.size() > 0) {
             Query channelCityQuery = new Query.QueryBuilder()
-                    .where(new Condition("CODE", moseekerCodes, ValueOp.IN))
-                    .and("channel", channelType.getValue())
+                    .where(new Condition(DictCityMap.DICT_CITY_MAP.CODE.getName(), moseekerCodes, ValueOp.IN))
+                    .and(DictCityMap.DICT_CITY_MAP.CHANNEL.getName(), channelType.getValue())
                     .buildQuery();
             List<DictCityMapDO> dictCityMapDOS = getDatas(channelCityQuery);
 
@@ -77,7 +79,14 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
                 for (Integer moseekerCode : moseekerCityLevels) {
                     String otherCode = getOtherCode(moseekerCode, dictCityMapDOS);
                     if (otherCode != null) {
-                        otherCity.add(otherCode);
+                        //或许可以做成策略模式，不过以后再改吧
+                        if(channelType==ChannelType.LIEPIN|| channelType==ChannelType.JOB51 || channelType==ChannelType.ZHILIAN) {
+                            otherCity.add(otherCode);
+                        }else{
+                            TypeReference<List<String>> typeRef
+                                    = new TypeReference<List<String>>() {};
+                            otherCity= JSON.parseObject(otherCode,typeRef);
+                        }
                     }
                 }
                 if (otherCity.size() > 0) {

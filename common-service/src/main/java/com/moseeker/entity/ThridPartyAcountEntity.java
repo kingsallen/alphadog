@@ -3,16 +3,10 @@ package com.moseeker.entity;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
-import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCityDao;
-import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCompanyAddressDao;
-import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCompanyDao;
-import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountDepartmentDao;
+import com.moseeker.baseorm.dao.thirdpartydb.*;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCity;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompany;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment;
+import com.moseeker.baseorm.db.thirdpartydb.tables.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -22,10 +16,7 @@ import com.moseeker.entity.pojos.Data;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCityDO;
-import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyAddressDO;
-import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountDepartmentDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.*;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +47,9 @@ public class ThridPartyAcountEntity {
 
     @Autowired
     ThirdpartyAccountCompanyAddressDao accountCompanyAddressDao;
+
+    @Autowired
+    ThirdPartyAccountJob1001SubsiteDao subsiteDao;
 
     @Autowired
     DictCityMapDao cityMapDao;
@@ -184,6 +178,27 @@ public class ThridPartyAcountEntity {
             logger.info("departmentDOList : {}",departmentDOList);
             if (departmentDOList != null && departmentDOList.size() > 0) {
                 departmentDao.addAllData(departmentDOList);
+            }
+        }
+
+        if(data.getSubsites() != null && !data.getSubsites().isEmpty()){
+            Condition deleteCondition = new Condition(ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE.ACCOUNT_ID.getName(), data.getAccountId());
+            subsiteDao.delete(deleteCondition);
+
+            List<ThirdpartyAccountJob1001SubsiteDO> subsiteDOList= data.getSubsites()
+                    .stream()
+                    .map(subsite -> {
+                        ThirdpartyAccountJob1001SubsiteDO subsiteDO=new ThirdpartyAccountJob1001SubsiteDO();
+                        subsiteDO.setAccountId(data.getAccountId());
+                        subsiteDO.setSite(subsite);
+                        subsiteDO.setText(subsite);
+                        subsiteDO.setCreateTime(currentTime);
+                        subsiteDO.setUpdateTime(currentTime);
+                        return subsiteDO;
+                    }).collect(Collectors.toList());
+            logger.info("subsiteDOList : {}",subsiteDOList);
+            if(subsiteDOList != null && !subsiteDOList.isEmpty()){
+                subsiteDao.addAllData(subsiteDOList);
             }
         }
     }

@@ -38,7 +38,7 @@ public class QueryConvert {
                 String[] sortByArray = commonQuery.getSortby().split(",");
                 String[] orderArray = null;
                 if (commonQuery.getOrder() != null) {
-                    orderArray = commonQuery.getSortby().split(",");
+                    orderArray = commonQuery.getOrder().split(",");
                 }
                 for (int i=0; i<sortByArray.length; i++) {
                     if (StringUtils.isNullOrEmpty(sortByArray[i])) {

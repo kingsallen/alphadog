@@ -127,7 +127,7 @@ public class TalentpoolApplication extends TableImpl<TalentpoolApplicationRecord
     /**
      * Rename this table
      */
-
+    @Override
     public TalentpoolApplication rename(String name) {
         return new TalentpoolApplication(name, null);
     }
