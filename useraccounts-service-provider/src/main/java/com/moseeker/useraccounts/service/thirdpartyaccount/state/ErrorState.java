@@ -33,11 +33,6 @@ public class ErrorState extends AbstractBindState {
     }
 
     @Override
-    public ThirdPartyAccountInfo dispatch(int accountId, List<Integer> hrIds) throws Exception {
-        throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DISPATCH_ACCOUNT_ERROR);
-    }
-
-    @Override
     public int updateBinding(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
         emailNotification.sendWebBindFailureMail(emailNotification.getMails(), thirdPartyAccount);
         return super.updateBinding(thirdPartyAccount);
