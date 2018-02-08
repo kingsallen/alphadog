@@ -31,9 +31,4 @@ public class CVCheckedState extends ApplicationState {
     void recover() {
 
     }
-
-    @Override
-    public ApplicationStateRoute getStatus() {
-        return applicationStateRoute;
-    }
 }

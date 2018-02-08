@@ -32,12 +32,15 @@ public class ApplicationEntity {
 
     public ApplicationEntity(int id, int state, boolean refuse, List<Integer> hrIdList, int viewNumber) {
         this.id = id;
+        logger.info("ApplicationEntity param state:{}, ", state);
         this.state = ApplicationStateRoute.initFromState(state).buildState(this);
+        logger.info("ApplicationEntity state:{}, ", this.state);
         this.initState = ApplicationStateRoute.initFromState(state).buildState(this);
         this.hrIdList = hrIdList;
         this.viewNumber = viewNumber;
         this.initViewNumber = viewNumber;
         this.refuse = refuse;
+        logger.info("ApplicationEntity refuse:{}, ", this.refuse);
     }
 
     /**
@@ -50,19 +53,25 @@ public class ApplicationEntity {
         if (!validateAuthority(hrEntity)) {
             throw ApplicationException.APPLICATION_HAVE_NO_PERMISSION;
         }
-        addViewNumber();
-        logger.info("ApplicationEntity view state:{}", state.getStatus().getName());
-        logger.info("ApplicationEntity view state:{}", state.getStatus().getState());
-        if (!refuse) {
-            state.pass();
+        HrOperationRecord hrOperationRecord = null;
+        try {
+            addViewNumber();
+            logger.info("ApplicationEntity view state:{}", state.getStatus());
+            logger.info("ApplicationEntity view state:{}", state.getStatus().getName());
+            logger.info("ApplicationEntity view state:{}", state.getStatus().getState());
+            if (!refuse) {
+                state.pass();
+            }
+            hrOperationRecord = new HrOperationRecord();
+            hrOperationRecord.setAdminId((long) hrEntity.getId());
+            hrOperationRecord.setCompanyId((long) hrEntity.getCompanyId());
+            hrOperationRecord.setAppId((long) id);
+            logger.info("ApplicationEntity view state:{}", state.getStatus().getName());
+            logger.info("ApplicationEntity view state:{}", state.getStatus().getState());
+            hrOperationRecord.setOperateTplId(this.state.getStatus().getState());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
-        HrOperationRecord hrOperationRecord = new HrOperationRecord();
-        hrOperationRecord.setAdminId((long) hrEntity.getId());
-        hrOperationRecord.setCompanyId((long) hrEntity.getCompanyId());
-        hrOperationRecord.setAppId((long) id);
-        logger.info("ApplicationEntity view state:{}", state.getStatus().getName());
-        logger.info("ApplicationEntity view state:{}", state.getStatus().getState());
-        hrOperationRecord.setOperateTplId(this.state.getStatus().getState());
         return hrOperationRecord;
     }
 
