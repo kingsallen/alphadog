@@ -840,6 +840,8 @@ public class WholeProfileService {
                 }
                 map.put("end_until_now", record.getEndUntilNow().intValue());
                 map.put("description", record.getDescription());
+                map.put("achievement", record.getAchievement());
+                map.put("responsibility",record.getResponsibility());
                 map.put("member", record.getMember());
                 map.put("role", record.getRole());
                 list.add(map);
@@ -952,6 +954,7 @@ public class WholeProfileService {
                     }
                     map.put("end_until_now", record.getEndUntilNow().intValue());
                     map.put("description", record.getDescription());
+                    map.put("achievement", record.getAchievement());
                     list.add(map);
                 });
             }

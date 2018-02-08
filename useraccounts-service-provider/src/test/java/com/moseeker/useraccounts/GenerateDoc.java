@@ -18,7 +18,7 @@ public class GenerateDoc {
 
     @Test
     public void test() throws ClassNotFoundException {
-        Class clazz=Class.forName("com.moseeker.useraccounts.thrift.UseraccountsServiceImpl");
+        Class clazz=Class.forName("ThriftUtil");
         Method[] methods=clazz.getDeclaredMethods();
         int i=0;
         DocBuilder docBuilder=DocBuilder.newInstance();
