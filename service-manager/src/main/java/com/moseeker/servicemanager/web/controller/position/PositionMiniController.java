@@ -28,25 +28,26 @@ public class PositionMiniController {
     /**
      * 小程序职位列表
      */
-    @RequestMapping(value = "/api/mini/position/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/mini/position/list", method = RequestMethod.POST)
     @ResponseBody
     public String getPositionList(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> map = ParamUtils.parseRequestParam(request);
-            String page= (String) map.get("pageNum");
-            String pageSize=(String)map.get("pageSize");
+
+            String pageSize=String.valueOf(map.get("pageSize"));
+            String page= String.valueOf(map.get("pageNum")) ;
             if(StringUtils.isNullOrEmpty(page)||"0".equals(page)){
                 page="0";
             }
             if(StringUtils.isNullOrEmpty(pageSize)){
-                pageSize="10";
+                pageSize="20";
             }
-            String accountId=(String)map.get("accountId");
+            int accountId=(int)map.get("accountId");
             String keyWords=(String)map.get("keyword");
             if(StringUtils.isNotNullOrEmpty(keyWords)){
                 keyWords=StringUtils.filterStringForSearch(keyWords);
             }
-            Response res = positonServices.getMiniPositionList(Integer.parseInt(accountId),keyWords,Integer.parseInt(page),Integer.parseInt(pageSize));
+            Response res = positonServices.getMiniPositionList(accountId,keyWords,Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -54,30 +55,27 @@ public class PositionMiniController {
         }
     }
     /**
-     * 小程序职位列表
+     * 小程序获取sug提示词
      */
-    @RequestMapping(value = "/api/mini/position/suggest", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/mini/position/suggest", method = RequestMethod.POST)
     @ResponseBody
     public String getPositionSuggest(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> map = ParamUtils.parseRequestParam(request);
-            String page= (String) map.get("pageNum");
+            String page= String.valueOf(map.get("pageNum")) ;
             if(StringUtils.isNullOrEmpty(page)||"0".equals(page)){
                 page="1";
             }
-            String pageSize=(String)map.get("pageSize");
+            String pageSize=String.valueOf(map.get("pageSize")) ;;
             if(StringUtils.isNullOrEmpty(pageSize)){
-                pageSize="10";
+                pageSize="20";
             }
-            String accountId=(String)map.get("accountId");
-            if(StringUtils.isNullOrEmpty(accountId)||"0".equals(accountId)){
-                return ResponseLogNotification.fail(request,"accountId不能为空");
-            }
+            int accountId=(int)map.get("accountId");
             String keyWords=(String)map.get("keyword");
             if(StringUtils.isNotNullOrEmpty(keyWords)){
                 keyWords=StringUtils.filterStringForSearch(keyWords);
             }
-            Response res = positonServices.getMiniPositionSuggest(Integer.parseInt(accountId),keyWords,Integer.parseInt(page),Integer.parseInt(pageSize));
+            Response res = positonServices.getMiniPositionSuggest(accountId,keyWords,Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
