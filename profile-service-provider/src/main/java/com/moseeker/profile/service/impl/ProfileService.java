@@ -69,6 +69,7 @@ import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.lang.ArrayUtils;
@@ -911,10 +912,14 @@ public class ProfileService {
      * @throws CommonException
      */
     public Map<String, Object> getProfileOther(List<Integer> positionIds, int profileId) throws CommonException{
+        long start = System.currentTimeMillis();
         Map<String, Object> otherMap = new HashMap<>();
         Map<String, Object> parentValues = new HashMap<>();
         Map<String, Object> parentkeys = new HashMap<>();
         if(positionIds != null && positionIds.size()>0 && profileId > 0) {
+
+            logger.info("positionIdList:{}", positionIds);
+
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.where(ProfileOther.PROFILE_OTHER.PROFILE_ID.getName(), profileId);
             ProfileOtherDO profileOtherDO = profileOtherDao.getData(queryBuilder.buildQuery());
@@ -923,14 +928,23 @@ public class ProfileService {
                 throw CommonException.PROGRAM_PARAM_NOTEXIST;
             }
             profileOtherMap.put(profileId, profileOtherDO.getOther());
+            long profileTime = System.currentTimeMillis();
+            logger.info("getProfileOther others profile time:{}", profileTime-start);
             Map<Integer, Integer> positionCustomConfigMap = positionEntity.getAppCvConfigIdByPositions(positionIds);
             queryBuilder.clear();
+            long configTime = System.currentTimeMillis();
+            logger.info("getProfileOther others config time:{}", configTime-profileTime);
             queryBuilder.where(new Condition("id", new ArrayList<>(positionCustomConfigMap.values()), ValueOp.IN));
             List<HrAppCvConfDO> hrAppCvConfDOList = hrAppCvConfDao.getDatas(queryBuilder.buildQuery());
             //获取申请职位的自定义简历字段
+            long cvConfTime = System.currentTimeMillis();
+            logger.info("getProfileOther others cvConfTime time:{}", cvConfTime-configTime);
             Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
                     hrAppCvConfDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
             //遍历职位获取职位与人自定义字段交集
+            long infoTime = System.currentTimeMillis();
+            logger.info("getProfileOther others info time:{}", profileTime-infoTime);
+            logger.info("getProfileOther others info time:{}", infoTime-start);
             positionIds.stream().forEach(positionId -> {
                 try {
                     if (positionCustomConfigMap.containsKey(positionId)) {
@@ -959,47 +973,57 @@ public class ProfileService {
                     logger.error(e1.getMessage(), e1);
                 }
             });
-        }
-        //组装所需要的数据结构
-        List<Map<String, Object>> otherList = new ArrayList<>();
-        Set<Map.Entry<String, Object>> entries = parentValues.entrySet();
-        Set<Map.Entry<String, Object>> keyEntries = parentkeys.entrySet();
-        for(Map.Entry<String, Object> entry : entries){
+            long positionTime = System.currentTimeMillis();
+            logger.info("getProfileOther others position time:{}", positionTime-infoTime);
+            //组装所需要的数据结构
+            List<Map<String, Object>> otherList = new ArrayList<>();
+            Set<Map.Entry<String, Object>> entries = parentValues.entrySet();
+            Set<Map.Entry<String, Object>> keyEntries = parentkeys.entrySet();
+            for(Map.Entry<String, Object> entry : entries){
 
-            if(!entry.getValue().toString().startsWith("[{") && !entry.getValue().toString().startsWith("[")) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("key", entry.getKey());
-                if(entry.getValue() != null && !"".equals(entry.getValue())) {
-                    map.put("value", entry.getValue());
-                    otherList.add(map);
-                }
-            }else if(entry.getValue().toString().startsWith("[{")){
-                TypeReference<List<Map<String,Object>>> typeRef
-                        = new TypeReference<List<Map<String,Object>>>() {};
-                List<Map<String , Object>> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
-                if(infoList!=null && infoList.size()>0) {
-                    for (Map.Entry<String, Object> key : keyEntries) {
-                        if (entry.getKey().equals(key.getValue())) {
-                            otherMap.put(key.getKey(), infoList);
-                            break;
+                if(!entry.getValue().toString().startsWith("[{") && !entry.getValue().toString().startsWith("[")) {
+                    Map<String, Object> map = new HashMap<>();
+                    if("证件照".equals(entry.getKey())){
+                        otherMap.put("photo", entry.getValue());
+                        continue;
+                    }
+                    map.put("key", entry.getKey());
+                    if(entry.getValue() != null && !"".equals(entry.getValue())) {
+                        map.put("value", entry.getValue());
+                        otherList.add(map);
+                    }
+                }else if(entry.getValue().toString().startsWith("[{")){
+                    TypeReference<List<Map<String,Object>>> typeRef
+                            = new TypeReference<List<Map<String,Object>>>() {};
+                    List<Map<String , Object>> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
+                    if(infoList!=null && infoList.size()>0) {
+                        for (Map.Entry<String, Object> key : keyEntries) {
+                            if (entry.getKey().equals(key.getValue())) {
+                                otherMap.put(key.getKey(), infoList);
+                                break;
+                            }
                         }
                     }
-                }
-            }else if(entry.getValue().toString().startsWith("[")){
-                TypeReference<List<String>> typeRef
-                        = new TypeReference<List<String>>() {};
-                List<String> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
-                if(infoList!=null && infoList.size()>0){
-                    for(Map.Entry<String, Object> key : keyEntries){
-                        if(entry.getKey().equals(key.getValue())){
-                            otherMap.put(key.getKey(), infoList);
-                            break;
+                }else if(entry.getValue().toString().startsWith("[")){
+                    TypeReference<List<String>> typeRef
+                            = new TypeReference<List<String>>() {};
+                    List<String> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
+                    if(infoList!=null && infoList.size()>0){
+                        for(Map.Entry<String, Object> key : keyEntries){
+                            if(entry.getKey().equals(key.getValue())){
+                                otherMap.put(key.getKey(), infoList);
+                                break;
+                            }
                         }
                     }
                 }
             }
+            otherMap.put("keyvalues", otherList);
+            long end = System.currentTimeMillis();
+            logger.info("getProfileOther others end  time:{}", end-positionTime);
+            logger.info("getProfileOther others time:{}", end-start);
         }
-        otherMap.put("keyvalues", otherList);
+
         return otherMap;
     }
 
@@ -1013,68 +1037,70 @@ public class ProfileService {
      */
   public Map<String, Object> getApplicationOther(int userId, int accountId) throws CommonException{
         // 根据HR编号获取公司对象
+      long start = System.currentTimeMillis();
         Query query = new Query.QueryBuilder().where(ProfileProfile.PROFILE_PROFILE.USER_ID.getName(), userId).buildQuery();
         ProfileProfileDO profileDO = dao.getData(query);
         if(profileDO == null)
             throw  CommonException.PROGRAM_PARAM_NOTEXIST;
-
         Integer profileId = profileDO.getId();
         Query accountQuery = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), accountId).buildQuery();
         UserHrAccountDO accountDO = userHrAccountDao.getData(accountQuery);
         if(accountDO == null)
             throw  CommonException.PROGRAM_PARAM_NOTEXIST;
-      Query companyQuery = null;
       Query positionQuery = null;
       List<Integer> accountIdList = new ArrayList<>();
-      if(accountDO.getAccountType() == 0 ){
-          Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), accountDO.getId()).buildQuery();
-          HrCompanyAccountDO companyAccountDO = hrCompanyAccountDao.getData(companyAccountQuery);
-          if(companyAccountDO == null)
-              return null;
-          companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.PARENT_ID.getName(), companyAccountDO.getCompanyId()).or("id", companyAccountDO.getCompanyId()).buildQuery();
-          List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(companyQuery);
-          if(companyDOList!= null && companyDOList.size()>0){
-              List<Integer> companyIdList = companyDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
-              Query companyAccountQuery1 = new Query.QueryBuilder().where(new Condition(HrCompanyAccount.HR_COMPANY_ACCOUNT.COMPANY_ID.getName(), companyIdList.toArray(), ValueOp.IN)).buildQuery();
-              List<HrCompanyAccountDO> companyAccountList = hrCompanyAccountDao.getDatas(companyAccountQuery1);
-              accountIdList = companyAccountList.stream().map(m -> m.getAccountId()).collect(Collectors.toList());
-          }else {
-              accountIdList.add(accountDO.getId());
-          }
-
-      }else{
-          accountIdList.add(accountDO.getId());
-      }
-      positionQuery =  new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountIdList.toArray(),ValueOp.IN)).buildQuery();
-      List<JobPositionDO> positionDOList = jobPositionDao.getDatas(positionQuery);
-      List<JobApplicationDO> applicationDOS = null;
-      List<JobApplicationDO> updateList = null;
-      if(positionDOList != null && positionDOList.size()>0){
-          List<Integer> positionIdList = positionDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
-          Query applicationQuery = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(),ValueOp.IN))
-                .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1).andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
-                .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1).and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
-                .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
-          applicationDOS = jobApplicationDao.getDatas(applicationQuery);
-          for(JobApplicationDO applicationDO : applicationDOS){
-              if(((int)applicationDO.getIsViewed())==1){
-                  applicationDO.setIsViewed(0);
-                  updateList.add(applicationDO);
+      List<JobApplicationDO> applicationDOList = new ArrayList<>();
+      List<JobApplicationDO> applicationDOS = new ArrayList<>();
+      Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), accountDO.getId()).buildQuery();
+      HrCompanyAccountDO companyAccountDO = hrCompanyAccountDao.getData(companyAccountQuery);
+      if (companyAccountDO == null)
+          throw CommonException.PROGRAM_PARAM_NOTEXIST;
+      long infoTime = System.currentTimeMillis();
+      logger.info("getApplicationOther others info  time:{}", infoTime-start);
+      Query applicationQuery = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.COMPANY_ID.getName(),companyAccountDO.getCompanyId())
+              .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
+      applicationDOList = jobApplicationDao.getDatas(applicationQuery);
+      long appTime = System.currentTimeMillis();
+      logger.info("getApplicationOther others appTime  time:{}", appTime -infoTime);
+      List<JobApplicationDO> updateList = new ArrayList<>();
+      if(accountDO.getAccountType() == 0){
+          for(JobApplicationDO applicationDO : applicationDOList){
+              if(applicationDO.getApplyType() == 0 || (applicationDO.getApplyType() == 1 && applicationDO.getEmailStatus() == 0)){
+                  applicationDOS.add(applicationDO);
+                  if(((int)applicationDO.getIsViewed())==1){
+                      applicationDO.setIsViewed(0);
+                      updateList.add(applicationDO);
+                  }
               }
           }
+      }else{
+          positionQuery =  new Query.QueryBuilder().where(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountDO.getId()).buildQuery();
+          List<JobPositionDO> positionDOList = jobPositionDao.getDatas(positionQuery);
+          List<Integer> positionIdList = positionDOList.stream().map(m ->m.getId()).collect(Collectors.toList());
+          for(JobApplicationDO applicationDO : applicationDOList){
+              if(applicationDO.getApplyType() == 0 || (applicationDO.getApplyType() == 1 && applicationDO.getEmailStatus() == 0)){
+                  applicationDOS.add(applicationDO);
+                  if(positionIdList.contains(applicationDO.getPositionId())){
+                      applicationDO.setIsViewed(0);
+                      updateList.add(applicationDO);
+                  }
+              }
+
+          }
       }
 
+      long positionTime = System.currentTimeMillis();
+      logger.info("getApplicationOther others position  time:{}", positionTime-appTime);
       //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
       if(updateList != null && updateList.size()>0){
           jobApplicationDao.updateDatas(updateList);
       }
-
         List<Integer> positionList = null;
         if(applicationDOS != null && applicationDOS.size()>0){
             positionList = applicationDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
+
             return  getProfileOther(positionList, profileId);
         }
-
         return  null;
     }
 
