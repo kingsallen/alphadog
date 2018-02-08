@@ -447,39 +447,34 @@ public class StringUtils {
                 value = value.replaceAll("\"", "");
             }
             if(value.contains("~")) {
-                value = value.replaceAll("~", "");
+                value = value.replaceAll("~", " ");
             }
             if(value.contains("*")) {
-                value = value.replaceAll("\\*", "");
+                value = value.replaceAll("\\*", " ");
             }
             if(value.contains("?")) {
-                value = value.replaceAll("\\?", "");
+                value = value.replaceAll("\\?", " ");
             }
             if(value.contains(":")) {
-                value = value.replaceAll(":", "");
+                value = value.replaceAll(":", " ");
             }
             if(value.contains("'")) {
-                value = value.replaceAll("'", "");
+                value = value.replaceAll("'", " ");
             }
             if(value.contains("@")) {
-                value = value.replaceAll("@", "");
+                value = value.replaceAll("@", " ");
             }
             if(value.contains("%")) {
-                value = value.replaceAll("%", "");
+                value = value.replaceAll("%", " ");
             }
             if(value.contains("$")) {
-                value = value.replaceAll("\\$", "");
+                value = value.replaceAll("\\$", " ");
             }
             if(value.contains("#")) {
-                value = value.replaceAll("#", "");
+                value = value.replaceAll("#", " ");
             }
             if(value.contains("=")) {
-                value = value.replaceAll("=", "");
-            }
-            if(value.contains(" ")) {
-                if(isContainChinese(value)){
-                    value = value.replaceAll(" ", "");
-                }
+                value = value.replaceAll("=", " ");
             }
             if(StringUtils.isNotNullOrEmpty(value)){
                 value=value.trim();

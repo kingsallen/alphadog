@@ -249,22 +249,22 @@ public class SearchengineService {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         if (!StringUtils.isEmpty(keywords)) {
-            String[] keyword_list = keywords.split(" ");
+//            String[] keyword_list = keywords.split(" ");
             QueryBuilder keyand = QueryBuilders.boolQuery();
-            for (int i = 0; i < keyword_list.length; i++) {
-                String keyword = keyword_list[i];
-                if(StringUtils.isBlank(keyword)){
-                    continue;
-                }
-                BoolQueryBuilder keyor = QueryBuilders.boolQuery();
-                QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
+//            for (int i = 0; i < keyword_list.length; i++) {
+//                String keyword = keyword_list[i];
+//                if(StringUtils.isBlank(keyword)){
+//                    continue;
+//                }
+//                BoolQueryBuilder keyor = QueryBuilders.boolQuery();
+                QueryBuilder fullf = QueryBuilders.queryStringQuery(keywords)
                         .field("title", 20.0f)
                         .field("city", 10.0f)
                         .field("team_name", 5.0f)
                         .field("custom", 4.0f)
                         .field("occupation", 3.0f);
                 ((BoolQueryBuilder) keyand).must(fullf);
-            }
+//            }
             ((BoolQueryBuilder) query).must(keyand);
         }
         if (!StringUtils.isEmpty(cities)) {
