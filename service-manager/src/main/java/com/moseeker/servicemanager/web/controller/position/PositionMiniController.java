@@ -67,7 +67,7 @@ public class PositionMiniController {
             }
             String pageSize=(String)map.get("pageSize");
             if(StringUtils.isNullOrEmpty(pageSize)){
-                pageSize="10";
+                pageSize="20";
             }
             String accountId=(String)map.get("accountId");
             if(StringUtils.isNullOrEmpty(accountId)||"0".equals(accountId)){
