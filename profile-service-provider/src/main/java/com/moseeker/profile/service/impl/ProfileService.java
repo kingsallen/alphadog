@@ -983,6 +983,10 @@ public class ProfileService {
 
                 if(!entry.getValue().toString().startsWith("[{") && !entry.getValue().toString().startsWith("[")) {
                     Map<String, Object> map = new HashMap<>();
+                    if("证件照".equals(entry.getKey())){
+                        otherMap.put("photo", entry.getValue());
+                        continue;
+                    }
                     map.put("key", entry.getKey());
                     if(entry.getValue() != null && !"".equals(entry.getValue())) {
                         map.put("value", entry.getValue());
