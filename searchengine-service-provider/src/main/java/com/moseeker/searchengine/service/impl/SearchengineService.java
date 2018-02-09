@@ -257,7 +257,7 @@ public class SearchengineService {
                     continue;
                 }
                 BoolQueryBuilder keyor = QueryBuilders.boolQuery();
-                QueryBuilder fullf = QueryBuilders.queryStringQuery(keywords)
+                QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
                         .field("title", 20.0f)
                         .field("city", 10.0f)
                         .field("team_name", 5.0f)
