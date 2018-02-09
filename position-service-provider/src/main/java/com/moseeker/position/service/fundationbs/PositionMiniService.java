@@ -58,10 +58,10 @@ public class PositionMiniService {
     public HrRecruitStatisticsDao hrRecruitStatisticsDao;
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
     @CounterIface
-    public PositionMiniBean getPositionMiniList(int accountId,String keyWord,int page,int pageSize) throws TException {
+    public PositionMiniBean getPositionMiniList(int accountId,String keyword,int page,int pageSize) throws TException {
         CompanyAccount account=this.getAccountInfo(accountId);
-        PositionMiniBean result=this.getAccountStatus(keyWord,page,pageSize,account);
-        List<PositionMiniInfo> list=getSearchdata(keyWord,page,pageSize,account);
+        PositionMiniBean result=this.getAccountStatus(keyword,page,pageSize,account);
+        List<PositionMiniInfo> list=getSearchdata(keyword,page,pageSize,account);
         this.handlerPositionMiniInfoList(list);
         result.setPositionList(list);
         this.handlerData(result,account);
@@ -81,9 +81,12 @@ public class PositionMiniService {
         }
         return null;
     }
-    /*
-     获取es的数据并处理
-     */
+    @CounterIface
+    public PositionMiniBean getPositionNumByStatus(int accountId,String keyword,int page,int pageSize) throws TException {
+        CompanyAccount account=this.getAccountInfo(accountId);
+        PositionMiniBean result=this.getAccountStatus(keyword,page,pageSize,account);
+        return result;
+    }
 
 
     /*
