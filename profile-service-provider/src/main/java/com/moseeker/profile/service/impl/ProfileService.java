@@ -1464,8 +1464,11 @@ public class ProfileService {
               logger.info("申请查看状态更新以及发送模板消息出错");
           }
       }
-        List<Integer> positionList = null;
-        if(applicationDOS != null && applicationDOS.size()>0){
+
+
+      List<Integer> positionList = new ArrayList<>();
+      logger.info("有效申请职位：{}；数量：{}", applicationDOS, applicationDOS.size());
+      if(applicationDOS != null && applicationDOS.size()>0){
             positionList = applicationDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
 
             return  getProfileOther(positionList, profileId);
