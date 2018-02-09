@@ -248,7 +248,6 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         }catch (CommonException e){
             return ResponseUtils.fail(e.getCode(),e.getMessage());
         }
-
     }
 
 
