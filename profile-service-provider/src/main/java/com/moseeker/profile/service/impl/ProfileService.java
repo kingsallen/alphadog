@@ -1062,7 +1062,10 @@ public class ProfileService {
           throw CommonException.PROGRAM_PARAM_NOTEXIST;
       long infoTime = System.currentTimeMillis();
       logger.info("getApplicationOther others info  time:{}", infoTime-start);
-      Query applicationQuery = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.COMPANY_ID.getName(),companyAccountDO.getCompanyId())
+      HrCompanyDO companyDO = this.selectSuperCompany(companyAccountDO.getCompanyId());
+      if (companyAccountDO == null)
+          throw CommonException.PROGRAM_PARAM_NOTEXIST;
+      Query applicationQuery = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.COMPANY_ID.getName(),companyDO.getId())
               .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
       applicationDOList = jobApplicationDao.getDatas(applicationQuery);
       long appTime = System.currentTimeMillis();
@@ -1176,5 +1179,16 @@ public class ProfileService {
             }
         });
         return ResponseUtils.success(result);
+    }
+
+
+    private HrCompanyDO selectSuperCompany(int companyId){
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+        HrCompanyDO companyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
+        if(companyDO != null && companyDO.getParentId() != 0){
+            selectSuperCompany(companyDO.getParentId());
+        }
+        return companyDO;
     }
 }
