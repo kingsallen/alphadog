@@ -532,6 +532,7 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
                 .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.eq(AbleFlag.ENABLE.getValue()))
                 .and(UserHrAccount.USER_HR_ACCOUNT.ACTIVATION.eq((byte) HRAccountActivationType.Actived.getValue()))
                 .orderBy(UserHrAccount.USER_HR_ACCOUNT.ACCOUNT_TYPE.asc())
+                .limit(1)
                 .fetchOneInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount.class);
         return record;
 
