@@ -99,8 +99,6 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
         position.setDescription(description);
 
         position.setCities(getCities(positionDB));
-        //51职位需要补全到6位
-        position.setCities(formateList(position.getCities(),"000000"));
 
         position.setEmail(getEmail(positionDB));
 
