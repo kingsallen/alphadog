@@ -19,11 +19,9 @@ import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
@@ -52,13 +50,14 @@ import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.profile.utils.DictCode;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
@@ -67,14 +66,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
@@ -84,11 +75,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 @Service
 @CounterIface
 public class ProfileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+            .getService(JobApplicationServices.Iface.class);
 
     @Autowired
     private UserHrAccountDao userHrAccountDao;
@@ -450,6 +450,19 @@ public class ProfileService {
         if(StringUtils.isEmptyList(positionApplications)){
             return ResponseUtils.success("");
         }
+
+        com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount userHrAccount = userHrAccountDao.fetchSuperHR(profileApplicationForm.getCompany_id());
+        List<Integer> applicationIdList = positionApplications
+                .stream()
+                .map(entry -> (Integer)entry.getValue().get("id"))
+                .collect(Collectors.toList());
+
+        try {
+            applicationService.viewApplications(userHrAccount.getId(), applicationIdList);
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+        }
+
         logger.info("=================================================");
         List<Map<String, Object>> datas =dao.getRelatedDataByJobApplication( positionApplications, downloadUrl, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
         return dao.handleResponse(datas);
