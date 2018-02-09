@@ -11,10 +11,12 @@ import com.moseeker.baseorm.dao.logdb.LogResumeDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -38,6 +40,8 @@ import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.profile.utils.DictCode;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
@@ -70,6 +74,9 @@ import static com.moseeker.baseorm.util.BeanUtils.profilter;
 public class ProfileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+            .getService(JobApplicationServices.Iface.class);
 
     @Autowired
     protected ProfileProfileDao dao;
@@ -108,6 +115,9 @@ public class ProfileService {
     private ConfigSysCvTplDao configSysCvTplDao;
     @Autowired
     private TalentPoolEntity talentPoolEntity;
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
@@ -416,6 +426,19 @@ public class ProfileService {
         if(StringUtils.isEmptyList(positionApplications)){
             return ResponseUtils.success("");
         }
+
+        UserHrAccountRecord userHrAccountRecord = userHrAccountDao.fetchSuperHR(profileApplicationForm.getCompany_id());
+        List<Integer> applicationIdList = positionApplications
+                .stream()
+                .map(entry -> (Integer)entry.getValue().get("id"))
+                .collect(Collectors.toList());
+
+        try {
+            applicationService.viewApplications(userHrAccountRecord.getId(), applicationIdList);
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+        }
+
         logger.info("=================================================");
         List<Map<String, Object>> datas =dao.getRelatedDataByJobApplication( positionApplications, downloadUrl, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
         return dao.handleResponse(datas);
