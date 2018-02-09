@@ -81,4 +81,32 @@ public class PositionMiniController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+    /**
+     * 小程序中上下架职位的数量
+     */
+    @RequestMapping(value = "/api/mini/position/num/status", method = RequestMethod.POST)
+    @ResponseBody
+    public String getPositionStatusNum(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            int page= 0;
+            int pageSize=20;
+            if(map.get("pageNum")!=null){
+                page=(int)map.get("pageNum");
+            }
+            if(map.get("pageSize")!=null){
+                pageSize=(int)map.get("pageSize");
+            }
+            int accountId=(int)map.get("accountId");
+            String keyWords=(String)map.get("keyword");
+            if(StringUtils.isNotNullOrEmpty(keyWords)){
+                keyWords=StringUtils.filterStringForSearch(keyWords);
+            }
+            Response res = positonServices.getMiniPositionNumStatus(accountId,keyWords,page,pageSize);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

@@ -19,6 +19,7 @@ import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
@@ -36,6 +37,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
@@ -58,6 +60,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
@@ -66,6 +69,12 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import java.text.ParseException;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
@@ -86,9 +95,6 @@ import java.util.stream.Collectors;
 public class ProfileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
-            .getService(JobApplicationServices.Iface.class);
 
     @Autowired
     private UserHrAccountDao userHrAccountDao;
@@ -145,6 +151,8 @@ public class ProfileService {
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
             .getService(JobApplicationServices.Iface.class);
+
+    ThreadPool pool = ThreadPool.Instance;
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
@@ -1589,7 +1597,7 @@ public class ProfileService {
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         HrCompanyDO companyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
         if(companyDO != null && companyDO.getParentId() != 0){
-            selectSuperCompany(companyDO.getParentId());
+            companyDO = selectSuperCompany(companyDO.getParentId());
         }
         return companyDO;
     }
