@@ -58,6 +58,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
@@ -142,9 +143,6 @@ public class ProfileService {
 
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
-
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
-            .getService(JobApplicationServices.Iface.class);
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
