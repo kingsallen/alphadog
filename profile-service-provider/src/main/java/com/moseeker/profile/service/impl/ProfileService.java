@@ -143,6 +143,9 @@ public class ProfileService {
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
 
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+            .getService(JobApplicationServices.Iface.class);
+
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
         record = dao.getRecord(query);
@@ -1432,19 +1435,21 @@ public class ProfileService {
           throw CommonException.PROGRAM_PARAM_NOTEXIST;
       long infoTime = System.currentTimeMillis();
       logger.info("getApplicationOther others info  time:{}", infoTime-start);
-      Query applicationQuery = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.COMPANY_ID.getName(),companyAccountDO.getCompanyId())
+      HrCompanyDO companyDO = this.selectSuperCompany(companyAccountDO.getCompanyId());
+      if (companyAccountDO == null)
+          throw CommonException.PROGRAM_PARAM_NOTEXIST;
+      Query applicationQuery = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.COMPANY_ID.getName(),companyDO.getId())
               .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
       applicationDOList = jobApplicationDao.getDatas(applicationQuery);
       long appTime = System.currentTimeMillis();
       logger.info("getApplicationOther others appTime  time:{}", appTime -infoTime);
-      List<JobApplicationDO> updateList = new ArrayList<>();
+      List<Integer> updateList = new ArrayList<>();
       if(accountDO.getAccountType() == 0){
           for(JobApplicationDO applicationDO : applicationDOList){
               if(applicationDO.getApplyType() == 0 || (applicationDO.getApplyType() == 1 && applicationDO.getEmailStatus() == 0)){
                   applicationDOS.add(applicationDO);
                   if(((int)applicationDO.getIsViewed())==1){
-                      applicationDO.setIsViewed(0);
-                      updateList.add(applicationDO);
+                      updateList.add(applicationDO.getId());
                   }
               }
           }
@@ -1456,8 +1461,7 @@ public class ProfileService {
               if(applicationDO.getApplyType() == 0 || (applicationDO.getApplyType() == 1 && applicationDO.getEmailStatus() == 0)){
                   applicationDOS.add(applicationDO);
                   if(positionIdList.contains(applicationDO.getPositionId())){
-                      applicationDO.setIsViewed(0);
-                      updateList.add(applicationDO);
+                      updateList.add(applicationDO.getId());
                   }
               }
 
@@ -1468,10 +1472,17 @@ public class ProfileService {
       logger.info("getApplicationOther others position  time:{}", positionTime-appTime);
       //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
       if(updateList != null && updateList.size()>0){
-          jobApplicationDao.updateDatas(updateList);
+          try {
+              applicationService.viewApplications(accountId, updateList);
+          } catch (TException e) {
+              logger.info("申请查看状态更新以及发送模板消息出错");
+          }
       }
-        List<Integer> positionList = null;
-        if(applicationDOS != null && applicationDOS.size()>0){
+
+
+      List<Integer> positionList = new ArrayList<>();
+      logger.info("有效申请职位：{}；数量：{}", applicationDOS, applicationDOS.size());
+      if(applicationDOS != null && applicationDOS.size()>0){
             positionList = applicationDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
 
             return  getProfileOther(positionList, profileId);
@@ -1546,30 +1557,40 @@ public class ProfileService {
      人才库简历上传
      */
     public Response talentpoolUploadParse(String fileName,String fileData,int companyId) throws TException, IOException {
-        Map<String,Object> result=new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         ResumeObj resumeObj = profileEntity.profileParser(fileName, fileData);
         logger.info("==============**********************");
         logger.info(JSON.toJSONString(resumeObj));
         logger.info("==============**********************");
-        result.put("resumeObj",resumeObj);
-        if(resumeObj.getStatus().getCode() == 200){
-            String phone=resumeObj.getResult().getPhone();
-            int userId=0;
-            if(StringUtils.isNotNullOrEmpty(phone)){
-                UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(phone,companyId);
-                if(userRecord!=null){
-                    userId=userRecord.getId();
+        result.put("resumeObj", resumeObj);
+        if (resumeObj.getStatus().getCode() == 200) {
+            String phone = resumeObj.getResult().getPhone();
+            int userId = 0;
+            if (StringUtils.isNotNullOrEmpty(phone)) {
+                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId);
+                if (userRecord != null) {
+                    userId = userRecord.getId();
                 }
 
             }
-            ProfileObj profileObj=handlerParseData(resumeObj,userId,fileName);
+            ProfileObj profileObj = handlerParseData(resumeObj, userId, fileName);
             logger.info("==============**********************");
             logger.info(JSON.toJSONString(profileObj));
             logger.info("==============**********************");
-            result.put("profile",profileObj);
-        }else{
-            ResponseUtils.fail(1,"解析失败");
+            result.put("profile", profileObj);
+        } else {
+            ResponseUtils.fail(1, "解析失败");
         }
         return ResponseUtils.success(result);
+    }
+
+    private HrCompanyDO selectSuperCompany(int companyId){
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+        HrCompanyDO companyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
+        if(companyDO != null && companyDO.getParentId() != 0){
+            selectSuperCompany(companyDO.getParentId());
+        }
+        return companyDO;
     }
 }

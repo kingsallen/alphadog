@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class StringUtils {
@@ -474,11 +476,26 @@ public class StringUtils {
             if(value.contains("=")) {
                 value = value.replaceAll("=", " ");
             }
+            if(value.contains(" ")){
+                if(StringUtils.isNotNullOrEmpty(value)&&isContainChinese(value)){
+                    value = value.replaceAll(" ", "");
+                }
+            }
             if(StringUtils.isNotNullOrEmpty(value)){
                 value=value.trim();
             }
         }
         return value;
+    }
+
+    //正则表达式判断是否包含中文
+    private static boolean isContainChinese(String str) {
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return true;
+        }
+        return false;
     }
 
 //    public static void main(String[] args) {
