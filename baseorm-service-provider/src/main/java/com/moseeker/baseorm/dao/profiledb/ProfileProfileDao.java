@@ -1100,6 +1100,12 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             recommenderIds.add(((Integer) entry.getValue().get("recommender_user_id")));
         }
 
+        create.update(JobApplication.JOB_APPLICATION)
+                .set(JobApplication.JOB_APPLICATION.IS_VIEWED, (byte)1)
+                .set(JobApplication.JOB_APPLICATION.VIEW_COUNT, JobApplication.JOB_APPLICATION.VIEW_COUNT.add(1))
+                .where(JobApplication.JOB_APPLICATION.ID.in(applicationIds))
+                .execute();
+
         positionIds.remove(Integer.valueOf(0));
         applicationIds.remove(Integer.valueOf(0));
         applierIds.remove(Integer.valueOf(0));
