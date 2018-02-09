@@ -746,7 +746,7 @@ public class ProfileUtils {
 				record.setUserId((Integer) profile.get("user_id"));
 			}
 			if (profile.get("disable") != null) {
-				record.setDisable(((Integer)profile.get("disable")).byteValue());
+				record.setDisable(BeanUtils.converToByte(profile.get("disable")));
 			} else {
 				record.setDisable((byte)(1));
 			}
