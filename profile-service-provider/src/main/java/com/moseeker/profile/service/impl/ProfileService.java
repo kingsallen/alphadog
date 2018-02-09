@@ -1424,7 +1424,10 @@ public class ProfileService {
           throw CommonException.PROGRAM_PARAM_NOTEXIST;
       long infoTime = System.currentTimeMillis();
       logger.info("getApplicationOther others info  time:{}", infoTime-start);
-      Query applicationQuery = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.COMPANY_ID.getName(),companyAccountDO.getCompanyId())
+      HrCompanyDO companyDO = this.selectSuperCompany(companyAccountDO.getCompanyId());
+      if (companyAccountDO == null)
+          throw CommonException.PROGRAM_PARAM_NOTEXIST;
+      Query applicationQuery = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.COMPANY_ID.getName(),companyDO.getId())
               .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
       applicationDOList = jobApplicationDao.getDatas(applicationQuery);
       long appTime = System.currentTimeMillis();
@@ -1543,30 +1546,40 @@ public class ProfileService {
      人才库简历上传
      */
     public Response talentpoolUploadParse(String fileName,String fileData,int companyId) throws TException, IOException {
-        Map<String,Object> result=new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         ResumeObj resumeObj = profileEntity.profileParser(fileName, fileData);
         logger.info("==============**********************");
         logger.info(JSON.toJSONString(resumeObj));
         logger.info("==============**********************");
-        result.put("resumeObj",resumeObj);
-        if(resumeObj.getStatus().getCode() == 200){
-            String phone=resumeObj.getResult().getPhone();
-            int userId=0;
-            if(StringUtils.isNotNullOrEmpty(phone)){
-                UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(phone,companyId);
-                if(userRecord!=null){
-                    userId=userRecord.getId();
+        result.put("resumeObj", resumeObj);
+        if (resumeObj.getStatus().getCode() == 200) {
+            String phone = resumeObj.getResult().getPhone();
+            int userId = 0;
+            if (StringUtils.isNotNullOrEmpty(phone)) {
+                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId);
+                if (userRecord != null) {
+                    userId = userRecord.getId();
                 }
 
             }
-            ProfileObj profileObj=handlerParseData(resumeObj,userId,fileName);
+            ProfileObj profileObj = handlerParseData(resumeObj, userId, fileName);
             logger.info("==============**********************");
             logger.info(JSON.toJSONString(profileObj));
             logger.info("==============**********************");
-            result.put("profile",profileObj);
-        }else{
-            ResponseUtils.fail(1,"解析失败");
+            result.put("profile", profileObj);
+        } else {
+            ResponseUtils.fail(1, "解析失败");
         }
         return ResponseUtils.success(result);
+    }
+
+    private HrCompanyDO selectSuperCompany(int companyId){
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+        HrCompanyDO companyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
+        if(companyDO != null && companyDO.getParentId() != 0){
+            selectSuperCompany(companyDO.getParentId());
+        }
+        return companyDO;
     }
 }
