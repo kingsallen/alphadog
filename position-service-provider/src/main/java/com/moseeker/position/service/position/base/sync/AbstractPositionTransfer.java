@@ -194,7 +194,7 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
      * @param positionDB
      * @return
      */
-    public List<String> getCities(JobPositionDO positionDB) {
+    public List<List<String>> getCities(JobPositionDO positionDB) {
         if(positionDB==null || positionDB.getId()==0){
             return Collections.emptyList();
         }
@@ -214,7 +214,7 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
             }
         }
 
-        List<String> otherCityCodes = cityMapDao.getOtherCityByCodes(getChannel(), new ArrayList<>(positionCityCodes));
+        List<List<String>> otherCityCodes = cityMapDao.getOtherCityByLastCodes(getChannel(), new ArrayList<>(positionCityCodes));
         logger.info("setCities:otherCityCodes:{}", otherCityCodes);
         return otherCityCodes;
     }
