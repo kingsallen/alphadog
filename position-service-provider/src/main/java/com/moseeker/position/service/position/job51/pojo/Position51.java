@@ -16,7 +16,7 @@ public class Position51 implements Serializable {
     private String company;
     private String department;
     private String quantity;
-    private List<List<String>> cities;
+    private List<String> cities;
     private ThirdpartyAccountCompanyAddress address;
     private String degree;
     private List<String> occupation;
@@ -75,11 +75,11 @@ public class Position51 implements Serializable {
         this.degree = degree;
     }
 
-    public List<List<String>> getCities() {
+    public List<String> getCities() {
         return cities;
     }
 
-    public void setCities(List<List<String>> cities) {
+    public void setCities(List<String> cities) {
         this.cities = cities;
     }
 

@@ -32,6 +32,20 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
         super(table, dictCityMapDOClass);
     }
 
+    public List<String> getOtherCityByCodes(ChannelType channelType, List<Integer> cityCodes) {
+        Query channelCityQuery = new Query.QueryBuilder()
+                .where(new Condition(DictCityMap.DICT_CITY_MAP.CODE.getName(), cityCodes, ValueOp.IN))
+                .and(DictCityMap.DICT_CITY_MAP.CHANNEL.getName(), channelType.getValue())
+                .buildQuery();
+        List<DictCityMapDO> dictCityMaps = getDatas(channelCityQuery);
+
+        if(dictCityMaps==null || dictCityMaps.isEmpty()){
+            return new ArrayList<>();
+        }
+
+        return dictCityMaps.stream().map(c->c.getCodeOther()).collect(Collectors.toList());
+    }
+
     public List<List<String>> getOtherCityByLastCodes(ChannelType channelType, List<Integer> cityCodes) {
 
         if (cityCodes == null || cityCodes.size() == 0) return new ArrayList<>();

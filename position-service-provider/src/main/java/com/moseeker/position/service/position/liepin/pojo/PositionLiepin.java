@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class PositionLiepin implements Serializable {
     private String title;
-    private List<List<String>> cities;
+    private List<String> cities;
     private String address;
     private List<String> occupation;
     private String department;
@@ -47,11 +47,11 @@ public class PositionLiepin implements Serializable {
         this.title = title;
     }
 
-    public List<List<String>> getCities() {
+    public List<String> getCities() {
         return cities;
     }
 
-    public void setCities(List<List<String>> cities) {
+    public void setCities(List<String> cities) {
         this.cities = cities;
     }
 

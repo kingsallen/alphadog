@@ -8,7 +8,7 @@ import java.util.List;
 public class PositionVeryEast {
     private String company;
     private String title;
-    private List<List<String>> region;
+    private List<String> region;
     private int quantity;
     private int indate;
     private int salary;
@@ -53,11 +53,11 @@ public class PositionVeryEast {
         this.title = title;
     }
 
-    public List<List<String>> getRegion() {
+    public List<String> getRegion() {
         return region;
     }
 
-    public void setRegion(List<List<String>> region) {
+    public void setRegion(List<String> region) {
         this.region = region;
     }
 
