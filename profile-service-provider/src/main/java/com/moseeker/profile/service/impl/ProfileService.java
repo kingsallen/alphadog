@@ -23,6 +23,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
@@ -689,7 +690,7 @@ public class ProfileService {
                             workexps.setJob(jobExpObj.getJob_position());
                         }
                         if (StringUtils.isNotNullOrEmpty(jobExpObj.getJob_nature())) {
-                            workexps.setType(DictCode.workType(jobExpObj.getJob_nature()));
+                           workexps.setType(DictCode.workType(jobExpObj.getJob_nature()));
                         }
                         workexps.setDepartmentName(jobExpObj.getJob_cpy_dept());
                         workexpsList.add(workexps);
@@ -709,6 +710,18 @@ public class ProfileService {
                 }
                 profileObj.setLanguages(languageList);
                 logger.info("profileParser getLanguages:{}", JSON.toJSONString(profileObj.getLanguages()));
+
+                // 查询
+                UserUserRecord userUser = userDao.getUserById(uid);
+                if (userUser != null) {
+                    User user = new User();
+                    user.setEmail(userUser.getEmail());
+                    user.setMobile(String.valueOf(userUser.getMobile()));
+                    user.setUid(String.valueOf(uid));
+                    user.setName(userUser.getName());
+                    profileObj.setUser(user);
+                }
+                logger.info("profileParser getUser:{}", JSON.toJSONString(profileObj.getUser()));
 
                 // 期望
                 Intentions intentions = new Intentions();
@@ -801,13 +814,6 @@ public class ProfileService {
                     resumeDao.addRecord(logResumeRecordRecord);
                 }
 
-                // 用户信息
-                User user = new User();
-                user.setMobile(resumeObj.getResult().getPhone());
-                user.setEmail(resumeObj.getResult().getEmail());
-                user.setName(resumeObj.getResult().getName());
-                profileObj.setUser(user);
-
                 // basic信息
                 logger.info("profileParser resumeObj.getResult().getCity():{}", resumeObj.getResult().getCity());
                 logger.info("profileParser resumeObj.getResult().getGender():{}", resumeObj.getResult().getGender());
@@ -839,9 +845,9 @@ public class ProfileService {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        logger.info("profileParser:{}", JSON.toJSONString(profileObj));
         return profileObj;
     }
-
 
     private ProfileObj handlerParseData(ResumeObj resumeObj,int uid,String fileName ){
         ProfileObj profileObj = new ProfileObj();
@@ -1163,8 +1169,6 @@ public class ProfileService {
         }
         return profileObj;
     }
-
-
     /**
      * 自定义简历数据校验
      * @param userId
@@ -1480,11 +1484,7 @@ public class ProfileService {
       logger.info("getApplicationOther others position  time:{}", positionTime-appTime);
       //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
       if(updateList != null && updateList.size()>0){
-          try {
-              applicationService.viewApplications(accountId, updateList);
-          } catch (TException e) {
-              logger.info("申请查看状态更新以及发送模板消息出错");
-          }
+         pool.startTast(() -> viewApplications(accountId, updateList));
       }
 
 
@@ -1498,6 +1498,14 @@ public class ProfileService {
         return  null;
     }
 
+    private String viewApplications(int accountId, List<Integer> updateList){
+        try {
+            applicationService.viewApplications(accountId, updateList);
+        } catch (Exception e) {
+            logger.info("申请查看状态更新以及发送模板消息出错");
+        }
+        return null;
+    }
     /**
      * 校验other指定字段
      * @param fields
