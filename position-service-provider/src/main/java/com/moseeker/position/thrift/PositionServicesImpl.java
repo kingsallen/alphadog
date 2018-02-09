@@ -546,4 +546,18 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public Response getMiniPositionNumStatus(int accountId, String keyword, int page, int pageSize) throws TException {
+        try {
+            PositionMiniBean  result=positionMiniService.getPositionNumByStatus(accountId,keyword,page,pageSize);
+            if(result==null){
+                return  ResponseUtils.success(new PositionMiniBean());
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }
