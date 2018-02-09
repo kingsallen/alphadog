@@ -1102,6 +1102,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
         create.update(JobApplication.JOB_APPLICATION)
                 .set(JobApplication.JOB_APPLICATION.IS_VIEWED, (byte)1)
+                .set(JobApplication.JOB_APPLICATION.VIEW_COUNT, JobApplication.JOB_APPLICATION.VIEW_COUNT.add(1))
                 .where(JobApplication.JOB_APPLICATION.ID.in(applicationIds))
                 .execute();
 
