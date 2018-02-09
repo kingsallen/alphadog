@@ -517,8 +517,15 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public Response updatePosition(String param) throws TException {
-        return service.updatePosition(param);
+        try {
+            return service.updatePosition(param);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+
     }
+
     @Override
     public Response getMiniPositionList(int accountId, String keyword, int page, int pageSize) throws TException {
         try {

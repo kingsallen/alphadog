@@ -38,6 +38,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
@@ -142,6 +143,8 @@ public class ProfileService {
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
             .getService(JobApplicationServices.Iface.class);
+
+    ThreadPool pool = ThreadPool.Instance;
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
@@ -1100,7 +1103,7 @@ public class ProfileService {
       //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
       if(updateList != null && updateList.size()>0){
 //          try {
-//              applicationService.viewApplications(accountId, applicationIdList);
+//              pool.startTast(() -> applicationService.viewApplications(accountId, updateList));
 //          } catch (TException e) {
 //              logger.info("申请查看状态更新以及发送模板消息出错");
 //          }
@@ -1187,7 +1190,7 @@ public class ProfileService {
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         HrCompanyDO companyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
         if(companyDO != null && companyDO.getParentId() != 0){
-            selectSuperCompany(companyDO.getParentId());
+            companyDO = selectSuperCompany(companyDO.getParentId());
         }
         return companyDO;
     }
