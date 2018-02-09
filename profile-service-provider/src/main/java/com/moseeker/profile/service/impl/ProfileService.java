@@ -16,7 +16,6 @@ import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -35,13 +34,10 @@ import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.profile.*;
-import com.moseeker.entity.pojo.profile.User;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.profile.utils.DictCode;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
@@ -52,12 +48,6 @@ import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
@@ -66,17 +56,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static com.moseeker.baseorm.util.BeanUtils.jooqMapfilter;
-import static com.moseeker.baseorm.util.BeanUtils.profilter;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @CounterIface
 public class ProfileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
-            .getService(JobApplicationServices.Iface.class);
 
     @Autowired
     protected ProfileProfileDao dao;
@@ -425,18 +416,6 @@ public class ProfileService {
         positionApplications=handlerApplicationData(positionApplications);
         if(StringUtils.isEmptyList(positionApplications)){
             return ResponseUtils.success("");
-        }
-
-        UserHrAccountRecord userHrAccountRecord = userHrAccountDao.fetchSuperHR(profileApplicationForm.getCompany_id());
-        List<Integer> applicationIdList = positionApplications
-                .stream()
-                .map(entry -> (Integer)entry.getValue().get("id"))
-                .collect(Collectors.toList());
-
-        try {
-            applicationService.viewApplications(userHrAccountRecord.getId(), applicationIdList);
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
         }
 
         logger.info("=================================================");
