@@ -229,4 +229,7 @@ public final class Constant {
     public static final int FANS_PROFILE_COMPLETION=58;
     public static final int FANS_RECOM_POSITION=59;
     public static final int EMPLOYEE_RECOM_POSITION=57;
+
+    //小程序简历详情路径
+    public static  final String WX_APP_PROFILE_INFO_URL = "/pages/profile?user_id={}";
 }
