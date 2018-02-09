@@ -388,63 +388,63 @@ public class StringUtils {
     public static String filterStringForSearch(String value){
         if(StringUtils.isNotNullOrEmpty(value)){
             if(value.contains("/")){
-                value=value.replaceAll("/","");
+                value=value.replaceAll("/"," ");
             }
             if(value.contains("OR")){
-                value=value.replaceAll("OR","");
+                value=value.replaceAll("OR"," ");
             }
             if(value.contains("AND")){
-                value=value.replaceAll("AND","");
+                value=value.replaceAll("AND"," ");
             }
 
             if(value.contains("(")){
-                value=value.replaceAll("\\(","");
+                value=value.replaceAll("\\("," ");
             }
             if(value.contains(")")){
-                value=value.replaceAll("\\)","");
+                value=value.replaceAll("\\)"," ");
             }
             if(value.contains("+")){
-                value=value.replaceAll("\\+","");
+                value=value.replaceAll("\\+"," ");
             }
             if(value.contains("\\")){
-                value=value.replaceAll("\\\\","");
+                value=value.replaceAll("\\\\"," ");
             }
             if(value.contains("（")){
-                value=value.replaceAll("（","");
+                value=value.replaceAll("（"," ");
             }
             if(value.contains("）")){
-                value=value.replaceAll("）","");
+                value=value.replaceAll("）"," ");
             }
             if(value.contains("-")){
-                value=value.replaceAll("-","");
+                value=value.replaceAll("-"," ");
             }
             if(value.contains("&")){
-                value=value.replaceAll("&","");
+                value=value.replaceAll("&"," ");
             }
             if(value.contains("+")){
-                value=value.replaceAll("\\+","");
+                value=value.replaceAll("\\+"," ");
             }
             if(value.contains("-")){
-                value=value.replaceAll("-","");
+                value=value.replaceAll("-"," ");
             }
 
             if(value.contains("|")){
-                value=value.replaceAll("|","");
+                value=value.replaceAll("|"," ");
             }
             if(value.contains("!")){
-                value=value.replaceAll("!","");
+                value=value.replaceAll("!"," ");
             }
             if(value.contains("{")){
-                value=value.replaceAll("\\{","");
+                value=value.replaceAll("\\{"," ");
             }
             if(value.contains("}")) {
-                value = value.replaceAll("\\}", "");
+                value = value.replaceAll("\\}", " ");
             }
             if(value.contains("^")) {
-                value = value.replaceAll("\\^", "");
+                value = value.replaceAll("\\^", " ");
             }
             if(value.contains("\"")) {
-                value = value.replaceAll("\"", "");
+                value = value.replaceAll("\"", " ");
             }
             if(value.contains("~")) {
                 value = value.replaceAll("~", " ");
@@ -476,12 +476,18 @@ public class StringUtils {
             if(value.contains("=")) {
                 value = value.replaceAll("=", " ");
             }
+            if(value.contains(" ")){
+                if(StringUtils.isNotNullOrEmpty(value)&&isContainChinese(value)){
+                    value = value.replaceAll(" ", "");
+                }
+            }
             if(StringUtils.isNotNullOrEmpty(value)){
                 value=value.trim();
             }
         }
         return value;
     }
+
     //正则表达式判断是否包含中文
     private static boolean isContainChinese(String str) {
         Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
