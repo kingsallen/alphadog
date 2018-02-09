@@ -1187,7 +1187,7 @@ public class ProfileService {
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         HrCompanyDO companyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
         if(companyDO != null && companyDO.getParentId() != 0){
-            selectSuperCompany(companyDO.getParentId());
+            companyDO = selectSuperCompany(companyDO.getParentId());
         }
         return companyDO;
     }
