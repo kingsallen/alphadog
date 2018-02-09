@@ -67,6 +67,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import static java.lang.Math.round;
@@ -151,6 +152,7 @@ public class PositionService {
 
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
+    PositionServices.Iface positionServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
 
     private static List dictAlipaycampusJobcategorylist;
 
@@ -2084,6 +2086,7 @@ public class PositionService {
         JSONObject obj = JSONObject.parseObject(param);
         int position_id = obj.getIntValue("id");
         int account_id = obj.getIntValue("accountId");
+        String keyword = obj.getString("keyword");
         Query accountQuery =  new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), account_id).buildQuery();
         UserHrAccountDO accountDO = userHrAccountDao.getData(accountQuery);
         JobPositionDO positionDO = null;
