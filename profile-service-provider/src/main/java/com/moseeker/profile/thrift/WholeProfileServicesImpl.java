@@ -134,7 +134,7 @@ public class WholeProfileServicesImpl implements Iface {
 
             response = service.getResource(userId, -1, "");
 
-            if(response != null && response.getData() != null) {
+            if(response != null && response.getStatus() ==0 && response.getData() != null) {
                 Map<String, Object> profile = (Map<String, Object>) JsonToMap.parseJSON2Map(response.getData());
                 Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(profile);
                 return ResponseUtils.success(profilrCamle);

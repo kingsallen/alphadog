@@ -1177,11 +1177,7 @@ public class ProfileService {
       logger.info("getApplicationOther others position  time:{}", positionTime-appTime);
       //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
       if(updateList != null && updateList.size()>0){
-//          try {
-//              pool.startTast(() -> applicationService.viewApplications(accountId, updateList));
-//          } catch (TException e) {
-//              logger.info("申请查看状态更新以及发送模板消息出错");
-//          }
+         pool.startTast(() -> viewApplications(accountId, updateList));
       }
 
 
@@ -1195,6 +1191,14 @@ public class ProfileService {
         return  null;
     }
 
+    private String viewApplications(int accountId, List<Integer> updateList){
+        try {
+//            applicationService.viewApplications(accountId, updateList);
+        } catch (Exception e) {
+            logger.info("申请查看状态更新以及发送模板消息出错");
+        }
+        return null;
+    }
     /**
      * 校验other指定字段
      * @param fields
