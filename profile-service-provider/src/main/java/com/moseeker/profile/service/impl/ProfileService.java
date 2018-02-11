@@ -457,18 +457,6 @@ public class ProfileService {
             return ResponseUtils.success("");
         }
 
-        com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount userHrAccount = userHrAccountDao.fetchSuperHR(profileApplicationForm.getCompany_id());
-        List<Integer> applicationIdList = positionApplications
-                .stream()
-                .map(entry -> (Integer)entry.getValue().get("id"))
-                .collect(Collectors.toList());
-
-        try {
-            applicationService.viewApplications(userHrAccount.getId(), applicationIdList);
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
-        }
-
         logger.info("=================================================");
         List<Map<String, Object>> datas =dao.getRelatedDataByJobApplication( positionApplications, downloadUrl, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
         return dao.handleResponse(datas);
