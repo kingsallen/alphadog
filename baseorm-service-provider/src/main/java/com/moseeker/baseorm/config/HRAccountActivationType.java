@@ -1,4 +1,4 @@
-package com.moseeker.useraccounts.constant;
+package com.moseeker.baseorm.config;
 
 /**
  * HR 账号  是否激活常量

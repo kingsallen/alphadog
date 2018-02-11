@@ -15,6 +15,7 @@ dependencies {
     compile deps["spring-context"]
     compile deps["spring-tx"]
     compile deps["jetty-support"]
+    compile deps["commons-http"]
     testCompile deps["spring-test"]
    
 }

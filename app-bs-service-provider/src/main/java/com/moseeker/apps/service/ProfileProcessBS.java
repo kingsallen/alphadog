@@ -310,7 +310,7 @@ public class ProfileProcessBS {
         if (StringUtils.isNullOrEmpty(positionName)) {
             return;
         }
-        Map<String, MessageTplDataCol> data = new HashMap<String, MessageTplDataCol>();
+        Map<String, MessageTplDataCol> data = new HashMap<>();
         MsInfo msInfo = tm.processStatus(status, userName);
         if (msInfo != null) {
             String color = "#173177";

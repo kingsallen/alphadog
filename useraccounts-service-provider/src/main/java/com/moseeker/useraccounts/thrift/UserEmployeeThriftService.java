@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -10,6 +11,10 @@ import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.service.constant.AwardEvent;
+import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
+import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +32,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl employeeService;
+    UserEmployeeServiceImpl employeeService;
 
     @Autowired
     private EmployeeEntity employeeEntity;
@@ -104,5 +109,19 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
         }
+    }
+
+    @Override
+    public void addEmployeeAward(List<Integer> applicationIdList, int eventType) throws BIZException, TException {
+        /** 初始化业务编号 */
+        AwardEvent awardEvent = AwardEvent.initFromSate(eventType);
+        ValidateUtil vu = new ValidateUtil();
+        vu.addRequiredOneValidate("申请编号", applicationIdList, null, null);
+        vu.addRequiredValidate("积分事件", awardEvent, null, null);
+        String result = vu.validate();
+        if (StringUtils.isNotBlank(result)) {
+            throw ExceptionConvertUtil.convertCommonException(UserAccountException.validateFailed(result));
+        }
+        employeeService.addEmployeeAward(applicationIdList, awardEvent);
     }
 }
