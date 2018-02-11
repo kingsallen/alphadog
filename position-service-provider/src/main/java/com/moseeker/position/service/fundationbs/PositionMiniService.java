@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrRecruitStatisticsDao;
+import com.moseeker.baseorm.dao.hrdb.HrRecruitUniqueStatisticsDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
@@ -12,6 +13,7 @@ import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrRecruitStatisticsRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrRecruitUniqueStatisticsRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
@@ -55,7 +57,7 @@ public class PositionMiniService {
     @Autowired
     public TalentPoolEntity talentPoolEntity;
     @Autowired
-    public HrRecruitStatisticsDao hrRecruitStatisticsDao;
+    public HrRecruitUniqueStatisticsDao hrRecruitUniqueStatisticsDao;
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
     @CounterIface
     public PositionMiniBean getPositionMiniList(int accountId,String keyword,int page,int pageSize) throws TException {
@@ -146,14 +148,14 @@ public class PositionMiniService {
         if(!StringUtils.isEmptyList(list)){
             List<Integer> positionIdList=this.getPositionIdByPositionMiniInfoList(list);
             if(!StringUtils.isEmptyList(positionIdList)){
-                List<HrRecruitStatisticsRecord> applist=this.getAppByPositionId(positionIdList);
+                List<HrRecruitUniqueStatisticsRecord> applist=this.getAppByPositionId(positionIdList);
                 if(!StringUtils.isEmptyList(applist)){
                     for(PositionMiniInfo info:list){
                         int id=info.getId();
-                        for(HrRecruitStatisticsRecord recruitStatisticsRecord:applist){
-                            int positionId=recruitStatisticsRecord.getPositionId();
+                        for(HrRecruitUniqueStatisticsRecord recruitUniqueStatisticsRecord:applist){
+                            int positionId=recruitUniqueStatisticsRecord.getPositionId();
                             if(positionId==id){
-                                int resumeNum=recruitStatisticsRecord.getApplyNum();
+                                int resumeNum=recruitUniqueStatisticsRecord.getApplyNum();
                                 info.setResumeNum(resumeNum);
                                 continue;
                             }
@@ -167,9 +169,9 @@ public class PositionMiniService {
     /*
      根据positionIdList获取收到的简历数
      */
-    public List<HrRecruitStatisticsRecord> getAppByPositionId(List<Integer> positionIdList){
+    public List<HrRecruitUniqueStatisticsRecord> getAppByPositionId(List<Integer> positionIdList){
         Query query=new Query.QueryBuilder().where(new Condition("position_id",positionIdList.toArray(),ValueOp.IN)).buildQuery();
-        List<HrRecruitStatisticsRecord> list=hrRecruitStatisticsDao.getRecords(query);
+        List<HrRecruitUniqueStatisticsRecord> list= hrRecruitUniqueStatisticsDao.getRecords(query);
         return list;
     }
     /*
@@ -190,7 +192,9 @@ public class PositionMiniService {
      */
     public List<PositionMiniInfo> getSearchdata(String keyWord,int page,int pageSize,CompanyAccount account) throws TException {
         Map<String,String> params=new HashMap<>();
-        params.put("keyword",keyWord);
+        if(StringUtils.isNotNullOrEmpty(keyWord)){
+            params.put("keyword",keyWord);
+        }
         params.put("page",String.valueOf(page));
         params.put("pageSize",String.valueOf(pageSize));
         UserHrAccount userHrAccount=account.getUserHrAccount();
@@ -247,7 +251,9 @@ public class PositionMiniService {
         if(accountType==0){
             int companyId=account1.getCompanyId();
             Map<String,String> params=new HashMap<>();
-            params.put("keyword",keyWord);
+            if(StringUtils.isNotNullOrEmpty(keyWord)){
+                params.put("keyword",keyWord);
+            }
             params.put("page",String.valueOf(page));
             params.put("pageSize",String.valueOf(pageSize));
             params.put("motherCompanyId",String.valueOf(companyId));
@@ -269,7 +275,9 @@ public class PositionMiniService {
         }else{
             int accountId=account1.getId();
             Map<String,String> params=new HashMap<>();
-            params.put("keyword",keyWord);
+            if(StringUtils.isNotNullOrEmpty(keyWord)){
+                params.put("keyword",keyWord);
+            }
             params.put("page",String.valueOf(page));
             params.put("pageSize",String.valueOf(pageSize));
             params.put("publisher",String.valueOf(accountId));
