@@ -137,8 +137,6 @@ public class ProfileService {
 
     @Autowired
     private ConfigSysCvTplDao configSysCvTplDao;
-    @Autowired
-    private TalentPoolEntity talentPoolEntity;
 
     @Autowired
     private TalentPoolEntity talentPoolEntity;
