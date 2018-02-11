@@ -230,6 +230,7 @@ public class TemlateMsgHttp {
             Map<String, String> miniprogram = new HashMap<>();
             miniprogram.put("appid", appid);
             miniprogram.put("pagepath", Constant.WX_APP_PROFILE_INFO_URL.replace("{}", user.getId()+""));
+            logger.info("minprogram 参数 ：{}", miniprogram);
             applierTemplate.put("miniprogram", miniprogram);
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
             Map<String, Object> params = JSON.parseObject(result);
