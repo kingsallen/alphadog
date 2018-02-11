@@ -546,7 +546,7 @@ public class SearchUtil {
             if("1".equals(condition)){
                 QueryBuilder query0=QueryBuilders.matchQuery("user.upload",1);
                 ((BoolQueryBuilder) keyand).should(query0);
-            }else if("-99".equals(condition)){
+            }else if("-99".equals(condition)||"99".equals(condition)){
                 List<Integer>  conditionList=new ArrayList<>();
                 conditionList.add(1);
                 conditionList.add(2);
