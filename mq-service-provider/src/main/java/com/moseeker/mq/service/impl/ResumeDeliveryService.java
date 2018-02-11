@@ -444,8 +444,8 @@ public class ResumeDeliveryService {
         String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
 
         if(hrWxUserDo != null && templateMessageDO != null){
-            String link ="";
-            response = msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDO, userUserDO, workExp, lastWorkName , hrWxUserDo.getOpenid(), url, link);
+            String appid = handlerMiniappId();
+            response = msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDO, userUserDO, workExp, lastWorkName , hrWxUserDo.getOpenid(), url, appid);
         }
         logger.info("sendMessageAndEmail sendTemplateMessageToHr:{}", response);
         return  response;
@@ -585,6 +585,13 @@ public class ResumeDeliveryService {
             url=env.getProperty("message.template.delivery.recom.link");
         }
         return url;
+
+    }
+
+    private String handlerMiniappId(){
+        String appid="";
+        appid=env.getProperty("miniapp.appid");
+        return appid;
 
     }
 
