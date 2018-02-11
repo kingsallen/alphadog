@@ -247,7 +247,9 @@ public class PositionMiniService {
         if(accountType==0){
             int companyId=account1.getCompanyId();
             Map<String,String> params=new HashMap<>();
-            params.put("keyword",keyWord);
+            if(StringUtils.isNotNullOrEmpty(keyWord)){
+                params.put("keyword",keyWord);
+            }
             params.put("page",String.valueOf(page));
             params.put("pageSize",String.valueOf(pageSize));
             params.put("motherCompanyId",String.valueOf(companyId));
@@ -269,7 +271,9 @@ public class PositionMiniService {
         }else{
             int accountId=account1.getId();
             Map<String,String> params=new HashMap<>();
-            params.put("keyword",keyWord);
+            if(StringUtils.isNotNullOrEmpty(keyWord)){
+                params.put("keyword",keyWord);
+            }
             params.put("page",String.valueOf(page));
             params.put("pageSize",String.valueOf(pageSize));
             params.put("publisher",String.valueOf(accountId));
