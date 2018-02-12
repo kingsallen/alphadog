@@ -26,6 +26,7 @@ public class LogVO implements Serializable {
     private String useragent;
     private String req_params;
     private Object customs;
+    private ReqParams recom_params;
 
     public Date getReq_time() {
         return req_time;
@@ -161,5 +162,13 @@ public class LogVO implements Serializable {
 
     public void setCustoms(Object customs) {
         this.customs = customs;
+    }
+
+    public ReqParams getRecom_params() {
+        return recom_params;
+    }
+
+    public void setRecom_params(ReqParams recom_params) {
+        this.recom_params = recom_params;
     }
 }
