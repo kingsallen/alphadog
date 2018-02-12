@@ -69,6 +69,12 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import java.text.ParseException;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
@@ -90,8 +96,9 @@ public class ProfileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+
     @Autowired
-    private UserHrAccountDao userHrAccountDao;
+    protected UserHrAccountDao userHrAccountDao;
 
     @Autowired
     protected ProfileProfileDao dao;
@@ -1290,4 +1297,5 @@ public class ProfileService {
         }
         return companyDO;
     }
+
 }

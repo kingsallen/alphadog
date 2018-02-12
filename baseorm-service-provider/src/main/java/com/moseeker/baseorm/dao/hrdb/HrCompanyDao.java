@@ -89,7 +89,7 @@ public class HrCompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
         boolean scaleIllegal = false;
         if (property != null && property.intValue() > 0) {
             List<DictConstantRecord> dictScales = create.selectFrom(DictConstant.DICT_CONSTANT)
-                    .where(DictConstant.DICT_CONSTANT.PARENT_CODE.equal(Constant.DICT_CONSTANT_COMPANY_SCAL))
+                    .where(DictConstant.DICT_CONSTANT.PARENT_CODE.equal(Constant.DICT_CONSTANT_COMPANY_PROPERTY))
                     .and(DictConstant.DICT_CONSTANT.CODE.equal(property.intValue())).fetch();
             if(dictScales != null && dictScales.size() > 0) {
                 scaleIllegal = true;

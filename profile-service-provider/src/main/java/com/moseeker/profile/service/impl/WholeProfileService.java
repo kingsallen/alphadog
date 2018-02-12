@@ -43,6 +43,7 @@ import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.*;

@@ -191,6 +191,7 @@ public class JobApplicataionServicesImpl implements Iface {
         }
     }
 
+
     /**
      * 清除一个公司一个人申请次数限制的redis key 给sysplat用
      *

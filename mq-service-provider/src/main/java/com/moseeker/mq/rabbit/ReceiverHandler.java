@@ -124,6 +124,7 @@ public class ReceiverHandler {
                     if(type==3){
                         personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,1,20);
                     }
+
                     logVo.setStatus_code(0);
                 }else{
                     this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
