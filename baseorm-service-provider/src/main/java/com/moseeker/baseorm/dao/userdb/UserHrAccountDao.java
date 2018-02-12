@@ -508,32 +508,27 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
     /*
     通过id获取user_hr_account
     */
-    public com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount getHrAccount(int accountId) {
-        List<com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount> accounts =
-                create.selectFrom(UserHrAccount.USER_HR_ACCOUNT)
-                        .where(UserHrAccount.USER_HR_ACCOUNT.ID.equal(accountId))
-                        .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.eq(1))
-                        .and(UserHrAccount.USER_HR_ACCOUNT.ACTIVATION.eq((byte) 1))
-                        .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount.class);
-        if (com.moseeker.common.util.StringUtils.isEmptyList(accounts)) {
+    public com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount getHrAccount(int accountId){
+        List<com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount> accounts=
+        create.selectFrom(UserHrAccount.USER_HR_ACCOUNT)
+                .where(UserHrAccount.USER_HR_ACCOUNT.ID.equal(accountId))
+                .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.eq(1))
+                .and(UserHrAccount.USER_HR_ACCOUNT.ACTIVATION.eq((byte)1))
+                .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount.class);
+        if(com.moseeker.common.util.StringUtils.isEmptyList(accounts)){
             return null;
         }
         return accounts.get(0);
     }
 
-    /**
-     * 查找公司下的主账号。如果是普通公司，则返回普通账号
-     * @param companyId 公司编号
-     * @return HR账号
-     */
-    public com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount fetchSuperHR(int companyId) {
-        com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount record = create.selectFrom(UserHrAccount.USER_HR_ACCOUNT)
-                .where(UserHrAccount.USER_HR_ACCOUNT.COMPANY_ID.eq(companyId))
+    public UserHrAccountRecord fetchSuperHR(int company_id) {
+        UserHrAccountRecord record = create.selectFrom(UserHrAccount.USER_HR_ACCOUNT)
+                .where(UserHrAccount.USER_HR_ACCOUNT.COMPANY_ID.eq(company_id))
                 .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.eq(AbleFlag.ENABLE.getValue()))
                 .and(UserHrAccount.USER_HR_ACCOUNT.ACTIVATION.eq((byte) HRAccountActivationType.Actived.getValue()))
                 .orderBy(UserHrAccount.USER_HR_ACCOUNT.ACCOUNT_TYPE.asc())
                 .limit(1)
-                .fetchOneInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount.class);
+                .fetchOne();
         return record;
 
     }

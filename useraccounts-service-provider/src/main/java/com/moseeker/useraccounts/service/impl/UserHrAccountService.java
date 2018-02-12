@@ -238,7 +238,7 @@ public class UserHrAccountService {
             userHrAccountRecord.setDisable(HRAccountStatus.Enabled.getStatus());
         }
         if (userHrAccountRecord.getActivation() == null) {
-            userHrAccountRecord.setActivation((byte) HRAccountActivationType.Actived.getValue());
+            userHrAccountRecord.setActivation((byte)HRAccountActivationType.Actived.getValue());
         }
         Timestamp now = new Timestamp(System.currentTimeMillis());
         userHrAccountRecord.setCreateTime(now);
