@@ -62,8 +62,16 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
     }
 
     @Override
-    public String occupationKey() {
-        return "occupation";
+    public List<DictJob1001OccupationDO> getAll() {
+        return occupationDao.getAllOccupation();
+    }
+
+    @Override
+    public boolean equals(DictJob1001OccupationDO oldData, DictJob1001OccupationDO newData) {
+        return oldData.getName().equals(newData.getName())
+                && oldData.getCodeOther().equals(newData.getCodeOther())
+                && oldData.getLevel() == newData.getLevel()
+                && oldData.getSubsite().equals(newData.getSubsite());
     }
 
     @Override

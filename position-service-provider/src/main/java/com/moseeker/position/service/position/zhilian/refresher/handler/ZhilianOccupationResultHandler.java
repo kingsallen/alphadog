@@ -1,29 +1,30 @@
-package com.moseeker.position.service.position.veryeast.refresh.handler;
+package com.moseeker.position.service.position.zhilian.refresher.handler;
 
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.dictdb.DictVeryEastOccupationDao;
+import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
+import com.moseeker.baseorm.dao.dictdb.DictZhilianOccupationDao;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
 import com.moseeker.position.utils.PositionRefreshUtils;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictVeryEastOccupationDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictZhilianOccupationDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
 @Component
-public class VEOccupationResultHandler extends AbstractOccupationResultHandler<DictVeryEastOccupationDO> implements VEResultHandlerAdapter {
-    Logger logger= LoggerFactory.getLogger(VEOccupationResultHandler.class);
+public class ZhilianOccupationResultHandler extends AbstractOccupationResultHandler<DictZhilianOccupationDO> implements ZhilianResultHandlerAdapter {
+    Logger logger= LoggerFactory.getLogger(ZhilianOccupationResultHandler.class);
 
     @Autowired
-    private DictVeryEastOccupationDao occupationDao;
+    DictZhilianOccupationDao occupationDao;
 
     @Override
-    public DictVeryEastOccupationDO buildOccupation(List<String> texts,List<String> codes,Map<String, Integer> newCode,JSONObject msg) {
-        DictVeryEastOccupationDO temp=new DictVeryEastOccupationDO();
+    protected DictZhilianOccupationDO buildOccupation(List<String> texts, List<String> codes, Map<String, Integer> newCode, JSONObject msg) {
+        DictZhilianOccupationDO temp=new DictZhilianOccupationDO();
 
         temp.setCodeOther(codes.get(codes.size()-1));
         temp.setCode(newCode.get(temp.getCodeOther()));
@@ -36,21 +37,20 @@ public class VEOccupationResultHandler extends AbstractOccupationResultHandler<D
     }
 
     @Override
-    @Transactional
-    public void persistent(List<DictVeryEastOccupationDO> data) {
+    protected void persistent(List<DictZhilianOccupationDO> data) {
         int delCount=occupationDao.deleteAll();
-        logger.info("veryeast delete old Occupation "+delCount);
+        logger.info("zhilian delete old Occupation "+delCount);
         occupationDao.addAllData(data);
-        logger.info("veryeast insert success");
+        logger.info("zhilian insert success");
     }
 
     @Override
-    public List<DictVeryEastOccupationDO> getAll() {
+    public List<DictZhilianOccupationDO> getAll() {
         return occupationDao.getAllOccupation();
     }
 
     @Override
-    public boolean equals(DictVeryEastOccupationDO oldData, DictVeryEastOccupationDO newData) {
+    public boolean equals(DictZhilianOccupationDO oldData, DictZhilianOccupationDO newData) {
         return oldData.getName().equals(newData.getName())
                 && oldData.getCodeOther().equals(newData.getCodeOther())
                 && oldData.getLevel() == newData.getLevel();

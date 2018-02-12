@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.iface.IChannelType;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
@@ -18,19 +19,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public abstract class AbstractRegionResultHandler extends AbstractJsonResultHandler {
+public abstract class AbstractRegionResultHandler extends AbstractJsonResultHandler implements IChannelType {
     Logger logger= LoggerFactory.getLogger(AbstractRegionResultHandler.class);
 
     @Autowired
     DictCityMapDao cityMapDao;
 
-    protected abstract ChannelType channelType();
-
     @Override
     protected void handle(JSONObject msg) {
         //处理regionMap
         JSONObject regionMap=msg.getJSONObject("regionMap");
-        int channelValue=channelType().getValue();
+        int channelValue=getChannelType().getValue();
 
         //处理不匹配的数据
         List<Region> moseekerUnmatched=regionMap.getJSONArray("moseekerUnmatched").toJavaList(Region.class);
