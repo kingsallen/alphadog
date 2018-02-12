@@ -37,6 +37,7 @@ import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,14 +46,17 @@ import java.util.Map;
 public class ZhilianSyncVerifyHandler implements PositionSyncVerifier<String> {
     Logger logger= LoggerFactory.getLogger(ZhilianSyncVerifyHandler.class);
 
-    @Autowired
-    private MobileVeifyHandler mobileVeifyHandler;
+    @Resource(type = MobileVeifyHandler.class)
+    private PositionSyncVerifyHandler verifyHandler;
+
+    @Resource(type = MobileVeifyHandler.class)
+    private PositionSyncVerifyReceiver verifyReceiver;
 
     @Override
     public void handler(String info) throws BIZException {
         logger.info("zhilian syncVerifyInfo info:{}",info);
         try {
-            mobileVeifyHandler.handler(info);
+            verifyHandler.handler(info);
         }catch (BIZException e){
             logger.error("zhilian syncVerifyInfo BIZException info:{},error:{}",info,e);
             throw e;
@@ -67,7 +71,7 @@ public class ZhilianSyncVerifyHandler implements PositionSyncVerifier<String> {
     public void receive(String param) throws BIZException {
         logger.info("zhilian verifyHandler param:{}",param);
         try {
-            mobileVeifyHandler.receive(param);
+            verifyReceiver.receive(param);
         }catch (BIZException e){
             logger.error("zhilian verifyHandler BIZException param:{},error:{}",param,e);
             throw e;
