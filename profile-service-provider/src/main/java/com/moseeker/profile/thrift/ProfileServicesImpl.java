@@ -126,7 +126,7 @@ public class ProfileServicesImpl implements Iface {
     @Override
     public Response resumeTalentProfile(String fileName, String file, int companyId) throws BIZException, TException {
         try {
-            return service.talentpoolUploadParse(fileName,file,companyId);
+            return null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
