@@ -2,6 +2,7 @@ package com.moseeker.profile.thrift;
 
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.profile.service.impl.ProfileAwardsService;
@@ -109,6 +110,8 @@ public class ProfileAwardsServicesImpl implements Iface {
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
             }
+        } catch (CommonException e) {
+            return ResponseUtils.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);

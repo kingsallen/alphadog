@@ -49,6 +49,7 @@ public class EducationController {
 	public String post(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Education education = ParamUtils.initModelForm(request, Education.class);
+
 			Response result = educationService.postResource(education);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	

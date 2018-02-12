@@ -47,6 +47,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.profile.*;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
@@ -84,14 +85,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 @Service
 @CounterIface
 public class ProfileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private UserHrAccountDao userHrAccountDao;
 
     @Autowired
     protected ProfileProfileDao dao;
@@ -137,6 +142,11 @@ public class ProfileService {
 
     @Autowired
     private ConfigSysCvTplDao configSysCvTplDao;
+    @Autowired
+    private TalentPoolEntity talentPoolEntity;
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
@@ -453,6 +463,7 @@ public class ProfileService {
         if(StringUtils.isEmptyList(positionApplications)){
             return ResponseUtils.success("");
         }
+
         logger.info("=================================================");
         List<Map<String, Object>> datas =dao.getRelatedDataByJobApplication( positionApplications, downloadUrl, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
         return dao.handleResponse(datas);
@@ -473,312 +484,8 @@ public class ProfileService {
             // 调用SDK得到结果
             ResumeObj resumeObj = profileEntity.profileParser(fileName, file);
             logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
-            // 调用成功,开始转换对象
-            if (resumeObj.getStatus().getCode() == 200) {
-                // 项目经验
-                logger.info("profileParser resumeObj.getResult().getProj_exp_objs():{}", JSON.toJSONString(resumeObj.getResult().getProj_exp_objs()));
-                List<Projectexps> projectexps = new ArrayList<>();
-                if (resumeObj.getResult().getProj_exp_objs() != null && resumeObj.getResult().getProj_exp_objs().size() > 0) {
-                    for (ProjectexpObj projectexpObj : resumeObj.getResult().getProj_exp_objs()) {
-                        Projectexps project = new Projectexps();
-                        try {
-                            if (projectexpObj.getEnd_date() != null && projectexpObj.getEnd_date().equals("至今")) {
-                                project.setEndUntilNow(1);
-                            } else {
-                                project.setEndDate(DateUtils.dateRepair(projectexpObj.getEnd_date(), "\\."));
-                            }
-                            project.setStartDate(DateUtils.dateRepair(projectexpObj.getStart_date(), "\\."));
-                        } catch (ParseException e) {
-                            LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
-                            logResumeRecordRecord.setErrorLog("日期转换异常: " + e.getMessage());
-                            logResumeRecordRecord.setFieldValue("projectexp: {\"startDate\": " + projectexpObj.getStart_date() + "\", \"endDate\":" + projectexpObj.getEnd_date()+"}");
-                            logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setFileName(fileName);
-                            logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
-                            resumeDao.addRecord(logResumeRecordRecord);
-                            logger.error(e.getMessage(), e);
-                        }
-                        // 职责
-                        project.setResponsibility(projectexpObj.getProj_resp());
-                        project.setDescription(projectexpObj.getProj_content());
-                        project.setName(projectexpObj.getProj_name());
-                        projectexps.add(project);
-                    }
-                }
-                profileObj.setProjectexps(projectexps);
-                logger.info("profileParser getProjectexps:{}", JSON.toJSONString(profileObj.getProjectexps()));
-
-                logger.info("profileParser resumeObj.getResult().getEducation_objs():{}", JSON.toJSONString(resumeObj.getResult().getEducation_objs()));
-                // 教育经历
-                List<Education> educationList = new ArrayList<>();
-                if (resumeObj.getResult().getEducation_objs() != null && resumeObj.getResult().getEducation_objs().size() > 0) {
-                    for (EducationObj educationObj : resumeObj.getResult().getEducation_objs()) {
-                        Education education = new Education();
-                        if (educationObj.getEdu_degree() != null) {
-                            if (DegreeSource.intToEnum.get(educationObj.getEdu_degree()) != null) {
-                                education.setDegree(DegreeSource.intToEnum.get(educationObj.getEdu_degree()));
-                            } else {
-                                education.setDegree(0);
-                            }
-                        }
-                        try {
-                            education.setStartDate(DateUtils.dateRepair(educationObj.getStart_date(), "\\."));
-                            if (educationObj.getEnd_date() != null && educationObj.getEnd_date().equals("至今")) {
-                                education.setEndUntilNow(1);
-                            } else {
-                                education.setEndDate(DateUtils.dateRepair(educationObj.getEnd_date(), "\\."));
-                            }
-                        } catch (ParseException e) {
-                            LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
-                            logResumeRecordRecord.setErrorLog("日期转换异常: " + e.getMessage());
-                            logResumeRecordRecord.setFieldValue("education: {\"startDate\": " + educationObj.getStart_date() + "\", \"endDate\":" + educationObj.getEnd_date()+"}");
-                            logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setFileName(fileName);
-                            logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
-                            resumeDao.addRecord(logResumeRecordRecord);
-                            logger.error(e.getMessage(), e);
-                        }
-                        // 学校名称
-                        education.setCollegeName(educationObj.getEdu_college());
-                        // 专业名称
-                        education.setMajorName(educationObj.getEdu_major());
-                        if (StringUtils.isNotNullOrEmpty(educationObj.getEdu_recruit())) {
-                            education.setIsUnified(educationObj.getEdu_recruit().equals("统招") ? 1 : 2);
-                        }
-                        educationList.add(education);
-                    }
-                }
-                profileObj.setEducations(educationList);
-                logger.info("profileParser getEducations:{}", JSON.toJSONString(profileObj.getEducations()));
-                // 技能
-                logger.info("profileParser resumeObj.getResult().getSkills_objs():{}", JSON.toJSONString(resumeObj.getResult().getSkills_objs()));
-                List<Skill> skills = new ArrayList<>();
-                if (resumeObj.getResult().getSkills_objs() != null && resumeObj.getResult().getSkills_objs().size() > 0) {
-                    for (SkillsObjs skillsObjs : resumeObj.getResult().getSkills_objs()) {
-                        Skill skill = new Skill();
-                        skill.setName(skillsObjs.getSkills_name());
-                        skills.add(skill);
-                    }
-                }
-                profileObj.setSkills(skills);
-                logger.info("profileParser getSkills:{}", JSON.toJSONString(profileObj.getSkills()));
-
-                // 工作经验
-                logger.info("profileParser resumeObj.getResult().getJob_exp_objs():{}", JSON.toJSONString(resumeObj.getResult().getJob_exp_objs()));
-                List<Workexps> workexpsList = new ArrayList<>();
-                if (resumeObj.getResult().getJob_exp_objs() != null && resumeObj.getResult().getJob_exp_objs().size() > 0) {
-                    for (JobExpObj jobExpObj : resumeObj.getResult().getJob_exp_objs()) {
-                        Workexps workexps = new Workexps();
-                        Company company = new Company();
-                        company.setCompanyIndustry(jobExpObj.getJob_industry());
-                        if (StringUtils.isNotNullOrEmpty(jobExpObj.getJob_cpy())) {
-                            company.setCompanyName(jobExpObj.getJob_cpy());
-                        } else {
-                            LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
-                            logResumeRecordRecord.setErrorLog("公司名称为空");
-                            logResumeRecordRecord.setFieldValue("job_exp_obj: " + JSONObject.toJSONString(jobExpObj));
-                            logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setFileName(fileName);
-                            logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
-                            resumeDao.addRecord(logResumeRecordRecord);
-                        }
-                        int companyScaleMaxValue = 0;
-                        try {
-                            companyScaleMaxValue = Arrays.stream(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size() == null ? "0-0" :
-                                    jobExpObj.getJob_cpy_size().replaceAll("[\\u4E00-\\u9FA5]", ""), "0-0").split("-", 2)).max(String::compareTo).map(m -> Integer.valueOf(m)).get();
-                        } catch (Exception e) {
-                            LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
-                            logResumeRecordRecord.setErrorLog("公司规模转换异常: " + e.getMessage());
-                            logResumeRecordRecord.setFieldValue("companyScale: " + jobExpObj.getJob_cpy_size());
-                            logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setFileName(fileName);
-                            logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
-                            resumeDao.addRecord(logResumeRecordRecord);
-                            logger.error(e.getMessage(), e);
-                        }
-                        company.setCompanyScale(String.valueOf(DictCode.companyScale(companyScaleMaxValue)));
-                        workexps.setCompany(company);
-                        workexps.setDescription(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_desc(), jobExpObj.getJob_content()));
-                        try {
-                            workexps.setStartDate(DateUtils.dateRepair(jobExpObj.getStart_date(), "\\."));
-                            if (jobExpObj.getEnd_date() != null && jobExpObj.getEnd_date().equals("至今")) {
-                                workexps.setEndUntilNow(1);
-                            } else {
-                                workexps.setEndDate(DateUtils.dateRepair(jobExpObj.getEnd_date(), "\\."));
-                            }
-                        } catch (Exception e) {
-                            LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
-                            logResumeRecordRecord.setErrorLog("日期转换异常: " + e.getMessage());
-                            logResumeRecordRecord.setFieldValue("workexp: {\"startDate\": " + jobExpObj.getStart_date() + "\", \"endDate\":" + jobExpObj.getEnd_date()+"}");
-                            logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setFileName(fileName);
-                            logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
-                            resumeDao.addRecord(logResumeRecordRecord);
-                            logger.error(e.getMessage(), e);
-                        }
-                        if (StringUtils.isNullOrEmpty(jobExpObj.getJob_position())) {
-                            LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
-                            logResumeRecordRecord.setErrorLog("工作职位为空: ");
-                            logResumeRecordRecord.setUserId(uid);
-                            logResumeRecordRecord.setFileName(fileName);
-                            logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
-                            resumeDao.addRecord(logResumeRecordRecord);
-                        } else {
-                            workexps.setJob(jobExpObj.getJob_position());
-                        }
-                        if (StringUtils.isNotNullOrEmpty(jobExpObj.getJob_nature())) {
-                           workexps.setType(DictCode.workType(jobExpObj.getJob_nature()));
-                        }
-                        workexps.setDepartmentName(jobExpObj.getJob_cpy_dept());
-                        workexpsList.add(workexps);
-                    }
-                }
-                profileObj.setWorkexps(workexpsList);
-                logger.info("profileParser getWorkexps:{}", JSON.toJSONString(profileObj.getWorkexps()));
-                // 语言
-                logger.info("profileParser resumeObj.getResult().getLang_objs():{}", JSON.toJSONString(resumeObj.getResult().getLang_objs()));
-                List<Language> languageList = new ArrayList<>();
-                if (resumeObj.getResult().getLang_objs() != null && resumeObj.getResult().getLang_objs().size() > 0) {
-                    for (LangObj langObj : resumeObj.getResult().getLang_objs()) {
-                        Language language = new Language();
-                        language.setName(langObj.getLanguage_name());
-                        languageList.add(language);
-                    }
-                }
-                profileObj.setLanguages(languageList);
-                logger.info("profileParser getLanguages:{}", JSON.toJSONString(profileObj.getLanguages()));
-
-                // 查询
-                UserUserRecord userUser = userDao.getUserById(uid);
-                if (userUser != null) {
-                    User user = new User();
-                    user.setEmail(userUser.getEmail());
-                    user.setMobile(String.valueOf(userUser.getMobile()));
-                    user.setUid(String.valueOf(uid));
-                    user.setName(userUser.getName());
-                    profileObj.setUser(user);
-                }
-                logger.info("profileParser getUser:{}", JSON.toJSONString(profileObj.getUser()));
-
-                // 期望
-                Intentions intentions = new Intentions();
-                if (resumeObj.getResult().getExpect_jnature() != null) {
-                    intentions.setWorktype(DictCode.workType(resumeObj.getResult().getExpect_jnature()));
-                }
-
-                if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getExpect_salary())) {
-                    try{
-                        int topSalary = Arrays.stream(resumeObj.getResult().getExpect_salary().replaceAll("[\\u4E00-\\u9FA5|/]", "").split("-|~", 2)).max(String::compareTo).map(m -> Integer.valueOf(m)).get();
-                        intentions.setSalaryCode(String.valueOf(DictCode.salary(topSalary)));
-                    } catch (Exception e) {
-                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
-                        logResumeRecordRecord.setErrorLog("期望薪资转换异常: " + e.getMessage());
-                        logResumeRecordRecord.setFieldValue("expectSalary: " + resumeObj.getResult().getExpect_salary());
-                        logResumeRecordRecord.setUserId(uid);
-                        logResumeRecordRecord.setFileName(fileName);
-                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
-                        resumeDao.addRecord(logResumeRecordRecord);
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-
-                // 期望城市
-                if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getExpect_jlocation())) {
-                    Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-                    queryBuilder.where("name", resumeObj.getResult().getExpect_jlocation());
-                    DictCityDO dictCityDO = dictCityDao.getData(queryBuilder.buildQuery());
-                    if (dictCityDO == null || dictCityDO.getCode() == 0) {
-                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
-                        logResumeRecordRecord.setErrorLog("期望城市转换异常: ");
-                        logResumeRecordRecord.setFieldValue("expectJlocation: " + resumeObj.getResult().getExpect_jlocation());
-                        logResumeRecordRecord.setUserId(uid);
-                        logResumeRecordRecord.setFileName(fileName);
-                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
-                        resumeDao.addRecord(logResumeRecordRecord);
-                    } else {
-                        City city = new City();
-                        city.setCityCode(dictCityDO.getCode());
-                        city.setCityName(dictCityDO.getName());
-                        intentions.setCities(new ArrayList<City>(){{add(city);}});
-                    }
-                }
-
-                // 期望职能
-                if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getExpect_job())) {
-                    Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-                    queryBuilder.where(new Condition("name", resumeObj.getResult().getExpect_job(), ValueOp.LIKE));
-                    DictPositionDO dictPositionDO = dictPositionDao.getData(queryBuilder.buildQuery());
-                    if (dictPositionDO == null || dictPositionDO.getCode() == 0) {
-                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
-                        logResumeRecordRecord.setErrorLog("期望职能转换异常: ");
-                        logResumeRecordRecord.setFieldValue("expectJob: " + resumeObj.getResult().getExpect_job());
-                        logResumeRecordRecord.setUserId(uid);
-                        logResumeRecordRecord.setFileName(fileName);
-                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
-                        resumeDao.addRecord(logResumeRecordRecord);
-                    } else {
-                        Positions positions = new Positions();
-                        positions.setPositionCode(dictPositionDO.getCode());
-                        positions.setPositionName(dictPositionDO.getName());
-                        intentions.setPositions(new ArrayList<Positions>(){{add(positions);}});
-                    }
-                }
-
-                List<Intentions> intentionsList = new ArrayList<>();
-                intentionsList.add(intentions);
-                profileObj.setIntentions(intentionsList);
-
-                // 证书
-                logger.info("profileParser resumeObj.getResult().getCert_objs():{}", JSON.toJSONString(resumeObj.getResult().getCert_objs()));
-                List<Credential> credentialList = new ArrayList<>();
-                if (resumeObj.getResult().getCert_objs() != null && resumeObj.getResult().getCert_objs().size() > 0) {
-                    for (CertObj certObj : resumeObj.getResult().getCert_objs()) {
-                        Credential credential = new Credential();
-                        credential.setName(certObj.getLangcert_name());
-                        credentialList.add(credential);
-                    }
-                }
-                profileObj.setCredentials(credentialList);
-                logger.info("profileParser getCredentials:{}", JSON.toJSONString(profileObj.getCredentials()));
-
-                if (credentialList.isEmpty() && StringUtils.isNotNullOrEmpty(resumeObj.getResult().getCont_certificate())) {
-                    LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
-                    logResumeRecordRecord.setErrorLog("证书为空，证书内容却不为空 ");
-                    logResumeRecordRecord.setFieldValue("contCertificate: " + resumeObj.getResult().getCont_certificate());
-                    logResumeRecordRecord.setUserId(uid);
-                    logResumeRecordRecord.setFileName(fileName);
-                    logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
-                    resumeDao.addRecord(logResumeRecordRecord);
-                }
-
-                // basic信息
-                logger.info("profileParser resumeObj.getResult().getCity():{}", resumeObj.getResult().getCity());
-                logger.info("profileParser resumeObj.getResult().getGender():{}", resumeObj.getResult().getGender());
-                logger.info("profileParser resumeObj.getResult().getName():{}", resumeObj.getResult().getName());
-                logger.info("profileParser resumeObj.getResult().getCont_my_desc():{}", resumeObj.getResult().getCont_my_desc());
-                logger.info("profileParser resumeObj.getResult().getBirthday():{}", resumeObj.getResult().getBirthday());
-                Basic basic = new Basic();
-                basic.setCityName(resumeObj.getResult().getCity());
-                basic.setGender(String.valueOf(DictCode.gender(resumeObj.getResult().getGender())));
-                basic.setName(resumeObj.getResult().getName());
-                basic.setSelfIntroduction(resumeObj.getResult().getCont_my_desc());
-                if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getBirthday())) {
-                    try {
-                        basic.setBirth(DateUtils.dateRepair(resumeObj.getResult().getBirthday(), "\\."));
-                    } catch (Exception e) {
-                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
-                        logResumeRecordRecord.setErrorLog("出生日期转换异常: " + e.getMessage());
-                        logResumeRecordRecord.setFieldValue("birthday: " + resumeObj.getResult().getBirthday());
-                        logResumeRecordRecord.setUserId(uid);
-                        logResumeRecordRecord.setFileName(fileName);
-                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
-                        resumeDao.addRecord(logResumeRecordRecord);
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-                profileObj.setBasic(basic);
-                logger.info("profileParser getBasic:{}", JSON.toJSONString(profileObj.getBasic()));
-            }
+            // 调用成功,开始转换对象,我把它单独独立出来
+            profileObj=handlerParseData(resumeObj,uid,fileName);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -786,6 +493,327 @@ public class ProfileService {
         return ResponseUtils.success(profileObj);
     }
 
+
+    private ProfileObj handlerParseData(ResumeObj resumeObj,int uid,String fileName ){
+        ProfileObj profileObj = new ProfileObj();
+        if (resumeObj.getStatus().getCode() == 200) {
+            // 项目经验
+            logger.info("profileParser resumeObj.getResult().getProj_exp_objs():{}", JSON.toJSONString(resumeObj.getResult().getProj_exp_objs()));
+            List<Projectexps> projectexps = new ArrayList<>();
+            if (resumeObj.getResult().getProj_exp_objs() != null && resumeObj.getResult().getProj_exp_objs().size() > 0) {
+                for (ProjectexpObj projectexpObj : resumeObj.getResult().getProj_exp_objs()) {
+                    Projectexps project = new Projectexps();
+                    try {
+                        if (projectexpObj.getEnd_date() != null && projectexpObj.getEnd_date().equals("至今")) {
+                            project.setEndUntilNow(1);
+                        } else {
+                            project.setEndDate(DateUtils.dateRepair(projectexpObj.getEnd_date(), "\\."));
+                        }
+                        project.setStartDate(DateUtils.dateRepair(projectexpObj.getStart_date(), "\\."));
+                    } catch (ParseException e) {
+                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                        logResumeRecordRecord.setErrorLog("日期转换异常: " + e.getMessage());
+                        logResumeRecordRecord.setFieldValue("projectexp: {\"startDate\": " + projectexpObj.getStart_date() + "\", \"endDate\":" + projectexpObj.getEnd_date()+"}");
+                        logResumeRecordRecord.setUserId(uid);
+                        logResumeRecordRecord.setFileName(fileName);
+                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                        resumeDao.addRecord(logResumeRecordRecord);
+                        logger.error(e.getMessage(), e);
+                    }
+                    // 职责
+                    project.setResponsibility(projectexpObj.getProj_resp());
+                    project.setDescription(projectexpObj.getProj_content());
+                    project.setName(projectexpObj.getProj_name());
+                    projectexps.add(project);
+                }
+            }
+            profileObj.setProjectexps(projectexps);
+            logger.info("profileParser getProjectexps:{}", JSON.toJSONString(profileObj.getProjectexps()));
+
+            logger.info("profileParser resumeObj.getResult().getEducation_objs():{}", JSON.toJSONString(resumeObj.getResult().getEducation_objs()));
+            // 教育经历
+            List<Education> educationList = new ArrayList<>();
+            if (resumeObj.getResult().getEducation_objs() != null && resumeObj.getResult().getEducation_objs().size() > 0) {
+                for (EducationObj educationObj : resumeObj.getResult().getEducation_objs()) {
+                    Education education = new Education();
+                    if (educationObj.getEdu_degree() != null) {
+                        if (DegreeSource.intToEnum.get(educationObj.getEdu_degree()) != null) {
+                            education.setDegree(DegreeSource.intToEnum.get(educationObj.getEdu_degree()));
+                        } else {
+                            education.setDegree(0);
+                        }
+                    }
+                    try {
+                        education.setStartDate(DateUtils.dateRepair(educationObj.getStart_date(), "\\."));
+                        if (educationObj.getEnd_date() != null && educationObj.getEnd_date().equals("至今")) {
+                            education.setEndUntilNow(1);
+                        } else {
+                            education.setEndDate(DateUtils.dateRepair(educationObj.getEnd_date(), "\\."));
+                        }
+                    } catch (ParseException e) {
+                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                        logResumeRecordRecord.setErrorLog("日期转换异常: " + e.getMessage());
+                        logResumeRecordRecord.setFieldValue("education: {\"startDate\": " + educationObj.getStart_date() + "\", \"endDate\":" + educationObj.getEnd_date()+"}");
+                        logResumeRecordRecord.setUserId(uid);
+                        logResumeRecordRecord.setFileName(fileName);
+                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                        resumeDao.addRecord(logResumeRecordRecord);
+                        logger.error(e.getMessage(), e);
+                    }
+                    // 学校名称
+                    education.setCollegeName(educationObj.getEdu_college());
+                    // 专业名称
+                    education.setMajorName(educationObj.getEdu_major());
+                    if (StringUtils.isNotNullOrEmpty(educationObj.getEdu_recruit())) {
+                        education.setIsUnified(educationObj.getEdu_recruit().equals("统招") ? 1 : 2);
+                    }
+                    educationList.add(education);
+                }
+            }
+            profileObj.setEducations(educationList);
+            logger.info("profileParser getEducations:{}", JSON.toJSONString(profileObj.getEducations()));
+            // 技能
+            logger.info("profileParser resumeObj.getResult().getSkills_objs():{}", JSON.toJSONString(resumeObj.getResult().getSkills_objs()));
+            List<Skill> skills = new ArrayList<>();
+            if (resumeObj.getResult().getSkills_objs() != null && resumeObj.getResult().getSkills_objs().size() > 0) {
+                for (SkillsObjs skillsObjs : resumeObj.getResult().getSkills_objs()) {
+                    Skill skill = new Skill();
+                    skill.setName(skillsObjs.getSkills_name());
+                    skills.add(skill);
+                }
+            }
+            profileObj.setSkills(skills);
+            logger.info("profileParser getSkills:{}", JSON.toJSONString(profileObj.getSkills()));
+
+            // 工作经验
+            logger.info("profileParser resumeObj.getResult().getJob_exp_objs():{}", JSON.toJSONString(resumeObj.getResult().getJob_exp_objs()));
+            List<Workexps> workexpsList = new ArrayList<>();
+            if (resumeObj.getResult().getJob_exp_objs() != null && resumeObj.getResult().getJob_exp_objs().size() > 0) {
+                for (JobExpObj jobExpObj : resumeObj.getResult().getJob_exp_objs()) {
+                    Workexps workexps = new Workexps();
+                    Company company = new Company();
+                    company.setCompanyIndustry(jobExpObj.getJob_industry());
+                    if (StringUtils.isNotNullOrEmpty(jobExpObj.getJob_cpy())) {
+                        company.setCompanyName(jobExpObj.getJob_cpy());
+                    } else {
+                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                        logResumeRecordRecord.setErrorLog("公司名称为空");
+                        logResumeRecordRecord.setFieldValue("job_exp_obj: " + JSONObject.toJSONString(jobExpObj));
+                        logResumeRecordRecord.setUserId(uid);
+                        logResumeRecordRecord.setFileName(fileName);
+                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                        resumeDao.addRecord(logResumeRecordRecord);
+                    }
+                    int companyScaleMaxValue = 0;
+                    try {
+                        companyScaleMaxValue = Arrays.stream(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size() == null ? "0-0" :
+                                jobExpObj.getJob_cpy_size().replaceAll("[\\u4E00-\\u9FA5]", ""), "0-0").split("-", 2)).max(String::compareTo).map(m -> Integer.valueOf(m)).get();
+                    } catch (Exception e) {
+                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                        logResumeRecordRecord.setErrorLog("公司规模转换异常: " + e.getMessage());
+                        logResumeRecordRecord.setFieldValue("companyScale: " + jobExpObj.getJob_cpy_size());
+                        logResumeRecordRecord.setUserId(uid);
+                        logResumeRecordRecord.setFileName(fileName);
+                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                        resumeDao.addRecord(logResumeRecordRecord);
+                        logger.error(e.getMessage(), e);
+                    }
+                    company.setCompanyScale(String.valueOf(DictCode.companyScale(companyScaleMaxValue)));
+                    workexps.setCompany(company);
+                    workexps.setDescription(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_desc(), jobExpObj.getJob_content()));
+                    try {
+                        workexps.setStartDate(DateUtils.dateRepair(jobExpObj.getStart_date(), "\\."));
+                        if (jobExpObj.getEnd_date() != null && jobExpObj.getEnd_date().equals("至今")) {
+                            workexps.setEndUntilNow(1);
+                        } else {
+                            workexps.setEndDate(DateUtils.dateRepair(jobExpObj.getEnd_date(), "\\."));
+                        }
+                    } catch (Exception e) {
+                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                        logResumeRecordRecord.setErrorLog("日期转换异常: " + e.getMessage());
+                        logResumeRecordRecord.setFieldValue("workexp: {\"startDate\": " + jobExpObj.getStart_date() + "\", \"endDate\":" + jobExpObj.getEnd_date()+"}");
+                        logResumeRecordRecord.setUserId(uid);
+                        logResumeRecordRecord.setFileName(fileName);
+                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                        resumeDao.addRecord(logResumeRecordRecord);
+                        logger.error(e.getMessage(), e);
+                    }
+                    if (StringUtils.isNullOrEmpty(jobExpObj.getJob_position())) {
+                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                        logResumeRecordRecord.setErrorLog("工作职位为空: ");
+                        logResumeRecordRecord.setUserId(uid);
+                        logResumeRecordRecord.setFileName(fileName);
+                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                        resumeDao.addRecord(logResumeRecordRecord);
+                    } else {
+                        workexps.setJob(jobExpObj.getJob_position());
+                    }
+                    if (StringUtils.isNotNullOrEmpty(jobExpObj.getJob_nature())) {
+                        workexps.setType(DictCode.workType(jobExpObj.getJob_nature()));
+                    }
+                    workexps.setDepartmentName(jobExpObj.getJob_cpy_dept());
+                    workexpsList.add(workexps);
+                }
+            }
+            profileObj.setWorkexps(workexpsList);
+            logger.info("profileParser getWorkexps:{}", JSON.toJSONString(profileObj.getWorkexps()));
+            // 语言
+            logger.info("profileParser resumeObj.getResult().getLang_objs():{}", JSON.toJSONString(resumeObj.getResult().getLang_objs()));
+            List<Language> languageList = new ArrayList<>();
+            if (resumeObj.getResult().getLang_objs() != null && resumeObj.getResult().getLang_objs().size() > 0) {
+                for (LangObj langObj : resumeObj.getResult().getLang_objs()) {
+                    Language language = new Language();
+                    language.setName(langObj.getLanguage_name());
+                    languageList.add(language);
+                }
+            }
+            profileObj.setLanguages(languageList);
+            logger.info("profileParser getLanguages:{}", JSON.toJSONString(profileObj.getLanguages()));
+
+            // 查询
+            UserUserRecord userUser = userDao.getUserById(uid);
+            if (userUser != null) {
+                User user = new User();
+                user.setEmail(userUser.getEmail());
+                user.setMobile(String.valueOf(userUser.getMobile()));
+                user.setUid(String.valueOf(uid));
+                user.setName(userUser.getName());
+                profileObj.setUser(user);
+            }else{
+                User user = new User();
+                user.setEmail(resumeObj.getResult().getEmail());
+                user.setMobile(resumeObj.getResult().getPhone());
+                if(uid!=0){
+                    user.setUid(String.valueOf(uid));
+                }
+                user.setName(resumeObj.getResult().getName());
+                profileObj.setUser(user);
+            }
+            logger.info("profileParser getUser:{}", JSON.toJSONString(profileObj.getUser()));
+
+            // 期望
+            Intentions intentions = new Intentions();
+            if (resumeObj.getResult().getExpect_jnature() != null) {
+                intentions.setWorktype(DictCode.workType(resumeObj.getResult().getExpect_jnature()));
+            }
+
+            if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getExpect_salary())) {
+                try{
+                    int topSalary = Arrays.stream(resumeObj.getResult().getExpect_salary().replaceAll("[\\u4E00-\\u9FA5|/]", "").split("-|~", 2)).max(String::compareTo).map(m -> Integer.valueOf(m)).get();
+                    intentions.setSalaryCode(String.valueOf(DictCode.salary(topSalary)));
+                } catch (Exception e) {
+                    LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                    logResumeRecordRecord.setErrorLog("期望薪资转换异常: " + e.getMessage());
+                    logResumeRecordRecord.setFieldValue("expectSalary: " + resumeObj.getResult().getExpect_salary());
+                    logResumeRecordRecord.setUserId(uid);
+                    logResumeRecordRecord.setFileName(fileName);
+                    logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                    resumeDao.addRecord(logResumeRecordRecord);
+                    logger.error(e.getMessage(), e);
+                }
+            }
+
+            // 期望城市
+            if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getExpect_jlocation())) {
+                Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+                queryBuilder.where("name", resumeObj.getResult().getExpect_jlocation());
+                DictCityDO dictCityDO = dictCityDao.getData(queryBuilder.buildQuery());
+                if (dictCityDO == null || dictCityDO.getCode() == 0) {
+                    LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                    logResumeRecordRecord.setErrorLog("期望城市转换异常: ");
+                    logResumeRecordRecord.setFieldValue("expectJlocation: " + resumeObj.getResult().getExpect_jlocation());
+                    logResumeRecordRecord.setUserId(uid);
+                    logResumeRecordRecord.setFileName(fileName);
+                    logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                    resumeDao.addRecord(logResumeRecordRecord);
+                } else {
+                    City city = new City();
+                    city.setCityCode(dictCityDO.getCode());
+                    city.setCityName(dictCityDO.getName());
+                    intentions.setCities(new ArrayList<City>(){{add(city);}});
+                }
+            }
+
+            // 期望职能
+            if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getExpect_job())) {
+                Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+                queryBuilder.where(new Condition("name", resumeObj.getResult().getExpect_job(), ValueOp.LIKE));
+                DictPositionDO dictPositionDO = dictPositionDao.getData(queryBuilder.buildQuery());
+                if (dictPositionDO == null || dictPositionDO.getCode() == 0) {
+                    LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                    logResumeRecordRecord.setErrorLog("期望职能转换异常: ");
+                    logResumeRecordRecord.setFieldValue("expectJob: " + resumeObj.getResult().getExpect_job());
+                    logResumeRecordRecord.setUserId(uid);
+                    logResumeRecordRecord.setFileName(fileName);
+                    logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                    resumeDao.addRecord(logResumeRecordRecord);
+                } else {
+                    Positions positions = new Positions();
+                    positions.setPositionCode(dictPositionDO.getCode());
+                    positions.setPositionName(dictPositionDO.getName());
+                    intentions.setPositions(new ArrayList<Positions>(){{add(positions);}});
+                }
+            }
+
+            List<Intentions> intentionsList = new ArrayList<>();
+            intentionsList.add(intentions);
+            profileObj.setIntentions(intentionsList);
+
+            // 证书
+            logger.info("profileParser resumeObj.getResult().getCert_objs():{}", JSON.toJSONString(resumeObj.getResult().getCert_objs()));
+            List<Credential> credentialList = new ArrayList<>();
+            if (resumeObj.getResult().getCert_objs() != null && resumeObj.getResult().getCert_objs().size() > 0) {
+                for (CertObj certObj : resumeObj.getResult().getCert_objs()) {
+                    Credential credential = new Credential();
+                    credential.setName(certObj.getLangcert_name());
+                    credentialList.add(credential);
+                }
+            }
+            profileObj.setCredentials(credentialList);
+            logger.info("profileParser getCredentials:{}", JSON.toJSONString(profileObj.getCredentials()));
+
+            if (credentialList.isEmpty() && StringUtils.isNotNullOrEmpty(resumeObj.getResult().getCont_certificate())) {
+                LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                logResumeRecordRecord.setErrorLog("证书为空，证书内容却不为空 ");
+                logResumeRecordRecord.setFieldValue("contCertificate: " + resumeObj.getResult().getCont_certificate());
+                logResumeRecordRecord.setUserId(uid);
+                logResumeRecordRecord.setFileName(fileName);
+                logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                resumeDao.addRecord(logResumeRecordRecord);
+            }
+
+            // basic信息
+            logger.info("profileParser resumeObj.getResult().getCity():{}", resumeObj.getResult().getCity());
+            logger.info("profileParser resumeObj.getResult().getGender():{}", resumeObj.getResult().getGender());
+            logger.info("profileParser resumeObj.getResult().getName():{}", resumeObj.getResult().getName());
+            logger.info("profileParser resumeObj.getResult().getCont_my_desc():{}", resumeObj.getResult().getCont_my_desc());
+            logger.info("profileParser resumeObj.getResult().getBirthday():{}", resumeObj.getResult().getBirthday());
+            Basic basic = new Basic();
+            basic.setCityName(resumeObj.getResult().getCity());
+            if(StringUtils.isNotNullOrEmpty(resumeObj.getResult().getGender())){
+                basic.setGender(String.valueOf(DictCode.gender(resumeObj.getResult().getGender())));
+            }
+            basic.setName(resumeObj.getResult().getName());
+            basic.setSelfIntroduction(resumeObj.getResult().getCont_my_desc());
+            if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getBirthday())) {
+                try {
+                    basic.setBirth(DateUtils.dateRepair(resumeObj.getResult().getBirthday(), "\\."));
+                } catch (Exception e) {
+                    LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                    logResumeRecordRecord.setErrorLog("出生日期转换异常: " + e.getMessage());
+                    logResumeRecordRecord.setFieldValue("birthday: " + resumeObj.getResult().getBirthday());
+                    logResumeRecordRecord.setUserId(uid);
+                    logResumeRecordRecord.setFileName(fileName);
+                    logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                    resumeDao.addRecord(logResumeRecordRecord);
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            profileObj.setBasic(basic);
+            logger.info("profileParser getBasic:{}", JSON.toJSONString(profileObj.getBasic()));
+        }
+        return profileObj;
+    }
 
     /**
      * 自定义简历数据校验
@@ -1185,6 +1213,33 @@ public class ProfileService {
                 logger.error("自定义字段校验失败! field_name:{}, value:{}, error_msg:{}", fieldName, customResult, configSysCvTplDO.getErrorMsg());
             }
         });
+        return ResponseUtils.success(result);
+    }
+    /*
+     人才库简历上传
+     */
+    public Response talentpoolUploadParse(String fileName,String fileData,int companyId) throws TException, IOException {
+        Map<String,Object> result=new HashMap<>();
+        ResumeObj resumeObj = profileEntity.profileParser(fileName, fileData);
+        result.put("resumeObj",resumeObj);
+        if(resumeObj.getStatus().getCode() == 200){
+            String phone=resumeObj.getResult().getPhone();
+            int userId=0;
+            if(StringUtils.isNotNullOrEmpty(phone)){
+                UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(phone,companyId);
+                if(userRecord!=null){
+                    userId=userRecord.getId();
+                }
+
+            }
+            ProfileObj profileObj=handlerParseData(resumeObj,userId,fileName);
+            logger.info("==============**********************");
+            logger.info(JSON.toJSONString(profileObj));
+            logger.info("==============**********************");
+            result.put("profile",profileObj);
+        }else{
+            ResponseUtils.fail(1,"解析失败");
+        }
         return ResponseUtils.success(result);
     }
 

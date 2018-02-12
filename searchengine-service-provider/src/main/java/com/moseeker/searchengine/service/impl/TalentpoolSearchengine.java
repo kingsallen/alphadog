@@ -46,10 +46,8 @@ public class TalentpoolSearchengine {
         TransportClient client=null;
         try {
             client = searchUtil.getEsClient();
-            Map<String, Object> aggInfo = new HashMap<>();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
-//            this.handlerAggs(params, builder, client, aggInfo);
             this.handlerSortOrder(params, builder);
             this.handlerPage(params, builder);
             this.handlerReturn(params, builder);
@@ -57,14 +55,6 @@ public class TalentpoolSearchengine {
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleData(response, "users");
-            if (aggInfo != null && !aggInfo.isEmpty()) {
-                result.put("aggs", aggInfo.get("aggs"));
-            }
-            String progressStatus = params.get("progress_status");
-            if(StringUtils.isNotNullOrEmpty(progressStatus)){
-                Map<String,Object> aggMap=getAggInfo(params);
-                result.put("aggs", aggMap.get("aggs"));
-            }
             return result;
         } catch (Exception e) {
             logger.info(e.getMessage()+"=================");
@@ -97,6 +87,7 @@ public class TalentpoolSearchengine {
                     .addAggregation(this.handleIsViewedCountAgg(params))
                     .addAggregation(this.handleNotViewedCountAgg(params));
             builder.setSize(0);
+            logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleAggData(response);
             return result;
@@ -132,35 +123,83 @@ public class TalentpoolSearchengine {
         String publisherIds=params.get("publisher");
         List<Integer> publisherIdList=convertStringToList(publisherIds);
         String hrId=params.get("hr_account_id");
+        String companyId=params.get("company_id");
         if(!this.isUseFieldorder(params)){
             builder.addSort(this.handlerScoreOrderScript(publisherIds));
-            if (publisherIdList.size() > 1) {
-                builder.addSort("user.hr_all_" + hrId + "_last_submit_time", SortOrder.DESC);
-            }else{
-                if(this.isMianHr(Integer.parseInt(hrId))){
-                    builder.addSort("user.hr_" + publisherIdList.get(0) + "_last_submit_time", SortOrder.DESC);
-                }else{
-                    builder.addSort("user.hr_" + hrId + "_last_submit_time", SortOrder.DESC);
+            if(this.isOrderTalent(params)){
+                this.orderByTalent(publisherIdList,hrId,companyId,builder);
+            }else {
+                if (publisherIdList.size() > 1) {
+                    builder.addSort("user.hr_all_" + hrId + "_last_submit_time", SortOrder.DESC);
+                } else {
+                    if (this.isMianHr(Integer.parseInt(hrId))) {
+                        builder.addSort("user.hr_" + publisherIdList.get(0) + "_last_submit_time", SortOrder.DESC);
+                    } else {
+                        builder.addSort("user.hr_" + hrId + "_last_submit_time", SortOrder.DESC);
+                    }
                 }
             }
         }else{
+            if(this.isOrderTalent(params)){
+                this.orderByTalent(publisherIdList,hrId,companyId,builder);
+            }else{
+                this.orderByApp(publisherIdList,hrId,companyId,builder);
+            }
             //如果查询多个。注解按照hr_all_+主账号_order
 
 
-            if (publisherIdList.size() > 1) {
-                builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+        }
+    }
+    /*
+     根据处理好的收藏时间排序
+     */
+    private void orderByTalent(List<Integer> publisherIdList,String hrId,String companyId,SearchRequestBuilder builder){
+        if (publisherIdList.size() > 1) {
+            builder.addSort("user.field_talent_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+        }else{
+            if(this.isMianHr(Integer.parseInt(hrId))){
+                logger.info("==============================");
+                builder.addSort("user.field_talent_order.hr_all_" + hrId + "_order", SortOrder.DESC);
             }else{
-                if(this.isMianHr(Integer.parseInt(hrId))){
-                    logger.info("==============================");
-                    builder.addSort("user.field_order.hr_all_" + hrId + "_order", SortOrder.DESC);
-                }else{
-                    String companyId=params.get("company_id");
-                    UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
-                    logger.info("++++++++++++++++++++++++++++++++");
-                    builder.addSort("user.field_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
-                }
+                UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
+                logger.info("++++++++++++++++++++++++++++++++");
+                builder.addSort("user.field_talent_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+//                builder.addSort("user.field_talent_order.hr_" + hrId + "_order", SortOrder.DESC);
+
+
             }
         }
+    }
+    /*
+     根据处理好的申请时间排序
+     */
+    private void orderByApp(List<Integer> publisherIdList,String hrId,String companyId,SearchRequestBuilder builder){
+
+        if (publisherIdList.size() > 1) {
+            builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+        }else{
+            if(this.isMianHr(Integer.parseInt(hrId))){
+                logger.info("==============================");
+                builder.addSort("user.field_order.hr_all_" + hrId + "_order", SortOrder.DESC);
+            }else{
+//                UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
+                logger.info("++++++++++++++++++++++++++++++++");
+//                builder.addSort("user.field_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+                builder.addSort("user.field_order.hr_" + hrId + "_order", SortOrder.DESC);
+            }
+        }
+    }
+    /*
+     按照收藏时间排序
+     */
+    private boolean isOrderTalent(Map<String,String>params){
+        String tagIds=params.get("tag_ids");
+        String favoriteHrs=params.get("favorite_hrs");
+        String isPublic=params.get("is_public");
+        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
+            return false;
+        }
+        return true;
     }
     /*
      处理统计
@@ -332,9 +371,10 @@ public class TalentpoolSearchengine {
                 if (StringUtils.isNotNullOrEmpty(publisherIds)) {
                     this.queryByPublisher(publisherIds, query);
                 }
-            }else{
-                this.queryByComapnyId(companyId, query);
             }
+//            else{
+//                this.queryByComapnyId(companyId, query);
+//            }
 
             if (StringUtils.isNotNullOrEmpty(candidateSource)) {
                 this.queryByCandidateSource(Integer.parseInt(candidateSource), query);
@@ -411,8 +451,7 @@ public class TalentpoolSearchengine {
             return null;
         }
         StringBuffer sb=new StringBuffer();
-        sb.append("origin=0;if(_source.user){upload=_source.user.upload;profiles=_source.user.profiles;if(profiles)" +
-                "{profile=profiles.profile;if(profile){origin=profile.origin}};for ( val in _source.user.applications) {if(");
+        sb.append("user=_source.user;if(user){applications=user.applications;;origins=user.origin_data;if(applications){for(val in applications){if(");
 
         if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
@@ -421,38 +460,13 @@ public class TalentpoolSearchengine {
                     sb.append("val.publisher in "+publisherIdList.toString()+"&&");
                 }
             }
-        }else{
-            sb.append("val.company_id == "+companyId+"&&");
         }
-
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
             sb.append("val.candidate_source=="+candidateSource+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(recommend)){
             sb.append("val.recommender_user_id>0 &&");
         }
-        if(StringUtils.isNotNullOrEmpty(origins)){
-            List<String> list=searchUtil.stringConvertList(origins);
-            sb.append("(");
-            for(String origin:list){
-                if("1".equals(origin)){
-                    sb.append("upload==1 ||");
-                }else if("-99".equals(origin)){
-                    sb.append(" val.origin==1 ||val.origin==2 ||val.origin==4 ||val.origin==128 || val.origin==256 ||val.origin==512 ||val.origin==1024 ||");
-                }else{
-                    if(origin.length()>8){
-                        sb.append(" origin=='"+origin+"'||");
-                    }else{
-                        sb.append(" val.origin=="+origin+"||");
-                    }
-                }
-            }
-            sb.deleteCharAt(sb.lastIndexOf("|"));
-            sb.deleteCharAt(sb.lastIndexOf("|"));
-            sb.append(")&&");
-
-        }
-
         if(StringUtils.isNotNullOrEmpty(submitTime)){
             long longTime=this.getLongTime(submitTime);
             sb.append(" val.submit_time>'"+longTime+"'&&");
@@ -464,9 +478,54 @@ public class TalentpoolSearchengine {
             List<Integer> positionIdList=this.convertStringToList(positionId);
             sb.append(" val.position_id in "+positionIdList.toString()+"&&");
         }
-        sb=sb.deleteCharAt(sb.lastIndexOf("&"));
-        sb=sb.deleteCharAt(sb.lastIndexOf("&"));
+        if(StringUtils.isNotNullOrEmpty(origins)){
+            List<String> list=searchUtil.stringConvertList(origins);
+            sb.append("(");
+            for(String origin:list){
+                if("-99".equals(origin)||"99".equals(origin)){
+                    sb.append(" (val.origin==1 ||val.origin==2 ||val.origin==4 ||val.origin==128 || val.origin==256 ||val.origin==512 ||val.origin==1024) ||");
+                }else{
+                    if(origin.length()>8){
+                        sb.append("('"+origin+"' in origins)||");
+                    }else{
+                        sb.append(" (val.origin=="+origin+")||");
+                    }
+                }
+            }
+            sb.deleteCharAt(sb.lastIndexOf("|"));
+            sb.deleteCharAt(sb.lastIndexOf("|"));
+            sb.append(")");
+        }else{
+            sb.deleteCharAt(sb.lastIndexOf("&"));
+            sb.deleteCharAt(sb.lastIndexOf("&"));
+        }
         sb.append("){return true}}}");
+
+        if(StringUtils.isNotNullOrEmpty(origins)){
+            List<String> list=searchUtil.stringConvertList(origins);
+            int flag=0;
+            for(String origin:list){
+                if(!"-99".equals(origin)&&!"99".equals(origin)){
+                    if(flag==0){
+                        sb.append("else{if(");
+                        flag=1;
+                    }
+                    sb.append("('"+origin+"' in origins)||");
+                }
+            }
+            if(flag==1){
+                sb.deleteCharAt(sb.lastIndexOf("|"));
+                sb.deleteCharAt(sb.lastIndexOf("|"));
+                sb.append("){return true;}}");
+                sb.append("}");
+            }else{
+                sb.append("}");
+            }
+
+        }else{
+            sb.append("}");
+        }
+
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         return script;
     }
