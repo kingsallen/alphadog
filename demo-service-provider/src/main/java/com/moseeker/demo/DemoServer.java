@@ -1,6 +1,6 @@
 package com.moseeker.demo;
 
-import com.moseeker.demo.thriftservice.DemoThriftServiceImpl;
+import com.moseeker.demo.userinterface.DemoThriftServiceImpl;
 import com.moseeker.rpccenter.exception.IncompleteException;
 import com.moseeker.rpccenter.exception.RegisterException;
 import com.moseeker.rpccenter.exception.RpcException;

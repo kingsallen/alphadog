@@ -218,4 +218,6 @@ service UserEmployeeService {
     bool isEmployee(1: i32 userId, 2: i32 companyId) throws (1: common_struct.BIZException e);
 
     common_struct.Response putUserEmployee(1:useraccounts_struct.UserEmployeeStruct userEmployee) throws (1: common_struct.BIZException e);
+    
+    void addEmployeeAward(1: list<i32> applicationIdList, 2: i32 eventType) throws (1:common_struct.BIZException e);
 }

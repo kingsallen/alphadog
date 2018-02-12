@@ -30,6 +30,9 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException THIRD_PARTY_ACCOUNT_NOTEXIST = new UserAccountException(42021, "第三方账号信息错误!");
     public static final UserAccountException NOT_ALLOWED_ADD_SUBACCOUNT = new UserAccountException(42022, "不允许继续添加子账号!");
     public static final UserAccountException HRACCOUNT_EXIST = new UserAccountException(42023, "HR账号已经存在!");
+    public static final UserAccountException AWARD_POSITION_ALREADY_DELETED = new UserAccountException(42024, "职位已经下架!");
+    public static final UserAccountException AWARD_POINTS_CONF_LOST = new UserAccountException(42025, "积分配置确实!");
+    public static final UserAccountException AWARD_EMPLOYEE_ELEGAL = new UserAccountException(42026, "员工信息不正确!");
 
     private final int code;
 

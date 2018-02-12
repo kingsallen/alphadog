@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.logdb.LogResumeDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
@@ -33,7 +34,6 @@ import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.profile.*;
-import com.moseeker.entity.pojo.profile.User;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
@@ -48,12 +48,6 @@ import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
@@ -62,8 +56,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static com.moseeker.baseorm.util.BeanUtils.jooqMapfilter;
-import static com.moseeker.baseorm.util.BeanUtils.profilter;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @CounterIface
@@ -108,6 +106,9 @@ public class ProfileService {
     private ConfigSysCvTplDao configSysCvTplDao;
     @Autowired
     private TalentPoolEntity talentPoolEntity;
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
@@ -416,6 +417,7 @@ public class ProfileService {
         if(StringUtils.isEmptyList(positionApplications)){
             return ResponseUtils.success("");
         }
+
         logger.info("=================================================");
         List<Map<String, Object>> datas =dao.getRelatedDataByJobApplication( positionApplications, downloadUrl, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
         return dao.handleResponse(datas);
