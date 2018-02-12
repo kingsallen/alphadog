@@ -40,7 +40,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
      * 获取所有职能，为了和新插入职能做对比
      * @return
      */
-    public abstract List<T> getAll();
+    protected abstract List<T> getAll();
 
     /**
      * 新旧职能对比，某几个字段对比相同
@@ -48,7 +48,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
      * @param newData   新推送职能
      * @return
      */
-    public abstract boolean equals(T oldData, T newData);
+    protected abstract boolean equals(T oldData, T newData);
 
     /**
      * 处理职位信息
