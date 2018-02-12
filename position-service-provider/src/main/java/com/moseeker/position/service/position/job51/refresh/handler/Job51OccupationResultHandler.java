@@ -48,12 +48,12 @@ public class Job51OccupationResultHandler extends AbstractOccupationResultHandle
     }
 
     @Override
-    public List<Dict51jobOccupationDO> getAll() {
+    protected List<Dict51jobOccupationDO> getAll() {
         return occupationDao.getAllOccupation();
     }
 
     @Override
-    public boolean equals(Dict51jobOccupationDO oldData, Dict51jobOccupationDO newData) {
+    protected boolean equals(Dict51jobOccupationDO oldData, Dict51jobOccupationDO newData) {
         return oldData.getName().equals(newData.getName())
                 && oldData.getCodeOther().equals(newData.getCodeOther())
                 && oldData.getLevel() == newData.getLevel();

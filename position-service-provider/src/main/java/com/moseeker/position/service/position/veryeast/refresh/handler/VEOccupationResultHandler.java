@@ -22,7 +22,7 @@ public class VEOccupationResultHandler extends AbstractOccupationResultHandler<D
     private DictVeryEastOccupationDao occupationDao;
 
     @Override
-    public DictVeryEastOccupationDO buildOccupation(List<String> texts,List<String> codes,Map<String, Integer> newCode,JSONObject msg) {
+    protected DictVeryEastOccupationDO buildOccupation(List<String> texts,List<String> codes,Map<String, Integer> newCode,JSONObject msg) {
         DictVeryEastOccupationDO temp=new DictVeryEastOccupationDO();
 
         temp.setCodeOther(codes.get(codes.size()-1));
@@ -37,7 +37,7 @@ public class VEOccupationResultHandler extends AbstractOccupationResultHandler<D
 
     @Override
     @Transactional
-    public void persistent(List<DictVeryEastOccupationDO> data) {
+    protected void persistent(List<DictVeryEastOccupationDO> data) {
         int delCount=occupationDao.deleteAll();
         logger.info("veryeast delete old Occupation "+delCount);
         occupationDao.addAllData(data);
@@ -45,12 +45,12 @@ public class VEOccupationResultHandler extends AbstractOccupationResultHandler<D
     }
 
     @Override
-    public List<DictVeryEastOccupationDO> getAll() {
+    protected List<DictVeryEastOccupationDO> getAll() {
         return occupationDao.getAllOccupation();
     }
 
     @Override
-    public boolean equals(DictVeryEastOccupationDO oldData, DictVeryEastOccupationDO newData) {
+    protected boolean equals(DictVeryEastOccupationDO oldData, DictVeryEastOccupationDO newData) {
         return oldData.getName().equals(newData.getName())
                 && oldData.getCodeOther().equals(newData.getCodeOther())
                 && oldData.getLevel() == newData.getLevel();

@@ -46,12 +46,12 @@ public class LiepinOccupationResultHandler extends AbstractOccupationResultHandl
     }
 
     @Override
-    public List<DictLiepinOccupationDO> getAll() {
+    protected List<DictLiepinOccupationDO> getAll() {
         return occupationDao.getAllOccupation();
     }
 
     @Override
-    public boolean equals(DictLiepinOccupationDO oldData, DictLiepinOccupationDO newData) {
+    protected boolean equals(DictLiepinOccupationDO oldData, DictLiepinOccupationDO newData) {
         return oldData.getName().equals(newData.getName())
                 && oldData.getOtherCode().equals(newData.getOtherCode())
                 && oldData.getLevel() == newData.getLevel();

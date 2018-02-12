@@ -45,12 +45,12 @@ public class ZhilianOccupationResultHandler extends AbstractOccupationResultHand
     }
 
     @Override
-    public List<DictZhilianOccupationDO> getAll() {
+    protected List<DictZhilianOccupationDO> getAll() {
         return occupationDao.getAllOccupation();
     }
 
     @Override
-    public boolean equals(DictZhilianOccupationDO oldData, DictZhilianOccupationDO newData) {
+    protected boolean equals(DictZhilianOccupationDO oldData, DictZhilianOccupationDO newData) {
         return oldData.getName().equals(newData.getName())
                 && oldData.getCodeOther().equals(newData.getCodeOther())
                 && oldData.getLevel() == newData.getLevel();

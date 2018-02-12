@@ -34,7 +34,7 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
     }
 
     @Override
-    public DictJob1001OccupationDO buildOccupation(List<String> texts,List<String> codes,Map<String, Integer> newCode,JSONObject msg) {
+    protected DictJob1001OccupationDO buildOccupation(List<String> texts,List<String> codes,Map<String, Integer> newCode,JSONObject msg) {
         DictJob1001OccupationDO temp=new DictJob1001OccupationDO();
 
         temp.setCodeOther(codes.get(codes.size()-1));
@@ -51,7 +51,7 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
 
     @Override
     @Transactional
-    public void persistent(List<DictJob1001OccupationDO> data) {
+    protected void persistent(List<DictJob1001OccupationDO> data) {
         if(data==null || data.isEmpty()){
             return;
         }
@@ -62,16 +62,19 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
     }
 
     @Override
-    public List<DictJob1001OccupationDO> getAll() {
+    protected List<DictJob1001OccupationDO> getAll() {
         return occupationDao.getAllOccupation();
     }
 
     @Override
-    public boolean equals(DictJob1001OccupationDO oldData, DictJob1001OccupationDO newData) {
+    protected boolean equals(DictJob1001OccupationDO oldData, DictJob1001OccupationDO newData) {
+        //subsite字段不相同的话直接返回true，不需要比较，因为之比较subsite相同的职能
+        if(!oldData.getSubsite().equals(newData.getSubsite())){
+            return true;
+        }
         return oldData.getName().equals(newData.getName())
                 && oldData.getCodeOther().equals(newData.getCodeOther())
-                && oldData.getLevel() == newData.getLevel()
-                && oldData.getSubsite().equals(newData.getSubsite());
+                && oldData.getLevel() == newData.getLevel();
     }
 
     @Override
