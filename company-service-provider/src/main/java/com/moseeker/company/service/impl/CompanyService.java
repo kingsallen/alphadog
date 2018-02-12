@@ -158,7 +158,7 @@ public class CompanyService {
                     if (!scaleIllegal) {
                         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
                     }
-                    boolean propertyIllegal = companyDao.checkPropertyIllegal(record.getScale());
+                    boolean propertyIllegal = companyDao.checkPropertyIllegal(record.getProperty());
                     if (!propertyIllegal) {
                         return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_PROPERTIY_ELLEGAL);
                     }

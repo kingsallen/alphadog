@@ -1146,7 +1146,7 @@ public class ProfileService {
 
     private String viewApplications(int accountId, List<Integer> updateList){
         try {
-//            applicationService.viewApplications(accountId, updateList);
+            applicationService.viewApplications(accountId, updateList);
         } catch (Exception e) {
             logger.info("申请查看状态更新以及发送模板消息出错");
         }
