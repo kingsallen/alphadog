@@ -277,7 +277,7 @@ public class ThirdPositionService {
             throw new CommonException(-1, "无效的第三方帐号！");
         }
         thirdPartyAccount.setId(thirdPostion.getR1().getThirdPartyAccountId());
-        int result = thirdPartyPositionDao.updateData(thirdPartyPosition,positionChangeUtil.toThirdPartyPosition(thirdPartyAccount.getChannel(),extData));
+        int result = thirdPartyPositionDao.updateData(thirdPartyPosition,positionChangeUtil.toThirdPartyPosition(thirdPostion.getR1().getChannel(),extData));
 
         if (result < 1) {
             throw ExceptionUtils.getCommonException(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
