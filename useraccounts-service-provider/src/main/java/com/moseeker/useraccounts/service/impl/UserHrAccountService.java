@@ -1584,7 +1584,103 @@ public class UserHrAccountService {
                 });
             }
         }
-        return hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
+        List<HrAppExportFieldsDO> showedApplicationExportFieldsList = hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
+        if (showedApplicationExportFieldsList != null) {
+            showedApplicationExportFieldsList.addAll(fetchDefaultExportFields());
+        }
+        return showedApplicationExportFieldsList;
+    }
+
+    /**
+     * 查找简历导出默认导出的字段
+     * todo 待老王回来一起讨论，默认的导出字段配置如何建表
+     * @return 简历导出默认导出的字段
+     */
+    private List<HrAppExportFieldsDO> fetchDefaultExportFields() {
+        List<HrAppExportFieldsDO> fieldsDOList = new ArrayList<>();
+
+        HrAppExportFieldsDO hrAppExportFieldsDO1 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO1.setFieldTitle("职位发布人");
+        hrAppExportFieldsDO1.setSample("张三");
+        hrAppExportFieldsDO1.setFieldName("position_publisher_name");
+        hrAppExportFieldsDO1.setShowed(0);
+        hrAppExportFieldsDO1.setSelected(0);
+        hrAppExportFieldsDO1.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO1);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO2 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO2.setFieldTitle("职位所属部门");
+        hrAppExportFieldsDO2.setSample("财务部");
+        hrAppExportFieldsDO2.setFieldName("position_department");
+        hrAppExportFieldsDO2.setShowed(0);
+        hrAppExportFieldsDO2.setSelected(0);
+        hrAppExportFieldsDO2.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO2);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO3 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO3.setFieldTitle("职位招聘类型");
+        hrAppExportFieldsDO3.setSample("社招");
+        hrAppExportFieldsDO3.setFieldName("position_candidate_source");
+        hrAppExportFieldsDO3.setShowed(0);
+        hrAppExportFieldsDO3.setSelected(0);
+        hrAppExportFieldsDO3.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO3);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO4 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO4.setFieldTitle("职位招聘性质");
+        hrAppExportFieldsDO4.setSample("全职");
+        hrAppExportFieldsDO4.setFieldName("position_employment_type");
+        hrAppExportFieldsDO4.setShowed(0);
+        hrAppExportFieldsDO4.setSelected(0);
+        hrAppExportFieldsDO4.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO4);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO5 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO5.setFieldTitle("职位自定义字段１");
+        hrAppExportFieldsDO5.setSample("abc");
+        hrAppExportFieldsDO5.setFieldName("position_occupation_name");
+        hrAppExportFieldsDO5.setShowed(0);
+        hrAppExportFieldsDO5.setSelected(0);
+        hrAppExportFieldsDO5.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO5);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO6 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO6.setFieldTitle("职位自定义字段2");
+        hrAppExportFieldsDO6.setSample("def");
+        hrAppExportFieldsDO6.setFieldName("position_custom_name");
+        hrAppExportFieldsDO6.setShowed(0);
+        hrAppExportFieldsDO6.setSelected(0);
+        hrAppExportFieldsDO6.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO6);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO7 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO7.setFieldTitle("职位编号");
+        hrAppExportFieldsDO7.setSample("001");
+        hrAppExportFieldsDO7.setFieldName("jobnumber");
+        hrAppExportFieldsDO7.setShowed(0);
+        hrAppExportFieldsDO7.setSelected(0);
+        hrAppExportFieldsDO7.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO7);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO8 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO8.setFieldTitle("申请职位");
+        hrAppExportFieldsDO8.setSample("前端工程师");
+        hrAppExportFieldsDO8.setFieldName("title");
+        hrAppExportFieldsDO8.setShowed(0);
+        hrAppExportFieldsDO8.setSelected(0);
+        hrAppExportFieldsDO8.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO8);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO9 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO9.setFieldTitle("招聘地点");
+        hrAppExportFieldsDO9.setSample("北京,上海");
+        hrAppExportFieldsDO9.setFieldName("city");
+        hrAppExportFieldsDO9.setShowed(0);
+        hrAppExportFieldsDO9.setSelected(0);
+        hrAppExportFieldsDO9.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO9);
+
+        return fieldsDOList;
     }
 
     public UserHrAccountDO requiresNotNullAccount(int hrId){
