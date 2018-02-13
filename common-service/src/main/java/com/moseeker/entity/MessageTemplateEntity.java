@@ -193,7 +193,7 @@ public class MessageTemplateEntity {
         if(record !=null&&StringUtils.isNotNullOrEmpty(record.getFirst())){
             first.setValue(record.getFirst());
         }else{
-            first.setValue("您好，请完善简历信息。");
+            first.setValue("您好，请完善您的简历信息。");
         }
         colMap.put("first",first);
         MessageTplDataCol keyword1=new MessageTplDataCol();

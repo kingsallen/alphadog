@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.listener;
 
-import com.moseeker.useraccounts.service.config.AppConfig;
+
+import com.moseeker.useraccounts.config.AppConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
