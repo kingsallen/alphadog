@@ -1584,7 +1584,57 @@ public class UserHrAccountService {
                 });
             }
         }
-        return hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
+        List<HrAppExportFieldsDO> showedApplicationExportFieldsList = hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
+        if (showedApplicationExportFieldsList != null) {
+            showedApplicationExportFieldsList.addAll(fetchDefaultExportFields());
+        }
+        return showedApplicationExportFieldsList;
+    }
+
+    /**
+     * 查找简历导出默认导出的字段
+     * @return 简历导出默认导出的字段
+     */
+    private List<HrAppExportFieldsDO> fetchDefaultExportFields() {
+        List<HrAppExportFieldsDO> fieldsDOList = new ArrayList<>();
+
+        HrAppExportFieldsDO hrAppExportFieldsDO1 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO1.setFieldTitle("职位发布人");
+        hrAppExportFieldsDO1.setSample("张三");
+        hrAppExportFieldsDO1.setFieldName("position_publisher_name");
+        fieldsDOList.add(hrAppExportFieldsDO1);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO2 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO2.setFieldTitle("职位所属部门");
+        hrAppExportFieldsDO2.setSample("财务部");
+        hrAppExportFieldsDO2.setFieldName("position_department");
+        fieldsDOList.add(hrAppExportFieldsDO2);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO3 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO3.setFieldTitle("职位招聘类型");
+        hrAppExportFieldsDO3.setSample("社招");
+        hrAppExportFieldsDO3.setFieldName("position_candidate_source");
+        fieldsDOList.add(hrAppExportFieldsDO3);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO4 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO4.setFieldTitle("职位招聘性质");
+        hrAppExportFieldsDO4.setSample("全职");
+        hrAppExportFieldsDO4.setFieldName("position_employment_type");
+        fieldsDOList.add(hrAppExportFieldsDO4);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO5 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO5.setFieldTitle("职位自定义字段１");
+        hrAppExportFieldsDO5.setSample("abc");
+        hrAppExportFieldsDO5.setFieldName("position_occupation_name");
+        fieldsDOList.add(hrAppExportFieldsDO5);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO6 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO6.setFieldTitle("职位自定义字段2");
+        hrAppExportFieldsDO6.setSample("def");
+        hrAppExportFieldsDO6.setFieldName("position_custom_name");
+        fieldsDOList.add(hrAppExportFieldsDO6);
+
+        return fieldsDOList;
     }
 
     public UserHrAccountDO requiresNotNullAccount(int hrId){
