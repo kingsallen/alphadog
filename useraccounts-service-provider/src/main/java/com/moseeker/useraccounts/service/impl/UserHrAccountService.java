@@ -1593,6 +1593,7 @@ public class UserHrAccountService {
 
     /**
      * 查找简历导出默认导出的字段
+     * todo 待老王回来一起讨论，默认的导出字段配置如何建表
      * @return 简历导出默认导出的字段
      */
     private List<HrAppExportFieldsDO> fetchDefaultExportFields() {
