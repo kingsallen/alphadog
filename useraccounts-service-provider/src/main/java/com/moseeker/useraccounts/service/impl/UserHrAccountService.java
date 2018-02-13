@@ -1636,7 +1636,7 @@ public class UserHrAccountService {
         fieldsDOList.add(hrAppExportFieldsDO4);
 
         HrAppExportFieldsDO hrAppExportFieldsDO5 = new HrAppExportFieldsDO();
-        hrAppExportFieldsDO5.setFieldTitle("职位自定义字段１");
+        hrAppExportFieldsDO5.setFieldTitle("自定义字段１");
         hrAppExportFieldsDO5.setSample("abc");
         hrAppExportFieldsDO5.setFieldName("position_occupation_name");
         hrAppExportFieldsDO5.setShowed(0);
@@ -1645,7 +1645,7 @@ public class UserHrAccountService {
         fieldsDOList.add(hrAppExportFieldsDO5);
 
         HrAppExportFieldsDO hrAppExportFieldsDO6 = new HrAppExportFieldsDO();
-        hrAppExportFieldsDO6.setFieldTitle("职位自定义字段2");
+        hrAppExportFieldsDO6.setFieldTitle("自定义字段2");
         hrAppExportFieldsDO6.setSample("def");
         hrAppExportFieldsDO6.setFieldName("position_custom_name");
         hrAppExportFieldsDO6.setShowed(0);
