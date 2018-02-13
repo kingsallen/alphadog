@@ -1651,7 +1651,31 @@ public class UserHrAccountService {
         hrAppExportFieldsDO6.setShowed(0);
         hrAppExportFieldsDO6.setSelected(0);
         hrAppExportFieldsDO6.setDisplayOrder(0);
-        fieldsDOList.add(hrAppExportFieldsDO6);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO7 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO7.setFieldTitle("职位编号");
+        hrAppExportFieldsDO7.setSample("001");
+        hrAppExportFieldsDO7.setFieldName("jobnumber");
+        hrAppExportFieldsDO7.setShowed(0);
+        hrAppExportFieldsDO7.setSelected(0);
+        hrAppExportFieldsDO7.setDisplayOrder(0);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO8 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO8.setFieldTitle("申请职位");
+        hrAppExportFieldsDO8.setSample("前端工程师");
+        hrAppExportFieldsDO8.setFieldName("title");
+        hrAppExportFieldsDO8.setShowed(0);
+        hrAppExportFieldsDO8.setSelected(0);
+        hrAppExportFieldsDO8.setDisplayOrder(0);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO9 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO9.setFieldTitle("招聘地点");
+        hrAppExportFieldsDO9.setSample("北京,上海");
+        hrAppExportFieldsDO9.setFieldName("city");
+        hrAppExportFieldsDO9.setShowed(0);
+        hrAppExportFieldsDO9.setSelected(0);
+        hrAppExportFieldsDO9.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO9);
 
         return fieldsDOList;
     }
