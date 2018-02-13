@@ -1651,6 +1651,7 @@ public class UserHrAccountService {
         hrAppExportFieldsDO6.setShowed(0);
         hrAppExportFieldsDO6.setSelected(0);
         hrAppExportFieldsDO6.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO6);
 
         HrAppExportFieldsDO hrAppExportFieldsDO7 = new HrAppExportFieldsDO();
         hrAppExportFieldsDO7.setFieldTitle("职位编号");
@@ -1659,6 +1660,7 @@ public class UserHrAccountService {
         hrAppExportFieldsDO7.setShowed(0);
         hrAppExportFieldsDO7.setSelected(0);
         hrAppExportFieldsDO7.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO7);
 
         HrAppExportFieldsDO hrAppExportFieldsDO8 = new HrAppExportFieldsDO();
         hrAppExportFieldsDO8.setFieldTitle("申请职位");
@@ -1667,6 +1669,7 @@ public class UserHrAccountService {
         hrAppExportFieldsDO8.setShowed(0);
         hrAppExportFieldsDO8.setSelected(0);
         hrAppExportFieldsDO8.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO8);
 
         HrAppExportFieldsDO hrAppExportFieldsDO9 = new HrAppExportFieldsDO();
         hrAppExportFieldsDO9.setFieldTitle("招聘地点");
