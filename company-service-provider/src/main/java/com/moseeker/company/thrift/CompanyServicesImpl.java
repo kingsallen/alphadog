@@ -22,7 +22,6 @@ import com.moseeker.company.service.impl.CompanyService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices.Iface;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -354,6 +353,12 @@ public class CompanyServicesImpl implements Iface {
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
+    }
+
+    @Override
+    public Response addHrAccountAndCompany(String companyName, String mobile) throws BIZException, TException {
+
+        return null;
     }
 
 

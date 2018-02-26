@@ -10,12 +10,15 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
@@ -32,11 +35,13 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 
+import java.util.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +49,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -729,5 +730,36 @@ public class CompanyService {
             return ResponseUtils.fail(1,"操作失败");
         }
         return ResponseUtils.success("");
+    }
+
+    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, byte source) throws Exception{
+        Query query = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.MOBILE.getName(), mobile).buildQuery();
+        UserHrAccountDO accountDO = userHrAccountDao.getData(query);
+        if(accountDO != null) {
+             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
+        }
+        HrCompanyDO companyDO = new HrCompanyDO();
+        companyDO.setType((byte)1);
+        companyDO.setName(companyName);
+        companyDO.setSource(source);
+        int companyId = companyDao.addData(companyDO).getId();
+        String[] passwordArray = this.genPassword(6);
+        UserHrAccountDO accountDO1 = new UserHrAccountDO();
+        accountDO1.setMobile(mobile);
+        accountDO1.setCompanyId(companyId);
+        accountDO1.setPassword(passwordArray[1]);
+//        accountDO1.setWxuserId();
+        accountDO1.setLoginCount(0);
+
+        return null;
+    }
+
+    private String[] genPassword(int length) {
+        String[] passwordArray = new String[2];
+        String plainPassword = StringUtils.getRandomString(length);
+        passwordArray[0] = plainPassword;
+        passwordArray[1] = MD5Util.encryptSHA(MD5Util.md5(plainPassword));
+
+        return passwordArray;
     }
 }
