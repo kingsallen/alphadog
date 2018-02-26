@@ -234,4 +234,22 @@ public class JobApplicationController {
 			return ResponseLogNotification.fail(request,e.getMessage());
 		}
 	}
+
+    /**
+     * 获取HR有多少未读简历
+     */
+    @RequestMapping(value = "/application/isView/count", method = RequestMethod.GET)
+    @ResponseBody
+    public String getAppliationIsViewCount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer accountId = params.getInt("accountId");
+            Response res =  applicationService.getHrIsViewApplication(accountId);
+            return ResponseLogNotification.success(request, res);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request,e.getMessage());
+        }
+    }
 }

@@ -40,6 +40,9 @@ service JobApplicationServices {
     // 根据指定渠道 channel=5（支付宝），指定时间段（"2017-05-10 14:57:14"）， 返回第三方渠道同步的申请状态。
     common_struct.Response getApplicationListForThirdParty(1:i32 channel, 2:string start_time, 3:string end_time);
 
+    // 根据指定渠道 channel=5（支付宝），指定时间段（"2017-05-10 14:57:14"）， 返回第三方渠道同步的申请状态。
+    common_struct.Response getHrIsViewApplication(1:i32 user_id);
+
     //查看申请
     void viewApplications(1:i32 hrId, 2:list<i32> applicationIdList) throws (1: common_struct.BIZException e);
 }
