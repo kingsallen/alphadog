@@ -33,6 +33,7 @@ public class ZhilianParamRefresher extends AbstractRabbitMQParamRefresher {
     public void addUserParam(JSONObject jsonSend) {
         jsonSend.put("user_name",getConfig("zhilian.username"));
         jsonSend.put("password",getConfig("zhilian.password"));
+        jsonSend.put("mobile",getConfig("zhilian.mobile"));
     }
 
     @Override
