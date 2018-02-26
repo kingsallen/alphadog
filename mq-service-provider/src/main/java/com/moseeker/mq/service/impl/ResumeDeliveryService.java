@@ -590,7 +590,7 @@ public class ResumeDeliveryService {
                     end = Integer.parseInt(workexpDO.getEndTime().substring(0, 4));
                 }
             }
-            return (end - start)+"";
+            return (end - start)+"年";
         }
         return "";
     }
@@ -610,9 +610,9 @@ public class ResumeDeliveryService {
                             workexpDO.getCompanyId()).buildQuery());
                     if (companyDO != null) {
                         if(StringUtils.isNotNullOrEmpty(companyDO.getName())){
-                            return companyDO.getName();
+                            return companyDO.getName()+" | "+workexpDO.getJob();
                         }else{
-                            return companyDO.getAbbreviation();
+                            return companyDO.getAbbreviation()+" | "+workexpDO.getJob();
                         }
                     }
                 }
@@ -620,7 +620,11 @@ public class ResumeDeliveryService {
             HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where("id",
                     workexpDOList.get(workexpDOList.size() - 1).getCompanyId()).buildQuery());
             if (companyDO != null) {
-                return companyDO.getAbbreviation();
+                if(StringUtils.isNotNullOrEmpty(companyDO.getName())){
+                    return companyDO.getName()+" | "+ workexpDOList.get(workexpDOList.size() - 1).getJob();
+                }else{
+                    return companyDO.getAbbreviation()+" | "+ workexpDOList.get(workexpDOList.size() - 1).getJob();
+                }
             }
         }
         return "";
