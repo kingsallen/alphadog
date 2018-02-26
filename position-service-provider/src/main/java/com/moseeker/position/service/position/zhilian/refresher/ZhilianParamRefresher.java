@@ -35,6 +35,8 @@ public class ZhilianParamRefresher extends AbstractRabbitMQParamRefresher {
         jsonSend.put("password",getConfig("zhilian.password"));
         jsonSend.put("mobile",getConfig("zhilian.mobile"));
         jsonSend.put("account_id",getConfig("zhilian.accountId"));
+        //因为智联可能需要验证手机号，但是微信输入验证码是职位同步的操作，需要positionId,可能会耦合
+        jsonSend.put("positionId",0);
     }
 
     @Override
