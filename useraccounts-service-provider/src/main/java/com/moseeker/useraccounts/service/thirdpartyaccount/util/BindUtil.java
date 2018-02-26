@@ -45,6 +45,10 @@ public class BindUtil {
                 logger.info("zhilian set mobile : {}",userHrAccount.getMobile());
                 extras.put("mobile",userHrAccount.getMobile());
                 break;
+            case JOB51:
+                logger.info("job51 set mobile : {}",userHrAccount.getMobile());
+                extras.put("mobile",userHrAccount.getMobile());
+                break;
             default:
                 break;
         }
