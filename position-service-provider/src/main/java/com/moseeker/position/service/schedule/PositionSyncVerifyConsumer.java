@@ -60,16 +60,17 @@ public class PositionSyncVerifyConsumer {
 
                     break;
                 case "publish": //职位同步验证
-                    logger.info("职位同步验证 json：{}",obj.toJSONString());
+                    logger.info("职位同步验证 json：{}",json);
                     wxVerifyHandler(obj);
 
                     break;
                 case "environ": //刷新验证
-                    logger.info("刷新验证 json：{}",obj.toJSONString());
+                    logger.info("刷新验证 json：{}",json);
                     wxVerifyHandler(obj);
 
                     break;
                 default:
+                    logger.info("无法识别的验证类型 json:{}",json);
                     break;
             }
 
