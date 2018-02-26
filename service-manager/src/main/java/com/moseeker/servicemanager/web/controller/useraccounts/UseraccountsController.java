@@ -17,7 +17,6 @@ import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import io.swagger.annotations.*;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.Logger;
@@ -35,7 +34,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
-@Api(value = "用户账户controller")
 @Controller
 @CounterIface
 public class UseraccountsController {
@@ -59,9 +57,6 @@ public class UseraccountsController {
 	 * // @param user_id 用户ID
 	 *
 	 */
-	@ApiOperation(value = "根据用户id查询用户信息", httpMethod = "GET", produces = "application/json")
-	@ApiResponse(code = 0,message = "success",response = User.class)
-	@ApiImplicitParam(name="user_id", value = "用户ID" , dataType = "int",dataTypeClass = int.class,required = true ,paramType = "path")
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	@ResponseBody
 	public String getUser(HttpServletRequest request, HttpServletResponse response) {
