@@ -667,6 +667,26 @@ public class PositionController {
         }
     }
 
+    /**
+     * 第三方职位列表详情
+     */
+    @RequestMapping(value = "/api/mini/update/position", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updatePosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Response result = positonServices.updatePosition(JSONObject.toJSONString(params));
+            if(result.getStatus()==0) {
+                return ResponseLogNotification.successJson(request, result.getData());
+            }else{
+                return ResponseLogNotification.failJson(request, result.getStatus(), result.getMessage(), result.getData());
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
     /*
     *获取pc端职位的详情
     */

@@ -2,6 +2,7 @@ package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
+import com.moseeker.common.annotation.iface.CounterInfo;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
@@ -89,7 +90,6 @@ public class ReceiverHandler {
         try{
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            log.info("rabitmq的参数是========"+jsonObject.toJSONString());
             int userId=jsonObject.getIntValue("user_id");
             int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");
@@ -123,6 +123,7 @@ public class ReceiverHandler {
                     if(type==3){
                         personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,1,20);
                     }
+
                     logVo.setStatus_code(0);
                 }else{
                     this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");

@@ -181,6 +181,18 @@ public class JobApplicataionServicesImpl implements Iface {
     }
 
     /**
+     * 获取HR下面有多少未读简历
+     * @param user_id
+     * @return
+     * @throws TException
+     */
+    @Override
+    public Response getHrIsViewApplication(int user_id) throws TException {
+        Response response = service.getHrApplicationNum(user_id);
+        return response;
+    }
+
+    /**
      * 清除一个公司一个人申请次数限制的redis key 给sysplat用
      *
      * @param userId    用户id
