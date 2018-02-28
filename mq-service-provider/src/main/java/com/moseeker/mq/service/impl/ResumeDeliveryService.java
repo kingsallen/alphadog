@@ -425,7 +425,7 @@ public class ResumeDeliveryService {
             String appid = handlerMiniappId();
             response = msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDO, userUserDO, workExp, lastWorkName , hrWxUserDo.getOpenid(), url, appid);
         }
-        logger.info("sendMessageAndEmail sendTemplateMessageToHr:openId {}", hrWxUserDo.getOpenid());
+        logger.info("sendMessageAndEmail sendTemplateMessageToHr:openId {}; accesstoken", hrWxUserDo.getOpenid());
         logger.info("sendMessageAndEmail sendTemplateMessageToHr:{}", response);
         return  response;
     }
