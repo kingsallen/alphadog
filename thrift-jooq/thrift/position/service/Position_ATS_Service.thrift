@@ -5,7 +5,7 @@ namespace java com.moseeker.thrift.gen.position.service
 /*
     查询第三方职位职能
 */
-service ATSPositionServices {
+service PositionATSServices {
     // 谷露新增职位
     common_struct.Response insertGlluePosition(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);
 

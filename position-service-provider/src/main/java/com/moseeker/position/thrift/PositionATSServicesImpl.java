@@ -1,8 +1,10 @@
-package com.moseeker.position.service.fundationbs;
+package com.moseeker.position.thrift;
 
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.position.service.fundationbs.PositionATSService;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.position.service.PositionATSServices;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -11,26 +13,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PositionATSService {
-    Logger logger= LoggerFactory.getLogger(PositionATSService.class);
+public class PositionATSServicesImpl implements PositionATSServices.Iface{
+    Logger logger= LoggerFactory.getLogger(PositionATSServicesImpl.class);
 
     @Autowired
-    private PositionService service;
+    PositionATSService positionATSService;
 
+    @Override
     public Response insertGlluePosition(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         try {
-
-
-            return ResponseUtils.success(service.batchHandlerJobPostion(batchHandlerJobPostion));
+            return ResponseUtils.success(positionATSService.insertGlluePosition(batchHandlerJobPostion));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
 
+    @Override
     public Response updateGlluePosition(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         try {
-            return ResponseUtils.success(service.batchHandlerJobPostion(batchHandlerJobPostion));
+            return ResponseUtils.success(positionATSService.updateGlluePosition(batchHandlerJobPostion));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
