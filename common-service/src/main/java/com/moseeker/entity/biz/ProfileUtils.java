@@ -738,7 +738,7 @@ public class ProfileUtils {
 				record.setUserId((Integer) profile.get("user_id"));
 			}
 			if (profile.get("disable") != null) {
-				record.setDisable((byte)(profile.get("disable")));
+				record.setDisable(((Integer)profile.get("disable")).byteValue());
 			} else {
 				record.setDisable((byte)(1));
 			}

@@ -113,25 +113,4 @@ public class HrWxHrChatDao extends DAOImpl<HrWxHrChatRecord, com.moseeker.baseor
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxHrChat> fetchByOrigin(Byte... values) {
         return fetch(HrWxHrChat.HR_WX_HR_CHAT.ORIGIN, values);
     }
-
-    /**
-     * Fetch records that have <code>msg_type IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxHrChat> fetchByMsgType(String... values) {
-        return fetch(HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE, values);
-    }
-
-    /**
-     * Fetch records that have <code>pic_url IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxHrChat> fetchByPicUrl(String... values) {
-        return fetch(HrWxHrChat.HR_WX_HR_CHAT.PIC_URL, values);
-    }
-
-    /**
-     * Fetch records that have <code>btn_content IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxHrChat> fetchByBtnContent(String... values) {
-        return fetch(HrWxHrChat.HR_WX_HR_CHAT.BTN_CONTENT, values);
-    }
 }

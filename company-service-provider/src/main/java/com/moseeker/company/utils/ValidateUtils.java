@@ -4,6 +4,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecord;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.company.bean.ValidateCommonBean;
 import com.moseeker.entity.TalentPoolEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -364,5 +365,37 @@ public class ValidateUtils {
             userIdList.add(id);
         }
         return userIdList;
+    }
+
+    /*
+    根据hrId和useridList，获取人才的id
+    */
+    public Set<Integer> getTalentuserIdSet(int hrId,Set<Integer> applierIdList){
+        List<Map<String,Object>> talentList=talentPoolEntity.getTalentpoolHrTalentByIdList(hrId,applierIdList);
+        //获取人才的Id
+        Set<Integer> idList=talentPoolEntity.getIdListByTalentpoolHrTalentList(talentList);
+        return idList;
+    }
+
+    /*
+    处理批量传输的人才，获取其中有效的和无效的
+    */
+    public ValidateCommonBean handlerApplierId(int hrId, Set<Integer> userIdList, int companyId){
+        ValidateCommonBean bean=new ValidateCommonBean();
+        int flag= talentPoolEntity.valiadteMainAccount(hrId,companyId);
+        Set<Integer> unUsedApplierIdList=new HashSet<>();
+        Set<Integer> applierIdList=new HashSet<>();
+        if(flag==0){
+            List<JobApplicationRecord> list=this.getJobApplicationByPublisherAndApplierId(userIdList,hrId);
+            applierIdList=this.getIdListByApplicationList(list);
+        }else{
+            List<JobApplicationRecord> list=talentPoolEntity.getJobApplicationByCompanyIdAndApplierId(userIdList,companyId);
+            applierIdList=this.getIdListByApplicationList(list);
+        }
+        unUsedApplierIdList= talentPoolEntity.filterIdList(userIdList,applierIdList);
+        Map<String,Object> result=new HashMap<>();
+        bean.setUnuseId(unUsedApplierIdList);
+        bean.setUseId(applierIdList);
+        return bean;
     }
 }
