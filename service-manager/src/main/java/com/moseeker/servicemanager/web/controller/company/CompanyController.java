@@ -549,7 +549,7 @@ public class CompanyController {
             if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
                 ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
-            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(companyId)){
                 ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
             Response result = companyServices.getTalentPoolStatus(Integer.parseInt(hrId),Integer.parseInt(companyId));
