@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
+import com.moseeker.thrift.gen.position.service.ATSPositionServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
 import org.slf4j.Logger;
@@ -52,6 +53,7 @@ public class PositionController {
 
     private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
     private PositionBS.Iface positionBS = ServiceManager.SERVICEMANAGER.getService(PositionBS.Iface.class);
+    private ATSPositionServices.Iface atsPositonServices = ServiceManager.SERVICEMANAGER.getService(ATSPositionServices.Iface.class);
 
     @Autowired
     private JobOccupationDao occuPationdao;
@@ -664,6 +666,38 @@ public class PositionController {
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    /**
+     * 谷露新增职位
+     */
+    @RequestMapping(value = "/glluePosition", method = RequestMethod.POST)
+    @ResponseBody
+    public String insertGlluePosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseBatchHandlerJobPostionParam(request);
+            Response res = atsPositonServices.insertGlluePosition(batchHandlerJobPostion);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 谷露修改职位
+     */
+    @RequestMapping(value = "/glluePosition", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateGlluePosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseBatchHandlerJobPostionParam(request);
+            Response res = atsPositonServices.updateGlluePosition(batchHandlerJobPostion);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
 
