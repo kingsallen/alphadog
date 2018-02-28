@@ -603,7 +603,11 @@ public class CompanyController {
                 ResponseLogNotification.fail(request,"微信名称不可以为空");
             }
             Response result = companyServices.addHrAccountAndCompany(company_name, mobile, Integer.parseInt(wxuserId), remote_ip, Integer.parseInt(source));
-            return ResponseLogNotification.success(request, result);
+            if (result.getStatus() == 0) {
+                return ResponseLogNotification.success(request, result);
+            } else {
+                return ResponseLogNotification.fail(request, result);
+            }
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());

@@ -18,6 +18,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.MD5Util;
@@ -753,14 +754,14 @@ public class CompanyService {
      * @return
      * @throws Exception
      */
-    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, byte source) throws Exception{
+    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, byte source) throws TException {
         //是否和超级公司名相同
         boolean repeatName = companyDao.checkRepeatNameWithSuperCompany(companyName);
         if(repeatName) {
             Query query = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.MOBILE.getName(), mobile).buildQuery();
             UserHrAccountDO accountDO = userHrAccountDao.getData(query);
             if (accountDO != null) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
             }
             HrCompanyDO companyDO = new HrCompanyDO();
             companyDO.setType((byte) 1);
@@ -768,7 +769,7 @@ public class CompanyService {
             companyDO.setSource(source);
             int companyId = companyDao.addData(companyDO).getId();
             if(companyId <= 0)
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
             String[] passwordArray = this.genPassword(6);
             UserHrAccountDO accountDO1 = new UserHrAccountDO();
             accountDO1.setMobile(mobile);
@@ -781,7 +782,7 @@ public class CompanyService {
             accountDO1.setLoginCount(0);
             int hrId = userHrAccountDao.addData(accountDO1).getId();
             if(hrId <= 0)
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
             HrCompanyAccountDO companyAccountDO = new HrCompanyAccountDO();
             companyAccountDO.setAccountId(hrId);
             companyAccountDO.setCompanyId(companyId);
@@ -809,10 +810,11 @@ public class CompanyService {
             data.put("mobile", mobile);
             data.put("code", passwordArray[0]);
             mqServer.sendSMS(SmsType.EMPLOYEE_MERGE_ACCOUNT_SMS, mobile, data, "2", remoteIp);
+            return ResponseUtils.success(new HashMap<>().put("hr_id", hrId));
         }else{
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.COMPANY_NAME_REPEAT);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NAME_REPEAT);
         }
-        return ResponseUtils.success(null);
+
     }
 
     private String[] genPassword(int length) {
