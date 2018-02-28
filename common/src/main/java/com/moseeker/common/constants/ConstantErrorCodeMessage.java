@@ -72,6 +72,7 @@ public final class ConstantErrorCodeMessage {
     public static final String CRAWLER_SERVICE_PARAM_ERROR = "{'status':32007,'message':'服务超时!'}";
     public static final String CRAWLER_SERVICE_IMPORT_UPPER_LIMIT = "{'status':32008,'message':'导入次数过多!'}";
     public static final String CRAWLER_RESUME_EMPTY = "{'status':32009,'message':'简历导入失败，请重新尝试!'}";
+    public static final String CRAWLER_SERVICE_PROFILE_EMPTY = "{'status':32010,'message':'简历为空'}";
 
     public static final String COMPANY_SUPER_REPEART_NAME = "{'status':33001, 'message':'和超级账号重名'}";
 
@@ -124,6 +125,7 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_DATA_ALLCITY_ERROR = "{'status':51015,'message':'全国职位暂不同步到支付宝'}";
     public static final String POSITION_DATA_NOCITYCODE_ERROR = "{'status':51016,'message':'无city code的职位暂不同步到支付宝'}";
     public static final String CITY_TOO_LONG = "{'status':51017,'message':'城市信息太长，无法入库'}";
+    public static final String POSITION_UPDATE_FAIL = "{'status':51019,'message':'更新职位信息失败，这个HR没有操作这个职位权限'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
     //职位同步

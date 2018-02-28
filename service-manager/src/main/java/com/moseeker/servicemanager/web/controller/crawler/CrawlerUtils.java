@@ -135,7 +135,7 @@ public class CrawlerUtils {
 		 * 			4		32005
 		 * 			-3		32006
 		 * 			-5		32007
-		 * 			5		32008
+		 * 			5		32010
 		 * 			-2		其他
 		 * */
 		if (messagBean.get("status") != null && (Integer) messagBean.get("status") == 0) {
@@ -186,7 +186,7 @@ public class CrawlerUtils {
 		} else if (messagBean.get("status") != null
 				&& (Integer) messagBean.get("status") == 5) {
 			decre(user_id, channelType);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_PARAM_ERROR);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_PROFILE_EMPTY);
 		}
 		decre(user_id, channelType);
 		return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_PARAM_ILLEGAL);

@@ -3,11 +3,19 @@ package com.moseeker.profile.thrift;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.JsonToMap;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.profile.service.impl.ProfileMiniService;
+import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.profile.service.impl.WholeProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices.Iface;
+
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +29,12 @@ public class WholeProfileServicesImpl implements Iface {
 
     @Autowired
     private WholeProfileService service;
+
+    @Autowired
+    private ProfileService profileService;
+
+    @Autowired
+    private ProfileMiniService profileMiniService;
 
     @Override
     public Response getResource(int userId, int profileId, String uuid) throws TException {
@@ -111,6 +125,43 @@ public class WholeProfileServicesImpl implements Iface {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
         }
+    }
+
+    @Override
+    public Response getProfileInfo(int userId, int accountId) throws BIZException, TException {
+        Response  response = null;
+        try {
+
+            response = service.getResource(userId, -1, "");
+
+            if(response != null && response.getStatus() ==0 && response.getData() != null) {
+                Map<String, Object> profile = (Map<String, Object>) JsonToMap.parseJSON2Map(response.getData());
+                Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(profile);
+                return ResponseUtils.success(profilrCamle);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
+    public Response getProfileMiniList(Map<String, String> params) throws TException {
+        try{
+            Map<String,Object> result=profileMiniService.getProfileMini(params);
+            if(result==null||result.isEmpty()){
+                return ResponseUtils.success(new HashMap<>());
+            }
+            return ResponseUtils.success(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+
     }
 
     @Override

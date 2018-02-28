@@ -422,8 +422,8 @@ public class ResumeDeliveryService {
         String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
 
         if(hrWxUserDo != null && templateMessageDO != null){
-            String link ="";
-            response = msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDO, userUserDO, workExp, lastWorkName , hrWxUserDo.getOpenid(), url, link);
+            String appid = handlerMiniappId();
+            response = msgHttp.handleHrTemplate(accountDO, positionDO, hrChatDO, templateMessageDO, userUserDO, workExp, lastWorkName , hrWxUserDo.getOpenid(), url, appid);
         }
         logger.info("sendMessageAndEmail sendTemplateMessageToHr:{}", response);
         return  response;
@@ -563,6 +563,13 @@ public class ResumeDeliveryService {
 
     }
 
+    private String handlerMiniappId(){
+        String appid="";
+        appid=env.getProperty("miniapp.appid");
+        return appid;
+
+    }
+
     private String calculate_workyears(String user_id ){
         ProfileProfileDO profileDO = profileDao.getData(new Query.QueryBuilder().where("user_id",
                 user_id).buildQuery());
@@ -583,7 +590,7 @@ public class ResumeDeliveryService {
                     end = Integer.parseInt(workexpDO.getEndTime().substring(0, 4));
                 }
             }
-            return (end - start)+"";
+            return (end - start)+"年";
         }
         return "";
     }
@@ -603,9 +610,9 @@ public class ResumeDeliveryService {
                             workexpDO.getCompanyId()).buildQuery());
                     if (companyDO != null) {
                         if(StringUtils.isNotNullOrEmpty(companyDO.getName())){
-                            return companyDO.getName();
+                            return companyDO.getName()+" | "+workexpDO.getJob();
                         }else{
-                            return companyDO.getAbbreviation();
+                            return companyDO.getAbbreviation()+" | "+workexpDO.getJob();
                         }
                     }
                 }
@@ -613,7 +620,11 @@ public class ResumeDeliveryService {
             HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where("id",
                     workexpDOList.get(workexpDOList.size() - 1).getCompanyId()).buildQuery());
             if (companyDO != null) {
-                return companyDO.getAbbreviation();
+                if(StringUtils.isNotNullOrEmpty(companyDO.getName())){
+                    return companyDO.getName()+" | "+ workexpDOList.get(workexpDOList.size() - 1).getJob();
+                }else{
+                    return companyDO.getAbbreviation()+" | "+ workexpDOList.get(workexpDOList.size() - 1).getJob();
+                }
             }
         }
         return "";
