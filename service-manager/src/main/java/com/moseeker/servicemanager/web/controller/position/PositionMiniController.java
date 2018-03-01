@@ -74,8 +74,8 @@ public class PositionMiniController {
             if(StringUtils.isNotNullOrEmpty(keyWords)){
                 keyWords=StringUtils.filterStringForSearch(keyWords);
             }
-            Response res = positonServices.getMiniPositionSuggest(accountId,keyWords,page,pageSize);
-            return ResponseLogNotification.success(request, res);
+            //Response res = positonServices.getMiniPositionSuggest(accountId,keyWords,page,pageSize);
+            return ResponseLogNotification.success(request, null);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
