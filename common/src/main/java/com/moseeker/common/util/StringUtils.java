@@ -388,10 +388,10 @@ public class StringUtils {
     public static String filterStringForSearch(String value){
         if(StringUtils.isNotNullOrEmpty(value)){
             String mark=" ";
-//            boolean flag=isContainChinese(value);
-//            if(flag){
-//                mark="";
-//            }
+            boolean flag=isContainChinese(value);
+            if(flag){
+                mark="";
+            }
             if(value.contains("/")){
                 value=value.replaceAll("/",mark);
             }
@@ -503,7 +503,7 @@ public class StringUtils {
         return false;
     }
     public static void main(String[] args) {
-        String aa="Assistant Manager / Manager, Deal Advisory\n";
+        String aa="Assistant Manager 张 Manager,/Deal Advisory\n";
         System.out.println(StringUtils.filterStringForSearch(aa));
 
     }
