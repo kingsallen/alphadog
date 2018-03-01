@@ -16,7 +16,7 @@ public class WXTemplateMsgPojo {
     private String url; // optional
     private int companyId; // optional
     private java.util.Map<String,MessageTplDataCol> data; // optional
-    private byte enableQxRetry; // optional
+    private byte enableQxRetry; // optional                     //1表示  如果当前公司的模板消息发送失败（包括当前公司没有绑定公众号），则使用仟寻发送模板消息
     private long delay; // optional
     private String validators; // optional
     private String id; // optional
