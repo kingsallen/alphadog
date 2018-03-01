@@ -8,6 +8,8 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.validation.ValidateUtil;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -90,6 +92,8 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
 
     public static class CVCheckedWXMsgNoticeBuilder {
 
+        private Logger logger = LoggerFactory.getLogger(this.getClass());
+
         private String positionName;        //职位名称
         private String companyName;         //公司名称
         private String signature;           //公众号标识
@@ -141,6 +145,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
                         signature, applicationId, applierId, companyId, redisClient);
                 return cvCheckedWXMsgNotice;
             } else {
+                logger.error("CVCheckedWXMsgNoticeBuilder buildCVCheckedWXMsgNotice result:{}", result);
                 throw ApplicationException.validateFailed(result);
             }
         }
