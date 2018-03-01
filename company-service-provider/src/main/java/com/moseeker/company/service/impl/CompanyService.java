@@ -754,7 +754,7 @@ public class CompanyService {
      * @return
      * @throws Exception
      */
-    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, byte source) throws TException {
+    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, byte source) throws Exception {
         //是否和超级公司名相同
         boolean repeatName = companyDao.checkRepeatNameWithSuperCompany(companyName);
         if(!repeatName) {
@@ -810,7 +810,9 @@ public class CompanyService {
             data.put("mobile", mobile);
             data.put("code", passwordArray[0]);
             mqServer.sendSMS(SmsType.EMPLOYEE_MERGE_ACCOUNT_SMS, mobile, data, "2", remoteIp);
-            return ResponseUtils.success(new HashMap<>().put("hr_id", hrId));
+            Map<String, Object> map = new HashMap();
+            map.put("hr_id", hrId);
+            return ResponseUtils.success(map);
         }else{
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NAME_REPEAT);
         }
