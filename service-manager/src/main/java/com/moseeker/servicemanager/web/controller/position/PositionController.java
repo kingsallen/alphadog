@@ -676,7 +676,7 @@ public class PositionController {
     @ResponseBody
     public String insertGlluePosition(HttpServletRequest request, HttpServletResponse response) {
         try {
-            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseBatchHandlerJobPostionParam(request);
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseGlluePostionParam(request);
             Response res = positonATSServices.insertGlluePosition(batchHandlerJobPostion);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
@@ -692,8 +692,40 @@ public class PositionController {
     @ResponseBody
     public String updateGlluePosition(HttpServletRequest request, HttpServletResponse response) {
         try {
-            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseBatchHandlerJobPostionParam(request);
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseGlluePostionParam(request);
             Response res = positonATSServices.updateGlluePosition(batchHandlerJobPostion);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 谷露下架的职位重新发布
+     */
+    @RequestMapping(value = "/glluePosition/republishPosition", method = RequestMethod.POST)
+    @ResponseBody
+    public String republishGlluePosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseGlluePostionParam(request);
+            Response res = positonATSServices.republishPosition(batchHandlerJobPostion);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 谷露下架的职位重新发布
+     */
+    @RequestMapping(value = "/glluePosition/revokePosition", method = RequestMethod.POST)
+    @ResponseBody
+    public String revokeGlluePosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseGlluePostionParam(request);
+            Response res = positonATSServices.revokeGlluePosition(batchHandlerJobPostion);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
