@@ -22,6 +22,11 @@ import java.util.Map;
 
 public class PositionParamUtils extends ParamUtils {
 
+    /**
+     * 解析一键同步参数
+     * @param request
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public static ThirdPartyPositionForm parseSyncParam(HttpServletRequest request) {
         ThirdPartyPositionForm form = new ThirdPartyPositionForm();
@@ -51,6 +56,12 @@ public class PositionParamUtils extends ParamUtils {
         return form;
     }
 
+    /**
+     * 解析谷露同步参数
+     * @param request
+     * @return
+     * @throws Exception
+     */
     public static BatchHandlerJobPostion parseGlluePostionParam(HttpServletRequest request) throws Exception {
         HashMap<String, Object> data = parseRequestParam(request);
 
@@ -75,6 +86,12 @@ public class PositionParamUtils extends ParamUtils {
         return batchHandlerDate;
     }
 
+    /**
+     * 解析批量职位同步参数
+     * @param request
+     * @return
+     * @throws Exception
+     */
     public static BatchHandlerJobPostion parseBatchHandlerJobPostionParam(HttpServletRequest request) throws Exception {
         HashMap<String, Object> data = parseRequestParam(request);
 
