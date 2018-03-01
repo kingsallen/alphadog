@@ -217,6 +217,7 @@ public class ReceiverHandler {
         params.setType(jsonObject.getIntValue("type"));
         logVo.setReq_params(jsonObject.toJSONString());
         logVo.setUser_id(jsonObject.getIntValue("user_id"));
+        logVo.setRecom_params(params);
     }
 
 }
