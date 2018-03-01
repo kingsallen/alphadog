@@ -13,6 +13,10 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.position.pojo.JobPositionFailMess;
+import com.moseeker.position.pojo.JobPostionResponse;
+import com.moseeker.position.pojo.SyncFailMessPojo;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
@@ -58,9 +62,7 @@ public class PositionATSService {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_ALREADY_EXIST);
             }
 
-            batchHandlerJobPostion.setNodelete(true);
-            batchHandlerJobPostion.setIsCreateDeparment(false);
-            return ResponseUtils.success(service.batchHandlerJobPostion(batchHandlerJobPostion));
+            return callBatchHandlerJobPostion(batchHandlerJobPostion);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -84,9 +86,7 @@ public class PositionATSService {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
             }
 
-            batchHandlerJobPostion.setNodelete(true);
-            batchHandlerJobPostion.setIsCreateDeparment(false);
-            return ResponseUtils.success(service.batchHandlerJobPostion(batchHandlerJobPostion));
+            return callBatchHandlerJobPostion(batchHandlerJobPostion);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -200,6 +200,38 @@ public class PositionATSService {
      */
     private boolean isDataEmpty(BatchHandlerJobPostion batchHandlerJobPostion){
         return batchHandlerJobPostion == null || batchHandlerJobPostion.getData() == null || batchHandlerJobPostion.getData().isEmpty();
+    }
+
+    /**
+     * 调用批量修改职位，设置初始值，以及对返回值的处理，从list返回值改为一个返回值
+     * @param batchHandlerJobPostion 要批量修改的职位
+     * @return
+     * @throws BIZException
+     */
+    private Response callBatchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPostion) throws BIZException {
+        batchHandlerJobPostion.setNodelete(true);
+        batchHandlerJobPostion.setIsCreateDeparment(false);
+
+        JobPostionResponse response=service.batchHandlerJobPostion(batchHandlerJobPostion);
+
+        return handleJobPostionResponse(response);
+    }
+
+    /**
+     * 处理返回值，从list返回值改为一个返回值
+     * @param jobPostionResponse
+     * @return
+     */
+    private Response handleJobPostionResponse(JobPostionResponse jobPostionResponse){
+        if(StringUtils.isEmptyList(jobPostionResponse.getJobPositionFailMessPojolist())){
+            if(jobPostionResponse.getInsertCounts()==0 && jobPostionResponse.getUpdateCounts()==0){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            }
+            return ResponseUtils.success("");
+        }else{
+            JobPositionFailMess failMess=jobPostionResponse.getJobPositionFailMessPojolist().get(0);
+            return ResponseUtils.fail(failMess.getStatus(),failMess.getMessage());
+        }
     }
 
     /**
