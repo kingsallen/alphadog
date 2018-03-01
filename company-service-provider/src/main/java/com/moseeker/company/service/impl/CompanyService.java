@@ -757,7 +757,7 @@ public class CompanyService {
     public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, byte source) throws TException {
         //是否和超级公司名相同
         boolean repeatName = companyDao.checkRepeatNameWithSuperCompany(companyName);
-        if(repeatName) {
+        if(!repeatName) {
             Query query = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.MOBILE.getName(), mobile).buildQuery();
             UserHrAccountDO accountDO = userHrAccountDao.getData(query);
             if (accountDO != null) {

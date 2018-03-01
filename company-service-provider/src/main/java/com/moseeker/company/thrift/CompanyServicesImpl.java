@@ -356,7 +356,7 @@ public class CompanyServicesImpl implements Iface {
     }
 
     @Override
-    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, int source) throws TException {
+    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, int source) throws BIZException, TException {
          return service.addHrAccountAndCompany(companyName, mobile, wxuserId, remoteIp, (byte)source);
     }
 
