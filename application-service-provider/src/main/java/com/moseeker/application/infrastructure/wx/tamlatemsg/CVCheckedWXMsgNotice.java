@@ -79,6 +79,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
         wxTemplateMsg.setData(data);
         wxTemplateMsg.setUserId(applierId);
         wxTemplateMsg.setSysTemplateId(configId);
+        wxTemplateMsg.setEnableQxRetry((byte) 1);
         wxTemplateMsg.setUrl(MessageFormat.format(
                 url,
                 ConfigPropertiesUtil.getInstance().get("platform.url",
