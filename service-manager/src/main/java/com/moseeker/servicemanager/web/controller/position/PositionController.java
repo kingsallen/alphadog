@@ -709,7 +709,7 @@ public class PositionController {
     /**
      * 谷露下架的职位重新发布
      */
-    @RequestMapping(value = "/glluePosition/republishPosition", method = RequestMethod.POST)
+    @RequestMapping(value = "/glluePosition/republish", method = RequestMethod.POST)
     @ResponseBody
     public String republishGlluePosition(HttpServletRequest request, HttpServletResponse response) {
         try {
