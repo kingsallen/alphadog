@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
+import com.moseeker.thrift.gen.position.service.PositionATSServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
 import org.slf4j.Logger;
@@ -52,6 +53,7 @@ public class PositionController {
 
     private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
     private PositionBS.Iface positionBS = ServiceManager.SERVICEMANAGER.getService(PositionBS.Iface.class);
+    private PositionATSServices.Iface positonATSServices = ServiceManager.SERVICEMANAGER.getService(PositionATSServices.Iface.class);
 
     @Autowired
     private JobOccupationDao occuPationdao;
@@ -669,6 +671,70 @@ public class PositionController {
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    /**
+     * 谷露新增职位
+     */
+    @RequestMapping(value = "/glluePosition", method = RequestMethod.POST)
+    @ResponseBody
+    public String insertGlluePosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseGlluePostionParam(request);
+            Response res = positonATSServices.insertGlluePosition(batchHandlerJobPostion);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 谷露修改职位
+     */
+    @RequestMapping(value = "/glluePosition", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateGlluePosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseGlluePostionParam(request);
+            Response res = positonATSServices.updateGlluePosition(batchHandlerJobPostion);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 谷露下架的职位重新发布
+     */
+    @RequestMapping(value = "/glluePosition/republishPosition", method = RequestMethod.POST)
+    @ResponseBody
+    public String republishGlluePosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseGlluePostionParam(request);
+            Response res = positonATSServices.republishPosition(batchHandlerJobPostion);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 谷露下架的职位重新发布
+     */
+    @RequestMapping(value = "/glluePosition/revokePosition", method = RequestMethod.POST)
+    @ResponseBody
+    public String revokeGlluePosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseGlluePostionParam(request);
+            Response res = positonATSServices.revokeGlluePosition(batchHandlerJobPostion);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
 

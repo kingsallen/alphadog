@@ -126,6 +126,10 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_DATA_NOCITYCODE_ERROR = "{'status':51016,'message':'无city code的职位暂不同步到支付宝'}";
     public static final String CITY_TOO_LONG = "{'status':51017,'message':'城市信息太长，无法入库'}";
     public static final String POSITION_UPDATE_FAIL = "{'status':51019,'message':'更新职位信息失败，这个HR没有操作这个职位权限'}";
+    public static final String POSITION_ALREADY_EXIST = "{'status':51020,'message':'该职位已存在!'}";
+    public static final String POSITION_ALREADY_ACTIVE = "{'status':51021,'message':'该职位已上线!'}";
+    public static final String POSITION_ALREADY_BANNED = "{'status':51022,'message':'该职位已撤下!'}";
+    public static final String POSITION_PUBLISHER_NOT_EXIST = "{'status':51023,'message':'发布者不存在'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
     //职位同步
