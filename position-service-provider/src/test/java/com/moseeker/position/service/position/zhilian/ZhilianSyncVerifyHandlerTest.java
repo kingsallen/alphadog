@@ -21,6 +21,6 @@ public class ZhilianSyncVerifyHandlerTest {
     @Test
     public void test() throws BIZException {
         JSONObject jsonObject= JSONObject.parseObject("{\"accountId\":\"522\",\"positionId\":\"1910934\",\"appid\":\"7\",\"channel\":\"3\",\"paramId\":\"86125fe7-7254-4fd6-a1f9-7c9cc665743a\",\"info\":\"dfdf\"}\n");
-        zhilianSyncVerifyHandler.syncVerifyInfo(jsonObject);
+//        zhilianSyncVerifyHandler.syncVerifyInfo(jsonObject);
     }
 }
