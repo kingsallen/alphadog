@@ -139,7 +139,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
 
             String result = validateUtil.validate();
 
-            if (StringUtils.isNotBlank(result)) {
+            if (StringUtils.isBlank(result)) {
                 CVCheckedWXMsgNotice cvCheckedWXMsgNotice = new CVCheckedWXMsgNotice(positionName, companyName,
                         signature, applicationId, applierId, companyId, redisClient);
                 return cvCheckedWXMsgNotice;
