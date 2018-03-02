@@ -379,7 +379,7 @@ public class ProfileProcessBS {
             data.put("keyword2", keyTwoMs);
             MessageTplDataCol keyThreeMs = new MessageTplDataCol();
             keyThreeMs.setColor(color);
-            keyThreeMs.setValue(msInfo.getResult());
+            keyThreeMs.setValue(msInfo.getStatusDesc());
             data.put("keyword3", keyThreeMs);
             MessageTplDataCol remarkMs = new MessageTplDataCol();
             remarkMs.setColor(color);
