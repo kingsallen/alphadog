@@ -34,13 +34,13 @@ public enum TemplateMs {
             MsInfo mi = null;
             switch (status) {
                 case 4:
-                    mi = new MsInfo(37,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}","您好，HR重新评估了您的简历，更新状态如下：", "面试通过", "点击查看投递进度详情");
+                    mi = new MsInfo(37,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}","您好，HR重新评估了您的简历，更新状态如下：", "已查阅简历", "点击查看投递进度详情");
                     break;
                 case 7:
-                    mi = new MsInfo(37,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}", "初审通过", "不匹配", "点击查看投递进度详情");
+                    mi = new MsInfo(37,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}", "您好，HR重新评估了您的简历，更新状态如下：", "初审通过", "点击查看投递进度详情");
                     break;
                 case 10:
-                    mi = new MsInfo(37,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}", "您好，HR重新评估了您的简历，更新状态如下：", "已查阅简历", "点击查看求职进度详情");
+                    mi = new MsInfo(37,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}", "您好，HR重新评估了您的简历，更新状态如下：", "面试通过", "点击查看求职进度详情");
                     break;
             }
             return mi;
