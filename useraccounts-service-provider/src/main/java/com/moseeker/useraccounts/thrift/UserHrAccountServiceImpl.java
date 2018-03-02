@@ -194,6 +194,11 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
+    public Response deleteThirdPartyAccount(int accountId) throws BIZException, TException {
+        return null;
+    }
+
+    @Override
     public ThirdPartyAccountInfo dispatchThirdPartyAccount(int accountId, List<Integer> hrIds) throws BIZException, TException {
         try {
             return thirdPartyAccountService.dispatch(accountId, hrIds);
