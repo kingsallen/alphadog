@@ -145,14 +145,22 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
+<<<<<<< HEAD
      * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
+=======
+     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio
+>>>>>>> a395c5a425497bb72fc23b8b6ab92bc479e7daff
      */
     public void setMsgType(String value) {
         set(8, value);
     }
 
     /**
+<<<<<<< HEAD
      * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
+=======
+     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio
+>>>>>>> a395c5a425497bb72fc23b8b6ab92bc479e7daff
      */
     public String getMsgType() {
         return (String) get(8);

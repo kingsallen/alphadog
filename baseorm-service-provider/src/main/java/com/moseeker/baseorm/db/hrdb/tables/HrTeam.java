@@ -132,6 +132,11 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
     public final TableField<HrTeamRecord, String> RES_ATTRS = createField("res_attrs", org.jooq.impl.SQLDataType.VARCHAR.length(128), this, "素材库图片处理参数,七牛格式");
 
     /**
+     * The column <code>hrdb.hr_team.link</code>. 模板链接
+     */
+    public final TableField<HrTeamRecord, String> LINK = createField("link", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "模板链接");
+
+    /**
      * Create a <code>hrdb.hr_team</code> table reference
      */
     public HrTeam() {
