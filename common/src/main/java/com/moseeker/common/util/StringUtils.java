@@ -436,6 +436,12 @@ public class StringUtils {
             if(value.contains("|")){
                 value=value.replaceAll("|",mark);
             }
+            if(value.contains("[")){
+                value=value.replaceAll("\\[",mark);
+            }
+            if(value.contains("]")){
+                value=value.replaceAll("\\]",mark);
+            }
             if(value.contains("!")){
                 value=value.replaceAll("!",mark);
             }
@@ -503,7 +509,7 @@ public class StringUtils {
         return false;
     }
     public static void main(String[] args) {
-        String aa="Assistant Manager 张 Manager,/Deal Advisory\n";
+        String aa="Assistant Manager [张] Manager,/Deal Advisory\n";
         System.out.println(StringUtils.filterStringForSearch(aa));
 
     }
