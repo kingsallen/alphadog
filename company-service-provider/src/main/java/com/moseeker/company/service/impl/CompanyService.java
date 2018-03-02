@@ -664,6 +664,7 @@ public class CompanyService {
             HrEmployeeCustomFieldsVO hrEmployeeCustomFieldsVO = new HrEmployeeCustomFieldsVO();
             hrEmployeeCustomFieldsVO.setFname(hrEmployeeCustomFieldsDO.getFname());
             hrEmployeeCustomFieldsVO.setId(hrEmployeeCustomFieldsDO.getId());
+            hrEmployeeCustomFieldsVO.setOption_type(hrEmployeeCustomFieldsDO.getOption_type());
             String fvaluesTemp = hrEmployeeCustomFieldsDO.getFvalues();
             if (fvaluesTemp != null) {
                 List fvalues = JSONObject.parseArray(fvaluesTemp);
