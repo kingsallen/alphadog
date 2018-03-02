@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat implements Serializable {
 
-    private static final long serialVersionUID = 1305727215;
+    private static final long serialVersionUID = -76600354;
 
     private Integer   id;
     private Integer   chatlistId;
@@ -33,6 +33,9 @@ public class HrWxHrChat implements Serializable {
     private Byte      status;
     private Timestamp createTime;
     private Byte      origin;
+    private String    msgType;
+    private String    picUrl;
+    private String    btnContent;
 
     public HrWxHrChat() {}
 
@@ -45,6 +48,9 @@ public class HrWxHrChat implements Serializable {
         this.status = value.status;
         this.createTime = value.createTime;
         this.origin = value.origin;
+        this.msgType = value.msgType;
+        this.picUrl = value.picUrl;
+        this.btnContent = value.btnContent;
     }
 
     public HrWxHrChat(
@@ -55,7 +61,10 @@ public class HrWxHrChat implements Serializable {
         Byte      speaker,
         Byte      status,
         Timestamp createTime,
-        Byte      origin
+        Byte      origin,
+        String    msgType,
+        String    picUrl,
+        String    btnContent
     ) {
         this.id = id;
         this.chatlistId = chatlistId;
@@ -65,6 +74,9 @@ public class HrWxHrChat implements Serializable {
         this.status = status;
         this.createTime = createTime;
         this.origin = origin;
+        this.msgType = msgType;
+        this.picUrl = picUrl;
+        this.btnContent = btnContent;
     }
 
     public Integer getId() {
@@ -131,6 +143,30 @@ public class HrWxHrChat implements Serializable {
         this.origin = origin;
     }
 
+    public String getMsgType() {
+        return this.msgType;
+    }
+
+    public void setMsgType(String msgType) {
+        this.msgType = msgType;
+    }
+
+    public String getPicUrl() {
+        return this.picUrl;
+    }
+
+    public void setPicUrl(String picUrl) {
+        this.picUrl = picUrl;
+    }
+
+    public String getBtnContent() {
+        return this.btnContent;
+    }
+
+    public void setBtnContent(String btnContent) {
+        this.btnContent = btnContent;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrWxHrChat (");
@@ -143,6 +179,9 @@ public class HrWxHrChat implements Serializable {
         sb.append(", ").append(status);
         sb.append(", ").append(createTime);
         sb.append(", ").append(origin);
+        sb.append(", ").append(msgType);
+        sb.append(", ").append(picUrl);
+        sb.append(", ").append(btnContent);
 
         sb.append(")");
         return sb.toString();
