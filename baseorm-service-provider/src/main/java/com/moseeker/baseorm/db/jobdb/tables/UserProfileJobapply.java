@@ -29,7 +29,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserProfileJobapply extends TableImpl<UserProfileJobapplyRecord> {
 
-    private static final long serialVersionUID = 2061732227;
+    private static final long serialVersionUID = 1977935555;
 
     /**
      * The reference instance of <code>jobdb.user_profile_jobapply</code>
@@ -70,9 +70,9 @@ public class UserProfileJobapply extends TableImpl<UserProfileJobapplyRecord> {
     public final TableField<UserProfileJobapplyRecord, Integer> 同上3 = createField("同上3", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "hr_position.id, 职位ID");
 
     /**
-     * The column <code>jobdb.user_profile_jobapply.投递状态</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified 6:excess apply times
+     * The column <code>jobdb.user_profile_jobapply.投递状态</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified, 6:excess apply times, 7 redundant,  8:failed, 9 failed and notified
      */
-    public final TableField<UserProfileJobapplyRecord, Integer> 投递状态 = createField("投递状态", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified 6:excess apply times");
+    public final TableField<UserProfileJobapplyRecord, Integer> 投递状态 = createField("投递状态", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified, 6:excess apply times, 7 redundant,  8:failed, 9 failed and notified");
 
     /**
      * The column <code>jobdb.user_profile_jobapply.来源</code>. 0:社招 1：校招
