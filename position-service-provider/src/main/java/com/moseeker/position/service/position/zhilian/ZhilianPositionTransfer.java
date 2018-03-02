@@ -89,11 +89,7 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
         int quantity=getQuantity(positionForm.getCount(),(int)positionDB.getCount());
         positionZhilian.setCount(quantity+"");
 
-        if(StringUtils.isNotNullOrEmpty(positionForm.getCompanyName())){
-            positionZhilian.setCompany(positionForm.getCompanyName());
-        }else{
-            positionZhilian.setCompany(getCompanyName(positionDB.getPublisher()));
-        }
+        positionZhilian.setCompany(positionForm.getCompanyName());
 
         return positionZhilian;
     }

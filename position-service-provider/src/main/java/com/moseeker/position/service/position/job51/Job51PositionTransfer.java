@@ -104,12 +104,7 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
 
         setEmployeeType((byte) positionDB.getEmploymentType(),position);
 
-        if(StringUtils.isNullOrEmpty(positionForm.getCompanyName())){
-            position.setCompany(positionForm.getCompanyName());
-        }else{
-            position.setCompany(getCompanyName(positionDB.getPublisher()));
-        }
-
+        position.setCompany(positionForm.getCompanyName());
 
         setAddress(position,positionForm);
 
