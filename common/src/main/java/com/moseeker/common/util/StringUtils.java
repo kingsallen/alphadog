@@ -487,6 +487,9 @@ public class StringUtils {
             if(value.contains("=")) {
                 value = value.replaceAll("=", mark);
             }
+            if(value.contains("_")) {
+                value = value.replaceAll("_", mark);
+            }
 //            if(value.contains(" ")) {
 //                value = value.replaceAll(" ", mark);
 //            }
