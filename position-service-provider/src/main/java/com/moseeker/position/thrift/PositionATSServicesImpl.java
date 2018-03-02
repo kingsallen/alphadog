@@ -22,7 +22,7 @@ public class PositionATSServicesImpl implements PositionATSServices.Iface{
     @Override
     public Response insertGlluePosition(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         try {
-            return ResponseUtils.success(positionATSService.insertGlluePosition(batchHandlerJobPostion));
+            return positionATSService.insertGlluePosition(batchHandlerJobPostion);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -32,7 +32,27 @@ public class PositionATSServicesImpl implements PositionATSServices.Iface{
     @Override
     public Response updateGlluePosition(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         try {
-            return ResponseUtils.success(positionATSService.updateGlluePosition(batchHandlerJobPostion));
+            return positionATSService.updateGlluePosition(batchHandlerJobPostion);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
+    public Response republishPosition(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
+        try {
+            return positionATSService.republishPosition(batchHandlerJobPostion);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
+    public Response revokeGlluePosition(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
+        try {
+            return positionATSService.revokeGlluePosition(batchHandlerJobPostion);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());

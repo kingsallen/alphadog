@@ -15,6 +15,7 @@ import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.position.service.position.base.PositionFactory;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.base.sync.PositionSyncVerifyHandlerUtil;
+import com.moseeker.position.service.position.base.sync.verify.MobileVeifyHandler;
 import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
 import com.moseeker.position.service.position.base.sync.TransferCheckUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
@@ -67,6 +68,8 @@ public class PositionBS {
     private PositionFactory positionFactory;
     @Autowired
     private PositionSyncVerifyHandlerUtil verifyHandlerUtil;
+    @Autowired
+    private MobileVeifyHandler mobileVeifyHandler;
 
 
     /**
@@ -233,44 +236,8 @@ public class PositionBS {
      * @throws TException
      */
     public Response getVerifyParam(String param) throws BIZException, TException {
-
-        logger.info("get verify param : {}",param);
-        if(StringUtils.isNullOrEmpty(param)){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-        }
-
-        JSONObject jsonParamObj=JSON.parseObject(param);
-
-        if(!jsonParamObj.containsKey("paramId")){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-        }
-
-        String paramId=jsonParamObj.getString("paramId");
-
-        String jsonParam=verifyHandlerUtil.getParam(paramId);
-
-        if(PositionSyncVerify.MOBILE_VERIFY_SUCCESS.equals(jsonParam)){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_INFO_SENDED);
-        }
-
-        if(StringUtils.isNullOrEmpty(jsonParam)){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
-        }
-
-        JSONObject jsonObject=JSON.parseObject(jsonParam);
-        int channel=jsonObject.getIntValue("channel");
-
-        ChannelType channelType=ChannelType.instaceFromInteger(channel);
-
-        PositionSyncVerifyHandler verifyHandler=positionFactory.getVerifyHandlerInstance(channelType);
-
-        jsonObject.put("paramId",paramId);
-        if(verifyHandler.isTimeout(jsonObject.toJSONString())){
-            verifyHandler.timeoutHandler(jsonObject.toJSONString());
-            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_SYNC_VERIFY_TIMEOUT);
-        }
-
-        return ResultMessage.SUCCESS.toResponse(jsonObject);
+        Response response=mobileVeifyHandler.getVerifyParam(param);
+        return response;
     }
 
     /**
@@ -287,7 +254,7 @@ public class PositionBS {
 
         PositionSyncVerifyHandler verifyHandler=positionFactory.getVerifyHandlerInstance(channelType);
 
-        verifyHandler.syncVerifyInfo(jsonParam);
+        verifyHandler.handler(jsonParam);
 
         return ResultMessage.SUCCESS.toResponse("");
     }

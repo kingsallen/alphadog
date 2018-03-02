@@ -69,8 +69,8 @@ public class WXTamplateMsgEntity {
             if (company != null) {
                 pojo.setCompanyId(company.getId());
                 pojo.setCompanyName(company.getName());
+                pojo.setSignature(companySignatures.get(pojo.getCompanyId()));
             }
-            pojo.setSignature(companySignatures.get(appId));
             pojo.setApplierId(applierIdMap.get(appId));
             return pojo;
         }).collect(Collectors.toList());
