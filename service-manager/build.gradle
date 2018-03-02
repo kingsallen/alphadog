@@ -33,12 +33,6 @@ dependencies {
     compile deps["commons-io"]
     compile deps["commons-fileupload"]
 
-    compile deps['spring-fox']
-    compile deps['spring-fox-ui']
-    compile deps["jackson-databind"]
-    compile deps["jackson-core"]
-    compile deps["jackson-annotations"]
-
 
     runtime deps['jstl']
 

@@ -52,6 +52,7 @@ public class UserAccountEntity {
         }
         return username;
     }
+
     /*
      * 账号合并完善账号信息
 	 *

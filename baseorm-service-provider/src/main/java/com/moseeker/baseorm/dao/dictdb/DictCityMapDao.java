@@ -32,6 +32,20 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
         super(table, dictCityMapDOClass);
     }
 
+    public List<String> getOtherCityByCodes(ChannelType channelType, List<Integer> cityCodes) {
+        Query channelCityQuery = new Query.QueryBuilder()
+                .where(new Condition(DictCityMap.DICT_CITY_MAP.CODE.getName(), cityCodes, ValueOp.IN))
+                .and(DictCityMap.DICT_CITY_MAP.CHANNEL.getName(), channelType.getValue())
+                .buildQuery();
+        List<DictCityMapDO> dictCityMaps = getDatas(channelCityQuery);
+
+        if(dictCityMaps==null || dictCityMaps.isEmpty()){
+            return new ArrayList<>();
+        }
+
+        return dictCityMaps.stream().map(c->c.getCodeOther()).collect(Collectors.toList());
+    }
+
     public List<List<String>> getOtherCityByLastCodes(ChannelType channelType, List<Integer> cityCodes) {
 
         if (cityCodes == null || cityCodes.size() == 0) return new ArrayList<>();
@@ -79,14 +93,9 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
                 for (Integer moseekerCode : moseekerCityLevels) {
                     String otherCode = getOtherCode(moseekerCode, dictCityMapDOS);
                     if (otherCode != null) {
-                        //或许可以做成策略模式，不过以后再改吧
-                        if(channelType==ChannelType.LIEPIN|| channelType==ChannelType.JOB51 || channelType==ChannelType.ZHILIAN) {
-                            otherCity.add(otherCode);
-                        }else{
-                            TypeReference<List<String>> typeRef
-                                    = new TypeReference<List<String>>() {};
-                            otherCity= JSON.parseObject(otherCode,typeRef);
-                        }
+                        TypeReference<List<String>> typeRef
+                                = new TypeReference<List<String>>() {};
+                        otherCity= JSON.parseObject(otherCode,typeRef);
                     }
                 }
                 if (otherCity.size() > 0) {

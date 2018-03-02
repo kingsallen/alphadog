@@ -252,6 +252,10 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(workExp.getStart_date())) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
+		if (StringUtils.isNullOrEmpty(workExp.getEnd_date())
+				&& workExp.getEnd_until_now()  != UntitlNow.UntilNow.getStatus()) {
+			vm.addFailedElement("结束时间", "未填写结束时间");
+		}
 		if (org.apache.commons.lang.StringUtils.isNotBlank(workExp.getStart_date())
 				&& org.apache.commons.lang.StringUtils.isNotBlank(workExp.getEnd_date())
 				&& DateTime.parse(workExp.getStart_date()).getMillis()
@@ -263,8 +267,8 @@ public class ProfileValidation {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
 		}
 		if (org.apache.commons.lang.StringUtils.isNotBlank(workExp.getEnd_date())
-				&& !legalDate(workExp.getEnd_date())) {
-			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
+				&& !lowerNow(workExp.getEnd_date())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~至今之间");
 		}
 		return vm;
 	}
@@ -280,6 +284,9 @@ public class ProfileValidation {
 		}
 		if(workExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
+		}
+		if (workExp.getEnd() == null && (workExp.getEndUntilNow() == null || workExp.getEndUntilNow() != UntitlNow.UntilNow.getStatus())) {
+			vm.addFailedElement("结束时间", "未填写结束时间");
 		}
 		if (workExp.getStart() != null && workExp.getEnd() != null
 				&& workExp.getStart().getTime() > workExp.getEnd().getTime()

@@ -78,11 +78,7 @@ public class ChatThriftServiceTest {
 
     ////@Test
     public void saveChat() throws Exception {
-<<<<<<< HEAD
 //        chatService.saveChat(28559, "answer", 61107, (byte) 1, (byte)0);
-=======
-        //chatService.saveChat(28559, "answer", 61107, (byte) 1, (byte)0);
->>>>>>> profile/parse_import
     }
 
     ////@Test

@@ -72,7 +72,7 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
 
         positionZhilian.setAddress(positionForm.getAddressName());
 
-        setOccupation(positionForm,positionZhilian);
+        positionZhilian.setOccupation(positionForm.getOccupation());
 
         positionZhilian.setSalary_low(getSalaryBottom(positionForm.getSalaryBottom())+"");
         positionZhilian.setSalary_high(getSalaryTop(positionForm.getSalaryTop())+"");
@@ -89,22 +89,9 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
         int quantity=getQuantity(positionForm.getCount(),(int)positionDB.getCount());
         positionZhilian.setCount(quantity+"");
 
-        if(StringUtils.isNullOrEmpty(positionForm.getCompanyName())){
-            positionZhilian.setCompany(positionForm.getCompanyName());
-        }else{
-            positionZhilian.setCompany(getCompanyName(positionDB.getPublisher()));
-        }
+        positionZhilian.setCompany(positionForm.getCompanyName());
 
         return positionZhilian;
-    }
-
-    protected void setOccupation(ThirdPartyPosition positionForm, PositionZhilian position) {
-        DecimalFormat df = new DecimalFormat("000");
-        List<String> list=new ArrayList<>();
-        if (positionForm.getOccupation() != null) {
-            positionForm.getOccupation().forEach(o -> list.add(df.format(Integer.valueOf(o))));
-        }
-        position.setOccupation(list);
     }
 
     protected void setDegree(int degreeInt, PositionZhilian position) {

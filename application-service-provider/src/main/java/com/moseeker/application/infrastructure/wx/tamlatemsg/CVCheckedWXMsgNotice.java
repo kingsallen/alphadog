@@ -8,6 +8,8 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.validation.ValidateUtil;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -79,6 +81,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
         wxTemplateMsg.setData(data);
         wxTemplateMsg.setUserId(applierId);
         wxTemplateMsg.setSysTemplateId(configId);
+        wxTemplateMsg.setEnableQxRetry((byte) 1);
         wxTemplateMsg.setUrl(MessageFormat.format(
                 url,
                 ConfigPropertiesUtil.getInstance().get("platform.url",
@@ -88,6 +91,8 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
     }
 
     public static class CVCheckedWXMsgNoticeBuilder {
+
+        private Logger logger = LoggerFactory.getLogger(this.getClass());
 
         private String positionName;        //职位名称
         private String companyName;         //公司名称
@@ -128,18 +133,18 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addRequiredStringValidate("职位", positionName, null, null);
             validateUtil.addRequiredStringValidate("公司名称", companyName, null, null);
-            validateUtil.addRequiredStringValidate("signature", signature, null, null);
             validateUtil.addIntTypeValidate("申请编号", applicationId, null, null, 0, Integer.MAX_VALUE);
             validateUtil.addIntTypeValidate("求职者编号", applierId, null, null, 0, Integer.MAX_VALUE);
             validateUtil.addIntTypeValidate("公司编号", companyId, null, null, 0, Integer.MAX_VALUE);
 
             String result = validateUtil.validate();
 
-            if (StringUtils.isNotBlank(result)) {
+            if (StringUtils.isBlank(result)) {
                 CVCheckedWXMsgNotice cvCheckedWXMsgNotice = new CVCheckedWXMsgNotice(positionName, companyName,
                         signature, applicationId, applierId, companyId, redisClient);
                 return cvCheckedWXMsgNotice;
             } else {
+                logger.error("CVCheckedWXMsgNoticeBuilder buildCVCheckedWXMsgNotice result:{}", result);
                 throw ApplicationException.validateFailed(result);
             }
         }

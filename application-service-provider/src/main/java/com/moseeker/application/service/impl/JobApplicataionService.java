@@ -115,6 +115,7 @@ public class JobApplicataionService {
     private HrCompanyAccountDao hrCompanyAccountDao;
     @Autowired
     private UserAliUserDao userAliUserDao;
+
     @Autowired
     private HrOperationRecordDao hrOperationRecordDao;
 

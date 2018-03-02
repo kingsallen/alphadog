@@ -1,6 +1,7 @@
 package com.moseeker.position.service.position.veryeast.refresh.handler;
 
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.iface.IChannelType;
 import com.moseeker.position.service.position.base.refresh.handler.ResultHandlerAdapter;
 
 /**
@@ -9,8 +10,8 @@ import com.moseeker.position.service.position.base.refresh.handler.ResultHandler
  * 在{com.moseeker.position.service.position.veryeast.refresh.VeryEastParamRefresher}类中会自动注入
  * 自动调用handle方法
  */
-public interface VEResultHandlerAdapter extends ResultHandlerAdapter<String> {
-    default ChannelType channelType(){
+public interface VEResultHandlerAdapter extends ResultHandlerAdapter<String>,IChannelType {
+    default ChannelType getChannelType(){
         return ChannelType.VERYEAST;
     }
 }

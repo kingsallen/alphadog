@@ -31,7 +31,7 @@ import java.util.List;
  */
 @Service
 public class JobApplicataionServicesImpl implements Iface {
-	Logger logger = LoggerFactory.getLogger(this.getClass());
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private JobApplicataionService service;
 
@@ -43,14 +43,14 @@ public class JobApplicataionServicesImpl implements Iface {
      */
     @Override
     public Response postApplication(JobApplication jobApplication){
-    	try{
-    		return service.postApplication(jobApplication);
-    	} catch (CommonException e) {
-    	    return new Response(e.getCode(), e.getMessage());
+        try{
+            return service.postApplication(jobApplication);
+        } catch (CommonException e) {
+            return new Response(e.getCode(), e.getMessage());
         } catch(Exception e){
-    		logger.error(e.getMessage(),e);
-    		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-    	}
+            logger.error(e.getMessage(),e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
     }
 
 
@@ -61,14 +61,14 @@ public class JobApplicataionServicesImpl implements Iface {
      */
     @Override
     public Response putApplication(JobApplication jobApplication){
-    	try{
-    		return service.putApplication(jobApplication);
-    	} catch (CommonException e) {
+        try{
+            return service.putApplication(jobApplication);
+        } catch (CommonException e) {
             return new Response(e.getCode(), e.getMessage());
         } catch(Exception e){
-    		logger.error(e.getMessage(),e);
-    		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
-    	}
+            logger.error(e.getMessage(),e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+        }
     }
 
     /**
@@ -78,14 +78,14 @@ public class JobApplicataionServicesImpl implements Iface {
      */
     @Override
     public Response deleteApplication(long applicationId){
-    	try{
-    		return service.deleteApplication(applicationId);
-    	} catch (CommonException e) {
+        try{
+            return service.deleteApplication(applicationId);
+        } catch (CommonException e) {
             return new Response(e.getCode(), e.getMessage());
         } catch(Exception e){
-    		logger.error(e.getMessage(),e);
-    		return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_ARCHIVE_FAILED);
-    	}
+            logger.error(e.getMessage(),e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_ARCHIVE_FAILED);
+        }
     }
 
     /**
@@ -96,14 +96,14 @@ public class JobApplicataionServicesImpl implements Iface {
      */
     @Override
     public Response postJobResumeOther(JobResumeOther jobResumeOther) throws TException {
-    	try{
-    		return service.postJobResumeOther(jobResumeOther);
-    	} catch (CommonException e) {
+        try{
+            return service.postJobResumeOther(jobResumeOther);
+        } catch (CommonException e) {
             return new Response(e.getCode(), e.getMessage());
         }  catch(Exception e){
-    		logger.error(e.getMessage(),e);
-    		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-    	}
+            logger.error(e.getMessage(),e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
     }
 
     /**
@@ -191,6 +191,7 @@ public class JobApplicataionServicesImpl implements Iface {
         }
     }
 
+
     /**
      * 清除一个公司一个人申请次数限制的redis key 给sysplat用
      *
@@ -204,14 +205,14 @@ public class JobApplicataionServicesImpl implements Iface {
 
     @Override
     public Response postApplicationIfNotApply(JobApplication application) throws TException {
-    	try{
-    		return service.postApplication(application);
-    	}  catch (CommonException e) {
+        try{
+            return service.postApplication(application);
+        }  catch (CommonException e) {
             return new Response(e.getCode(), e.getMessage());
         } catch(Exception e){
 
-    		logger.error(e.getMessage(),e);
-    		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-    	}
+            logger.error(e.getMessage(),e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
     }
 }

@@ -256,7 +256,7 @@ public class ApplicationRepository {
             int id = jobApplication.getId();
 
             int state = calculateSate(jobApplication, stateMap);
-            ApplicationStateRoute status = ApplicationStateRoute.initFromState(jobApplication.getAppTplId());
+            ApplicationStateRoute status = ApplicationStateRoute.initFromState(state);
             if (status == null) {
                 logger.error("ApplicationRepository status is null! application:{}", jobApplication);
             }
