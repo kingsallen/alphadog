@@ -519,7 +519,7 @@ public class ResumeDeliveryService {
 
             //记录发送邮件的结果
             LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
-            emailrecord.setEmail("accountDO.getEmail()");
+            emailrecord.setEmail(accountDO.getEmail());
             emailrecord.setContent(sendEmail.getMessage());
             emailSendrecordDao.addData(emailrecord);
         }
@@ -536,7 +536,7 @@ public class ResumeDeliveryService {
                     emailStruct.put("to_email", ccmail.getToEmail());
                     MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
                     LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
-                    emailrecord1.setEmail("accountDO.getEmail()");
+                    emailrecord1.setEmail(ccmail.getToEmail());
                     emailrecord1.setContent(sendEmail.getMessage());
                     emailSendrecordDao.addData(emailrecord1);
                     logger.info("抄送邮箱："+ccmail.getToEmail());
