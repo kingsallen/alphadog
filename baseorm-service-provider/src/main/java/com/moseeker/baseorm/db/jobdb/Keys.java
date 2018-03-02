@@ -17,7 +17,6 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
-import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationAtsRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobCustomRecord;
@@ -31,7 +30,6 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionExtRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionShareTplConfRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobResumeOtherRecord;
 
 import javax.annotation.Generated;
 
@@ -86,7 +84,6 @@ public class Keys {
     public static final UniqueKey<JobPositionCityRecord> KEY_JOB_POSITION_CITY_IDX_PID_CODE = UniqueKeys0.KEY_JOB_POSITION_CITY_IDX_PID_CODE;
     public static final UniqueKey<JobPositionExtRecord> KEY_JOB_POSITION_EXT_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_EXT_PRIMARY;
     public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY;
-    public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = UniqueKeys0.KEY_JOB_RESUME_OTHER_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -121,9 +118,8 @@ public class Keys {
         public static final UniqueKey<JobPcReportedRecord> KEY_JOB_PC_REPORTED_PRIMARY = createUniqueKey(JobPcReported.JOB_PC_REPORTED, "KEY_job_pc_reported_PRIMARY", JobPcReported.JOB_PC_REPORTED.ID);
         public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = createUniqueKey(JobPosition.JOB_POSITION, "KEY_job_position_PRIMARY", JobPosition.JOB_POSITION.ID);
         public static final UniqueKey<JobPositionCcmailRecord> KEY_JOB_POSITION_CCMAIL_PRIMARY = createUniqueKey(JobPositionCcmail.JOB_POSITION_CCMAIL, "KEY_job_position_ccmail_PRIMARY", JobPositionCcmail.JOB_POSITION_CCMAIL.ID);
-        public static final UniqueKey<JobPositionCityRecord> KEY_JOB_POSITION_CITY_IDX_PID_CODE = createUniqueKey(JobPositionCity.JOB_POSITION_CITY, "KEY_job_position_city_idx_pid_code", JobPositionCity.JOB_POSITION_CITY.PID, JobPositionCity.JOB_POSITION_CITY.CODE);
+        public static final UniqueKey<JobPositionCityRecord> KEY_JOB_POSITION_CITY_IDX_PID_CODE = createUniqueKey(JobPositionCity.JOB_POSITION_CITY, "KEY_job_position_city_IDX_pid_code", JobPositionCity.JOB_POSITION_CITY.PID, JobPositionCity.JOB_POSITION_CITY.CODE);
         public static final UniqueKey<JobPositionExtRecord> KEY_JOB_POSITION_EXT_PRIMARY = createUniqueKey(JobPositionExt.JOB_POSITION_EXT, "KEY_job_position_ext_PRIMARY", JobPositionExt.JOB_POSITION_EXT.PID);
         public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = createUniqueKey(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, "KEY_job_position_share_tpl_conf_PRIMARY", JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
-        public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = createUniqueKey(JobResumeOther.JOB_RESUME_OTHER, "KEY_job_resume_other_PRIMARY", JobResumeOther.JOB_RESUME_OTHER.APP_ID);
     }
 }
