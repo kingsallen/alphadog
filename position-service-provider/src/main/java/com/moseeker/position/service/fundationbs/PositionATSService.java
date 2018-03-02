@@ -49,6 +49,7 @@ public class PositionATSService {
      */
     public Response insertGlluePosition(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         try {
+            logger.info("谷露新增职位，data:{}",batchHandlerJobPostion);
             if(isDataEmpty(batchHandlerJobPostion)){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
@@ -75,6 +76,8 @@ public class PositionATSService {
      */
     public Response updateGlluePosition(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         try {
+            logger.info("谷露更新职位，data:{}",batchHandlerJobPostion);
+
             if(isDataEmpty(batchHandlerJobPostion)){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
@@ -101,6 +104,8 @@ public class PositionATSService {
      */
     public Response republishPosition(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         try {
+            logger.info("谷露下架的职位重新发布，data:{}",batchHandlerJobPostion);
+
             if(isDataEmpty(batchHandlerJobPostion)){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
@@ -147,6 +152,8 @@ public class PositionATSService {
      * @return
      */
     public Response revokeGlluePosition(BatchHandlerJobPostion batchHandlerJobPostion){
+        logger.info("谷露下架谷露职位，data:{}",batchHandlerJobPostion);
+
         if(isDataEmpty(batchHandlerJobPostion)){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }

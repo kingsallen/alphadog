@@ -2209,6 +2209,13 @@ public class PositionService {
         return ResponseUtils.fail(1,"自定义配置为空");
     }
 
+    /**
+     * 小程序调用来进行职位上下架
+     * ATS调用来进行职位上下架
+     * 如果有修改，请同时修改上面两个项目
+     * @param param
+     * @return
+     */
     public Response updatePosition(String param) {
         JSONObject obj = JSONObject.parseObject(param);
         int position_id = obj.getIntValue("id");
