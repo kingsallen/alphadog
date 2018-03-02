@@ -513,7 +513,7 @@ public class ResumeDeliveryService {
 
         //发送邮件给HR
         Response sendEmail = null;
-        if(positionDO.getProfile_cc_mail_enabled() == 1) {
+        if(positionDO.getProfile_tohr_mail_enabled() == 1) {
             sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
             logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
 
@@ -526,7 +526,7 @@ public class ResumeDeliveryService {
 
         logger.info("是否启用抄送邮箱："+positionDO.getProfile_cc_mail_enabled());
         //判断是否启用抄送邮箱
-        if(positionDO.() == 1){
+        if(positionDO.getProfile_cc_mail_enabled() == 1){
             List<JobPositionCcmailRecord> ccmailList = ccmailDao.getRecords(new Query.QueryBuilder().where("position_id",
                     positionDO.getId()).buildQuery());
             logger.info("抄送邮箱长度："+ccmailList.size());
