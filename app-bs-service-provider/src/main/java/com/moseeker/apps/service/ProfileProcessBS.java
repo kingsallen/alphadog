@@ -267,14 +267,24 @@ public class ProfileProcessBS {
                                 turnToCVCheckeds, employeesToBeUpdates, result,
                                 rewardsToBeAdd);
                         list.forEach(pvs -> {
-                            sendTemplate(pvs.getApplier_id(),
-                                    pvs.getApplier_name(), companyId,
-                                    progressStatus, pvs.getPosition_name(),
-                                    pvs.getId(), TemplateMs.TOSEEKER);
-                            sendTemplate(pvs.getRecommender_user_id(),
-                                    pvs.getApplier_name(), companyId,
-                                    progressStatus, pvs.getPosition_name(),
-                                    pvs.getId(), TemplateMs.TORECOM);
+                            //当为这三种状态时说明HR做了重新考虑
+                            if(ProcessUtils.LETTERS_RECRUITMENT_REOFFERED.equals(result.getReason())
+                                || ProcessUtils.LETTERS_RECRUITMENT_RECVPASSED.equals(result.getReason())
+                                    || ProcessUtils.LETTERS_RECRUITMENT_RECVCHECKED.equals(result.getReason())){
+                                sendTemplate(pvs.getApplier_id(),
+                                        pvs.getApplier_name(), companyId,
+                                        progressStatus, pvs.getPosition_name(),
+                                        pvs.getId(), TemplateMs.RESRT);
+                            }else {
+                                sendTemplate(pvs.getApplier_id(),
+                                        pvs.getApplier_name(), companyId,
+                                        progressStatus, pvs.getPosition_name(),
+                                        pvs.getId(), TemplateMs.TOSEEKER);
+                                sendTemplate(pvs.getRecommender_user_id(),
+                                        pvs.getApplier_name(), companyId,
+                                        progressStatus, pvs.getPosition_name(),
+                                        pvs.getId(), TemplateMs.TORECOM);
+                            }
                         });
                     } else {
                         return ResponseUtils
@@ -372,7 +382,7 @@ public class ProfileProcessBS {
             data.put("keyword2", keyTwoMs);
             MessageTplDataCol keyThreeMs = new MessageTplDataCol();
             keyThreeMs.setColor(color);
-            keyThreeMs.setValue(msInfo.getResult());
+            keyThreeMs.setValue(msInfo.getStatusDesc());
             data.put("keyword3", keyThreeMs);
             MessageTplDataCol remarkMs = new MessageTplDataCol();
             remarkMs.setColor(color);

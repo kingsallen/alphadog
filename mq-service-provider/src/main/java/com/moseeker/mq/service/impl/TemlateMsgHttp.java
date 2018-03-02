@@ -197,7 +197,7 @@ public class TemlateMsgHttp {
             Map<String,MessageTplDataCol> colMap =new HashMap<>();
             MessageTplDataCol first = new MessageTplDataCol();
             first.setColor("#173177");
-            first.setValue( String.format("%s,您好！\n您发布的%s职位收到了一份新简历",hrAccount.getUsername(), position.getTitle()));
+            first.setValue( String.format("%s,您收到了一份新简历",hrAccount.getUsername()));
             colMap.put("first",first);
             MessageTplDataCol remark = new MessageTplDataCol();
             remark.setColor("#173177");
