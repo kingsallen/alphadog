@@ -12,6 +12,7 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
@@ -25,6 +26,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.pojo.SearchData;
@@ -64,8 +66,19 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import static java.lang.Math.round;
+import static java.lang.Math.toIntExact;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -73,17 +86,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static java.lang.Math.round;
-import static java.lang.Math.toIntExact;
 
 @Service
 @Transactional
@@ -140,6 +142,8 @@ public class PositionService {
     @Autowired
     private CampaignRecomPositionlistDao campaignRecomPositionlistDao;
     @Autowired
+    private UserHrAccountDao userHrAccountDao;
+    @Autowired
     private HrAppCvConfDao hrAppCvConfDao;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -148,6 +152,7 @@ public class PositionService {
 
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
+    PositionServices.Iface positionServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
 
     private static List dictAlipaycampusJobcategorylist;
 
@@ -303,6 +308,9 @@ public class PositionService {
         }
         searchData.setTitle(jobPositionPojo.title);
         jobPositionPojo.search_data=searchData;
+        if(jobPositionPojo.salary_bottom==0&&jobPositionPojo.salary_top==0){
+            jobPositionPojo.salary="薪资面议";
+        }
         return ResponseUtils.success(jobPositionPojo);
     }
 
@@ -2092,6 +2100,42 @@ public class PositionService {
         logger.error("自定义配置为空，positionId:{}, appCvConfId:{}", positionId, appCvConfId);
         return ResponseUtils.fail(1,"自定义配置为空");
     }
+
+    public Response updatePosition(String param) {
+        JSONObject obj = JSONObject.parseObject(param);
+        int position_id = obj.getIntValue("id");
+        int account_id = obj.getIntValue("accountId");
+        String keyword = obj.getString("keyword");
+        Query accountQuery =  new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), account_id).buildQuery();
+        UserHrAccountDO accountDO = userHrAccountDao.getData(accountQuery);
+        JobPositionDO positionDO = null;
+        if(accountDO != null && accountDO.getAccountType() != 0) {
+            Query query = new Query.QueryBuilder().where(JobPosition.JOB_POSITION.ID.getName(), position_id)
+                    .and(JobPosition.JOB_POSITION.PUBLISHER.getName(), account_id).buildQuery();
+            positionDO = jobPositionDao.getData(query);
+        }
+
+        if((accountDO != null && accountDO.getAccountType() == 0) || positionDO != null){
+            try {
+
+                Map<String, Object> updateField = obj.getObject("updateField", Map.class);
+                Date date = new Date();
+                String dateStr = DateUtils.dateToShortTime(date);
+                updateField.put("updateTime", new Timestamp(date.getTime()));
+                JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
+                jobPositionDao.updateRecord(record);
+                updateField.put("updateTime", dateStr);
+                return ResponseUtils.success(updateField);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            }
+        }else{
+            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_UPDATE_FAIL);
+        }
+
+    }
+
 
 
     /**

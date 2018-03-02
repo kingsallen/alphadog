@@ -135,13 +135,19 @@ public class CrawlerUtils {
 		 * 			4		32005
 		 * 			-3		32006
 		 * 			-5		32007
-		 * 			5		32008
+		 * 			5		32010
 		 * 			-2		其他
 		 * */
 		if (messagBean.get("status") != null && (Integer) messagBean.get("status") == 0) {
 			List<Map<String, Object>> resumes = (List<Map<String, Object>>) messagBean.get("resumes");
+			if(resumes==null || resumes.isEmpty()){
+				return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_RESUME_EMPTY);
+			}
 			Map<String, Object> resume = resumes.get(0);
-			if (resume != null && resume.get("profile") != null) {
+			if(resume==null || resume.isEmpty()){
+				return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_RESUME_EMPTY);
+			}
+			if (resume.get("profile") != null) {
 				Map<String, Object> profile = (Map<String, Object>) resume.get("profile");
 				if (lang != 0) {
 					profile.put("lang", lang);
@@ -180,7 +186,7 @@ public class CrawlerUtils {
 		} else if (messagBean.get("status") != null
 				&& (Integer) messagBean.get("status") == 5) {
 			decre(user_id, channelType);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_PARAM_ERROR);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_PROFILE_EMPTY);
 		}
 		decre(user_id, channelType);
 		return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_PARAM_ILLEGAL);

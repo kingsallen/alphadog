@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.thirdpartyaccount.base;
 
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.common.constants.BindingStatus;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
@@ -53,7 +54,12 @@ public abstract class AbstractBindState implements BindState{
 
             HrThirdPartyAccountDO bindingAccount = thirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, thirdPartyAccount.getChannel());
             if (bindingAccount == null) {
-                context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
+                try {
+                    context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
+                }catch (BIZException e){
+                    logger.info("catch BIZException when dispatch after bind finished. exception {}",e);
+                    return result;
+                }
             }
         }
 

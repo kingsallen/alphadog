@@ -42,6 +42,7 @@ import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.*;
@@ -838,6 +839,8 @@ public class WholeProfileService {
                 }
                 map.put("end_until_now", record.getEndUntilNow().intValue());
                 map.put("description", record.getDescription());
+                map.put("achievement", record.getAchievement());
+                map.put("responsibility",record.getResponsibility());
                 map.put("member", record.getMember());
                 map.put("role", record.getRole());
                 list.add(map);
@@ -933,6 +936,7 @@ public class WholeProfileService {
                     }
                     map.put("end_until_now", record.getEndUntilNow().intValue());
                     map.put("description", record.getDescription());
+                    map.put("achievement", record.getAchievement());
                     list.add(map);
                 });
             }
