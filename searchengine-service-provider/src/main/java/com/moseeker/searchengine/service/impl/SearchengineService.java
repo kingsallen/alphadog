@@ -885,6 +885,7 @@ public class SearchengineService {
 
         String flag=params.get("flag");
         String returnParams=params.get("return_params");
+        String candidateSource=params.get("candidate_source");
         if(StringUtils.isBlank(flag)){
             flag="0";
         }
@@ -898,10 +899,10 @@ public class SearchengineService {
         Map<String,Object> map=new HashMap<String,Object>();
         try {
             client = searchUtil.getEsClient();
-            SearchResponse hits=this.searchPrefix(keyWord,companyIds,publisherCompanyId,Integer.parseInt(flag),publisher,returnParams,Integer.parseInt(page),Integer.parseInt(pageSize),client);
+            SearchResponse hits=this.searchPrefix(keyWord,companyIds,publisherCompanyId,Integer.parseInt(flag),publisher, candidateSource,returnParams,Integer.parseInt(page),Integer.parseInt(pageSize),client);
             long hitNum=hits.getHits().getTotalHits();
             if(hitNum==0){
-                hits=this.searchQueryString(keyWord,companyIds,publisherCompanyId,Integer.parseInt(flag),publisher,returnParams,Integer.parseInt(page),Integer.parseInt(pageSize),client);
+                hits=this.searchQueryString(keyWord,companyIds,publisherCompanyId,Integer.parseInt(flag),publisher,candidateSource,returnParams,Integer.parseInt(page),Integer.parseInt(pageSize),client);
                 map=searchUtil.handleData(hits,"suggest");
             }else{
                 map=searchUtil.handleData(hits,"suggest");
@@ -914,13 +915,13 @@ public class SearchengineService {
 
     }
     //通过Prefix方式搜索
-     private SearchResponse searchPrefix(String keyWord,String companyIds,String publisherCompanyId,int flag,String publisher,String returnParams,int page,int pageSize,TransportClient client){
+     private SearchResponse searchPrefix(String keyWord,String companyIds,String publisherCompanyId,int flag,String publisher,String candidateSource,String returnParams,int page,int pageSize,TransportClient client){
          QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
          QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
          List<String> list=new ArrayList<>();
          list.add("title");
          searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
-         this.handlerCommonSuggest(companyIds,publisherCompanyId,flag,publisher,query);
+         this.handlerCommonSuggest(companyIds,publisherCompanyId,flag,publisher,candidateSource,query);
          SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                  .setQuery(query)
                  .setFrom((page-1)*pageSize)
@@ -932,13 +933,13 @@ public class SearchengineService {
          return res;
      }
     //通过QueryString搜索
-    private SearchResponse searchQueryString(String keyWord,String companyIds,String publisherCompanyId,int flag,String publisher,String returnParams,int page,int pageSize,TransportClient client){
+    private SearchResponse searchQueryString(String keyWord,String companyIds,String publisherCompanyId,int flag,String publisher,String candidateSource,String returnParams,int page,int pageSize,TransportClient client){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         List<String> list=new ArrayList<>();
         list.add("title");
         searchUtil.handleKeyWordforQueryString(keyWord, false, query, list);
-        this.handlerCommonSuggest(companyIds,publisherCompanyId,flag,publisher,query);
+        this.handlerCommonSuggest(companyIds,publisherCompanyId,flag,publisher,candidateSource,query);
         SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
@@ -955,7 +956,7 @@ public class SearchengineService {
      提取公共部分，进行封装
      */
 
-    public void handlerCommonSuggest(String companyIds,String publisherCompanyId,int flag,String publisher,QueryBuilder query ){
+    public void handlerCommonSuggest(String companyIds,String publisherCompanyId,int flag,String publisher,String candidateSource,QueryBuilder query ){
         searchUtil.handleTerms(companyIds,query,"company_id");
         if(StringUtils.isNotBlank(publisherCompanyId)){
             searchUtil.handleTerms(companyIds,query,"publisher_company_id");
@@ -967,6 +968,9 @@ public class SearchengineService {
         }
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleTerms(publisher,query,"publisher");
+        }
+        if(StringUtils.isNotBlank(candidateSource)){
+            searchUtil.handleMatch(Integer.parseInt(candidateSource),query,"candidate_source");
         }
     }
     /*

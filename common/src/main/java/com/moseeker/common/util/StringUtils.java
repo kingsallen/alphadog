@@ -509,7 +509,7 @@ public class StringUtils {
     }
 
     public static void main(String[] args) {
-        String aa="Helpdesk - Analyst – Urgent!!! (Permanent Position)";
+        String aa="福伊特中国2018校园招聘 – Cost Calculation Specialist成本合算专员\n";
         System.out.println(StringUtils.filterStringForSearch(aa));
     }
 
