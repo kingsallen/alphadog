@@ -70,7 +70,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
         data.put("keyword2", keyTwoMs);
         MessageTplDataCol keyThreeMs = new MessageTplDataCol();
         keyThreeMs.setColor(color);
-        keyThreeMs.setValue(result);
+        keyThreeMs.setValue(statusDesc);
         data.put("keyword3", keyThreeMs);
         MessageTplDataCol remarkMs = new MessageTplDataCol();
         remarkMs.setColor(color);
