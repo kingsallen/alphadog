@@ -122,16 +122,16 @@ public class HrTeamMemberDao extends DAOImpl<HrTeamMemberRecord, com.moseeker.ba
     }
 
     /**
-     * Fetch records that have <code>disable IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeamMember> fetchByDisable(Integer... values) {
-        return fetch(HrTeamMember.HR_TEAM_MEMBER.DISABLE, values);
-    }
-
-    /**
      * Fetch records that have <code>res_attrs IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeamMember> fetchByResAttrs(String... values) {
         return fetch(HrTeamMember.HR_TEAM_MEMBER.RES_ATTRS, values);
+    }
+
+    /**
+     * Fetch records that have <code>disable IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeamMember> fetchByDisable(Integer... values) {
+        return fetch(HrTeamMember.HR_TEAM_MEMBER.DISABLE, values);
     }
 }

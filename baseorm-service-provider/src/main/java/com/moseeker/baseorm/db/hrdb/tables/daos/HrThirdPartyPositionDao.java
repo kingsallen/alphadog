@@ -80,13 +80,6 @@ public class HrThirdPartyPositionDao extends DAOImpl<HrThirdPartyPositionRecord,
     }
 
     /**
-     * Fetch records that have <code>channel IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByChannel(Short... values) {
-        return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL, values);
-    }
-
-    /**
      * Fetch records that have <code>is_synchronization IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByIsSynchronization(Short... values) {
@@ -196,6 +189,13 @@ public class HrThirdPartyPositionDao extends DAOImpl<HrThirdPartyPositionRecord,
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchBySalaryTop(Integer... values) {
         return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.SALARY_TOP, values);
+    }
+
+    /**
+     * Fetch records that have <code>channel IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByChannel(Short... values) {
+        return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL, values);
     }
 
     /**

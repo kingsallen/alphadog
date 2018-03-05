@@ -17,7 +17,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * 团队信息
+ * 团队表
  */
 @Generated(
     value = {
@@ -143,6 +143,13 @@ public class HrTeamDao extends DAOImpl<HrTeamRecord, com.moseeker.baseorm.db.hrd
     }
 
     /**
+     * Fetch records that have <code>res_attrs IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> fetchByResAttrs(String... values) {
+        return fetch(HrTeam.HR_TEAM.RES_ATTRS, values);
+    }
+
+    /**
      * Fetch records that have <code>team_detail IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> fetchByTeamDetail(String... values) {
@@ -164,9 +171,9 @@ public class HrTeamDao extends DAOImpl<HrTeamRecord, com.moseeker.baseorm.db.hrd
     }
 
     /**
-     * Fetch records that have <code>res_attrs IN (values)</code>
+     * Fetch records that have <code>link IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> fetchByResAttrs(String... values) {
-        return fetch(HrTeam.HR_TEAM.RES_ATTRS, values);
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> fetchByLink(String... values) {
+        return fetch(HrTeam.HR_TEAM.LINK, values);
     }
 }

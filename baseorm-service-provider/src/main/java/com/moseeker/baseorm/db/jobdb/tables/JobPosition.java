@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = -2110736378;
+    private static final long serialVersionUID = 250331355;
 
     /**
      * The reference instance of <code>jobdb.job_position</code>
@@ -375,6 +375,11 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
      * The column <code>jobdb.job_position.profile_cc_mail_enabled</code>. 简历申请是否抄送邮箱，0 否；1 是
      */
     public final TableField<JobPositionRecord, Byte> PROFILE_CC_MAIL_ENABLED = createField("profile_cc_mail_enabled", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "简历申请是否抄送邮箱，0 否；1 是");
+
+    /**
+     * The column <code>jobdb.job_position.profile_tohr_mail_enabled</code>. 简历是否发送到HR邮箱 0 否 1是
+     */
+    public final TableField<JobPositionRecord, Byte> PROFILE_TOHR_MAIL_ENABLED = createField("profile_tohr_mail_enabled", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "简历是否发送到HR邮箱 0 否 1是");
 
     /**
      * Create a <code>jobdb.job_position</code> table reference

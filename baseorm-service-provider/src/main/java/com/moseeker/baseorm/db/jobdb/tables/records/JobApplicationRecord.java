@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationRecord> {
 
-    private static final long serialVersionUID = 1277309212;
+    private static final long serialVersionUID = -1733170596;
 
     /**
      * Setter for <code>jobdb.job_application.id</code>.
@@ -212,14 +212,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     }
 
     /**
-     * Setter for <code>jobdb.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified 6:excess apply times
+     * Setter for <code>jobdb.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified, 6:excess apply times, 7 redundant,  8:failed, 9 failed and notified
      */
     public void setAtsStatus(Integer value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified 6:excess apply times
+     * Getter for <code>jobdb.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified, 6:excess apply times, 7 redundant,  8:failed, 9 failed and notified
      */
     public Integer getAtsStatus() {
         return (Integer) get(13);

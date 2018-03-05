@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCmsMedia extends TableImpl<HrCmsMediaRecord> {
 
-    private static final long serialVersionUID = -1122331303;
+    private static final long serialVersionUID = -1208050609;
 
     /**
      * The reference instance of <code>hrdb.hr_cms_media</code>
@@ -92,6 +92,11 @@ public class HrCmsMedia extends TableImpl<HrCmsMediaRecord> {
     public final TableField<HrCmsMediaRecord, Integer> RES_ID = createField("res_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "资源hr_resource.id");
 
     /**
+     * The column <code>hrdb.hr_cms_media.res_attrs</code>. 素材库图片处理参数,七牛格式
+     */
+    public final TableField<HrCmsMediaRecord, String> RES_ATTRS = createField("res_attrs", org.jooq.impl.SQLDataType.VARCHAR.length(128), this, "素材库图片处理参数,七牛格式");
+
+    /**
      * The column <code>hrdb.hr_cms_media.orders</code>. 顺序
      */
     public final TableField<HrCmsMediaRecord, Integer> ORDERS = createField("orders", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "顺序");
@@ -115,11 +120,6 @@ public class HrCmsMedia extends TableImpl<HrCmsMediaRecord> {
      * The column <code>hrdb.hr_cms_media.update_time</code>.
      */
     public final TableField<HrCmsMediaRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
-     * The column <code>hrdb.hr_cms_media.res_attrs</code>. 素材库图片处理参数,七牛格式
-     */
-    public final TableField<HrCmsMediaRecord, String> RES_ATTRS = createField("res_attrs", org.jooq.impl.SQLDataType.VARCHAR.length(128), this, "素材库图片处理参数,七牛格式");
 
     /**
      * Create a <code>hrdb.hr_cms_media</code> table reference

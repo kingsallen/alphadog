@@ -23,12 +23,11 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition implements Serializable {
 
-    private static final long serialVersionUID = -1468284452;
+    private static final long serialVersionUID = -1677950258;
 
     private Integer   id;
     private Integer   positionId;
     private String    thirdPartPositionId;
-    private Short     channel;
     private Short     isSynchronization;
     private Short     isRefresh;
     private Timestamp syncTime;
@@ -45,6 +44,7 @@ public class HrThirdPartyPosition implements Serializable {
     private Short     salaryDiscuss;
     private Integer   salaryBottom;
     private Integer   salaryTop;
+    private Short     channel;
     private Integer   practiceSalary;
     private Byte      practicePerWeek;
     private Byte      practiceSalaryUnit;
@@ -62,7 +62,6 @@ public class HrThirdPartyPosition implements Serializable {
         this.id = value.id;
         this.positionId = value.positionId;
         this.thirdPartPositionId = value.thirdPartPositionId;
-        this.channel = value.channel;
         this.isSynchronization = value.isSynchronization;
         this.isRefresh = value.isRefresh;
         this.syncTime = value.syncTime;
@@ -79,6 +78,7 @@ public class HrThirdPartyPosition implements Serializable {
         this.salaryDiscuss = value.salaryDiscuss;
         this.salaryBottom = value.salaryBottom;
         this.salaryTop = value.salaryTop;
+        this.channel = value.channel;
         this.practiceSalary = value.practiceSalary;
         this.practicePerWeek = value.practicePerWeek;
         this.practiceSalaryUnit = value.practiceSalaryUnit;
@@ -95,7 +95,6 @@ public class HrThirdPartyPosition implements Serializable {
         Integer   id,
         Integer   positionId,
         String    thirdPartPositionId,
-        Short     channel,
         Short     isSynchronization,
         Short     isRefresh,
         Timestamp syncTime,
@@ -112,6 +111,7 @@ public class HrThirdPartyPosition implements Serializable {
         Short     salaryDiscuss,
         Integer   salaryBottom,
         Integer   salaryTop,
+        Short     channel,
         Integer   practiceSalary,
         Byte      practicePerWeek,
         Byte      practiceSalaryUnit,
@@ -126,7 +126,6 @@ public class HrThirdPartyPosition implements Serializable {
         this.id = id;
         this.positionId = positionId;
         this.thirdPartPositionId = thirdPartPositionId;
-        this.channel = channel;
         this.isSynchronization = isSynchronization;
         this.isRefresh = isRefresh;
         this.syncTime = syncTime;
@@ -143,6 +142,7 @@ public class HrThirdPartyPosition implements Serializable {
         this.salaryDiscuss = salaryDiscuss;
         this.salaryBottom = salaryBottom;
         this.salaryTop = salaryTop;
+        this.channel = channel;
         this.practiceSalary = practiceSalary;
         this.practicePerWeek = practicePerWeek;
         this.practiceSalaryUnit = practiceSalaryUnit;
@@ -177,14 +177,6 @@ public class HrThirdPartyPosition implements Serializable {
 
     public void setThirdPartPositionId(String thirdPartPositionId) {
         this.thirdPartPositionId = thirdPartPositionId;
-    }
-
-    public Short getChannel() {
-        return this.channel;
-    }
-
-    public void setChannel(Short channel) {
-        this.channel = channel;
     }
 
     public Short getIsSynchronization() {
@@ -315,6 +307,14 @@ public class HrThirdPartyPosition implements Serializable {
         this.salaryTop = salaryTop;
     }
 
+    public Short getChannel() {
+        return this.channel;
+    }
+
+    public void setChannel(Short channel) {
+        this.channel = channel;
+    }
+
     public Integer getPracticeSalary() {
         return this.practiceSalary;
     }
@@ -402,7 +402,6 @@ public class HrThirdPartyPosition implements Serializable {
         sb.append(id);
         sb.append(", ").append(positionId);
         sb.append(", ").append(thirdPartPositionId);
-        sb.append(", ").append(channel);
         sb.append(", ").append(isSynchronization);
         sb.append(", ").append(isRefresh);
         sb.append(", ").append(syncTime);
@@ -419,6 +418,7 @@ public class HrThirdPartyPosition implements Serializable {
         sb.append(", ").append(salaryDiscuss);
         sb.append(", ").append(salaryBottom);
         sb.append(", ").append(salaryTop);
+        sb.append(", ").append(channel);
         sb.append(", ").append(practiceSalary);
         sb.append(", ").append(practicePerWeek);
         sb.append(", ").append(practiceSalaryUnit);
