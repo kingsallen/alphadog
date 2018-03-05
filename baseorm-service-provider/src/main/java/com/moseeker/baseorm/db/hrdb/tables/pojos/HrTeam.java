@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 团队信息
+ * 团队表
  */
 @Generated(
     value = {
@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeam implements Serializable {
 
-    private static final long serialVersionUID = 1532474269;
+    private static final long serialVersionUID = -675321441;
 
     private Integer   id;
     private String    name;
@@ -37,10 +37,10 @@ public class HrTeam implements Serializable {
     private Integer   isShow;
     private String    slogan;
     private Integer   resId;
+    private String    resAttrs;
     private String    teamDetail;
     private Integer   disable;
     private String    subTitle;
-    private String    resAttrs;
     private String    link;
 
     public HrTeam() {}
@@ -58,10 +58,10 @@ public class HrTeam implements Serializable {
         this.isShow = value.isShow;
         this.slogan = value.slogan;
         this.resId = value.resId;
+        this.resAttrs = value.resAttrs;
         this.teamDetail = value.teamDetail;
         this.disable = value.disable;
         this.subTitle = value.subTitle;
-        this.resAttrs = value.resAttrs;
         this.link = value.link;
     }
 
@@ -78,10 +78,10 @@ public class HrTeam implements Serializable {
         Integer   isShow,
         String    slogan,
         Integer   resId,
+        String    resAttrs,
         String    teamDetail,
         Integer   disable,
         String    subTitle,
-        String    resAttrs,
         String    link
     ) {
         this.id = id;
@@ -96,10 +96,10 @@ public class HrTeam implements Serializable {
         this.isShow = isShow;
         this.slogan = slogan;
         this.resId = resId;
+        this.resAttrs = resAttrs;
         this.teamDetail = teamDetail;
         this.disable = disable;
         this.subTitle = subTitle;
-        this.resAttrs = resAttrs;
         this.link = link;
     }
 
@@ -199,6 +199,14 @@ public class HrTeam implements Serializable {
         this.resId = resId;
     }
 
+    public String getResAttrs() {
+        return this.resAttrs;
+    }
+
+    public void setResAttrs(String resAttrs) {
+        this.resAttrs = resAttrs;
+    }
+
     public String getTeamDetail() {
         return this.teamDetail;
     }
@@ -221,14 +229,6 @@ public class HrTeam implements Serializable {
 
     public void setSubTitle(String subTitle) {
         this.subTitle = subTitle;
-    }
-
-    public String getResAttrs() {
-        return this.resAttrs;
-    }
-
-    public void setResAttrs(String resAttrs) {
-        this.resAttrs = resAttrs;
     }
 
     public String getLink() {
@@ -255,10 +255,10 @@ public class HrTeam implements Serializable {
         sb.append(", ").append(isShow);
         sb.append(", ").append(slogan);
         sb.append(", ").append(resId);
+        sb.append(", ").append(resAttrs);
         sb.append(", ").append(teamDetail);
         sb.append(", ").append(disable);
         sb.append(", ").append(subTitle);
-        sb.append(", ").append(resAttrs);
         sb.append(", ").append(link);
 
         sb.append(")");

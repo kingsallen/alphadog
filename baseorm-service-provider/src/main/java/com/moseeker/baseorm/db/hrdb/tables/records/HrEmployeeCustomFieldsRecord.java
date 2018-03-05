@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCustomFieldsRecord extends UpdatableRecordImpl<HrEmployeeCustomFieldsRecord> implements Record9<Integer, Integer, String, String, Integer, Byte, Integer, Integer, Integer> {
 
-    private static final long serialVersionUID = 206097261;
+    private static final long serialVersionUID = 718957261;
 
     /**
      * Setter for <code>hrdb.hr_employee_custom_fields.id</code>.
@@ -143,14 +143,14 @@ public class HrEmployeeCustomFieldsRecord extends UpdatableRecordImpl<HrEmployee
     }
 
     /**
-     * Setter for <code>hrdb.hr_employee_custom_fields.option_type</code>. 选项类型  0:下拉选项, 1:文本
+     * Setter for <code>hrdb.hr_employee_custom_fields.option_type</code>. 选项类型  0:下拉列表, 1:文本
      */
     public void setOptionType(Integer value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_employee_custom_fields.option_type</code>. 选项类型  0:下拉选项, 1:文本
+     * Getter for <code>hrdb.hr_employee_custom_fields.option_type</code>. 选项类型  0:下拉列表, 1:文本
      */
     public Integer getOptionType() {
         return (Integer) get(8);
