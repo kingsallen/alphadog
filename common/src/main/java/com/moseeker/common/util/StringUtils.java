@@ -387,10 +387,10 @@ public class StringUtils {
      */
     public static String filterStringForSearch(String value){
         if(StringUtils.isNotNullOrEmpty(value)){
-            String mark=" ";
-            boolean flag=isContainChinese(value);
+            String mark="";
+            boolean flag=isContainEnglish(value);
             if(flag){
-                mark="";
+                mark=" ";
             }
             if(value.contains("/")){
                 value=value.replaceAll("/",mark);
@@ -502,19 +502,19 @@ public class StringUtils {
     /*
      是否包含中文
      */
-    public static boolean isContainChinese(String str) {
+    public static boolean isContainEnglish(String str) {
 
-        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Pattern p = Pattern.compile(".*[a-zA-Z]+.*");
         Matcher m = p.matcher(str);
         if (m.find()) {
             return true;
         }
         return false;
     }
-    public static void main(String[] args) {
-        String aa="Assistant Manager [张] Manager,/Deal Advisory\n";
-        System.out.println(StringUtils.filterStringForSearch(aa));
 
+    public static void main(String[] args) {
+        String aa="IT销售 （~ 高薪 jskjweiw_jse JLB）";
+        System.out.println(StringUtils.filterStringForSearch(aa));
     }
 
 }
