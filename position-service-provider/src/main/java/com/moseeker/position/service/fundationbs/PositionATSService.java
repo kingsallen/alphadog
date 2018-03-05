@@ -208,7 +208,7 @@ public class PositionATSService {
                 Map<String,String> data=new HashMap<>();
                 data.put("url",url);
 
-                return ResponseUtils.success(url);
+                return ResponseUtils.success(data);
             }
 
             return response;
