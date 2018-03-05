@@ -24,7 +24,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 团队信息
+ * 团队表
  */
 @Generated(
     value = {
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeam extends TableImpl<HrTeamRecord> {
 
-    private static final long serialVersionUID = 695424642;
+    private static final long serialVersionUID = 109697610;
 
     /**
      * The reference instance of <code>hrdb.hr_team</code>
@@ -64,12 +64,12 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
     /**
      * The column <code>hrdb.hr_team.summary</code>. 职能概述
      */
-    public final TableField<HrTeamRecord, String> SUMMARY = createField("summary", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职能概述");
+    public final TableField<HrTeamRecord, String> SUMMARY = createField("summary", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false), this, "职能概述");
 
     /**
      * The column <code>hrdb.hr_team.description</code>. 团队介绍
      */
-    public final TableField<HrTeamRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(2048).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "团队介绍");
+    public final TableField<HrTeamRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(2048).nullable(false), this, "团队介绍");
 
     /**
      * The column <code>hrdb.hr_team.show_order</code>. 团队显示顺序
@@ -104,12 +104,17 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
     /**
      * The column <code>hrdb.hr_team.slogan</code>. 团队标语
      */
-    public final TableField<HrTeamRecord, String> SLOGAN = createField("slogan", org.jooq.impl.SQLDataType.VARCHAR.length(1024).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "团队标语");
+    public final TableField<HrTeamRecord, String> SLOGAN = createField("slogan", org.jooq.impl.SQLDataType.VARCHAR.length(1024).nullable(false), this, "团队标语");
 
     /**
      * The column <code>hrdb.hr_team.res_id</code>. 团队主图片hr_resource.id
      */
     public final TableField<HrTeamRecord, Integer> RES_ID = createField("res_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "团队主图片hr_resource.id");
+
+    /**
+     * The column <code>hrdb.hr_team.res_attrs</code>. 素材库图片处理参数,七牛格式
+     */
+    public final TableField<HrTeamRecord, String> RES_ATTRS = createField("res_attrs", org.jooq.impl.SQLDataType.VARCHAR.length(128), this, "素材库图片处理参数,七牛格式");
 
     /**
      * The column <code>hrdb.hr_team.team_detail</code>. 团队详情页配置hr_media.id: [1, 23, 32]
@@ -124,12 +129,7 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
     /**
      * The column <code>hrdb.hr_team.sub_title</code>. 团队小标题
      */
-    public final TableField<HrTeamRecord, String> SUB_TITLE = createField("sub_title", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "团队小标题");
-
-    /**
-     * The column <code>hrdb.hr_team.res_attrs</code>. 素材库图片处理参数,七牛格式
-     */
-    public final TableField<HrTeamRecord, String> RES_ATTRS = createField("res_attrs", org.jooq.impl.SQLDataType.VARCHAR.length(128), this, "素材库图片处理参数,七牛格式");
+    public final TableField<HrTeamRecord, String> SUB_TITLE = createField("sub_title", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false), this, "团队小标题");
 
     /**
      * The column <code>hrdb.hr_team.link</code>. 模板链接
@@ -155,7 +155,7 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
     }
 
     private HrTeam(String alias, Table<HrTeamRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "团队信息");
+        super(alias, null, aliased, parameters, "团队表");
     }
 
     /**

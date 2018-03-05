@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeamMember implements Serializable {
 
-    private static final long serialVersionUID = 711750553;
+    private static final long serialVersionUID = 1316961897;
 
     private Integer   id;
     private String    name;
@@ -34,8 +34,8 @@ public class HrTeamMember implements Serializable {
     private Timestamp createTime;
     private Timestamp updateTime;
     private Integer   resId;
-    private Integer   disable;
     private String    resAttrs;
+    private Integer   disable;
 
     public HrTeamMember() {}
 
@@ -49,8 +49,8 @@ public class HrTeamMember implements Serializable {
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
         this.resId = value.resId;
-        this.disable = value.disable;
         this.resAttrs = value.resAttrs;
+        this.disable = value.disable;
     }
 
     public HrTeamMember(
@@ -63,8 +63,8 @@ public class HrTeamMember implements Serializable {
         Timestamp createTime,
         Timestamp updateTime,
         Integer   resId,
-        Integer   disable,
-        String    resAttrs
+        String    resAttrs,
+        Integer   disable
     ) {
         this.id = id;
         this.name = name;
@@ -75,8 +75,8 @@ public class HrTeamMember implements Serializable {
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.resId = resId;
-        this.disable = disable;
         this.resAttrs = resAttrs;
+        this.disable = disable;
     }
 
     public Integer getId() {
@@ -151,20 +151,20 @@ public class HrTeamMember implements Serializable {
         this.resId = resId;
     }
 
-    public Integer getDisable() {
-        return this.disable;
-    }
-
-    public void setDisable(Integer disable) {
-        this.disable = disable;
-    }
-
     public String getResAttrs() {
         return this.resAttrs;
     }
 
     public void setResAttrs(String resAttrs) {
         this.resAttrs = resAttrs;
+    }
+
+    public Integer getDisable() {
+        return this.disable;
+    }
+
+    public void setDisable(Integer disable) {
+        this.disable = disable;
     }
 
     @Override
@@ -180,8 +180,8 @@ public class HrTeamMember implements Serializable {
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
         sb.append(", ").append(resId);
-        sb.append(", ").append(disable);
         sb.append(", ").append(resAttrs);
+        sb.append(", ").append(disable);
 
         sb.append(")");
         return sb.toString();
