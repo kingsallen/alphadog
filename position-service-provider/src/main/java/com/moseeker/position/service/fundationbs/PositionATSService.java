@@ -9,6 +9,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.Position.PositionSource;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.position.pojo.JobPositionFailMess;
@@ -26,6 +27,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class PositionATSService {
@@ -129,13 +132,14 @@ public class PositionATSService {
             param.put("accountId",postionObj.getPublisher());
             param.put("updateField",updateField);
 
-            return service.updatePosition(param.toJSONString());
+            Response response=service.updatePosition(param.toJSONString());
+
+            return addPositionUrlOnlySuccess(response,jobPositionRecord.getId());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
-
 
     /**
      * 下架谷露职位
@@ -178,15 +182,40 @@ public class PositionATSService {
         param.put("accountId",postionObj.getPublisher());
         param.put("updateField",updateField);
 
-
         Response response=service.updatePosition(param.toJSONString());
-
 
         //解除绑定，绑定在hr_third_part_position当中，传递position和要修改的is_synchronization
         Condition condition=new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),jobPositionRecord.getId());
         thirdPartyPositionDao.disable(Arrays.asList(condition));
 
-        return response;
+        return addPositionUrlOnlySuccess(response,jobPositionRecord.getId());
+    }
+
+    /**
+     * 在谷露返回参数中加上职位url,只有success才返回
+     * @param id
+     * @return
+     */
+    public Response addPositionUrlOnlySuccess(Response response, int id){
+        try {
+            if(response.getStatus()==0 && response.getMessage().equals("success")){
+                ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+                configUtils.loadResource("setting.properties");
+                String url=configUtils.get("gllue.url", String.class);
+
+                url=url+"position/index/pid/"+id;
+
+                Map<String,String> data=new HashMap<>();
+                data.put("url",url);
+
+                return ResponseUtils.success(url);
+            }
+
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -210,20 +239,29 @@ public class PositionATSService {
 
         JobPostionResponse response=service.batchHandlerJobPostion(batchHandlerJobPostion);
 
-        return handleJobPostionResponse(response);
+        JobPostrionObj postionObj = batchHandlerJobPostion.getData().get(0);
+
+        JobPositionRecord jobPositionRecord=jobPositionDao.getUniquePosition(
+                postionObj.getCompany_id(),
+                PositionSource.ATS.getCode(),
+                postionObj.getSource_id(),
+                postionObj.getJobnumber());
+
+        return handleJobPostionResponse(response,jobPositionRecord);
     }
 
     /**
      * 处理返回值，从list返回值改为一个返回值
      * @param jobPostionResponse
+     * @param jobPositionRecord
      * @return
      */
-    private Response handleJobPostionResponse(JobPostionResponse jobPostionResponse){
+    private Response handleJobPostionResponse(JobPostionResponse jobPostionResponse, JobPositionRecord jobPositionRecord){
         if(StringUtils.isEmptyList(jobPostionResponse.getJobPositionFailMessPojolist())){
             if(jobPostionResponse.getInsertCounts()==0 && jobPostionResponse.getUpdateCounts()==0){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             }
-            return ResponseUtils.success("");
+            return addPositionUrlOnlySuccess(ResponseUtils.success(""),jobPositionRecord.getId());
         }else{
             JobPositionFailMess failMess=jobPostionResponse.getJobPositionFailMessPojolist().get(0);
             return ResponseUtils.fail(failMess.getStatus(),failMess.getMessage());
@@ -244,4 +282,5 @@ public class PositionATSService {
                 postionObj.getSource_id(),
                 postionObj.getJobnumber());
     }
+
 }
