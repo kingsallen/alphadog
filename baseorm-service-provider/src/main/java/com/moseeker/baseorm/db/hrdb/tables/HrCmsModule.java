@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCmsModule extends TableImpl<HrCmsModuleRecord> {
 
-    private static final long serialVersionUID = 794605546;
+    private static final long serialVersionUID = -730876324;
 
     /**
      * The reference instance of <code>hrdb.hr_cms_module</code>
@@ -69,7 +69,7 @@ public class HrCmsModule extends TableImpl<HrCmsModuleRecord> {
     /**
      * The column <code>hrdb.hr_cms_module.type</code>. 1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情10，动态
      */
-    public final TableField<HrCmsModuleRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情10，动态");
+    public final TableField<HrCmsModuleRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情10，动态");
 
     /**
      * The column <code>hrdb.hr_cms_module.orders</code>. 顺序

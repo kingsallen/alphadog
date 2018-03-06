@@ -115,13 +115,6 @@ public class HrCmsMediaDao extends DAOImpl<HrCmsMediaRecord, com.moseeker.baseor
     }
 
     /**
-     * Fetch records that have <code>res_attrs IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCmsMedia> fetchByResAttrs(String... values) {
-        return fetch(HrCmsMedia.HR_CMS_MEDIA.RES_ATTRS, values);
-    }
-
-    /**
      * Fetch records that have <code>orders IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCmsMedia> fetchByOrders(Integer... values) {
@@ -154,5 +147,12 @@ public class HrCmsMediaDao extends DAOImpl<HrCmsMediaRecord, com.moseeker.baseor
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCmsMedia> fetchByUpdateTime(Timestamp... values) {
         return fetch(HrCmsMedia.HR_CMS_MEDIA.UPDATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>res_attrs IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCmsMedia> fetchByResAttrs(String... values) {
+        return fetch(HrCmsMedia.HR_CMS_MEDIA.RES_ATTRS, values);
     }
 }

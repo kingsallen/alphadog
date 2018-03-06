@@ -23,15 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccountHr implements Serializable {
 
-    private static final long serialVersionUID = -1855529811;
+    private static final long serialVersionUID = -393706137;
 
     private Integer   id;
     private Integer   thirdPartyAccountId;
     private Integer   hrAccountId;
+    private Short     channel;
     private Byte      status;
     private Timestamp createTime;
     private Timestamp updateTime;
-    private Short     channel;
 
     public HrThirdPartyAccountHr() {}
 
@@ -39,28 +39,28 @@ public class HrThirdPartyAccountHr implements Serializable {
         this.id = value.id;
         this.thirdPartyAccountId = value.thirdPartyAccountId;
         this.hrAccountId = value.hrAccountId;
+        this.channel = value.channel;
         this.status = value.status;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
-        this.channel = value.channel;
     }
 
     public HrThirdPartyAccountHr(
         Integer   id,
         Integer   thirdPartyAccountId,
         Integer   hrAccountId,
+        Short     channel,
         Byte      status,
         Timestamp createTime,
-        Timestamp updateTime,
-        Short     channel
+        Timestamp updateTime
     ) {
         this.id = id;
         this.thirdPartyAccountId = thirdPartyAccountId;
         this.hrAccountId = hrAccountId;
+        this.channel = channel;
         this.status = status;
         this.createTime = createTime;
         this.updateTime = updateTime;
-        this.channel = channel;
     }
 
     public Integer getId() {
@@ -87,6 +87,14 @@ public class HrThirdPartyAccountHr implements Serializable {
         this.hrAccountId = hrAccountId;
     }
 
+    public Short getChannel() {
+        return this.channel;
+    }
+
+    public void setChannel(Short channel) {
+        this.channel = channel;
+    }
+
     public Byte getStatus() {
         return this.status;
     }
@@ -111,14 +119,6 @@ public class HrThirdPartyAccountHr implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Short getChannel() {
-        return this.channel;
-    }
-
-    public void setChannel(Short channel) {
-        this.channel = channel;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrThirdPartyAccountHr (");
@@ -126,10 +126,10 @@ public class HrThirdPartyAccountHr implements Serializable {
         sb.append(id);
         sb.append(", ").append(thirdPartyAccountId);
         sb.append(", ").append(hrAccountId);
+        sb.append(", ").append(channel);
         sb.append(", ").append(status);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
-        sb.append(", ").append(channel);
 
         sb.append(")");
         return sb.toString();
