@@ -242,7 +242,7 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         return result;
     }
 
-    /*@Override
+    @Override
     public List<String> toChaosJson(PositionVeryEastWithAccount positionVeryEastWithAccount) {
         if(positionVeryEastWithAccount==null || positionVeryEastWithAccount.getPosition_info()==null){
             return new ArrayList<>();
@@ -255,5 +255,5 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
             }
             return results;
         }
-    }*/
+    }
 }

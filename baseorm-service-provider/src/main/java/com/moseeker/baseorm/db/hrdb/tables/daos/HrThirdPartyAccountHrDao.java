@@ -80,6 +80,13 @@ public class HrThirdPartyAccountHrDao extends DAOImpl<HrThirdPartyAccountHrRecor
     }
 
     /**
+     * Fetch records that have <code>channel IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccountHr> fetchByChannel(Short... values) {
+        return fetch(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.CHANNEL, values);
+    }
+
+    /**
      * Fetch records that have <code>status IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccountHr> fetchByStatus(Byte... values) {
@@ -98,12 +105,5 @@ public class HrThirdPartyAccountHrDao extends DAOImpl<HrThirdPartyAccountHrRecor
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccountHr> fetchByUpdateTime(Timestamp... values) {
         return fetch(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.UPDATE_TIME, values);
-    }
-
-    /**
-     * Fetch records that have <code>channel IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccountHr> fetchByChannel(Short... values) {
-        return fetch(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.CHANNEL, values);
     }
 }

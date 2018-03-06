@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCmsMedia implements Serializable {
 
-    private static final long serialVersionUID = 1251819909;
+    private static final long serialVersionUID = -1202660495;
 
     private Integer   id;
     private Integer   moduleId;
@@ -33,12 +33,12 @@ public class HrCmsMedia implements Serializable {
     private String    subTitle;
     private String    link;
     private Integer   resId;
-    private String    resAttrs;
     private Integer   orders;
     private Integer   isShow;
     private Integer   disable;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private String    resAttrs;
 
     public HrCmsMedia() {}
 
@@ -51,12 +51,12 @@ public class HrCmsMedia implements Serializable {
         this.subTitle = value.subTitle;
         this.link = value.link;
         this.resId = value.resId;
-        this.resAttrs = value.resAttrs;
         this.orders = value.orders;
         this.isShow = value.isShow;
         this.disable = value.disable;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.resAttrs = value.resAttrs;
     }
 
     public HrCmsMedia(
@@ -68,12 +68,12 @@ public class HrCmsMedia implements Serializable {
         String    subTitle,
         String    link,
         Integer   resId,
-        String    resAttrs,
         Integer   orders,
         Integer   isShow,
         Integer   disable,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        String    resAttrs
     ) {
         this.id = id;
         this.moduleId = moduleId;
@@ -83,12 +83,12 @@ public class HrCmsMedia implements Serializable {
         this.subTitle = subTitle;
         this.link = link;
         this.resId = resId;
-        this.resAttrs = resAttrs;
         this.orders = orders;
         this.isShow = isShow;
         this.disable = disable;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.resAttrs = resAttrs;
     }
 
     public Integer getId() {
@@ -155,14 +155,6 @@ public class HrCmsMedia implements Serializable {
         this.resId = resId;
     }
 
-    public String getResAttrs() {
-        return this.resAttrs;
-    }
-
-    public void setResAttrs(String resAttrs) {
-        this.resAttrs = resAttrs;
-    }
-
     public Integer getOrders() {
         return this.orders;
     }
@@ -203,6 +195,14 @@ public class HrCmsMedia implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public String getResAttrs() {
+        return this.resAttrs;
+    }
+
+    public void setResAttrs(String resAttrs) {
+        this.resAttrs = resAttrs;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrCmsMedia (");
@@ -215,12 +215,12 @@ public class HrCmsMedia implements Serializable {
         sb.append(", ").append(subTitle);
         sb.append(", ").append(link);
         sb.append(", ").append(resId);
-        sb.append(", ").append(resAttrs);
         sb.append(", ").append(orders);
         sb.append(", ").append(isShow);
         sb.append(", ").append(disable);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(resAttrs);
 
         sb.append(")");
         return sb.toString();
