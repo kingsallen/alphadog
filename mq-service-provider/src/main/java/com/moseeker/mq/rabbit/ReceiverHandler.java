@@ -2,9 +2,11 @@ package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
+import com.moseeker.common.annotation.iface.CounterInfo;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
+import com.moseeker.common.log.ReqParams;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
@@ -89,14 +91,11 @@ public class ReceiverHandler {
         try{
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            log.info("rabitmq的参数是========"+jsonObject.toJSONString());
             int userId=jsonObject.getIntValue("user_id");
             int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");
             int templateId;
-            logVo.setReq_params(jsonObject.toJSONString());
-            logVo.setAppid(4);
-            logVo.setUser_id(userId);
+            this.addPropertyLogVO(logVo,jsonObject);
             if(type!=0){
                 switch (type) {
                     case 1: templateId = Constant.FANS_PROFILE_COMPLETION;logVo.setEvent("FANS_PROFILE_COMPLETION"); break;
@@ -123,6 +122,7 @@ public class ReceiverHandler {
                     if(type==3){
                         personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,1,20);
                     }
+
                     logVo.setStatus_code(0);
                 }else{
                     this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
@@ -209,6 +209,16 @@ public class ReceiverHandler {
         log.setReq_time(new Date());
         log.setRefer("wechat_template_message");
         return log;
+    }
+
+    private void addPropertyLogVO(LogVO logVo,JSONObject jsonObject){
+        ReqParams params=new ReqParams();
+        params.setCompany_id(jsonObject.getIntValue("company_id"));
+        params.setUser_id(jsonObject.getIntValue("user_id"));
+        params.setType(jsonObject.getIntValue("type"));
+        logVo.setReq_params(jsonObject.toJSONString());
+        logVo.setUser_id(jsonObject.getIntValue("user_id"));
+        logVo.setRecom_params(params);
     }
 
 }

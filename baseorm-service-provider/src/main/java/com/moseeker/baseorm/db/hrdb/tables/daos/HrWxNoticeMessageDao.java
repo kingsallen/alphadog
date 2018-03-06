@@ -98,4 +98,11 @@ public class HrWxNoticeMessageDao extends DAOImpl<HrWxNoticeMessageRecord, com.m
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxNoticeMessage> fetchByStatus(Byte... values) {
         return fetch(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.STATUS, values);
     }
+
+    /**
+     * Fetch records that have <code>disable IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxNoticeMessage> fetchByDisable(Byte... values) {
+        return fetch(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE, values);
+    }
 }

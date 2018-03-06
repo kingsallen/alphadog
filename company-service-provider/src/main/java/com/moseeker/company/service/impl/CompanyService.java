@@ -171,7 +171,7 @@ public class CompanyService {
                     if (!scaleIllegal) {
                         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
                     }
-                    boolean propertyIllegal = companyDao.checkPropertyIllegal(record.getScale());
+                    boolean propertyIllegal = companyDao.checkPropertyIllegal(record.getProperty());
                     if (!propertyIllegal) {
                         return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_PROPERTIY_ELLEGAL);
                     }
@@ -677,6 +677,7 @@ public class CompanyService {
             HrEmployeeCustomFieldsVO hrEmployeeCustomFieldsVO = new HrEmployeeCustomFieldsVO();
             hrEmployeeCustomFieldsVO.setFname(hrEmployeeCustomFieldsDO.getFname());
             hrEmployeeCustomFieldsVO.setId(hrEmployeeCustomFieldsDO.getId());
+            hrEmployeeCustomFieldsVO.setOption_type(hrEmployeeCustomFieldsDO.getOption_type());
             String fvaluesTemp = hrEmployeeCustomFieldsDO.getFvalues();
             if (fvaluesTemp != null) {
                 List fvalues = JSONObject.parseArray(fvaluesTemp);
@@ -716,8 +717,8 @@ public class CompanyService {
      获取此账号是不是此公司的主账号
      */
     private int validateHrAndCompany(int hrId,int companyId){
-        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("account_type",0).or("account_type",1)
-        .buildQuery();
+        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).andInnerCondition("account_type",0)
+                .or("account_type",2).buildQuery();
         int count =userHrAccountDao.getCount(query);
         return count;
     }

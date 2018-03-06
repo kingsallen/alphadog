@@ -2,7 +2,9 @@ package com.moseeker.position.service.position.base;
 
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.position.service.position.base.refresh.AbstractRabbitMQParamRefresher;
+import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifier;
 import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
+import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +37,31 @@ public class PositionFactory {
                 return refresher;
             }
         }
+        logger.error("no matched RabbitMQParamRefresher channelType:{}",channelType);
         throw new RuntimeException("no matched RabbitMQParamRefresher");
     }
 
 
     @Autowired
-    private List<PositionSyncVerifyHandler> handlers;
+    private List<PositionSyncVerifier> handlers;
 
     public PositionSyncVerifyHandler getVerifyHandlerInstance(ChannelType channelType){
-        for(PositionSyncVerifyHandler handler:handlers){
+        for(PositionSyncVerifier handler:handlers){
             if(handler.getChannelType()==channelType){
                 return handler;
             }
         }
+        logger.error("no matched PositionSyncVerifyHandler channelType:{}",channelType);
         throw new RuntimeException("no matched PositionSyncVerifyHandler");
     }
 
+    public PositionSyncVerifyReceiver getVerifyReceiverInstance(ChannelType channelType){
+        for(PositionSyncVerifier handler:handlers){
+            if(handler.getChannelType()==channelType){
+                return handler;
+            }
+        }
+        logger.error("no matched PositionSyncVerifyReceiver channelType:{}",channelType);
+        throw new RuntimeException("no matched PositionSyncVerifyReceiver");
+    }
 }

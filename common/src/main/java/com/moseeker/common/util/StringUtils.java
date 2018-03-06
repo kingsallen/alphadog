@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class StringUtils {
@@ -385,94 +387,107 @@ public class StringUtils {
      */
     public static String filterStringForSearch(String value){
         if(StringUtils.isNotNullOrEmpty(value)){
+            String mark="";
+            boolean flag=isContainEnglish(value);
+            if(flag){
+                mark=" ";
+            }
             if(value.contains("/")){
-                value=value.replaceAll("/"," ");
+                value=value.replaceAll("/",mark);
             }
             if(value.contains("OR")){
-                value=value.replaceAll("OR"," ");
+                value=value.replaceAll("OR",mark);
             }
             if(value.contains("AND")){
-                value=value.replaceAll("AND"," ");
+                value=value.replaceAll("AND",mark);
             }
 
             if(value.contains("(")){
-                value=value.replaceAll("\\("," ");
+                value=value.replaceAll("\\(",mark);
             }
             if(value.contains(")")){
-                value=value.replaceAll("\\)"," ");
+                value=value.replaceAll("\\)",mark);
             }
             if(value.contains("+")){
-                value=value.replaceAll("\\+"," ");
+                value=value.replaceAll("\\+",mark);
             }
             if(value.contains("\\")){
-                value=value.replaceAll("\\\\"," ");
+                value=value.replaceAll("\\\\",mark);
             }
             if(value.contains("（")){
-                value=value.replaceAll("（"," ");
+                value=value.replaceAll("（",mark);
             }
             if(value.contains("）")){
-                value=value.replaceAll("）"," ");
+                value=value.replaceAll("）",mark);
             }
             if(value.contains("-")){
-                value=value.replaceAll("-"," ");
+                value=value.replaceAll("-",mark);
             }
             if(value.contains("&")){
-                value=value.replaceAll("&"," ");
+                value=value.replaceAll("&",mark);
             }
             if(value.contains("+")){
-                value=value.replaceAll("\\+"," ");
+                value=value.replaceAll("\\+",mark);
             }
-            if(value.contains("-")){
-                value=value.replaceAll("-"," ");
+            if(value.contains("–")){
+                value=value.replaceAll("–",mark);
             }
-
             if(value.contains("|")){
-                value=value.replaceAll("|"," ");
+                value=value.replaceAll("|",mark);
+            }
+            if(value.contains("[")){
+                value=value.replaceAll("\\[",mark);
+            }
+            if(value.contains("]")){
+                value=value.replaceAll("\\]",mark);
             }
             if(value.contains("!")){
-                value=value.replaceAll("!"," ");
+                value=value.replaceAll("!",mark);
             }
             if(value.contains("{")){
-                value=value.replaceAll("\\{"," ");
+                value=value.replaceAll("\\{",mark);
             }
             if(value.contains("}")) {
-                value = value.replaceAll("\\}", " ");
+                value = value.replaceAll("\\}", mark);
             }
             if(value.contains("^")) {
-                value = value.replaceAll("\\^", " ");
+                value = value.replaceAll("\\^", mark);
             }
             if(value.contains("\"")) {
-                value = value.replaceAll("\"", " ");
+                value = value.replaceAll("\"", mark);
             }
             if(value.contains("~")) {
-                value = value.replaceAll("~", " ");
+                value = value.replaceAll("~", mark);
             }
             if(value.contains("*")) {
-                value = value.replaceAll("\\*", " ");
+                value = value.replaceAll("\\*", mark);
             }
             if(value.contains("?")) {
-                value = value.replaceAll("\\?", " ");
+                value = value.replaceAll("\\?", mark);
             }
             if(value.contains(":")) {
-                value = value.replaceAll(":", " ");
+                value = value.replaceAll(":", mark);
             }
             if(value.contains("'")) {
-                value = value.replaceAll("'", " ");
+                value = value.replaceAll("'", mark);
             }
             if(value.contains("@")) {
-                value = value.replaceAll("@", " ");
+                value = value.replaceAll("@", mark);
             }
             if(value.contains("%")) {
-                value = value.replaceAll("%", " ");
+                value = value.replaceAll("%", mark);
             }
             if(value.contains("$")) {
-                value = value.replaceAll("\\$", " ");
+                value = value.replaceAll("\\$", mark);
             }
             if(value.contains("#")) {
-                value = value.replaceAll("#", " ");
+                value = value.replaceAll("#", mark);
             }
             if(value.contains("=")) {
-                value = value.replaceAll("=", " ");
+                value = value.replaceAll("=", mark);
+            }
+            if(value.contains("_")) {
+                value = value.replaceAll("_", mark);
             }
             if(StringUtils.isNotNullOrEmpty(value)){
                 value=value.trim();
@@ -480,18 +495,22 @@ public class StringUtils {
         }
         return value;
     }
+    /*
+     是否包含中文
+     */
+    public static boolean isContainEnglish(String str) {
 
-//    public static void main(String[] args) {
-//        String aa="aaa~!@#$%^&*(){}^~*?:\\+=-aaa";
-//        System.out.println(StringUtils.filterStringForSearch(aa));
-//        String bb="or and or or";
-//        StringBuffer sb=new StringBuffer();
-//        sb.append("or ");
-//        sb.append("aaa ");
-//        sb.append("or  ");
-//        sb.deleteCharAt(sb.lastIndexOf("r"));
-//        sb.deleteCharAt(sb.lastIndexOf("o"));
-//        System.out.println(sb.toString());
-//    }
+        Pattern p = Pattern.compile(".*[a-zA-Z]+.*");
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        String aa="Helpdesk - Analyst – Urgent!!! (Permanent Position)";
+        System.out.println(StringUtils.filterStringForSearch(aa));
+    }
 
 }
