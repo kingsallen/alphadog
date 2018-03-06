@@ -429,10 +429,9 @@ public class StringUtils {
             if(value.contains("+")){
                 value=value.replaceAll("\\+",mark);
             }
-            if(value.contains("-")){
-                value=value.replaceAll("-",mark);
+            if(value.contains("–")){
+                value=value.replaceAll("–",mark);
             }
-
             if(value.contains("|")){
                 value=value.replaceAll("|",mark);
             }
@@ -490,9 +489,6 @@ public class StringUtils {
             if(value.contains("_")) {
                 value = value.replaceAll("_", mark);
             }
-//            if(value.contains(" ")) {
-//                value = value.replaceAll(" ", mark);
-//            }
             if(StringUtils.isNotNullOrEmpty(value)){
                 value=value.trim();
             }
@@ -513,7 +509,7 @@ public class StringUtils {
     }
 
     public static void main(String[] args) {
-        String aa="IT销售 （~ 高薪 jskjweiw_jse JLB）";
+        String aa="福伊特中国2018校园招聘 – Cost Calculation Specialist成本合算专员\n";
         System.out.println(StringUtils.filterStringForSearch(aa));
     }
 
