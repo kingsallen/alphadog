@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = 1373866938;
+    private static final long serialVersionUID = -689655688;
 
     private Integer   companyId;
     private Integer   themeId;
@@ -42,8 +42,8 @@ public class HrCompanyConf implements Serializable {
     private String    searchImg;
     private String    jobOccupation;
     private String    teamnameCustom;
-    private Timestamp applicationTime;
     private Integer   newjdStatus;
+    private Timestamp applicationTime;
     private Byte      hrChat;
     private Byte      showInQx;
     private String    employeeSlug;
@@ -70,8 +70,8 @@ public class HrCompanyConf implements Serializable {
         this.searchImg = value.searchImg;
         this.jobOccupation = value.jobOccupation;
         this.teamnameCustom = value.teamnameCustom;
-        this.applicationTime = value.applicationTime;
         this.newjdStatus = value.newjdStatus;
+        this.applicationTime = value.applicationTime;
         this.hrChat = value.hrChat;
         this.showInQx = value.showInQx;
         this.employeeSlug = value.employeeSlug;
@@ -97,8 +97,8 @@ public class HrCompanyConf implements Serializable {
         String    searchImg,
         String    jobOccupation,
         String    teamnameCustom,
-        Timestamp applicationTime,
         Integer   newjdStatus,
+        Timestamp applicationTime,
         Byte      hrChat,
         Byte      showInQx,
         String    employeeSlug,
@@ -122,8 +122,8 @@ public class HrCompanyConf implements Serializable {
         this.searchImg = searchImg;
         this.jobOccupation = jobOccupation;
         this.teamnameCustom = teamnameCustom;
-        this.applicationTime = applicationTime;
         this.newjdStatus = newjdStatus;
+        this.applicationTime = applicationTime;
         this.hrChat = hrChat;
         this.showInQx = showInQx;
         this.employeeSlug = employeeSlug;
@@ -267,20 +267,20 @@ public class HrCompanyConf implements Serializable {
         this.teamnameCustom = teamnameCustom;
     }
 
-    public Timestamp getApplicationTime() {
-        return this.applicationTime;
-    }
-
-    public void setApplicationTime(Timestamp applicationTime) {
-        this.applicationTime = applicationTime;
-    }
-
     public Integer getNewjdStatus() {
         return this.newjdStatus;
     }
 
     public void setNewjdStatus(Integer newjdStatus) {
         this.newjdStatus = newjdStatus;
+    }
+
+    public Timestamp getApplicationTime() {
+        return this.applicationTime;
+    }
+
+    public void setApplicationTime(Timestamp applicationTime) {
+        this.applicationTime = applicationTime;
     }
 
     public Byte getHrChat() {
@@ -344,8 +344,8 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(searchImg);
         sb.append(", ").append(jobOccupation);
         sb.append(", ").append(teamnameCustom);
-        sb.append(", ").append(applicationTime);
         sb.append(", ").append(newjdStatus);
+        sb.append(", ").append(applicationTime);
         sb.append(", ").append(hrChat);
         sb.append(", ").append(showInQx);
         sb.append(", ").append(employeeSlug);

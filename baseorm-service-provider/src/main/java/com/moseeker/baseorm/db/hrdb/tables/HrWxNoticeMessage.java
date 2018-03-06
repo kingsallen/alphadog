@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxNoticeMessage extends TableImpl<HrWxNoticeMessageRecord> {
 
-    private static final long serialVersionUID = -1972658208;
+    private static final long serialVersionUID = 1086211505;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_notice_message</code>
@@ -79,6 +79,11 @@ public class HrWxNoticeMessage extends TableImpl<HrWxNoticeMessageRecord> {
      * The column <code>hrdb.hr_wx_notice_message.status</code>. 是否开启, 1:开启, 0:关闭
      */
     public final TableField<HrWxNoticeMessageRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否开启, 1:开启, 0:关闭");
+
+    /**
+     * The column <code>hrdb.hr_wx_notice_message.disable</code>. 是否是有效数据 0 是 1否
+     */
+    public final TableField<HrWxNoticeMessageRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是有效数据 0 是 1否");
 
     /**
      * Create a <code>hrdb.hr_wx_notice_message</code> table reference

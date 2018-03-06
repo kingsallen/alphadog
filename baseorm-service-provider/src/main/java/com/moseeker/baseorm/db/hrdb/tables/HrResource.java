@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrResource extends TableImpl<HrResourceRecord> {
 
-    private static final long serialVersionUID = 1386705696;
+    private static final long serialVersionUID = 363538612;
 
     /**
      * The reference instance of <code>hrdb.hr_resource</code>
@@ -72,6 +72,11 @@ public class HrResource extends TableImpl<HrResourceRecord> {
     public final TableField<HrResourceRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(2048).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注资源");
 
     /**
+     * The column <code>hrdb.hr_resource.disable</code>. 0是正常1是删除
+     */
+    public final TableField<HrResourceRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0是正常1是删除");
+
+    /**
      * The column <code>hrdb.hr_resource.company_id</code>. 企业id
      */
     public final TableField<HrResourceRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "企业id");
@@ -82,16 +87,6 @@ public class HrResource extends TableImpl<HrResourceRecord> {
     public final TableField<HrResourceRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "资源名称");
 
     /**
-     * The column <code>hrdb.hr_resource.disable</code>. 0是正常1是删除
-     */
-    public final TableField<HrResourceRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0是正常1是删除");
-
-    /**
-     * The column <code>hrdb.hr_resource.cover</code>. 视频封面
-     */
-    public final TableField<HrResourceRecord, String> COVER = createField("cover", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "视频封面");
-
-    /**
      * The column <code>hrdb.hr_resource.create_time</code>. 资源创建时间
      */
     public final TableField<HrResourceRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "资源创建时间");
@@ -100,6 +95,11 @@ public class HrResource extends TableImpl<HrResourceRecord> {
      * The column <code>hrdb.hr_resource.update_time</code>. 资源修改时间
      */
     public final TableField<HrResourceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "资源修改时间");
+
+    /**
+     * The column <code>hrdb.hr_resource.cover</code>. 视频封面
+     */
+    public final TableField<HrResourceRecord, String> COVER = createField("cover", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "视频封面");
 
     /**
      * Create a <code>hrdb.hr_resource</code> table reference

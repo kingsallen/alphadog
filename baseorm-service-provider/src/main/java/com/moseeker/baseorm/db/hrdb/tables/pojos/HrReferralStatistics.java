@@ -23,11 +23,9 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrReferralStatistics implements Serializable {
 
-    private static final long serialVersionUID = 783997654;
+    private static final long serialVersionUID = 1891393664;
 
     private Integer id;
-    private String  positionTitle;
-    private String  employeeName;
     private Integer employeeId;
     private Integer companyId;
     private Date    createDate;
@@ -41,13 +39,13 @@ public class HrReferralStatistics implements Serializable {
     private Integer infoType;
     private Integer publisher;
     private Integer positionId;
+    private String  employeeName;
+    private String  positionTitle;
 
     public HrReferralStatistics() {}
 
     public HrReferralStatistics(HrReferralStatistics value) {
         this.id = value.id;
-        this.positionTitle = value.positionTitle;
-        this.employeeName = value.employeeName;
         this.employeeId = value.employeeId;
         this.companyId = value.companyId;
         this.createDate = value.createDate;
@@ -61,12 +59,12 @@ public class HrReferralStatistics implements Serializable {
         this.infoType = value.infoType;
         this.publisher = value.publisher;
         this.positionId = value.positionId;
+        this.employeeName = value.employeeName;
+        this.positionTitle = value.positionTitle;
     }
 
     public HrReferralStatistics(
         Integer id,
-        String  positionTitle,
-        String  employeeName,
         Integer employeeId,
         Integer companyId,
         Date    createDate,
@@ -79,11 +77,11 @@ public class HrReferralStatistics implements Serializable {
         Integer recomOnBoardNum,
         Integer infoType,
         Integer publisher,
-        Integer positionId
+        Integer positionId,
+        String  employeeName,
+        String  positionTitle
     ) {
         this.id = id;
-        this.positionTitle = positionTitle;
-        this.employeeName = employeeName;
         this.employeeId = employeeId;
         this.companyId = companyId;
         this.createDate = createDate;
@@ -97,6 +95,8 @@ public class HrReferralStatistics implements Serializable {
         this.infoType = infoType;
         this.publisher = publisher;
         this.positionId = positionId;
+        this.employeeName = employeeName;
+        this.positionTitle = positionTitle;
     }
 
     public Integer getId() {
@@ -105,22 +105,6 @@ public class HrReferralStatistics implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getPositionTitle() {
-        return this.positionTitle;
-    }
-
-    public void setPositionTitle(String positionTitle) {
-        this.positionTitle = positionTitle;
-    }
-
-    public String getEmployeeName() {
-        return this.employeeName;
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
     }
 
     public Integer getEmployeeId() {
@@ -227,13 +211,27 @@ public class HrReferralStatistics implements Serializable {
         this.positionId = positionId;
     }
 
+    public String getEmployeeName() {
+        return this.employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
+    public String getPositionTitle() {
+        return this.positionTitle;
+    }
+
+    public void setPositionTitle(String positionTitle) {
+        this.positionTitle = positionTitle;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrReferralStatistics (");
 
         sb.append(id);
-        sb.append(", ").append(positionTitle);
-        sb.append(", ").append(employeeName);
         sb.append(", ").append(employeeId);
         sb.append(", ").append(companyId);
         sb.append(", ").append(createDate);
@@ -247,6 +245,8 @@ public class HrReferralStatistics implements Serializable {
         sb.append(", ").append(infoType);
         sb.append(", ").append(publisher);
         sb.append(", ").append(positionId);
+        sb.append(", ").append(employeeName);
+        sb.append(", ").append(positionTitle);
 
         sb.append(")");
         return sb.toString();
