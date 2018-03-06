@@ -2,20 +2,26 @@ package com.moseeker.company.service.impl;
 
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.hrdb.tables.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
+import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
@@ -32,11 +38,16 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
+import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 
+import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.mq.struct.SmsType;
+import java.util.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +55,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -100,9 +107,15 @@ public class CompanyService {
     @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
 
+    @Autowired
+    private HrCompanyAccountDao companyAccountDao;
 
     @Autowired
     private UserHrAccountDao userHrAccountDao;
+    @Autowired
+    private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
+
+    MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
     public Response getResource(CommonQuery query) throws TException {
         try {
@@ -730,5 +743,88 @@ public class CompanyService {
             return ResponseUtils.fail(1,"操作失败");
         }
         return ResponseUtils.success("");
+    }
+
+    /**
+     * hr注册时添加hr和公司数据，完成公司积分设置
+     * @param companyName   公司名称
+     * @param mobile    电话号码
+     * @param wxuserId  微信编号
+     * @param remoteIp  登录ip
+     * @param source    来源
+     * @return
+     * @throws Exception
+     */
+    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, byte source) throws Exception {
+        //是否和超级公司名相同
+        boolean repeatName = companyDao.checkRepeatNameWithSuperCompany(companyName);
+        if(!repeatName) {
+            Query query = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.MOBILE.getName(), mobile).buildQuery();
+            UserHrAccountDO accountDO = userHrAccountDao.getData(query);
+            if (accountDO != null) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
+            }
+            HrCompanyDO companyDO = new HrCompanyDO();
+            companyDO.setType((byte) 1);
+            companyDO.setName(companyName);
+            companyDO.setSource(source);
+            int companyId = companyDao.addData(companyDO).getId();
+            if(companyId <= 0)
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            String[] passwordArray = this.genPassword(6);
+            UserHrAccountDO accountDO1 = new UserHrAccountDO();
+            accountDO1.setMobile(mobile);
+            accountDO1.setCompanyId(companyId);
+            accountDO1.setPassword(passwordArray[1]);
+            accountDO1.setWxuserId(wxuserId);
+            accountDO1.setLastLoginIp(remoteIp);
+            accountDO1.setRegisterIp(remoteIp);
+            accountDO1.setSource(source);
+            accountDO1.setLoginCount(0);
+            int hrId = userHrAccountDao.addData(accountDO1).getId();
+            if(hrId <= 0)
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            HrCompanyAccountDO companyAccountDO = new HrCompanyAccountDO();
+            companyAccountDO.setAccountId(hrId);
+            companyAccountDO.setCompanyId(companyId);
+            companyAccountDao.addData(companyAccountDO);
+
+            //公司积分配置
+            Query configQuery = new Query.QueryBuilder().where(new Condition(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.AWARD.getName(), 0, ValueOp.GT)).buildQuery();
+            List<ConfigSysPointsConfTplDO> tplDOList = configSysPointsConfTplDao.getDatas(configQuery);
+            List<HrPointsConfDO> pointsConfList = new ArrayList<>();
+            if(tplDOList!= null && tplDOList.size()>0){
+                for(ConfigSysPointsConfTplDO tplDO : tplDOList) {
+                    HrPointsConfDO confDO = new HrPointsConfDO();
+                    confDO.setCompanyId(companyId);
+                    confDO.setStatusName(tplDO.getStatus());
+                    confDO.setReward(tplDO.getAward());
+                    confDO.setDescription(tplDO.getDescription());
+                    confDO.setTemplateId(tplDO.getId());
+                    confDO.setTag(tplDO.getTag()+"");
+                    pointsConfList.add(confDO);
+                }
+                hrPointsConfDao.addAllData(pointsConfList);
+            }
+            //发送消息给HR
+            Map<String, String> data = new HashMap<>();
+            data.put("mobile", mobile);
+            data.put("code", passwordArray[0]);
+            mqServer.sendSMS(SmsType.EMPLOYEE_MERGE_ACCOUNT_SMS, mobile, data, "2", remoteIp);
+            Map<String, Object> map = new HashMap();
+            map.put("hr_id", hrId);
+            return ResponseUtils.success(map);
+        }else{
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NAME_REPEAT);
+        }
+
+    }
+
+    private String[] genPassword(int length) {
+        String[] passwordArray = new String[2];
+        String plainPassword = StringUtils.getRandomString(length);
+        passwordArray[0] = plainPassword;
+        passwordArray[1] = MD5Util.encryptSHA(MD5Util.md5(plainPassword));
+        return passwordArray;
     }
 }
