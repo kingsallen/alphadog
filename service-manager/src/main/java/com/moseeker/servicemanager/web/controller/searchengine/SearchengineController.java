@@ -105,7 +105,7 @@ public class SearchengineController {
             String keywords = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("keywords")));
             String cities =StringUtils.filterStringForSearch( BeanUtils.converToString(reqParams.get("cities")));
             String industries =StringUtils.filterStringForSearch( BeanUtils.converToString(reqParams.get("industries")));
-            String occupations = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("occupations")));
+            String occupations =BeanUtils.converToString(reqParams.get("occupations"));
             String scale = BeanUtils.converToString(reqParams.get("scale"));
             String employment_type = BeanUtils.converToString(reqParams.get("employment_type"));
             String candidate_source = BeanUtils.converToString(reqParams.get("candidate_source"));
