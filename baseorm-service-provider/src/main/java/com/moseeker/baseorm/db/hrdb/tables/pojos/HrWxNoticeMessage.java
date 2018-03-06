@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxNoticeMessage implements Serializable {
 
-    private static final long serialVersionUID = 1313452015;
+    private static final long serialVersionUID = 700055905;
 
     private Integer id;
     private Integer wechatId;
@@ -30,6 +30,7 @@ public class HrWxNoticeMessage implements Serializable {
     private String  first;
     private String  remark;
     private Byte    status;
+    private Byte    disable;
 
     public HrWxNoticeMessage() {}
 
@@ -40,6 +41,7 @@ public class HrWxNoticeMessage implements Serializable {
         this.first = value.first;
         this.remark = value.remark;
         this.status = value.status;
+        this.disable = value.disable;
     }
 
     public HrWxNoticeMessage(
@@ -48,7 +50,8 @@ public class HrWxNoticeMessage implements Serializable {
         Integer noticeId,
         String  first,
         String  remark,
-        Byte    status
+        Byte    status,
+        Byte    disable
     ) {
         this.id = id;
         this.wechatId = wechatId;
@@ -56,6 +59,7 @@ public class HrWxNoticeMessage implements Serializable {
         this.first = first;
         this.remark = remark;
         this.status = status;
+        this.disable = disable;
     }
 
     public Integer getId() {
@@ -106,6 +110,14 @@ public class HrWxNoticeMessage implements Serializable {
         this.status = status;
     }
 
+    public Byte getDisable() {
+        return this.disable;
+    }
+
+    public void setDisable(Byte disable) {
+        this.disable = disable;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrWxNoticeMessage (");
@@ -116,6 +128,7 @@ public class HrWxNoticeMessage implements Serializable {
         sb.append(", ").append(first);
         sb.append(", ").append(remark);
         sb.append(", ").append(status);
+        sb.append(", ").append(disable);
 
         sb.append(")");
         return sb.toString();
