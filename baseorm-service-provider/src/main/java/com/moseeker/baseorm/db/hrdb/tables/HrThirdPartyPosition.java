@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 1046654801;
+    private static final long serialVersionUID = -1909338955;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -67,9 +67,14 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     public final TableField<HrThirdPartyPositionRecord, String> THIRD_PART_POSITION_ID = createField("third_part_position_id", org.jooq.impl.SQLDataType.VARCHAR.length(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "第三方渠道编号");
 
     /**
+     * The column <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
+     */
+    public final TableField<HrThirdPartyPositionRecord, Short> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "1=51job,2=猎聘,3=智联,4=linkedin");
+
+    /**
      * The column <code>hrdb.hr_third_party_position.is_synchronization</code>. 是否同步:0=未同步,1=同步,2=同步中，3=同步失败，4=同步错误(发生不能给用户显示的错误)
      */
-    public final TableField<HrThirdPartyPositionRecord, Short> IS_SYNCHRONIZATION = createField("is_synchronization", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "是否同步:0=未同步,1=同步,2=同步中，3=同步失败，4=同步错误(发生不能给用户显示的错误)");
+    public final TableField<HrThirdPartyPositionRecord, Short> IS_SYNCHRONIZATION = createField("is_synchronization", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "是否同步:0=未同步,1=同步,2=同步中，3=同步失败，4=同步错误(发生不能给用户显示的错误)");
 
     /**
      * The column <code>hrdb.hr_third_party_position.is_refresh</code>. 是否刷新:0=未刷新,1=刷新,2=刷新中
@@ -147,11 +152,6 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     public final TableField<HrThirdPartyPositionRecord, Integer> SALARY_TOP = createField("salary_top", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "薪资封顶");
 
     /**
-     * The column <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
-     */
-    public final TableField<HrThirdPartyPositionRecord, Short> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "1=51job,2=猎聘,3=智联,4=linkedin");
-
-    /**
      * The column <code>hrdb.hr_third_party_position.practice_salary</code>. 实习薪资，完整薪资
      */
     public final TableField<HrThirdPartyPositionRecord, Integer> PRACTICE_SALARY = createField("practice_salary", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "实习薪资，完整薪资");
@@ -199,7 +199,7 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     /**
      * The column <code>hrdb.hr_third_party_position.count</code>. 招聘人数
      */
-    public final TableField<HrThirdPartyPositionRecord, Integer> COUNT = createField("count", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "招聘人数");
+    public final TableField<HrThirdPartyPositionRecord, Integer> COUNT = createField("count", org.jooq.impl.SQLDataType.INTEGER, this, "招聘人数");
 
     /**
      * Create a <code>hrdb.hr_third_party_position</code> table reference
