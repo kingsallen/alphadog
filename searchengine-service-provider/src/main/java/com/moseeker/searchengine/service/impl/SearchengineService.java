@@ -985,7 +985,7 @@ public class SearchengineService {
             searchUtil.handleTerms(publisher,query,"publisher");
         }
         if(StringUtils.isNotBlank(candidateSource)){
-            searchUtil.handleMatch(Integer.parseInt(candidateSource),query,"candidate_source_name");
+            searchUtil.handleMatch(candidateSource,query,"candidate_source_name");
         }
         if(StringUtils.isNotBlank(city)){
             searchUtil.handleTerm(city,query,"city");
