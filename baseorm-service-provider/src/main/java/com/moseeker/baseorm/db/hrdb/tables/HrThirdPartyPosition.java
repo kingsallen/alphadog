@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = -1909338955;
+    private static final long serialVersionUID = 693969032;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -104,7 +104,7 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     /**
      * The column <code>hrdb.hr_third_party_position.occupation</code>. 同步时选中的第三方职位职能
      */
-    public final TableField<HrThirdPartyPositionRecord, String> OCCUPATION = createField("occupation", org.jooq.impl.SQLDataType.VARCHAR.length(200), this, "同步时选中的第三方职位职能");
+    public final TableField<HrThirdPartyPositionRecord, String> OCCUPATION = createField("occupation", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "同步时选中的第三方职位职能");
 
     /**
      * The column <code>hrdb.hr_third_party_position.sync_fail_reason</code>. 失败原因
@@ -157,14 +157,14 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     public final TableField<HrThirdPartyPositionRecord, Integer> PRACTICE_SALARY = createField("practice_salary", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "实习薪资，完整薪资");
 
     /**
-     * The column <code>hrdb.hr_third_party_position.practice_per_week</code>. 每周实习天数
-     */
-    public final TableField<HrThirdPartyPositionRecord, Byte> PRACTICE_PER_WEEK = createField("practice_per_week", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "每周实习天数");
-
-    /**
      * The column <code>hrdb.hr_third_party_position.practice_salary_unit</code>. 实习薪资单位，0：元/月，1：元/天
      */
     public final TableField<HrThirdPartyPositionRecord, Byte> PRACTICE_SALARY_UNIT = createField("practice_salary_unit", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "实习薪资单位，0：元/月，1：元/天");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.practice_per_week</code>. 每周实习天数
+     */
+    public final TableField<HrThirdPartyPositionRecord, Byte> PRACTICE_PER_WEEK = createField("practice_per_week", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "每周实习天数");
 
     /**
      * The column <code>hrdb.hr_third_party_position.company_id</code>. 绑定第三方账号对应公司的id，关联thirdparty_account_city的id
