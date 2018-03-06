@@ -518,7 +518,7 @@ public class ResumeDeliveryService {
 
         //记录发送邮件的结果
         LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
-        emailrecord.setEmail("accountDO.getEmail()");
+        emailrecord.setEmail(accountDO.getEmail());
         emailrecord.setContent(sendEmail.getMessage());
         emailSendrecordDao.addData(emailrecord);
         logger.info("是否启用抄送邮箱："+positionDO.getProfile_cc_mail_enabled());
