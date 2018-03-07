@@ -759,10 +759,12 @@ public class CompanyService {
         //是否和超级公司名相同
         boolean repeatName = companyDao.checkRepeatNameWithSuperCompany(companyName);
         if(!repeatName) {
-            Query query = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.MOBILE.getName(), mobile).buildQuery();
+
+            Query query = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.MOBILE.getName(), mobile)
+                    .or(UserHrAccount.USER_HR_ACCOUNT.WXUSER_ID.getName(), wxuserId).buildQuery();
             UserHrAccountDO accountDO = userHrAccountDao.getData(query);
             if (accountDO != null) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.MOBILE_WECHAT_IS_INVALID);
             }
             HrCompanyDO companyDO = new HrCompanyDO();
             companyDO.setType((byte) 1);
