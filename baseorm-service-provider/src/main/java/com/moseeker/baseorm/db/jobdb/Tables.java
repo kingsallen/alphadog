@@ -19,7 +19,6 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
-import com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply;
 
 import javax.annotation.Generated;
 
@@ -111,9 +110,4 @@ public class Tables {
      * 自定义简历副本记录表
      */
     public static final JobResumeOther JOB_RESUME_OTHER = com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
-
-    /**
-     * VIEW
-     */
-    public static final UserProfileJobapply USER_PROFILE_JOBAPPLY = com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply.USER_PROFILE_JOBAPPLY;
 }
