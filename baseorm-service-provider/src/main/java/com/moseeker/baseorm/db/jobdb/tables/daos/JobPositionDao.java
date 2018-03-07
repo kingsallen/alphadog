@@ -512,11 +512,4 @@ public class JobPositionDao extends DAOImpl<JobPositionRecord, com.moseeker.base
     public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetchByProfileCcMailEnabled(Byte... values) {
         return fetch(JobPosition.JOB_POSITION.PROFILE_CC_MAIL_ENABLED, values);
     }
-
-    /**
-     * Fetch records that have <code>profile_tohr_mail_enabled IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetchByProfileTohrMailEnabled(Byte... values) {
-        return fetch(JobPosition.JOB_POSITION.PROFILE_TOHR_MAIL_ENABLED, values);
-    }
 }

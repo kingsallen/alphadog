@@ -69,5 +69,4 @@ struct JobPositionDO {
 	63: optional i32 positionCode,	//职能字典code, dict_position.code
 	64: optional i32 teamId,	//职位所属团队
     65: optional i8 profile_cc_mail_enabled //简历申请是否抄送邮箱，0 否；1 是
-    66: optional i8 profile_tohr_mail_enabled //简历申请是否发送到HR邮箱，0 否；1 是
 }

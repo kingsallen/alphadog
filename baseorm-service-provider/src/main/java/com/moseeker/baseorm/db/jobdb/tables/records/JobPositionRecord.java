@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = -1950100686;
+    private static final long serialVersionUID = 988869384;
 
     /**
      * Setter for <code>jobdb.job_position.id</code>.
@@ -170,14 +170,14 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     }
 
     /**
-     * Setter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities职位描述
+     * Setter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities
      */
     public void setAccountabilities(String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities职位描述
+     * Getter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities
      */
     public String getAccountabilities() {
         return (String) get(10);
@@ -884,14 +884,14 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     }
 
     /**
-     * Setter for <code>jobdb.job_position.current_status</code>. 已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
+     * Setter for <code>jobdb.job_position.current_status</code>. 已经弃用，0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
      */
     public void setCurrentStatus(Byte value) {
         set(61, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position.current_status</code>. 已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
+     * Getter for <code>jobdb.job_position.current_status</code>. 已经弃用，0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
      */
     public Byte getCurrentStatus() {
         return (Byte) get(61);
@@ -939,20 +939,6 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
         return (Byte) get(64);
     }
 
-    /**
-     * Setter for <code>jobdb.job_position.profile_tohr_mail_enabled</code>. 简历是否发送到HR邮箱 0 否 1是
-     */
-    public void setProfileTohrMailEnabled(Byte value) {
-        set(65, value);
-    }
-
-    /**
-     * Getter for <code>jobdb.job_position.profile_tohr_mail_enabled</code>. 简历是否发送到HR邮箱 0 否 1是
-     */
-    public Byte getProfileTohrMailEnabled() {
-        return (Byte) get(65);
-    }
-
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -979,7 +965,7 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     /**
      * Create a detached, initialised JobPositionRecord
      */
-    public JobPositionRecord(Integer id, String jobnumber, Integer companyId, String title, String province, String city, String department, Integer lJobid, Timestamp publishDate, Timestamp stopDate, String accountabilities, String experience, String requirement, String salary, String language, Integer jobGrade, Byte status, Integer visitnum, String lastvisit, Integer sourceId, Timestamp updateTime, String businessGroup, Byte employmentType, String hrEmail, String benefits, Byte degree, String feature, Byte emailNotice, Byte candidateSource, String occupation, Integer isRecom, String industry, Integer hongbaoConfigId, Integer hongbaoConfigRecomId, Integer hongbaoConfigAppId, Byte emailResumeConf, Integer lPostingtargetid, Byte priority, Integer shareTplId, String district, Short count, Integer salaryTop, Integer salaryBottom, Byte experienceAbove, Byte degreeAbove, Byte managementExperience, Byte gender, Integer publisher, Integer appCvConfigId, Short source, Byte hbStatus, Integer childCompanyId, Byte age, String majorRequired, String workAddress, String keyword, String reportingTo, Byte isHiring, Byte underlings, Byte languageRequired, Byte targetIndustry, Byte currentStatus, Integer positionCode, Integer teamId, Byte profileCcMailEnabled, Byte profileTohrMailEnabled) {
+    public JobPositionRecord(Integer id, String jobnumber, Integer companyId, String title, String province, String city, String department, Integer lJobid, Timestamp publishDate, Timestamp stopDate, String accountabilities, String experience, String requirement, String salary, String language, Integer jobGrade, Byte status, Integer visitnum, String lastvisit, Integer sourceId, Timestamp updateTime, String businessGroup, Byte employmentType, String hrEmail, String benefits, Byte degree, String feature, Byte emailNotice, Byte candidateSource, String occupation, Integer isRecom, String industry, Integer hongbaoConfigId, Integer hongbaoConfigRecomId, Integer hongbaoConfigAppId, Byte emailResumeConf, Integer lPostingtargetid, Byte priority, Integer shareTplId, String district, Short count, Integer salaryTop, Integer salaryBottom, Byte experienceAbove, Byte degreeAbove, Byte managementExperience, Byte gender, Integer publisher, Integer appCvConfigId, Short source, Byte hbStatus, Integer childCompanyId, Byte age, String majorRequired, String workAddress, String keyword, String reportingTo, Byte isHiring, Byte underlings, Byte languageRequired, Byte targetIndustry, Byte currentStatus, Integer positionCode, Integer teamId, Byte profileCcMailEnabled) {
         super(JobPosition.JOB_POSITION);
 
         set(0, id);
@@ -1047,6 +1033,5 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
         set(62, positionCode);
         set(63, teamId);
         set(64, profileCcMailEnabled);
-        set(65, profileTohrMailEnabled);
     }
 }

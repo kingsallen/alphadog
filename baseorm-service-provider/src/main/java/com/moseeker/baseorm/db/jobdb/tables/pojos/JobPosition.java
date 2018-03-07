@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition implements Serializable {
 
-    private static final long serialVersionUID = -834341397;
+    private static final long serialVersionUID = -1448832961;
 
     private Integer   id;
     private String    jobnumber;
@@ -90,7 +90,6 @@ public class JobPosition implements Serializable {
     private Integer   positionCode;
     private Integer   teamId;
     private Byte      profileCcMailEnabled;
-    private Byte      profileTohrMailEnabled;
 
     public JobPosition() {}
 
@@ -160,7 +159,6 @@ public class JobPosition implements Serializable {
         this.positionCode = value.positionCode;
         this.teamId = value.teamId;
         this.profileCcMailEnabled = value.profileCcMailEnabled;
-        this.profileTohrMailEnabled = value.profileTohrMailEnabled;
     }
 
     public JobPosition(
@@ -228,8 +226,7 @@ public class JobPosition implements Serializable {
         Byte      currentStatus,
         Integer   positionCode,
         Integer   teamId,
-        Byte      profileCcMailEnabled,
-        Byte      profileTohrMailEnabled
+        Byte      profileCcMailEnabled
     ) {
         this.id = id;
         this.jobnumber = jobnumber;
@@ -296,7 +293,6 @@ public class JobPosition implements Serializable {
         this.positionCode = positionCode;
         this.teamId = teamId;
         this.profileCcMailEnabled = profileCcMailEnabled;
-        this.profileTohrMailEnabled = profileTohrMailEnabled;
     }
 
     public Integer getId() {
@@ -819,14 +815,6 @@ public class JobPosition implements Serializable {
         this.profileCcMailEnabled = profileCcMailEnabled;
     }
 
-    public Byte getProfileTohrMailEnabled() {
-        return this.profileTohrMailEnabled;
-    }
-
-    public void setProfileTohrMailEnabled(Byte profileTohrMailEnabled) {
-        this.profileTohrMailEnabled = profileTohrMailEnabled;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("JobPosition (");
@@ -896,7 +884,6 @@ public class JobPosition implements Serializable {
         sb.append(", ").append(positionCode);
         sb.append(", ").append(teamId);
         sb.append(", ").append(profileCcMailEnabled);
-        sb.append(", ").append(profileTohrMailEnabled);
 
         sb.append(")");
         return sb.toString();
