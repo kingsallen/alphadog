@@ -48,7 +48,7 @@ public class DictCityMapTest {
         param.put("channel",3);
         param.put("single_layer",1);
         param.put("code",110208);
-        JSONArray response = occupationService.queryOccupation(JSON.toJSONString(param));
+        JSON response = occupationService.queryOccupation(JSON.toJSONString(param));
 
         response.toString();
     }
