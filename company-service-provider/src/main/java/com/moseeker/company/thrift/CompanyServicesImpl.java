@@ -358,12 +358,10 @@ public class CompanyServicesImpl implements Iface {
     @Override
     public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, int source) throws BIZException, TException {
         try {
-            return service.addHrAccountAndCompany(companyName, mobile, wxuserId, remoteIp, (byte)source);
-        } catch (CommonException e) {
-            throw ExceptionConvertUtil.convertCommonException(e);
-        } catch (Exception e) {
+            return service.addHrAccountAndCompany(companyName, mobile, wxuserId, remoteIp, (byte) source);
+        }catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new SysBIZException();
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
     }
 
