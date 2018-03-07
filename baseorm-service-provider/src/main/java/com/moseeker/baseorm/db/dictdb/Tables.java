@@ -15,6 +15,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
@@ -97,6 +98,11 @@ public class Tables {
      * 一览人才的职位表
      */
     public static final DictJob1001Occupation DICT_JOB1001_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation.DICT_JOB1001_OCCUPATION;
+
+    /**
+     * JobsDB的职位职能表
+     */
+    public static final DictJobsdbOccupation DICT_JOBSDB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION;
 
     /**
      * The table <code>dictdb.dict_liepin_occupation</code>.

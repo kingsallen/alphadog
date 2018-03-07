@@ -15,6 +15,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
@@ -46,7 +47,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1786983547;
+    private static final long serialVersionUID = -1608271606;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -114,6 +115,11 @@ public class Dictdb extends SchemaImpl {
     public final DictJob1001Occupation DICT_JOB1001_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation.DICT_JOB1001_OCCUPATION;
 
     /**
+     * JobsDB的职位职能表
+     */
+    public final DictJobsdbOccupation DICT_JOBSDB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION;
+
+    /**
      * The table <code>dictdb.dict_liepin_occupation</code>.
      */
     public final DictLiepinOccupation DICT_LIEPIN_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation.DICT_LIEPIN_OCCUPATION;
@@ -175,6 +181,7 @@ public class Dictdb extends SchemaImpl {
             DictIndustry.DICT_INDUSTRY,
             DictIndustryType.DICT_INDUSTRY_TYPE,
             DictJob1001Occupation.DICT_JOB1001_OCCUPATION,
+            DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION,
             DictLiepinOccupation.DICT_LIEPIN_OCCUPATION,
             DictMajor.DICT_MAJOR,
             DictPosition.DICT_POSITION,
