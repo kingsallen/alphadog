@@ -513,7 +513,7 @@ public class ResumeDeliveryService {
 
         //发送邮件给HR
         Response sendEmail = null;
-        if(positionDO.getProfile_tohr_mail_enabled() == 1) {
+        if(positionDO.getEmailNotice() == 0) {
             sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
             logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
 

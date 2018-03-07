@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationRecord> {
 
-    private static final long serialVersionUID = -1733170596;
+    private static final long serialVersionUID = -136853036;
 
     /**
      * Setter for <code>jobdb.job_application.id</code>.
@@ -100,14 +100,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     }
 
     /**
-     * Setter for <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
+     * Setter for <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
      */
     public void setStatusId(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
+     * Getter for <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
      */
     public Integer getStatusId() {
         return (Integer) get(5);
@@ -366,14 +366,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     }
 
     /**
-     * Setter for <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败
+     * Setter for <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；8: 包含特殊字体;  9，提取邮件失败
      */
     public void setEmailStatus(Integer value) {
         set(24, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败
+     * Getter for <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；8: 包含特殊字体;  9，提取邮件失败
      */
     public Integer getEmailStatus() {
         return (Integer) get(24);
