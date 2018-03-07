@@ -602,7 +602,9 @@ public class CompanyController {
             if(StringUtils.isNullOrEmpty(wxuserId)){
                 ResponseLogNotification.fail(request,"微信名称不可以为空");
             }
+            logger.info("addHrAccountAndCompany hr注册参数：companyName={}, mobile={},wxuserId={}",company_name, mobile, wxuserId);
             Response result = companyServices.addHrAccountAndCompany(company_name, mobile, Integer.parseInt(wxuserId), remote_ip, Integer.parseInt(source));
+            logger.info("addHrAccountAndCompany hr注册成功结果：{};提示信息：{}",result.getStatus(), result.getMessage());
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);
             } else {

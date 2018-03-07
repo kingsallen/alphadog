@@ -815,6 +815,7 @@ public class CompanyService {
             logger.info("addHrAccountAndCompany hr注册成功短信发送结果：{};提示信息：{}",response.getStatus(), response.getMessage());
             Map<String, Object> map = new HashMap();
             map.put("hr_id", hrId);
+            logger.info("addHrAccountAndCompany hr注册成功编号：{}",hrId);
             return ResponseUtils.success(map);
         }else{
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NAME_REPEAT);
