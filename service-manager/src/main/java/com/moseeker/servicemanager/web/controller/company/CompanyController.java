@@ -577,4 +577,40 @@ public class CompanyController {
         }
     }
 
+    /**
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/api/hrcompany/add", method = RequestMethod.POST)
+    @ResponseBody
+    public String addHrAccountAndCompany(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            String company_name=String.valueOf(data.get("company_name"));
+            String mobile=String.valueOf(data.get("mobile"));
+            String wxuserId=String.valueOf(data.get("wxuser_id"));
+            String remote_ip=String.valueOf(data.get("remote_ip"));
+            String source=String.valueOf(data.get("source"));
+            if(StringUtils.isNullOrEmpty(mobile)){
+                ResponseLogNotification.fail(request,"注册手机号不可以为空");
+            }
+            if(StringUtils.isNullOrEmpty(company_name)){
+                ResponseLogNotification.fail(request,"注册公司名称不可以为空");
+            }
+            if(StringUtils.isNullOrEmpty(wxuserId)){
+                ResponseLogNotification.fail(request,"微信名称不可以为空");
+            }
+            Response result = companyServices.addHrAccountAndCompany(company_name, mobile, Integer.parseInt(wxuserId), remote_ip, Integer.parseInt(source));
+            if (result.getStatus() == 0) {
+                return ResponseLogNotification.success(request, result);
+            } else {
+                return ResponseLogNotification.fail(request, result);
+            }
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

@@ -37,7 +37,6 @@ public class WechatController {
 	/**
 	 * 查询公众号信息
 	 * @param company_id 公司编号
-	 * @param wechat_id 共帐号编号
 	 * @param request
 	 * @param response
 	 * @return
