@@ -985,10 +985,10 @@ public class SearchengineService {
             searchUtil.handleTerms(publisher,query,"publisher");
         }
         if(StringUtils.isNotBlank(candidateSource)){
-            searchUtil.handleTerm(candidateSource,query,"candidate_source_name");
+            searchUtil.handleMatchParse(candidateSource,query,"candidate_source_name");
         }
         if(StringUtils.isNotBlank(city)){
-            searchUtil.handleTerm(city,query,"city");
+            searchUtil.handleMatchParse(city,query,"city");
         }
         if(StringUtils.isNotBlank(occupation)){
             searchUtil.handleTerm(occupation,query,"search_data.occupation");
@@ -997,7 +997,7 @@ public class SearchengineService {
             searchUtil.handleTerm(teamName,query,"search_data.team_name");
         }
         if(StringUtils.isNotBlank(employmentType)){
-            searchUtil.handleTerm(employmentType,query,"employment_type_name");
+            searchUtil.handleMatchParse(employmentType,query,"employment_type_name");
         }
         if(StringUtils.isNotBlank(degreeName)){
             searchUtil.handleTerm(degreeName,query,"search_data.degree_name");
