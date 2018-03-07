@@ -808,11 +808,12 @@ public class CompanyService {
                 }
                 hrPointsConfDao.addAllData(pointsConfList);
             }
-            //发送消息给HR
+            //发送消息给HRgit
             Map<String, String> data = new HashMap<>();
             data.put("mobile", mobile);
             data.put("code", passwordArray[0]);
-            mqServer.sendSMS(SmsType.EMPLOYEE_MERGE_ACCOUNT_SMS, mobile, data, "2", remoteIp);
+            Response response =  mqServer.sendSMS(SmsType.EMPLOYEE_MERGE_ACCOUNT_SMS, mobile, data, "2", remoteIp);
+            logger.info("addHrAccountAndCompany hr注册成功短信发送结果：{};提示信息：{}",response.getStatus(), response.getMessage());
             Map<String, Object> map = new HashMap();
             map.put("hr_id", hrId);
             return ResponseUtils.success(map);
