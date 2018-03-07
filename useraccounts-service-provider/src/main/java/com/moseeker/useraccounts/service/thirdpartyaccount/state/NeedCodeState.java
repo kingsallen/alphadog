@@ -34,6 +34,11 @@ public class NeedCodeState extends AbstractBindState {
     }
 
     @Override
+    public int delete(HrThirdPartyAccountDO thirdPartyAccountDO) throws Exception {
+        throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DEL_STATUS_ERROR);
+    }
+
+    @Override
     public int updateBinding(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
         throw new UnsupportedOperationException("NeedCodeState can not update into the database!");
     }

@@ -6,10 +6,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
-import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindConfirmOperation;
-import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindMessageOperation;
-import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindOperation;
-import com.moseeker.useraccounts.service.thirdpartyaccount.operation.DispatchOperation;
+import com.moseeker.useraccounts.service.thirdpartyaccount.operation.*;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +28,8 @@ public abstract class AbstractBindState implements BindState{
     BindConfirmOperation bindConfirmOperation;
     @Autowired
     DispatchOperation dispatchOperation;
+    @Autowired
+    DeleteOperation deleteOperation;
 
     @Autowired
     protected HRThirdPartyAccountDao thirdPartyAccountDao;
@@ -92,5 +91,10 @@ public abstract class AbstractBindState implements BindState{
     @Override
     public int updateBinding(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
         return hrThirdPartyAccountDao.updateData(thirdPartyAccount);
+    }
+
+    @Override
+    public int delete(HrThirdPartyAccountDO thirdPartyAccountDO) throws Exception {
+        return deleteOperation.delete(thirdPartyAccountDO);
     }
 }

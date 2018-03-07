@@ -20,6 +20,8 @@ public interface BindState {
 
     ThirdPartyAccountInfo dispatch(int accountId, List<Integer> hrIds) throws Exception;
 
+    int delete(HrThirdPartyAccountDO thirdPartyAccountDO) throws Exception;
+
     int updateBinding(HrThirdPartyAccountDO thirdPartyAccountDO) throws Exception;
 
     BindingStatus status();

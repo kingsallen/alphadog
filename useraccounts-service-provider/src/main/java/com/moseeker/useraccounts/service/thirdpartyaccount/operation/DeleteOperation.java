@@ -1,0 +1,39 @@
+package com.moseeker.useraccounts.service.thirdpartyaccount.operation;
+
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
+import com.moseeker.common.constants.BindingStatus;
+import com.moseeker.common.util.query.Update;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import org.apache.commons.lang.time.FastDateFormat;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+@Component
+public class DeleteOperation {
+
+    @Autowired
+    HRThirdPartyAccountDao thirdPartyAccountDao;
+
+    @Autowired
+    HRThirdPartyAccountHrDao thirdPartyAccountHrDao;
+
+    public int delete(HrThirdPartyAccountDO thirdPartyAccount){
+        int accountId=thirdPartyAccount.getId();
+        //解除账号绑定关系，删除第三方账号
+        Update update = new Update.UpdateBuilder()
+                .set(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.getName(), 0)
+                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
+                .buildUpdate();
+        thirdPartyAccountHrDao.invalidByThirdPartyAccountId(accountId);
+        thirdPartyAccount.setBinding((short) BindingStatus.UNDISPATCH.getValue());
+        //设置更新时间
+        FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
+        thirdPartyAccount.setUpdateTime(sdf.format(new Date()));
+
+        return thirdPartyAccountDao.updateData(thirdPartyAccount);
+    }
+}

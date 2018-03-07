@@ -26,6 +26,11 @@ public class GetingInfoState extends AbstractBindState {
     }
 
     @Override
+    public int delete(HrThirdPartyAccountDO thirdPartyAccountDO) throws Exception {
+        throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DEL_STATUS_ERROR);
+    }
+
+    @Override
     public BindingStatus status() {
         return BindingStatus.GETINGINFO;
     }

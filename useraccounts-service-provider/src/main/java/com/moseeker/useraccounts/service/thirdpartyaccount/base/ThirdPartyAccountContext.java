@@ -69,12 +69,12 @@ public class ThirdPartyAccountContext{
         return getBindState(accountId).bindMessage(hrId, accountId, code);
     }
 
-    public HrThirdPartyAccountDO bindChaosHandle(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
-        return null;
-    }
-
     public ThirdPartyAccountInfo dispatch(int accountId, List<Integer> hrIds) throws Exception {
         return getBindState(accountId).dispatch(accountId, hrIds);
+    }
+
+    public int delete(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
+        return getBindState(thirdPartyAccount).delete(thirdPartyAccount);
     }
 
     public int updateBinding(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
