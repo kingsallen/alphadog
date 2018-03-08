@@ -125,6 +125,9 @@ public final class ConstantErrorCodeMessage {
     public static final String CITY_TOO_LONG = "{'status':51017,'message':'城市信息太长，无法入库'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
+    //mq服务提示信息说明
+    public static final String MQ_TEMPLATE_NOTICE_CLOSE = "{'status':71001,'message':'模板消息开关关闭！'}";
+    public static final String MQ_WECHAT_NOT_INFO = "{'status':71001,'message':'公众号信息不存在！'}";
 
     //APPBS错误代码61000
 

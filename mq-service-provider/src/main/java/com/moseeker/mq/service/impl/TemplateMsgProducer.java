@@ -66,7 +66,7 @@ public class TemplateMsgProducer {
                     .buildQuery();
             HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(query);
             if(hrWxWechatDO == null )
-                return ResponseUtils.fail("公众号信息不存在");
+                return ResponseUtils.fail(ConstantErrorCodeMessage.MQ_WECHAT_NOT_INFO);
             Query noticeQuery = new Query.QueryBuilder().where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.getName(),hrWxWechatDO.getId())
                     .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.getName(),messageTemplateNoticeStruct.getSys_template_id())
                     .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE.getName(),"0")
@@ -74,7 +74,7 @@ public class TemplateMsgProducer {
                     .buildQuery();
             HrWxNoticeMessageDO noticeMessageDO = noticeMessageDao.getData(noticeQuery);
             if(noticeMessageDO != null){
-                return  ResponseUtils.fail("模板开关关闭");
+                return  ResponseUtils.fail(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
             }
 			messageTemplateNoticeStruct.setId(UUID.randomUUID().toString()+System.currentTimeMillis());
 			String json = BeanUtils.convertStructToJSON(messageTemplateNoticeStruct);
