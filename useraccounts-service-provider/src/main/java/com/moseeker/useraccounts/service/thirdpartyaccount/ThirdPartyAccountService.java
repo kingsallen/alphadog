@@ -17,6 +17,7 @@ import com.moseeker.common.util.query.Update;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.ThridPartyAcountEntity;
 import com.moseeker.entity.pojos.ThirdPartyAccountExt;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
@@ -224,6 +225,30 @@ public class ThirdPartyAccountService {
                 return;
             }
         }
+    }
+
+    /**
+     * 解除账号绑定关系，删除第三方账号
+     * @param accountId 第三方账号ID
+     */
+    public Response deleteThirdPartyAccount(int accountId,int userId) throws Exception {
+        logger.info("帐号删除,accountId:{}", accountId);
+
+        HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getAccountById(accountId);
+
+        if (thirdPartyAccount == null || thirdPartyAccount.getBinding() == 0) {
+            throw new CommonException(-1, "无效的第三方帐号");
+        }
+
+        UserHrAccountDO hrAccount = hrAccountDao.getValidAccount(userId);
+
+        if (hrAccount == null) {
+            throw new CommonException(-1, "无效的HR帐号");
+        }
+
+        stateContext.delete(thirdPartyAccount,hrAccount);
+
+        return RespnoseUtil.SUCCESS.toResponse();
     }
 
     /**

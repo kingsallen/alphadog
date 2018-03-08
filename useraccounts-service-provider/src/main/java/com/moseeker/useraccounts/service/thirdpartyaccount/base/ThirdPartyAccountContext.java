@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.common.constants.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import org.slf4j.Logger;
@@ -69,12 +70,12 @@ public class ThirdPartyAccountContext{
         return getBindState(accountId).bindMessage(hrId, accountId, code);
     }
 
-    public HrThirdPartyAccountDO bindChaosHandle(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
-        return null;
-    }
-
     public ThirdPartyAccountInfo dispatch(int accountId, List<Integer> hrIds) throws Exception {
         return getBindState(accountId).dispatch(accountId, hrIds);
+    }
+
+    public int delete(HrThirdPartyAccountDO thirdPartyAccount,UserHrAccountDO hrAccount) throws Exception {
+        return getBindState(thirdPartyAccount).delete(thirdPartyAccount,hrAccount);
     }
 
     public int updateBinding(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
