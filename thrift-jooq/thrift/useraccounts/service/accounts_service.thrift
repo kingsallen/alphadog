@@ -110,8 +110,10 @@ service UserHrAccountService {
     //猎聘发送验证码
     hr_third_party_account_struct.HrThirdPartyAccountDO bindMessage(1:i32 hrId,2:i32 id,3:string code) throws (1: common_struct.BIZException e);
 
-    //解绑第三方nag帐号
+    //解绑第三方帐号
     void unbindThirdPartyAccount(1:i32 accountId,2:i32 userId) throws (1: common_struct.BIZException e);
+    //删除第三方帐号
+    common_struct.Response deleteThirdPartyAccount(1:i32 accountId,2:i32 userId) throws (1: common_struct.BIZException e);
     //分配第三方帐号
     useraccounts_struct.ThirdPartyAccountInfo dispatchThirdPartyAccount(1:i32 accountId,2:list<i32> hrIds) throws (1: common_struct.BIZException e);
     //获取第三方帐号信息
