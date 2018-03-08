@@ -5,7 +5,7 @@ import com.moseeker.position.service.position.base.refresh.handler.ResultHandler
 
 public interface YLResultHandlerAdapter extends ResultHandlerAdapter<String> {
     @Override
-    default ChannelType channelType(){
+    default ChannelType getChannelType(){
         return ChannelType.JOB1001;
     }
 }
