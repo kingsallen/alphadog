@@ -7,6 +7,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Update;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -48,7 +49,7 @@ public class DeleteOperation {
         thirdPartyAccountHrDao.invalidByThirdPartyAccountId(accountId);
         thirdPartyAccount.setBinding((short) BindingStatus.UNBIND.getValue());
         //设置更新时间
-        FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
+        FastDateFormat sdf = FastDateFormat.getInstance(DateUtils.SHOT_TIME);
         thirdPartyAccount.setUpdateTime(sdf.format(new Date()));
 
         return thirdPartyAccountDao.updateData(thirdPartyAccount);
