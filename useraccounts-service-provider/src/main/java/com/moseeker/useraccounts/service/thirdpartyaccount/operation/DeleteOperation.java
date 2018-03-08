@@ -1,11 +1,17 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount.operation;
 
+import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.common.constants.BindingStatus;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.query.Update;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,7 +27,18 @@ public class DeleteOperation {
     @Autowired
     HRThirdPartyAccountHrDao thirdPartyAccountHrDao;
 
-    public int delete(HrThirdPartyAccountDO thirdPartyAccount){
+    public int delete(HrThirdPartyAccountDO thirdPartyAccount,UserHrAccountDO hrAccount) throws BIZException {
+        if(thirdPartyAccount.getCompanyId()!=hrAccount.getCompanyId()){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DEL_NO_AUTHORIZED);
+        }
+
+        if(hrAccount.getAccountType() == HRAccountType.SubAccount.getType()){
+            HrThirdPartyAccountHrDO relationship = thirdPartyAccountHrDao.getBinder(thirdPartyAccount.getId(),hrAccount.getId());
+            if(relationship == null){
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DEL_NO_AUTHORIZED);
+            }
+        }
+
         int accountId=thirdPartyAccount.getId();
         //解除账号绑定关系，删除第三方账号
         Update update = new Update.UpdateBuilder()
@@ -29,7 +46,7 @@ public class DeleteOperation {
                 .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                 .buildUpdate();
         thirdPartyAccountHrDao.invalidByThirdPartyAccountId(accountId);
-        thirdPartyAccount.setBinding((short) BindingStatus.UNDISPATCH.getValue());
+        thirdPartyAccount.setBinding((short) BindingStatus.UNBIND.getValue());
         //设置更新时间
         FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
         thirdPartyAccount.setUpdateTime(sdf.format(new Date()));

@@ -231,7 +231,7 @@ public class ThirdPartyAccountService {
      * 解除账号绑定关系，删除第三方账号
      * @param accountId 第三方账号ID
      */
-    public Response deleteThirdPartyAccount(int accountId) throws Exception {
+    public Response deleteThirdPartyAccount(int accountId,int userId) throws Exception {
         logger.info("帐号删除,accountId:{}", accountId);
 
         HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getAccountById(accountId);
@@ -240,7 +240,13 @@ public class ThirdPartyAccountService {
             throw new CommonException(-1, "无效的第三方帐号");
         }
 
-        stateContext.delete(thirdPartyAccount);
+        UserHrAccountDO hrAccount = hrAccountDao.getValidAccount(userId);
+
+        if (hrAccount == null) {
+            throw new CommonException(-1, "无效的HR帐号");
+        }
+
+        stateContext.delete(thirdPartyAccount,hrAccount);
 
         return RespnoseUtil.SUCCESS.toResponse();
     }

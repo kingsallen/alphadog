@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import com.moseeker.useraccounts.service.thirdpartyaccount.operation.*;
@@ -94,7 +95,7 @@ public abstract class AbstractBindState implements BindState{
     }
 
     @Override
-    public int delete(HrThirdPartyAccountDO thirdPartyAccountDO) throws Exception {
-        return deleteOperation.delete(thirdPartyAccountDO);
+    public int delete(HrThirdPartyAccountDO thirdPartyAccountDO, UserHrAccountDO hrAccount) throws Exception {
+        return deleteOperation.delete(thirdPartyAccountDO,hrAccount);
     }
 }

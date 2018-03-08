@@ -355,7 +355,13 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "account_id不能为空");
             }
 
-            userHrAccountService.deleteThirdPartyAccount(accountId);
+            Integer userId = params.getInt("user_id", 0);
+
+            if (userId == null) {
+                return ResponseLogNotification.fail(request, "user_id不能为空");
+            }
+
+            userHrAccountService.deleteThirdPartyAccount(accountId,userId);
 
             return ResponseLogNotification.successJson(request, 1);
         } catch (Exception e) {

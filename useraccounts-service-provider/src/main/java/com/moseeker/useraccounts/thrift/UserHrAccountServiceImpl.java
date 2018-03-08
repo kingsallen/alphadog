@@ -194,9 +194,9 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public Response deleteThirdPartyAccount(int accountId) throws BIZException, TException {
+    public Response deleteThirdPartyAccount(int accountId,int userId) throws BIZException, TException {
         try {
-            return thirdPartyAccountService.deleteThirdPartyAccount(accountId);
+            return thirdPartyAccountService.deleteThirdPartyAccount(accountId,userId);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
