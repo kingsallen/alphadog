@@ -14,8 +14,6 @@ public interface BindState {
 
     HrThirdPartyAccountDO bindMessage(int hrId, int accountId, String code) throws Exception;
 
-    HrThirdPartyAccountDO bindChaosHandle(HrThirdPartyAccountDO thirdPartyAccountDO) throws Exception;
-
     ThirdPartyAccountInfo dispatch(int accountId, List<Integer> hrIds) throws Exception;
 
     int delete(HrThirdPartyAccountDO thirdPartyAccountDO, UserHrAccountDO hrAccount) throws Exception;

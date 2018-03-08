@@ -80,11 +80,6 @@ public abstract class AbstractBindState implements BindState{
     }
 
     @Override
-    public HrThirdPartyAccountDO bindChaosHandle(HrThirdPartyAccountDO thirdPartyAccountDO) throws Exception {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public ThirdPartyAccountInfo dispatch(int accountId, List<Integer> hrIds) throws Exception {
         return dispatchOperation.dispatch(accountId, hrIds);
     }
