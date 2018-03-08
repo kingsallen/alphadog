@@ -7,8 +7,4 @@ import org.springframework.stereotype.Component;
 @Component
 public class VERegionResultHandler extends AbstractRegionResultHandler implements VEResultHandlerAdapter {
 
-    @Override
-    public ChannelType channelType() {
-        return ChannelType.VERYEAST;
-    }
 }

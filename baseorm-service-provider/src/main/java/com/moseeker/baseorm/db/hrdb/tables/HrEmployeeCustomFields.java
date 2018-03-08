@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCustomFields extends TableImpl<HrEmployeeCustomFieldsRecord> {
 
-    private static final long serialVersionUID = -529685298;
+    private static final long serialVersionUID = -1542395362;
 
     /**
      * The reference instance of <code>hrdb.hr_employee_custom_fields</code>
@@ -89,6 +89,11 @@ public class HrEmployeeCustomFields extends TableImpl<HrEmployeeCustomFieldsReco
      * The column <code>hrdb.hr_employee_custom_fields.status</code>. 0: 正常 1: 被删除
      */
     public final TableField<HrEmployeeCustomFieldsRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0: 正常 1: 被删除");
+
+    /**
+     * The column <code>hrdb.hr_employee_custom_fields.option_type</code>. 选项类型  0:下拉选项, 1:文本
+     */
+    public final TableField<HrEmployeeCustomFieldsRecord, Integer> OPTION_TYPE = createField("option_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "选项类型  0:下拉选项, 1:文本");
 
     /**
      * Create a <code>hrdb.hr_employee_custom_fields</code> table reference

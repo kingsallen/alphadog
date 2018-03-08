@@ -20,7 +20,7 @@ service PositionServices {
     // 根据职位Id获取当前职位
     common_struct.Response getPositionById(1:i32 positionId);  
     //获取公司两种自定义的字段
-    common_struct.Response CustomField(1:string param);    
+    common_struct.Response CustomField(1:string param);
     //是否可以刷新
     bool ifAllowRefresh(1:i32 positionId, 2: i32 account_id);
     list<string> getThirdPartyPositions(1: common_struct.CommonQuery query);

@@ -8,8 +8,4 @@ import org.springframework.stereotype.Component;
 @Component
 public class YLRegionResultHandler extends AbstractRegionResultHandler implements YLResultHandlerAdapter {
 
-    @Override
-    public ChannelType channelType() {
-        return ChannelType.JOB1001;
-    }
 }
