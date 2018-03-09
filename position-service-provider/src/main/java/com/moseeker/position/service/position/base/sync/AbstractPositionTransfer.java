@@ -174,7 +174,7 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
      * @param requirement 职位要求
      * @return
      */
-    protected static String getDescription(String accounTabilities, String requirement) {
+    protected String getDescription(String accounTabilities, String requirement) {
         StringBuffer descript = new StringBuffer();
         if (StringUtils.isNotNullOrEmpty(accounTabilities)) {
             descript.append(accounTabilities);

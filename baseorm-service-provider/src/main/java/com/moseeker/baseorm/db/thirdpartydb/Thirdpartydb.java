@@ -10,6 +10,7 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddre
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Thirdpartydb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1479652420;
+    private static final long serialVersionUID = -1283247724;
 
     /**
      * The reference instance of <code>thirdpartydb</code>
@@ -74,6 +75,11 @@ public class Thirdpartydb extends SchemaImpl {
     public final ThirdpartyJob1001Position THIRDPARTY_JOB1001_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION;
 
     /**
+     * JobsDB的第三方职位子表
+     */
+    public final ThirdpartyJobsdbPosition THIRDPARTY_JOBSDB_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION;
+
+    /**
      * 最佳东方的第三方职位子表
      */
     public final ThirdpartyVeryeastPosition THIRDPARTY_VERYEAST_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION;
@@ -109,6 +115,7 @@ public class Thirdpartydb extends SchemaImpl {
             ThirdpartyAccountDepartment.THIRDPARTY_ACCOUNT_DEPARTMENT,
             ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE,
             ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION,
+            ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION,
             ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION);
     }
 }
