@@ -756,6 +756,7 @@ public class CompanyService {
      * @return
      * @throws Exception
      */
+    @Transactional
     public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, byte source) throws Exception {
         //是否和超级公司名相同
         boolean repeatName = companyDao.checkRepeatNameWithSuperCompany(companyName);
@@ -764,7 +765,7 @@ public class CompanyService {
                     .or(UserHrAccount.USER_HR_ACCOUNT.WXUSER_ID.getName(), wxuserId).buildQuery();
             UserHrAccountDO accountDO = userHrAccountDao.getData(query);
             if (accountDO != null) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.MOBILE_WECHAT_IS_INVALID);
+                throw ExceptionFactory.buildException(Category.COMPANY_DATA_EMPTY);
             }
             HrCompanyDO companyDO = new HrCompanyDO();
             companyDO.setType((byte) 1);
