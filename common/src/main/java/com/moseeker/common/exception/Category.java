@@ -18,7 +18,7 @@ public enum Category {
     PROGRAM_CONFIG_INCOMPLETE(90016, "配置信息丢失!"),
     PROGRAM_ELLEGAL_EXCEPTION(90018, "错误异常!"),
     COMPANY_DATA_EMPTY(90017, "公司信息不存在！"),
-    ACCOUNT_DATA_EMPTY(90018, "公司信息不存在！");
+    ACCOUNT_DATA_IN(90018, "该手机号或微信号已注册！");
 
     private Category(int code, String msg) {
         this.code = code;
