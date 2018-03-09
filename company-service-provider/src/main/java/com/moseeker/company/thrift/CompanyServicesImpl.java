@@ -329,7 +329,7 @@ public class CompanyServicesImpl implements Iface {
                 return ResponseUtils.success(map);
             }
             if(result==2){
-                return ResponseUtils.fail(1,"此账号不是此公司的主账号");
+                return ResponseUtils.fail(1,"此账号不是此公司的账号");
             }
             if(result==3){
                 return ResponseUtils.fail(1,"此公司无配置,联系客服人员");
