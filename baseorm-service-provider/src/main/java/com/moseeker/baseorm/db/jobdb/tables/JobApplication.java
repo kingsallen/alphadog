@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplication extends TableImpl<JobApplicationRecord> {
 
-    private static final long serialVersionUID = -1082036473;
+    private static final long serialVersionUID = -1042034163;
 
     /**
      * The reference instance of <code>jobdb.job_application</code>
@@ -77,9 +77,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
     public final TableField<JobApplicationRecord, Timestamp> SUBMIT_TIME = createField("submit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "申请提交时间");
 
     /**
-     * The column <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
+     * The column <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
      */
-    public final TableField<JobApplicationRecord, Integer> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_award_config.id, 申请状态ID");
+    public final TableField<JobApplicationRecord, Integer> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_points_conf.id, 申请状态ID");
 
     /**
      * The column <code>jobdb.job_application.l_application_id</code>. ATS的申请ID
@@ -117,9 +117,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
     public final TableField<JobApplicationRecord, String> RESUME_ID = createField("resume_id", org.jooq.impl.SQLDataType.VARCHAR.length(24).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "mongodb collection application[id]");
 
     /**
-     * The column <code>jobdb.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified 6:excess apply times
+     * The column <code>jobdb.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified, 6:excess apply times, 7 redundant,  8:failed, 9 failed and notified
      */
-    public final TableField<JobApplicationRecord, Integer> ATS_STATUS = createField("ats_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified 6:excess apply times");
+    public final TableField<JobApplicationRecord, Integer> ATS_STATUS = createField("ats_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified, 6:excess apply times, 7 redundant,  8:failed, 9 failed and notified");
 
     /**
      * The column <code>jobdb.job_application.applier_name</code>. 姓名或微信昵称
@@ -172,9 +172,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
     public final TableField<JobApplicationRecord, Integer> APPLY_TYPE = createField("apply_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "投递区分， 0：profile投递， 1：email投递");
 
     /**
-     * The column <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败
+     * The column <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；8: 包含特殊字体;  9，提取邮件失败
      */
-    public final TableField<JobApplicationRecord, Integer> EMAIL_STATUS = createField("email_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败");
+    public final TableField<JobApplicationRecord, Integer> EMAIL_STATUS = createField("email_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；8: 包含特殊字体;  9，提取邮件失败");
 
     /**
      * The column <code>jobdb.job_application.view_count</code>. profile浏览次数

@@ -511,16 +511,19 @@ public class ResumeDeliveryService {
 
         logger.info("sendEmailToHr emailStruct:{}", emailStruct);
 
-        //发送邮件
-        Response sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+        //发送邮件给HR
+        Response sendEmail = null;
+        if(positionDO.getEmailNotice() == 0) {
+            sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+            logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
 
-        logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
+            //记录发送邮件的结果
+            LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
+            emailrecord.setEmail(accountDO.getEmail());
+            emailrecord.setContent(sendEmail.getMessage());
+            emailSendrecordDao.addData(emailrecord);
+        }
 
-        //记录发送邮件的结果
-        LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
-        emailrecord.setEmail(accountDO.getEmail());
-        emailrecord.setContent(sendEmail.getMessage());
-        emailSendrecordDao.addData(emailrecord);
         logger.info("是否启用抄送邮箱："+positionDO.getProfile_cc_mail_enabled());
         //判断是否启用抄送邮箱
         if(positionDO.getProfile_cc_mail_enabled() == 1){
@@ -533,7 +536,7 @@ public class ResumeDeliveryService {
                     emailStruct.put("to_email", ccmail.getToEmail());
                     MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
                     LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
-                    emailrecord1.setEmail("accountDO.getEmail()");
+                    emailrecord1.setEmail(ccmail.getToEmail());
                     emailrecord1.setContent(sendEmail.getMessage());
                     emailSendrecordDao.addData(emailrecord1);
                     logger.info("抄送邮箱："+ccmail.getToEmail());
