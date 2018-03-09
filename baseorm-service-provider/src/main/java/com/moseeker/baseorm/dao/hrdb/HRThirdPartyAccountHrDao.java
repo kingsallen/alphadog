@@ -47,6 +47,21 @@ public class HRThirdPartyAccountHrDao extends JooqCrudImpl<HrThirdPartyAccountHr
         return getDatas(query);
     }
 
+    /**
+     * 按照绑定时间倒序获取和某个第三方帐号绑定的第三方帐号
+     * @param accountId
+     * @return
+     */
+    public HrThirdPartyAccountHrDO getBinder(int accountId,int hrId) {
+        Query query = new Query.QueryBuilder()
+                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.getName(),hrId)
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.getName(), 1)
+                .buildQuery();
+
+        return getData(query);
+    }
+
     public List<HrThirdPartyAccountHrDO> getHrAccounts(List<Integer> hrAccountIds) {
         Query query = new Query.QueryBuilder()
                 .where(new Condition(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.getName(), hrAccountIds,ValueOp.IN))
