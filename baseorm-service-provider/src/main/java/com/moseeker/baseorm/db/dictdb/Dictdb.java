@@ -4,7 +4,6 @@
 package com.moseeker.baseorm.db.dictdb;
 
 
-import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
@@ -15,7 +14,6 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
-import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
@@ -47,7 +45,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1608271606;
+    private static final long serialVersionUID = 1988589473;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -60,12 +58,7 @@ public class Dictdb extends SchemaImpl {
     public final Dict_51jobOccupation DICT_51JOB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation.DICT_51JOB_OCCUPATION;
 
     /**
-     * The table <code>dictdb.dict_alipaycampus_city</code>.
-     */
-    public final DictAlipaycampusCity DICT_ALIPAYCAMPUS_CITY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY;
-
-    /**
-     * dict_alipaycampus_jobcategory[alipay校园招聘-职位类别]
+     * job_category[校园工作-基础数据-职位类别]
      */
     public final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
 
@@ -75,7 +68,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCity DICT_CITY = com.moseeker.baseorm.db.dictdb.tables.DictCity.DICT_CITY;
 
     /**
-     * 城市字典code映射表
+     * The table <code>dictdb.dict_city_map</code>.
      */
     public final DictCityMap DICT_CITY_MAP = com.moseeker.baseorm.db.dictdb.tables.DictCityMap.DICT_CITY_MAP;
 
@@ -90,7 +83,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCollege DICT_COLLEGE = com.moseeker.baseorm.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
     /**
-     * The table <code>dictdb.dict_constant</code>.
+     * 常量字典表
      */
     public final DictConstant DICT_CONSTANT = com.moseeker.baseorm.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
@@ -100,7 +93,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
     public final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -113,11 +106,6 @@ public class Dictdb extends SchemaImpl {
      * 一览人才的职位表
      */
     public final DictJob1001Occupation DICT_JOB1001_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation.DICT_JOB1001_OCCUPATION;
-
-    /**
-     * JobsDB的职位职能表
-     */
-    public final DictJobsdbOccupation DICT_JOBSDB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION;
 
     /**
      * The table <code>dictdb.dict_liepin_occupation</code>.
@@ -170,7 +158,6 @@ public class Dictdb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Dict_51jobOccupation.DICT_51JOB_OCCUPATION,
-            DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
             DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY,
             DictCity.DICT_CITY,
             DictCityMap.DICT_CITY_MAP,
@@ -181,7 +168,6 @@ public class Dictdb extends SchemaImpl {
             DictIndustry.DICT_INDUSTRY,
             DictIndustryType.DICT_INDUSTRY_TYPE,
             DictJob1001Occupation.DICT_JOB1001_OCCUPATION,
-            DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION,
             DictLiepinOccupation.DICT_LIEPIN_OCCUPATION,
             DictMajor.DICT_MAJOR,
             DictPosition.DICT_POSITION,
