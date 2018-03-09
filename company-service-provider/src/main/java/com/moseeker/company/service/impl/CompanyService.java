@@ -714,14 +714,15 @@ public class CompanyService {
         return 0;
     }
     /*
-     获取此账号是不是此公司的主账号
+     获取此账号是不是此公司的账号
      */
     private int validateHrAndCompany(int hrId,int companyId){
-        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).andInnerCondition("account_type",0)
-                .or("account_type",2).buildQuery();
+        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("activation",1).and("disable",1).andInnerCondition("account_type",0)
+                .or("account_type",1).buildQuery();
         int count =userHrAccountDao.getCount(query);
         return count;
     }
+
     /*
       根据公司id获取公司配置
      */
@@ -816,6 +817,7 @@ public class CompanyService {
             logger.info("addHrAccountAndCompany hr注册成功短信发送结果：{};提示信息：{}",response.getStatus(), response.getMessage());
             Map<String, Object> map = new HashMap();
             map.put("hr_id", hrId);
+            logger.info("addHrAccountAndCompany hr注册成功编号：{}",hrId);
             return ResponseUtils.success(map);
         }else{
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NAME_REPEAT);
