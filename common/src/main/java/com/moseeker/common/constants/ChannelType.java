@@ -113,7 +113,12 @@ public enum ChannelType {
         public String getOrigin(String origin) {
             return null;
         }
-    },UPLOAD51(20,"upload51","51上传","talent_upload"){
+    }, JOBSDB(8,"jobsdb","JobsDB","common_retrieval_flow"){
+		@Override
+		public String getOrigin(String origin) {
+			return null;
+		}
+	},UPLOAD51(20,"upload51","51上传","talent_upload"){
 		@Override
 		public String getOrigin(String origin) {
 			String result;
