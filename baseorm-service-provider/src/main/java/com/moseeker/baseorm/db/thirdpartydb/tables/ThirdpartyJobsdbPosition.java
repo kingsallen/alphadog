@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ThirdpartyJobsdbPosition extends TableImpl<ThirdpartyJobsdbPositionRecord> {
 
-    private static final long serialVersionUID = 1635995059;
+    private static final long serialVersionUID = 1544733551;
 
     /**
      * The reference instance of <code>thirdpartydb.thirdparty_jobsdb_position</code>
@@ -77,24 +77,24 @@ public class ThirdpartyJobsdbPosition extends TableImpl<ThirdpartyJobsdbPosition
     public final TableField<ThirdpartyJobsdbPositionRecord, String> SUMMARY3 = createField("summary3", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "总结3");
 
     /**
-     * The column <code>thirdpartydb.thirdparty_jobsdb_position.occupationExt1</code>. 额外职能1
+     * The column <code>thirdpartydb.thirdparty_jobsdb_position.occupation_ext1</code>. 额外职能1
      */
-    public final TableField<ThirdpartyJobsdbPositionRecord, Integer> OCCUPATIONEXT1 = createField("occupationExt1", org.jooq.impl.SQLDataType.INTEGER, this, "额外职能1");
+    public final TableField<ThirdpartyJobsdbPositionRecord, Integer> OCCUPATION_EXT1 = createField("occupation_ext1", org.jooq.impl.SQLDataType.INTEGER, this, "额外职能1");
 
     /**
-     * The column <code>thirdpartydb.thirdparty_jobsdb_position.occupationExt2</code>. 额外职能2
+     * The column <code>thirdpartydb.thirdparty_jobsdb_position.occupation_ext2</code>. 额外职能2
      */
-    public final TableField<ThirdpartyJobsdbPositionRecord, Integer> OCCUPATIONEXT2 = createField("occupationExt2", org.jooq.impl.SQLDataType.INTEGER, this, "额外职能2");
+    public final TableField<ThirdpartyJobsdbPositionRecord, Integer> OCCUPATION_EXT2 = createField("occupation_ext2", org.jooq.impl.SQLDataType.INTEGER, this, "额外职能2");
 
     /**
-     * The column <code>thirdpartydb.thirdparty_jobsdb_position.childAddressId</code>. 子地址code
+     * The column <code>thirdpartydb.thirdparty_jobsdb_position.child_address_id</code>. 子地址code
      */
-    public final TableField<ThirdpartyJobsdbPositionRecord, Integer> CHILDADDRESSID = createField("childAddressId", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "子地址code");
+    public final TableField<ThirdpartyJobsdbPositionRecord, Integer> CHILD_ADDRESS_ID = createField("child_address_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "子地址code");
 
     /**
-     * The column <code>thirdpartydb.thirdparty_jobsdb_position.childAddressName</code>. 子地址名称
+     * The column <code>thirdpartydb.thirdparty_jobsdb_position.child_address_name</code>. 子地址名称
      */
-    public final TableField<ThirdpartyJobsdbPositionRecord, String> CHILDADDRESSNAME = createField("childAddressName", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "子地址名称");
+    public final TableField<ThirdpartyJobsdbPositionRecord, String> CHILD_ADDRESS_NAME = createField("child_address_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "子地址名称");
 
     /**
      * The column <code>thirdpartydb.thirdparty_jobsdb_position.create_time</code>. 创建时间

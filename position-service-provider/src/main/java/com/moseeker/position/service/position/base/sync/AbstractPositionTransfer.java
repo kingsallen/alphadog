@@ -154,7 +154,7 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
      */
     protected static List<String> getFeature(String feature) {
         if (StringUtils.isNotNullOrEmpty(feature)) {
-            String[] featureArray = feature.trim().split(",");
+            String[] featureArray = feature.trim().split("#");
             List<String> featureList = new ArrayList<>();
             for (String featureElement : featureArray) {
                 if (!featureElement.trim().equals("")) {

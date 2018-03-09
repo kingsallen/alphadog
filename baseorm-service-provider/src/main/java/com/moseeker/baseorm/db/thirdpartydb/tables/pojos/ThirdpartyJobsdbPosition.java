@@ -23,17 +23,17 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ThirdpartyJobsdbPosition implements Serializable {
 
-    private static final long serialVersionUID = -1808252420;
+    private static final long serialVersionUID = -1726834244;
 
     private Integer   id;
     private Integer   pid;
     private String    summary1;
     private String    summary2;
     private String    summary3;
-    private Integer   occupationext1;
-    private Integer   occupationext2;
-    private Integer   childaddressid;
-    private String    childaddressname;
+    private Integer   occupationExt1;
+    private Integer   occupationExt2;
+    private Integer   childAddressId;
+    private String    childAddressName;
     private Timestamp createTime;
     private Timestamp updateTime;
     private Short     status;
@@ -46,10 +46,10 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         this.summary1 = value.summary1;
         this.summary2 = value.summary2;
         this.summary3 = value.summary3;
-        this.occupationext1 = value.occupationext1;
-        this.occupationext2 = value.occupationext2;
-        this.childaddressid = value.childaddressid;
-        this.childaddressname = value.childaddressname;
+        this.occupationExt1 = value.occupationExt1;
+        this.occupationExt2 = value.occupationExt2;
+        this.childAddressId = value.childAddressId;
+        this.childAddressName = value.childAddressName;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
         this.status = value.status;
@@ -61,10 +61,10 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         String    summary1,
         String    summary2,
         String    summary3,
-        Integer   occupationext1,
-        Integer   occupationext2,
-        Integer   childaddressid,
-        String    childaddressname,
+        Integer   occupationExt1,
+        Integer   occupationExt2,
+        Integer   childAddressId,
+        String    childAddressName,
         Timestamp createTime,
         Timestamp updateTime,
         Short     status
@@ -74,10 +74,10 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         this.summary1 = summary1;
         this.summary2 = summary2;
         this.summary3 = summary3;
-        this.occupationext1 = occupationext1;
-        this.occupationext2 = occupationext2;
-        this.childaddressid = childaddressid;
-        this.childaddressname = childaddressname;
+        this.occupationExt1 = occupationExt1;
+        this.occupationExt2 = occupationExt2;
+        this.childAddressId = childAddressId;
+        this.childAddressName = childAddressName;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.status = status;
@@ -123,36 +123,36 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         this.summary3 = summary3;
     }
 
-    public Integer getOccupationext1() {
-        return this.occupationext1;
+    public Integer getOccupationExt1() {
+        return this.occupationExt1;
     }
 
-    public void setOccupationext1(Integer occupationext1) {
-        this.occupationext1 = occupationext1;
+    public void setOccupationExt1(Integer occupationExt1) {
+        this.occupationExt1 = occupationExt1;
     }
 
-    public Integer getOccupationext2() {
-        return this.occupationext2;
+    public Integer getOccupationExt2() {
+        return this.occupationExt2;
     }
 
-    public void setOccupationext2(Integer occupationext2) {
-        this.occupationext2 = occupationext2;
+    public void setOccupationExt2(Integer occupationExt2) {
+        this.occupationExt2 = occupationExt2;
     }
 
-    public Integer getChildaddressid() {
-        return this.childaddressid;
+    public Integer getChildAddressId() {
+        return this.childAddressId;
     }
 
-    public void setChildaddressid(Integer childaddressid) {
-        this.childaddressid = childaddressid;
+    public void setChildAddressId(Integer childAddressId) {
+        this.childAddressId = childAddressId;
     }
 
-    public String getChildaddressname() {
-        return this.childaddressname;
+    public String getChildAddressName() {
+        return this.childAddressName;
     }
 
-    public void setChildaddressname(String childaddressname) {
-        this.childaddressname = childaddressname;
+    public void setChildAddressName(String childAddressName) {
+        this.childAddressName = childAddressName;
     }
 
     public Timestamp getCreateTime() {
@@ -188,10 +188,10 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         sb.append(", ").append(summary1);
         sb.append(", ").append(summary2);
         sb.append(", ").append(summary3);
-        sb.append(", ").append(occupationext1);
-        sb.append(", ").append(occupationext2);
-        sb.append(", ").append(childaddressid);
-        sb.append(", ").append(childaddressname);
+        sb.append(", ").append(occupationExt1);
+        sb.append(", ").append(occupationExt2);
+        sb.append(", ").append(childAddressId);
+        sb.append(", ").append(childAddressName);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
         sb.append(", ").append(status);

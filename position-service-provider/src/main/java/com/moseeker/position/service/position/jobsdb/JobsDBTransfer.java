@@ -96,6 +96,8 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
         }
         data.setAddressName(position.getAddressName());
         data.setAddressId(position.getAddressId());
+        data.setSalaryTop(position.getSalaryTop());
+        data.setSalaryBottom(position.getSalaryBottom());
 
         logger.info("回写到第三方职位对象:{}",data);
         return data;
@@ -105,7 +107,7 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
     public ThirdpartyJobsDBPositionDO toExtThirdPartyPosition(PositionJobsDBForm form, PositionJobsDBWithAccount positionJobsDBWithAccount) {
         ThirdpartyJobsDBPositionDO jobsDB=new ThirdpartyJobsDBPositionDO();
         jobsDB.setChildAddressId(form.getChildAddressId());
-        jobsDB.setChildAddressName(form.getAddressName());
+        jobsDB.setChildAddressName(form.getChildAddressName());
         if (!form.getOccupation2().isEmpty() && form.getOccupation2().size() > 0) {
             jobsDB.setOccupationExt1(form.getOccupation2().get(form.getOccupation2().size() - 1));
         }
@@ -119,7 +121,7 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
         jobsDB.setStatus((byte) 0);
         jobsDB.setCreateTime(sdf.format(new Date()));
 
-        return null;
+        return jobsDB;
     }
 
     @Override

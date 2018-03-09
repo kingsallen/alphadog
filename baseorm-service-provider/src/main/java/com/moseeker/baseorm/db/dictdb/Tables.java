@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.dictdb;
 
 
+import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
@@ -14,6 +15,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
@@ -41,6 +43,11 @@ public class Tables {
      * 51的职位表
      */
     public static final Dict_51jobOccupation DICT_51JOB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation.DICT_51JOB_OCCUPATION;
+
+    /**
+     * The table <code>dictdb.dict_alipaycampus_city</code>.
+     */
+    public static final DictAlipaycampusCity DICT_ALIPAYCAMPUS_CITY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY;
 
     /**
      * job_category[校园工作-基础数据-职位类别]
@@ -91,6 +98,11 @@ public class Tables {
      * 一览人才的职位表
      */
     public static final DictJob1001Occupation DICT_JOB1001_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation.DICT_JOB1001_OCCUPATION;
+
+    /**
+     * JobsDB的职位职能表
+     */
+    public static final DictJobsdbOccupation DICT_JOBSDB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION;
 
     /**
      * The table <code>dictdb.dict_liepin_occupation</code>.

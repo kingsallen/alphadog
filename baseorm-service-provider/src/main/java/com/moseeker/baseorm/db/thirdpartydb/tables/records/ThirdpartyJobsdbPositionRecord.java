@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<ThirdpartyJobsdbPositionRecord> implements Record12<Integer, Integer, String, String, String, Integer, Integer, Integer, String, Timestamp, Timestamp, Short> {
 
-    private static final long serialVersionUID = 2042099000;
+    private static final long serialVersionUID = 377703560;
 
     /**
      * Setter for <code>thirdpartydb.thirdparty_jobsdb_position.id</code>. 主键
@@ -103,58 +103,58 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
     }
 
     /**
-     * Setter for <code>thirdpartydb.thirdparty_jobsdb_position.occupationExt1</code>. 额外职能1
+     * Setter for <code>thirdpartydb.thirdparty_jobsdb_position.occupation_ext1</code>. 额外职能1
      */
-    public void setOccupationext1(Integer value) {
+    public void setOccupationExt1(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>thirdpartydb.thirdparty_jobsdb_position.occupationExt1</code>. 额外职能1
+     * Getter for <code>thirdpartydb.thirdparty_jobsdb_position.occupation_ext1</code>. 额外职能1
      */
-    public Integer getOccupationext1() {
+    public Integer getOccupationExt1() {
         return (Integer) get(5);
     }
 
     /**
-     * Setter for <code>thirdpartydb.thirdparty_jobsdb_position.occupationExt2</code>. 额外职能2
+     * Setter for <code>thirdpartydb.thirdparty_jobsdb_position.occupation_ext2</code>. 额外职能2
      */
-    public void setOccupationext2(Integer value) {
+    public void setOccupationExt2(Integer value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>thirdpartydb.thirdparty_jobsdb_position.occupationExt2</code>. 额外职能2
+     * Getter for <code>thirdpartydb.thirdparty_jobsdb_position.occupation_ext2</code>. 额外职能2
      */
-    public Integer getOccupationext2() {
+    public Integer getOccupationExt2() {
         return (Integer) get(6);
     }
 
     /**
-     * Setter for <code>thirdpartydb.thirdparty_jobsdb_position.childAddressId</code>. 子地址code
+     * Setter for <code>thirdpartydb.thirdparty_jobsdb_position.child_address_id</code>. 子地址code
      */
-    public void setChildaddressid(Integer value) {
+    public void setChildAddressId(Integer value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>thirdpartydb.thirdparty_jobsdb_position.childAddressId</code>. 子地址code
+     * Getter for <code>thirdpartydb.thirdparty_jobsdb_position.child_address_id</code>. 子地址code
      */
-    public Integer getChildaddressid() {
+    public Integer getChildAddressId() {
         return (Integer) get(7);
     }
 
     /**
-     * Setter for <code>thirdpartydb.thirdparty_jobsdb_position.childAddressName</code>. 子地址名称
+     * Setter for <code>thirdpartydb.thirdparty_jobsdb_position.child_address_name</code>. 子地址名称
      */
-    public void setChildaddressname(String value) {
+    public void setChildAddressName(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>thirdpartydb.thirdparty_jobsdb_position.childAddressName</code>. 子地址名称
+     * Getter for <code>thirdpartydb.thirdparty_jobsdb_position.child_address_name</code>. 子地址名称
      */
-    public String getChildaddressname() {
+    public String getChildAddressName() {
         return (String) get(8);
     }
 
@@ -277,7 +277,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public Field<Integer> field6() {
-        return ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.OCCUPATIONEXT1;
+        return ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.OCCUPATION_EXT1;
     }
 
     /**
@@ -285,7 +285,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public Field<Integer> field7() {
-        return ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.OCCUPATIONEXT2;
+        return ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.OCCUPATION_EXT2;
     }
 
     /**
@@ -293,7 +293,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public Field<Integer> field8() {
-        return ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.CHILDADDRESSID;
+        return ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.CHILD_ADDRESS_ID;
     }
 
     /**
@@ -301,7 +301,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public Field<String> field9() {
-        return ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.CHILDADDRESSNAME;
+        return ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.CHILD_ADDRESS_NAME;
     }
 
     /**
@@ -373,7 +373,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public Integer value6() {
-        return getOccupationext1();
+        return getOccupationExt1();
     }
 
     /**
@@ -381,7 +381,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public Integer value7() {
-        return getOccupationext2();
+        return getOccupationExt2();
     }
 
     /**
@@ -389,7 +389,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public Integer value8() {
-        return getChildaddressid();
+        return getChildAddressId();
     }
 
     /**
@@ -397,7 +397,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public String value9() {
-        return getChildaddressname();
+        return getChildAddressName();
     }
 
     /**
@@ -474,7 +474,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public ThirdpartyJobsdbPositionRecord value6(Integer value) {
-        setOccupationext1(value);
+        setOccupationExt1(value);
         return this;
     }
 
@@ -483,7 +483,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public ThirdpartyJobsdbPositionRecord value7(Integer value) {
-        setOccupationext2(value);
+        setOccupationExt2(value);
         return this;
     }
 
@@ -492,7 +492,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public ThirdpartyJobsdbPositionRecord value8(Integer value) {
-        setChildaddressid(value);
+        setChildAddressId(value);
         return this;
     }
 
@@ -501,7 +501,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
      */
     @Override
     public ThirdpartyJobsdbPositionRecord value9(String value) {
-        setChildaddressname(value);
+        setChildAddressName(value);
         return this;
     }
 
@@ -566,7 +566,7 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
     /**
      * Create a detached, initialised ThirdpartyJobsdbPositionRecord
      */
-    public ThirdpartyJobsdbPositionRecord(Integer id, Integer pid, String summary1, String summary2, String summary3, Integer occupationext1, Integer occupationext2, Integer childaddressid, String childaddressname, Timestamp createTime, Timestamp updateTime, Short status) {
+    public ThirdpartyJobsdbPositionRecord(Integer id, Integer pid, String summary1, String summary2, String summary3, Integer occupationExt1, Integer occupationExt2, Integer childAddressId, String childAddressName, Timestamp createTime, Timestamp updateTime, Short status) {
         super(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION);
 
         set(0, id);
@@ -574,10 +574,10 @@ public class ThirdpartyJobsdbPositionRecord extends UpdatableRecordImpl<Thirdpar
         set(2, summary1);
         set(3, summary2);
         set(4, summary3);
-        set(5, occupationext1);
-        set(6, occupationext2);
-        set(7, childaddressid);
-        set(8, childaddressname);
+        set(5, occupationExt1);
+        set(6, occupationExt2);
+        set(7, childAddressId);
+        set(8, childAddressName);
         set(9, createTime);
         set(10, updateTime);
         set(11, status);
