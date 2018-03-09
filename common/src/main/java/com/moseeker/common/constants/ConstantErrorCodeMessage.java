@@ -106,6 +106,8 @@ public final class ConstantErrorCodeMessage {
     public static final String DISPATCH_ACCOUNT_GETINGINFO ="{'status':42018,'message':'帐号正在同步第三方信息中,无法分配，请稍后再试!'}";
     public static final String DISPATCH_ACCOUNT_ERROR ="{'status':42019,'message':'帐号绑定程序发生错误,无法分配，请稍后再试!'}";
     public static final String SUBACCOUNT_REBIND_ERROR ="{'status':42020,'message':'子账号不能重新绑定第三方账号!'}";
+    public static final String DEL_STATUS_ERROR ="{'status':42021,'message':'第三方账号状态错误，无法删除!'}";
+    public static final String DEL_NO_AUTHORIZED ="{'status':42022,'message':'删除第三方账号失败，这个HR没有操作这个账号权限!'}";
 
     //Position服务提示信息说明
     public static final String POSITION_NODELETE_BLANK = "{'status':51001,'message':'参数nodelete不能为空！'}";
