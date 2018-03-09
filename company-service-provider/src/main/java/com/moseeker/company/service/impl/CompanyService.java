@@ -785,8 +785,9 @@ public class CompanyService {
             int hrId = userHrAccountDao.addData(accountDO1).getId();
             if(hrId <= 0)
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
-            companyDO.setHraccountId(hrId);
-            companyDao.updateData(companyDO);
+            HrCompanyDO companyDO1 = companyDao.getCompanyById(companyId);
+            companyDO1.setHraccountId(hrId);
+            companyDao.updateData(companyDO1);
             HrCompanyAccountDO companyAccountDO = new HrCompanyAccountDO();
             companyAccountDO.setAccountId(hrId);
             companyAccountDO.setCompanyId(companyId);
