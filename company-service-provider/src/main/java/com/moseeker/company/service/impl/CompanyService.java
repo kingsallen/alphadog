@@ -717,8 +717,7 @@ public class CompanyService {
      获取此账号是不是此公司的账号
      */
     private int validateHrAndCompany(int hrId,int companyId){
-        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("activation",1).and("disable",1).andInnerCondition("account_type",0)
-                .or("account_type",1).buildQuery();
+        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("activation",1).and("disable",1).buildQuery();
         int count =userHrAccountDao.getCount(query);
         return count;
     }
