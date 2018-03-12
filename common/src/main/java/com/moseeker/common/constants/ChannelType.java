@@ -109,6 +109,11 @@ public enum ChannelType {
 			return null;
 		}
 	}, JOB1001(7,"job1001","一览英才","common_retrieval_flow"){
+        @Override
+        public String getOrigin(String origin) {
+            return null;
+        }
+    }, JOBSDB(8,"jobsdb","JobsDB","common_retrieval_flow"){
 		@Override
 		public String getOrigin(String origin) {
 			return null;
