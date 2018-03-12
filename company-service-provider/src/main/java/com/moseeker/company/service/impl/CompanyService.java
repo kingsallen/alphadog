@@ -786,6 +786,8 @@ public class CompanyService {
             int hrId = userHrAccountDao.addData(accountDO1).getId();
             if(hrId <= 0)
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            companyDO.setHraccountId(hrId);
+            companyDao.updateData(companyDO);
             HrCompanyAccountDO companyAccountDO = new HrCompanyAccountDO();
             companyAccountDO.setAccountId(hrId);
             companyAccountDO.setCompanyId(companyId);
@@ -816,6 +818,7 @@ public class CompanyService {
             logger.info("addHrAccountAndCompany hr注册成功短信发送结果：{};提示信息：{}",response.getStatus(), response.getMessage());
             Map<String, Object> map = new HashMap();
             map.put("hr_id", hrId);
+            logger.info("addHrAccountAndCompany hr注册成功编号：{}",hrId);
             return ResponseUtils.success(map);
         }else{
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NAME_REPEAT);
