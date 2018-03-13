@@ -199,8 +199,12 @@ public class PositionController {
             if(!"moseeker.com".equals(map.get("refreshKey"))){
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"wrong request param!");
             }
+            int channel=0;
+            if(map.containsKey("channel")){
+                channel= (int) map.get("channel");
+            }
             logger.info("-----------refresh Third Party Param start------------");
-            Response result = positionBS.refreshThirdPartyParam();
+            Response result = positionBS.refreshThirdPartyParam(channel);
             logger.info("result:" + JSON.toJSONString(result));
             logger.info("-----------refresh Third Party Param end------------");
             return ResponseLogNotification.success(request, result);
