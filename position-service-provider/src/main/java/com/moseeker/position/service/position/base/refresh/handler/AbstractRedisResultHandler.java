@@ -26,9 +26,9 @@ public abstract class AbstractRedisResultHandler extends AbstractJsonResultHandl
     Logger logger= LoggerFactory.getLogger(AbstractRedisResultHandler.class);
 
     @Resource(name = "cacheClient")
-    private RedisClient redisClient;
+    protected RedisClient redisClient;
     @Autowired
-    private PositionEmailNotification emailNotification;
+    protected PositionEmailNotification emailNotification;
 
     protected abstract String[] param();
     protected abstract String keyIdentifier();
