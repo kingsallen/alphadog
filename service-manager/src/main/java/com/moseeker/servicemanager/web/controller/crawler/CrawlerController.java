@@ -107,6 +107,15 @@ public class CrawlerController {
 		}
 	}
 
+	/**
+	 * 调用scraper获取html
+	 * 根据传入的position_id和channel找到第三方账号，
+	 * 推送 查询出的第三方账号和密码加上传入的url 给scraper
+	 * scraper获取html返回
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping(value = "/getThirdPartyHtml", method = RequestMethod.POST)
 	@ResponseBody
 	public String getThirdPartyHtml(HttpServletRequest request, HttpServletResponse response) {
