@@ -8,13 +8,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class PositionRefreshUtils {
-    private static Logger logger= LoggerFactory.getLogger(PositionRefreshUtils.class);
+public class PositionParamRefreshUtils {
+    private static Logger logger= LoggerFactory.getLogger(PositionParamRefreshUtils.class);
 
     private static final int DEFAULT_KEY_SEED=100000;
     private static final int DEFAULT_KEY_SIZE=16;
 
-    private PositionRefreshUtils(){}
+    private PositionParamRefreshUtils(){}
 
     public static <K> Map<K,Integer> generateNewKey(Iterator<K> it){
         return generateNewKey(it,DEFAULT_KEY_SEED,DEFAULT_KEY_SIZE);

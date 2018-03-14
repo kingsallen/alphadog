@@ -1,18 +1,15 @@
 package com.moseeker.position.service.position.job51.refresh.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
-import com.moseeker.position.utils.PositionRefreshUtils;
+import com.moseeker.position.utils.PositionParamRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +29,8 @@ public class Job51OccupationResultHandler extends AbstractOccupationResultHandle
         temp.setCodeOther(codes.get(codes.size()-1));
         temp.setCode(newCode.get(temp.getCodeOther()));
         temp.setLevel((short)codes.size());
-        temp.setName(PositionRefreshUtils.lastString(texts));
-        temp.setParentId(newCode.get(PositionRefreshUtils.parentCode(codes)));
+        temp.setName(PositionParamRefreshUtils.lastString(texts));
+        temp.setParentId(newCode.get(PositionParamRefreshUtils.parentCode(codes)));
         temp.setStatus((short)1);
 
         return temp;

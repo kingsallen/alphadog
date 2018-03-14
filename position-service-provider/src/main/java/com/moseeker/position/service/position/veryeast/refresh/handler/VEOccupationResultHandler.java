@@ -3,7 +3,7 @@ package com.moseeker.position.service.position.veryeast.refresh.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictVeryEastOccupationDao;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
-import com.moseeker.position.utils.PositionRefreshUtils;
+import com.moseeker.position.utils.PositionParamRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictVeryEastOccupationDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +28,8 @@ public class VEOccupationResultHandler extends AbstractOccupationResultHandler<D
         temp.setCodeOther(codes.get(codes.size()-1));
         temp.setCode(newCode.get(temp.getCodeOther()));
         temp.setLevel((short)codes.size());
-        temp.setName(PositionRefreshUtils.lastString(texts));
-        temp.setParentId(newCode.get(PositionRefreshUtils.parentCode(codes)));
+        temp.setName(PositionParamRefreshUtils.lastString(texts));
+        temp.setParentId(newCode.get(PositionParamRefreshUtils.parentCode(codes)));
         temp.setStatus((short)1);
 
         return temp;

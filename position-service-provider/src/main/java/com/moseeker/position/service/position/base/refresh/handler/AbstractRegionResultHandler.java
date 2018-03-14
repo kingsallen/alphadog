@@ -4,10 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
-import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.iface.IChannelType;
 import com.moseeker.common.util.query.Condition;
-import com.moseeker.position.utils.PositionRefreshUtils;
+import com.moseeker.position.utils.PositionParamRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.slf4j.Logger;
@@ -49,7 +48,7 @@ public abstract class AbstractRegionResultHandler extends AbstractJsonResultHand
                 Region moseekerRegion=data.getJSONObject("moseekerRegion").toJavaObject(Region.class);
                 Region thirdPartyRegion=data.getJSONObject("thirdPartyRegion").toJavaObject(Region.class);
 
-                int moseekerCode= PositionRefreshUtils.lastCode(moseekerRegion.getCode());
+                int moseekerCode= PositionParamRefreshUtils.lastCode(moseekerRegion.getCode());
 
                 DictCityMapDO cityMap=new DictCityMapDO();
 

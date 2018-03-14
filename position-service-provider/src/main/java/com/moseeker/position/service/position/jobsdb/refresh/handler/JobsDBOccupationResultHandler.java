@@ -7,7 +7,7 @@ import com.moseeker.baseorm.dao.dictdb.DictJobsDBOccupationDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
-import com.moseeker.position.utils.PositionRefreshUtils;
+import com.moseeker.position.utils.PositionParamRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictJobsDBOccupationDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +33,8 @@ public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandl
         temp.setCodeOther(codes.get(codes.size()-1));
         temp.setCode(newCode.get(temp.getCodeOther()));
         temp.setLevel((short)codes.size());
-        temp.setName(PositionRefreshUtils.lastString(texts));
-        temp.setParentId(newCode.get(PositionRefreshUtils.parentCode(codes)));
+        temp.setName(PositionParamRefreshUtils.lastString(texts));
+        temp.setParentId(newCode.get(PositionParamRefreshUtils.parentCode(codes)));
         temp.setStatus((short)1);
 
         return temp;

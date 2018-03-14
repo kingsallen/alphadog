@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.common.util.StructSerializer;
 import com.moseeker.position.service.third.base.AbstractThirdInfoProvider;
@@ -35,7 +36,7 @@ public class JobsDBInfoProvider extends AbstractThirdInfoProvider{
         int accountId = getThirdPartyAccount(param).getThirdPartyAccountId();
 
         //获取redis中的字段(提供食宿、计算机能力、语言能力等等)
-        String str=redisClient.get(RefreshConstant.APP_ID, RefreshConstant.VERY_EAST_REDIS_PARAM_KEY,"");
+        String str=redisClient.get(RefreshConstant.APP_ID, KeyIdentifier.THIRD_PARTY_ENVIRON_PARAM.toString(),String.valueOf(getChannel().getValue()));
         logger.info("jobsdb redis param :"+str);
         if(str==null){
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,accountId+"在JobsDB不存在work location、Salary");

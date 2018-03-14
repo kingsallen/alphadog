@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.iface.IChannelType;
 import com.moseeker.position.utils.PositionEmailNotification;
-import com.moseeker.position.utils.PositionRefreshUtils;
+import com.moseeker.position.utils.PositionParamRefreshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +76,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
         for(Occupation o:occupationList){
             List<String> texts=o.getText();
             List<String> codes=o.getCode();
-            if(PositionRefreshUtils.notEmptyAndSizeMatch(texts,codes)){
+            if(PositionParamRefreshUtils.notEmptyAndSizeMatch(texts,codes)){
                 logger.info("Invalid Occupation: text:{},code:{} ",texts,codes);
                 continue;
             }
@@ -159,7 +159,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
      * @return
      */
     protected Map<String,Integer> generateNewKey(List<String> otherCodes,JSONObject msg) {
-        return PositionRefreshUtils.generateNewKey(otherCodes.iterator());
+        return PositionParamRefreshUtils.generateNewKey(otherCodes.iterator());
     }
 
 
@@ -179,7 +179,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
             List<String> texts=o.getText();
             List<String> codes=o.getCode();
 
-            if(PositionRefreshUtils.notEmptyAndSizeMatch(texts,codes)){
+            if(PositionParamRefreshUtils.notEmptyAndSizeMatch(texts,codes)){
                 logger.info("Invalid Occupation: text:{},code:{} ",texts,codes);
                 continue;
             }

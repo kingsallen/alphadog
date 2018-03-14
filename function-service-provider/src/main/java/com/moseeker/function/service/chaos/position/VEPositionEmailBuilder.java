@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.function.service.PositionEmailBuilder;
@@ -32,7 +33,7 @@ public class VEPositionEmailBuilder implements PositionEmailBuilder<ThirdpartyVe
     public Map<String, String> message(ThirdpartyVeryEastPositionDO position) {
         Map<String, String> map=new HashMap<>();
 
-        String json=redisClient.get(RefreshConstant.APP_ID,RefreshConstant.VERY_EAST_REDIS_PARAM_KEY,"");
+        String json=redisClient.get(RefreshConstant.APP_ID, KeyIdentifier.THIRD_PARTY_ENVIRON_PARAM.toString(),String.valueOf(getChannelType().getValue()));
 
         JSONObject obj=JSONObject.parseObject(json);
 

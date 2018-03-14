@@ -76,7 +76,7 @@ public class PositionBSThriftService implements Iface {
     @Override
     public Response refreshThirdPartyParam(int channel) throws BIZException, TException {
         try {
-            refresher.refresh();
+            refresher.refresh(channel);
             return ResultMessage.SUCCESS.toResponse(null);
         }catch (Exception e){
             logger.error("refresh Third Party Param error {}",e.getMessage());

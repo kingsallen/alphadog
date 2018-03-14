@@ -6,6 +6,7 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.common.iface.IChannelType;
 import com.moseeker.common.util.StringUtils;
@@ -22,7 +23,7 @@ import java.util.Map;
 /**
  * 把部分参数存放到redis的处理策略
  */
-public abstract class AbstractRedisResultHandler extends AbstractJsonResultHandler implements IChannelType{
+public abstract class AbstractRedisResultHandler extends AbstractJsonResultHandler implements IChannelType,ResultProvider{
     Logger logger= LoggerFactory.getLogger(AbstractRedisResultHandler.class);
 
     @Resource(name = "cacheClient")
@@ -31,7 +32,14 @@ public abstract class AbstractRedisResultHandler extends AbstractJsonResultHandl
     protected PositionEmailNotification emailNotification;
 
     protected abstract String[] param();
-    protected abstract String keyIdentifier();
+
+    /**
+     * 生成redis的key
+     * @return
+     */
+    protected String keyIdentifier(){
+        return KeyIdentifier.THIRD_PARTY_ENVIRON_PARAM.toString();
+    };
 
     @Override
     protected void handle(JSONObject obj) {
@@ -51,7 +59,16 @@ public abstract class AbstractRedisResultHandler extends AbstractJsonResultHandl
 
         String json=result.toJSONString();
         logger.info("save refresh result to {} redis : {}",keyIdentifier(),json);
-        redisClient.set(RefreshConstant.APP_ID,keyIdentifier(),"",json);
+        redisClient.set(RefreshConstant.APP_ID,keyIdentifier(),String.valueOf(getChannelType().getValue()),json);
+    }
+
+    /**
+     * 返回Redis中保存的environ参数
+     * @return
+     */
+    @Override
+    public String getRedisResult(){
+        return redisClient.get(RefreshConstant.APP_ID,keyIdentifier(),String.valueOf(getChannelType().getValue()));
     }
 
     /**

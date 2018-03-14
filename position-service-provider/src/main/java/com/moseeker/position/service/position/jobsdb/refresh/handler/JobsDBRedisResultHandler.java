@@ -98,11 +98,6 @@ public class JobsDBRedisResultHandler extends AbstractRedisResultHandler impleme
         return childWorkLocations;
     }
 
-    @Override
-    protected String keyIdentifier() {
-        return RefreshConstant.VERY_EAST_REDIS_PARAM_KEY;
-    }
-
     private static class ChaosWorkLocation{
         private int id;
         private String name;
