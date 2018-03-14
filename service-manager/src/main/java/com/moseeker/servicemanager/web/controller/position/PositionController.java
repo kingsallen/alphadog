@@ -195,13 +195,13 @@ public class PositionController {
     @ResponseBody
     public String refreshThirdPartyParam(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            Params<String, Object> map = ParamUtils.parseRequestParam(request);
             if(!"moseeker.com".equals(map.get("refreshKey"))){
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"wrong request param!");
             }
             int channel=0;
             if(map.containsKey("channel")){
-                channel= (int) map.get("channel");
+                channel= map.getInt("channel");
             }
             logger.info("-----------refresh Third Party Param start------------");
             Response result = positionBS.refreshThirdPartyParam(channel);

@@ -84,9 +84,11 @@ public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandl
      */
     private void recursiveOccupation(JobFunction jobFunction,List<Occupation> result,Occupation parent){
         Occupation thisOccupation=new Occupation();
+        thisOccupation.setCode(new ArrayList<>());
+        thisOccupation.setText(new ArrayList<>());
         if(parent!=null){
-            thisOccupation.setCode(new ArrayList<>(parent.getCode()));
-            thisOccupation.setText(new ArrayList<>(parent.getText()));
+            thisOccupation.getCode().addAll(parent.getCode());
+            thisOccupation.getText().addAll(parent.getText());
         }
 
         thisOccupation.getCode().add(String.valueOf(jobFunction.getId()));

@@ -26,14 +26,8 @@ public class JobsDBRedisResultHandler extends AbstractRedisResultHandler impleme
     }
 
     @Override
-    protected void handle(JSONObject obj) {
+    protected String handleCacheValue(JSONObject obj) {
         JSONObject result=new JSONObject();
-
-        String[] params=param();
-        if(params == null || params.length==0){
-            logger.info("no refresh result to redis");
-            return;
-        }
 
         result.put(SALARY,obj.get(SALARY));
         result.put(EMPLOYEE_TYPE,obj.get(EMPLOYEE_TYPE));
@@ -60,9 +54,7 @@ public class JobsDBRedisResultHandler extends AbstractRedisResultHandler impleme
 
         result.put(WORK_LOCATION,obj.get(WORK_LOCATION));
 
-        String json=result.toJSONString();
-        logger.info("save refresh result to {} redis : {}",keyIdentifier(),json);
-        redisClient.set(RefreshConstant.APP_ID,keyIdentifier(),"",json);
+        return result.toJSONString();
     }
 
     /**

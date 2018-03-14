@@ -43,7 +43,7 @@ public abstract class AbstractRedisResultHandler extends AbstractJsonResultHandl
 
     @Override
     protected void handle(JSONObject obj) {
-        JSONObject result=new JSONObject();
+
 
         String[] params=param();
         if(params == null || params.length==0){
@@ -51,15 +51,27 @@ public abstract class AbstractRedisResultHandler extends AbstractJsonResultHandl
             return;
         }
 
+        String json=handleCacheValue(obj);
+
+        logger.info("save refresh result to {} redis : {}",keyIdentifier(),json);
+        redisClient.set(RefreshConstant.APP_ID,keyIdentifier(),String.valueOf(getChannelType().getValue()),json);
+    }
+
+    /**
+     * 将chaos-environ传过来的需要缓存的数据 转为保存在redis中的数据
+     * 默认就是chaos传什么，我们就保存什么
+     * @param obj
+     * @return
+     */
+    protected String handleCacheValue(JSONObject obj){
+        JSONObject result=new JSONObject();
         for(String p:param()){
             result.put(p,obj.get(p));
         }
 
 //        changeCheck(result);
 
-        String json=result.toJSONString();
-        logger.info("save refresh result to {} redis : {}",keyIdentifier(),json);
-        redisClient.set(RefreshConstant.APP_ID,keyIdentifier(),String.valueOf(getChannelType().getValue()),json);
+        return result.toJSONString();
     }
 
     /**

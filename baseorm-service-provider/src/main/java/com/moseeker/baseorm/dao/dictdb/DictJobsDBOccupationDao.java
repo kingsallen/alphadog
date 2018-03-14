@@ -56,7 +56,7 @@ public class DictJobsDBOccupationDao extends AbstractDictOccupationDao<DictJobsD
     }
 
     public int deleteAll(){
-        Condition condition=new Condition(DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION.CODE.getName(),0, ValueOp.NEQ);
+        Condition condition=new Condition(DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION.STATUS.getName(),1);
         return delete(condition);
     }
 

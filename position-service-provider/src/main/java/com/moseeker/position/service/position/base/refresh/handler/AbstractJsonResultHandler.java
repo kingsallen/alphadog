@@ -13,7 +13,7 @@ public abstract class AbstractJsonResultHandler implements JsonResultHandler {
         try {
             JSONObject obj=JSONObject.parseObject(json);
             handle(obj.getJSONObject("data"));
-        }catch (Exception e){
+         }catch (Exception e){
             logger.info("parse json exception : data:{},exception：{}",json,e);
             throw e;
         }
