@@ -10,12 +10,11 @@ import java.util.List;
 public class PositionJobsDBForm {
     private List<String> summery;
     private List<List<String>> occupation;
-    private int addressId;
-    private String addressName;
-    private int childAddressId;
-    private String childAddressName;
+    private List<String> address;
     private int salaryTop;
     private int salaryBottom;
+    private int channel;
+
 
     {
         summery=new ArrayList<>();
@@ -59,6 +58,14 @@ public class PositionJobsDBForm {
         }
     }
 
+    public List<String> getAddress() {
+        return address;
+    }
+
+    public void setAddress(List<String> address) {
+        this.address = address;
+    }
+
     public List<String> getOccupation1() {
         return occupation.get(0);
     }
@@ -99,46 +106,12 @@ public class PositionJobsDBForm {
         this.occupation = occupation;
     }
 
-    public int getChildAddressId() {
-        return childAddressId;
-    }
-
-    public void setChildAddressId(int childAddressId) {
-        this.childAddressId = childAddressId;
-    }
-
-    public String getChildAddressName() {
-        return childAddressName;
-    }
-
-    public void setChildAddressName(String childAddressName) {
-        this.childAddressName = childAddressName;
-    }
-
-    public int getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(int addressId) {
-        this.addressId = addressId;
-    }
-
     public int getChannel() {
         return channel;
     }
 
     public void setChannel(int channel) {
         this.channel = channel;
-    }
-
-    private int channel;
-
-    public String getAddressName() {
-        return addressName;
-    }
-
-    public void setAddressName(String addressName) {
-        this.addressName = addressName;
     }
 
     public int getSalaryTop() {

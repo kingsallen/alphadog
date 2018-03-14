@@ -1,14 +1,39 @@
 package com.moseeker.position.service.position.base.sync.check;
 
-import java.util.Collections;
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.util.StringUtils;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractTransferCheck<T> implements ITransferCheck<T> {
-    Map<T,List<String>> errorMsgMap=new ConcurrentHashMap<>();
+    private Map<T,List<String>> errorMsgMap=new ConcurrentHashMap<>();
 
-    public List<String> popErrorMsg(T t){
+    //获取前台表单对应类型class
+    public abstract Class<T> getFormClass();
+
+    /**
+     * 将json类型的表单数据转换成对应的渠道表单类再传给各渠道实现类
+     * @param jsonForm
+     * @return
+     */
+    public boolean containsError(JSONObject jsonForm){
+        return containsError(jsonForm.toJavaObject(getFormClass()));
+    }
+
+    public List<String> getError(JSONObject jsonForm){
+        return getError(jsonForm.toJavaObject(getFormClass()));
+    }
+
+    @Override
+    public boolean containsError(T t) {
+        return !StringUtils.isEmptyList(getError(t));
+    }
+
+    /*public List<String> popErrorMsg(JSONObject jsonForm){
+        T t = jsonForm.toJavaObject(getFormClass());
+
         if(errorMsgMap.containsKey(t)){
             List<String> result=errorMsgMap.get(t);
             errorMsgMap.remove(t);
@@ -17,12 +42,12 @@ public abstract class AbstractTransferCheck<T> implements ITransferCheck<T> {
         return Collections.emptyList();
     }
 
-    public List<String> putErrorMsg(T t,List<String> errorMsg){
+    protected List<String> putErrorMsg(T t,List<String> errorMsg){
         if(errorMsgMap.containsKey(t)){
             List<String> result=errorMsgMap.get(t);
             errorMsgMap.put(t,errorMsg);
             return result;
         }
         return Collections.emptyList();
-    }
+    }*/
 }

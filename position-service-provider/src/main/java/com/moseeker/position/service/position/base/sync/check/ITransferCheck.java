@@ -7,5 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public interface ITransferCheck<T> extends IChannelType{
-    boolean check(T t);
+    boolean containsError(T t);
+
+    List<String> getError(T t);
 }

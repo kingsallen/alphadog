@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ThirdpartyJobsdbPosition extends TableImpl<ThirdpartyJobsdbPositionRecord> {
 
-    private static final long serialVersionUID = 1544733551;
+    private static final long serialVersionUID = 1363186851;
 
     /**
      * The reference instance of <code>thirdpartydb.thirdparty_jobsdb_position</code>
@@ -79,17 +79,17 @@ public class ThirdpartyJobsdbPosition extends TableImpl<ThirdpartyJobsdbPosition
     /**
      * The column <code>thirdpartydb.thirdparty_jobsdb_position.occupation_ext1</code>. 额外职能1
      */
-    public final TableField<ThirdpartyJobsdbPositionRecord, Integer> OCCUPATION_EXT1 = createField("occupation_ext1", org.jooq.impl.SQLDataType.INTEGER, this, "额外职能1");
+    public final TableField<ThirdpartyJobsdbPositionRecord, String> OCCUPATION_EXT1 = createField("occupation_ext1", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "额外职能1");
 
     /**
      * The column <code>thirdpartydb.thirdparty_jobsdb_position.occupation_ext2</code>. 额外职能2
      */
-    public final TableField<ThirdpartyJobsdbPositionRecord, Integer> OCCUPATION_EXT2 = createField("occupation_ext2", org.jooq.impl.SQLDataType.INTEGER, this, "额外职能2");
+    public final TableField<ThirdpartyJobsdbPositionRecord, String> OCCUPATION_EXT2 = createField("occupation_ext2", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "额外职能2");
 
     /**
      * The column <code>thirdpartydb.thirdparty_jobsdb_position.child_address_id</code>. 子地址code
      */
-    public final TableField<ThirdpartyJobsdbPositionRecord, Integer> CHILD_ADDRESS_ID = createField("child_address_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "子地址code");
+    public final TableField<ThirdpartyJobsdbPositionRecord, String> CHILD_ADDRESS_ID = createField("child_address_id", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "子地址code");
 
     /**
      * The column <code>thirdpartydb.thirdparty_jobsdb_position.child_address_name</code>. 子地址名称

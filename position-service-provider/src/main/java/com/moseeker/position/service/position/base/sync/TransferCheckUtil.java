@@ -5,6 +5,7 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.position.service.position.base.sync.check.AbstractTransferCheck;
 import com.moseeker.position.service.position.base.sync.check.ITransferCheck;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -14,6 +15,8 @@ import java.util.*;
  */
 @Component
 public class TransferCheckUtil {
+
+    @Autowired
     List<AbstractTransferCheck> checkList;
 
     public List<String> checkBeforeTransfer(SyncRequestType requestType, ChannelType channelType, JSONObject jsonForm){
@@ -21,11 +24,12 @@ public class TransferCheckUtil {
             return Collections.emptyList();
         }
 
-        for(ITransferCheck transferCheck:checkList){
+        for(AbstractTransferCheck transferCheck:checkList){
             if(transferCheck.getChannelType()==channelType){
-//                transferCheck.check()
+                if(transferCheck.containsError(jsonForm)){
+                    return transferCheck.getError(jsonForm);
+                }
             }
-
         }
         return Collections.emptyList();
     }

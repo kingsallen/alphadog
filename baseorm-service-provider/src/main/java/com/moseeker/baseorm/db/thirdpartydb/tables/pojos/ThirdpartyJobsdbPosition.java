@@ -23,16 +23,16 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ThirdpartyJobsdbPosition implements Serializable {
 
-    private static final long serialVersionUID = -1726834244;
+    private static final long serialVersionUID = 1953444130;
 
     private Integer   id;
     private Integer   pid;
     private String    summary1;
     private String    summary2;
     private String    summary3;
-    private Integer   occupationExt1;
-    private Integer   occupationExt2;
-    private Integer   childAddressId;
+    private String    occupationExt1;
+    private String    occupationExt2;
+    private String    childAddressId;
     private String    childAddressName;
     private Timestamp createTime;
     private Timestamp updateTime;
@@ -61,9 +61,9 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         String    summary1,
         String    summary2,
         String    summary3,
-        Integer   occupationExt1,
-        Integer   occupationExt2,
-        Integer   childAddressId,
+        String    occupationExt1,
+        String    occupationExt2,
+        String    childAddressId,
         String    childAddressName,
         Timestamp createTime,
         Timestamp updateTime,
@@ -123,27 +123,27 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         this.summary3 = summary3;
     }
 
-    public Integer getOccupationExt1() {
+    public String getOccupationExt1() {
         return this.occupationExt1;
     }
 
-    public void setOccupationExt1(Integer occupationExt1) {
+    public void setOccupationExt1(String occupationExt1) {
         this.occupationExt1 = occupationExt1;
     }
 
-    public Integer getOccupationExt2() {
+    public String getOccupationExt2() {
         return this.occupationExt2;
     }
 
-    public void setOccupationExt2(Integer occupationExt2) {
+    public void setOccupationExt2(String occupationExt2) {
         this.occupationExt2 = occupationExt2;
     }
 
-    public Integer getChildAddressId() {
+    public String getChildAddressId() {
         return this.childAddressId;
     }
 
-    public void setChildAddressId(Integer childAddressId) {
+    public void setChildAddressId(String childAddressId) {
         this.childAddressId = childAddressId;
     }
 

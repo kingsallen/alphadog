@@ -168,6 +168,8 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【同步记录ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【职位ID】：").append(pojo.getData().getPositionId()).append(divider);
         emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getData().getAccountId()).append(divider);
+
+        // worktype
         emailMessgeBuilder.append("【招聘类型】：").append(moseekerPosition.getCandidateSource() == 1 ? "校招" : "社招").append(divider);
         emailMessgeBuilder.append("【标题】：").append(moseekerPosition.getTitle()).append(divider);
         emailMessgeBuilder.append("【城市】：").append(positionSyncMailUtil.getCitys(moseekerPosition.getId())).append(divider);
@@ -181,6 +183,7 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【招聘人数】：").append(Double.valueOf(moseekerPosition.getCount()).intValue()).append(divider);
         emailMessgeBuilder.append("【工作年限】：").append(positionSyncMailUtil.getExperience(moseekerPosition.getExperience())).append(divider);
         emailMessgeBuilder.append("【学历要求】：").append(positionSyncMailUtil.getDegree(moseekerPosition.getDegree())).append(divider);
+
         if (thirdPartyPositionDO.getChannel() == ChannelType.LIEPIN.getValue()) {
             if (moseekerPosition.getCandidateSource() == 1) {
                 emailMessgeBuilder.append("【实习薪资】：").append(thirdPartyPositionDO.getPracticeSalary()).append(thirdPartyPositionDO.getPracticeSalaryUnit() == 1 ? "元/天" : "元/月").append(divider);
@@ -190,6 +193,8 @@ public class PositionSyncFailedNotification {
                 emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
             }
         }
+
+
         emailMessgeBuilder.append("<b style=\"color:blue;text-decoration:underline\">【简历邮箱】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append("</b>");
         emailMessgeBuilder.append("<b style=\"color:red\">（手动发布该职位时，请一定将该邮箱填写在简历回收邮箱中）</b>").append(divider);
         emailMessgeBuilder.append("【职位描述】：").append(divider);

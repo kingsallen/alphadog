@@ -18,7 +18,7 @@ public class JobsDBRedisResultHandler extends AbstractRedisResultHandler impleme
 
     private static final String EMPLOYEE_TYPE="employee_type";
     private static final String SALARY="salary";
-    private static final String WORK_LOCATION="work_location";
+    public static final String WORK_LOCATION="work_location";
 
     @Override
     protected String[] param() {
@@ -52,7 +52,7 @@ public class JobsDBRedisResultHandler extends AbstractRedisResultHandler impleme
         }
 
 
-        result.put(WORK_LOCATION,obj.get(WORK_LOCATION));
+        result.put(WORK_LOCATION,workLocationPojos);
 
         return result.toJSONString();
     }
@@ -118,68 +118,5 @@ public class JobsDBRedisResultHandler extends AbstractRedisResultHandler impleme
         public void setChildren(List<ChaosWorkLocation> children) {
             this.children = children;
         }
-    }
-
-    private static class WorkLocationPojo{
-        private WorkLocation workLocation;
-        private List<ChildWorkLocation> childWorkLocation;
-
-        public WorkLocation getWorkLocation() {
-            return workLocation;
-        }
-
-        public void setWorkLocation(WorkLocation workLocation) {
-            this.workLocation = workLocation;
-        }
-
-        public List<ChildWorkLocation> getChildWorkLocation() {
-            return childWorkLocation;
-        }
-
-        public void setChildWorkLocation(List<ChildWorkLocation> childWorkLocation) {
-            this.childWorkLocation = childWorkLocation;
-        }
-
-        private static class ChildWorkLocation{
-            private String text;
-            private String code;
-
-            public String getText() {
-                return text;
-            }
-
-            public void setText(String text) {
-                this.text = text;
-            }
-
-            public String getCode() {
-                return code;
-            }
-
-            public void setCode(String code) {
-                this.code = code;
-            }
-        }
-        private static class WorkLocation{
-            private String text;
-            private String code;
-
-            public String getText() {
-                return text;
-            }
-
-            public void setText(String text) {
-                this.text = text;
-            }
-
-            public String getCode() {
-                return code;
-            }
-
-            public void setCode(String code) {
-                this.code = code;
-            }
-        }
-
     }
 }

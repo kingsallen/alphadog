@@ -205,7 +205,7 @@ public class PositionService {
             return ResponseUtils
                     .fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
         }
-        // NullPoint check
+        // NullPoint checkFormWrong
         JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
         if (jobPositionPojo == null) {
             logger.error("无法根据ID查找到职位。 positionId:{}", positionId);

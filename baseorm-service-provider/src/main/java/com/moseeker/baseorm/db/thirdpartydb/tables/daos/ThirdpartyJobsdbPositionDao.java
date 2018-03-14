@@ -96,21 +96,21 @@ public class ThirdpartyJobsdbPositionDao extends DAOImpl<ThirdpartyJobsdbPositio
     /**
      * Fetch records that have <code>occupation_ext1 IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchByOccupationExt1(Integer... values) {
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchByOccupationExt1(String... values) {
         return fetch(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.OCCUPATION_EXT1, values);
     }
 
     /**
      * Fetch records that have <code>occupation_ext2 IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchByOccupationExt2(Integer... values) {
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchByOccupationExt2(String... values) {
         return fetch(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.OCCUPATION_EXT2, values);
     }
 
     /**
      * Fetch records that have <code>child_address_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchByChildAddressId(Integer... values) {
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchByChildAddressId(String... values) {
         return fetch(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.CHILD_ADDRESS_ID, values);
     }
 

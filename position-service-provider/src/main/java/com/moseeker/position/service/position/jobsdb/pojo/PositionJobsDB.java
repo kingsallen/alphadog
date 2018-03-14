@@ -16,7 +16,7 @@ public class PositionJobsDB {
 
     private List<List<String>> job_functions;
 
-    private List<Integer> work_location;
+    private List<String> work_location;
 
     private int employment_type;
 
@@ -66,11 +66,11 @@ public class PositionJobsDB {
         this.job_functions = job_functions;
     }
 
-    public List<Integer> getWork_location() {
+    public List<String> getWork_location() {
         return work_location;
     }
 
-    public void setWork_location(List<Integer> work_location) {
+    public void setWork_location(List<String> work_location) {
         this.work_location = work_location;
     }
 
