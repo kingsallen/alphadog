@@ -112,6 +112,12 @@ public class CrawlerController {
 	 * 根据传入的position_id和channel找到第三方账号，
 	 * 推送 查询出的第三方账号和密码加上传入的url 给scraper
 	 * scraper获取html返回
+	 * {
+		 "appid":4,
+		 "position_id":1,
+		 "url":"http://www.moseeker.com",
+		 "channel":8
+	 	}
 	 * @param request
 	 * @param response
 	 * @return
