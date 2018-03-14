@@ -21,6 +21,8 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -607,8 +609,15 @@ public class ChatDao {
         }
     }
 
-    @Test
-    public void testSha1() {
-        System.out.println(DigestUtils.sha1Hex("liugongyi@moseeker.com"));
+    public List<Integer> findUserIdByName(String keyword, List<Integer> chatUserIdList) {
+        List<Integer> userIdList = new ArrayList<>();
+
+        userUserDao.fetchIdBy
+
+        return userIdList;
+    }
+
+    public List<Integer> fetchUserIdByHrId(int hrId) {
+        return hrChatUnreadCountDao.fetchUserIdByHRId(hrId);
     }
 }

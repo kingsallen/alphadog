@@ -129,6 +129,14 @@ public class ChatService {
         return rooms;
     }
 
+    public HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, String keyword, int userId, int pageSize) {
+
+        List<Integer> chatUserIdList = chaoDao.fetchUserIdByHrId(hrId);
+
+        List<Integer> userIdList = chaoDao.findUserIdByName(keyword, chatUserIdList);
+
+    }
+
     /**
      * 用户查找聊天室列表
      * @param userId 用户编号

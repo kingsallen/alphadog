@@ -20,6 +20,13 @@ struct HRChatRoomsVO {
     5:  optional list<HRChatRoomVO> rooms   //HR聊天室信息集合
 }
 
+struct HRChatRoomsIndexVO {
+    1:  optional i32 userId,                //页码
+    2:  optional i32 pageSize,              //每页显示的数量
+    3:  optional i32 totalRow,              //聊天室总数
+    4:  optional list<HRChatRoomVO> rooms   //HR聊天室信息集合
+}
+
 struct UserChatRoomVO {
     1:  optional i32 id,                    //聊天室编号
     2:  optional i32 hrId,                  //userdb.user_hr_account.id HR编号

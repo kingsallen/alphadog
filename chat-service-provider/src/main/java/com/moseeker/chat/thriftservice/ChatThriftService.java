@@ -2,8 +2,10 @@ package com.moseeker.chat.thriftservice;
 
 import com.moseeker.chat.service.ChatService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.chat.service.ChatService.Iface;
 import com.moseeker.thrift.gen.chat.struct.*;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -26,6 +28,17 @@ public class ChatThriftService implements Iface {
     public HRChatRoomsVO listHRChatRoom(int hrId, int pageNo, int pageSize) throws  TException {
         try {
             return chatService.listHRChatRoom(hrId, pageNo, pageSize);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+        }
+    }
+
+    @Override
+    public HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, String keyword, int userId, int pageSize) throws BIZException, TException {
+        try {
+            ValidateUtil validateUtil = new ValidateUtil();
+            return chatService.listHRChatRoomByIndex(hrId, keyword, userId, pageSize);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
