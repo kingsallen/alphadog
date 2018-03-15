@@ -37,6 +37,7 @@ import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -352,14 +353,24 @@ public class PositionBS {
         }
 
         try {
-          String html= UrlUtil.sendPost(scrapperUrl,jsonObject.toJSONString());
+            String html= UrlUtil.sendPost(scrapperUrl,jsonObject.toJSONString());
 
-          logger.info("get html from scraper success. html length:{}",html.length());
+            logger.info("get html from scraper success. html length:{}",html.length());
 
-          return html;
+            JSONObject result=JSON.parseObject(html);
+
+            String status=result.getString("status");
+            if("1".equals(status)){
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CRAWLER_USER_NOPERMITION);
+            }else if(!"0".equals(status)){
+                logger.error("get html from scraper return status error :{}",status);
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIMEOUT);
+            }
+
+            return result.getJSONArray("resumes").getString(0);
         } catch (ConnectException e){
-          logger.error("get html from scraper connection error:{}",e);
-          throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIMEOUT);
+            logger.error("get html from scraper connection error:{}",e);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIMEOUT);
         }
 
       }
