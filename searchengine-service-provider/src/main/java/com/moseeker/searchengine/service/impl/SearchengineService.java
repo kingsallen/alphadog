@@ -141,27 +141,112 @@ public class SearchengineService {
         return ResponseUtils.success(result);
     }
     /*
+     小程序用的查詢職位接口
+     */
+    @CounterIface
+    public Map<String,Object> searchPositionMini(Map<String,String> params){
+        TransportClient client= EsClientInstance.getClient();
+
+        String pageFrom=params.get("page");
+        String pageSize=params.get("pageSize");
+        String childCompanyId=params.get("childCompanyId");
+        String motherCompanyId=params.get("motherCompanyId");
+        String keywords=params.get("keyword");
+        String status=params.get("status");
+        String publisher=params.get("publisher");
+        if (StringUtils.isBlank(pageFrom)||"0".equals(pageFrom)) {
+            pageFrom = "0";
+        }
+        if (StringUtils.isBlank(pageSize)||"0".equals(pageSize)) {
+            pageSize = "20";
+        }
+        QueryBuilder query=this.getPositionQueryBuilder(keywords,null,null,null, null,
+                null, null, null, null,  null, motherCompanyId,
+                childCompanyId, null, null);
+
+        if(StringUtils.isNotBlank(status)){
+            searchUtil.handleMatch(Integer.parseInt(status),query,"status");
+        }else{
+            this.handlerStatusQuery(query);
+        }
+        if(StringUtils.isNotBlank(publisher)){
+            searchUtil.handleMatch(Integer.parseInt(publisher),query,"publisher");
+        }
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+                .setQuery(query);
+        boolean haskey=false;
+        if(StringUtils.isNotBlank(keywords)){
+            haskey=true;
+        }
+        responseBuilder.addSort("status", SortOrder.ASC);
+        this.positionIndexOrder(responseBuilder,true,haskey,null);
+//        this.handlerOrderByPriorityCityOrTimeOrStatus(responseBuilder,null);
+        if(StringUtils.isNotBlank(status)){
+            responseBuilder.setSize(0);
+        }else{
+            responseBuilder.setFrom(Integer.parseInt(pageFrom)).setSize(Integer.parseInt(pageSize));
+        }
+        responseBuilder.setTrackScores(true);
+        logger.info(responseBuilder.toString());
+        SearchResponse response = responseBuilder.execute().actionGet();
+        Map<String,Object> result=searchUtil.handleData(response,"positionList");
+        return result;
+    }
+
+    private void handlerStatusQuery(QueryBuilder query){
+        List<String> statusList=new ArrayList<>();
+        statusList.add("0");
+        statusList.add("2");
+        Map<String,List<String>> params=new HashMap<>();
+        params.put("status",statusList);
+        searchUtil.handleShouldMatchFilter(params,query);
+    }
+    /*
      将查询elasticsearch index的逻辑独立出来
      */
     private SearchResponse getSearchIndex(String keywords, String cities, String industries, String occupations, String scale,
                                           String employment_type, String candidate_source, String experience, String degree, String salary,
                                           String company_name, int page_from, int page_size, String child_company_name, String department,
                                           boolean order_by_priority, String custom){
-
+        TransportClient client= EsClientInstance.getClient();
         if (page_from == 0) {
             page_from = 0;
         }
         if (page_size == 0) {
             page_size = 20;
         }
-        TransportClient client= EsClientInstance.getClient();
+        boolean haskey = false;
+        if (!StringUtils.isEmpty(keywords)){
+            haskey =true;
+        }
+        if(!StringUtils.isEmpty(industries)){
+            haskey =true;
+        }
+        QueryBuilder query=this.getPositionQueryBuilder(keywords,cities,industries,occupations, scale,
+                employment_type, candidate_source, experience, degree,  salary, company_name,
+                child_company_name, department, custom);
+        QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
+        ((BoolQueryBuilder) query).must(status_filter);
+        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+                .setQuery(query);
+        this.positionIndexOrder(responseBuilder,order_by_priority,haskey,cities);
+        responseBuilder.setFrom(page_from).setSize(page_size);
+        responseBuilder.setTrackScores(true);
+        logger.info(responseBuilder.toString());
+        SearchResponse response = responseBuilder.execute().actionGet();
+        return response;
+
+    }
+    /*
+     封装一下对职位列表的查询语句
+     */
+    private QueryBuilder getPositionQueryBuilder(String keywords,String cities, String industries, String occupations, String scale,
+                                                 String employment_type, String candidate_source, String experience, String degree, String salary,
+                                                 String company_name, String child_company_name, String department,
+                                                 String custom){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-
-        boolean haskey = false;
-
-        if (!StringUtils.isEmpty(keywords)&&!"".equals(keywords.trim())) {
-            haskey = true;
+        if (!StringUtils.isEmpty(keywords)) {
             String[] keyword_list = keywords.split(" ");
             QueryBuilder keyand = QueryBuilders.boolQuery();
             for (int i = 0; i < keyword_list.length; i++) {
@@ -180,8 +265,6 @@ public class SearchengineService {
             }
             ((BoolQueryBuilder) query).must(keyand);
         }
-
-
         if (!StringUtils.isEmpty(cities)) {
             String[] city_list = cities.split(",");
             QueryBuilder cityor = QueryBuilders.boolQuery();
@@ -199,7 +282,6 @@ public class SearchengineService {
         }
 
         if (!StringUtils.isEmpty(industries)) {
-            haskey = true;
             String[] industry_list = industries.split(",");
             QueryBuilder industryor = QueryBuilders.boolQuery();
             for (int i = 0; i < industry_list.length; i++) {
@@ -209,7 +291,6 @@ public class SearchengineService {
             }
             ((BoolQueryBuilder) query).must(industryor);
         }
-
         if (!StringUtils.isEmpty(occupations)) {
             String[] occupation_list = occupations.split(",");
             QueryBuilder occupationor = QueryBuilders.boolQuery();
@@ -295,52 +376,77 @@ public class SearchengineService {
             QueryBuilder custom_filter = QueryBuilders.termQuery("search_data.custom", custom);
             ((BoolQueryBuilder) query).must(custom_filter);
         }
+        return query;
+    }
 
-        QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
-        ((BoolQueryBuilder) query).must(status_filter);
-
-
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
-                .setQuery(query);
-
+    /*
+     封装一下对排序的语句
+     */
+    private void positionIndexOrder(SearchRequestBuilder responseBuilder,boolean order_by_priority,boolean haskey,String cities){
         if (order_by_priority) {
-
             if (haskey) {
-                responseBuilder.addSort("priority", SortOrder.ASC);
-                if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
-                    SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
-                    builder.order(SortOrder.DESC);
-                    responseBuilder.addSort(builder);
-                } else {
-                    responseBuilder.addSort("_score", SortOrder.DESC);
-                }
+                this.handlerOrderByPriorityCityOrScore(responseBuilder,cities);
             } else {
-                responseBuilder.addSort("priority", SortOrder.ASC);
-                if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
-                    SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 1), "number");
-                    builder.order(SortOrder.DESC);
-                    responseBuilder.addSort(builder);
-                } else {
-                    responseBuilder.addSort("update_time", SortOrder.DESC);
-                }
-
+                this.handlerOrderByPriorityCityOrTime(responseBuilder,cities);
             }
-
         } else {
-            if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
-                SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
-                builder.order(SortOrder.DESC);
-                responseBuilder.addSort(builder);
-            } else {
-                responseBuilder.addSort("_score", SortOrder.DESC);
-            }
+            this.handlerOrderByCityOrScore(responseBuilder,cities);
         }
-        responseBuilder.setFrom(page_from).setSize(page_size);
-        responseBuilder.setTrackScores(true);
-        logger.info(responseBuilder.toString());
-        SearchResponse response = responseBuilder.execute().actionGet();
-        return response;
+    }
 
+    /*
+     继续对排序进行细分1,按照priority排序，再按照城市或者得分排序
+     */
+   private void handlerOrderByPriorityCityOrScore(SearchRequestBuilder responseBuilder,String cities){
+       responseBuilder.addSort("priority", SortOrder.ASC);
+       if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+           SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
+           builder.order(SortOrder.DESC);
+           responseBuilder.addSort(builder);
+       } else {
+           responseBuilder.addSort("_score", SortOrder.DESC);
+       }
+   }
+
+   /*
+    继续对排序进行细分2,按照城市或者排序
+     */
+    private void handlerOrderByPriorityCityOrTime(SearchRequestBuilder responseBuilder,String cities){
+        responseBuilder.addSort("priority", SortOrder.ASC);
+        if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+            SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 1), "number");
+            builder.order(SortOrder.DESC);
+            responseBuilder.addSort(builder);
+        } else {
+            responseBuilder.addSort("update_time", SortOrder.DESC);
+        }
+    }
+    /*
+        继续对排序进行细分3,按照城市或者得分排序
+         */
+    private void handlerOrderByCityOrScore(SearchRequestBuilder responseBuilder,String cities){
+        if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+            SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 0), "number");
+            builder.order(SortOrder.DESC);
+            responseBuilder.addSort(builder);
+        } else {
+            responseBuilder.addSort("_score", SortOrder.DESC);
+        }
+    }
+    /*
+   继续对排序进行细分4,按照城市或者排序
+    */
+    private void handlerOrderByPriorityCityOrTimeOrStatus(SearchRequestBuilder responseBuilder,String cities){
+        responseBuilder.addSort("status", SortOrder.ASC);
+        responseBuilder.addSort("priority", SortOrder.ASC);
+        responseBuilder.addSort("_score", SortOrder.DESC);
+        if (!StringUtils.isEmpty(cities) && !"全国".equals(cities)) {
+            SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(cities, 1), "number");
+            builder.order(SortOrder.DESC);
+            responseBuilder.addSort(builder);
+        } else {
+            responseBuilder.addSort("update_time", SortOrder.DESC);
+        }
     }
     /*
       按照被命中的城市是否是全国。来重新处理顺序问题，只有全国的，或者是全国命中的沉底
@@ -769,12 +875,19 @@ public class SearchengineService {
     public Map<String,Object> getPositionSuggest(Map<String,String> params){
         String keyWord=params.get("keyWord");
         String companyIds=params.get("company_id");
-        if(StringUtils.isBlank(keyWord)||StringUtils.isBlank(companyIds)){
+        String publisher=params.get("publisher");
+        if(StringUtils.isBlank(keyWord)&&StringUtils.isBlank(companyIds)&&StringUtils.isBlank(publisher)){
             return null;
         }
         String publisherCompanyId=params.get("did");
         String page=params.get("page_from");
         String pageSize=params.get("page_size");
+
+        String flag=params.get("flag");
+        String returnParams=params.get("return_params");
+        if(StringUtils.isBlank(flag)){
+            flag="0";
+        }
         if(StringUtils.isBlank(page)){
             page="1";
         }
@@ -785,59 +898,83 @@ public class SearchengineService {
         Map<String,Object> map=new HashMap<String,Object>();
         try {
             client = searchUtil.getEsClient();
-            SearchResponse hits=this.searchPrefix(keyWord,companyIds,publisherCompanyId,Integer.parseInt(page),Integer.parseInt(pageSize),client);
+            SearchResponse hits=this.searchPrefix(keyWord,companyIds,publisherCompanyId,Integer.parseInt(flag),publisher,returnParams,Integer.parseInt(page),Integer.parseInt(pageSize),client);
             long hitNum=hits.getHits().getTotalHits();
             if(hitNum==0){
-                hits=this.searchQueryString(keyWord,companyIds,publisherCompanyId,Integer.parseInt(page),Integer.parseInt(pageSize),client);
+                hits=this.searchQueryString(keyWord,companyIds,publisherCompanyId,Integer.parseInt(flag),publisher,returnParams,Integer.parseInt(page),Integer.parseInt(pageSize),client);
                 map=searchUtil.handleData(hits,"suggest");
             }else{
                 map=searchUtil.handleData(hits,"suggest");
             }
         }catch(Exception e){
-
+            e.printStackTrace();
         }
 
         return map;
 
     }
     //通过Prefix方式搜索
-     private SearchResponse searchPrefix(String keyWord,String companyIds,String publisherCompanyId,int page,int pageSize,TransportClient client){
+     private SearchResponse searchPrefix(String keyWord,String companyIds,String publisherCompanyId,int flag,String publisher,String returnParams,int page,int pageSize,TransportClient client){
          QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
          QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
          List<String> list=new ArrayList<>();
          list.add("title");
          searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
-         searchUtil.handleTerms(companyIds,query,"company_id");
-         if(StringUtils.isNotBlank(publisherCompanyId)){
-             searchUtil.handleTerms(companyIds,query,"publisher_company_id");
-         }
-         searchUtil.handleMatch(0,query,"status");
+         this.handlerCommonSuggest(companyIds,publisherCompanyId,flag,publisher,query);
          SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                  .setQuery(query)
                  .setFrom((page-1)*pageSize)
                  .setSize(pageSize)
                  .setTrackScores(true);
+         this.handlerReturnParams(returnParams,responseBuilder);
+         logger.info(responseBuilder.toString());
          SearchResponse res=responseBuilder.execute().actionGet();
          return res;
      }
     //通过QueryString搜索
-    private SearchResponse searchQueryString(String keyWord,String companyIds,String publisherCompanyId,int page,int pageSize,TransportClient client){
+    private SearchResponse searchQueryString(String keyWord,String companyIds,String publisherCompanyId,int flag,String publisher,String returnParams,int page,int pageSize,TransportClient client){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         List<String> list=new ArrayList<>();
         list.add("title");
         searchUtil.handleKeyWordforQueryString(keyWord, false, query, list);
-        searchUtil.handleTerms(companyIds,query,"company_id");
-        if(StringUtils.isNotBlank(publisherCompanyId)){
-            searchUtil.handleTerms(companyIds,query,"publisher_company_id");
-        }
-        searchUtil.handleMatch(0,query,"status");
+        this.handlerCommonSuggest(companyIds,publisherCompanyId,flag,publisher,query);
         SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
                 .setSize(pageSize)
                 .setTrackScores(true);
+
+        this.handlerReturnParams(returnParams,responseBuilder);
+        logger.info(responseBuilder.toString());
         SearchResponse res=responseBuilder.execute().actionGet();
         return res;
+    }
+
+    /*
+     提取公共部分，进行封装
+     */
+
+    public void handlerCommonSuggest(String companyIds,String publisherCompanyId,int flag,String publisher,QueryBuilder query ){
+        searchUtil.handleTerms(companyIds,query,"company_id");
+        if(StringUtils.isNotBlank(publisherCompanyId)){
+            searchUtil.handleTerms(companyIds,query,"publisher_company_id");
+        }
+        if(flag==0){
+            searchUtil.handleMatch(0,query,"status");
+        }else{
+            this.handlerStatusQuery(query);
+        }
+        if(StringUtils.isNotBlank(publisher)){
+            searchUtil.handleTerms(publisher,query,"publisher");
+        }
+    }
+    /*
+     制定返回参数
+     */
+    private void handlerReturnParams(String returnParams,SearchRequestBuilder builder){
+        if(StringUtils.isNotBlank(returnParams)){
+            builder.setFetchSource(returnParams.split(","),null);
+        }
     }
 }

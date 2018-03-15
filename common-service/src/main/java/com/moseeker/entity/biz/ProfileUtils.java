@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileAwards;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -25,10 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class ProfileUtils {
@@ -599,16 +597,22 @@ public class ProfileUtils {
 	public List<ProfileAwardsRecord> mapToAwardsRecords(List<Map<String, Object>> awards) {
 		List<ProfileAwardsRecord> awardsRecords = new ArrayList<>();
 		if (awards != null && awards.size() > 0) {
-			awards.forEach(award -> {
-				ProfileAwardsRecord record = BeanUtils.MapToRecord(award, ProfileAwardsRecord.class);
+			Iterator<Map<String, Object>> iterator = awards.iterator();
+			while (iterator.hasNext()) {
+
+				ProfileAwardsRecord record = BeanUtils.MapToRecord(iterator.next(), ProfileAwardsRecord.class);
 				if (record != null) {
+					ValidationMessage<ProfileAwardsRecord> validationMessage = ProfileValidation.verifyAward(record);
+					if (!validationMessage.isPass()) {
+						continue;
+					}
 //					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
 //						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
 //					}
 					this.awardsMaxLimit(record);
 					awardsRecords.add(record);
 				}
-			});
+			}
 		}
 		return awardsRecords;
 	}
@@ -667,6 +671,11 @@ public class ProfileUtils {
 		ProfileBasicRecord record = null;
 		if (basic != null) {
 			record = BeanUtils.MapToRecord(basic, ProfileBasicRecord.class);
+			ValidationMessage<ProfileBasicRecord> validationMessage = ProfileValidation.verifyBasic(record);
+			if (!validationMessage.isPass()) {
+				return null;
+			}
+
 //			if(StringUtils.isNotNullOrEmpty(record.getSelfIntroduction()) && record.getSelfIntroduction().length() > Constant.DESCRIPTION_LENGTH) {
 //				record.setSelfIntroduction(record.getSelfIntroduction().substring(0, Constant.DESCRIPTION_LENGTH));
 //			}
@@ -729,7 +738,7 @@ public class ProfileUtils {
 				record.setUserId((Integer) profile.get("user_id"));
 			}
 			if (profile.get("disable") != null) {
-				record.setDisable((byte)(profile.get("disable")));
+				record.setDisable(BeanUtils.converToByte(profile.get("disable")));
 			} else {
 				record.setDisable((byte)(1));
 			}

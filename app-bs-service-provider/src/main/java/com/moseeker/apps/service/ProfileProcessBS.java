@@ -323,7 +323,6 @@ public class ProfileProcessBS {
     @CounterIface
     public void sendTemplate(int userId, String userName, int companyId,
                              int status, String positionName, int applicationId, TemplateMs tm)  {
-        logger.info("sendTemplate userId : {}; userName:{};companyId:{};status:{};positionName:{};application:{}");
         if (StringUtils.isNullOrEmpty(positionName)) {
             return;
         }

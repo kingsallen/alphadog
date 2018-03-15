@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCustomFields implements Serializable {
 
-    private static final long serialVersionUID = 552969452;
+    private static final long serialVersionUID = -1739202293;
 
     private Integer id;
     private Integer companyId;
@@ -32,6 +32,7 @@ public class HrEmployeeCustomFields implements Serializable {
     private Byte    disable;
     private Integer mandatory;
     private Integer status;
+    private Integer optionType;
 
     public HrEmployeeCustomFields() {}
 
@@ -44,6 +45,7 @@ public class HrEmployeeCustomFields implements Serializable {
         this.disable = value.disable;
         this.mandatory = value.mandatory;
         this.status = value.status;
+        this.optionType = value.optionType;
     }
 
     public HrEmployeeCustomFields(
@@ -54,7 +56,8 @@ public class HrEmployeeCustomFields implements Serializable {
         Integer forder,
         Byte    disable,
         Integer mandatory,
-        Integer status
+        Integer status,
+        Integer optionType
     ) {
         this.id = id;
         this.companyId = companyId;
@@ -64,6 +67,7 @@ public class HrEmployeeCustomFields implements Serializable {
         this.disable = disable;
         this.mandatory = mandatory;
         this.status = status;
+        this.optionType = optionType;
     }
 
     public Integer getId() {
@@ -130,6 +134,14 @@ public class HrEmployeeCustomFields implements Serializable {
         this.status = status;
     }
 
+    public Integer getOptionType() {
+        return this.optionType;
+    }
+
+    public void setOptionType(Integer optionType) {
+        this.optionType = optionType;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrEmployeeCustomFields (");
@@ -142,6 +154,7 @@ public class HrEmployeeCustomFields implements Serializable {
         sb.append(", ").append(disable);
         sb.append(", ").append(mandatory);
         sb.append(", ").append(status);
+        sb.append(", ").append(optionType);
 
         sb.append(")");
         return sb.toString();

@@ -19,7 +19,6 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
-import com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +44,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1374727488;
+    private static final long serialVersionUID = -1780831705;
 
     /**
      * The reference instance of <code>jobdb</code>
@@ -128,11 +127,6 @@ public class Jobdb extends SchemaImpl {
     public final JobResumeOther JOB_RESUME_OTHER = com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
 
     /**
-     * VIEW
-     */
-    public final UserProfileJobapply USER_PROFILE_JOBAPPLY = com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply.USER_PROFILE_JOBAPPLY;
-
-    /**
      * No further instances allowed
      */
     private Jobdb() {
@@ -171,7 +165,6 @@ public class Jobdb extends SchemaImpl {
             JobPositionExt.JOB_POSITION_EXT,
             JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,
             JobPositionTopic.JOB_POSITION_TOPIC,
-            JobResumeOther.JOB_RESUME_OTHER,
-            UserProfileJobapply.USER_PROFILE_JOBAPPLY);
+            JobResumeOther.JOB_RESUME_OTHER);
     }
 }

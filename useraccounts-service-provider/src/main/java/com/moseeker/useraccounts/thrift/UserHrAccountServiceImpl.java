@@ -194,6 +194,16 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
+    public Response deleteThirdPartyAccount(int accountId,int userId) throws BIZException, TException {
+        try {
+            return thirdPartyAccountService.deleteThirdPartyAccount(accountId,userId);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
     public ThirdPartyAccountInfo dispatchThirdPartyAccount(int accountId, List<Integer> hrIds) throws BIZException, TException {
         try {
             return thirdPartyAccountService.dispatch(accountId, hrIds);
@@ -635,5 +645,12 @@ public class UserHrAccountServiceImpl implements Iface {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
         }
+    }
+
+    @Override
+    public Response getHrCompanyInfo(int wechat_id, String unionId, int account_id) throws BIZException, TException {
+        Response response = service.getHrCompanyInfo(wechat_id, unionId, account_id);
+        logger.info("getHrCompanyInfo fanhuizhi:{}", response);
+        return response;
     }
 }

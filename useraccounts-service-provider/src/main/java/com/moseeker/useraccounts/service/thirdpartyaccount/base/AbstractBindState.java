@@ -1,13 +1,13 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount.base;
 
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.common.constants.BindingStatus;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
-import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindConfirmOperation;
-import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindMessageOperation;
-import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindOperation;
-import com.moseeker.useraccounts.service.thirdpartyaccount.operation.DispatchOperation;
+import com.moseeker.useraccounts.service.thirdpartyaccount.operation.*;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +29,8 @@ public abstract class AbstractBindState implements BindState{
     BindConfirmOperation bindConfirmOperation;
     @Autowired
     DispatchOperation dispatchOperation;
+    @Autowired
+    DeleteOperation deleteOperation;
 
     @Autowired
     protected HRThirdPartyAccountDao thirdPartyAccountDao;
@@ -43,16 +45,23 @@ public abstract class AbstractBindState implements BindState{
     public HrThirdPartyAccountDO bind(int hrId, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
         HrThirdPartyAccountDO result=bindOperation.bind(hrId, thirdPartyAccount);
 
-        result.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-        result.setSyncTime(result.getUpdateTime());
-        context.updateBinding(result);
+
+        if(result.getBinding()!= BindingStatus.NEEDCODE.getValue()){
+            result.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            result.setSyncTime(result.getUpdateTime());
+            context.updateBinding(result);
 
 
-        HrThirdPartyAccountDO bindingAccount = thirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, thirdPartyAccount.getChannel());
-        if (bindingAccount == null) {
-            context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
+            HrThirdPartyAccountDO bindingAccount = thirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, thirdPartyAccount.getChannel());
+            if (bindingAccount == null) {
+                try {
+                    context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
+                }catch (BIZException e){
+                    logger.info("catch BIZException when dispatch after bind finished. exception {}",e);
+                    return result;
+                }
+            }
         }
-
 
         return result;
     }
@@ -71,11 +80,6 @@ public abstract class AbstractBindState implements BindState{
     }
 
     @Override
-    public HrThirdPartyAccountDO bindChaosHandle(HrThirdPartyAccountDO thirdPartyAccountDO) throws Exception {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public ThirdPartyAccountInfo dispatch(int accountId, List<Integer> hrIds) throws Exception {
         return dispatchOperation.dispatch(accountId, hrIds);
     }
@@ -83,5 +87,10 @@ public abstract class AbstractBindState implements BindState{
     @Override
     public int updateBinding(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
         return hrThirdPartyAccountDao.updateData(thirdPartyAccount);
+    }
+
+    @Override
+    public int delete(HrThirdPartyAccountDO thirdPartyAccountDO, UserHrAccountDO hrAccount) throws Exception {
+        return deleteOperation.delete(thirdPartyAccountDO,hrAccount);
     }
 }

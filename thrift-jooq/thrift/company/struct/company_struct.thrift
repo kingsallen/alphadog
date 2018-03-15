@@ -68,7 +68,8 @@ struct HrImporterMonitorVO{
 struct HrEmployeeCustomFieldsVO{
     1: optional i32 id,	//null
     2: optional string fname,
-    3: optional list<string> fvalues
+    3: optional list<string> fvalues,
+    4: optional i32 option_type //选项类型  0:下拉选项, 1:文本
 }
 
 struct HrCompanyConf {

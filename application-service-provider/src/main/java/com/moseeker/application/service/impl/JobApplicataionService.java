@@ -1,23 +1,33 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.application.domain.ApplicationBatchEntity;
+import com.moseeker.application.domain.HREntity;
+import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
 import com.moseeker.baseorm.dao.historydb.HistoryJobApplicationDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobResumeOtherDao;
 import com.moseeker.baseorm.dao.userdb.UserAliUserDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobResumeOtherRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -30,10 +40,8 @@ import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.*;
 import com.moseeker.common.util.query.Query.QueryBuilder;
-import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -41,22 +49,28 @@ import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.apache.thrift.TException;
+import org.jooq.impl.DSL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -85,9 +99,15 @@ public class JobApplicataionService {
     @Autowired
     private JobResumeOtherDao jobResumeOtherDao;
     @Autowired
+    private HrCompanyDao hrCompanyDao;
+    @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
     @Autowired
     private UserUserDao userUserDao;
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
+    @Autowired
+    private HrCompanyAccountDao hrCompanyAccountDao;
     @Autowired
     private UserAliUserDao userAliUserDao;
 
@@ -100,6 +120,9 @@ public class JobApplicataionService {
     @Autowired
     EmployeeEntity employeeEntity;
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+
+    @Autowired
+    ApplicationRepository applicationRepository;
 
     /**
      * 创建申请
@@ -928,6 +951,76 @@ public class JobApplicataionService {
         hrOperationRecordRecord.setAppId(appId);
         hrOperationRecordRecord.setOperateTplId(jobApplicationRecord.getAppTplId().intValue());
         return hrOperationRecordRecord;
+    }
+
+    public Response getHrApplicationNum(int user_id){
+        int num = 0;
+        Query accountQuery = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), user_id).buildQuery();
+        UserHrAccountDO accountDO = userHrAccountDao.getData(accountQuery);
+        if(accountDO == null)
+            return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
+        Query companyQuery = null;
+        Query positionQuery = null;
+        List<JobApplicationDO> isViewCountList = null;
+        List<Integer> accountIdList = new ArrayList<>();
+       if(accountDO.getAccountType() == 0 ){
+            Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), accountDO.getId()).buildQuery();
+            HrCompanyAccountDO companyAccountDO = hrCompanyAccountDao.getData(companyAccountQuery);
+            if(companyAccountDO == null)
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.PARENT_ID.getName(), companyAccountDO.getCompanyId()).or("id", companyAccountDO.getCompanyId()).buildQuery();
+            List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(companyQuery);
+            if(companyDOList!= null && companyDOList.size()>0){
+                List<Integer> companyIdList = companyDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
+                Query companyAccountQuery1 = new Query.QueryBuilder().where(new Condition(HrCompanyAccount.HR_COMPANY_ACCOUNT.COMPANY_ID.getName(), companyIdList.toArray(), ValueOp.IN)).buildQuery();
+                List<HrCompanyAccountDO> companyAccountList = hrCompanyAccountDao.getDatas(companyAccountQuery1);
+                accountIdList = companyAccountList.stream().map(m -> m.getAccountId()).collect(Collectors.toList());
+            }else {
+                accountIdList.add(accountDO.getId());
+            }
+
+        }else{
+            accountIdList.add(accountDO.getId());
+        }
+
+        positionQuery =  new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountIdList.toArray(),ValueOp.IN)).buildQuery();
+        List<JobPositionDO> positionDOList = jobPositionDao.getDatas(positionQuery);
+        if(positionDOList != null && positionDOList.size()>0){
+            List<Integer> positionIdList = positionDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            Query applicationQuery = new Query.QueryBuilder().select(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLIER_ID.getName())
+                    .where(new Condition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionIdList.toArray(),ValueOp.IN))
+                    .and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.IS_VIEWED.getName(),1).andInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),0)
+                    .orInnerCondition(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLY_TYPE.getName(),1).and(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.EMAIL_STATUS.getName(), 0)
+                    .groupBy(com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.APPLIER_ID.getName()).buildQuery();
+            logger.info("applicationQuery SQL :{}", applicationQuery);
+            isViewCountList = jobApplicationDao.getDatas(applicationQuery);
+
+        }
+        if(isViewCountList!=null)
+            num = isViewCountList.size();
+        logger.info("HR账号未读申请数量：{}", num);
+        return ResponseUtils.success(num);
+    }
+
+    /**
+     * HR查看申请
+     * 查看申请的是为了处理HR查看，导出，下载某一个申请人信息时，将申请人对应的“是否查看申请”（是否查看的标记是在申请记录上，
+     * 但是业务逻辑做过改版，现有的业务逻辑应该在申请人上比较合适）标记为“已经查看”状态。
+     * 查看申请时需要权限的，主账号可以查看公司下的任何简历，子账号只能查看自己发布职位收到的申请人的简历。
+     * 查看简历还会触发发送模板消息和积分添加。如果申请有推荐人，并且该公司存在公司积分配置，
+     * 那么会对推荐人添加对应积分。HR查看申请 对推荐人（申请是员工转发的候选人投递的，
+     * 那么员工就是该申请的推荐人）添加对应积分（需要公司配置了该操作的积分项）。
+     * @param hrId HR编号
+     * @param applicationIdList  申请集合
+     * @throws CommonException 业务异常 (41012,  "请提交正确的HR信息!" )(41013,  "HR账号类型异常!" )(41014,  "申请信息不正确!" )(41010,  "没有权限查看申请信息!" )
+     */
+    @Transactional
+    @CounterIface
+    public void viewApplications(int hrId, List<Integer> applicationIdList) throws CommonException {
+
+        HREntity hrEntity = applicationRepository.fetchHREntity(hrId);
+        ApplicationBatchEntity applicationBatchEntity = applicationRepository.fetchApplicationEntity(applicationIdList);
+        hrEntity.viewApplication(applicationBatchEntity);
     }
 }
 

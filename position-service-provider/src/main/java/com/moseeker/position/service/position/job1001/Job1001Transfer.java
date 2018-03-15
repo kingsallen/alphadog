@@ -62,8 +62,6 @@ public class Job1001Transfer extends AbstractPositionTransfer<PositionJob1001For
     protected PositionJob1001 createAndInitPositionInfo(PositionJob1001Form positionForm, JobPositionDO positionDB) throws Exception {
         PositionJob1001 positionInfo=new PositionJob1001();
 
-
-
         positionInfo.setTitle(positionDB.getTitle());
         positionInfo.setDepartment(positionDB.getDepartment());
         positionInfo.setLanguage(positionDB.getLanguage());

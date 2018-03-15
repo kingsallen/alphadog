@@ -20,7 +20,7 @@ service PositionServices {
     // 根据职位Id获取当前职位
     common_struct.Response getPositionById(1:i32 positionId);  
     //获取公司两种自定义的字段
-    common_struct.Response CustomField(1:string param);    
+    common_struct.Response CustomField(1:string param);
     //是否可以刷新
     bool ifAllowRefresh(1:i32 positionId, 2: i32 account_id);
     list<string> getThirdPartyPositions(1: common_struct.CommonQuery query);
@@ -97,6 +97,14 @@ service PositionServices {
     common_struct.Response positionCvConf(1:i32 positionId);
 
     common_struct.Response getEmployeeRecomPositionByIds(1:i32 recomPushId,2:i32 companyId,3:i32 type,4:i32 pageNum,5: i32 pageSize);
+
+    common_struct.Response updatePosition(1:string param);
+
+    common_struct.Response getMiniPositionList(1:i32 accountId,2:string keyword,3:i32 page,4: i32 pageSize);
+
+    common_struct.Response getMiniPositionSuggest(1:i32 accountId,2:string keyword,3:i32 page,4: i32 pageSize);
+
+    common_struct.Response getMiniPositionNumStatus(1:i32 accountId,2:string keyword,3:i32 page,4: i32 pageSize);
 
 }
 /*

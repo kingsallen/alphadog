@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.thirdpartyaccount.operation;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
@@ -68,7 +69,7 @@ public class DispatchOperation {
 //        return context.getBindState(thirdPartyAccount).dispatch(thirdPartyAccount,hrIds);
     }
 
-    private void invalidNotUsedRelationship(HrThirdPartyAccountDO thirdPartyAccount, List<Integer> hrIds){
+    private void invalidNotUsedRelationship(HrThirdPartyAccountDO thirdPartyAccount, List<Integer> hrIds) throws BIZException {
         //检查这些Hr是否绑定的其它相同渠道的帐号
         List<HrThirdPartyAccountHrDO> otherBinders = thirdPartyAccountHrDao.getHrOtherBoundAcount(thirdPartyAccount.getId(),hrIds,thirdPartyAccount.getChannel());
         if ( otherBinders != null && !otherBinders.isEmpty()) {
@@ -77,7 +78,7 @@ public class DispatchOperation {
             List<HrThirdPartyAccountDO> otherAccounts = thirdPartyAccountDao.getAccountsById(accountIds);
 
             if (otherAccounts != null && otherAccounts.size() > 0) {
-                throw new CommonException(-1, "已分配其他账号");
+                throw new BIZException(-1, "已分配其他账号");
             } else {
                 //错误的数据进行修复,将这些用户与无效的帐号的关联关系解除
                 List<Integer> ids = otherBinders.stream().map(item -> item.getId()).collect(Collectors.toList());

@@ -233,6 +233,48 @@ public class PositionController {
         }
     }
 
+    @RequestMapping(value = "/position/syncVerifyInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public String syncVerifyInfo(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            String jsonParam=JSON.toJSONString(params);
+            logger.info("-----------syncVerifyInfo------------");
+            logger.info("syncVerifyInfo params:" + jsonParam);
+            Response result=positionBS.syncVerifyInfo(jsonParam);
+            logger.info("syncVerifyInfo result:" + JSON.toJSONString(result));
+            logger.info("-----------syncVerifyInfo end------------");
+            return ResponseLogNotification.success(request, result);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/position/getSyncVerifyParam", method = RequestMethod.GET)
+    @ResponseBody
+    public String getVerifyParam(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            String jsonParam=JSON.toJSONString(params);
+            logger.info("-----------getVerifyInfo------------");
+            logger.info("getVerifyInfo params:" + jsonParam);
+            Response result=positionBS.getVerifyParam(jsonParam);
+            logger.info("getVerifyInfo result:" + JSON.toJSONString(result));
+            logger.info("-----------getVerifyInfo end------------");
+            return ResponseLogNotification.success(request, result);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     @RequestMapping(value = "/jobposition/saveAndSync", method = RequestMethod.POST)
     @ResponseBody
     public String saveAndSyncPosition(HttpServletRequest request, HttpServletResponse response) {
@@ -619,6 +661,26 @@ public class PositionController {
             thirdPartyAccount.unsetId();
             positonServices.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount,extThirdPartyPosition);
             return ResponseLogNotification.successJson(request, 1);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    /**
+     * 第三方职位列表详情
+     */
+    @RequestMapping(value = "/api/mini/update/position", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updatePosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Response result = positonServices.updatePosition(JSONObject.toJSONString(params));
+            if(result.getStatus()==0) {
+                return ResponseLogNotification.successJson(request, result.getData());
+            }else{
+                return ResponseLogNotification.failJson(request, result.getStatus(), result.getMessage(), result.getData());
+            }
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseLogNotification.failJson(request, e);

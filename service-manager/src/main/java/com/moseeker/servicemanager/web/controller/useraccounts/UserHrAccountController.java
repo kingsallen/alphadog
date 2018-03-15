@@ -345,6 +345,30 @@ public class UserHrAccountController {
         }
     }
 
+    @RequestMapping(value = "/thirdpartyaccount", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String deleteThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer accountId = params.getInt("account_id");
+            if (accountId == null) {
+                return ResponseLogNotification.fail(request, "account_id不能为空");
+            }
+
+            Integer userId = params.getInt("user_id", 0);
+
+            if (userId == null) {
+                return ResponseLogNotification.fail(request, "user_id不能为空");
+            }
+
+            userHrAccountService.deleteThirdPartyAccount(accountId,userId);
+
+            return ResponseLogNotification.successJson(request, 1);
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
     @RequestMapping(value = "/thirdpartyaccount/dispatch", method = RequestMethod.POST)
     @ResponseBody
     public String dispatchThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
@@ -1033,6 +1057,32 @@ public class UserHrAccountController {
             } else {
                 return ResponseLogNotification.failJson(request, message);
             }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
+     * 获取自定义申请导出字段
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/company/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getHrAccountCompanyInfo(HttpServletRequest request) {
+        try {
+            ValidateUtil vu = new ValidateUtil();
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int account_id = params.getInt("accountId",0);
+            int wechat_id = params.getInt("wechatId", 41);
+            String unionId = params.getString("unionId");
+            Response res = userHrAccountService.getHrCompanyInfo(wechat_id,unionId,account_id);
+            return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {

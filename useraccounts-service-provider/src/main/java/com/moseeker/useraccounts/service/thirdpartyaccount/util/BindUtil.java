@@ -1,12 +1,16 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount.util;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +21,8 @@ import java.util.Objects;
 
 @Component
 public class BindUtil {
+    Logger logger= LoggerFactory.getLogger(BindUtil.class);
+
     @Resource(name = "cacheClient")
     protected RedisClient redisClient;
 
@@ -33,6 +39,20 @@ public class BindUtil {
      */
     public Map<String, String> getBindExtra(UserHrAccountDO userHrAccount, HrThirdPartyAccountDO account) throws BIZException {
         Map<String, String> extras = new HashMap<>();
+        ChannelType channelType=ChannelType.instaceFromInteger(account.getChannel());
+        switch (channelType){
+            case ZHILIAN:
+                logger.info("zhilian set mobile : {}",userHrAccount.getMobile());
+                extras.put("mobile",userHrAccount.getMobile());
+                break;
+            case JOB51:
+                logger.info("job51 set mobile : {}",userHrAccount.getMobile());
+                extras.put("mobile",userHrAccount.getMobile());
+                break;
+            default:
+                break;
+        }
+        logger.info("getBindExtra extras : {}", JSON.toJSONString(extras));
         return extras;
     }
 

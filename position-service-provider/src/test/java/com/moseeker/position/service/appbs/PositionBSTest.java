@@ -21,10 +21,13 @@ public class PositionBSTest {
 
     @Test
     public void test() throws Exception {
-        String json="{\"appid\":4,\"channels\":[\"{\\\"occupation\\\":[\\\"1066\\\",\\\"1067\\\"],\\\"channel\\\":7,\\\"subsite\\\":\\\"监\n" +
-                "理英才网\\\",\\\"salaryBottom\\\":10,\\\"salaryTop\\\":20}\"],\"channelsIterator\":[\"{\\\"occupation\\\":[\\\"1066\\\",\\\"1067\\\"],\\\"channel\\\":7,\\\"subsite\\\":\\\"监理英才网\\\",\\\"salaryBottom\\\":10,\\\"salaryTop\\\":20}\"],\"channelsSize\":1,\"positionId\":10,\"setAppid\":true,\"setChannels\":true,\"setPositionId\":true}\n";
+        String json="{\"appid\":4,\"channels\":[\"{\\\"companyId\\\":904,\\\"occupation\\\":[\\\"21\\\",\\\"3010000\\\",\\\"115\\\"],\\\"companyName\\\":\\\"寻仟信息科技(上海)有限公司\\\",\\\"count\\\":1,\\\"channel\\\":3,\\\"addressName\\\":\\\"上海市徐汇区乐山路33号1号楼\\\",\\\"salaryBottom\\\":10,\\\"salaryTop\\\":20}\"],\"channelsIterator\":[\"{\\\"companyId\\\":904,\\\"occupation\\\":[\\\"21\\\",\\\"3010000\\\",\\\"115\\\"],\\\"companyName\\\":\\\"寻仟信息科技(上海)有限公司\\\",\\\"count\\\":1,\\\"channel\\\":3,\\\"addressName\\\":\\\"上海市徐汇区乐山路33号1号楼\\\",\\\"salaryBottom\\\":10,\\\"salaryTop\\\":20}\"],\"channelsSize\":1,\"positionId\":1020935,\"requestType\":1,\"setAppid\":true,\"setChannels\":true,\"setPositionId\":true,\"setRequestType\":true}\n";
         ThirdPartyPositionForm form= JSON.toJavaObject(JSON.parseObject(json),ThirdPartyPositionForm.class);
         positionBS.syncPositionToThirdParty(form);
+
+//        String json="{\"paramId\":\"86125fe7-7254-4fd6-a1f9-7c9cc665743a\"}";
+//
+//        positionBS.getVerifyParam(json);
     }
 
 }

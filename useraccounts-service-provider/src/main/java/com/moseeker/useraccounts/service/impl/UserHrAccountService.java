@@ -2,16 +2,24 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.config.HRAccountActivationType;
+import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
-import com.moseeker.baseorm.db.userdb.tables.*;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -41,33 +49,32 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
-import com.moseeker.useraccounts.constant.HRAccountActivationType;
 import com.moseeker.useraccounts.constant.HRAccountStatus;
-import com.moseeker.useraccounts.constant.HRAccountType;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import static com.moseeker.useraccounts.exception.UserAccountException.HR_UPDATEMOBILE_FAILED;
+import static com.moseeker.useraccounts.exception.UserAccountException.ILLEGAL_MOBILE;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
 import com.moseeker.useraccounts.pojo.EmployeeRankObj;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static com.moseeker.useraccounts.exception.UserAccountException.*;
+import javax.annotation.Resource;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * HR账号服务
@@ -112,7 +119,13 @@ public class UserHrAccountService {
     private UserUserDao userUserDao;
 
     @Autowired
+    private UserWxUserDao userWxUserDao;
+
+    @Autowired
     private EmployeeEntity employeeEntity;
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     private HrImporterMonitorDao hrImporterMonitorDao;
@@ -122,6 +135,12 @@ public class UserHrAccountService {
 
     @Autowired
     private HrCompanyDao hrCompanyDao;
+
+    @Autowired
+    private HrCompanyAccountDao hrCompanyAccountDao;
+
+    @Autowired
+    private JobApplicationDao applicationDao;
 
     @Autowired
     CandidateCompanyDao candidateCompanyDao;
@@ -134,6 +153,9 @@ public class UserHrAccountService {
 
     @Autowired
     HrCompanyAccountDao companyAccountDao;
+
+    @Autowired
+    JobPositionDao positionDao;
 
     @Autowired
     private PositionEntity positionEntity;
@@ -1584,8 +1606,188 @@ public class UserHrAccountService {
                 });
             }
         }
-        return hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
+        List<HrAppExportFieldsDO> showedApplicationExportFieldsList = hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
+        if (showedApplicationExportFieldsList != null) {
+            showedApplicationExportFieldsList.addAll(fetchDefaultExportFields());
+        }
+        return showedApplicationExportFieldsList;
     }
+
+    /**
+     * 查找简历导出默认导出的字段
+     * todo 待老王回来一起讨论，默认的导出字段配置如何建表
+     * @return 简历导出默认导出的字段
+     */
+    private List<HrAppExportFieldsDO> fetchDefaultExportFields() {
+        List<HrAppExportFieldsDO> fieldsDOList = new ArrayList<>();
+
+        HrAppExportFieldsDO hrAppExportFieldsDO1 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO1.setFieldTitle("职位发布人");
+        hrAppExportFieldsDO1.setSample("张三");
+        hrAppExportFieldsDO1.setFieldName("position_publisher_name");
+        hrAppExportFieldsDO1.setShowed(0);
+        hrAppExportFieldsDO1.setSelected(0);
+        hrAppExportFieldsDO1.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO1);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO2 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO2.setFieldTitle("职位所属部门");
+        hrAppExportFieldsDO2.setSample("财务部");
+        hrAppExportFieldsDO2.setFieldName("position_department");
+        hrAppExportFieldsDO2.setShowed(0);
+        hrAppExportFieldsDO2.setSelected(0);
+        hrAppExportFieldsDO2.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO2);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO3 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO3.setFieldTitle("职位招聘类型");
+        hrAppExportFieldsDO3.setSample("社招");
+        hrAppExportFieldsDO3.setFieldName("position_candidate_source");
+        hrAppExportFieldsDO3.setShowed(0);
+        hrAppExportFieldsDO3.setSelected(0);
+        hrAppExportFieldsDO3.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO3);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO4 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO4.setFieldTitle("职位招聘性质");
+        hrAppExportFieldsDO4.setSample("全职");
+        hrAppExportFieldsDO4.setFieldName("position_employment_type");
+        hrAppExportFieldsDO4.setShowed(0);
+        hrAppExportFieldsDO4.setSelected(0);
+        hrAppExportFieldsDO4.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO4);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO5 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO5.setFieldTitle("自定义字段１");
+        hrAppExportFieldsDO5.setSample("abc");
+        hrAppExportFieldsDO5.setFieldName("position_occupation_name");
+        hrAppExportFieldsDO5.setShowed(0);
+        hrAppExportFieldsDO5.setSelected(0);
+        hrAppExportFieldsDO5.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO5);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO6 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO6.setFieldTitle("自定义字段2");
+        hrAppExportFieldsDO6.setSample("def");
+        hrAppExportFieldsDO6.setFieldName("position_custom_name");
+        hrAppExportFieldsDO6.setShowed(0);
+        hrAppExportFieldsDO6.setSelected(0);
+        hrAppExportFieldsDO6.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO6);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO7 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO7.setFieldTitle("职位编号");
+        hrAppExportFieldsDO7.setSample("001");
+        hrAppExportFieldsDO7.setFieldName("jobnumber");
+        hrAppExportFieldsDO7.setShowed(0);
+        hrAppExportFieldsDO7.setSelected(0);
+        hrAppExportFieldsDO7.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO7);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO8 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO8.setFieldTitle("申请职位");
+        hrAppExportFieldsDO8.setSample("前端工程师");
+        hrAppExportFieldsDO8.setFieldName("title");
+        hrAppExportFieldsDO8.setShowed(0);
+        hrAppExportFieldsDO8.setSelected(0);
+        hrAppExportFieldsDO8.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO8);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO9 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO9.setFieldTitle("招聘地点");
+        hrAppExportFieldsDO9.setSample("北京,上海");
+        hrAppExportFieldsDO9.setFieldName("city");
+        hrAppExportFieldsDO9.setShowed(0);
+        hrAppExportFieldsDO9.setSelected(0);
+        hrAppExportFieldsDO9.setDisplayOrder(0);
+        fieldsDOList.add(hrAppExportFieldsDO9);
+
+        return fieldsDOList;
+    }
+
+
+    /**
+     * 获取HR账号信息以及公司信息
+     * @param wechat_id 微信公众号编号
+     * @param unionId    HR微信unionId
+     * @return
+     */
+    public Response getHrCompanyInfo(int wechat_id, String unionId, int account_id){
+        UserHrAccountDO accountDO = null;
+        UserWxUserDO userWxUserDO = null;
+        //当HR编号不存在时使用unionid获取Hr账号信息
+        if(account_id<=0) {
+            Query query = new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), wechat_id)
+                    .and(UserWxUser.USER_WX_USER.UNIONID.getName(), unionId)
+                    .and(UserWxUser.USER_WX_USER.IS_SUBSCRIBE.getName(), "1").buildQuery();
+            userWxUserDO = userWxUserDao.getData(query);
+            if (userWxUserDO == null)
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
+            Query accountQuery = new Query.QueryBuilder().where(com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT.WXUSER_ID.getName(), userWxUserDO.getId()).buildQuery();
+            accountDO = userHrAccountDao.getData(accountQuery);
+            if (accountDO == null)
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
+            account_id = accountDO.getId();
+        }else{
+            Query accountQuery = new Query.QueryBuilder().where(com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT.ID.getName(), account_id).buildQuery();
+            accountDO = userHrAccountDao.getData(accountQuery);
+            if (accountDO == null)
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
+            Query query = new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.ID.getName(), accountDO.getWxuserId()).buildQuery();
+            userWxUserDO = userWxUserDao.getData(query);
+            if (userWxUserDO == null)
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
+        }
+        Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), account_id).buildQuery();
+        HrCompanyAccountDO companyAccountDO = hrCompanyAccountDao.getData(companyAccountQuery);
+        if(companyAccountDO == null)
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        Query companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(), companyAccountDO.getCompanyId()).buildQuery();
+        HrCompanyDO companyDO = hrCompanyDao.getData(companyQuery);
+        if(companyDO == null)
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("accountId",account_id);
+        params.put("abbreviation", companyDO.getAbbreviation());
+        String name = accountDO.getUsername();
+        if(!StringUtils.isNotNullOrEmpty(name) && StringUtils.isNotNullOrEmpty(accountDO.getMobile())){
+            name = accountDO.getMobile().substring(0,3)+"****"+accountDO.getMobile().substring(7,11);
+        }
+        params.put("username", name);
+        params.put("type", false);
+        if(companyDO.getType() == 0)
+            params.put("type", true);
+        String logo = "";
+        String cdn = env.getProperty("cdn.url");
+        if(StringUtils.isNotNullOrEmpty(accountDO.getHeadimgurl())){
+            if(accountDO.getHeadimgurl().startsWith("http")){
+                logo = accountDO.getHeadimgurl();
+            }else{
+                logo = cdn+accountDO.getHeadimgurl();
+            }
+        }else if(StringUtils.isNotNullOrEmpty(userWxUserDO.getHeadimgurl())){
+            if(userWxUserDO.getHeadimgurl().startsWith("http")){
+                logo = userWxUserDO.getHeadimgurl();
+            }else{
+                logo = cdn+userWxUserDO.getHeadimgurl();
+            }
+        }else if(StringUtils.isNotNullOrEmpty(companyDO.getLogo())){
+            if(companyDO.getLogo().startsWith("http")){
+                logo = companyDO.getLogo();
+            }else{
+                logo = cdn +companyDO.getLogo();
+            }
+        }
+        if(!logo.startsWith("https") && logo.startsWith("http")){
+            logo = logo.replace("http", "https");
+        }
+        params.put("headImgUrl",logo);
+        return ResponseUtils.success(params);
+
+    }
+
+
 
     public UserHrAccountDO requiresNotNullAccount(int hrId){
         UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);

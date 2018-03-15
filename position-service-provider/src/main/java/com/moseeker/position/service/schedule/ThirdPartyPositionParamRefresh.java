@@ -8,8 +8,7 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.position.service.position.base.refresh.AbstractRabbitMQParamRefresher;
-import com.moseeker.position.service.position.base.refresh.ParamRefresher;
-import com.moseeker.position.service.position.base.refresh.RefresherFactory;
+import com.moseeker.position.service.position.base.PositionFactory;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.slf4j.Logger;
@@ -21,9 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +35,7 @@ public class ThirdPartyPositionParamRefresh {
     private RedisClient redisClient;
 
     @Autowired
-    RefresherFactory refresherFactory;
+    PositionFactory refresherFactory;
 
     @Autowired
     PositionEmailNotification emailNotification;

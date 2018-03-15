@@ -54,11 +54,13 @@ public class EsClientInstance {
 
                         try {
                             failNum=failNum+1;
+                            logger.info("es客户端连接失败，失败次数为="+failNum);
                             if(CONNECTION_NUM==null||CONNECTION_NUM==0){
                                 CONNECTION_NUM=20;
                             }
                             if(failNum>CONNECTION_NUM){
-                                failNum=0;
+                                failNum=1;
+                                logger.info("es客户端连接失败，连接失败次数重置");
                                 sendEmail();
                             }
                             logger.info("链接es客户端失败，等待1.5秒重新连接=========");

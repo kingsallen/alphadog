@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.userdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import java.sql.SQLException;
 import org.jooq.impl.TableImpl;
@@ -30,5 +31,12 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
             wxuser = create.selectFrom(UserWxUser.USER_WX_USER).where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userId)).limit(1).fetchOne();
         }
         return wxuser;
+    }
+
+    public UserWxUserDO getWXUserById(int id) {
+        Query query=new Query.QueryBuilder()
+                .where(UserWxUser.USER_WX_USER.ID.getName(),id)
+                .buildQuery();
+        return getData(query);
     }
 }

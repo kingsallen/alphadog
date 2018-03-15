@@ -3,6 +3,7 @@ package com.moseeker.mq.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
@@ -180,12 +181,12 @@ public class TemlateMsgHttp {
      * @param lastWork      申请者上一份工作公司名
      * @param openId        HR微信openId
      * @param url           模板发送请求链接
-     * @param link          模板消息点击链接
+     * @param appid          模板消息点击链接
      * @return
      */
     public Response handleHrTemplate(UserHrAccountDO hrAccount, JobPositionDO position, HrWxWechatDO hrWxWechatDO, HrWxTemplateMessageDO template,
                                                 UserUserDO user, String workExp, String lastWork, String openId, String url,
-                                                String link)  {
+                                                String appid)  {
         if( hrAccount == null || position == null || !StringUtils.isNotNullOrEmpty(openId) || template== null
                 || user == null || !StringUtils.isNotNullOrEmpty(url)){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
@@ -224,11 +225,14 @@ public class TemlateMsgHttp {
             applierTemplate.put("data", colMap);
             applierTemplate.put("touser", openId);
             applierTemplate.put("template_id", template.getWxTemplateId());
-            applierTemplate.put("url", link);
             applierTemplate.put("topcolor", template.getTopcolor());
+            Map<String, String> miniprogram = new HashMap<>();
+            miniprogram.put("appid", appid);
+            miniprogram.put("pagepath", Constant.WX_APP_PROFILE_INFO_URL.replace("{}", user.getId()+""));
+            applierTemplate.put("miniprogram", miniprogram);
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
             Map<String, Object> params = JSON.parseObject(result);
-            insertLogWxMessageRecord(hrWxWechatDO, template, openId, link, colMap ,params);
+            insertLogWxMessageRecord(hrWxWechatDO, template, openId, "", colMap ,params);
             if(params!= null && "0".equals(params.get("errcode"))){
                 return ResponseUtils.success("success");
             }

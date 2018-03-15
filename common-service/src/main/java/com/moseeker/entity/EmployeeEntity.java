@@ -196,7 +196,6 @@ public class EmployeeEntity {
         return 0;
     }
 
-
     @Transactional
     public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws Exception {
         // 获取积分点数

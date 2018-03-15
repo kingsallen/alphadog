@@ -4,6 +4,7 @@ import java.util.List;
 
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.searchengine.service.impl.TalentpoolSearchengine;
 import org.apache.thrift.TException;
 import org.elasticsearch.search.SearchHits;
@@ -116,6 +117,9 @@ public class SearchengineServiceImpl implements Iface {
 	@Override
 	public Response userQuery(Map<String, String> params) throws TException {
 		try{
+//			logger.info("+++++++++++++++++++");
+//			logger.info(JSON.toJSONString(params));
+//			logger.info("+++++++++++++++++++");
 			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
 			if(res==null||res.isEmpty()){
 				return ResponseUtils.success("");
@@ -130,7 +134,7 @@ public class SearchengineServiceImpl implements Iface {
 	@Override
 	public Response userAggInfo(Map<String, String> params) throws TException {
 		try{
-			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
+			Map<String,Object> res=talentpoolSearchengine.getAggInfo(params);
 			if(res==null||res.isEmpty()){
 				return ResponseUtils.success("");
 			}
@@ -145,5 +149,20 @@ public class SearchengineServiceImpl implements Iface {
 	public Response queryPositionIndex(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, String department, boolean order_by_priority, String custom) throws TException {
 		return service.queryPositionIndex(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size, child_company_name, department, order_by_priority, custom);
 	}
+
+	@Override
+	public Response queryPositionMini(Map<String, String> params) throws TException {
+		try{
+			Map<String,Object> res=service.searchPositionMini(params);
+			if(res==null||res.isEmpty()){
+				return ResponseUtils.success("");
+			}
+			return ResponseUtils.success(res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
 
 }

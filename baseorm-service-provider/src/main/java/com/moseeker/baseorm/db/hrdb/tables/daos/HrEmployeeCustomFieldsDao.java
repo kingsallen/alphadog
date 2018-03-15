@@ -112,4 +112,11 @@ public class HrEmployeeCustomFieldsDao extends DAOImpl<HrEmployeeCustomFieldsRec
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> fetchByStatus(Integer... values) {
         return fetch(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS, values);
     }
+
+    /**
+     * Fetch records that have <code>option_type IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> fetchByOptionType(Integer... values) {
+        return fetch(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.OPTION_TYPE, values);
+    }
 }

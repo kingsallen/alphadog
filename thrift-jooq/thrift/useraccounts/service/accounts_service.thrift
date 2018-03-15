@@ -110,8 +110,10 @@ service UserHrAccountService {
     //猎聘发送验证码
     hr_third_party_account_struct.HrThirdPartyAccountDO bindMessage(1:i32 hrId,2:i32 id,3:string code) throws (1: common_struct.BIZException e);
 
-    //解绑第三方nag帐号
+    //解绑第三方帐号
     void unbindThirdPartyAccount(1:i32 accountId,2:i32 userId) throws (1: common_struct.BIZException e);
+    //删除第三方帐号
+    common_struct.Response deleteThirdPartyAccount(1:i32 accountId,2:i32 userId) throws (1: common_struct.BIZException e);
     //分配第三方帐号
     useraccounts_struct.ThirdPartyAccountInfo dispatchThirdPartyAccount(1:i32 accountId,2:list<i32> hrIds) throws (1: common_struct.BIZException e);
     //获取第三方帐号信息
@@ -173,6 +175,8 @@ service UserHrAccountService {
     useraccounts_struct.ImportUserEmployeeStatistic checkBatchInsert(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId) throws (1: common_struct.BIZException e)
     //查询自定义导出字段
     list<hr_app_export_fields_struct.HrAppExportFieldsDO> getExportFields(1: i32 companyId, 2: i32 userHrAccountId) throws (1: common_struct.BIZException e)
+    // 员工信息导入
+    common_struct.Response getHrCompanyInfo(1:i32 wechat_id, 2:string unionId, 3:i32 account_id) throws (1: common_struct.BIZException e)
 }
 
 
@@ -218,4 +222,6 @@ service UserEmployeeService {
     bool isEmployee(1: i32 userId, 2: i32 companyId) throws (1: common_struct.BIZException e);
 
     common_struct.Response putUserEmployee(1:useraccounts_struct.UserEmployeeStruct userEmployee) throws (1: common_struct.BIZException e);
+    
+    void addEmployeeAward(1: list<i32> applicationIdList, 2: i32 eventType) throws (1:common_struct.BIZException e);
 }
