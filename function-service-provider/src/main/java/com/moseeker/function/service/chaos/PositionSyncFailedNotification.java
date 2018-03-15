@@ -1,24 +1,22 @@
 package com.moseeker.function.service.chaos;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.moseeker.baseorm.base.AbstractDictOccupationDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.util.OccupationUtil;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.email.Email;
-import com.moseeker.common.iface.IChannelType;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.CityEntity;
-import com.moseeker.function.service.PositionEmailBuilder;
+import com.moseeker.function.service.chaos.base.PositionEmailBuilder;
 import com.moseeker.function.service.chaos.util.PositionSyncMailUtil;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -28,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -126,11 +125,7 @@ public class PositionSyncFailedNotification {
 
         List<String> emails;
 
-        if(pojo.getStatus() == 2 || pojo.getStatus() == 9){
-            emails = csMails;
-        }else{
-            emails = devMails;
-        }
+        emails = Arrays.asList("panyongbing@moseeker.com");
 
         if (emails == null || emails.size() == 0) {
             logger.error("职位同步到第三方的时候无法确认状态，且不能发送邮件:邮件地址为空：返回信息:{}", JSON.toJSONString(pojo));
@@ -169,49 +164,7 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【职位ID】：").append(pojo.getData().getPositionId()).append(divider);
         emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getData().getAccountId()).append(divider);
 
-        // worktype
-        emailMessgeBuilder.append("【招聘类型】：").append(moseekerPosition.getCandidateSource() == 1 ? "校招" : "社招").append(divider);
-        emailMessgeBuilder.append("【标题】：").append(moseekerPosition.getTitle()).append(divider);
-        emailMessgeBuilder.append("【城市】：").append(positionSyncMailUtil.getCitys(moseekerPosition.getId())).append(divider);
-        emailMessgeBuilder.append("【地址】：").append(positionSyncMailUtil.getAddress(thirdPartyPositionDO.getAddress())).append(divider);
-        emailMessgeBuilder.append("【职能】：").append(positionSyncMailUtil.getOccupation(thirdPartyPositionDO.getChannel(), thirdPartyPositionDO.getOccupation())).append(divider);
-        emailMessgeBuilder.append("【部门】：").append(thirdPartyPositionDO.getDepartment()).append(divider);
-        if (thirdPartyPositionDO.getSalaryBottom() > 0 && thirdPartyPositionDO.getSalaryTop() > 0) {
-            emailMessgeBuilder.append("【月薪】：").append(thirdPartyPositionDO.getSalaryBottom()).append("-").append(thirdPartyPositionDO.getSalaryTop()).append(divider);
-        }
-        emailMessgeBuilder.append("【面议】：").append(thirdPartyPositionDO.getSalaryDiscuss() == 0 ? "否" : "是").append(divider);
-        emailMessgeBuilder.append("【招聘人数】：").append(Double.valueOf(moseekerPosition.getCount()).intValue()).append(divider);
-        emailMessgeBuilder.append("【工作年限】：").append(positionSyncMailUtil.getExperience(moseekerPosition.getExperience())).append(divider);
-        emailMessgeBuilder.append("【学历要求】：").append(positionSyncMailUtil.getDegree(moseekerPosition.getDegree())).append(divider);
-
-        if (thirdPartyPositionDO.getChannel() == ChannelType.LIEPIN.getValue()) {
-            if (moseekerPosition.getCandidateSource() == 1) {
-                emailMessgeBuilder.append("【实习薪资】：").append(thirdPartyPositionDO.getPracticeSalary()).append(thirdPartyPositionDO.getPracticeSalaryUnit() == 1 ? "元/天" : "元/月").append(divider);
-                emailMessgeBuilder.append("【每周实习天数】：").append(thirdPartyPositionDO.getPracticePerWeek()).append(divider);
-            } else {
-                emailMessgeBuilder.append("【发放月数】：").append(thirdPartyPositionDO.getSalaryMonth()).append(divider);
-                emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
-            }
-        }
-
-
-        emailMessgeBuilder.append("<b style=\"color:blue;text-decoration:underline\">【简历邮箱】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append("</b>");
-        emailMessgeBuilder.append("<b style=\"color:red\">（手动发布该职位时，请一定将该邮箱填写在简历回收邮箱中）</b>").append(divider);
-        emailMessgeBuilder.append("【职位描述】：").append(divider);
-        StringBuffer descript = new StringBuffer();
-        if (StringUtils.isNotNullOrEmpty(moseekerPosition.getAccountabilities())) {
-            descript.append(moseekerPosition.getAccountabilities());
-        }
-        if (StringUtils.isNotNullOrEmpty(moseekerPosition.getRequirement())) {
-            if (!moseekerPosition.getRequirement().contains("职位要求")) {
-                descript.append("\n职位要求：\n" + moseekerPosition.getRequirement());
-            } else {
-                descript.append(moseekerPosition.getRequirement());
-            }
-        }
-        emailMessgeBuilder.append(descript.toString().replaceAll("\n", divider)).append(divider);
-        emailMessgeBuilder.append(divider).append("<hr>").append(divider);
-        buildExtContext(thirdPartyPositionDO.getChannel(),extThirdPartyPosition,emailMessgeBuilder);
+        emailMessgeBuilder.append(buildExtContext(moseekerPosition,thirdPartyPositionDO,extThirdPartyPosition));
 
         emailMessgeBuilder.append("【错误信息】：").append(divider);
         String errorMessage;
@@ -300,16 +253,13 @@ public class PositionSyncFailedNotification {
 
     }
 
-    private void buildExtContext(int channel,Object extThirdPartyPosition,StringBuilder emailMessgeBuilder) throws BIZException {
+    private String buildExtContext(JobPositionDO moseekerPosition, HrThirdPartyPositionDO thirdPartyPosition, Object extThirdPartyPosition) throws BIZException {
         for(PositionEmailBuilder builder:emailBuilders){
-            if(builder.getChannelType().getValue()==channel){
-                Map<String,String> map= builder.message(extThirdPartyPosition);
-                map.forEach((k,v)->{
-                    emailMessgeBuilder.append(k).append(v).append(divider);
-                });
-                return ;
+            if(builder.getChannelType().getValue()==thirdPartyPosition.getChannel()){
+                return builder.message(moseekerPosition,thirdPartyPosition,extThirdPartyPosition);
             }
         }
+        throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
 
 
