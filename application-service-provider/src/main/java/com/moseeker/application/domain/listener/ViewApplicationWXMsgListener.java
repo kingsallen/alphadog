@@ -4,7 +4,14 @@ import com.moseeker.application.domain.WXTamplateMsgEntity;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.domain.event.ViewApplicationListEvent;
 import com.moseeker.application.domain.event.ViewApplicationSource;
+import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +37,12 @@ public class ViewApplicationWXMsgListener implements SmartApplicationListener {
 
     @Autowired
     ApplicationRepository applicationRepository;
+
+    @Autowired
+    HrWxNoticeMessageDao messageDao;
+
+    @Autowired
+    HrWxWechatDao wxWechatDao;
 
     @Override
     public boolean supportsEventType(Class<? extends ApplicationEvent> eventType) {
