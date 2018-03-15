@@ -2,7 +2,6 @@ package com.moseeker.useraccounts.service.thirdpartyaccount;
 
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
@@ -15,7 +14,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.entity.ThridPartyAcountEntity;
+import com.moseeker.useraccounts.service.thirdpartyaccount.info.ThridPartyAcountEntity;
 import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
