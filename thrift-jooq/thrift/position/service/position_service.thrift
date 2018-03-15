@@ -108,6 +108,8 @@ service PositionServices {
 
     common_struct.Response getMiniPositionDetail(1:i32 positionId);
 
+    common_struct.Response getMiniPositionShare(1:i32 positionId);
+
 
 }
 /*

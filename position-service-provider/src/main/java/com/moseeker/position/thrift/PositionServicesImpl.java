@@ -581,4 +581,18 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public Response getMiniPositionShare(int positionId) throws TException {
+        try {
+            Map<String,Object>  result= positionMiniService.getPositionShareInfo(positionId);
+            if(result==null){
+                return  ResponseUtils.success(new HashMap<>());
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }
