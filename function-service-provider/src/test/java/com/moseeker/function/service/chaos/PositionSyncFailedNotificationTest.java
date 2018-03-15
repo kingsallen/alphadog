@@ -50,9 +50,19 @@ public class PositionSyncFailedNotificationTest {
 
     @Test
     public void test() throws BIZException {
+        //51
         int positionId=1913159;
         int thirdPartyPositionId=582;
+        testEmail(positionId,thirdPartyPositionId);
 
+        //猎聘
+        positionId=1914334;
+        thirdPartyPositionId=589;
+        testEmail(positionId,thirdPartyPositionId);
+
+    }
+
+    public void testEmail(int positionId,int thirdPartyPositionId) throws BIZException {
         Query query=new Query.QueryBuilder().where(JobPosition.JOB_POSITION.ID.getName(),positionId).buildQuery();
         JobPositionDO position=positionDao.getData(query);
 
@@ -61,15 +71,15 @@ public class PositionSyncFailedNotificationTest {
 
         String json =
                 "{" +
-                "  'message': ['第三方验证码识别服务失败']," +
-                "  'operation': 'publish'," +
-                "  'data': {" +
-                "    'channel': '1'," +
-                "    'positionId': '1935423'," +
-                "    'accountId': '769'" +
-                "  }," +
-                "  'status': 2" +
-                "}";
+                        "  'message': ['第三方验证码识别服务失败']," +
+                        "  'operation': 'publish'," +
+                        "  'data': {" +
+                        "    'channel': '1'," +
+                        "    'positionId': '1935423'," +
+                        "    'accountId': '769'" +
+                        "  }," +
+                        "  'status': 2" +
+                        "}";
         PositionForSyncResultPojo pojo= JSON.parseObject(json,PositionForSyncResultPojo.class);
 
 

@@ -54,6 +54,9 @@ public abstract class AbstractPositionEmailBuilder<T> implements PositionEmailBu
         }
 
         public EmailBodyBuilder value(String value){
+            if(value==null){
+                value="";
+            }
             builder.append(value).append(divider);
             return this;
         }
