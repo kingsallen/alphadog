@@ -216,11 +216,7 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
         }
         data.setAddressId(position.getAddressId());
 
-        if(p.getAddress()==null) {
-            data.setAddressName(position.getAddressName());
-        }else{
-            data.setAddressName(p.getAddress().getCity()+p.getAddress().getAddress());
-        }
+        data.setAddressName(position.getAddressName());
 
         logger.info("回写到第三方职位对象:{}",data);
         return data;
