@@ -919,6 +919,7 @@ public class CompanyService {
      */
     @CounterIface
     public int addCompanyFeature(HrCompanyFeatureDO hrCompanyFeatureDO){
+        hrCompanyFeatureDO.setDisable(1);
         HrCompanyFeatureRecord hrCompanyFeatureRecord=BeanUtils.structToDB(hrCompanyFeatureDO, HrCompanyFeatureRecord.class);
         HrCompanyFeatureRecord result=hrCompanyFeatureDao.addRecord(hrCompanyFeatureRecord);
         return result.getId();

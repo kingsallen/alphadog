@@ -640,7 +640,7 @@ public class CompanyController {
             List<Map<String,Object>> list= (List<Map<String, Object>>) data.get("data");
             List<HrCompanyFeatureDO> dataList=new ArrayList<>();
             for(Map<String,Object> map:list){
-                HrCompanyFeatureDO DO=ParamUtils.initModelForm(data, HrCompanyFeatureDO.class);
+                HrCompanyFeatureDO DO=ParamUtils.initModelForm(map, HrCompanyFeatureDO.class);
                 dataList.add(DO);
             }
             Response res=companyServices.addCompanyFeatures(dataList);
@@ -671,7 +671,7 @@ public class CompanyController {
             List<Map<String,Object>> list= (List<Map<String, Object>>) data.get("data");
             List<HrCompanyFeatureDO> dataList=new ArrayList<>();
             for(Map<String,Object> map:list){
-                HrCompanyFeatureDO DO=ParamUtils.initModelForm(data, HrCompanyFeatureDO.class);
+                HrCompanyFeatureDO DO=ParamUtils.initModelForm(map, HrCompanyFeatureDO.class);
                 dataList.add(DO);
             }
             Response res=companyServices.updateCompanyFeatures(dataList);
