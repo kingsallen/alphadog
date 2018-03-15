@@ -49,9 +49,9 @@ public class LiepinPositionEmailBuilder extends AbstractPositionEmailBuilder<Emp
             emailMessgeBuilder.name("【发放月数】：").value(thirdPartyPosition.getSalaryMonth());
             emailMessgeBuilder.name("【反馈时长】：").value(thirdPartyPosition.getFeedbackPeriod());
         }
-        emailMessgeBuilder.name(email(moseekerPosition));
-        emailMessgeBuilder.name("【职位描述】：").value("");
-        emailMessgeBuilder.name(describe(moseekerPosition));
+        emailMessgeBuilder.line(email(moseekerPosition));
+        emailMessgeBuilder.line("【职位描述】：");
+        emailMessgeBuilder.line(describe(moseekerPosition));
 
         return emailMessgeBuilder.toString();
     }

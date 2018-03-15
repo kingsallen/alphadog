@@ -66,9 +66,9 @@ public class VEPositionEmailBuilder extends AbstractPositionEmailBuilder<Thirdpa
         emailMessgeBuilder.name("").name("【计算机能力】").value(getText(computerLevels,position.getComputerLevel()+""));
         emailMessgeBuilder.name("").name("【有效期】").value(position.getIndate()+"天");
 
-        emailMessgeBuilder.name(email(moseekerPosition));
-        emailMessgeBuilder.name("【职位描述】：").value("");
-        emailMessgeBuilder.name(describe(moseekerPosition));
+        emailMessgeBuilder.line(email(moseekerPosition));
+        emailMessgeBuilder.line("【职位描述】：");
+        emailMessgeBuilder.line(describe(moseekerPosition));
 
         return emailMessgeBuilder.name("").toString();
     }

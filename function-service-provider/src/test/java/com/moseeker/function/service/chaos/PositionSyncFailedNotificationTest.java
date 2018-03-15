@@ -51,13 +51,13 @@ public class PositionSyncFailedNotificationTest {
     @Test
     public void test() throws BIZException {
         //51
-        int positionId=1913159;
-        int thirdPartyPositionId=582;
-        testEmail(positionId,thirdPartyPositionId);
+//        int positionId=1913159;
+//        int thirdPartyPositionId=582;
+//        testEmail(positionId,thirdPartyPositionId);
 
         //猎聘
-        positionId=1914334;
-        thirdPartyPositionId=589;
+        int positionId=1913182;
+        int thirdPartyPositionId=588;
         testEmail(positionId,thirdPartyPositionId);
 
     }
@@ -82,6 +82,8 @@ public class PositionSyncFailedNotificationTest {
                         "}";
         PositionForSyncResultPojo pojo= JSON.parseObject(json,PositionForSyncResultPojo.class);
 
+        pojo.getData().setChannel(String.valueOf(twoParam.getR1().getChannel()));
+        pojo.getData().setPositionId(String.valueOf(positionId));
 
         failedNotification.sendUnKnowResultMail(position, twoParam.getR1(),twoParam.getR2(),pojo);
     }

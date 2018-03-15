@@ -45,12 +45,12 @@ public class ZhilianPositionEmailBuilder extends AbstractPositionEmailBuilder<Em
         emailMessgeBuilder.name("【工作年限】：").value(positionSyncMailUtil.getExperience(moseekerPosition.getExperience()));
         emailMessgeBuilder.name("【月薪】：").value(thirdPartyPosition.getSalaryBottom()+"-"+thirdPartyPosition.getSalaryTop());
         emailMessgeBuilder.name("【学历要求】：").value(positionSyncMailUtil.getDegree(moseekerPosition.getDegree()));
-        emailMessgeBuilder.name("【招聘人数】：").value(String.valueOf(moseekerPosition.getCount()));
+        emailMessgeBuilder.name("【招聘人数】：").value(String.valueOf(thirdPartyPosition.getCount()));
         emailMessgeBuilder.name("【公司】：").value(thirdPartyPosition.getCompanyName());
 
-        emailMessgeBuilder.name(email(moseekerPosition));
-        emailMessgeBuilder.name("【职位描述】：").value("");
-        emailMessgeBuilder.name(describe(moseekerPosition));
+        emailMessgeBuilder.line(email(moseekerPosition));
+        emailMessgeBuilder.line("【职位描述】：");
+        emailMessgeBuilder.line(describe(moseekerPosition));
 
         return emailMessgeBuilder.toString();
     }

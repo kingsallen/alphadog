@@ -43,9 +43,9 @@ public class VLPositionEmailBuilder extends AbstractPositionEmailBuilder<Thirdpa
         emailMessgeBuilder.name("【职能】").value(positionSyncMailUtil.getOccupation(thirdPartyPosition.getChannel(), thirdPartyPosition.getOccupation()));
         emailMessgeBuilder.name("【薪资】").value(thirdPartyPosition.getSalaryBottom()+"-"+thirdPartyPosition.getSalaryTop());
 
-        emailMessgeBuilder.name(email(moseekerPosition));
-        emailMessgeBuilder.name("【职位描述】：").value("");
-        emailMessgeBuilder.name(describe(moseekerPosition));
+        emailMessgeBuilder.line(email(moseekerPosition));
+        emailMessgeBuilder.line("【职位描述】：");
+        emailMessgeBuilder.line(describe(moseekerPosition));
         return emailMessgeBuilder.toString();
     }
 
