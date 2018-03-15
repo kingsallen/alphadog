@@ -56,10 +56,13 @@ public class PositionSyncFailedNotificationTest {
 //        testEmail(positionId,thirdPartyPositionId);
 
         //猎聘
-        int positionId=1913182;
-        int thirdPartyPositionId=588;
+        int positionId=1914334;
+        int thirdPartyPositionId=589;
         testEmail(positionId,thirdPartyPositionId);
 
+        //智联
+//        int positionId=1913182;
+//        int thirdPartyPositionId=588;
     }
 
     public void testEmail(int positionId,int thirdPartyPositionId) throws BIZException {

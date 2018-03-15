@@ -34,7 +34,7 @@ public class LiepinPositionEmailBuilder extends AbstractPositionEmailBuilder<Emp
         emailMessgeBuilder.name("【城市】：").value(positionSyncMailUtil.getCitys(moseekerPosition.getId()));
         emailMessgeBuilder.name("【地址】：").value("");
         emailMessgeBuilder.name("【职能】：").value(positionSyncMailUtil.getOccupation(thirdPartyPosition.getChannel(), thirdPartyPosition.getOccupation()));
-        emailMessgeBuilder.name("【部门】：").value(thirdPartyPosition.getDepartment());
+        emailMessgeBuilder.name("【部门】：").value(thirdPartyPosition.getDepartmentName());
         emailMessgeBuilder.name("【月薪】：").value(thirdPartyPosition.getSalaryBottom()+"-"+thirdPartyPosition.getSalaryTop());
         emailMessgeBuilder.name("【面议】：").value(thirdPartyPosition.getSalaryDiscuss() == 0 ? "否" : "是");
         emailMessgeBuilder.name("【工作年限】：").value(positionSyncMailUtil.getExperience(moseekerPosition.getExperience()));
