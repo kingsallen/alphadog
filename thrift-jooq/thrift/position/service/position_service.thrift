@@ -106,6 +106,9 @@ service PositionServices {
 
     common_struct.Response getMiniPositionNumStatus(1:i32 accountId,2:string keyword,3:i32 page,4: i32 pageSize);
 
+    common_struct.Response getMiniPositionDetail(1:i32 positionId);
+
+
 }
 /*
 	查询第三方自定义职能

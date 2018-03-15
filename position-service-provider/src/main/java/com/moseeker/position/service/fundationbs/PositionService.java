@@ -11,6 +11,14 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
+import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
@@ -20,6 +28,7 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategory
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
+import com.moseeker.baseorm.db.hrdb.tables.daos.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
@@ -147,6 +156,7 @@ public class PositionService {
     private HrAppCvConfDao hrAppCvConfDao;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
 
     private static List<DictAlipaycampusJobcategoryRecord> alipaycampusJobcategory;
 
@@ -313,8 +323,6 @@ public class PositionService {
         }
         return ResponseUtils.success(jobPositionPojo);
     }
-
-
     /*
      * 获取城市
      */
