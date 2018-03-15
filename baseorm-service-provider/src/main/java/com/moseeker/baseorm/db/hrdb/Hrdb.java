@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
+import com.moseeker.baseorm.db.hrdb.tables.HrAiConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
@@ -85,12 +86,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 384137707;
+    private static final long serialVersionUID = 1133595435;
 
     /**
      * The reference instance of <code>hrdb</code>
      */
     public static final Hrdb HRDB = new Hrdb();
+
+    /**
+     * 人工智能系统配置表
+     */
+    public final HrAiConf HR_AI_CONF = com.moseeker.baseorm.db.hrdb.tables.HrAiConf.HR_AI_CONF;
 
     /**
      * 企业申请简历校验配置
@@ -397,6 +403,7 @@ public class Hrdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            HrAiConf.HR_AI_CONF,
             HrAppCvConf.HR_APP_CV_CONF,
             HrAppExportFields.HR_APP_EXPORT_FIELDS,
             HrChatUnreadCount.HR_CHAT_UNREAD_COUNT,
