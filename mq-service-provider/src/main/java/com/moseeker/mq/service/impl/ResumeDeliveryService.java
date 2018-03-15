@@ -152,6 +152,7 @@ public class ResumeDeliveryService {
             HrWxWechatDO aggregationChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where("signature",
                     env.getProperty("wechat.qx.signature")).buildQuery());
             //向求职者发送的模板
+
             HrWxTemplateMessageDO templateMessageDO = null;
             HrWxTemplateMessageDO templateMessageDOForRecom = null;
             if(hrChatDO != null) {

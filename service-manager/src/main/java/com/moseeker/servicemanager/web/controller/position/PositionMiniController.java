@@ -109,4 +109,38 @@ public class PositionMiniController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 小程序中职位详情
+     */
+    @RequestMapping(value = "/api/mini/position/detail", method = RequestMethod.POST)
+    @ResponseBody
+    public String getPositionDetail(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            int positionId=(int)map.get("position_id");
+            Response res = positonServices.getMiniPositionDetail(positionId);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 小程序中职位详情页分享标题
+     */
+    @RequestMapping(value = "/api/mini/position/share", method = RequestMethod.POST)
+    @ResponseBody
+    public String getPositionShare(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            int positionId=(int)map.get("position_id");
+            Response res = positonServices.getMiniPositionShare(positionId);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

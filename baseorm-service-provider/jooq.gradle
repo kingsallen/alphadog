@@ -40,7 +40,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
     }
     generator() {
         database() {
-            inputSchema("jobdb")
+            inputSchema("hrdb")
             //inputSchema("hrdb")
 
             name("org.jooq.util.mysql.MySQLDatabase")
@@ -56,7 +56,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             daos true
         }
         target() {
-            packageName('com.moseeker.baseorm.db.jobdb')
+            packageName('com.moseeker.baseorm.db.hrdb')
             directory('src/main/java')
         }
     }

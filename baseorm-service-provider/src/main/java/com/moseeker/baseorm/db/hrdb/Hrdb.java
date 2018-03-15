@@ -92,6 +92,7 @@ public class Hrdb extends SchemaImpl {
      */
     public static final Hrdb HRDB = new Hrdb();
 
+
     /**
      * 企业申请简历校验配置
      */

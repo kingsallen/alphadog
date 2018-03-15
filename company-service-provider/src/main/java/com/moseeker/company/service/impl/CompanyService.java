@@ -755,6 +755,7 @@ public class CompanyService {
      * @return
      * @throws Exception
      */
+    @Transactional
     public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, byte source) throws Exception {
         //是否和超级公司名相同
         boolean repeatName = companyDao.checkRepeatNameWithSuperCompany(companyName);
@@ -764,7 +765,7 @@ public class CompanyService {
                     .or(UserHrAccount.USER_HR_ACCOUNT.WXUSER_ID.getName(), wxuserId).buildQuery();
             UserHrAccountDO accountDO = userHrAccountDao.getData(query);
             if (accountDO != null) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.MOBILE_WECHAT_IS_INVALID);
+                throw ExceptionFactory.buildException(Category.ACCOUNT_DATA_IN);
             }
             HrCompanyDO companyDO = new HrCompanyDO();
             companyDO.setType((byte) 1);
@@ -772,7 +773,7 @@ public class CompanyService {
             companyDO.setSource(source);
             int companyId = companyDao.addData(companyDO).getId();
             if(companyId <= 0)
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+                throw ExceptionFactory.buildException(Category.PROGRAM_VALIDATE_REQUIRED);
             String[] passwordArray = this.genPassword(6);
             UserHrAccountDO accountDO1 = new UserHrAccountDO();
             accountDO1.setMobile(mobile);
@@ -785,7 +786,7 @@ public class CompanyService {
             accountDO1.setLoginCount(0);
             int hrId = userHrAccountDao.addData(accountDO1).getId();
             if(hrId <= 0)
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+                throw ExceptionFactory.buildException(Category.PROGRAM_VALIDATE_REQUIRED);
             HrCompanyDO companyDO1 = companyDao.getCompanyById(companyId);
             companyDO1.setHraccountId(hrId);
             companyDao.updateData(companyDO1);
@@ -815,8 +816,8 @@ public class CompanyService {
             Map<String, String> data = new HashMap<>();
             data.put("mobile", mobile);
             data.put("code", passwordArray[0]);
-            Response response =  mqServer.sendSMS(SmsType.EMPLOYEE_MERGE_ACCOUNT_SMS, mobile, data, "2", remoteIp);
-            logger.info("addHrAccountAndCompany hr注册成功短信发送结果：{};提示信息：{}",response.getStatus(), response.getMessage());
+//            Response response =  mqServer.sendSMS(SmsType.EMPLOYEE_MERGE_ACCOUNT_SMS, mobile, data, "2", remoteIp);
+//            logger.info("addHrAccountAndCompany hr注册成功短信发送结果：{};提示信息：{}",response.getStatus(), response.getMessage());
             Map<String, Object> map = new HashMap();
             map.put("hr_id", hrId);
             logger.info("addHrAccountAndCompany hr注册成功编号：{}",hrId);

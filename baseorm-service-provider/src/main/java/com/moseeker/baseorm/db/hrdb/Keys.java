@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
+import com.moseeker.baseorm.db.hrdb.tables.HrAiConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
@@ -58,6 +59,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrAiConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppExportFieldsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
@@ -138,6 +140,7 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<HrAiConfRecord, Integer> IDENTITY_HR_AI_CONF = Identities0.IDENTITY_HR_AI_CONF;
     public static final Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = Identities0.IDENTITY_HR_APP_CV_CONF;
     public static final Identity<HrAppExportFieldsRecord, Integer> IDENTITY_HR_APP_EXPORT_FIELDS = Identities0.IDENTITY_HR_APP_EXPORT_FIELDS;
     public static final Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = Identities0.IDENTITY_HR_CMS_MEDIA;
@@ -194,6 +197,7 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<HrAiConfRecord> KEY_HR_AI_CONF_PRIMARY = UniqueKeys0.KEY_HR_AI_CONF_PRIMARY;
     public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = UniqueKeys0.KEY_HR_APP_CV_CONF_PRIMARY;
     public static final UniqueKey<HrAppExportFieldsRecord> KEY_HR_APP_EXPORT_FIELDS_PRIMARY = UniqueKeys0.KEY_HR_APP_EXPORT_FIELDS_PRIMARY;
     public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = UniqueKeys0.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY;
@@ -263,6 +267,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
+        public static Identity<HrAiConfRecord, Integer> IDENTITY_HR_AI_CONF = createIdentity(HrAiConf.HR_AI_CONF, HrAiConf.HR_AI_CONF.ID);
         public static Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = createIdentity(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConf.HR_APP_CV_CONF.ID);
         public static Identity<HrAppExportFieldsRecord, Integer> IDENTITY_HR_APP_EXPORT_FIELDS = createIdentity(HrAppExportFields.HR_APP_EXPORT_FIELDS, HrAppExportFields.HR_APP_EXPORT_FIELDS.ID);
         public static Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = createIdentity(HrCmsMedia.HR_CMS_MEDIA, HrCmsMedia.HR_CMS_MEDIA.ID);
@@ -317,6 +322,7 @@ public class Keys {
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
+        public static final UniqueKey<HrAiConfRecord> KEY_HR_AI_CONF_PRIMARY = createUniqueKey(HrAiConf.HR_AI_CONF, "KEY_hr_ai_conf_PRIMARY", HrAiConf.HR_AI_CONF.ID);
         public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = createUniqueKey(HrAppCvConf.HR_APP_CV_CONF, "KEY_hr_app_cv_conf_PRIMARY", HrAppCvConf.HR_APP_CV_CONF.ID);
         public static final UniqueKey<HrAppExportFieldsRecord> KEY_HR_APP_EXPORT_FIELDS_PRIMARY = createUniqueKey(HrAppExportFields.HR_APP_EXPORT_FIELDS, "KEY_hr_app_export_fields_PRIMARY", HrAppExportFields.HR_APP_EXPORT_FIELDS.ID);
         public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = createUniqueKey(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT, "KEY_hr_chat_unread_count_PRIMARY", HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.ROOM_ID);

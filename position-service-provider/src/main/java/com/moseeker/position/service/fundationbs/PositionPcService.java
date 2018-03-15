@@ -97,6 +97,10 @@ public class PositionPcService {
 	private JobPcRecommendPositionsModuleDao jobPcRecommendPositionsModuleDao;
 	@Autowired
 	private JobPcRecommendPositionItemDao jobPcRecommendPositionItemDao;
+	@Autowired
+	private HrWxWechatDao hrWxWechatDao;
+	@Autowired
+	private JobPositionShareTplConfDao jobPositionShareTplConfDao;
 	/*
      * 获取pc首页职位推荐
      */
@@ -152,6 +156,60 @@ public class PositionPcService {
 		if(DO==null){
 			return null;
 		}
+		this.handlerForPositionDetail(map,DO,positionId);
+		return map;
+	}
+	@CounterIface
+	public Map<String,Object> getMiniPositionDetails(int positionId) throws Exception {
+		Map<String,Object> map=new HashMap<String,Object>();
+		Query query=new Query.QueryBuilder().where("id",positionId).buildQuery();
+		JobPositionDO  DO=jobPositionDao.getData(query);
+		if(DO==null){
+			return null;
+		}
+		this.handlerForPositionDetail(map,DO,positionId);
+		//获取母公司龚公众号
+		Map<String,Object> wxData=this.getHrWxChatBtyCompanyId(DO.getCompanyId());
+		if(wxData!=null&&!wxData.isEmpty()){
+			map.put("wx",wxData);
+		}
+//		if(DO.getShareTplId()>3){
+//			Map<String,Object> tplData=this.getJobShareTplConf(DO.getShareTplId());
+//			if(tplData!=null&&!tplData.isEmpty()){
+//				map.put("tplconf",tplData);
+//			}
+//		}
+
+		return map;
+	}
+	/*
+	 获取母公司的公众号信息
+	 */
+	private Map<String,Object> getHrWxChatBtyCompanyId(int companyId) throws TException {
+		Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+		HrWxWechatDO DO=hrWxWechatDao.getData(query);
+		if(DO!=null){
+			String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+			Map<String,Object> wxData= JSON.parseObject(DOs, Map.class);
+			return wxData;
+		}
+		return null;
+	}
+	//获取公司分享末班
+	private Map<String,Object> getJobShareTplConf(double id) throws TException {
+		Query query=new Query.QueryBuilder().where("id",id).buildQuery();
+		JobPositionShareTplConfDO DO= jobPositionShareTplConfDao.getData(query);
+		if(DO!=null){
+			String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+			Map<String,Object> tplData= JSON.parseObject(DOs, Map.class);
+			return tplData;
+		}
+		return null;
+	}
+	/*
+	 提取小程序获取职位详情和pc端获取职位详情的公共部分，组装成公共方法
+	 */
+	private void handlerForPositionDetail(Map<String,Object> map,JobPositionDO  DO,int positionId) throws Exception {
 		String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
 		Map<String,Object> positionData= JSON.parseObject(DOs, Map.class);
 		map.put("position",positionData);
@@ -187,8 +245,6 @@ public class PositionPcService {
 			Map<String,Object> customField=this.handleCustomField(positionId,confCompanyId);
 			map.put("customField",customField);
 		}
-
-		return map;
 	}
 	//添加举报信息
 	@CounterIface
