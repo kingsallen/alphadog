@@ -1,5 +1,9 @@
 package com.moseeker.company.thrift;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
@@ -32,6 +36,12 @@ import java.util.Map;
 public class CompanyServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public CompanyServicesImpl(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
 
     @Autowired
     private CompanyService service;
@@ -359,6 +369,109 @@ public class CompanyServicesImpl implements Iface {
     public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, int source) throws BIZException, TException {
         try {
             return service.addHrAccountAndCompany(companyName, mobile, wxuserId, remoteIp, (byte)source);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response getFeatureById(int id) throws BIZException, TException {
+        try {
+            HrCompanyFeature hrCompanyFeature=service.getCompanyFeatureById(id);
+            if(hrCompanyFeature==null){
+                hrCompanyFeature=new HrCompanyFeature();
+            }
+            String result=JSON.toJSONString(hrCompanyFeature,serializeConfig);
+            return ResponseUtils.successWithoutStringify(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response getFeatureByCompanyId(int companyId) throws BIZException, TException {
+        try {
+            List<HrCompanyFeature> list=service.getCompanyFeatureByCompanyId(companyId);
+            if(StringUtils.isEmptyList(list)){
+                list=new ArrayList<>();
+            }
+            String result=JSON.toJSONString(list,serializeConfig);
+            return ResponseUtils.successWithoutStringify(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response updateCompanyFeature(HrCompanyFeatureDO data) throws BIZException, TException {
+        try {
+            int result= service.updateCompanyFeature(data);
+            return ResponseUtils.success(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response updateCompanyFeatures(List<HrCompanyFeatureDO> dataList) throws BIZException, TException {
+        try {
+            int result= service.updateCompanyFeatureList(dataList);
+            return ResponseUtils.success(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response addCompanyFeature(HrCompanyFeatureDO data) throws BIZException, TException {
+        try {
+            int result= service.addCompanyFeature(data);
+            return ResponseUtils.success(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response addCompanyFeatures(List<HrCompanyFeatureDO> dataList) throws BIZException, TException {
+        try {
+            int result= service.addCompanyFeatureList(dataList);
+            return ResponseUtils.success(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response getCompanyFeatureIdList(List<Integer> dataList) throws BIZException, TException {
+        try {
+            List<HrCompanyFeature> list=service.getCompanyFeatureByIdList(dataList);
+            if(StringUtils.isEmptyList(list)){
+                list=new ArrayList<>();
+            }
+            String result=JSON.toJSONString(list,serializeConfig);
+            return ResponseUtils.successWithoutStringify(result);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

@@ -946,4 +946,45 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/api/position/feature/{pid}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionFeatureByPid(@PathVariable("pid") int pid, HttpServletRequest request, HttpServletResponse response){
+        try{
+            Response result=positonServices.getFeatureByPId(pid);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/position/feature/list", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateFeatureList( HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> fidList=(List<Integer>)params.get("fids");
+            int pid=(int)params.get("position_id");
+            Response result=positonServices.updatePositionFeatures(pid,fidList);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/position/feature", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateFeature( HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int fid=(int)params.get("fid");
+            int pid=(int)params.get("position_id");
+            Response result=positonServices.updatePositionFeature(pid,fid);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

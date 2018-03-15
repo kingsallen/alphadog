@@ -99,3 +99,12 @@ struct HrCompanyConf {
 	23: optional i8 talentpool_status
 
 }
+
+struct HrCompanyFeatureDO {
+    1: optional  i32    id,
+    2: optional  i32    company_id,
+    3: optional  string feature,
+    4: optional  string create_time,
+    5: optional  string update_time,
+    6: optional  i32    disable
+}
