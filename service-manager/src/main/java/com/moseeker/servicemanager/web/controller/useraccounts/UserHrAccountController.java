@@ -345,6 +345,30 @@ public class UserHrAccountController {
         }
     }
 
+    @RequestMapping(value = "/thirdpartyaccount", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String deleteThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer accountId = params.getInt("account_id");
+            if (accountId == null) {
+                return ResponseLogNotification.fail(request, "account_id不能为空");
+            }
+
+            Integer userId = params.getInt("user_id", 0);
+
+            if (userId == null) {
+                return ResponseLogNotification.fail(request, "user_id不能为空");
+            }
+
+            userHrAccountService.deleteThirdPartyAccount(accountId,userId);
+
+            return ResponseLogNotification.successJson(request, 1);
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
     @RequestMapping(value = "/thirdpartyaccount/dispatch", method = RequestMethod.POST)
     @ResponseBody
     public String dispatchThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
@@ -1040,6 +1064,7 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
 
     /**
      * 获取自定义申请导出字段

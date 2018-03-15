@@ -14,7 +14,15 @@ import com.moseeker.baseorm.dao.profiledb.ProfileWorkexpDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCcmailRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -116,42 +124,43 @@ public class ResumeDeliveryService {
             if(messageEmailStruct.getApply_type() == 1 && messageEmailStruct.getEmail_status() != 0){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             }
-            JobPositionDO positionDo = positionDao.getData(new Query.QueryBuilder().where("id",
+            JobPositionDO positionDo = positionDao.getData(new Query.QueryBuilder().where(JobPosition.JOB_POSITION.ID.getName(),
                     messageEmailStruct.getPosition_id()).buildQuery());
             if(positionDo == null){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
-            HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where("id",
+            HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(),
                     positionDo.getCompanyId()).buildQuery());
             if(companyDO == null ) return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-            UserHrAccountDO accountDo = accountDao.getData(new Query.QueryBuilder().where("id",
+            UserHrAccountDO accountDo = accountDao.getData(new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(),
                     positionDo.getPublisher()).buildQuery());
             UserWxUserDO hrWxUserDo = null;
 
             List<HrWxNoticeMessageDO> wxNoticeMessageDO = null;
             //申请者用户
-            UserUserDO userUserDO = userDao.getData(new Query.QueryBuilder().where("id",
+            UserUserDO userUserDO = userDao.getData(new Query.QueryBuilder().where(UserUser.USER_USER.ID.getName(),
                     messageEmailStruct.getApplier_id()).buildQuery());
             if(userUserDO == null)
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 
             //投递者关注的微信公众号
-            HrWxWechatDO hrChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where("company_id",
+            HrWxWechatDO hrChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),
                     companyDO.getId()).buildQuery());
 
 
             //关注的微信公众号
-            HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where("signature",
+            HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),
                     env.getProperty("wechat.helper.signature")).buildQuery());
 
             if(accountDo != null)
                 //获取hr的微信号
-                hrWxUserDo = wxUserDao.getData(new Query.QueryBuilder().where("id",
-                        accountDo.getWxuserId()).and("wechat_id", hrWxWechatDO.getId()).buildQuery());
+                hrWxUserDo = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.ID.getName(),
+                        accountDo.getWxuserId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrWxWechatDO.getId()).buildQuery());
             //关注的聚合号
-            HrWxWechatDO aggregationChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where("signature",
+            HrWxWechatDO aggregationChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),
                     env.getProperty("wechat.qx.signature")).buildQuery());
             //向求职者发送的模板
+
             HrWxTemplateMessageDO templateMessageDO = null;
             HrWxTemplateMessageDO templateMessageDOForRecom = null;
             if(hrChatDO != null) {
@@ -245,12 +254,14 @@ public class ResumeDeliveryService {
         Response response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
         if(templateMessageDO != null && hrChatDO != null){
-            UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("sysuser_id",
-                    userUserDO.getId()).and("wechat_id", hrChatDO.getId()).buildQuery());
+            UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(),
+                    userUserDO.getId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
             if(userWxDO == null) return response;
             //获取企业号消息模板发送开关
-            wxNoticeMessageDO = wxNoticeMessageDao.getDatas(new Query.QueryBuilder().where("wechat_id",
-                    hrChatDO.getId()).and("notice_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("status", "1").buildQuery());
+            wxNoticeMessageDO = wxNoticeMessageDao.getDatas(new Query.QueryBuilder().where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.getName(),
+                    hrChatDO.getId()).and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.getName(), Constant.TEMPLATES_APPLY_NOTICE_TPL)
+                    .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.STATUS.getName(), "1")
+                    .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE.getName(),"0").buildQuery());
             boolean send_applier = true;
             if(wxNoticeMessageDO == null || wxNoticeMessageDO.size()==0)
                 send_applier = false;
@@ -281,14 +292,15 @@ public class ResumeDeliveryService {
 
         if(templateMessageDO != null && hrChatDO != null){
             String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
-            UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("sysuser_id",
-                    userUserDO.getId()).and("wechat_id", hrChatDO.getId()).buildQuery());
+            UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(),
+                    userUserDO.getId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
             //获取申请者聚合号编号
-            UserWxUserDO qx_userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("unionid",
-                    userWxDO.getUnionid()).and("wechat_id", hrChatDO.getId()).buildQuery());
+            UserWxUserDO qx_userWxDO = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.UNIONID.getName(),
+                    userWxDO.getUnionid()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
             //向求职者发送的模板
-            HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                    hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable","0").buildQuery());
+            HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.WECHAT_ID.getName(),
+                    hrChatDO.getId()).and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.SYS_TEMPLATE_ID.getName(), Constant.TEMPLATES_APPLY_NOTICE_TPL)
+                    .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.DISABLE.getName(),"0").buildQuery());
             if( qx_userWxDO != null) {
                 String link = handlerLink("applier").replace("{}", application_id + "");
                 response = msgHttp.handleApplierTemplate(positionDO, companyDO, hrChatDO, qx_userWxDO.getOpenid(), url, link, templateMessageDOQX);
@@ -340,17 +352,19 @@ public class ResumeDeliveryService {
         if(hrChatDO != null && recommenderUserId>0 && templateMessageDO != null){
             //判断模板消息是否开启
             String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
-            wxNoticeMessageDO = wxNoticeMessageDao.getDatas(new Query.QueryBuilder().where("wechat_id",
-                    hrChatDO.getId()).and("notice_id", Constant.TEMPLATES_SWITCH_NEW_RESUME_TPL).and("status", "1").buildQuery());
+            wxNoticeMessageDO = wxNoticeMessageDao.getDatas(new Query.QueryBuilder().where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.getName(),
+                    hrChatDO.getId()).and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.getName(), Constant.TEMPLATES_SWITCH_NEW_RESUME_TPL)
+                    .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.STATUS.getName(), "1")
+                    .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE.getName(), "0").buildQuery());
             boolean send_applier = true;
             if(wxNoticeMessageDO == null || wxNoticeMessageDO.size()==0)
                 send_applier = false;
             if(send_applier) {
-                UserUserDO userRecomDO = userDao.getData(new Query.QueryBuilder().where("id",
+                UserUserDO userRecomDO = userDao.getData(new Query.QueryBuilder().where(UserUser.USER_USER.ID.getName(),
                         recommenderUserId).buildQuery());
                 if(userRecomDO == null) return response;
-                UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("sysuser_id",
-                        userRecomDO.getId()).and("wechat_id", hrChatDO.getId()).buildQuery());
+                UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(),
+                        userRecomDO.getId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
                 if(userWxDO == null) return response;
                 String link = handlerLink("recom") + "?wechat_signature="+ hrChatDO.getSignature();
                 response = msgHttp.handleRecomTemplate(positionDO, hrChatDO, templateMessageDO, userDO, workExp, lastWorkName, userWxDO.getOpenid(), url, link);
@@ -376,25 +390,28 @@ public class ResumeDeliveryService {
 
         if(hrChatDO != null && recommender_user_id > 0 ) {
             String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
-            HrWxNoticeMessageDO noticeMessageDO = wxNoticeMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                    hrChatDO.getId()).and("notice_id", Constant.TEMPLATES_SWITCH_NEW_RESUME_TPL).and("status", "1").buildQuery());
+            HrWxNoticeMessageDO noticeMessageDO = wxNoticeMessageDao.getData(new Query.QueryBuilder().where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.getName(),
+                    hrChatDO.getId()).and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.getName(), Constant.TEMPLATES_SWITCH_NEW_RESUME_TPL)
+                    .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.STATUS.getName(), "1")
+                    .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE.getName(), "0").buildQuery());
             boolean send_applier = true;
             if (wxNoticeMessageDO == null || wxNoticeMessageDO.size() == 0)
                 send_applier = false;
             if (send_applier) {
-                UserUserDO userRecomDO = userDao.getData(new Query.QueryBuilder().where("id",
+                UserUserDO userRecomDO = userDao.getData(new Query.QueryBuilder().where(UserUser.USER_USER.ID.getName(),
                         recommender_user_id).buildQuery());
                 if(userRecomDO == null) return response;
-                UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("sysuser_id",
-                        userRecomDO.getId()).and("wechat_id", hrChatDO.getId()).buildQuery());
+                UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(),
+                        userRecomDO.getId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
                 if(userWxDO == null) return response;
-                UserWxUserDO qx_userWxDO = wxUserDao.getData(new Query.QueryBuilder().where("unionid",
-                        userWxDO.getUnionid()).and("wechat_id", hrChatDO.getId()).buildQuery());
+                UserWxUserDO qx_userWxDO = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.UNIONID.getName(),
+                        userWxDO.getUnionid()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
                 if(qx_userWxDO == null) return response;
 
                 //向推荐者发送的模板
-                HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                        hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_NEW_RESUME_TPL).and("disable", "0").buildQuery());
+                HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.WECHAT_ID.getName(),
+                        hrChatDO.getId()).and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.SYS_TEMPLATE_ID.getName(), Constant.TEMPLATES_NEW_RESUME_TPL)
+                        .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.DISABLE.getName(), "0").buildQuery());
                 String link = handlerLink("recom")+ "?wechat_signature="+ hrChatDO.getSignature();;
                 response = msgHttp.handleRecomTemplate(positionDO, hrChatDO, templateMessageDOQX, userRecomDO, workExp, lastWorkName, qx_userWxDO.getOpenid(), url, link);
             }
@@ -511,16 +528,19 @@ public class ResumeDeliveryService {
 
         logger.info("sendEmailToHr emailStruct:{}", emailStruct);
 
-        //发送邮件
-        Response sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+        //发送邮件给HR
+        Response sendEmail = null;
+        if(positionDO.getEmailNotice() == 0) {
+            sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+            logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
 
-        logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
+            //记录发送邮件的结果
+            LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
+            emailrecord.setEmail(accountDO.getEmail());
+            emailrecord.setContent(sendEmail.getMessage());
+            emailSendrecordDao.addData(emailrecord);
+        }
 
-        //记录发送邮件的结果
-        LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
-        emailrecord.setEmail("accountDO.getEmail()");
-        emailrecord.setContent(sendEmail.getMessage());
-        emailSendrecordDao.addData(emailrecord);
         logger.info("是否启用抄送邮箱："+positionDO.getProfile_cc_mail_enabled());
         //判断是否启用抄送邮箱
         if(positionDO.getProfile_cc_mail_enabled() == 1){
@@ -533,7 +553,7 @@ public class ResumeDeliveryService {
                     emailStruct.put("to_email", ccmail.getToEmail());
                     MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
                     LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
-                    emailrecord1.setEmail("accountDO.getEmail()");
+                    emailrecord1.setEmail(ccmail.getToEmail());
                     emailrecord1.setContent(sendEmail.getMessage());
                     emailSendrecordDao.addData(emailrecord1);
                     logger.info("抄送邮箱："+ccmail.getToEmail());

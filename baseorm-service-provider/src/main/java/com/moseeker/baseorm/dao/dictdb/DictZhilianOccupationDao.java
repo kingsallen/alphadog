@@ -3,12 +3,14 @@ package com.moseeker.baseorm.dao.dictdb;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.AbstractDictOccupationDao;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictZhilianOccupationRecord;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictZhilianOccupationDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
@@ -57,6 +59,11 @@ public class DictZhilianOccupationDao extends AbstractDictOccupationDao<DictZhil
     @Override
     protected Condition conditionToSearchFather(DictZhilianOccupationDO dictZhilianOccupationDO) {
         return new Condition(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE.getName(),dictZhilianOccupationDO.getParentId());
+    }
+
+    public int deleteAll(){
+        Condition condition=new Condition(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE.getName(),0, ValueOp.NEQ);
+        return delete(condition);
     }
 
     @Override

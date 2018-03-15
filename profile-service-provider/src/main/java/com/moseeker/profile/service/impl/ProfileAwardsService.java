@@ -262,8 +262,8 @@ public class ProfileAwardsService {
 
         awards.forEach(award -> {
             awardIds.add(award.getId());
-            logger.error("--------");
-            logger.error("-----award.getId():" + award.getId() + "-------");
+            logger.info("--------");
+            logger.info("-----award.getId():" + award.getId() + "-------");
         });
         dao.updateProfileUpdateTime(awardIds);
     }

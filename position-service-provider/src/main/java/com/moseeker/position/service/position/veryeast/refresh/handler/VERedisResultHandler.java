@@ -12,11 +12,6 @@ public class VERedisResultHandler extends AbstractRedisResultHandler implements 
     }
 
     @Override
-    protected int appId() {
-        return RefreshConstant.APP_ID;
-    }
-
-    @Override
     protected String keyIdentifier() {
         return RefreshConstant.VERY_EAST_REDIS_PARAM_KEY;
     }

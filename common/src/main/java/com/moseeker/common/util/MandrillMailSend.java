@@ -103,6 +103,7 @@ public class MandrillMailSend {
 
             } else {
                 logger.debug(messageStatus[0].getEmail() + " " + messageStatus[0].getStatus());
+
                 return ResponseUtils.fail(0,messageStatus[0].getStatus() + "," + params.get("templateName") + "," + message.getSubject());
 
             }

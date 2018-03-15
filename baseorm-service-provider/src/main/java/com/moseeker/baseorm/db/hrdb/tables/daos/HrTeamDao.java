@@ -169,4 +169,11 @@ public class HrTeamDao extends DAOImpl<HrTeamRecord, com.moseeker.baseorm.db.hrd
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> fetchByResAttrs(String... values) {
         return fetch(HrTeam.HR_TEAM.RES_ATTRS, values);
     }
+
+    /**
+     * Fetch records that have <code>link IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> fetchByLink(String... values) {
+        return fetch(HrTeam.HR_TEAM.LINK, values);
+    }
 }
