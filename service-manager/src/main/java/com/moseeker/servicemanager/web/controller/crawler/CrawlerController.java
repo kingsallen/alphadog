@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.crawler;
 
 import java.net.ConnectException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -129,7 +130,11 @@ public class CrawlerController {
 			String paramJson = ParamUtils.parseJsonParam(request);
 			ScraperHtmlParam param = JSON.parseObject(paramJson,ScraperHtmlParam.class,parserConfig);
 
-			return positionbs.getThirdPartyHtml(param);
+			Map<String,String> result=new HashMap<>();
+
+			result.put("html",positionbs.getThirdPartyHtml(param));
+
+			return ResponseLogNotification.successJson(request,result);
 		} catch (BIZException e) {
 			logger.error(e.getMessage(),e);
 			return ResponseLogNotification.failJson(request,e);
