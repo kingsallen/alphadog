@@ -69,14 +69,23 @@ public class PositionJobsDBForm {
     }
 
     public void setOccupation1(List<String> occupation1) {
+        if(StringUtils.isEmptyList(occupation1)){
+            return;
+        }
         occupation.set(0,occupation1);
     }
 
     public void setOccupation2(List<String> occupation2) {
+        if(StringUtils.isEmptyList(occupation2)){
+            return;
+        }
         occupation.set(1,occupation2);
     }
 
     public void setOccupation3(List<String> occupation3) {
+        if(StringUtils.isEmptyList(occupation3)){
+            return;
+        }
         occupation.set(2,occupation3);
     }
 

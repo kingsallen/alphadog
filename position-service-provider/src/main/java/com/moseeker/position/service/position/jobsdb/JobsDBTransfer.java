@@ -171,7 +171,12 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
         form.setOccupation2(Arrays.asList(extPosition.getOccupationExt1()));
         form.setOccupation3(Arrays.asList(extPosition.getOccupationExt2()));
 
-        List<String> address=Arrays.asList(String.valueOf(thirdPartyPosition.getAddressId()),String.valueOf(extPosition.getChildAddressId()));
+        List<String> address=new ArrayList<>();
+        address.add(String.valueOf(thirdPartyPosition.getAddressId()));
+        //如果二级地址没有就不传
+        if(StringUtils.isNotNullOrEmpty(extPosition.getChildAddressId())){
+            address.add(String.valueOf(extPosition.getChildAddressId()));
+        }
         form.setAddress(address);
 
         form.setSalaryTop(thirdPartyPosition.getSalaryTop());
