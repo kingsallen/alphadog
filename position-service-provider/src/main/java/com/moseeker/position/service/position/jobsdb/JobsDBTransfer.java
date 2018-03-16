@@ -167,9 +167,15 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
         form.setSummery2(extPosition.getSummary2());
         form.setSummery3(extPosition.getSummary3());
 
-        form.setOccupation1(Arrays.asList(thirdPartyPosition.getOccupation()));
-        form.setOccupation2(Arrays.asList(extPosition.getOccupationExt1()));
-        form.setOccupation3(Arrays.asList(extPosition.getOccupationExt2()));
+        if(StringUtils.isNotNullOrEmpty(thirdPartyPosition.getOccupation())) {
+            form.setOccupation1(Arrays.asList(thirdPartyPosition.getOccupation()));
+        }
+        if(StringUtils.isNotNullOrEmpty(extPosition.getOccupationExt1())) {
+            form.setOccupation2(Arrays.asList(extPosition.getOccupationExt1()));
+        }
+        if(StringUtils.isNotNullOrEmpty(extPosition.getOccupationExt2())) {
+            form.setOccupation3(Arrays.asList(extPosition.getOccupationExt2()));
+        }
 
         List<String> address=new ArrayList<>();
         address.add(String.valueOf(thirdPartyPosition.getAddressId()));
