@@ -66,7 +66,8 @@ public class ProfileMiniController {
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
             int accountId = form.getInt("accountId", 0);
             int userId = form.getInt("userId");
-            Response result = profileService.getProfileInfo(userId, accountId);
+            int positionId = form.getInt("positionId", 0);
+            Response result = profileService.getProfileInfo(userId, accountId, positionId);
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -86,7 +87,8 @@ public class ProfileMiniController {
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
             int accountId = form.getInt("accountId", 0);
             int userId = form.getInt("userId");
-            Response result = profileOtherService.getProfileOtherByPosition(userId, accountId);
+            int positionId = form.getInt("positionId", 0);
+            Response result = profileOtherService.getProfileOtherByPosition(userId, accountId, positionId);
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
