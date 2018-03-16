@@ -871,7 +871,7 @@ public class SearchengineService {
         }
         return ResponseUtils.success(data);
     }
-
+    @CounterIface
     public Map<String,Object> getPositionSuggest(Map<String,String> params){
         String keyWord=params.get("keyWord");
         String companyIds=params.get("company_id");
