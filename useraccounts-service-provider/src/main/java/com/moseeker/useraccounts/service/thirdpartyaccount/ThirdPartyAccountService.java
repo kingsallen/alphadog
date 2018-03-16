@@ -14,7 +14,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.useraccounts.service.thirdpartyaccount.info.ThridPartyAcountEntity;
+import com.moseeker.useraccounts.service.thirdpartyaccount.info.ThirdPartyAcountEntity;
 import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -63,7 +63,7 @@ public class ThirdPartyAccountService {
     EmailNotification emailNotification;
 
     @Autowired
-    ThridPartyAcountEntity thridPartyAcountEntity;
+    ThirdPartyAcountEntity thridPartyAcountEntity;
 
     @Autowired
     ThirdPartyAccountContext stateContext;

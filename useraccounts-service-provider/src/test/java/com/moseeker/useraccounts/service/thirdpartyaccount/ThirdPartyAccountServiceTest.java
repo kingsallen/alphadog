@@ -4,7 +4,7 @@ package com.moseeker.useraccounts.service.thirdpartyaccount;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.useraccounts.service.thirdpartyaccount.info.ThridPartyAcountEntity;
+import com.moseeker.useraccounts.service.thirdpartyaccount.info.ThirdPartyAcountEntity;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.useraccounts.config.AppConfig;
 import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindOperation;
@@ -24,7 +24,7 @@ public class ThirdPartyAccountServiceTest {
     HRThirdPartyAccountDao thirdPartyAccountDao;
 
     @Autowired
-    ThridPartyAcountEntity thridPartyAcountEntity;
+    ThirdPartyAcountEntity thridPartyAcountEntity;
 
     /*@Mock
     ChaosHandler chaosHandler;*/

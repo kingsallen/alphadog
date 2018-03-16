@@ -6,6 +6,8 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.pojos.ThirdPartyInfoData;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.jooq.UpdatableRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.Locale;
 
 public abstract class AbstractInfoHandler<T> {
+
+    private Logger logger = LoggerFactory.getLogger(AbstractInfoHandler.class);
 
     /**
      * 所有传过来的数据初始化成对应的第三方信息
@@ -76,10 +80,12 @@ public abstract class AbstractInfoHandler<T> {
 
         if(!StringUtils.isEmptyList(toBeAddData)) {
             getDao().addAllData(toBeAddData);
+            logger.info("third party info handler {} add data :{}",getDao().toString(),toBeAddData.size());
         }
 
         if(!StringUtils.isEmptyList(toBeDelData)) {
             getDao().deleteDatas(toBeDelData);
+            logger.info("third party info handler {} del data :{}",getDao().toString(),toBeDelData.size());
         }
     }
 
@@ -98,10 +104,10 @@ public abstract class AbstractInfoHandler<T> {
     private boolean dataNotInDatas(T data, List<T> datas){
         for(T t:datas){
             if(equals(t,data)){
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
 }

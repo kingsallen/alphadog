@@ -21,31 +21,31 @@ public class JobsDBTransferStrategy {
         校招	实习	Internship
         校招	其他	Freelance*/
 
-        FULLTIME(1,"全职", WorkType.fullTime),
-        PARTTIME(2,"兼职",WorkType.partTime),
-        CONTRACT(3,"合同工",WorkType.contract),
-        INTERNSHIP(4,"实习",WorkType.practice),
-        FREELANCE(5,"其他",WorkType.other)
+        FULLTIME("Full Time","全职", WorkType.fullTime),
+        PARTTIME("Part Time","兼职",WorkType.partTime),
+        CONTRACT("Contract","合同工",WorkType.contract),
+        INTERNSHIP("Internship","实习",WorkType.practice),
+        FREELANCE("Freelance","其他",WorkType.other)
         ;
         /**/
 
-        EmploymentType(int code, String text, WorkType employment_type) {
+        EmploymentType(String code, String text, WorkType employment_type) {
             this.code = code;
             this.text = text;
             this.employment_type = employment_type;
         }
 
-        public static int moseekerToOther(int employment_type ){
+        public static String moseekerToOther(int employment_type ){
             for(EmploymentType t:values()){
                 if(t.employment_type.getValue()==employment_type){
                     return t.code;
                 }
             }
             logger.info("no matched WorkMode");
-            return 0;
+            return "";
         }
 
-        private int code;
+        private String code;
         private String text;
         private WorkType employment_type;
     }

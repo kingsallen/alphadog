@@ -18,7 +18,7 @@ public class PositionJobsDB {
 
     private List<String> work_location;
 
-    private int employment_type;
+    private List<String> employment_type;
 
     private int salary_top;
 
@@ -74,11 +74,11 @@ public class PositionJobsDB {
         this.work_location = work_location;
     }
 
-    public int getEmployment_type() {
+    public List<String> getEmployment_type() {
         return employment_type;
     }
 
-    public void setEmployment_type(int employment_type) {
+    public void setEmployment_type(List<String> employment_type) {
         this.employment_type = employment_type;
     }
 

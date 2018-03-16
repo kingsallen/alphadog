@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * Created by jack on 27/09/2017.
  */
 @Component
-public class ThridPartyAcountEntity {
+public class ThirdPartyAcountEntity {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
