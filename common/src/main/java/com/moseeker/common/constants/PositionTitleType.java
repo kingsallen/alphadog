@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public enum PositionTitleType {
 
-    SHARE1(1, "【诚意招贤】{} 招聘 {}"), SHARE2(2, " 想和你一起上班】{} 招聘 {}"),  SHARE3(3, "【WE WANT U】{} 招聘 {}");
+    SHARE1(1, "【诚意招贤】{1} 招聘 {2}"), SHARE2(2, " 想和你一起上班】{1} 招聘 {2}"),  SHARE3(3, "【WE WANT U】{1} 招聘 {2}");
 
     private int value;
     private String name;
