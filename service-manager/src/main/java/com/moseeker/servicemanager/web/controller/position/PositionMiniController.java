@@ -119,7 +119,7 @@ public class PositionMiniController {
     public String getPositionDetail(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int positionId = params.getInt("positionId");
+            Integer positionId = params.getInt("positionId");
             Response res = positonServices.getMiniPositionDetail(positionId);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
@@ -136,7 +136,7 @@ public class PositionMiniController {
     public String getPositionShare(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int positionId = params.getInt("positionId");
+            Integer positionId = params.getInt("positionId");
             Response res = positonServices.getMiniPositionShare(positionId);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {

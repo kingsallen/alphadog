@@ -12,6 +12,7 @@ import com.moseeker.profile.service.impl.WholeProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices.Iface;
 
 import java.util.HashMap;
@@ -128,14 +129,18 @@ public class WholeProfileServicesImpl implements Iface {
     }
 
     @Override
-    public Response getProfileInfo(int userId, int accountId) throws BIZException, TException {
+    public Response getProfileInfo(int userId, int accountId, int positionId) throws BIZException, TException {
         Response  response = null;
         try {
 
             response = service.getResource(userId, -1, "");
-
+            JobPositionDO positionDO= service.getPositionById(accountId, positionId);
             if(response != null && response.getStatus() ==0 && response.getData() != null) {
+
                 Map<String, Object> profile = (Map<String, Object>) JsonToMap.parseJSON2Map(response.getData());
+                if(positionDO != null){
+                    profile.put("position_name", positionDO.getTitle());
+                }
                 Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(profile);
                 return ResponseUtils.success(profilrCamle);
             }

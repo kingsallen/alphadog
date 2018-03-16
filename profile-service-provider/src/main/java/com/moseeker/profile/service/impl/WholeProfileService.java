@@ -13,6 +13,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
@@ -46,6 +47,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
@@ -728,6 +730,13 @@ public class WholeProfileService {
         } else {
             return ResponseUtils.success(false);
         }
+    }
+
+    public JobPositionDO getPositionById(int accountId, int positionId) throws TException {
+        Query query = new Query.QueryBuilder().where(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountId)
+                .and(JobPosition.JOB_POSITION.ID.getName(), positionId).buildQuery();
+        JobPositionDO positionDO = jobPositionDao.getData(query);
+        return positionDO;
     }
 
     private List<Map<String, Object>> buildsWorks(ProfileProfileRecord profileRecord, Query query) {
