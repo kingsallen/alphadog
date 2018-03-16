@@ -2,6 +2,7 @@ package com.moseeker.chat.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.chat.constant.ChatOrigin;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
@@ -41,6 +42,9 @@ public class ChatService {
 
     @Autowired
     private ChatDao chaoDao;
+
+    @Autowired
+    private UserHrAccountDao hrAccountDao;
 
     private ThreadPool pool = ThreadPool.Instance;
 
@@ -342,9 +346,16 @@ public class ChatService {
         logger.info("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}, is_gamma:{}", userId, hrId, positionId, roomId, is_gamma);
         final ResultOfSaveRoomVO resultOfSaveRoomVO;
 
+        //检测HR是否存在
+        boolean isHrDelete=false;
+        UserHrAccountDO hrAccountDO = hrAccountDao.getValidAccount(hrId);
+        if(hrAccountDO==null){
+            isHrDelete=true;
+        }
+
         HrWxHrChatListDO chatRoom = chaoDao.getChatRoom(roomId, userId, hrId);
         boolean chatDebut = false;
-        if(chatRoom == null) {
+        if(chatRoom == null && !isHrDelete) {
             chatRoom = new HrWxHrChatListDO();
             String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
             chatRoom.setCreateTime(createTime);
@@ -373,8 +384,12 @@ public class ChatService {
             }
         } else {
             resultOfSaveRoomVO = new ResultOfSaveRoomVO();
+            resultOfSaveRoomVO.setHr(new HrVO());
         }
+
+
         resultOfSaveRoomVO.setChatDebut(chatDebut);
+        resultOfSaveRoomVO.getHr().setIsDelete(isHrDelete);
         logger.info("enterChatRoom result:{}", resultOfSaveRoomVO);
         return resultOfSaveRoomVO;
     }
