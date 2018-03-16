@@ -55,6 +55,11 @@ public class PositionATSService {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
 
+            //来源应该位9
+            if(batchHandlerJobPostion.getData().get(0).getSource()!=PositionSource.ATS.getCode()){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.SOURCE_ERROR);
+            }
+
             //更新，需要判断职位是否存在，不存在才能新增
             if(checkGllueJobPositionExist(batchHandlerJobPostion)){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_ALREADY_EXIST);

@@ -2,15 +2,19 @@ package com.moseeker.chat.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.chat.constant.ChatOrigin;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.utils.Page;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChatMsgType;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.chat.struct.*;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
@@ -41,6 +45,9 @@ public class ChatService {
 
     @Autowired
     private ChatDao chaoDao;
+
+    @Autowired
+    private UserHrAccountDao hrAccountDao;
 
     private ThreadPool pool = ThreadPool.Instance;
 
@@ -295,7 +302,21 @@ public class ChatService {
      * 添加聊天内容，并修改未读消息数量
      * @param chat 聊天信息
      */
-    public int saveChat(ChatVO chat) {
+    public int saveChat(ChatVO chat) throws BIZException {
+        if(chat == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
+        HrWxHrChatListDO chatRoom = chaoDao.getChatRoomById(chat.getRoomId());
+        if(chatRoom == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CHAT_ROOM_NOT_EXIST);
+        }
+
+        UserHrAccountDO hrAccountDO = hrAccountDao.getValidAccount(chatRoom.getHraccountId());
+        if(hrAccountDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
+        }
+
         logger.info("saveChat chat:{}", JSON.toJSONString(chat));
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
         String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
@@ -340,9 +361,16 @@ public class ChatService {
         logger.info("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}, is_gamma:{}", userId, hrId, positionId, roomId, is_gamma);
         final ResultOfSaveRoomVO resultOfSaveRoomVO;
 
+        //检测HR是否存在
+        boolean isHrDelete=false;
+        UserHrAccountDO hrAccountDO = hrAccountDao.getValidAccount(hrId);
+        if(hrAccountDO==null){
+            isHrDelete=true;
+        }
+
         HrWxHrChatListDO chatRoom = chaoDao.getChatRoom(roomId, userId, hrId);
         boolean chatDebut = false;
-        if(chatRoom == null) {
+        if(chatRoom == null && !isHrDelete) {
             chatRoom = new HrWxHrChatListDO();
             String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
             chatRoom.setCreateTime(createTime);
@@ -371,8 +399,12 @@ public class ChatService {
             }
         } else {
             resultOfSaveRoomVO = new ResultOfSaveRoomVO();
+            resultOfSaveRoomVO.setHr(new HrVO());
         }
+
+
         resultOfSaveRoomVO.setChatDebut(chatDebut);
+        resultOfSaveRoomVO.getHr().setIsDelete(isHrDelete);
         logger.info("enterChatRoom result:{}", resultOfSaveRoomVO);
         return resultOfSaveRoomVO;
     }

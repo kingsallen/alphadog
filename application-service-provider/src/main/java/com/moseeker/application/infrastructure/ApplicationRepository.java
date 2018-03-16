@@ -11,6 +11,8 @@ import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxNoticeMessage;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechat;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
@@ -44,6 +46,7 @@ public class ApplicationRepository {
     private HrOperationJOOQDao hrOperationJOOQDao;
     private HrCompanyJOOQDao companyJOOQDao;
     private WechatJOOQDao wechatJOOQDao;
+    private HrWxNoticeMessageJOOQDao noticeMessageJOOQDao;
 
     /**
      * es数据模板，tableName: 表名， user_id: 用户id
@@ -65,6 +68,7 @@ public class ApplicationRepository {
         hrOperationJOOQDao = new HrOperationJOOQDao(configuration);
         companyJOOQDao = new HrCompanyJOOQDao(configuration);
         wechatJOOQDao = new WechatJOOQDao(configuration);
+        noticeMessageJOOQDao = new HrWxNoticeMessageJOOQDao(configuration);
     }
 
     public JobApplicationJOOQDao getJobApplicationDao() {
@@ -140,20 +144,25 @@ public class ApplicationRepository {
     }
 
     /**
-     * 查找公司signature信息  key是公司编号， value是signature
+     * 查找公司signature信息
      * @param companyIdList 公司编号集合
-     * @return 公司signature信息集合 key是公司编号， value是signature
+     * @return 公司公众号信息集合
      */
-    public Map<Integer,String> getSignatureByCompanyId(List<Integer> companyIdList) {
-        Map<Integer, String> map = new HashMap<>();
-        List<Record2<Integer,String>> result = wechatJOOQDao.getCompanyIdAndSignatureByCompanyId(companyIdList);
-        if (result != null) {
-            result.forEach(record -> {
-                map.put(record.value1(), record.value2());
-            });
-        }
-        return map;
+    public  List<HrWxWechat> getSignatureByCompanyId(List<Integer> companyIdList) {
+        List<HrWxWechat> result = wechatJOOQDao.getCompanyIdAndSignatureByCompanyId(companyIdList);
+        return result;
     }
+
+    /**
+     * 查找公司signature信息
+     * @param companyIdList 公司编号集合
+     * @return 公司公众号信息集合
+     */
+    public  List<HrWxNoticeMessage> getNoticeByCompanyId(List<Integer> companyIdList, int notice_id) {
+        List<HrWxNoticeMessage> result = noticeMessageJOOQDao.getCompanyIdAndNoticeByCompanyId(companyIdList, notice_id);
+        return result;
+    }
+
 
     /**
      * 查找申请人编号

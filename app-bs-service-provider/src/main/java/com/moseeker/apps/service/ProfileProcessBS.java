@@ -330,6 +330,9 @@ public class ProfileProcessBS {
         }
         MsInfo msInfo = tm.processStatus(status, userName);
         logger.info("msInfo: {}", msInfo);
+        if(msInfo == null){
+            return ;
+        }
         String signature = "";
         int wechatId = 0;
         try {
