@@ -8,11 +8,13 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
@@ -65,6 +67,16 @@ public class ChatDao {
     JobPositionDao jobPositionDao;
 
     ThreadPool threadPool = ThreadPool.Instance;
+
+    /**
+     * 根据聊天室ID获取聊天室
+     * @param roomId 聊天室ID
+     * @return
+     */
+    public HrWxHrChatListDO getChatRoomById(int roomId){
+        Query query=new Query.QueryBuilder().where(HrWxHrChatList.HR_WX_HR_CHAT_LIST.ID.getName(),roomId).buildQuery();
+        return hrWxHrChatListDao.getData(query);
+    }
 
     /**
      * 按照未阅读对聊天室排序
