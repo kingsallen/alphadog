@@ -15,6 +15,8 @@ public class JobsDBTransferCheck extends AbstractTransferCheck<PositionJobsDBFor
 
     private static String THREE_SUMMERY_REQUIRED="必须有三条总结!";
 
+    private static String THREE_SUMMERY_LENGTH_50="总结长度不能超过50!";
+
     private static String SALARY_NOT_EMPTY="薪资不能为空!";
 
     private static String OCCUPATION_NOT_EMPTY="职能不能为空!";
@@ -30,8 +32,12 @@ public class JobsDBTransferCheck extends AbstractTransferCheck<PositionJobsDBFor
         }
 
         // 必须有三条总结
-        if(isSummaryEmpty(positionJobsDBForm.getSummery())){
+        if(isSummaryEmpty(positionJobsDBForm.getSummary())){
             errorMsg.add(THREE_SUMMERY_REQUIRED);
+        }
+
+        if(isSummaryOutOfLength(positionJobsDBForm.getSummary())){
+            errorMsg.add(THREE_SUMMERY_LENGTH_50);
         }
 
         // 薪资上下限必须都不为0
@@ -60,6 +66,12 @@ public class JobsDBTransferCheck extends AbstractTransferCheck<PositionJobsDBFor
                 || StringUtils.isNullOrEmpty(summary.get(0))
                 || StringUtils.isNullOrEmpty(summary.get(1))
                 || StringUtils.isNullOrEmpty(summary.get(2));
+    }
+
+    public boolean isSummaryOutOfLength(List<String> summary){
+        return summary.get(0).length() > 50
+                || summary.get(1).length() > 50
+                || summary.get(2).length() > 50;
     }
 
     @Override

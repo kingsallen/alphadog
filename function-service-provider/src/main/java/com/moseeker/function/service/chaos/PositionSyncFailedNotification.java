@@ -125,7 +125,11 @@ public class PositionSyncFailedNotification {
 
         List<String> emails;
 
-        emails = Arrays.asList("panyongbing@moseeker.com");
+        if(pojo.getStatus() == 2 || pojo.getStatus() == 9){
+            emails = csMails;
+        }else{
+            emails = devMails;
+        }
 
         if (emails == null || emails.size() == 0) {
             logger.error("职位同步到第三方的时候无法确认状态，且不能发送邮件:邮件地址为空：返回信息:{}", JSON.toJSONString(pojo));

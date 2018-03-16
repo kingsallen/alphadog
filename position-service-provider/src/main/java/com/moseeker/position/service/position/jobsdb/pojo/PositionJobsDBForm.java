@@ -1,14 +1,12 @@
 package com.moseeker.position.service.position.jobsdb.pojo;
 
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.position.service.position.veryeast.pojo.PositionVeryEastForm;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PositionJobsDBForm {
-    private List<String> summery;
+    private List<String> summary;
     private List<List<String>> occupation;
     private List<String> address;
     private int salaryTop;
@@ -16,11 +14,11 @@ public class PositionJobsDBForm {
     private int channel;
 
 
-    {
-        summery=new ArrayList<>();
-        summery.add("");
-        summery.add("");
-        summery.add("");
+    public PositionJobsDBForm(){
+        summary =new ArrayList<>();
+        summary.add("");
+        summary.add("");
+        summary.add("");
 
         occupation=new ArrayList<>();
         occupation.add(new ArrayList<>());
@@ -29,53 +27,45 @@ public class PositionJobsDBForm {
     }
 
     public String getSummery1(){
-        return summery.get(0);
+        return summary.get(0);
     }
 
     public String getSummery2(){
-        return summery.get(1);
+        return summary.get(1);
     }
 
     public String getSummery3(){
-        return summery.get(2);
+        return summary.get(2);
     }
 
     public void setSummery1(String summery1){
         if(StringUtils.isNotNullOrEmpty(summery1)) {
-            summery.set(0,summery1);
+            summary.set(0,summery1);
         }
     }
 
     public void setSummery2(String summery2){
         if(StringUtils.isNotNullOrEmpty(summery2)) {
-            summery.set(1,summery2);
+            summary.set(1,summery2);
         }
     }
 
     public void setSummery3(String summery3){
         if(StringUtils.isNotNullOrEmpty(summery3)) {
-            summery.set(2,summery3);
+            summary.set(2,summery3);
         }
     }
 
-    public List<String> getAddress() {
-        return address;
-    }
-
-    public void setAddress(List<String> address) {
-        this.address = address;
-    }
-
     public List<String> getOccupation1() {
-        return occupation.get(0);
+        return StringUtils.isEmptyList(occupation) ? null:occupation.get(0);
     }
 
     public List<String> getOccupation2() {
-        return occupation.get(1);
+        return StringUtils.isEmptyList(occupation) || occupation.size() <2 ? new ArrayList<>():occupation.get(1);
     }
 
     public List<String> getOccupation3() {
-        return occupation.get(2);
+        return StringUtils.isEmptyList(occupation) || occupation.size() <3 ? new ArrayList<>():occupation.get(2);
     }
 
     public void setOccupation1(List<String> occupation1) {
@@ -90,12 +80,20 @@ public class PositionJobsDBForm {
         occupation.set(2,occupation3);
     }
 
-    public List<String> getSummery() {
-        return summery;
+    public List<String> getAddress() {
+        return address;
     }
 
-    public void setSummery(List<String> summery) {
-        this.summery = summery;
+    public void setAddress(List<String> address) {
+        this.address = address;
+    }
+
+    public List<String> getSummary() {
+        return summary;
+    }
+
+    public void setSummary(List<String> summary) {
+        this.summary = summary;
     }
 
     public List<List<String>> getOccupation() {

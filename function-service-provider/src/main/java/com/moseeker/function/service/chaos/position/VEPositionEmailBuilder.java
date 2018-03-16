@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public class VEPositionEmailBuilder extends AbstractPositionEmailBuilder<Thirdpa
         emailMessgeBuilder.name("【工作经验】").value(positionSyncMailUtil.getExperience(moseekerPosition.getExperience()));
         emailMessgeBuilder.name("【工作性质】").value(WorkType.instanceFromInt((int)moseekerPosition.getEmploymentType()).getName());
 
-        String json=redisClient.get(RefreshConstant.APP_ID, KeyIdentifier.THIRD_PARTY_ENVIRON_PARAM.toString(),String.valueOf(getChannelType().getValue()));
+        String json = redisClient.get(RefreshConstant.APP_ID, KeyIdentifier.THIRD_PARTY_ENVIRON_PARAM.toString(),String.valueOf(getChannelType().getValue()));
         JSONObject obj=JSONObject.parseObject(json);
         JSONArray accommodations=obj.getJSONArray("accommodation");
         JSONArray computerLevels=obj.getJSONArray("computerLevel");
@@ -60,6 +61,7 @@ public class VEPositionEmailBuilder extends AbstractPositionEmailBuilder<Thirdpa
         JSONArray languageLevels=obj.getJSONArray("languageLevel");
         emailMessgeBuilder.name("").name("【提供食宿】").value(getText(accommodations,position.getAccommodation()+""));
         emailMessgeBuilder.name("").name("【年龄要求】").value(position.getAge_bottom()+"至"+position.getAge_top()+"岁");
+
         emailMessgeBuilder.name("").name("【语言能力1】").value(getText(languageTypes,position.getLanguageType1()+"")+"，掌握程度："+getText(languageLevels,position.getLanguageLevel1()+""));
         emailMessgeBuilder.name("").name("【语言能力2】").value(getText(languageTypes,position.getLanguageType2()+"")+"，掌握程度："+getText(languageLevels,position.getLanguageLevel2()+""));
         emailMessgeBuilder.name("").name("【语言能力3】").value(getText(languageTypes,position.getLanguageType3()+"")+"，掌握程度："+getText(languageLevels,position.getLanguageLevel3()+""));
@@ -82,6 +84,6 @@ public class VEPositionEmailBuilder extends AbstractPositionEmailBuilder<Thirdpa
                 return obj.getString("text");
             }
         }
-        return "";
+        return "无";
     }
 }

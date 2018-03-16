@@ -218,7 +218,7 @@ public class PositionBS {
 
         // 提交到chaos处理
         logger.info("chaosService.synchronizePosition:{}", positionsForSynchronizations);
-//        chaosService.synchronizePosition(positionsForSynchronizations);
+        chaosService.synchronizePosition(positionsForSynchronizations);
 
         // 回写数据到第三方职位表表
         logger.info("write back to thirdpartyposition:{}", JSON.toJSONString(writeBackThirdPartyPositionList));
