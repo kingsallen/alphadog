@@ -123,7 +123,11 @@ public class PositionBS {
 
             try {
                 results.addAll(syncPositionToThirdParty(positionForm,moseekerJobPosition,accounts));
-            }catch (Exception e){
+            } catch(BIZException e){
+                logger.error("batch Sync Position error bizexception:{},positionForm:{}",e,JSON.toJSONString(positionForm));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),JSON.toJSONString(positionForm),e.getMessage()));
+                continue;
+            } catch(Exception e){
                 logger.error("batch Sync Position error exception:{},positionForm:{}",e,JSON.toJSONString(positionForm));
                 emailNotification.sendSyncFailureMail(positionForm, null, e);
                 results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),JSON.toJSONString(positionForm),"batch Sync Position error"));
