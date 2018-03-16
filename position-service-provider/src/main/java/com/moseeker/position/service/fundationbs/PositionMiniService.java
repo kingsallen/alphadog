@@ -105,7 +105,7 @@ public class PositionMiniService {
         JobPositionDO positionDO = jobPositionDao.getData(query);
         if(positionDO == null )
             return new HashMap<>();
-
+        HrCompanyDO companyDO = hrCompanyDao.getCompanyById(positionDO.getCompanyId());
         HrHbConfigDO configDO = getHrHbConfigDOByCompanyId(positionDO.getCompanyId(), position_id);
 
         if(configDO != null){
@@ -114,7 +114,8 @@ public class PositionMiniService {
         }else{
             String title = positionDO.getTitle();
             String description = "点击即可快速申请！";
-            if(positionDO.getShareTplId()>0){
+
+            if(positionDO.getShareTplId()>0 && companyDO != null){
                 if(positionDO.getShareTplId()>3){
                     Query shareQuery=new Query.QueryBuilder().where(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID.getName(), (int)positionDO.getShareTplId()).buildQuery();
                     JobPositionShareTplConfDO tplConfDO = tplConfDao.getData(shareQuery);
@@ -128,6 +129,8 @@ public class PositionMiniService {
                     }
                 }else if(positionDO.getShareTplId()>0){
                     title = PositionTitleType.instanceFromByte((int)positionDO.getShareTplId()).toString();
+                    title = title.replace("{1}", companyDO.getAbbreviation());
+                    title = title.replace("{2}", positionDO.getTitle());
                     description = PositionDescriptionType.instanceFromByte((int)positionDO.getShareTplId()).toString();
                 }
             }
