@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1290405286;
+    private static final long serialVersionUID = -449018446;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -184,14 +184,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月校招职位申请次数限制
+     * Setter for <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月申请校招职位次数限制
      */
     public void setSchoolApplicationCountLimit(Short value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月校招职位申请次数限制
+     * Getter for <code>hrdb.hr_company_conf.school_application_count_limit</code>. 一个人在一个公司下每月申请校招职位次数限制
      */
     public Short getSchoolApplicationCountLimit() {
         return (Short) get(11);
@@ -268,31 +268,31 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.application_time</code>. newjd_status即新的jd页的生效时间，
-     */
-    public void setApplicationTime(Timestamp value) {
-        set(17, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_company_conf.application_time</code>. newjd_status即新的jd页的生效时间，
-     */
-    public Timestamp getApplicationTime() {
-        return (Timestamp) get(17);
-    }
-
-    /**
      * Setter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
      */
     public void setNewjdStatus(Integer value) {
-        set(18, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
      */
     public Integer getNewjdStatus() {
-        return (Integer) get(18);
+        return (Integer) get(17);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.application_time</code>. newjd_status即新的jd页的生效时间，
+     */
+    public void setApplicationTime(Timestamp value) {
+        set(18, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.application_time</code>. newjd_status即新的jd页的生效时间，
+     */
+    public Timestamp getApplicationTime() {
+        return (Timestamp) get(18);
     }
 
     /**
@@ -352,14 +352,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启
+     * Setter for <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启';
      */
     public void setTalentpoolStatus(Byte value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启
+     * Getter for <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启';
      */
     public Byte getTalentpoolStatus() {
         return (Byte) get(23);
@@ -391,7 +391,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     /**
      * Create a detached, initialised HrCompanyConfRecord
      */
-    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus) {
+    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Integer newjdStatus, Timestamp applicationTime, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus) {
         super(HrCompanyConf.HR_COMPANY_CONF);
 
         set(0, companyId);
@@ -411,8 +411,8 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         set(14, searchImg);
         set(15, jobOccupation);
         set(16, teamnameCustom);
-        set(17, applicationTime);
-        set(18, newjdStatus);
+        set(17, newjdStatus);
+        set(18, applicationTime);
         set(19, hrChat);
         set(20, showInQx);
         set(21, employeeSlug);

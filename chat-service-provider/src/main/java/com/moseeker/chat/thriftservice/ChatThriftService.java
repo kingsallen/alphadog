@@ -2,16 +2,21 @@ package com.moseeker.chat.thriftservice;
 
 import com.moseeker.chat.service.ChatService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.chat.service.ChatService.Iface;
 import com.moseeker.thrift.gen.chat.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by jack on 08/03/2017.
@@ -35,13 +40,22 @@ public class ChatThriftService implements Iface {
     }
 
     @Override
-    public HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, String keyword, int userId, int pageSize) throws BIZException, TException {
+    public HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, String keyword, int userId, boolean apply, int pageSize) throws BIZException, TException {
         try {
             ValidateUtil validateUtil = new ValidateUtil();
-            return chatService.listHRChatRoomByIndex(hrId, keyword, userId, pageSize);
+            validateUtil.addIntTypeValidate("HR", hrId, null, null, 1, Integer.MAX_VALUE);
+            validateUtil.addRequiredStringValidate("关键词", keyword, null, null);
+            validateUtil.addStringLengthValidate("关键词", keyword, null, null, 0, 100);
+            validateUtil.addIntTypeValidate("用户", userId, null, null, 1, Integer.MAX_VALUE);
+            validateUtil.addIntTypeValidate("每页数量", pageSize, null, null, 0, 1000);
+            String result = validateUtil.validate();
+            if (StringUtils.isNotBlank(result)) {
+                ExceptionUtils.convertException(CommonException.validateFailed(result));
+            }
+            return chatService.listHRChatRoomByIndex(hrId, keyword, userId, apply, pageSize);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
         }
     }
 
@@ -93,12 +107,71 @@ public class ChatThriftService implements Iface {
     }
 
     @Override
+    public List<ChatVO> listLastMessage(List<Integer> roomIdList) throws BIZException, TException {
+
+        try {
+            return chatService.listLastMessage(roomIdList);
+        } catch (CommonException e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public ChatHistory listMessage(int roomId, int chatId, int pageSize) throws BIZException, TException {
+
+        if (roomId <= 0 || chatId <= 0) {
+            throw ExceptionUtils.convertException(CommonException.validateFailed("参数不正确!"));
+        }
+
+        try {
+            return chatService.listMessage(roomId, chatId, pageSize);
+        } catch (CommonException e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public HRChatRoomVO getChatRoom(int roomId, int hrId) throws BIZException, TException {
+        try {
+            return chatService.getChatRoom(roomId, hrId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public List<String> getChatSug(int hrId, boolean applied, String keyword) throws BIZException, TException {
+        try {
+            return chatService.getChatSug(hrId, applied, keyword);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public int getHRUnreadCount(int hrId) throws BIZException, TException {
+        try {
+            return chatService.getHRUnreadCount(hrId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public HrVO getHrInfo(int roomId) throws BIZException, TException {
+        try {
+            return chatService.getHrInfo(roomId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
     public void leaveChatRoom(int roomId, byte speaker) throws TException {
         try {
             chatService.leaveChatRoom(roomId, speaker);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 }

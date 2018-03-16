@@ -8,11 +8,17 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.thrift.gen.chat.struct.ChatVO;
+import com.moseeker.thrift.gen.chat.struct.HrVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
@@ -22,13 +28,12 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -609,15 +614,52 @@ public class ChatDao {
         }
     }
 
-    public List<Integer> findUserIdByName(String keyword, List<Integer> chatUserIdList) {
-        List<Integer> userIdList = new ArrayList<>();
-
-        userUserDao.fetchIdBy
-
-        return userIdList;
+    public List<Integer> fetchUserIdByHrId(int hrId, boolean apply) {
+        return hrChatUnreadCountDao.fetchUserIdByHRId(hrId, apply);
     }
 
-    public List<Integer> fetchUserIdByHrId(int hrId) {
-        return hrChatUnreadCountDao.fetchUserIdByHRId(hrId);
+    public HrChatUnreadCountRecord fetchRoomByHRIdAndUserId(int hrId, int userId) {
+        return hrChatUnreadCountDao.fetchByHrIdAndUserId(hrId, userId);
+    }
+
+    public int countRoom(int hrId, List<Integer> userIdList, boolean apply) {
+        return hrChatUnreadCountDao.countRoom(hrId, userIdList, apply);
+    }
+
+    public List<HrChatUnreadCountRecord> fetchRooms(int hrId, List<Integer> userIdList, boolean apply, Timestamp updateTime, int pageSize) {
+        return hrChatUnreadCountDao.fetchRooms(hrId, userIdList, apply, updateTime, pageSize);
+    }
+
+    public List<ChatVO> listLastMessage(List<Integer> roomIdList) {
+        List<Integer> chatIdList = hrWxHrChatDao.lastMessageIdList(roomIdList);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(new Condition("id", chatIdList, ValueOp.IN));
+        return hrWxHrChatDao.getDatas(queryBuilder.buildQuery(), ChatVO.class);
+    }
+
+    public List<ChatVO> listMessage(int roomId, int chatId, int pageSize) {
+        return hrWxHrChatDao.listMessage(roomId, chatId, pageSize);
+    }
+
+    public int countMessage(int roomId, int chatId) {
+        return hrWxHrChatDao.countMessage(roomId, chatId);
+    }
+
+    public HrChatUnreadCountRecord fetchRoomById(int roomId) {
+        return hrChatUnreadCountDao.fetchById(roomId);
+    }
+
+    public List<Integer> findUserIdByName(String keyword, List<Integer> chatUserIdList) {
+
+        return userUserDao.fetchIdByIdListAndName(chatUserIdList, keyword);
+    }
+
+    public List<String> findUserNameByKeyword(String keyword, List<Integer> chatUserIdList) {
+
+        return userUserDao.fetchIdByIdListAndName(chatUserIdList, keyword, 10);
+    }
+
+    public int countUnreadMessage(int hrId) {
+        return hrWxHrChatListDao.countUnreadMessage(hrId);
     }
 }

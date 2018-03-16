@@ -1,13 +1,15 @@
 package com.moseeker.chat.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.chat.constant.ChatOrigin;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.utils.Page;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChatMsgType;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.chat.struct.*;
@@ -25,7 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -129,12 +135,108 @@ public class ChatService {
         return rooms;
     }
 
-    public HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, String keyword, int userId, int pageSize) {
+    public HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, String keyword, int userId, boolean apply, int pageSize) {
 
-        List<Integer> chatUserIdList = chaoDao.fetchUserIdByHrId(hrId);
+        HRChatRoomsIndexVO hrChatRoomsIndexVO = new HRChatRoomsIndexVO();
+        List<Integer> chatUserIdList = chaoDao.fetchUserIdByHrId(hrId, apply);
 
-        List<Integer> userIdList = chaoDao.findUserIdByName(keyword, chatUserIdList);
+        if (chatUserIdList.size() > 0) {
+            List<Integer> userIdList = chaoDao.findUserIdByName(keyword, chatUserIdList);
 
+            if (userIdList.size() > 0) {
+                HrChatUnreadCountRecord room = chaoDao.fetchRoomByHRIdAndUserId(hrId, userId);
+                Timestamp update = null;
+                if (room == null) {
+                    update = room.getUpdateTime();
+                }
+
+                int total = chaoDao.countRoom(hrId, userIdList, apply);
+                hrChatRoomsIndexVO.setTotalRow(total);
+                List<HrChatUnreadCountRecord> roomList = chaoDao.fetchRooms(hrId, userIdList, apply, update, pageSize);
+
+                if (roomList.size() > 0) {
+
+                    List<HRChatRoomVO> rooms = new ArrayList<>();
+
+                    int[] roomIdArray = roomList.stream().mapToInt(chatUnreadCountDO -> chatUnreadCountDO.getRoomId()).toArray();
+                    int[] userIdArray = roomList.stream().mapToInt(chatUnreadCountDO -> chatUnreadCountDO.getUserId()).toArray();
+
+                    Future chatRoomsFuture = pool.startTast(() -> chaoDao.listChatRoom(roomIdArray));
+                    Future usersFuture = pool.startTast(() -> chaoDao.listUsers(userIdArray));
+
+                    List<HrWxHrChatListDO> chatRoomList = null;
+                    List<UserUserDO> userList = null;
+                    /** 匹配聊天室的创建时间和状态 */
+                    try {
+                        chatRoomList = (List<HrWxHrChatListDO>) chatRoomsFuture.get();
+
+                    } catch (InterruptedException | ExecutionException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    /** 匹配用户名称和头像 */
+                    try {
+                        userList = (List<UserUserDO>) usersFuture.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+
+                    for (HrChatUnreadCountRecord hrChatUnreadCountRecord : roomList) {
+
+                        HRChatRoomVO hrChatRoomVO = new HRChatRoomVO();
+                        hrChatRoomVO.setId(hrChatUnreadCountRecord.getRoomId());
+                        hrChatRoomVO.setUserId(hrChatUnreadCountRecord.getUserId());
+                        hrChatRoomVO.setApply(hrChatUnreadCountRecord.getApply() == 1 ? true:false);
+
+                        /** 匹配聊天室的创建时间和状态 */
+                            Optional<HrWxHrChatListDO> chatRoomDOOptional = chatRoomList.stream()
+                                    .filter(chatRoom -> chatRoom.getId() == hrChatUnreadCountRecord.getRoomId()).findFirst();
+                            if(chatRoomDOOptional.isPresent()) {
+                                hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getUpdateTime());
+                                hrChatRoomVO.setUnReadNum(chatRoomDOOptional.get().getHrUnreadCount());
+                            }
+
+                        /** 匹配C端用户的名称和头像 */
+                        if(userList != null && userList.size() > 0) {
+                            Optional<UserUserDO> userUserDOOptional = userList.stream()
+                                    .filter(userUserDO -> userUserDO.getId() == hrChatUnreadCountRecord.getUserId()).findAny();
+                            if(userUserDOOptional.isPresent()) {
+                                hrChatRoomVO.setHeadImgUrl(userUserDOOptional.get().getHeadimg());
+                                String name = StringUtils.isNotNullOrEmpty(userUserDOOptional.get().getName())
+                                        ? userUserDOOptional.get().getName():userUserDOOptional.get().getNickname();
+                                hrChatRoomVO.setName(name);
+                            }
+                        }
+
+                        rooms.add(hrChatRoomVO);
+
+                    }
+                }
+            }
+        }
+        return hrChatRoomsIndexVO;
+    }
+
+    public HRChatRoomVO getChatRoom(int roomId, int hrId) {
+        HRChatRoomVO roomVO = null;
+        HrChatUnreadCountRecord record = chaoDao.fetchRoomById(roomId);
+        if (record != null && record.getHrId() == hrId) {
+            roomVO = new HRChatRoomVO();
+            roomVO.setId(roomId);
+            roomVO.setApply(record.getApply() == 1 ? true:false);
+            roomVO.setUserId(record.getUserId());
+            HrWxHrChatListDO chatListDO = chaoDao.getChatRoom(roomId, 0, 0);
+            if (chatListDO != null) {
+                roomVO.setCreateTime(chatListDO.getUpdateTime());
+                roomVO.setUnReadNum(chatListDO.getHrUnreadCount());
+            }
+            UserUserDO userUserDO = chaoDao.getUser(record.getUserId());
+            if (userUserDO != null) {
+                String name = StringUtils.isNotNullOrEmpty(userUserDO.getName())
+                        ? userUserDO.getName():userUserDO.getNickname();
+                roomVO.setName(name);
+            }
+        }
+        return roomVO;
     }
 
     /**
@@ -552,5 +654,83 @@ public class ChatService {
         }
         chaoDao.updateChatRoom(chatRoom);
         chaoDao.updateChatUnreadCount(hrChatUnreadCountDO);
+    }
+
+    /**
+     * 查询聊天室最后聊天记录
+     * @param roomIdList 聊天室列表
+     * @return 聊天记录列表
+     * @throws CommonException
+     */
+    public List<ChatVO> listLastMessage(List<Integer> roomIdList) throws CommonException {
+
+        return chaoDao.listLastMessage(roomIdList);
+    }
+
+    /**
+     * 查询聊天历史记录
+     * @param roomId 聊天室
+     * @param chatId 聊天记录
+     * @param pageSize
+     * @return
+     * @throws CommonException
+     */
+    public ChatHistory listMessage(int roomId, int chatId, int pageSize) throws CommonException {
+        ChatHistory chatHistory = new ChatHistory();
+        chatHistory.setConversationId(roomId);
+        if (pageSize <= 0 || pageSize > Constant.PAGE_SIZE) {
+            pageSize = Constant.PAGE_SIZE;
+        }
+        int count = chaoDao.countMessage(roomId, chatId);
+        if (count >= 0) {
+            List<ChatVO> chatVOList = chaoDao.listMessage(roomId, chatId, pageSize);
+            chatHistory.setChatList(chatVOList);
+            if (count > chatVOList.size()) {
+                chatHistory.setHasMore(true);
+            } else {
+                chatHistory.setHasMore(false);
+            }
+        }
+        HrChatUnreadCountRecord hrChatUnreadCountRecord = chaoDao.fetchRoomById(roomId);
+        if (hrChatUnreadCountRecord != null ) {
+            if (hrChatUnreadCountRecord.getUpdateTime() != null) {
+                chatHistory.setHrLeaveTime(
+                        new DateTime(hrChatUnreadCountRecord.getHrChatTime()).toString("YYYY-MM-dd HH:mm:sss"));
+            }
+            if (hrChatUnreadCountRecord.getUserId() != null) {
+                UserUserDO userUserDO = chaoDao.getUser(hrChatUnreadCountRecord.getUserId());
+                chatHistory.setUserId(userUserDO.getId());
+                chatHistory.setName(userUserDO.getName());
+            }
+        }
+        return chatHistory;
+    }
+
+    public List<String> getChatSug(int hrId, boolean applied, String keyword) {
+        List<String> userNames = new ArrayList<>();
+
+        List<Integer> chatUserIdList = chaoDao.fetchUserIdByHrId(hrId, applied);
+        if (chatUserIdList != null && chatUserIdList.size() > 0) {
+            userNames = chaoDao.findUserNameByKeyword(keyword, chatUserIdList);
+        }
+        return userNames;
+    }
+
+    public int getHRUnreadCount(int hrId) {
+        return chaoDao.countUnreadMessage(hrId);
+    }
+
+    public HrVO getHrInfo(int roomId) {
+        HrVO hrVO = new HrVO();
+        HrWxHrChatListDO chatRoom = chaoDao.getChatRoom(roomId, 0, 0);
+        if (chatRoom != null && chatRoom.getHraccountId() > 0) {
+            UserHrAccountDO hr = chaoDao.getHr(chatRoom.getHraccountId());
+            if (hr != null) {
+                hrVO.setHrId(hr.getId());
+                hrVO.setHrHeadImg(hr.getHeadimgurl());
+                hrVO.setHrName(hr.getUsername());
+            }
+        }
+        return hrVO;
     }
 }
