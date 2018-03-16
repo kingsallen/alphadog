@@ -6,7 +6,7 @@ import java.util.List;
  * 第三方账号的扩展信息
  * Created by jack on 28/09/2017.
  */
-public class Data {
+public class ThirdPartyInfoData {
 
     private int accountId;
     private int operationType;              //1 账号绑定  2. 职位发布  1出错需要告诉CS；2出错不需要告诉CS，但是需要告诉开发
