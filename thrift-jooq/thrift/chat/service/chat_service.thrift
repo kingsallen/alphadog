@@ -27,5 +27,7 @@ service ChatService {
     i32 getHRUnreadCount(1: i32 hrId) throws (1: common_struct.BIZException e)
     //获取聊天室中的hr信息
     chat_struct.HrVO getHrInfo(1: i32 roomId) throws (1: common_struct.BIZException e)
+    //更新投递状态
+    void updateApplyStatus(1: i32 userId, 2: i32 positionId) throws (1: common_struct.BIZException e)
 }
 

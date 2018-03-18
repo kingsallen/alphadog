@@ -662,4 +662,12 @@ public class ChatDao {
     public int countUnreadMessage(int hrId) {
         return hrWxHrChatListDao.countUnreadMessage(hrId);
     }
+
+    public int fetchPublisher(int positionId) {
+        return jobPositionDao.fetchPublisher(positionId);
+    }
+
+    public void updateApplyStatus(int publisher, int userId) {
+        hrChatUnreadCountDao.updateApply(publisher, userId);
+    }
 }

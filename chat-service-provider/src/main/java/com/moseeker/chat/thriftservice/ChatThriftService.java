@@ -167,6 +167,17 @@ public class ChatThriftService implements Iface {
     }
 
     @Override
+    public void updateApplyStatus(int userId, int positionId) throws BIZException, TException {
+        try {
+            if (userId > 0 && positionId > 0) {
+                chatService.updateApplyStatus(userId, positionId);
+            }
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
     public void leaveChatRoom(int roomId, byte speaker) throws TException {
         try {
             chatService.leaveChatRoom(roomId, speaker);

@@ -132,4 +132,12 @@ public class HrChatUnreadCountDao extends JooqCrudImpl<HrChatUnreadCountDO, HrCh
                 .where(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.ROOM_ID.eq(roomId))
                 .fetchOne();
     }
+
+    public void updateApply(int publisher, int userId) {
+        create.update(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT)
+                .set(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.APPLY, (byte)1)
+                .where(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.HR_ID.eq(publisher))
+                .and(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.USER_ID.eq(userId))
+                .execute();
+    }
 }

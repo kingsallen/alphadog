@@ -410,8 +410,13 @@ public class ChatService {
     public int saveChat(ChatVO chat) {
         logger.info("saveChat chat:{}", JSON.toJSONString(chat));
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
-        String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
-        chatDO.setCreateTime(date);
+        String date;
+        if (org.apache.commons.lang.StringUtils.isNotBlank(chat.getCreate_time())) {
+            date = chat.getCreate_time();
+            chatDO.setCreateTime(date);
+        } else {
+            date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
+        }
         chatDO.setPid(chat.getPositionId());
         chatDO.setSpeaker(chat.getSpeaker());
         chatDO.setChatlistId(chat.getRoomId());
@@ -425,7 +430,7 @@ public class ChatService {
         int result=0;
         chatDO=chaoDao.saveChat(chatDO);
         if(chatDO!=null){
-            result=1;
+            result=chatDO.getId();
         }
         logger.info("saveChat after saveChat chatDO:{}", chatDO);
         chaoDao.addChatTOChatRoom(chatDO);
@@ -732,5 +737,12 @@ public class ChatService {
             }
         }
         return hrVO;
+    }
+
+    public void updateApplyStatus(int userId, int positionId) {
+        int publisher = chaoDao.fetchPublisher(positionId);
+        if (publisher > 0) {
+            chaoDao.updateApplyStatus(publisher, userId);
+        }
     }
 }
