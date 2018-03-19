@@ -1,4 +1,4 @@
-package com.moseeker.position.service.position.qianxun;
+package com.moseeker.common.constants;
 
 import java.util.HashMap;
 

@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.ValueFilter;
-import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
@@ -33,7 +32,6 @@ import com.moseeker.baseorm.db.hrdb.tables.daos.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
@@ -65,12 +63,11 @@ import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.service.position.*;
 import com.moseeker.position.service.position.qianxun.Degree;
-import com.moseeker.position.service.position.qianxun.WorkType;
+import com.moseeker.common.constants.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -230,7 +227,7 @@ public class PositionService {
             return ResponseUtils
                     .fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
         }
-        // NullPoint check
+        // NullPoint checkFormWrong
         JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
         if (jobPositionPojo == null) {
             logger.error("无法根据ID查找到职位。 positionId:{}", positionId);

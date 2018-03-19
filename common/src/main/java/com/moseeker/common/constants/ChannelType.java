@@ -184,7 +184,18 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	};
+	},UPLOADJOBSDB(26,"uploadJobsDB","简历上传","talent_upload"){
+		@Override
+		public String getOrigin(String origin) {
+			String result;
+			if(StringUtils.isNullOrEmpty(origin)) {
+				result = "10000000000000000000000000";
+			}else{
+				result=getResult(origin,26);
+			}
+			return result;
+		}
+	};;
 
 	private ChannelType(int value, String name,String alias,String retriveName) {
 		this.value = value;

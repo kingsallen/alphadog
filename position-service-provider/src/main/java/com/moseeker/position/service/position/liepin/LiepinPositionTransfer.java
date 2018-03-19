@@ -14,7 +14,7 @@ import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer
 import com.moseeker.position.service.position.liepin.pojo.PositionLiepin;
 import com.moseeker.position.service.position.liepin.pojo.PositionLiepinWithAccount;
 import com.moseeker.position.service.position.qianxun.Degree;
-import com.moseeker.position.service.position.qianxun.WorkType;
+import com.moseeker.common.constants.WorkType;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;

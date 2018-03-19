@@ -1136,7 +1136,7 @@ public class UserHrAccountService {
                 userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, employeeMap));
             } else {
                 // ES没取到数据，从数据库中取数据，但是不设置任何积分
-                logger.info("ES Data is empty!!!!");
+                logger.info("ES ThirdPartyInfoData is empty!!!!");
                 userEmployeeVOPageVO.setData(employeeList(queryBuilder, 1, companyIds, null));
             }
         } else {

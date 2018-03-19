@@ -5,6 +5,7 @@ import com.moseeker.position.constants.ResultMessage;
 import com.moseeker.position.service.appbs.PositionBS;
 import com.moseeker.position.service.schedule.ThirdPartyPositionParamRefresh;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS.Iface;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ScraperHtmlParam;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -74,9 +75,9 @@ public class PositionBSThriftService implements Iface {
     }
 
     @Override
-    public Response refreshThirdPartyParam() throws BIZException, TException {
+    public Response refreshThirdPartyParam(int channel) throws BIZException, TException {
         try {
-            refresher.refresh();
+            refresher.refresh(channel);
             return ResultMessage.SUCCESS.toResponse(null);
         }catch (Exception e){
             logger.error("refresh Third Party Param error {}",e.getMessage());
@@ -108,6 +109,19 @@ public class PositionBSThriftService implements Iface {
         }catch (Exception e){
             logger.error("sync Verify Info error {}",e.getMessage());
             return ResultMessage.PROGRAM_EXCEPTION.toResponse();
+        }
+    }
+
+    @Override
+    public String getThirdPartyHtml(ScraperHtmlParam param) throws BIZException, TException {
+        try {
+            return positionBS.getThirdPartyHtml(param);
+        } catch (BIZException e){
+            logger.error("sync Verify Info param:{} error {}",param,e.getMessage());
+            throw e;
+        } catch (Exception e){
+            logger.error("sync Verify Info error {}",e.getMessage());
+            throw e;
         }
     }
 }

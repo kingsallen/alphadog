@@ -4,9 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.DictJob1001OccupationDao;
-import com.moseeker.common.util.MD5Util;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
-import com.moseeker.position.utils.PositionRefreshUtils;
+import com.moseeker.position.utils.PositionParamRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictJob1001OccupationDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,7 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
     protected Map<String, Integer> generateNewKey(List<String> otherCodes,JSONObject msg) {
         String subsite=msg.getString("subsite");
         int DEFAULT_KEY_SEED=getSeed(subsite);
-        return PositionRefreshUtils.generateNewKey(otherCodes.iterator(),DEFAULT_KEY_SEED,otherCodes.size());
+        return PositionParamRefreshUtils.generateNewKey(otherCodes.iterator(),DEFAULT_KEY_SEED,otherCodes.size());
     }
 
     @Override
@@ -40,8 +39,8 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
         temp.setCodeOther(codes.get(codes.size()-1));
         temp.setCode(newCode.get(temp.getCodeOther()));
         temp.setLevel((short)codes.size());
-        temp.setName(PositionRefreshUtils.lastString(texts));
-        temp.setParentId(newCode.get(PositionRefreshUtils.parentCode(codes)));
+        temp.setName(PositionParamRefreshUtils.lastString(texts));
+        temp.setParentId(newCode.get(PositionParamRefreshUtils.parentCode(codes)));
         temp.setStatus((short)1);
         temp.setSubsite(msg.getString("subsite"));
 

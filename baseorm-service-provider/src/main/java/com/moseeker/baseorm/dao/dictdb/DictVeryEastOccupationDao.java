@@ -58,7 +58,7 @@ public class DictVeryEastOccupationDao extends AbstractDictOccupationDao<DictVer
     }
 
     public int deleteAll(){
-        Condition condition=new Condition("code",0, ValueOp.NEQ);
+        Condition condition=new Condition(DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION.CODE.getName(),0, ValueOp.NEQ);
         return delete(condition);
     }
 
