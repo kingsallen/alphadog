@@ -251,10 +251,10 @@ public class SearchUtil {
     				sb.append(words[i]+" or ");
     			}
     		}
-    		if(words.length>1){
-                sb.deleteCharAt(sb.lastIndexOf("r"));
-                sb.deleteCharAt(sb.lastIndexOf("o"));
-            }
+//    		if(words.length>1){
+//                sb.deleteCharAt(sb.lastIndexOf("r"));
+//                sb.deleteCharAt(sb.lastIndexOf("o"));
+//            }
     		String condition=sb.toString();
     		QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
     		for(String field:list){
@@ -305,10 +305,10 @@ public class SearchUtil {
                     sb.append(words[i]+" or ");
                 }
             }
-            if(words.length>1){
-                sb.deleteCharAt(sb.lastIndexOf("r"));
-                sb.deleteCharAt(sb.lastIndexOf("o"));
-            }
+//            if(words.length>1){
+//                sb.deleteCharAt(sb.lastIndexOf("r"));
+//                sb.deleteCharAt(sb.lastIndexOf("o"));
+//            }
             String condition=sb.toString();
             QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
             if(fieldList!=null&&fieldList.size()>0){
