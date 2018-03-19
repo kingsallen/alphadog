@@ -23,14 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionExt implements Serializable {
 
-    private static final long serialVersionUID = -403234472;
+    private static final long serialVersionUID = -1274158766;
 
     private Integer   pid;
     private Integer   jobCustomId;
     private Timestamp createTime;
     private Timestamp updateTime;
-    private Integer   jobOccupationId;
     private String    extra;
+    private Integer   jobOccupationId;
     private Integer   alipayJobId;
 
     public JobPositionExt() {}
@@ -40,8 +40,8 @@ public class JobPositionExt implements Serializable {
         this.jobCustomId = value.jobCustomId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
-        this.jobOccupationId = value.jobOccupationId;
         this.extra = value.extra;
+        this.jobOccupationId = value.jobOccupationId;
         this.alipayJobId = value.alipayJobId;
     }
 
@@ -50,16 +50,16 @@ public class JobPositionExt implements Serializable {
         Integer   jobCustomId,
         Timestamp createTime,
         Timestamp updateTime,
-        Integer   jobOccupationId,
         String    extra,
+        Integer   jobOccupationId,
         Integer   alipayJobId
     ) {
         this.pid = pid;
         this.jobCustomId = jobCustomId;
         this.createTime = createTime;
         this.updateTime = updateTime;
-        this.jobOccupationId = jobOccupationId;
         this.extra = extra;
+        this.jobOccupationId = jobOccupationId;
         this.alipayJobId = alipayJobId;
     }
 
@@ -95,20 +95,20 @@ public class JobPositionExt implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Integer getJobOccupationId() {
-        return this.jobOccupationId;
-    }
-
-    public void setJobOccupationId(Integer jobOccupationId) {
-        this.jobOccupationId = jobOccupationId;
-    }
-
     public String getExtra() {
         return this.extra;
     }
 
     public void setExtra(String extra) {
         this.extra = extra;
+    }
+
+    public Integer getJobOccupationId() {
+        return this.jobOccupationId;
+    }
+
+    public void setJobOccupationId(Integer jobOccupationId) {
+        this.jobOccupationId = jobOccupationId;
     }
 
     public Integer getAlipayJobId() {
@@ -127,8 +127,8 @@ public class JobPositionExt implements Serializable {
         sb.append(", ").append(jobCustomId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
-        sb.append(", ").append(jobOccupationId);
         sb.append(", ").append(extra);
+        sb.append(", ").append(jobOccupationId);
         sb.append(", ").append(alipayJobId);
 
         sb.append(")");

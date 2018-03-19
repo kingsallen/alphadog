@@ -2,6 +2,7 @@
 
 include "../../common/struct/common_struct.thrift"
 include "../struct/appbs_struct.thrift"
+include "../struct/third_party_struct.thrift"
 namespace java com.moseeker.thrift.gen.apps.positionbs.service
 
 /**
@@ -22,5 +23,7 @@ service PositionBS {
     common_struct.Response syncVerifyInfo(1: string info) throws (1: common_struct.BIZException e);
     //获取缓存验证信息
     common_struct.Response getVerifyParam(1: string key) throws (1: common_struct.BIZException e);
+    // 获取简历html
+    string getThirdPartyHtml(1:third_party_struct.ScraperHtmlParam param) throws (1: common_struct.BIZException e);
 }
 
