@@ -225,7 +225,7 @@ public class ChatController {
 
     @RequestMapping(value = "/chat-room/{id}/hr-detail", method = RequestMethod.GET)
     @ResponseBody
-    public String getChatRoom(HttpServletRequest request, @RequestParam int id) {
+    public String getChatRoom(HttpServletRequest request, @PathVariable int id) {
         try {
 
             ParamUtils.parseRequestParam(request);
