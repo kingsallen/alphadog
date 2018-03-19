@@ -322,7 +322,7 @@ public class ChatService {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
-        if (StringUtils.isNotNullOrEmpty(obj.getContent()) || StringUtils.isNotNullOrEmpty(obj.getContent().trim())){
+        if (StringUtils.isNullOrEmpty(obj.getContent()) || StringUtils.isNullOrEmpty(obj.getContent().trim())){
             logger.error("empty content ChatVO:{}",obj);
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
