@@ -69,9 +69,26 @@ public class ChatServiceTest {
 
         String jsonChat="{\"btnContent\":\"\",\"content\":\"您可以扫描二维码关注我们的公众号，通过“高级搜索”查找目标职位。\",\"id\":0,\"msgType\":\"qrcode\",\"origin\":2,\"picUrl\":\"http://mmbiz.qpic.cn/mmbiz_jpg/F1aY0QXqBALe5UtYccHct4SMBj0ttNKyibEutrvModlnYW8D5fCMLibhexAFJGYN469edHDgb6tOQMtHhBpeGxQA/0\",\"positionId\":1922881,\"roomId\":603845,\"setBtnContent\":true,\"setContent\":true,\"setCreate_time\":false,\"setId\":false,\"setMsgType\":true,\"setOrigin\":true,\"setOrigin_str\":false,\"setPicUrl\":true,\"setPositionId\":true,\"setRoomId\":true,\"setSpeaker\":true,\"speaker\":2}";
 
-        ChatVO chatVO=JSON.toJavaObject(JSON.parseObject(jsonChat),ChatVO.class);
+        ChatVO chatVO=null;
 
+        try {
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setContent("");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        chatVO =new ChatVO();
+        chatVO.setContent(" ");
         chatService.saveChat(chatVO);
+
 
 
 

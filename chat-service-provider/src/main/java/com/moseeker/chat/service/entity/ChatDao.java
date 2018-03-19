@@ -243,9 +243,9 @@ public class ChatDao {
                     .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
                     .mapToInt(userHrAccountDO -> userHrAccountDO.getWxuserId()).toArray();
             //查找头像不存在的公司编号
-            /*int[] companyIdArray = userHrAccountDOList.stream()
+            int[] companyIdArray = userHrAccountDOList.stream()
                     .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
-                    .mapToInt(userHrAccountDO -> userHrAccountDO.getCompanyId()).toArray();*/
+                    .mapToInt(userHrAccountDO -> userHrAccountDO.getCompanyId()).toArray();
 
             /** 查找微信信息 */
             if(wxUserIdArray.length > 0) {
@@ -280,6 +280,32 @@ public class ChatDao {
             }
 
             /** 查找公司信息 */
+            if(companyIdArray.length > 0) {
+                String companyIdStr = StringUtils.converFromArrayToStr(companyIdArray);
+                QueryUtil findCompany = new QueryUtil();
+                findCompany.addSelectAttribute("id").addSelectAttribute("logo");
+                findCompany.addEqualFilter("id",companyIdStr);
+                Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(findCompany));
+
+
+                /** 过滤头像不存在的HR，匹配公司logo*/
+                userHrAccountDOList.stream()
+                        .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
+                        .forEach(userHrAccountDO -> {
+                            try {
+                                List<HrCompanyDO> companyDOList = (List<HrCompanyDO>) companyFuture.get();
+                                if(companyDOList != null && companyDOList.size() > 0) {
+                                    companyDOList.forEach(companyDO -> {
+                                        if(userHrAccountDO.getCompanyId() == companyDO.getId()) {
+                                            userHrAccountDO.setHeadimgurl(companyDO.getLogo());
+                                        }
+                                    });
+                                }
+                            } catch (InterruptedException | ExecutionException e) {
+                                logger.error(e.getMessage(), e);
+                            }
+                        });
+            }
 
         }
         return userHrAccountDOList;
