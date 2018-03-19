@@ -300,24 +300,46 @@ public class ChatService {
         return chatsVO;
     }
 
+    private HrWxHrChatListDO requiredNotNullChatRoom(int roomId) throws BIZException {
+        HrWxHrChatListDO chatRoom = chaoDao.getChatRoomById(roomId);
+        if(chatRoom == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CHAT_ROOM_NOT_EXIST);
+        }
+        return chatRoom;
+    }
+
+    private UserHrAccountDO requiredNotNullHr(int hraccountId) throws BIZException {
+        UserHrAccountDO hrAccountDO = hrAccountDao.getValidAccount(hraccountId);
+        if(hrAccountDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
+        }
+        return hrAccountDO;
+    }
+
+    private ChatVO requiredValidChat(ChatVO obj) throws BIZException {
+        if (obj == null) {
+            logger.error("null ChatVO");
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
+        if (StringUtils.isNotNullOrEmpty(obj.getContent()) || StringUtils.isNotNullOrEmpty(obj.getContent().trim())){
+            logger.error("empty content ChatVO:{}",obj);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
+        return obj;
+    }
+
     /**
      * 添加聊天内容，并修改未读消息数量
      * @param chat 聊天信息
      */
     public int saveChat(ChatVO chat) throws BIZException {
-        if(chat == null){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-        }
+        requiredValidChat(chat);
 
-        HrWxHrChatListDO chatRoom = chaoDao.getChatRoomById(chat.getRoomId());
-        if(chatRoom == null){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CHAT_ROOM_NOT_EXIST);
-        }
+        HrWxHrChatListDO chatRoom = requiredNotNullChatRoom(chat.getRoomId());
 
-        UserHrAccountDO hrAccountDO = hrAccountDao.getValidAccount(chatRoom.getHraccountId());
-        if(hrAccountDO == null){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
-        }
+        requiredNotNullHr(chatRoom.getHraccountId());
 
         logger.info("saveChat chat:{}", JSON.toJSONString(chat));
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
