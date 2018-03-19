@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
  * Created by jack on 23/01/2018.
  */
 public class WXTamplateMsgEntity {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

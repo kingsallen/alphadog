@@ -1,7 +1,10 @@
 package com.moseeker.position.thrift;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -42,6 +45,13 @@ import org.springframework.stereotype.Service;
 public class PositionServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public PositionServicesImpl(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
     @Autowired
     private PositionService service;
     @Autowired
@@ -241,7 +251,7 @@ public class PositionServicesImpl implements Iface {
                 }
             }
         } catch (Exception e) {
-            logger.error("save and sync error exception:",e);
+            logger.info("save and sync error exception:",e);
         }
 
         response.setSyncFailMessPojolist(syncFailMessPojolistList);
@@ -561,6 +571,43 @@ public class PositionServicesImpl implements Iface {
             if(result==null){
                 return  ResponseUtils.success(new PositionMiniBean());
             }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getFeatureByPId(int pid) throws TException {
+        try {
+            List<HrCompanyFeature> result=positionQxService.getPositionFeature(pid);
+            if(StringUtils.isEmptyList(result)){
+                result=new ArrayList<>();
+            }
+            String res=JSON.toJSONString(result,serializeConfig);
+            return  ResponseUtils.successWithoutStringify(res);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response updatePositionFeature(int pid, int fid) throws TException {
+        try {
+            int result=positionQxService.updatePositionFeature(pid,fid);
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response updatePositionFeatures(int pid, List<Integer> fidList) throws TException {
+        try {
+            int  result=positionQxService.updatePositionFeatureList(pid,fidList);
             return  ResponseUtils.success(result);
         }catch (Exception e){
             logger.info(e.getMessage(),e);

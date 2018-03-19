@@ -5,6 +5,7 @@ import com.moseeker.common.util.DateUtils;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -97,4 +98,5 @@ public class JobPositionPojo {
     public int city_flag=0;//1代表只是全国,0代表还含有其他城市
 
     public SearchData search_data;
+    public List<Map<String,Object>> position_feature;
 }
