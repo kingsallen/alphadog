@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import org.apache.commons.lang.StringUtils;
 import org.jooq.*;
 import org.jooq.Condition;
 import org.jooq.impl.TableImpl;

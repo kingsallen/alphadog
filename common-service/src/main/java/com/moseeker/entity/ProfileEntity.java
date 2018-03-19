@@ -580,7 +580,6 @@ public class ProfileEntity {
         for (Integer integer : userIdList) {
 
             UserProfile userProfile = new UserProfile();
-            userProfileList.add(userProfile);
 
             Optional<Record2<Integer, Integer>> record2Optional = result
                     .stream()
@@ -588,8 +587,11 @@ public class ProfileEntity {
                     .findAny();
             if (record2Optional.isPresent()) {
                 userProfile.setHaveProfile(true);
+            } else {
+                userProfile.setHaveProfile(false);
             }
             userProfile.setUserId(integer);
+            userProfileList.add(userProfile);
         }
         return userProfileList;
     }

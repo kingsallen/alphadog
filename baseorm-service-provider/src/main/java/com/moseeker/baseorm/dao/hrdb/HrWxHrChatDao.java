@@ -51,13 +51,23 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
 
         List<ChatVO> chatVOList = new ArrayList<>();
 
-        Result<HrWxHrChatRecord> chatRecordResult = create
-                .selectFrom(HrWxHrChat.HR_WX_HR_CHAT)
-                .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
-                .and(HrWxHrChat.HR_WX_HR_CHAT.ID.lt(chatId))
-                .orderBy(HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME.desc())
-                .limit(pageSize)
-                .fetch();
+        Result<HrWxHrChatRecord> chatRecordResult = null;
+        if (chatId > 0) {
+            chatRecordResult = create
+                    .selectFrom(HrWxHrChat.HR_WX_HR_CHAT)
+                    .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
+                    .and(HrWxHrChat.HR_WX_HR_CHAT.ID.lt(chatId))
+                    .orderBy(HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME.desc())
+                    .limit(pageSize)
+                    .fetch();
+        } else {
+            chatRecordResult = create
+                    .selectFrom(HrWxHrChat.HR_WX_HR_CHAT)
+                    .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
+                    .orderBy(HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME.desc())
+                    .limit(pageSize)
+                    .fetch();
+        }
         if (chatRecordResult != null && chatRecordResult.size() > 0) {
             chatVOList = BeanUtils.DBToStruct(ChatVO.class, chatRecordResult);
         }
@@ -72,11 +82,19 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
      * @return
      */
     public int countMessage(int roomId, int chatId) {
-        return create.selectCount()
-                .from(HrWxHrChat.HR_WX_HR_CHAT)
-                .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
-                .and(HrWxHrChat.HR_WX_HR_CHAT.ID.lt(chatId))
-                .fetchOne()
-                .value1();
+        if (chatId > 0) {
+            return create.selectCount()
+                    .from(HrWxHrChat.HR_WX_HR_CHAT)
+                    .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
+                    .and(HrWxHrChat.HR_WX_HR_CHAT.ID.lt(chatId))
+                    .fetchOne()
+                    .value1();
+        } else {
+            return create.selectCount()
+                    .from(HrWxHrChat.HR_WX_HR_CHAT)
+                    .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
+                    .fetchOne()
+                    .value1();
+        }
     }
 }

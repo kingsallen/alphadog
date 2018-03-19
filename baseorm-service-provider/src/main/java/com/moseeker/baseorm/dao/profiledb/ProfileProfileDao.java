@@ -1837,6 +1837,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
     public List<Record2<Integer,Integer>> fetchUserProfile(List<Integer> userIdList) {
         Result<Record2<Integer,Integer>> result = create.select(ProfileProfile.PROFILE_PROFILE.USER_ID, ProfileProfile.PROFILE_PROFILE.ID)
+                .from(ProfileProfile.PROFILE_PROFILE)
                 .where(ProfileProfile.PROFILE_PROFILE.USER_ID.in(userIdList))
                 .fetch();
         if (result != null) {

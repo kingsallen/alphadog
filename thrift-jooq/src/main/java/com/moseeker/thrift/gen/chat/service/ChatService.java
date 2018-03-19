@@ -14,7 +14,7 @@ public class ChatService {
 
     public com.moseeker.thrift.gen.chat.struct.HRChatRoomsVO listHRChatRoom(int hrId, int pageNo, int pageSize) throws com.moseeker.thrift.gen.common.struct.CURDException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, java.lang.String keyword, int userId, boolean apply, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, java.lang.String keyword, int roomId, boolean apply, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.chat.struct.UserChatRoomsVO listUserChatRoom(int userId, int pageNo, int pageSize) throws com.moseeker.thrift.gen.common.struct.CURDException, org.apache.thrift.TException;
 
@@ -48,7 +48,7 @@ public class ChatService {
 
     public void listHRChatRoom(int hrId, int pageNo, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.chat.struct.HRChatRoomsVO> resultHandler) throws org.apache.thrift.TException;
 
-    public void listHRChatRoomByIndex(int hrId, java.lang.String keyword, int userId, boolean apply, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO> resultHandler) throws org.apache.thrift.TException;
+    public void listHRChatRoomByIndex(int hrId, java.lang.String keyword, int roomId, boolean apply, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO> resultHandler) throws org.apache.thrift.TException;
 
     public void listUserChatRoom(int userId, int pageNo, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.chat.struct.UserChatRoomsVO> resultHandler) throws org.apache.thrift.TException;
 
@@ -126,18 +126,18 @@ public class ChatService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "listHRChatRoom failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, java.lang.String keyword, int userId, boolean apply, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, java.lang.String keyword, int roomId, boolean apply, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_listHRChatRoomByIndex(hrId, keyword, userId, apply, pageSize);
+      send_listHRChatRoomByIndex(hrId, keyword, roomId, apply, pageSize);
       return recv_listHRChatRoomByIndex();
     }
 
-    public void send_listHRChatRoomByIndex(int hrId, java.lang.String keyword, int userId, boolean apply, int pageSize) throws org.apache.thrift.TException
+    public void send_listHRChatRoomByIndex(int hrId, java.lang.String keyword, int roomId, boolean apply, int pageSize) throws org.apache.thrift.TException
     {
       listHRChatRoomByIndex_args args = new listHRChatRoomByIndex_args();
       args.setHrId(hrId);
       args.setKeyword(keyword);
-      args.setUserId(userId);
+      args.setRoomId(roomId);
       args.setApply(apply);
       args.setPageSize(pageSize);
       sendBase("listHRChatRoomByIndex", args);
@@ -557,9 +557,9 @@ public class ChatService {
       }
     }
 
-    public void listHRChatRoomByIndex(int hrId, java.lang.String keyword, int userId, boolean apply, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO> resultHandler) throws org.apache.thrift.TException {
+    public void listHRChatRoomByIndex(int hrId, java.lang.String keyword, int roomId, boolean apply, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      listHRChatRoomByIndex_call method_call = new listHRChatRoomByIndex_call(hrId, keyword, userId, apply, pageSize, resultHandler, this, ___protocolFactory, ___transport);
+      listHRChatRoomByIndex_call method_call = new listHRChatRoomByIndex_call(hrId, keyword, roomId, apply, pageSize, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
@@ -567,14 +567,14 @@ public class ChatService {
     public static class listHRChatRoomByIndex_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO> {
       private int hrId;
       private java.lang.String keyword;
-      private int userId;
+      private int roomId;
       private boolean apply;
       private int pageSize;
-      public listHRChatRoomByIndex_call(int hrId, java.lang.String keyword, int userId, boolean apply, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public listHRChatRoomByIndex_call(int hrId, java.lang.String keyword, int roomId, boolean apply, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.hrId = hrId;
         this.keyword = keyword;
-        this.userId = userId;
+        this.roomId = roomId;
         this.apply = apply;
         this.pageSize = pageSize;
       }
@@ -584,7 +584,7 @@ public class ChatService {
         listHRChatRoomByIndex_args args = new listHRChatRoomByIndex_args();
         args.setHrId(hrId);
         args.setKeyword(keyword);
-        args.setUserId(userId);
+        args.setRoomId(roomId);
         args.setApply(apply);
         args.setPageSize(pageSize);
         args.write(prot);
@@ -1136,7 +1136,7 @@ public class ChatService {
       public listHRChatRoomByIndex_result getResult(I iface, listHRChatRoomByIndex_args args) throws org.apache.thrift.TException {
         listHRChatRoomByIndex_result result = new listHRChatRoomByIndex_result();
         try {
-          result.success = iface.listHRChatRoomByIndex(args.hrId, args.keyword, args.userId, args.apply, args.pageSize);
+          result.success = iface.listHRChatRoomByIndex(args.hrId, args.keyword, args.roomId, args.apply, args.pageSize);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -1611,7 +1611,7 @@ public class ChatService {
       }
 
       public void start(I iface, listHRChatRoomByIndex_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.chat.struct.HRChatRoomsIndexVO> resultHandler) throws org.apache.thrift.TException {
-        iface.listHRChatRoomByIndex(args.hrId, args.keyword, args.userId, args.apply, args.pageSize,resultHandler);
+        iface.listHRChatRoomByIndex(args.hrId, args.keyword, args.roomId, args.apply, args.pageSize,resultHandler);
       }
     }
 
@@ -3486,7 +3486,7 @@ public class ChatService {
 
     private static final org.apache.thrift.protocol.TField HR_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("hrId", org.apache.thrift.protocol.TType.I32, (short)1);
     private static final org.apache.thrift.protocol.TField KEYWORD_FIELD_DESC = new org.apache.thrift.protocol.TField("keyword", org.apache.thrift.protocol.TType.STRING, (short)2);
-    private static final org.apache.thrift.protocol.TField USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("userId", org.apache.thrift.protocol.TType.I32, (short)3);
+    private static final org.apache.thrift.protocol.TField ROOM_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("roomId", org.apache.thrift.protocol.TType.I32, (short)3);
     private static final org.apache.thrift.protocol.TField APPLY_FIELD_DESC = new org.apache.thrift.protocol.TField("apply", org.apache.thrift.protocol.TType.BOOL, (short)4);
     private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)5);
 
@@ -3495,7 +3495,7 @@ public class ChatService {
 
     public int hrId; // required
     public java.lang.String keyword; // required
-    public int userId; // required
+    public int roomId; // required
     public boolean apply; // required
     public int pageSize; // required
 
@@ -3503,7 +3503,7 @@ public class ChatService {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       HR_ID((short)1, "hrId"),
       KEYWORD((short)2, "keyword"),
-      USER_ID((short)3, "userId"),
+      ROOM_ID((short)3, "roomId"),
       APPLY((short)4, "apply"),
       PAGE_SIZE((short)5, "pageSize");
 
@@ -3524,8 +3524,8 @@ public class ChatService {
             return HR_ID;
           case 2: // KEYWORD
             return KEYWORD;
-          case 3: // USER_ID
-            return USER_ID;
+          case 3: // ROOM_ID
+            return ROOM_ID;
           case 4: // APPLY
             return APPLY;
           case 5: // PAGE_SIZE
@@ -3571,7 +3571,7 @@ public class ChatService {
 
     // isset id assignments
     private static final int __HRID_ISSET_ID = 0;
-    private static final int __USERID_ISSET_ID = 1;
+    private static final int __ROOMID_ISSET_ID = 1;
     private static final int __APPLY_ISSET_ID = 2;
     private static final int __PAGESIZE_ISSET_ID = 3;
     private byte __isset_bitfield = 0;
@@ -3582,7 +3582,7 @@ public class ChatService {
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.KEYWORD, new org.apache.thrift.meta_data.FieldMetaData("keyword", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.ROOM_ID, new org.apache.thrift.meta_data.FieldMetaData("roomId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.APPLY, new org.apache.thrift.meta_data.FieldMetaData("apply", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
@@ -3598,7 +3598,7 @@ public class ChatService {
     public listHRChatRoomByIndex_args(
       int hrId,
       java.lang.String keyword,
-      int userId,
+      int roomId,
       boolean apply,
       int pageSize)
     {
@@ -3606,8 +3606,8 @@ public class ChatService {
       this.hrId = hrId;
       setHrIdIsSet(true);
       this.keyword = keyword;
-      this.userId = userId;
-      setUserIdIsSet(true);
+      this.roomId = roomId;
+      setRoomIdIsSet(true);
       this.apply = apply;
       setApplyIsSet(true);
       this.pageSize = pageSize;
@@ -3623,7 +3623,7 @@ public class ChatService {
       if (other.isSetKeyword()) {
         this.keyword = other.keyword;
       }
-      this.userId = other.userId;
+      this.roomId = other.roomId;
       this.apply = other.apply;
       this.pageSize = other.pageSize;
     }
@@ -3637,8 +3637,8 @@ public class ChatService {
       setHrIdIsSet(false);
       this.hrId = 0;
       this.keyword = null;
-      setUserIdIsSet(false);
-      this.userId = 0;
+      setRoomIdIsSet(false);
+      this.roomId = 0;
       setApplyIsSet(false);
       this.apply = false;
       setPageSizeIsSet(false);
@@ -3692,27 +3692,27 @@ public class ChatService {
       }
     }
 
-    public int getUserId() {
-      return this.userId;
+    public int getRoomId() {
+      return this.roomId;
     }
 
-    public listHRChatRoomByIndex_args setUserId(int userId) {
-      this.userId = userId;
-      setUserIdIsSet(true);
+    public listHRChatRoomByIndex_args setRoomId(int roomId) {
+      this.roomId = roomId;
+      setRoomIdIsSet(true);
       return this;
     }
 
-    public void unsetUserId() {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __USERID_ISSET_ID);
+    public void unsetRoomId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __ROOMID_ISSET_ID);
     }
 
-    /** Returns true if field userId is set (has been assigned a value) and false otherwise */
-    public boolean isSetUserId() {
-      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __USERID_ISSET_ID);
+    /** Returns true if field roomId is set (has been assigned a value) and false otherwise */
+    public boolean isSetRoomId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __ROOMID_ISSET_ID);
     }
 
-    public void setUserIdIsSet(boolean value) {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
+    public void setRoomIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ROOMID_ISSET_ID, value);
     }
 
     public boolean isApply() {
@@ -3779,11 +3779,11 @@ public class ChatService {
         }
         break;
 
-      case USER_ID:
+      case ROOM_ID:
         if (value == null) {
-          unsetUserId();
+          unsetRoomId();
         } else {
-          setUserId((java.lang.Integer)value);
+          setRoomId((java.lang.Integer)value);
         }
         break;
 
@@ -3814,8 +3814,8 @@ public class ChatService {
       case KEYWORD:
         return getKeyword();
 
-      case USER_ID:
-        return getUserId();
+      case ROOM_ID:
+        return getRoomId();
 
       case APPLY:
         return isApply();
@@ -3838,8 +3838,8 @@ public class ChatService {
         return isSetHrId();
       case KEYWORD:
         return isSetKeyword();
-      case USER_ID:
-        return isSetUserId();
+      case ROOM_ID:
+        return isSetRoomId();
       case APPLY:
         return isSetApply();
       case PAGE_SIZE:
@@ -3881,12 +3881,12 @@ public class ChatService {
           return false;
       }
 
-      boolean this_present_userId = true;
-      boolean that_present_userId = true;
-      if (this_present_userId || that_present_userId) {
-        if (!(this_present_userId && that_present_userId))
+      boolean this_present_roomId = true;
+      boolean that_present_roomId = true;
+      if (this_present_roomId || that_present_roomId) {
+        if (!(this_present_roomId && that_present_roomId))
           return false;
-        if (this.userId != that.userId)
+        if (this.roomId != that.roomId)
           return false;
       }
 
@@ -3921,7 +3921,7 @@ public class ChatService {
       if (isSetKeyword())
         hashCode = hashCode * 8191 + keyword.hashCode();
 
-      hashCode = hashCode * 8191 + userId;
+      hashCode = hashCode * 8191 + roomId;
 
       hashCode = hashCode * 8191 + ((apply) ? 131071 : 524287);
 
@@ -3958,12 +3958,12 @@ public class ChatService {
           return lastComparison;
         }
       }
-      lastComparison = java.lang.Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
+      lastComparison = java.lang.Boolean.valueOf(isSetRoomId()).compareTo(other.isSetRoomId());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetUserId()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.userId, other.userId);
+      if (isSetRoomId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.roomId, other.roomId);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -4020,8 +4020,8 @@ public class ChatService {
       }
       first = false;
       if (!first) sb.append(", ");
-      sb.append("userId:");
-      sb.append(this.userId);
+      sb.append("roomId:");
+      sb.append(this.roomId);
       first = false;
       if (!first) sb.append(", ");
       sb.append("apply:");
@@ -4092,10 +4092,10 @@ public class ChatService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 3: // USER_ID
+            case 3: // ROOM_ID
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.userId = iprot.readI32();
-                struct.setUserIdIsSet(true);
+                struct.roomId = iprot.readI32();
+                struct.setRoomIdIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -4139,8 +4139,8 @@ public class ChatService {
           oprot.writeString(struct.keyword);
           oprot.writeFieldEnd();
         }
-        oprot.writeFieldBegin(USER_ID_FIELD_DESC);
-        oprot.writeI32(struct.userId);
+        oprot.writeFieldBegin(ROOM_ID_FIELD_DESC);
+        oprot.writeI32(struct.roomId);
         oprot.writeFieldEnd();
         oprot.writeFieldBegin(APPLY_FIELD_DESC);
         oprot.writeBool(struct.apply);
@@ -4172,7 +4172,7 @@ public class ChatService {
         if (struct.isSetKeyword()) {
           optionals.set(1);
         }
-        if (struct.isSetUserId()) {
+        if (struct.isSetRoomId()) {
           optionals.set(2);
         }
         if (struct.isSetApply()) {
@@ -4188,8 +4188,8 @@ public class ChatService {
         if (struct.isSetKeyword()) {
           oprot.writeString(struct.keyword);
         }
-        if (struct.isSetUserId()) {
-          oprot.writeI32(struct.userId);
+        if (struct.isSetRoomId()) {
+          oprot.writeI32(struct.roomId);
         }
         if (struct.isSetApply()) {
           oprot.writeBool(struct.apply);
@@ -4212,8 +4212,8 @@ public class ChatService {
           struct.setKeywordIsSet(true);
         }
         if (incoming.get(2)) {
-          struct.userId = iprot.readI32();
-          struct.setUserIdIsSet(true);
+          struct.roomId = iprot.readI32();
+          struct.setRoomIdIsSet(true);
         }
         if (incoming.get(3)) {
           struct.apply = iprot.readBool();

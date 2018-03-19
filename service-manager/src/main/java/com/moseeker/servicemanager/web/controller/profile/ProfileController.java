@@ -590,7 +590,16 @@ public class ProfileController {
         try {
             // GET方法 通用参数解析并赋值
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
-            List<Integer> userIdList = (List<Integer>) params.get("user_ids");
+            List<Integer> userIdList = new ArrayList<>();
+            if (params.get("user_ids") instanceof String) {
+                userIdList.add(Integer.valueOf((String)params.get("user_ids")));
+            } else {
+                List<String> userIdStrList = (List<String>) params.get("user_ids");
+                if (userIdStrList != null && userIdStrList.size() > 0) {
+                    userIdStrList.forEach(idStr -> userIdList.add(Integer.valueOf(idStr)));
+                }
+            }
+
             List<UserProfile> userProfileList = service.fetchUserProfile(userIdList);
             return ResponseLogNotification.successJson(request, userProfileList);
         } catch (Exception e) {

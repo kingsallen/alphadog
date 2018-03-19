@@ -135,19 +135,27 @@ public class ChatService {
         return rooms;
     }
 
-    public HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, String keyword, int userId, boolean apply, int pageSize) {
+    public HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, String keyword, int roomId, boolean apply, int pageSize) {
 
         HRChatRoomsIndexVO hrChatRoomsIndexVO = new HRChatRoomsIndexVO();
         List<Integer> chatUserIdList = chaoDao.fetchUserIdByHrId(hrId, apply);
 
         if (chatUserIdList.size() > 0) {
-            List<Integer> userIdList = chaoDao.findUserIdByName(keyword, chatUserIdList);
+
+            List<Integer> userIdList;
+            if (org.apache.commons.lang.StringUtils.isNotBlank(keyword)) {
+                userIdList = chaoDao.findUserIdByName(keyword, chatUserIdList);
+            } else {
+                userIdList = chatUserIdList;
+            }
 
             if (userIdList.size() > 0) {
-                HrChatUnreadCountRecord room = chaoDao.fetchRoomByHRIdAndUserId(hrId, userId);
                 Timestamp update = null;
-                if (room == null) {
-                    update = room.getUpdateTime();
+                if (roomId > 0) {
+                    HrChatUnreadCountRecord room = chaoDao.fetchRoomById(roomId);
+                    if (room != null) {
+                        update = room.getUpdateTime();
+                    }
                 }
 
                 int total = chaoDao.countRoom(hrId, userIdList, apply);
@@ -210,6 +218,7 @@ public class ChatService {
                         rooms.add(hrChatRoomVO);
 
                     }
+                    hrChatRoomsIndexVO.setRooms(rooms);
                 }
             }
         }
@@ -217,7 +226,12 @@ public class ChatService {
     }
 
     public HRChatRoomVO getChatRoom(int roomId, int hrId) {
-        HRChatRoomVO roomVO = null;
+        HRChatRoomVO roomVO = new HRChatRoomVO();
+        roomVO.setId(0);
+        roomVO.setApply(false);
+        roomVO.setUnReadNum(0);
+        roomVO.setUserId(0);
+        roomVO.setCreateTime("");
         HrChatUnreadCountRecord record = chaoDao.fetchRoomById(roomId);
         if (record != null && record.getHrId() == hrId) {
             roomVO = new HRChatRoomVO();
@@ -233,7 +247,16 @@ public class ChatService {
             if (userUserDO != null) {
                 String name = StringUtils.isNotNullOrEmpty(userUserDO.getName())
                         ? userUserDO.getName():userUserDO.getNickname();
-                roomVO.setName(name);
+                if (org.apache.commons.lang.StringUtils.isBlank(name)) {
+                    roomVO.setName("");
+                } else {
+                    roomVO.setName(name);
+                }
+                if (org.apache.commons.lang.StringUtils.isBlank(userUserDO.getHeadimg())) {
+                    roomVO.setHeadImgUrl("");
+                } else {
+                    roomVO.setHeadImgUrl(userUserDO.getHeadimg());
+                }
             }
         }
         return roomVO;

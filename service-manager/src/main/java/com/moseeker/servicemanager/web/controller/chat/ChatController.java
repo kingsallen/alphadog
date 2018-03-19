@@ -28,48 +28,9 @@ public class ChatController {
 
     ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
 
-    @RequestMapping(value = "/chat-room", method = RequestMethod.GET)
+    @RequestMapping(value = "/chat-rooms/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String getChatRooms(HttpServletRequest request, HttpServletResponse response) {
-        try {
-
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            Integer hrId = params.getInt("hr_id");
-            Integer userId = params.getInt("user_id");
-            String keyword = params.getString("keyword");
-            Boolean apply = params.getBoolean("apply");
-            Integer pageSize = params.getInt("page_size");
-
-            ValidateUtil validateUtil = new ValidateUtil();
-            validateUtil.addIntTypeValidate("HR", hrId, null, null, 1, Integer.MAX_VALUE);
-            validateUtil.addRequiredStringValidate("关键词", keyword, null, null);
-            validateUtil.addStringLengthValidate("关键词", keyword, null, null, 0, 100);
-            validateUtil.addIntTypeValidate("用户", userId, null, null, 1, Integer.MAX_VALUE);
-            validateUtil.addIntTypeValidate("每页数量", pageSize, null, null, 0, 1000);
-
-            String message = validateUtil.validate();
-
-            if (StringUtils.isNotBlank(message)) {
-                if (apply == null) {
-                    apply = true;
-                }
-                if (pageSize == null || pageSize == 0) {
-                    pageSize = 10;
-                }
-                HRChatRoomsIndexVO result = chatService.listHRChatRoomByIndex(hrId, keyword, userId, apply, pageSize);
-                return ResponseLogNotification.successJson(request, result);
-            } else {
-                return ResponseLogNotification.fail(request, message);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.failJson(request, e);
-        }
-    }
-
-    @RequestMapping(value = "/chat-room/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public String getChatRooms(HttpServletRequest request, @RequestParam int id) {
+    public String getChatRooms(HttpServletRequest request, @PathVariable int id) {
         try {
 
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
@@ -81,9 +42,49 @@ public class ChatController {
 
             String message = validateUtil.validate();
 
-            if (StringUtils.isNotBlank(message)) {
+            if (StringUtils.isBlank(message)) {
                 HRChatRoomVO roomVO = chatService.getChatRoom(id, hrId);
                 return ResponseLogNotification.successJson(request, roomVO);
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    @RequestMapping(value = "/chat-rooms", method = RequestMethod.GET)
+    @ResponseBody
+    public String getChatRooms(HttpServletRequest request, HttpServletResponse response) {
+        try {
+
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer hrId = params.getInt("hr_id");
+            Integer roomId = params.getInt("room_id");
+            String keyword = params.getString("keyword");
+            Boolean apply = params.getBoolean("apply");
+            Integer pageSize = params.getInt("page_size");
+
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addIntTypeValidate("HR", hrId, null, null, 1, Integer.MAX_VALUE);
+            validateUtil.addStringLengthValidate("关键词", keyword, null, null, 0, 100);
+            validateUtil.addIntTypeValidate("每页数量", pageSize, null, null, 0, 1000);
+
+            String message = validateUtil.validate();
+
+            if (StringUtils.isBlank(message)) {
+                if (roomId == null) {
+                    roomId = 0;
+                }
+                if (apply == null) {
+                    apply = true;
+                }
+                if (pageSize == null || pageSize == 0) {
+                    pageSize = 10;
+                }
+                HRChatRoomsIndexVO result = chatService.listHRChatRoomByIndex(hrId, keyword, roomId, apply, pageSize);
+                return ResponseLogNotification.successJson(request, result);
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
@@ -99,14 +100,18 @@ public class ChatController {
         try {
 
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            List<Integer> roomIdList = (List<Integer>) params.get("room_ids");
+            List<Integer> roomIdList = new ArrayList<>();
+            List<String> roomIdStrList = (List<String>) params.get("room_ids");
+            if (roomIdStrList != null && roomIdStrList.size() > 0) {
+                roomIdStrList.forEach(idStr -> roomIdList.add(Integer.valueOf(idStr)));
+            }
 
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addRequiredOneValidate("聊天室编号", roomIdList, null, null);
 
             String message = validateUtil.validate();
 
-            if (StringUtils.isNotBlank(message)) {
+            if (StringUtils.isBlank(message)) {
                 List<ChatVO> chatVOList = chatService.listLastMessage(roomIdList);
                 return ResponseLogNotification.successJson(request, chatVOList);
             } else {
@@ -120,7 +125,7 @@ public class ChatController {
 
     @RequestMapping(value = "/chat-room/{id}/last-messages", method = RequestMethod.GET)
     @ResponseBody
-    public String getRoomLastMessages(HttpServletRequest request, @RequestParam int id) {
+    public String getRoomLastMessages(HttpServletRequest request, @PathVariable int id) {
         try {
             if (id > 0) {
                 List<ChatVO> chatVOList = chatService.listLastMessage(new ArrayList<Integer>(){{this.add(id);}});
@@ -149,11 +154,11 @@ public class ChatController {
 
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addIntTypeValidate("聊天室编号", id, null, null, 1, Integer.MAX_VALUE);
-            validateUtil.addIntTypeValidate("聊天记录", lastReadId, null, null, 1, Integer.MAX_VALUE);
+            validateUtil.addIntTypeValidate("聊天记录", lastReadId, null, null, 0, Integer.MAX_VALUE);
 
             String message = validateUtil.validate();
 
-            if (StringUtils.isNotBlank(message)) {
+            if (StringUtils.isBlank(message)) {
                 ChatHistory chatHistory = chatService.listMessage(id, lastReadId, pageSize);
                 return ResponseLogNotification.successJson(request, chatHistory);
             } else {
@@ -181,7 +186,7 @@ public class ChatController {
 
             String message = validateUtil.validate();
 
-            if (StringUtils.isNotBlank(message)) {
+            if (StringUtils.isBlank(message)) {
                 List<String> sugList = chatService.getChatSug(hrId, applied, keyword);
                 return ResponseLogNotification.successJson(request, sugList);
             } else {
@@ -206,7 +211,7 @@ public class ChatController {
 
             String message = validateUtil.validate();
 
-            if (StringUtils.isNotBlank(message)) {
+            if (StringUtils.isBlank(message)) {
                 int count = chatService.getHRUnreadCount(hrId);
                 return ResponseLogNotification.successJson(request, count);
             } else {
@@ -230,7 +235,7 @@ public class ChatController {
 
             String message = validateUtil.validate();
 
-            if (StringUtils.isNotBlank(message)) {
+            if (StringUtils.isBlank(message)) {
                 HrVO hrVO = chatService.getHrInfo(id);
                 return ResponseLogNotification.successJson(request, hrVO);
             } else {
@@ -242,9 +247,9 @@ public class ChatController {
         }
     }
 
-    @RequestMapping(value = "/chat-room/%s/messages", method = RequestMethod.POST)
+    @RequestMapping(value = "/chat-room/{id}/messages", method = RequestMethod.POST)
     @ResponseBody
-    public String postChatMessage(HttpServletRequest request, @RequestParam int id) {
+    public String postChatMessage(HttpServletRequest request, @PathVariable int id) {
         try {
 
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
@@ -273,7 +278,7 @@ public class ChatController {
 
             String message = validateUtil.validate();
 
-            if (StringUtils.isNotBlank(message)) {
+            if (StringUtils.isBlank(message)) {
 
                 ChatVO chatVO = new ChatVO();
                 chatVO.setOrigin(origin.byteValue());

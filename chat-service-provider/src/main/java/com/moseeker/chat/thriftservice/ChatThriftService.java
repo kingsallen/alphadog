@@ -40,19 +40,19 @@ public class ChatThriftService implements Iface {
     }
 
     @Override
-    public HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, String keyword, int userId, boolean apply, int pageSize) throws BIZException, TException {
+    public HRChatRoomsIndexVO listHRChatRoomByIndex(int hrId, String keyword, int roomId, boolean apply, int pageSize) throws BIZException, TException {
         try {
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addIntTypeValidate("HR", hrId, null, null, 1, Integer.MAX_VALUE);
             validateUtil.addRequiredStringValidate("关键词", keyword, null, null);
             validateUtil.addStringLengthValidate("关键词", keyword, null, null, 0, 100);
-            validateUtil.addIntTypeValidate("用户", userId, null, null, 1, Integer.MAX_VALUE);
+            validateUtil.addIntTypeValidate("聊天室", roomId, null, null, 1, Integer.MAX_VALUE);
             validateUtil.addIntTypeValidate("每页数量", pageSize, null, null, 0, 1000);
             String result = validateUtil.validate();
             if (StringUtils.isNotBlank(result)) {
                 ExceptionUtils.convertException(CommonException.validateFailed(result));
             }
-            return chatService.listHRChatRoomByIndex(hrId, keyword, userId, apply, pageSize);
+            return chatService.listHRChatRoomByIndex(hrId, keyword, roomId, apply, pageSize);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
@@ -119,7 +119,7 @@ public class ChatThriftService implements Iface {
     @Override
     public ChatHistory listMessage(int roomId, int chatId, int pageSize) throws BIZException, TException {
 
-        if (roomId <= 0 || chatId <= 0) {
+        if (roomId <= 0) {
             throw ExceptionUtils.convertException(CommonException.validateFailed("参数不正确!"));
         }
 

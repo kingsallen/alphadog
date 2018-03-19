@@ -43,6 +43,14 @@ public class HrChatUnreadCountDao extends JooqCrudImpl<HrChatUnreadCountDO, HrCh
                 .and(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.APPLY.eq(applied))
                 .groupBy(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.USER_ID)
                 .fetch();
+
+        String sql = create
+                .select(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.USER_ID)
+                .from(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT)
+                .where(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.HR_ID.eq(hrId))
+                .and(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.APPLY.eq(applied))
+                .groupBy(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.USER_ID).getSQL();
+        logger.info("fetchUserIdByHRId sql:{}", sql);
         if (result != null) {
             return result.stream().map(record -> record.value1()).collect(Collectors.toList());
         } else {
@@ -65,16 +73,15 @@ public class HrChatUnreadCountDao extends JooqCrudImpl<HrChatUnreadCountDO, HrCh
                     .from(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT)
                     .where(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.HR_ID.eq(hrId))
                     .and(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.APPLY.eq(applyByte))
-                    .orderBy(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.UPDATE_TIME.desc())
                     .fetchOne()
                     .value1();
         } else {
             return create
-                    .selectFrom(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT)
+                    .selectCount()
+                    .from(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT)
                     .where(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.HR_ID.eq(hrId))
                     .and(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.APPLY.eq(applyByte))
                     .and(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.USER_ID.in(userIdList))
-                    .orderBy(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.UPDATE_TIME.desc())
                     .fetchOne()
                     .value1();
         }
