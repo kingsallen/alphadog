@@ -282,7 +282,7 @@ public class ChatDao {
                 QueryUtil findCompany = new QueryUtil();
                 findCompany.addSelectAttribute("id").addSelectAttribute("logo");
                 findCompany.addEqualFilter("id",companyIdStr);
-                Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(queryUtil));
+                Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(findCompany));
 
 
                 /** 过滤头像不存在的HR，匹配公司logo*/
