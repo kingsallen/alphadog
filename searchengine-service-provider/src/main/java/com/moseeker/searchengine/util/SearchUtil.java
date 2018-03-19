@@ -247,7 +247,8 @@ public class SearchUtil {
     public void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
     	if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords.trim())){
     		hasKey=true;
-    		String words[]=keywords.split(",");
+            keywords=keywords.trim();
+            String words[]=keywords.split(",");
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		StringBuffer sb=new StringBuffer();
     		for(int i=0;i<words.length;i++){
@@ -260,10 +261,10 @@ public class SearchUtil {
     				sb.append(words[i]+" or ");
     			}
     		}
-    		if(words.length>1){
-                sb.deleteCharAt(sb.lastIndexOf("r"));
-                sb.deleteCharAt(sb.lastIndexOf("o"));
-            }
+//    		if(words.length>1){
+//                sb.deleteCharAt(sb.lastIndexOf("r"));
+//                sb.deleteCharAt(sb.lastIndexOf("o"));
+//            }
     		String condition=sb.toString();
     		QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
     		for(String field:list){
@@ -302,6 +303,7 @@ public class SearchUtil {
     //组装query_string关键字带权重查询语句
     public void keyWordforQueryStringPropery(String keywords,QueryBuilder query,List<String> fieldList,List<Integer> properyList){
         if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords)){
+            keywords=keywords.trim();
             String words[]=keywords.split(",");
             StringBuffer sb=new StringBuffer();
             for(int i=0;i<words.length;i++){
@@ -314,10 +316,10 @@ public class SearchUtil {
                     sb.append(words[i]+" or ");
                 }
             }
-            if(words.length>1){
-                sb.deleteCharAt(sb.lastIndexOf("r"));
-                sb.deleteCharAt(sb.lastIndexOf("o"));
-            }
+//            if(words.length>1){
+//                sb.deleteCharAt(sb.lastIndexOf("r"));
+//                sb.deleteCharAt(sb.lastIndexOf("o"));
+//            }
             String condition=sb.toString();
             QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
             if(fieldList!=null&&fieldList.size()>0){
