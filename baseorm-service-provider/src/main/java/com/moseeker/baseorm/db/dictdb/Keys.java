@@ -19,6 +19,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
+import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
@@ -37,6 +38,7 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictJobsdbOccupationRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictLiepinOccupationRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictMajorRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictTestMobileRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictVeryeastOccupationRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictZhilianOccupationRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.Dict_51jobOccupationRecord;
@@ -72,6 +74,7 @@ public class Keys {
     public static final Identity<DictConstantRecord, Integer> IDENTITY_DICT_CONSTANT = Identities0.IDENTITY_DICT_CONSTANT;
     public static final Identity<DictCountryRecord, Integer> IDENTITY_DICT_COUNTRY = Identities0.IDENTITY_DICT_COUNTRY;
     public static final Identity<DictLiepinOccupationRecord, Integer> IDENTITY_DICT_LIEPIN_OCCUPATION = Identities0.IDENTITY_DICT_LIEPIN_OCCUPATION;
+    public static final Identity<DictTestMobileRecord, Integer> IDENTITY_DICT_TEST_MOBILE = Identities0.IDENTITY_DICT_TEST_MOBILE;
     public static final Identity<DictZhilianOccupationRecord, Integer> IDENTITY_DICT_ZHILIAN_OCCUPATION = Identities0.IDENTITY_DICT_ZHILIAN_OCCUPATION;
 
     // -------------------------------------------------------------------------
@@ -89,13 +92,14 @@ public class Keys {
     public static final UniqueKey<DictConstantRecord> KEY_DICT_CONSTANT_PRIMARY = UniqueKeys0.KEY_DICT_CONSTANT_PRIMARY;
     public static final UniqueKey<DictConstantRecord> KEY_DICT_CONSTANT_DICT_CONSTANT_TYPE_CODE = UniqueKeys0.KEY_DICT_CONSTANT_DICT_CONSTANT_TYPE_CODE;
     public static final UniqueKey<DictCountryRecord> KEY_DICT_COUNTRY_PRIMARY = UniqueKeys0.KEY_DICT_COUNTRY_PRIMARY;
-    public static final UniqueKey<DictIndustryRecord> KEY_DICT_INDUSTRY_CODE = UniqueKeys0.KEY_DICT_INDUSTRY_CODE;
-    public static final UniqueKey<DictIndustryTypeRecord> KEY_DICT_INDUSTRY_TYPE_CODE = UniqueKeys0.KEY_DICT_INDUSTRY_TYPE_CODE;
+    public static final UniqueKey<DictIndustryRecord> KEY_DICT_INDUSTRY_PRIMARY = UniqueKeys0.KEY_DICT_INDUSTRY_PRIMARY;
+    public static final UniqueKey<DictIndustryTypeRecord> KEY_DICT_INDUSTRY_TYPE_PRIMARY = UniqueKeys0.KEY_DICT_INDUSTRY_TYPE_PRIMARY;
     public static final UniqueKey<DictJob1001OccupationRecord> KEY_DICT_JOB1001_OCCUPATION_PRIMARY = UniqueKeys0.KEY_DICT_JOB1001_OCCUPATION_PRIMARY;
     public static final UniqueKey<DictJobsdbOccupationRecord> KEY_DICT_JOBSDB_OCCUPATION_PRIMARY = UniqueKeys0.KEY_DICT_JOBSDB_OCCUPATION_PRIMARY;
     public static final UniqueKey<DictLiepinOccupationRecord> KEY_DICT_LIEPIN_OCCUPATION_PRIMARY = UniqueKeys0.KEY_DICT_LIEPIN_OCCUPATION_PRIMARY;
     public static final UniqueKey<DictMajorRecord> KEY_DICT_MAJOR_CODE = UniqueKeys0.KEY_DICT_MAJOR_CODE;
     public static final UniqueKey<DictPositionRecord> KEY_DICT_POSITION_CODE = UniqueKeys0.KEY_DICT_POSITION_CODE;
+    public static final UniqueKey<DictTestMobileRecord> KEY_DICT_TEST_MOBILE_PRIMARY = UniqueKeys0.KEY_DICT_TEST_MOBILE_PRIMARY;
     public static final UniqueKey<DictVeryeastOccupationRecord> KEY_DICT_VERYEAST_OCCUPATION_PRIMARY = UniqueKeys0.KEY_DICT_VERYEAST_OCCUPATION_PRIMARY;
     public static final UniqueKey<DictZhilianOccupationRecord> KEY_DICT_ZHILIAN_OCCUPATION_PRIMARY = UniqueKeys0.KEY_DICT_ZHILIAN_OCCUPATION_PRIMARY;
 
@@ -115,6 +119,7 @@ public class Keys {
         public static Identity<DictConstantRecord, Integer> IDENTITY_DICT_CONSTANT = createIdentity(DictConstant.DICT_CONSTANT, DictConstant.DICT_CONSTANT.ID);
         public static Identity<DictCountryRecord, Integer> IDENTITY_DICT_COUNTRY = createIdentity(DictCountry.DICT_COUNTRY, DictCountry.DICT_COUNTRY.ID);
         public static Identity<DictLiepinOccupationRecord, Integer> IDENTITY_DICT_LIEPIN_OCCUPATION = createIdentity(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION, DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.ID);
+        public static Identity<DictTestMobileRecord, Integer> IDENTITY_DICT_TEST_MOBILE = createIdentity(DictTestMobile.DICT_TEST_MOBILE, DictTestMobile.DICT_TEST_MOBILE.ID);
         public static Identity<DictZhilianOccupationRecord, Integer> IDENTITY_DICT_ZHILIAN_OCCUPATION = createIdentity(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION, DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE);
     }
 
@@ -130,13 +135,14 @@ public class Keys {
         public static final UniqueKey<DictConstantRecord> KEY_DICT_CONSTANT_PRIMARY = createUniqueKey(DictConstant.DICT_CONSTANT, "KEY_dict_constant_PRIMARY", DictConstant.DICT_CONSTANT.ID);
         public static final UniqueKey<DictConstantRecord> KEY_DICT_CONSTANT_DICT_CONSTANT_TYPE_CODE = createUniqueKey(DictConstant.DICT_CONSTANT, "KEY_dict_constant_dict_constant_type_code", DictConstant.DICT_CONSTANT.PARENT_CODE, DictConstant.DICT_CONSTANT.CODE);
         public static final UniqueKey<DictCountryRecord> KEY_DICT_COUNTRY_PRIMARY = createUniqueKey(DictCountry.DICT_COUNTRY, "KEY_dict_country_PRIMARY", DictCountry.DICT_COUNTRY.ID);
-        public static final UniqueKey<DictIndustryRecord> KEY_DICT_INDUSTRY_CODE = createUniqueKey(DictIndustry.DICT_INDUSTRY, "KEY_dict_industry_code", DictIndustry.DICT_INDUSTRY.CODE);
-        public static final UniqueKey<DictIndustryTypeRecord> KEY_DICT_INDUSTRY_TYPE_CODE = createUniqueKey(DictIndustryType.DICT_INDUSTRY_TYPE, "KEY_dict_industry_type_code", DictIndustryType.DICT_INDUSTRY_TYPE.CODE);
+        public static final UniqueKey<DictIndustryRecord> KEY_DICT_INDUSTRY_PRIMARY = createUniqueKey(DictIndustry.DICT_INDUSTRY, "KEY_dict_industry_PRIMARY", DictIndustry.DICT_INDUSTRY.CODE);
+        public static final UniqueKey<DictIndustryTypeRecord> KEY_DICT_INDUSTRY_TYPE_PRIMARY = createUniqueKey(DictIndustryType.DICT_INDUSTRY_TYPE, "KEY_dict_industry_type_PRIMARY", DictIndustryType.DICT_INDUSTRY_TYPE.CODE);
         public static final UniqueKey<DictJob1001OccupationRecord> KEY_DICT_JOB1001_OCCUPATION_PRIMARY = createUniqueKey(DictJob1001Occupation.DICT_JOB1001_OCCUPATION, "KEY_dict_job1001_occupation_PRIMARY", DictJob1001Occupation.DICT_JOB1001_OCCUPATION.CODE);
         public static final UniqueKey<DictJobsdbOccupationRecord> KEY_DICT_JOBSDB_OCCUPATION_PRIMARY = createUniqueKey(DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION, "KEY_dict_jobsdb_occupation_PRIMARY", DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION.CODE);
         public static final UniqueKey<DictLiepinOccupationRecord> KEY_DICT_LIEPIN_OCCUPATION_PRIMARY = createUniqueKey(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION, "KEY_dict_liepin_occupation_PRIMARY", DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.ID);
         public static final UniqueKey<DictMajorRecord> KEY_DICT_MAJOR_CODE = createUniqueKey(DictMajor.DICT_MAJOR, "KEY_dict_major_code", DictMajor.DICT_MAJOR.CODE);
         public static final UniqueKey<DictPositionRecord> KEY_DICT_POSITION_CODE = createUniqueKey(DictPosition.DICT_POSITION, "KEY_dict_position_code", DictPosition.DICT_POSITION.CODE);
+        public static final UniqueKey<DictTestMobileRecord> KEY_DICT_TEST_MOBILE_PRIMARY = createUniqueKey(DictTestMobile.DICT_TEST_MOBILE, "KEY_dict_test_mobile_PRIMARY", DictTestMobile.DICT_TEST_MOBILE.ID);
         public static final UniqueKey<DictVeryeastOccupationRecord> KEY_DICT_VERYEAST_OCCUPATION_PRIMARY = createUniqueKey(DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION, "KEY_dict_veryeast_occupation_PRIMARY", DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION.CODE);
         public static final UniqueKey<DictZhilianOccupationRecord> KEY_DICT_ZHILIAN_OCCUPATION_PRIMARY = createUniqueKey(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION, "KEY_dict_zhilian_occupation_PRIMARY", DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE);
     }

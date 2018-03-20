@@ -7,10 +7,12 @@ import java.util.Map;
 import java.util.Set;
 import com.moseeker.baseorm.dao.analyticsd.StJobSimilarityDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
+import com.moseeker.baseorm.dao.dictdb.DictIndustryTypeDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.dictdb.tables.pojos.DictIndustryType;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
@@ -21,6 +23,7 @@ import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.thrift.gen.dao.struct.analytics.StJobSimilarityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryTypeDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
@@ -103,6 +106,8 @@ public class PositionPcService {
 	@Autowired
 	private JobPositionShareTplConfDao jobPositionShareTplConfDao;
 	@Autowired
+	private DictIndustryTypeDao dictIndustryTypeDao;
+	@Autowired
 	private PositionEntity positionEntity;
 	/*
      * 获取pc首页职位推荐
@@ -183,14 +188,19 @@ public class PositionPcService {
 		if(wxData!=null&&!wxData.isEmpty()){
 			map.put("wx",wxData);
 		}
-//		if(DO.getShareTplId()>3){
-//			Map<String,Object> tplData=this.getJobShareTplConf(DO.getShareTplId());
-//			if(tplData!=null&&!tplData.isEmpty()){
-//				map.put("tplconf",tplData);
-//			}
-//		}
+
 
 		return map;
+	}
+	private Map<String,Object> getIndustryPic(int type) throws TException {
+		Query query1=new Query.QueryBuilder().where("code",type).buildQuery();
+		DictIndustryTypeDO DO=dictIndustryTypeDao.getData(query1);
+		if(DO!=null){
+			String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+			Map<String,Object> data= JSON.parseObject(DOs, Map.class);
+			return data;
+		}
+		return null;
 	}
 	/*
 	 获取母公司的公众号信息
@@ -240,9 +250,12 @@ public class PositionPcService {
 					String industryDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(industryDO);
 					Map<String,Object> industryData= JSON.parseObject(industryDOs, Map.class);
 					map.put("industryData",industryData);
+					Map<String,Object> industryPics=this.getIndustryPic(industryDO.getType());
+					if(industryPics!=null&&!industryPics.isEmpty()){
+						map.put("industryType",industryPics);
+					}
 				}
 			}
-
 			String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
 			Map<String,Object> companyData= JSON.parseObject(companyDOs, Map.class);
 			map.put("company",companyData);
