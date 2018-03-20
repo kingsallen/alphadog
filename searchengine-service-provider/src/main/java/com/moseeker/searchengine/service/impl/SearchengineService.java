@@ -38,6 +38,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.ScriptQueryBuilder;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
@@ -912,6 +913,89 @@ public class SearchengineService {
         return map;
 
     }
+
+    public Map<String,Object> getProfileSuggest(Map<String,String> params){
+        String keyWord=params.get("keyWord");
+        String companyId=params.get("company_id");
+        String account_type=params.get("account_type");
+        String hr_account_id=params.get("hr_account_id");
+        if(StringUtils.isBlank(keyWord)&&StringUtils.isBlank(companyId)&&StringUtils.isBlank(hr_account_id)){
+            return null;
+        }
+        String page=params.get("page_from");
+        String pageSize=params.get("page_size");
+
+        String flag=params.get("flag");
+        String returnParams=params.get("return_params");
+        if(StringUtils.isBlank(flag)){
+            flag="0";
+        }
+        if(StringUtils.isBlank(page)){
+            page="1";
+        }
+        if(StringUtils.isBlank(pageSize)){
+            pageSize="15";
+        }
+        TransportClient client=null;
+        Map<String,Object> map=new HashMap<String,Object>();
+        try {
+            client = searchUtil.getEsClient();
+            SearchResponse hits=this.searchProfilePrefix(keyWord,Integer.parseInt(companyId),Integer.parseInt(hr_account_id),Integer.parseInt(account_type),Integer.parseInt(flag),returnParams,Integer.parseInt(page),Integer.parseInt(pageSize),client);
+            long hitNum=hits.getHits().getTotalHits();
+            if(hitNum==0){
+                hits=this.searchProfileQueryString(keyWord,Integer.parseInt(companyId),Integer.parseInt(hr_account_id),Integer.parseInt(account_type),Integer.parseInt(flag),returnParams,Integer.parseInt(page),Integer.parseInt(pageSize),client);
+                map=searchUtil.handleData(hits,"suggest");
+            }else{
+                map=searchUtil.handleData(hits,"suggest");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return map;
+
+    }
+    //通过Prefix方式搜索
+    private SearchResponse searchProfilePrefix(String keyWord,int companyId,int hr_account_id, int account_type, int flag, String returnParams,int page,int pageSize,TransportClient client){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.basic.name");
+        searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
+        QueryBuilder queryAppScript=this.queryScript(companyId, account_type, hr_account_id);
+        if(queryAppScript!=null){
+            ((BoolQueryBuilder) query).filter(queryAppScript);
+        }
+        SearchRequestBuilder responseBuilder=client.prepareSearch("users_index").setTypes("users")
+                .setQuery(query)
+                .setFrom((page-1)*pageSize)
+                .setSize(pageSize)
+                .setTrackScores(true);
+        this.handlerReturnParams(returnParams,responseBuilder);
+        logger.info(responseBuilder.toString());
+        SearchResponse res=responseBuilder.execute().actionGet();
+        return res;
+    }
+
+    //通过QueryString搜索
+    private SearchResponse searchProfileQueryString(String keyWord,int companyId,int hr_account_id, int account_type, int flag, String returnParams,int page,int pageSize,TransportClient client){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.basic.name");
+        searchUtil.handleKeyWordforQueryString(keyWord, false, query, list);
+        QueryBuilder queryAppScript=this.queryScript(companyId, account_type, hr_account_id);
+        SearchRequestBuilder responseBuilder=client.prepareSearch("users_index").setTypes("users")
+                .setQuery(query)
+                .setFrom((page-1)*pageSize)
+                .setSize(pageSize)
+                .setTrackScores(true);
+
+        this.handlerReturnParams(returnParams,responseBuilder);
+        logger.info(responseBuilder.toString());
+        SearchResponse res=responseBuilder.execute().actionGet();
+        return res;
+    }
     //通过Prefix方式搜索
      private SearchResponse searchPrefix(String keyWord,Map<String,String> params,int page,int pageSize,TransportClient client){
          QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
@@ -931,6 +1015,7 @@ public class SearchengineService {
          SearchResponse res=responseBuilder.execute().actionGet();
          return res;
      }
+
     //通过QueryString搜索
     private SearchResponse searchQueryString(String keyWord,Map<String,String> params,int page,int pageSize,TransportClient client){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
@@ -1014,5 +1099,25 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(returnParams)){
             builder.setFetchSource(returnParams.split(","),null);
         }
+    }
+
+     /*
+      使用script的方式组装对application的查询
+     */
+
+    public ScriptQueryBuilder queryScript(int company_id, int account_type, int hraccount_id){
+
+        StringBuffer sb=new StringBuffer();
+        sb.append("user=_source.user;if(user){applications=user.applications;;origins=user.origin_data;if(applications){for(val in applications){if(");
+        if(account_type == 0){
+            sb.append("val.company_id == "+company_id);
+        }else{
+            sb.append("val.publisher == "+hraccount_id);
+        }
+        sb.append("){return true}}}");
+        sb.append("}");
+
+        ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
+        return script;
     }
 }

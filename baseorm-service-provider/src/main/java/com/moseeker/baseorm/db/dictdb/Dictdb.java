@@ -19,6 +19,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
+import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
@@ -135,6 +136,11 @@ public class Dictdb extends SchemaImpl {
     public final DictPosition DICT_POSITION = com.moseeker.baseorm.db.dictdb.tables.DictPosition.DICT_POSITION;
 
     /**
+     * The table <code>dictdb.dict_test_mobile</code>.
+     */
+    public final DictTestMobile DICT_TEST_MOBILE = com.moseeker.baseorm.db.dictdb.tables.DictTestMobile.DICT_TEST_MOBILE;
+
+    /**
      * 最佳东方的职位职能表
      */
     public final DictVeryeastOccupation DICT_VERYEAST_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION;
@@ -185,6 +191,7 @@ public class Dictdb extends SchemaImpl {
             DictLiepinOccupation.DICT_LIEPIN_OCCUPATION,
             DictMajor.DICT_MAJOR,
             DictPosition.DICT_POSITION,
+            DictTestMobile.DICT_TEST_MOBILE,
             DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION,
             DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION);
     }
