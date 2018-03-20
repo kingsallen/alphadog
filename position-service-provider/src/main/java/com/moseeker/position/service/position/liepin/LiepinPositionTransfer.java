@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
@@ -36,6 +38,8 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
     @Autowired
     DictLiepinOccupationDao occupationDao;
 
+    @Autowired
+    PositionQxService positionQxService;
 
     @Override
     public PositionLiepinWithAccount changeToThirdPartyPosition(ThirdPartyPosition positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
@@ -132,11 +136,12 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
 
 
     public void setWelfare(PositionLiepin position, JobPositionDO positionDB){
-        if(positionDB.getFeature() == null || positionDB.getFeature().isEmpty()){
+        List<HrCompanyFeature> features = positionQxService.getPositionFeature(positionDB.getId());
+        if(StringUtils.isEmptyList(features)){
             //爬虫需要即使数据库这个字段为空，也需要要一个空列表
             position.setWelfare(new ArrayList<>());
         }else {
-            position.setWelfare(Arrays.asList(positionDB.getFeature().split("#")));
+            position.setWelfare(features.stream().map(f->f.getFeature()).collect(Collectors.toList()));
         }
     }
 
