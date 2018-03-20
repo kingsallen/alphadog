@@ -60,6 +60,9 @@ public class PositionBS {
 
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
+    //scrapper获取超时时间
+    private static int timeOut = 3*60*1000;
+
     @Autowired
     private JobPositionDao jobPositionDao;
     @Autowired
@@ -357,7 +360,7 @@ public class PositionBS {
         }
 
         try {
-            String html= UrlUtil.sendPost(scrapperUrl,jsonObject.toJSONString());
+            String html= UrlUtil.sendPost(scrapperUrl,jsonObject.toJSONString(),timeOut,timeOut);
 
             logger.info("get html from scraper success. html length:{}",html.length());
 
