@@ -57,14 +57,14 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
                     .selectFrom(HrWxHrChat.HR_WX_HR_CHAT)
                     .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
                     .and(HrWxHrChat.HR_WX_HR_CHAT.ID.lt(chatId))
-                    .orderBy(HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME.desc())
+                    .orderBy(HrWxHrChat.HR_WX_HR_CHAT.ID.desc())
                     .limit(pageSize)
                     .fetch();
         } else {
             chatRecordResult = create
                     .selectFrom(HrWxHrChat.HR_WX_HR_CHAT)
                     .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
-                    .orderBy(HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME.desc())
+                    .orderBy(HrWxHrChat.HR_WX_HR_CHAT.ID.desc())
                     .limit(pageSize)
                     .fetch();
         }
