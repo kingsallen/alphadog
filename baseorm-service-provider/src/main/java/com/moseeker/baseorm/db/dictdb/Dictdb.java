@@ -15,9 +15,11 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
+import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
@@ -46,7 +48,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1786983547;
+    private static final long serialVersionUID = 877714558;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -99,7 +101,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
     public final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -112,6 +114,11 @@ public class Dictdb extends SchemaImpl {
      * 一览人才的职位表
      */
     public final DictJob1001Occupation DICT_JOB1001_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation.DICT_JOB1001_OCCUPATION;
+
+    /**
+     * JobsDB的职位职能表
+     */
+    public final DictJobsdbOccupation DICT_JOBSDB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION;
 
     /**
      * The table <code>dictdb.dict_liepin_occupation</code>.
@@ -127,6 +134,11 @@ public class Dictdb extends SchemaImpl {
      * 职能分类字典表
      */
     public final DictPosition DICT_POSITION = com.moseeker.baseorm.db.dictdb.tables.DictPosition.DICT_POSITION;
+
+    /**
+     * The table <code>dictdb.dict_test_mobile</code>.
+     */
+    public final DictTestMobile DICT_TEST_MOBILE = com.moseeker.baseorm.db.dictdb.tables.DictTestMobile.DICT_TEST_MOBILE;
 
     /**
      * 最佳东方的职位职能表
@@ -175,9 +187,11 @@ public class Dictdb extends SchemaImpl {
             DictIndustry.DICT_INDUSTRY,
             DictIndustryType.DICT_INDUSTRY_TYPE,
             DictJob1001Occupation.DICT_JOB1001_OCCUPATION,
+            DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION,
             DictLiepinOccupation.DICT_LIEPIN_OCCUPATION,
             DictMajor.DICT_MAJOR,
             DictPosition.DICT_POSITION,
+            DictTestMobile.DICT_TEST_MOBILE,
             DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION,
             DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION);
     }
