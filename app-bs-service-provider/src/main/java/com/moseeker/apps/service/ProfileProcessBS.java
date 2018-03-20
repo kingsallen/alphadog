@@ -11,10 +11,12 @@ import com.moseeker.apps.utils.ProcessUtils;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -40,6 +42,7 @@ import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -76,6 +79,9 @@ public class ProfileProcessBS {
 
     @Autowired
     private JobApplicationDao jobApplicationDao;
+
+    @Autowired
+    private HrWxNoticeMessageDao noticeMessageDao;
 
     @Autowired
     private UserHrAccountDao userHraccountDao;
@@ -259,14 +265,24 @@ public class ProfileProcessBS {
                                 turnToCVCheckeds, employeesToBeUpdates, result,
                                 rewardsToBeAdd);
                         list.forEach(pvs -> {
-                            sendTemplate(pvs.getApplier_id(),
-                                    pvs.getApplier_name(), companyId,
-                                    progressStatus, pvs.getPosition_name(),
-                                    pvs.getId(), TemplateMs.TOSEEKER);
-                            sendTemplate(pvs.getRecommender_user_id(),
-                                    pvs.getApplier_name(), companyId,
-                                    progressStatus, pvs.getPosition_name(),
-                                    pvs.getId(), TemplateMs.TORECOM);
+                            //当为这三种状态时说明HR做了重新考虑
+                            if(ProcessUtils.LETTERS_RECRUITMENT_REOFFERED.equals(result.getReason())
+                                || ProcessUtils.LETTERS_RECRUITMENT_RECVPASSED.equals(result.getReason())
+                                    || ProcessUtils.LETTERS_RECRUITMENT_RECVCHECKED.equals(result.getReason())){
+                                sendTemplate(pvs.getApplier_id(),
+                                        pvs.getApplier_name(), companyId,
+                                        progressStatus, pvs.getPosition_name(),
+                                        pvs.getId(), TemplateMs.RESRT);
+                            }else {
+                                sendTemplate(pvs.getApplier_id(),
+                                        pvs.getApplier_name(), companyId,
+                                        progressStatus, pvs.getPosition_name(),
+                                        pvs.getId(), TemplateMs.TOSEEKER);
+                                sendTemplate(pvs.getRecommender_user_id(),
+                                        pvs.getApplier_name(), companyId,
+                                        progressStatus, pvs.getPosition_name(),
+                                        pvs.getId(), TemplateMs.TORECOM);
+                            }
                         });
                     } else {
                         return ResponseUtils
@@ -310,8 +326,35 @@ public class ProfileProcessBS {
         if (StringUtils.isNullOrEmpty(positionName)) {
             return;
         }
-        Map<String, MessageTplDataCol> data = new HashMap<>();
         MsInfo msInfo = tm.processStatus(status, userName);
+        if(msInfo == null){
+            return ;
+        }
+        String signature = "";
+        int wechatId = 0;
+        try {
+            Response wechat = companyService.getWechat(companyId, 0);
+            if (wechat.getStatus() == 0) {
+                Map<String, Object> wechatData = JSON.parseObject(wechat
+                        .getData());
+                signature = String.valueOf(wechatData.get("signature"));
+                wechatId = (Integer)wechatData.get("id");
+                Query query = new Query.QueryBuilder().where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.getName(), wechatId)
+                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.getName(), msInfo.getConfig_id())
+                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE.getName(), "0")
+                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.STATUS.getName(), "0")
+                        .buildQuery();
+                HrWxNoticeMessageDO noticeMessageDO = noticeMessageDao.getData(query);
+                if(noticeMessageDO != null){
+                    logger.info("模板开关关闭");
+                    return ;
+                }
+            }
+        } catch (TException e1) {
+            log.error(e1.getMessage(), e1);
+        }
+        Map<String, MessageTplDataCol> data = new HashMap<String, MessageTplDataCol>();
+
         if (msInfo != null) {
             String color = "#173177";
             String companyName = "";
@@ -338,7 +381,7 @@ public class ProfileProcessBS {
             data.put("keyword2", keyTwoMs);
             MessageTplDataCol keyThreeMs = new MessageTplDataCol();
             keyThreeMs.setColor(color);
-            keyThreeMs.setValue(msInfo.getResult());
+            keyThreeMs.setValue(msInfo.getStatusDesc());
             data.put("keyword3", keyThreeMs);
             MessageTplDataCol remarkMs = new MessageTplDataCol();
             remarkMs.setColor(color);
@@ -349,17 +392,7 @@ public class ProfileProcessBS {
             templateNoticeStruct.setData(data);
             templateNoticeStruct.setUser_id(userId);
             templateNoticeStruct.setSys_template_id(msInfo.getConfig_id());
-            String signature = "";
-            try {
-                Response wechat = companyService.getWechat(companyId, 0);
-                if (wechat.getStatus() == 0) {
-                    Map<String, Object> wechatData = JSON.parseObject(wechat
-                            .getData());
-                    signature = String.valueOf(wechatData.get("signature"));
-                }
-            } catch (TException e1) {
-                log.error(e1.getMessage(), e1);
-            }
+
             templateNoticeStruct.setUrl(MessageFormat.format(
                     msInfo.getUrl(),
                     ConfigPropertiesUtil.getInstance().get("platform.url",

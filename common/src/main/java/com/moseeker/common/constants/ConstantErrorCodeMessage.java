@@ -128,6 +128,11 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_DATA_NOCITYCODE_ERROR = "{'status':51016,'message':'无city code的职位暂不同步到支付宝'}";
     public static final String CITY_TOO_LONG = "{'status':51017,'message':'城市信息太长，无法入库'}";
     public static final String POSITION_UPDATE_FAIL = "{'status':51019,'message':'更新职位信息失败，这个HR没有操作这个职位权限'}";
+    public static final String POSITION_ALREADY_EXIST = "{'status':51020,'message':'该职位已存在!'}";
+    public static final String POSITION_ALREADY_ACTIVE = "{'status':51021,'message':'该职位已上线!'}";
+    public static final String POSITION_ALREADY_BANNED = "{'status':51022,'message':'该职位已撤下!'}";
+    public static final String POSITION_PUBLISHER_NOT_EXIST = "{'status':51023,'message':'发布者不存在'}";
+    public static final String SOURCE_ERROR = "{'status':51024,'message':'来源错误！'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
     //职位同步
@@ -141,6 +146,10 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_SYNC_EMPTY_MOBILE_CODE = "{'status':61008,'message':'验证处理--验证码为空'}";
     public static final String POSITION_SYNC_NOT_FIND_THIRD_PARTY_POSITION = "{'status':61009,'message':'找不到第三方职位同步信息'}";
     public static final String POSITION_SYNC_INFO_SENDED = "{'status':61010,'message':'验证信息发送成功'}";
+    //mq服务提示信息说明
+    public static final String MQ_TEMPLATE_NOTICE_CLOSE = "{'status':71001,'message':'模板消息开关关闭！'}";
+    public static final String MQ_WECHAT_NOT_INFO = "{'status':71001,'message':'公众号信息不存在！'}";
+
     //APPBS错误代码61000
 
 

@@ -36,6 +36,8 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
+import com.moseeker.common.constants.Position.PositionSource;
+import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
@@ -44,6 +46,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
@@ -71,6 +74,8 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+
+import static java.lang.Math.log;
 import static java.lang.Math.round;
 import static java.lang.Math.toIntExact;
 import java.sql.Timestamp;
@@ -78,6 +83,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
@@ -146,6 +152,8 @@ public class PositionService {
     private UserHrAccountDao userHrAccountDao;
     @Autowired
     private HrAppCvConfDao hrAppCvConfDao;
+    @Autowired
+    private JobPositionCcmailDao jobPositionCcmailDao;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
     @Autowired
@@ -432,19 +440,19 @@ public class PositionService {
         return jobOccupationMap;
     }
 
-    private Map<String,JobCustomRecord> jobCustomGroupByName(int companyId){
+    private Map<Integer,UserHrAccountDO> userHrAccountGroupByID(int companyId){
         // 公司下职位自定义字段
-        Map<String,JobCustomRecord> jobCustomMap = new LinkedHashMap<>();
+        Map<Integer,UserHrAccountDO> userHrAccountMap = new LinkedHashMap<>();
         Query commonQuery = new Query.QueryBuilder()
-                .where("company_id", companyId)
-                .and("status", 1)
+                .where(UserHrAccount.USER_HR_ACCOUNT.COMPANY_ID.getName(), companyId)
+                .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.getName(), 1)
                 .buildQuery();
         // 公司下职能信息
-        List<JobCustomRecord> jobCustomRecordList = jobCustomDao.getRecords(commonQuery);
-        for (JobCustomRecord jobCustomRecord : jobCustomRecordList) {
-            jobCustomMap.put(jobCustomRecord.getName().trim(), jobCustomRecord);
+        List<UserHrAccountDO> userHrAccountList = userHrAccountDao.getDatas(commonQuery);
+        for (UserHrAccountDO userHrAccountDO : userHrAccountList) {
+            userHrAccountMap.put(userHrAccountDO.getId(), userHrAccountDO);
         }
-        return jobCustomMap;
+        return userHrAccountMap;
     }
 
     private Map<Integer,JobPositionRecord> dbListGroupById(int companyId){
@@ -459,6 +467,21 @@ public class PositionService {
             dbListMap.put(jobPositionRecord.getId(), jobPositionRecord);
         }
         return dbListMap;
+    }
+
+    private Map<String,JobCustomRecord> jobCustomGroupByName(int companyId){
+        // 公司下职位自定义字段
+        Map<String,JobCustomRecord> jobCustomMap = new LinkedHashMap<>();
+        Query commonQuery = new Query.QueryBuilder()
+                .where("company_id", companyId)
+                .and("status", 1)
+                .buildQuery();
+        // 公司下职能信息
+        List<JobCustomRecord> jobCustomRecordList = jobCustomDao.getRecords(commonQuery);
+        for (JobCustomRecord jobCustomRecord : jobCustomRecordList) {
+            jobCustomMap.put(jobCustomRecord.getName().trim(), jobCustomRecord);
+        }
+        return jobCustomMap;
     }
 
     private List<JobPositionRecord> getDBOnlineList(Map<Integer,JobPositionRecord> dbListMap){
@@ -572,6 +595,8 @@ public class PositionService {
         List<JobPositionCityRecord> jobPositionCityRecordsUpdatelist = new ArrayList<>();
         // 需要新增的JobPositionCity数据
         List<JobPositionCityRecord> jobPositionCityRecordsAddlist = new ArrayList<>();
+        // 需要新增的JobPositionCity数据
+        List<JobPositionCcmailRecord> jobPositionCcmailRecordsAddlist = new ArrayList<>();
         // 需要作废的第三方职位
         List<Integer> thirdPartyPositionDisablelist = new ArrayList<>();
         // 返回同步需要的的id以及对应的thirdParty_position
@@ -580,6 +605,10 @@ public class PositionService {
         List<JobPositionFailMess> jobPositionFailMessPojos = new ArrayList<>();
         // 需要删除的城市的数据ID列表
         List<Integer> deleteCitylist = new ArrayList<>();
+        // 需要删除的抄送邮箱数据职位ID列表
+        List<Integer> ccmailPositionIdsToDelete = new ArrayList<>();
+        // 公司下HR账号ID
+        Map<Integer,UserHrAccountDO> userHrAccountMap = userHrAccountGroupByID(companyId);
         // 处理数据
         for (JobPostrionObj jobPositionHandlerDate : jobPositionHandlerDates) {
             logger.info("提交的数据：" + jobPositionHandlerDate.toString());
@@ -589,6 +618,12 @@ public class PositionService {
             if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getRequirement())) {
                 record.setRequirement("");
             }
+            // 判断publisher是否存在
+            if(!userHrAccountMap.containsKey(jobPositionHandlerDate.getPublisher())){
+                handlerFailMess(ConstantErrorCodeMessage.POSITION_PUBLISHER_NOT_EXIST, jobPositionFailMessPojos, jobPositionHandlerDate);
+                continue;
+            }
+
             int team_id = 0;
             if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getDepartment())) {
                 logger.info(record.getDepartment().trim());
@@ -672,13 +707,11 @@ public class PositionService {
                 record.setSalary(record.getSalaryBottom().intValue() + "K以上");
             }
             // 按company_id + .source_id + .jobnumber + source=9取得数据
-            Query queryUtil = new Query.QueryBuilder()
-                    .where(JobPosition.JOB_POSITION.COMPANY_ID.getName(), jobPositionHandlerDate.getCompany_id())
-                    .and(JobPosition.JOB_POSITION.SOURCE.getName(), 9)
-                    .and(JobPosition.JOB_POSITION.SOURCE_ID.getName(), jobPositionHandlerDate.getSource_id())
-                    .and(JobPosition.JOB_POSITION.JOBNUMBER.getName(), jobPositionHandlerDate.getJobnumber())
-                    .buildQuery();
-            JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(queryUtil);
+            JobPositionRecord jobPositionRecord = jobPositionDao.getUniquePosition(
+                    jobPositionHandlerDate.getCompany_id(),
+                    PositionSource.ATS.getCode(),
+                    jobPositionHandlerDate.getSource_id(),
+                    jobPositionHandlerDate.getJobnumber());
 
             // 城市信息
             String city = citys(jobPositionHandlerDate.getCity());
@@ -728,6 +761,17 @@ public class PositionService {
                                 }
                             }
                         }
+
+                        // 需要更新的抄送邮箱数据
+                        if(jobPositionHandlerDate.isSetProfile_cc_mail_enabled()){
+                            // 增加需要删除抄送邮箱
+                            ccmailPositionIdsToDelete.add(record.getId());
+
+                            handleCcmail(jobPositionHandlerDate,record,jobPositionCcmailRecordsAddlist);
+                        }
+
+
+
                         // 将需要更新JobPosition的数据放入更新的列表
                         jobPositionUpdateRecordList.add(record);
 
@@ -738,7 +782,6 @@ public class PositionService {
                             //添加修改标题的职位对应的需要作废的第三方职位数据parent_id
                             thirdPartyPositionDisablelist.add(record.getId());
                         }
-
 
                         // 需要更新JobPositionCity数据
                         List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(jobPositionHandlerDate.getCity(), record.getId());
@@ -794,6 +837,10 @@ public class PositionService {
                 jobPositionAddRecordList.add(record);
                 // 需要同步的数据
                 addSyncData(syncData,record.getId(),jobPositionHandlerDate.getThirdParty_position());
+                // 需要更新的抄送邮箱数据
+                if(jobPositionHandlerDate.isSetProfile_cc_mail_enabled()){
+                    handleCcmail(jobPositionHandlerDate,record,jobPositionCcmailRecordsAddlist);
+                }
 
                 if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra()) || jobOccupationId != 0 || customId != 0) {
                     // 新增jobPostion_ext数据
@@ -838,6 +885,17 @@ public class PositionService {
                 jobPositionCityDao.addAllRecord(jobPositionCityRecordsAddlist.stream().distinct().collect(Collectors.toList()));
                 logger.info("-------------新增jobPositionCity数据结束------------------");
             }
+            // 删除jobPositionCcmail数据
+            if (!ccmailPositionIdsToDelete.isEmpty()) {
+                logger.info("-------------删除ccmailPositionIds数据开始------------------");
+                jobPositionCcmailDao.deleteByPositionIds(ccmailPositionIdsToDelete);
+                logger.info("-------------删除ccmailPositionIds数据结束------------------");
+            }
+            if (!jobPositionCcmailRecordsAddlist.isEmpty()){
+                logger.info("-------------新增jobPositionCcmailRecordsAddlist数据结束------------------");
+                jobPositionCcmailDao.addAllRecord(jobPositionCcmailRecordsAddlist);
+                logger.info("-------------新增jobPositionCcmailRecordsAddlist数据结束------------------");
+            }
             // 更新jobPositionCity数据
             if (jobPositionCityRecordsUpdatelist.size() > 0) {
                 if (deleteCitylist.size() > 0) {
@@ -880,7 +938,57 @@ public class PositionService {
         return jobPostionResponse;
     }
 
-    public void addSyncData(List<ThirdPartyPositionForm> syncData, int positionId, String data){
+    /**
+     * 处理抄送邮件记录
+     * @param jobPositionHandlerDate    ATS传过来的数据
+     * @param record    要入库的数据
+     * @param jobPositionCcmailRecordsAddlist   要入库的抄送邮件数据
+     */
+    private void handleCcmail(JobPostrionObj jobPositionHandlerDate,JobPositionRecord record,List<JobPositionCcmailRecord> jobPositionCcmailRecordsAddlist){
+        if(jobPositionHandlerDate.profile_cc_mail_enabled){
+            record.setProfileCcMailEnabled((byte)1);
+            if(!StringUtils.isEmptyList(jobPositionHandlerDate.getCcmail())){
+                List<JobPositionCcmailRecord> tempCcmailRecords=generateCcmailData(jobPositionHandlerDate.getCcmail(),record);
+                jobPositionCcmailRecordsAddlist.addAll(tempCcmailRecords);
+            }
+        }else{
+            record.setProfileCcMailEnabled((byte)0);
+        }
+    }
+
+    /**
+     * 生成抄送邮箱数据
+     * @param ccmails
+     * @param record
+     * @return
+     */
+    private List<JobPositionCcmailRecord> generateCcmailData(List<String> ccmails,JobPositionRecord record){
+        return ccmails.stream().filter(mail->{
+            ValidateUtil vu=new ValidateUtil();
+            vu.addRegExpressValidate("抄送邮箱", mail, "^([\\w-])+(\\.[\\w-]+)*@([\\w-])+((\\.[\\w-]+)+)$", mail+"不符合规则", null);
+            String result=vu.validate();
+            if(StringUtils.isNullOrEmpty(result)){
+                return true;
+            }else {
+                logger.info("ATS邮箱格式不正确 {}",mail);
+                return false;
+            }
+        }).map(mail->{
+            JobPositionCcmailRecord ccmailRecord = new JobPositionCcmailRecord();
+            ccmailRecord.setHrId(record.getPublisher());
+            ccmailRecord.setPositionId(record.getId());
+            ccmailRecord.setToEmail(mail);
+            return ccmailRecord;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 生成同步数据，并加入到syncData列表中
+     * @param syncData
+     * @param positionId
+     * @param data
+     */
+    private void addSyncData(List<ThirdPartyPositionForm> syncData, int positionId, String data){
         if(syncData==null || StringUtils.isNullOrEmpty(data)) return;
         // 需要同步的数据
         ThirdPartyPositionForm form=new ThirdPartyPositionForm();
@@ -916,7 +1024,7 @@ public class PositionService {
         // 删除jobPositionCity数据
         List<Integer> list = new ArrayList<>();
         if (jobPositionRecord != null && jobPositionRecord.getStatus().intValue() != 1) {
-            jobPositionRecord.setStatus((byte) 1);
+            jobPositionRecord.setStatus((byte)PositionStatus.DELETED.getValue());
             // 删除JobPostion
             jobPositionDao.updateRecord(jobPositionRecord);
             // 更新ES Search Engine
@@ -2132,6 +2240,13 @@ public class PositionService {
         return ResponseUtils.fail(1,"自定义配置为空");
     }
 
+    /**
+     * 小程序调用来进行职位上下架
+     * ATS调用来进行职位上下架
+     * 如果有修改，请同时修改上面两个项目
+     * @param param
+     * @return
+     */
     public Response updatePosition(String param) {
         JSONObject obj = JSONObject.parseObject(param);
         int position_id = obj.getIntValue("id");

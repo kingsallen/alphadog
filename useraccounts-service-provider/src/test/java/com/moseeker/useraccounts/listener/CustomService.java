@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.listener;
 
+
 import com.moseeker.useraccounts.config.AppConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
