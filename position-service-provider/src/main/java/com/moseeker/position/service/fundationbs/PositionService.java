@@ -148,11 +148,6 @@ public class PositionService {
     private HrAppCvConfDao hrAppCvConfDao;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
-    @Autowired
-    private JobPositionHrCompanyFeatureDao jobPositionHrCompanyFeatureDao;
-    @Autowired
-    private HrCompanyFeatureDao hrCompanyFeatureDao;
-
     private static List<DictAlipaycampusJobcategoryRecord> alipaycampusJobcategory;
 
 
@@ -316,36 +311,14 @@ public class PositionService {
         if(jobPositionPojo.salary_bottom==0&&jobPositionPojo.salary_top==0){
             jobPositionPojo.salary="薪资面议";
         }
-        List<Map<String,Object>> positionFeature=this.getPositionFeatureList(positionId);
+        List<Map<String,Object>> positionFeature=positionEntity.getPositionFeatureList(positionId);
         if(!StringUtils.isEmptyList(positionFeature)){
             jobPositionPojo.position_feature=positionFeature;
         }
         return ResponseUtils.success(jobPositionPojo);
     }
 
-    private List<Map<String,Object>> getPositionFeatureList(int pid){
-        List<Integer> fidList=this.getFeatureIdList(pid);
-        if(StringUtils.isEmptyList(fidList)){
-            return null;
-        }
-        Query query=new Query.QueryBuilder().where(new Condition("id",fidList.toArray(),ValueOp.IN)).buildQuery();
-        List<Map<String,Object>> result=hrCompanyFeatureDao.getMaps(query);
-        return result;
-    }
-    /*
-     获取职位的福利id
-     */
-    private List<Integer> getFeatureIdList(int pid){
-        List<JobPositionHrCompanyFeature> dataList=jobPositionHrCompanyFeatureDao.getPositionFeatureList(pid);
-        if(StringUtils.isEmptyList(dataList)){
-            return null;
-        }
-        List<Integer> list=new ArrayList<>();
-        for(JobPositionHrCompanyFeature feature:dataList){
-            list.add(feature.getFid());
-        }
-        return list;
-    }
+
     /*
      * 获取城市
      */
