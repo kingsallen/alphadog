@@ -3,6 +3,7 @@ package com.moseeker.profile.thrift;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.JsonToMap;
 import com.moseeker.common.util.StringUtils;
@@ -216,6 +217,20 @@ public class WholeProfileServicesImpl implements Iface {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response getMiniProfileSuggest(int accountId, String keyword, int page, int pageSize) throws TException {
+        try {
+            Map<String,Object>  result=profileMiniService.getProfileMiniSug(accountId,keyword,page,pageSize);
+            if(result==null||result.isEmpty()){
+                return  ResponseUtils.success(new HashMap<>());
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
