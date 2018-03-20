@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -636,7 +637,25 @@ public class ChatDao {
         List<Integer> chatIdList = hrWxHrChatDao.lastMessageIdList(roomIdList);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(new Condition("id", chatIdList, ValueOp.IN));
-        return hrWxHrChatDao.getDatas(queryBuilder.buildQuery(), ChatVO.class);
+        List<HrWxHrChatDO> chatDOList = hrWxHrChatDao.getDatas(queryBuilder.buildQuery());
+        if (chatDOList != null && chatDOList.size() > 0) {
+            return chatDOList.stream().map(hrWxHrChatDO -> {
+                ChatVO chatVO = new ChatVO();
+                chatVO.setId(hrWxHrChatDO.getId());
+                chatVO.setRoomId(hrWxHrChatDO.getChatlistId());
+                chatVO.setCreate_time(hrWxHrChatDO.getCreateTime());
+                chatVO.setOrigin(hrWxHrChatDO.getOrigin());
+                chatVO.setPicUrl(hrWxHrChatDO.getPicUrl());
+                chatVO.setBtnContent(hrWxHrChatDO.getBtnContent());
+                chatVO.setContent(hrWxHrChatDO.getContent());
+                chatVO.setMsgType(hrWxHrChatDO.getMsgType());
+                chatVO.setPositionId(hrWxHrChatDO.getPid());
+                chatVO.setSpeaker(hrWxHrChatDO.getSpeaker());
+                return chatVO;
+            }).collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public List<ChatVO> listMessage(int roomId, int chatId, int pageSize) {
