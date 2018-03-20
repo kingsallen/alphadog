@@ -185,4 +185,9 @@ public class ChatThriftService implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public void roleLeaveChatRoom(int roleId, byte speaker) throws TException {
+        chatService.roleLeaveChatRoom(roleId, speaker);
+    }
 }

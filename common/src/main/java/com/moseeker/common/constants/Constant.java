@@ -234,6 +234,8 @@ public final class Constant {
     public static final int PAGE_SIZE=20;
     public static final int PAGE_=20;
 
+    public static final int DATABASE_PAGE_SIZE=500;
+
     //小程序简历详情路径
     public static  final String WX_APP_PROFILE_INFO_URL = "pages/profile?user_id={}";
 }

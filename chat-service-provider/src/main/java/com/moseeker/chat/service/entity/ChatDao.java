@@ -9,6 +9,8 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
@@ -669,5 +671,35 @@ public class ChatDao {
 
     public void updateApplyStatus(int publisher, int userId) {
         hrChatUnreadCountDao.updateApply(publisher, userId);
+    }
+
+    public boolean roleExist(int roleId, byte speaker) {
+        if (speaker == ChatSpeakerType.USER.getValue()) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(UserUser.USER_USER.ID.getName(), roleId);
+            UserUserDO userUserDO = userUserDao.getData(queryBuilder.buildQuery());
+            if (userUserDO != null && userUserDO.getId() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), roleId);
+            UserHrAccountDO userHrAccountDO = userHrAccountDao.getData(queryBuilder.buildQuery());
+            if (userHrAccountDO != null && userHrAccountDO.getId() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public List<Integer> fetchRoomIdByRole(int roleId, byte speaker) {
+        if (speaker == ChatSpeakerType.USER.getValue()) {
+            return hrChatUnreadCountDao.fetchRoomIdByUserId(roleId);
+        } else {
+            return hrChatUnreadCountDao.fetchRoomIdByHRId(roleId);
+        }
     }
 }

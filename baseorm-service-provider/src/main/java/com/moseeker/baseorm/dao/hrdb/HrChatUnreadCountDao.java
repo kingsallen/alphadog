@@ -147,4 +147,28 @@ public class HrChatUnreadCountDao extends JooqCrudImpl<HrChatUnreadCountDO, HrCh
                 .and(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.USER_ID.eq(userId))
                 .execute();
     }
+
+    public List<Integer> fetchRoomIdByUserId(int roleId) {
+        Result<Record1<Integer>> result = create.select(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.ROOM_ID)
+                .from(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT)
+                .where(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.USER_ID.eq(roleId))
+                .fetch();
+        if (result != null) {
+            return result.stream().map(integerRecord1 -> integerRecord1.value1()).collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Integer> fetchRoomIdByHRId(int roleId) {
+        Result<Record1<Integer>> result = create.select(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.ROOM_ID)
+                .from(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT)
+                .where(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.HR_ID.eq(roleId))
+                .fetch();
+        if (result != null) {
+            return result.stream().map(integerRecord1 -> integerRecord1.value1()).collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
+    }
 }

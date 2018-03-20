@@ -673,12 +673,17 @@ public class ChatService {
 
         HrChatUnreadCountDO hrChatUnreadCountDO = new HrChatUnreadCountDO();
         hrChatUnreadCountDO.setRoomId(roomId);
+        String leaveTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         if(speaker == 0) {
             chatRoom.setUserUnreadCount(0);
             hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)0);
+            hrChatUnreadCountDO.setWxChatTime(leaveTime);
+            chatRoom.setWxChatTime(leaveTime);
         } else {
             chatRoom.setHrUnreadCount(0);
             hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)0);
+            hrChatUnreadCountDO.setHrChatTime(leaveTime);
+            chatRoom.setHrChatTime(leaveTime);
         }
         chaoDao.updateChatRoom(chatRoom);
         chaoDao.updateChatUnreadCount(hrChatUnreadCountDO);
@@ -766,6 +771,18 @@ public class ChatService {
         int publisher = chaoDao.fetchPublisher(positionId);
         if (publisher > 0) {
             chaoDao.updateApplyStatus(publisher, userId);
+        }
+    }
+
+    public void roleLeaveChatRoom(int roleId, byte speaker) {
+        if (chaoDao.roleExist(roleId, speaker)) {
+            List<Integer> roomIdList = chaoDao.fetchRoomIdByRole(roleId, speaker);
+            if (roomIdList != null && roomIdList.size() > 0) {
+                pool.startTast(() -> {
+                    roomIdList.forEach(roomId -> leaveChatRoom(roomId, speaker));
+                    return true;
+                });
+            }
         }
     }
 }
