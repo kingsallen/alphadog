@@ -614,4 +614,15 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public Response updatePositionFeatureBatch(List<JobPositionHrCompanyFeatureDO> featureList) throws TException {
+        try {
+            int  result=positionQxService.updatePositionFeatureBatch(featureList);
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }

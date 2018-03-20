@@ -408,3 +408,8 @@ struct PositionDetailsForAlipayCampus{
       33: optional Timestamp gmt_expired,  // 过期时间（毫秒数）  1494926993617
       34: optional Timestamp gmt_refresh,    // 刷新时间 （毫秒数）  1494926993617
 }
+
+struct JobPositionHrCompanyFeatureDO{
+  1: optional i32 pid,
+  2: optional i32 fid
+}

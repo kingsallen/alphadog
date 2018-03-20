@@ -14,6 +14,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.position.utils.CommonMessage;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignHeadImageDO;
+import com.moseeker.thrift.gen.position.struct.JobPositionHrCompanyFeatureDO;
 import com.moseeker.thrift.gen.position.struct.PositionDetails;
 import com.moseeker.thrift.gen.position.struct.PositionDetailsListVO;
 import com.moseeker.thrift.gen.position.struct.PositionDetailsVO;
@@ -232,6 +233,30 @@ public class PositionQxService {
         }
         jobPositionHrCompanyFeatureDao.addAllRecord(list);
 
+        return 0;
+    }
+    @CounterIface
+    @Transactional
+    public int updatePositionFeatureBatch(List<JobPositionHrCompanyFeatureDO> list){
+        if(StringUtils.isEmptyList(list)){
+            return 0;
+        }
+        List<JobPositionHrCompanyFeatureRecord> featureList=new ArrayList<>();
+        List<Integer> pidList=new ArrayList<>();
+        for(JobPositionHrCompanyFeatureDO DO:list){
+            JobPositionHrCompanyFeatureRecord record=new JobPositionHrCompanyFeatureRecord();
+            record.setPid(DO.getPid());
+            record.setFid(DO.getFid());
+            if(!pidList.contains(DO.getPid())){
+                pidList.add(DO.getPid());
+            }
+            featureList.add(record);
+        }
+        if(!StringUtils.isEmptyList(pidList)){
+            jobPositionHrCompanyFeatureDao.deletePositionFeatureBatch(pidList);
+            jobPositionHrCompanyFeatureDao.addAllRecord(featureList);
+            return 1;
+        }
         return 0;
     }
 
