@@ -701,6 +701,7 @@ public class ChatDao {
     }
 
     public void updateApplyStatus(int publisher, int userId) {
+
         hrChatUnreadCountDao.updateApply(publisher, userId);
     }
 
@@ -732,5 +733,9 @@ public class ChatDao {
         } else {
             return hrChatUnreadCountDao.fetchRoomIdByHRId(roleId);
         }
+    }
+
+    public int fetchSuperAccount(int id) {
+        return userHrAccountDao.fetchSuperHRByHrId(id);
     }
 }
