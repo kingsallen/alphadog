@@ -680,7 +680,7 @@ public class ProfileUtils {
 			record = BeanUtils.MapToRecord(basic, ProfileBasicRecord.class);
 			ValidationMessage<ProfileBasicRecord> validationMessage = ProfileValidation.verifyBasic(record);
 			if (!validationMessage.isPass()) {
-				return null;
+                record.setBirth(null);
 			}
 
 //			if(StringUtils.isNotNullOrEmpty(record.getSelfIntroduction()) && record.getSelfIntroduction().length() > Constant.DESCRIPTION_LENGTH) {
