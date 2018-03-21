@@ -177,11 +177,15 @@ public class ChatDao {
                 if(wxUserDOList != null && wxUserDOList.size() > 0) {
 
                     userUserDOList.stream().filter(userUserDO -> StringUtils.isNullOrEmpty(userUserDO.getHeadimg())).forEach(userUserDO -> {
-                        wxUserDOList.forEach(userWxUserDO -> {
-                            if(userUserDO.getId() == userWxUserDO.getSysuserId()) {
-                                userUserDO.setHeadimg(userWxUserDO.getHeadimgurl());
-                            }
-                        });
+                        Optional<UserWxUserDO> userWxUserDOOptional = wxUserDOList
+                                .stream().filter(userWxUserDO1 -> userWxUserDO1.getSysuserId() == userUserDO.getId())
+                                .findAny();
+                        if (userWxUserDOOptional.isPresent()) {
+                            logger.info("listUsers userWxUserDOOptional exist");
+                            userUserDO.setHeadimg(userWxUserDOOptional.get().getHeadimgurl());
+                        } else {
+                            logger.info("listUsers userWxUserDOOptional not exist");
+                        }
                     });
                 }
             }
