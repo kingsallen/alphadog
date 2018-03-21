@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  */
 public class PositionFeaturePojo {
     private int pid;
+    @JSONField(serialize = false)
     private List<HrCompanyFeature> featureList;
 
     public int getPid() {
