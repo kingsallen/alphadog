@@ -160,6 +160,8 @@ public class PositionService {
     private JobPositionHrCompanyFeatureDao jobPositionHrCompanyFeatureDao;
     @Autowired
     private HrCompanyFeatureDao hrCompanyFeatureDao;
+    @Autowired
+    PositionATSService positionATSService;
 
     private static List<DictAlipaycampusJobcategoryRecord> alipaycampusJobcategory;
 
@@ -494,6 +496,16 @@ public class PositionService {
         return dbOnlineList;
     }
 
+    private JobPostrionObj buildPositionFeature(JobPostrionObj obj){
+        JobPostrionObj positionFeature = new JobPostrionObj();
+        positionFeature.setJobnumber(obj.getJobnumber());
+        positionFeature.setCompany_id(obj.getCompany_id());
+        positionFeature.setSource_id(obj.getSource_id());
+        positionFeature.setSource(obj.getSource());
+
+        return positionFeature;
+    }
+
     /**
      * 批量处理修改职位
      *
@@ -521,6 +533,8 @@ public class PositionService {
         Map<String,JobCustomRecord> jobCustomMap = jobCustomGroupByName(companyId);
         // 数据库中该公司的职位列表
         Map<Integer,JobPositionRecord> dbListMap = dbListGroupById(companyId);
+        // 生成职位福利特色数据
+        BatchHandlerJobPostion forUpdatePositionFeature = new BatchHandlerJobPostion();
         List<JobPositionRecord> dbOnlineList = getDBOnlineList(dbListMap);
 
         // 需要更新ES的jobpostionID
@@ -706,6 +720,10 @@ public class PositionService {
             if (record.getSalaryBottom().intValue() > 0 && record.getSalaryTop().intValue() == 999) {
                 record.setSalary(record.getSalaryBottom().intValue() + "K以上");
             }
+            // 处理职位福利特色数据
+
+
+
             // 按company_id + .source_id + .jobnumber + source=9取得数据
             JobPositionRecord jobPositionRecord = jobPositionDao.getUniquePosition(
                     jobPositionHandlerDate.getCompany_id(),
@@ -915,6 +933,8 @@ public class PositionService {
                 thirdpartyPositionDao.disable(Arrays.asList(condition));
                 logger.info("-------------作废thirdPartyPosition数据结束------------------");
             }
+            // 更新职位福利特色
+            positionATSService.atsUpdatePositionFeature(batchHandlerJobPosition);
         } catch (Exception e) {
             logger.info("更新和插入数据发生异常,异常信息为：" + e.getMessage());
             e.printStackTrace();

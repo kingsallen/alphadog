@@ -252,7 +252,13 @@ public class PositionATSService {
                 continue;
             }
             List<Integer> featureIds = new ArrayList<>();
-            for(String featureName:jobPositionHandlerDate.getFeature()){
+
+            String feature = jobPositionHandlerDate.getFeature();
+            if(feature == null){
+                continue;
+            }
+
+            for(String featureName:feature.split("#")){
                 featureIds.add(featureMap.get(featureName).getId());
             }
             positionQxService.updatePositionFeatureList(jobPositionHandlerDate.getId(),featureIds);
@@ -290,7 +296,12 @@ public class PositionATSService {
 
             jobPositionHandlerDate.setId(jobPositionRecord.getId());
 
-            for(String featureName:jobPositionHandlerDate.getFeature()){
+            String feature = jobPositionHandlerDate.getFeature();
+            if(feature == null){
+                continue;
+            }
+
+            for(String featureName:feature.split("#")){
                 if (!featureMap.containsKey(featureName)){
                     companyFeatureAddList.add(buildCompanyFeature(featureName,companyId));
 
