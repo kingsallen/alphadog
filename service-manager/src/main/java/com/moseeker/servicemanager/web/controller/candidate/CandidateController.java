@@ -8,6 +8,7 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
+import com.moseeker.thrift.gen.candidate.struct.RecentPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +45,29 @@ public class CandidateController {
             if (StringUtils.isNullOrEmpty(message)) {
                 Response result = candidateService.getCandidateInfo(accountId, userId, positionId);
                 return ResponseLogNotification.success(request, result);
+            } else {
+                return ResponseLogNotification.fail(request, vu.validate());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    @RequestMapping(value = "api/v1/candidate/recent-view-record", method = RequestMethod.GET)
+    @ResponseBody
+    public String recentViewRecord(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer accountId = params.getInt("hr_id");
+            Integer userId = params.getInt("user_id");
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("员工编号", accountId, null, null);
+            vu.addRequiredValidate("用户编号", userId, null, null);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                RecentPosition result = candidateService.getRecentPosition(accountId, userId);
+                return ResponseLogNotification.successJson(request, result);
             } else {
                 return ResponseLogNotification.fail(request, vu.validate());
             }

@@ -1,7 +1,10 @@
 package com.moseeker.candidate.service.entities;
 
+import com.moseeker.baseorm.config.HRAccountType;
+import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
@@ -13,13 +16,15 @@ import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChainRec
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrGroupCompanyRelRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
-import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.candidate.constant.EmployeeType;
 import com.moseeker.candidate.constant.RecomType;
 import com.moseeker.candidate.service.Candidate;
@@ -45,14 +50,15 @@ import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.*;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
-import org.jooq.Record1;
-import org.jooq.Result;
 import org.jooq.impl.DefaultDSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,6 +100,12 @@ public class CandidateEntity implements Candidate {
 
     @Autowired
     private UserEmployeeDao employeeDao;
+
+    @Autowired
+    private UserHrAccountDao hrAccountDao;
+
+    @Autowired
+    private JobPositionCityDao positionCityDao;
 
     /**
      * C端用户查看职位，判断是否生成候选人数据
@@ -1168,6 +1180,40 @@ public class CandidateEntity implements Candidate {
         result.put("sharechain", chain);
         result.put("sysuser", userRecord.intoMap());
         return result;
+    }
+
+    @Override
+    public RecentPosition getRecentPosition(int hrId, int userId) {
+        RecentPosition recentPosition = new RecentPosition();
+
+        UserHrAccountDO hrAccountDO = hrAccountDao.getValidAccount(hrId);
+        if (hrAccountDO != null && hrAccountDO.getId() > 0) {
+            int companyId = hrAccountDO.getCompanyId();
+            List<Integer> positionIdList;
+            if (hrAccountDO.getAccountType() == HRAccountType.SupperAccount.getType()) {
+                positionIdList = positionDao.getPositionIds(new ArrayList<Integer>(){{add(companyId);}});
+            } else {
+                positionIdList = positionDao.getPositionIdByPublisher(hrId);
+            }
+            if (positionIdList != null && positionIdList.size() > 0) {
+                CandidatePositionRecord recentViewedPosition = candidateDBDao.fetchRecentViewedPosition(userId, positionIdList);
+                if (recentViewedPosition != null) {
+                    recentPosition.setPositionId(recentViewedPosition.getPositionId());
+                    JobPositionRecord positionRecord = positionDao.getPositionById(recentViewedPosition.getPositionId());
+                    if (positionRecord != null) {
+                        recentPosition.setPositionName(positionRecord.getTitle());
+                    }
+                    List<DictCityDO> positionCityRecordList = positionCityDao.getPositionCitys(recentPosition.getPositionId());
+                    if (positionCityRecordList != null && positionCityRecordList.size() > 0) {
+                        List<String> cities = new ArrayList<>();
+                        positionCityRecordList.forEach(dictCityDO -> cities.add(dictCityDO.getEname()));
+                        recentPosition.setCities(cities);
+                    }
+                }
+            }
+        }
+
+        return recentPosition;
     }
 
     /**
