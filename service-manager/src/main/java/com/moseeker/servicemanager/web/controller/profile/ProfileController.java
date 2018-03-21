@@ -4,7 +4,6 @@ package com.moseeker.servicemanager.web.controller.profile;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -26,19 +25,7 @@ import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.taobao.api.internal.util.json.JSONErrorListener;
+import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.slf4j.Logger;
@@ -49,6 +36,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @CounterIface
@@ -599,6 +593,7 @@ public class ProfileController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
     @RequestMapping(value = "/profile/upload", method = RequestMethod.GET)
     @ResponseBody
     public String getUploadprofile(HttpServletRequest request, HttpServletResponse response) {
@@ -617,5 +612,30 @@ public class ProfileController {
     }
 
 
+    @RequestMapping(value = "/api/v1/profile/user-profile", method = RequestMethod.GET)
+    @ResponseBody
+    public String getUserProfile(HttpServletRequest request, HttpServletResponse response) {
+        // PrintWriter writer = null;
+        try {
+            // GET方法 通用参数解析并赋值
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> userIdList = new ArrayList<>();
+            if (params.get("user_ids") instanceof String) {
+                userIdList.add(Integer.valueOf((String)params.get("user_ids")));
+            } else {
+                List<String> userIdStrList = (List<String>) params.get("user_ids");
+                if (userIdStrList != null && userIdStrList.size() > 0) {
+                    userIdStrList.forEach(idStr -> userIdList.add(Integer.valueOf(idStr)));
+                }
+            }
 
+            List<UserProfile> userProfileList = service.fetchUserProfile(userIdList);
+            return ResponseLogNotification.successJson(request, userProfileList);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
 }

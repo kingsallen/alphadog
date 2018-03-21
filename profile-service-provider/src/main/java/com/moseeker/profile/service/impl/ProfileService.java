@@ -74,6 +74,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -1310,4 +1312,7 @@ public class ProfileService {
         return companyDO;
     }
 
+    public List<UserProfile> fetchUserProfile(List<Integer> userIdList) {
+        return profileEntity.fetchUserProfile(userIdList);
+    }
 }

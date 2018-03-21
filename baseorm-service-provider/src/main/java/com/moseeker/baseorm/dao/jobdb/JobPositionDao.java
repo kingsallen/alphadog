@@ -598,4 +598,15 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         return getRecord(queryUtil);
     }
 
+    public int fetchPublisher(int positionId) {
+	    Record1<Integer> record1 = create.select(JobPosition.JOB_POSITION.PUBLISHER)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.eq(positionId))
+                .fetchOne();
+	    if (record1 == null) {
+	        return 0;
+        } else {
+	        return record1.value1();
+        }
+    }
 }

@@ -106,4 +106,18 @@ public class HrChatUnreadCountDao extends DAOImpl<HrChatUnreadCountRecord, com.m
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrChatUnreadCount> fetchByUserHaveUnreadMsg(Byte... values) {
         return fetch(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.USER_HAVE_UNREAD_MSG, values);
     }
+
+    /**
+     * Fetch records that have <code>update_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrChatUnreadCount> fetchByUpdateTime(Timestamp... values) {
+        return fetch(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.UPDATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>apply IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrChatUnreadCount> fetchByApply(Byte... values) {
+        return fetch(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.APPLY, values);
+    }
 }

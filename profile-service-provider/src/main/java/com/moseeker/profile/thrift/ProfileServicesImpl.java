@@ -18,6 +18,7 @@ import java.util.Map;
 
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 
+import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,6 +128,16 @@ public class ProfileServicesImpl implements Iface {
     public Response resumeTalentProfile(String fileName, String file, int companyId) throws BIZException, TException {
         try {
             return service.talentpoolUploadParse(fileName,file,companyId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
+    public List<UserProfile> fetchUserProfile(List<Integer> userIdList) throws BIZException, TException {
+        try {
+            return service.fetchUserProfile(userIdList);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());

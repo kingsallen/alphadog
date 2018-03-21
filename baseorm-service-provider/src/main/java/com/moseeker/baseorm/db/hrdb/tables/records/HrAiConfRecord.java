@@ -104,7 +104,6 @@ public class HrAiConfRecord extends UpdatableRecordImpl<HrAiConfRecord> implemen
 
     /**
      * Setter for <code>hrdb.hr_ai_conf.employee_percent</code>. 员工推送比例: 0.1 &lt;= x &lt;= 10
-     * Setter for <code>hrdb.hr_ai_conf.employee_percent</code>. 员工推送比例: 0 &lt; x &lt;= 10
      */
     public void setEmployeePercent(Double value) {
         set(5, value);

@@ -92,7 +92,6 @@ public class Hrdb extends SchemaImpl {
      */
     public static final Hrdb HRDB = new Hrdb();
 
-
     /**
      * 人工智能系统配置表
      */

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyFeature extends TableImpl<HrCompanyFeatureRecord> {
 
-    private static final long serialVersionUID = 221013164;
+    private static final long serialVersionUID = 1806625261;
 
     /**
      * The reference instance of <code>hrdb.hr_company_feature</code>
@@ -79,7 +79,7 @@ public class HrCompanyFeature extends TableImpl<HrCompanyFeatureRecord> {
     /**
      * The column <code>hrdb.hr_company_feature.disable</code>. 0:无效 1:有效
      */
-    public final TableField<HrCompanyFeatureRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0:无效 1:有效");
+    public final TableField<HrCompanyFeatureRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "0:无效 1:有效");
 
     /**
      * Create a <code>hrdb.hr_company_feature</code> table reference

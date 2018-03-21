@@ -6,6 +6,9 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
@@ -14,11 +17,8 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.thrift.gen.chat.struct.ChatVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -625,6 +626,111 @@ public class ChatDao {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+        }
+    }
+
+    public List<Integer> fetchUserIdByHrId(int hrId, boolean apply) {
+        return hrChatUnreadCountDao.fetchUserIdByHRId(hrId, apply);
+    }
+
+    public HrChatUnreadCountRecord fetchRoomByHRIdAndUserId(int hrId, int userId) {
+        return hrChatUnreadCountDao.fetchByHrIdAndUserId(hrId, userId);
+    }
+
+    public int countRoom(int hrId, List<Integer> userIdList, boolean apply) {
+        return hrChatUnreadCountDao.countRoom(hrId, userIdList, apply);
+    }
+
+    public List<HrChatUnreadCountRecord> fetchRooms(int hrId, List<Integer> userIdList, boolean apply, Timestamp updateTime, int pageSize) {
+        return hrChatUnreadCountDao.fetchRooms(hrId, userIdList, apply, updateTime, pageSize);
+    }
+
+    public List<ChatVO> listLastMessage(List<Integer> roomIdList) {
+        List<Integer> chatIdList = hrWxHrChatDao.lastMessageIdList(roomIdList);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(new Condition("id", chatIdList, ValueOp.IN));
+        List<HrWxHrChatDO> chatDOList = hrWxHrChatDao.getDatas(queryBuilder.buildQuery());
+        if (chatDOList != null && chatDOList.size() > 0) {
+            return chatDOList.stream().map(hrWxHrChatDO -> {
+                ChatVO chatVO = new ChatVO();
+                chatVO.setId(hrWxHrChatDO.getId());
+                chatVO.setRoomId(hrWxHrChatDO.getChatlistId());
+                chatVO.setCreate_time(hrWxHrChatDO.getCreateTime());
+                chatVO.setOrigin(hrWxHrChatDO.getOrigin());
+                chatVO.setPicUrl(hrWxHrChatDO.getPicUrl());
+                chatVO.setBtnContent(hrWxHrChatDO.getBtnContent());
+                chatVO.setContent(hrWxHrChatDO.getContent());
+                chatVO.setMsgType(hrWxHrChatDO.getMsgType());
+                chatVO.setPositionId(hrWxHrChatDO.getPid());
+                chatVO.setSpeaker(hrWxHrChatDO.getSpeaker());
+                return chatVO;
+            }).collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ChatVO> listMessage(int roomId, int chatId, int pageSize) {
+        return hrWxHrChatDao.listMessage(roomId, chatId, pageSize);
+    }
+
+    public int countMessage(int roomId, int chatId) {
+        return hrWxHrChatDao.countMessage(roomId, chatId);
+    }
+
+    public HrChatUnreadCountRecord fetchRoomById(int roomId) {
+        return hrChatUnreadCountDao.fetchById(roomId);
+    }
+
+    public List<Integer> findUserIdByName(String keyword, List<Integer> chatUserIdList) {
+
+        return userUserDao.fetchIdByIdListAndName(chatUserIdList, keyword);
+    }
+
+    public List<String> findUserNameByKeyword(String keyword, List<Integer> chatUserIdList) {
+
+        return userUserDao.fetchIdByIdListAndName(chatUserIdList, keyword, 10);
+    }
+
+    public int countUnreadMessage(int hrId) {
+        return hrWxHrChatListDao.countUnreadMessage(hrId);
+    }
+
+    public int fetchPublisher(int positionId) {
+        return jobPositionDao.fetchPublisher(positionId);
+    }
+
+    public void updateApplyStatus(int publisher, int userId) {
+        hrChatUnreadCountDao.updateApply(publisher, userId);
+    }
+
+    public boolean roleExist(int roleId, byte speaker) {
+        if (speaker == ChatSpeakerType.USER.getValue()) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(UserUser.USER_USER.ID.getName(), roleId);
+            UserUserDO userUserDO = userUserDao.getData(queryBuilder.buildQuery());
+            if (userUserDO != null && userUserDO.getId() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), roleId);
+            UserHrAccountDO userHrAccountDO = userHrAccountDao.getData(queryBuilder.buildQuery());
+            if (userHrAccountDO != null && userHrAccountDO.getId() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public List<Integer> fetchRoomIdByRole(int roleId, byte speaker) {
+        if (speaker == ChatSpeakerType.USER.getValue()) {
+            return hrChatUnreadCountDao.fetchRoomIdByUserId(roleId);
+        } else {
+            return hrChatUnreadCountDao.fetchRoomIdByHRId(roleId);
         }
     }
 }
