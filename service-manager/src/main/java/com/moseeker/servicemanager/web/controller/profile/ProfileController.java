@@ -524,6 +524,7 @@ public class ProfileController {
             Map<String, Object> params = ParamUtils.parseequestParameter(request);
             String  companyId=(String)params.get("company_id");
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
+            logger.info("MultipartFile Name: "+file.getOriginalFilename());
             Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
