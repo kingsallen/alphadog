@@ -513,7 +513,7 @@ public class ResumeDeliveryService {
         logger.info("sendEmailToHr emailStruct:{}", emailStruct);
 
         //发送邮件给HR
-        Response sendEmail = null;
+        Response sendEmail = new Response();
         if(positionDO.getEmailNotice() == 0) {
             sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
             logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
@@ -540,11 +540,15 @@ public class ResumeDeliveryService {
                 //遍历抄送邮箱发送邮件
                 for(JobPositionCcmailRecord ccmail : ccmailList){
                     emailStruct.put("to_email", ccmail.getToEmail());
-                    MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
-                    LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
-                    emailrecord1.setEmail(ccmail.getToEmail());
-                    emailrecord1.setContent(sendEmail.getMessage());
-                    emailSendrecordDao.addData(emailrecord1);
+                    sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+                    try{
+                        LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
+                        emailrecord1.setEmail(ccmail.getToEmail());
+                        emailrecord1.setContent(sendEmail.getMessage());
+                        emailSendrecordDao.addData(emailrecord1);
+                    }catch(Exception e){
+                        logger.error("简历抄送邮箱日记记录失败：{}", e.getMessage());
+                    }
                     logger.info("抄送邮箱："+ccmail.getToEmail());
                 }
             }
