@@ -2,6 +2,7 @@ package com.moseeker.chat.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.chat.constant.ChatOrigin;
 import com.moseeker.chat.constant.ChatSpeakerType;
@@ -818,9 +819,18 @@ public class ChatService {
     }
 
     public void updateApplyStatus(int userId, int positionId) {
+        logger.info("ChatService updateApplyStatus userId:{}, positionId:{}",userId, positionId);
         int publisher = chaoDao.fetchPublisher(positionId);
+        logger.info("ChatService updateApplyStatus publisher: {}", publisher);
         if (publisher > 0) {
             chaoDao.updateApplyStatus(publisher, userId);
+        }
+        UserHrAccountDO userHrAccountDO = chaoDao.getHr(publisher);
+        if (userHrAccountDO != null && userHrAccountDO.getAccountType() == HRAccountType.SubAccount.getType()) {
+            int accountId = chaoDao.fetchSuperAccount(userHrAccountDO.getId());
+            if (accountId > 0 && accountId != publisher) {
+                chaoDao.updateApplyStatus(accountId, userId);
+            }
         }
     }
 

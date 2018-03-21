@@ -920,8 +920,10 @@ public class PositionService {
                 thirdpartyPositionDao.disable(Arrays.asList(condition));
                 logger.info("-------------作废thirdPartyPosition数据结束------------------");
             }
-            // 更新职位福利特色
-            positionATSService.atsUpdatePositionFeature(batchHandlerJobPosition);
+            if(jobPositionIds.size()>0) {
+                // 更新职位福利特色
+                positionATSService.atsUpdatePositionFeature(batchHandlerJobPosition);
+            }
         } catch (Exception e) {
             logger.info("更新和插入数据发生异常,异常信息为：" + e.getMessage());
             e.printStackTrace();

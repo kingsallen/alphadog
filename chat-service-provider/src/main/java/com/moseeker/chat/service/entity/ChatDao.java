@@ -173,6 +173,7 @@ public class ChatDao {
                 findHeadImg.addSelectAttribute("headimgurl").addSelectAttribute("id");
                 findHeadImg.addEqualFilter("sysuser_id", wxUserIdStr);
                 List<UserWxUserDO> wxUserDOList = userWxUserDao.getDatas(findHeadImg);
+                logger.info("listUsers wxUserDOList:{}", wxUserDOList);
                 if(wxUserDOList != null && wxUserDOList.size() > 0) {
 
                     userUserDOList.stream().filter(userUserDO -> StringUtils.isNullOrEmpty(userUserDO.getHeadimg())).forEach(userUserDO -> {
@@ -701,6 +702,7 @@ public class ChatDao {
     }
 
     public void updateApplyStatus(int publisher, int userId) {
+
         hrChatUnreadCountDao.updateApply(publisher, userId);
     }
 
@@ -732,5 +734,9 @@ public class ChatDao {
         } else {
             return hrChatUnreadCountDao.fetchRoomIdByHRId(roleId);
         }
+    }
+
+    public int fetchSuperAccount(int id) {
+        return userHrAccountDao.fetchSuperHRByHrId(id);
     }
 }
