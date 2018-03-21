@@ -10,7 +10,6 @@ import java.util.List;
  */
 public class PositionFeaturePojo {
     private int pid;
-    @JSONField(serialize = false)
     private List<HrCompanyFeature> featureList;
 
     public int getPid() {
