@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 
 import java.util.List;

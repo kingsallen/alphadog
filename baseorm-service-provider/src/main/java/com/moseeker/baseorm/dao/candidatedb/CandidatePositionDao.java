@@ -63,4 +63,19 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
 
         return positionDOList;
     }
+
+    /**
+     * 查找最近浏览的职位信息
+     * @param userId
+     * @param positionIdList
+     * @return
+     */
+    public CandidatePositionRecord fetchRecentViewedPosition(int userId, List<Integer> positionIdList) {
+        return create.selectFrom(CandidatePosition.CANDIDATE_POSITION)
+                .where(CandidatePosition.CANDIDATE_POSITION.USER_ID.eq(userId))
+                .and(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.in(positionIdList))
+                .orderBy(CandidatePosition.CANDIDATE_POSITION.UPDATE_TIME.desc())
+                .limit(1)
+                .fetchOne();
+    }
 }

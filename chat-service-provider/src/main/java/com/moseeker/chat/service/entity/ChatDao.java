@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
@@ -170,22 +171,29 @@ public class ChatDao {
             if(noHeadImgArray != null && noHeadImgArray.length > 0) {
                 String wxUserIdStr = StringUtils.converFromArrayToStr(noHeadImgArray);
                 QueryUtil findHeadImg = new QueryUtil();
-                findHeadImg.addSelectAttribute("headimgurl").addSelectAttribute("id");
+                findHeadImg.addSelectAttribute("headimgurl").addSelectAttribute("id")
+                        .addSelectAttribute(UserWxUser.USER_WX_USER.SYSUSER_ID.getName());
                 findHeadImg.addEqualFilter("sysuser_id", wxUserIdStr);
                 List<UserWxUserDO> wxUserDOList = userWxUserDao.getDatas(findHeadImg);
+                logger.info("listUsers wxUserDOList:{}", wxUserDOList);
                 if(wxUserDOList != null && wxUserDOList.size() > 0) {
 
                     userUserDOList.stream().filter(userUserDO -> StringUtils.isNullOrEmpty(userUserDO.getHeadimg())).forEach(userUserDO -> {
-                        wxUserDOList.forEach(userWxUserDO -> {
-                            if(userUserDO.getId() == userWxUserDO.getSysuserId()) {
-                                userUserDO.setHeadimg(userWxUserDO.getHeadimgurl());
-                            }
-                        });
+                        Optional<UserWxUserDO> userWxUserDOOptional = wxUserDOList
+                                .stream().filter(userWxUserDO1 -> userWxUserDO1.getSysuserId() == userUserDO.getId())
+                                .findAny();
+                        if (userWxUserDOOptional.isPresent()) {
+                            logger.info("listUsers userWxUserDOOptional exist");
+                            userUserDO.setHeadimg(userWxUserDOOptional.get().getHeadimgurl());
+                        } else {
+                            logger.info("listUsers userWxUserDOOptional not exist");
+                        }
                     });
                 }
             }
 
         }
+        logger.info("listUsers wxUserDOList:{}", userUserDOList);
         return userUserDOList;
     }
 
@@ -701,6 +709,7 @@ public class ChatDao {
     }
 
     public void updateApplyStatus(int publisher, int userId) {
+
         hrChatUnreadCountDao.updateApply(publisher, userId);
     }
 
@@ -732,5 +741,9 @@ public class ChatDao {
         } else {
             return hrChatUnreadCountDao.fetchRoomIdByHRId(roleId);
         }
+    }
+
+    public int fetchSuperAccount(int id) {
+        return userHrAccountDao.fetchSuperHRByHrId(id);
     }
 }
