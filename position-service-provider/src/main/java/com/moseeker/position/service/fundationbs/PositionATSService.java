@@ -54,9 +54,6 @@ public class PositionATSService {
     @Autowired
     private PositionQxService positionQxService;
 
-    @Autowired
-    private HrCompanyDao companyDao;
-
 
     CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
 
@@ -284,14 +281,6 @@ public class PositionATSService {
     private BatchHandlerJobPostion initPidAndFeature(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         int companyId = batchHandlerJobPostion.getData().get(0).getCompany_id();
 
-        // 查找下是的company_id对应的公司是子公司还是母公司
-        int motherCompanyId = 0;
-        HrCompanyDO company = companyDao.getCompanyById(companyId);
-        boolean isMotherCompany = (company.getParentId() == 0);
-        if(!isMotherCompany){
-            motherCompanyId = companyDao.getCompanyById(company.getParentId()).getId();
-        }
-
         Map<String,HrCompanyFeature> featureMap = getCompanyFeatureGroupByName(companyId);
 
         List<HrCompanyFeatureDO> companyFeatureAddList = new ArrayList<>();
@@ -317,10 +306,6 @@ public class PositionATSService {
             for(String featureName:feature.split("#")){
                 if (!featureMap.containsKey(featureName)){
                     companyFeatureAddList.add(buildCompanyFeature(featureName,companyId));
-                    // 如果参数中的company_id对应的公司是子公司，需要给母公司添加一条一模一样的福利特色
-                    if(!isMotherCompany){
-                        companyFeatureAddList.add(buildCompanyFeature(featureName,motherCompanyId));
-                    }
 
                     //防止重复往companyFeatureAddList里加入需要添加的福利特色
                     featureMap.put(featureName,null);
