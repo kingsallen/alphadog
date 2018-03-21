@@ -235,7 +235,7 @@ struct JobPostrionObj{
     14:i32 employment_type, // 应聘职位类型，0：全职，1：兼职 2：共同工 3：实习 9：其他
     15:string hr_email, // HR联系邮箱，申请通知
     16:i32 degree,// 学历 0：无 1：大专 2：本科 3：硕士 4：MBA 5:博士
-    17:string  feature, // 职位特色
+    17:string feature, // 职位特色
     18:i32  email_notice,  // 申请后是否给HR发送邮件，0：发送，1：不发送
     19:i32  candidate_source,// 0：社招 1：校招 2：定向招聘
     20:string occupation, // 职位职能

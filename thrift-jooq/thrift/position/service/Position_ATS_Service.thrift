@@ -17,4 +17,7 @@ service PositionATSServices {
 
     // 谷露下架职位
     common_struct.Response revokeGlluePosition(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);
+
+    // ATS更新职位福利特色
+    common_struct.Response atsUpdatePositionFeature(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);
 }
