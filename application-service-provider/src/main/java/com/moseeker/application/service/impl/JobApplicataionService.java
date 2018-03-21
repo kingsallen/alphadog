@@ -956,6 +956,7 @@ public class JobApplicataionService {
 
             try {
                 ThreadPool.Instance.startTast(() -> {
+                    logger.info("saveJobApplication updateApplyStatus applier_id:{}, position_id:{}", jobApplicationRecord.getApplierId(), jobApplicationRecord.getPositionId());
                     chatService.updateApplyStatus(jobApplicationRecord.getApplierId(), jobApplicationRecord.getPositionId());
                     return 0;
                 });
