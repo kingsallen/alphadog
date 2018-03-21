@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
@@ -163,7 +164,8 @@ public class ChatDao {
             if(noHeadImgArray != null && noHeadImgArray.length > 0) {
                 String wxUserIdStr = StringUtils.converFromArrayToStr(noHeadImgArray);
                 QueryUtil findHeadImg = new QueryUtil();
-                findHeadImg.addSelectAttribute("headimgurl").addSelectAttribute("id");
+                findHeadImg.addSelectAttribute("headimgurl").addSelectAttribute("id")
+                        .addSelectAttribute(UserWxUser.USER_WX_USER.SYSUSER_ID.getName());
                 findHeadImg.addEqualFilter("sysuser_id", wxUserIdStr);
                 List<UserWxUserDO> wxUserDOList = userWxUserDao.getDatas(findHeadImg);
                 if(wxUserDOList != null && wxUserDOList.size() > 0) {
