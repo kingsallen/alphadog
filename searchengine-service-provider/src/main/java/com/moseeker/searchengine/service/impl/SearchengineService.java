@@ -983,10 +983,10 @@ public class SearchengineService {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         List<String> list=new ArrayList<>();
-        list.add("name");
+        list.add("user.profiles.basic.name");
         searchUtil.handleKeyWordforQueryString(keyWord, false, query, list);
         QueryBuilder queryAppScript=this.queryScript(companyId, account_type, hr_account_id);
-        SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder=client.prepareSearch("users_index").setTypes("users")
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
                 .setSize(pageSize)
