@@ -31,6 +31,13 @@ public class JobPositionHrCompanyFeatureDao extends JooqCrudImpl<JobPositionHrCo
         return list;
     }
     /*
+    获取职位福利中间表,根据职位id的列表
+    */
+    public List<JobPositionHrCompanyFeature> getPositionFeatureBatch(List<Integer> pidList){
+        List<JobPositionHrCompanyFeature> list=create.selectFrom(JOB_POSITION_HR_COMPANY_FEATURE).where(JOB_POSITION_HR_COMPANY_FEATURE.PID.in(pidList)).fetchInto(JobPositionHrCompanyFeature.class);
+        return list;
+    }
+    /*
      根据职位id删除公司的福利特色
      */
     public int deletePositionFeature(int pid){

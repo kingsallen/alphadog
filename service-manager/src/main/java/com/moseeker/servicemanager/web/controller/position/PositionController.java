@@ -1019,4 +1019,21 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/api/position/feature/batch", method = RequestMethod.GET)
+    @ResponseBody
+    public String getFeatureBatch( HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> pidList=ParamUtils.convertIntList(String.valueOf(params.get("pids")));
+            if(StringUtils.isEmptyList(pidList)){
+                return ResponseLogNotification.fail(request, "职位id不能为空");
+            }
+            Response result=positonServices.getPositionFeatureBetch(pidList);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

@@ -107,9 +107,15 @@ service PositionServices {
     common_struct.Response getMiniPositionNumStatus(1:i32 accountId,2:string keyword,3:i32 page,4: i32 pageSize);
 
      common_struct.Response getFeatureByPId(1:i32 pid);
+
      common_struct.Response updatePositionFeature(1:i32 pid,2:i32 fid);
+
      common_struct.Response updatePositionFeatures(1:i32 pid,2:list<i32> fidList);
+
      common_struct.Response updatePositionFeatureBatch(1: list<position_struct.JobPositionHrCompanyFeatureDO> featureList);
+
+     common_struct.Response getPositionFeatureBetch(1:list<i32> pidList);
+
 }
 /*
 	查询第三方自定义职能
