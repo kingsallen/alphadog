@@ -191,6 +191,7 @@ public class ChatDao {
             }
 
         }
+        logger.info("listUsers wxUserDOList:{}", userUserDOList);
         return userUserDOList;
     }
 
