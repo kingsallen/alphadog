@@ -130,4 +130,16 @@ public class CandidateThriftService implements CandidateService.Iface {
     public Response getCandidateInfo(int hrId, int userId, int positionId) throws TException {
         return ResponseUtils.successWithoutStringify(JSON.toJSONString(candidate.getCandidateInfo(hrId, userId, positionId), SerializerFeature.WriteDateUseDateFormat));
     }
+
+    @Override
+    public RecentPosition getRecentPosition(int hrId, int userId) throws BIZException, TException {
+        try {
+            return candidate.getRecentPosition(hrId, userId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 }

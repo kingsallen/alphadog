@@ -90,4 +90,12 @@ public interface Candidate {
 
 
     Map<String,Object> getCandidateInfo(int hrId, int userId, int positionId);
+
+    /**
+     * 查找最近浏览的职位
+     * @param hrId HR
+     * @param userId C端用户
+     * @return
+     */
+    RecentPosition getRecentPosition(int hrId, int userId);
 }
