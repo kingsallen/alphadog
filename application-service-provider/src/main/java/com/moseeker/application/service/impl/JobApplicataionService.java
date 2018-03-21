@@ -942,15 +942,15 @@ public class JobApplicataionService {
         if (!resultVO.isCreate()) {
             HrOperationRecordRecord hrOperationRecord = getHrOperationRecordRecord(resultVO.getApplicationId(), jobApplicationRecord, jobPositionRecord);
             hrOperationRecordDao.addRecord(hrOperationRecord);
-
-            try {
-                ThreadPool.Instance.startTast(() -> {
-                    chatService.updateApplyStatus(jobApplicationRecord.getApplierId(), jobApplicationRecord.getPositionId());
-                    return 0;
-                });
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
+        }
+        try {
+            ThreadPool.Instance.startTast(() -> {
+                logger.info("saveJobApplication updateApplyStatus applier_id:{}, position_id:{}", jobApplicationRecord.getApplierId(), jobApplicationRecord.getPositionId());
+                chatService.updateApplyStatus(jobApplicationRecord.getApplierId(), jobApplicationRecord.getPositionId());
+                return 0;
+            });
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
         return resultVO;
     }
