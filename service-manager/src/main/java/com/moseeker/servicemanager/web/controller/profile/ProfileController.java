@@ -367,6 +367,7 @@ public class ProfileController {
             Integer uid = params.getInt("uid");
             if (file != null) {
                 String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
+                logger.info("/profile/parser MultipartFile file :{}",file.getOriginalFilename());
                 Response res = service.resumeProfile(uid, file.getOriginalFilename(), data);
                 return ResponseLogNotification.success(request, res);
             } else {
@@ -491,8 +492,10 @@ public class ProfileController {
         try {
             Map<String, Object> params = ParamUtils.parseequestParameter(request);
             String  companyId=(String)params.get("company_id");
+            String  filename=(String)params.get("filename");
+            logger.info("talent pool MultipartFile file :{}",filename);
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
-            Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,Integer.parseInt(companyId));
+            Response res = service.resumeTalentProfile( filename, data,Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
