@@ -864,6 +864,9 @@ public class CompanyService {
     public List<HrCompanyFeature> getCompanyFeatureByCompanyId(int companyId){
         List<HrCompanyFeature> list=new ArrayList<>();
         com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany hrCompanyDO=companyDao.getHrCompanyById(companyId);
+        if(hrCompanyDO==null){
+            return new ArrayList<>();
+        }
         if(hrCompanyDO.getParentId()>0){
             list=hrCompanyFeatureDao.getFeatureListByCompanyId(companyId);
         }else{
