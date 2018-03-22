@@ -8,7 +8,9 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatListRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -737,5 +739,9 @@ public class ChatDao {
 
     public void updateChatRoom(HrChatUnreadCountRecord hrChatUnreadCountRecord) {
         hrChatUnreadCountDao.updateRecord(hrChatUnreadCountRecord);
+    }
+
+    public void updateChatRoom(HrWxHrChatListRecord hrWxHrChatListRecord) {
+        hrWxHrChatListDao.updateRecord(hrWxHrChatListRecord);
     }
 }
