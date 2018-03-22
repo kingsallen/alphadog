@@ -342,4 +342,29 @@ public class ChatController {
             return ResponseLogNotification.failJson(request, e);
         }
     }
+
+    @RequestMapping(value = "/chat-room/{id}/leave-room", method = RequestMethod.POST)
+    @ResponseBody
+    public String hrLeaveRoom(HttpServletRequest request, @PathVariable int id) {
+        try {
+
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer speaker = params.getInt("speaker");
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredValidate("聊天室", id, null, null);
+            validateUtil.addRequiredValidate("角色", speaker, null, null);
+
+            String message = validateUtil.validate();
+
+            if (StringUtils.isBlank(message)) {
+                chatService.leaveChatRoom(id, speaker.byteValue());
+                return ResponseLogNotification.successJson(request, "success");
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
 }
