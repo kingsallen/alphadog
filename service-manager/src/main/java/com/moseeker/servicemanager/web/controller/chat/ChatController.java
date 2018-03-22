@@ -100,8 +100,13 @@ public class ChatController {
         try {
 
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<String> roomIdStrList = new ArrayList<>();
+            if (params.get("room_ids") instanceof  String) {
+                roomIdStrList.add(params.getString("room_ids"));
+            } else {
+                roomIdStrList = (List<String>) params.get("room_ids");
+            }
             List<Integer> roomIdList = new ArrayList<>();
-            List<String> roomIdStrList = (List<String>) params.get("room_ids");
             if (roomIdStrList != null && roomIdStrList.size() > 0) {
                 roomIdStrList.forEach(idStr -> roomIdList.add(Integer.valueOf(idStr)));
             }
