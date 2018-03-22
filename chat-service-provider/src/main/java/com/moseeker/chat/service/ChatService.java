@@ -720,6 +720,13 @@ public class ChatService {
         int count = chaoDao.countMessage(roomId, chatId);
         if (count >= 0) {
             List<ChatVO> chatVOList = chaoDao.listMessage(roomId, chatId, pageSize);
+            if (chatVOList != null && chatVOList.size() > 0) {
+                chatVOList.forEach(chatVO -> {
+                    if (chatVO.getSpeaker() == 2) {
+                        chatVO.setSpeaker((byte) 1);
+                    }
+                });
+            }
             chatHistory.setChatList(chatVOList);
             if (count > chatVOList.size()) {
                 chatHistory.setHasMore(true);
