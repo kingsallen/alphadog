@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatRecord;
 import com.moseeker.chat.constant.ChatOrigin;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
@@ -786,8 +787,17 @@ public class ChatService {
                 chatHistory.setUserId(userUserDO.getId());
                 chatHistory.setName(userUserDO.getName());
             }
+            updateLeaveTime(hrChatUnreadCountRecord, chatId);
         }
         return chatHistory;
+    }
+
+    private void updateLeaveTime(HrChatUnreadCountRecord hrChatUnreadCountRecord, int chatId) {
+        HrWxHrChatRecord chatRecord = chaoDao.getChat(chatId);
+        if (hrChatUnreadCountRecord.getHrChatTime().getTime() < chatRecord.getCreateTime().getTime()) {
+            hrChatUnreadCountRecord.setHrChatTime(chatRecord.getCreateTime());
+            chaoDao.updateChatRoom(hrChatUnreadCountRecord);
+        }
     }
 
     public List<String> getChatSug(int hrId, boolean applied, String keyword) {
