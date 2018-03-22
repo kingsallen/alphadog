@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatListRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatRecord;
 import com.moseeker.chat.constant.ChatOrigin;
 import com.moseeker.chat.constant.ChatSpeakerType;
@@ -793,10 +794,29 @@ public class ChatService {
     }
 
     private void updateLeaveTime(HrChatUnreadCountRecord hrChatUnreadCountRecord, int chatId) {
-        HrWxHrChatRecord chatRecord = chaoDao.getChat(chatId);
-        if (hrChatUnreadCountRecord.getHrChatTime().getTime() < chatRecord.getCreateTime().getTime()) {
-            hrChatUnreadCountRecord.setHrChatTime(chatRecord.getCreateTime());
+        if (chatId == 0) {
+            hrChatUnreadCountRecord.setHrChatTime(new Timestamp(System.currentTimeMillis()));
+            hrChatUnreadCountRecord.setHrHaveUnreadMsg((byte) 0);
             chaoDao.updateChatRoom(hrChatUnreadCountRecord);
+
+            HrWxHrChatListRecord hrWxHrChatListRecord = new HrWxHrChatListRecord();
+            hrWxHrChatListRecord.setId(hrChatUnreadCountRecord.getRoomId());
+            hrWxHrChatListRecord.setHrUnreadCount(0);
+            chaoDao.updateChatRoom(hrWxHrChatListRecord);
+        } else {
+            HrWxHrChatRecord chatRecord = chaoDao.getChat(chatId);
+            if (chatRecord != null) {
+                if (hrChatUnreadCountRecord.getHrChatTime() == null || hrChatUnreadCountRecord.getHrChatTime().getTime() < chatRecord.getCreateTime().getTime()) {
+                    hrChatUnreadCountRecord.setHrChatTime(chatRecord.getCreateTime());
+                    hrChatUnreadCountRecord.setHrHaveUnreadMsg((byte) 0);
+                    chaoDao.updateChatRoom(hrChatUnreadCountRecord);
+
+                    HrWxHrChatListRecord hrWxHrChatListRecord = new HrWxHrChatListRecord();
+                    hrWxHrChatListRecord.setId(hrChatUnreadCountRecord.getRoomId());
+                    hrWxHrChatListRecord.setHrUnreadCount(0);
+                    chaoDao.updateChatRoom(hrWxHrChatListRecord);
+                }
+            }
         }
     }
 
