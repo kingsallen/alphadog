@@ -97,4 +97,10 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
                     .value1();
         }
     }
+
+    public HrWxHrChatRecord fetchById(int chatId) {
+        return create.selectFrom(HrWxHrChat.HR_WX_HR_CHAT)
+                .where(HrWxHrChat.HR_WX_HR_CHAT.ID.eq(chatId))
+                .fetchOne();
+    }
 }

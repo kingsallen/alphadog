@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
@@ -727,5 +728,13 @@ public class ChatDao {
 
     public int fetchSuperAccount(int id) {
         return userHrAccountDao.fetchSuperHRByHrId(id);
+    }
+
+    public HrWxHrChatRecord getChat(int chatId) {
+        return hrWxHrChatDao.fetchById(chatId);
+    }
+
+    public void updateChatRoom(HrChatUnreadCountRecord hrChatUnreadCountRecord) {
+        hrChatUnreadCountDao.updateRecord(hrChatUnreadCountRecord);
     }
 }
