@@ -904,8 +904,10 @@ public class CompanyService {
         if(hrCompanyFeatureDO==null){
             return 0;
         }
-        if(StringUtils.isNullOrEmpty(hrCompanyFeatureDO.getFeature())){
-            return 0;
+        if(hrCompanyFeatureDO.isSetFeature()){
+            if(StringUtils.isNullOrEmpty(hrCompanyFeatureDO.getFeature())){
+                return 0;
+            }
         }
         HrCompanyFeatureRecord hrCompanyFeatureRecord=BeanUtils.structToDB(hrCompanyFeatureDO, HrCompanyFeatureRecord.class);
         int result =hrCompanyFeatureDao.updateRecord(hrCompanyFeatureRecord);
@@ -919,24 +921,25 @@ public class CompanyService {
         if(StringUtils.isEmptyList(dataList)){
             return 0;
         }
-        List<HrCompanyFeatureRecord> list=BeanUtils.structToDB(dataList,HrCompanyFeatureRecord.class);
-        List<HrCompanyFeatureRecord> recordList=new ArrayList<>();
-        if(!StringUtils.isEmptyList(list)){
-            for(HrCompanyFeatureRecord record:list){
-                String feature=record.getFeature();
-                if(StringUtils.isNotNullOrEmpty(feature)){
-                    recordList.add(record);
+        List<HrCompanyFeatureDO> recordList=new ArrayList<>();
+        for(HrCompanyFeatureDO DO:dataList){
+            if(DO.isSetFeature()){
+                if(StringUtils.isNullOrEmpty(DO.getFeature())){
+                    continue;
                 }
             }
+            recordList.add(DO);
         }
-        if(!StringUtils.isEmptyList(recordList)){
-            int[] result =hrCompanyFeatureDao.updateRecords(recordList);
-            if(result[0]>0){
-                return 1;
-            }
+        if(StringUtils.isEmptyList(recordList)){
+            return 0;
         }
-
+        List<HrCompanyFeatureRecord> list=BeanUtils.structToDB(dataList,HrCompanyFeatureRecord.class);
+        int[] result =hrCompanyFeatureDao.updateRecords(list);
+        if(result[0]>0) {
+            return 1;
+        }
         return 0;
+
     }
     /*
      单个增加
