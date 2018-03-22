@@ -3,6 +3,7 @@ package com.moseeker.position.thrift;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -631,7 +632,7 @@ public class PositionServicesImpl implements Iface {
     public Response getPositionFeatureBetch(List<Integer> pidList) throws TException {
         try {
             List<PositionFeaturePojo> list=positionQxService.getPositionFeatureBatch(pidList);
-            String res=JSON.toJSONString(list,serializeConfig);
+            String res=JSON.toJSONString(list, serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
             return  ResponseUtils.successWithoutStringify(res);
         }catch (Exception e){
             logger.info(e.getMessage(),e);
