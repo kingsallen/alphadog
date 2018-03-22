@@ -26,14 +26,16 @@ public class HrCompanyFeatureDao extends JooqCrudImpl<HrCompanyFeature, HrCompan
      根据公司id获取公司福利特色列表
      */
     public List<HrCompanyFeature> getFeatureListByCompanyId(int companyId){
-        List<HrCompanyFeature> list=create.selectFrom(HR_COMPANY_FEATURE).where(HR_COMPANY_FEATURE.COMPANY_ID.eq(companyId)).and(HR_COMPANY_FEATURE.DISABLE.eq(1)).fetchInto(HrCompanyFeature.class);
+        List<HrCompanyFeature> list=create.selectFrom(HR_COMPANY_FEATURE).where(HR_COMPANY_FEATURE.COMPANY_ID.eq(companyId)).and(HR_COMPANY_FEATURE.DISABLE.eq(1))
+                .and(HR_COMPANY_FEATURE.FEATURE.ne("")).fetchInto(HrCompanyFeature.class);
         return list;
     }
     /*
      根据公司id列表获取公司福利特色列表
      */
     public List<HrCompanyFeature> getFeatureListByCompanyIdList(List<Integer> companyIdList){
-        List<HrCompanyFeature> list=create.selectFrom(HR_COMPANY_FEATURE).where(HR_COMPANY_FEATURE.COMPANY_ID.in(companyIdList)).and(HR_COMPANY_FEATURE.DISABLE.eq(1)).fetchInto(HrCompanyFeature.class);
+        List<HrCompanyFeature> list=create.selectFrom(HR_COMPANY_FEATURE).where(HR_COMPANY_FEATURE.COMPANY_ID.in(companyIdList)).and(HR_COMPANY_FEATURE.DISABLE.eq(1))
+                .and(HR_COMPANY_FEATURE.FEATURE.ne("")).fetchInto(HrCompanyFeature.class);
         return list;
     }
     /*
