@@ -901,6 +901,12 @@ public class CompanyService {
      */
     @CounterIface
     public int updateCompanyFeature(HrCompanyFeatureDO hrCompanyFeatureDO){
+        if(hrCompanyFeatureDO==null){
+            return 0;
+        }
+        if(StringUtils.isNullOrEmpty(hrCompanyFeatureDO.getFeature())){
+            return 0;
+        }
         HrCompanyFeatureRecord hrCompanyFeatureRecord=BeanUtils.structToDB(hrCompanyFeatureDO, HrCompanyFeatureRecord.class);
         int result =hrCompanyFeatureDao.updateRecord(hrCompanyFeatureRecord);
         return result;
@@ -910,11 +916,26 @@ public class CompanyService {
      */
     @CounterIface
     public int updateCompanyFeatureList(List<HrCompanyFeatureDO> dataList){
-        List<HrCompanyFeatureRecord> list=BeanUtils.structToDB(dataList,HrCompanyFeatureRecord.class);
-        int[] result =hrCompanyFeatureDao.updateRecords(list);
-        if(result[0]>0){
-            return 1;
+        if(StringUtils.isEmptyList(dataList)){
+            return 0;
         }
+        List<HrCompanyFeatureRecord> list=BeanUtils.structToDB(dataList,HrCompanyFeatureRecord.class);
+        List<HrCompanyFeatureRecord> recordList=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(HrCompanyFeatureRecord record:list){
+                String feature=record.getFeature();
+                if(StringUtils.isNotNullOrEmpty(feature)){
+                    recordList.add(record);
+                }
+            }
+        }
+        if(!StringUtils.isEmptyList(recordList)){
+            int[] result =hrCompanyFeatureDao.updateRecords(recordList);
+            if(result[0]>0){
+                return 1;
+            }
+        }
+
         return 0;
     }
     /*
@@ -922,6 +943,12 @@ public class CompanyService {
      */
     @CounterIface
     public int addCompanyFeature(HrCompanyFeatureDO hrCompanyFeatureDO){
+        if(hrCompanyFeatureDO==null){
+            return 0;
+        }
+        if(StringUtils.isNullOrEmpty(hrCompanyFeatureDO.getFeature())){
+            return 0;
+        }
         hrCompanyFeatureDO.setDisable(1);
         HrCompanyFeatureRecord hrCompanyFeatureRecord=BeanUtils.structToDB(hrCompanyFeatureDO, HrCompanyFeatureRecord.class);
         HrCompanyFeatureRecord result=hrCompanyFeatureDao.addRecord(hrCompanyFeatureRecord);
@@ -932,8 +959,24 @@ public class CompanyService {
      */
     @CounterIface
     public int addCompanyFeatureList(List<HrCompanyFeatureDO> dataList){
+        if(StringUtils.isEmptyList(dataList)){
+            return 0;
+        }
         List<HrCompanyFeatureRecord> list=BeanUtils.structToDB(dataList,HrCompanyFeatureRecord.class);
-        hrCompanyFeatureDao.addAllRecord(list);
-        return 1;
+        List<HrCompanyFeatureRecord> recordList=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(HrCompanyFeatureRecord record:list){
+                String feature=record.getFeature();
+                if(StringUtils.isNotNullOrEmpty(feature)){
+                    recordList.add(record);
+                }
+            }
+        }
+        if(!StringUtils.isEmptyList(recordList)){
+            hrCompanyFeatureDao.addAllRecord(recordList);
+            return 1;
+        }
+
+        return 0;
     }
 }
