@@ -1206,7 +1206,7 @@ public class CandidateEntity implements Candidate {
                     List<DictCityDO> positionCityRecordList = positionCityDao.getPositionCitys(recentPosition.getPositionId());
                     if (positionCityRecordList != null && positionCityRecordList.size() > 0) {
                         List<String> cities = new ArrayList<>();
-                        positionCityRecordList.forEach(dictCityDO -> cities.add(dictCityDO.getEname()));
+                        positionCityRecordList.forEach(dictCityDO -> cities.add(dictCityDO.getName()));
                         recentPosition.setCities(cities);
                     }
                 }
