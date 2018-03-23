@@ -466,11 +466,11 @@ public class ChatService {
      * @param chat 聊天信息
      */
     public int saveChat(ChatVO chat) throws BIZException {
-        requiredValidChat(chat);
+        /*requiredValidChat(chat);
 
         HrWxHrChatListDO chatRoom = requiredNotNullChatRoom(chat.getRoomId());
 
-        requiredNotNullHr(chatRoom.getHraccountId());
+        requiredNotNullHr(chatRoom.getHraccountId());*/
 
         logger.info("saveChat chat:{}", JSON.toJSONString(chat));
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
@@ -762,6 +762,7 @@ public class ChatService {
      * @throws CommonException
      */
     public ChatHistory listMessage(int roomId, int chatId, int pageSize) throws CommonException {
+        logger.info("listMessage roomId:{} speaker:{}, pageSize:{}", roomId, chatId, pageSize);
         ChatHistory chatHistory = new ChatHistory();
         chatHistory.setConversationId(roomId);
         if (pageSize <= 0 || pageSize > Constant.PAGE_SIZE) {
@@ -770,6 +771,13 @@ public class ChatService {
         int count = chaoDao.countMessage(roomId, chatId);
         if (count >= 0) {
             List<ChatVO> chatVOList = chaoDao.listMessage(roomId, chatId, pageSize);
+            if (chatVOList != null && chatVOList.size() > 0) {
+                chatVOList.forEach(chatVO -> {
+                    if (chatVO.getSpeaker() == 2) {
+                        chatVO.setSpeaker((byte) 1);
+                    }
+                });
+            }
             chatHistory.setChatList(chatVOList);
             if (count > chatVOList.size()) {
                 chatHistory.setHasMore(true);
@@ -778,6 +786,7 @@ public class ChatService {
             }
         }
         HrChatUnreadCountRecord hrChatUnreadCountRecord = chaoDao.fetchRoomById(roomId);
+        logger.info("listMessage hrChatUnreadCountRecord:{}", hrChatUnreadCountRecord);
         if (hrChatUnreadCountRecord != null ) {
             if (hrChatUnreadCountRecord.getUpdateTime() != null) {
                 chatHistory.setHrLeaveTime(
@@ -788,12 +797,14 @@ public class ChatService {
                 chatHistory.setUserId(userUserDO.getId());
                 chatHistory.setName(userUserDO.getName());
             }
+            logger.info("listMessage hrChatUnreadCountRecord:{}, chatId:{}", hrChatUnreadCountRecord, chatId);
             updateLeaveTime(hrChatUnreadCountRecord, chatId);
         }
         return chatHistory;
     }
 
     private void updateLeaveTime(HrChatUnreadCountRecord hrChatUnreadCountRecord, int chatId) {
+        logger.info("ChatService updateLeaveTime hrChatUnreadCountRecord:{}, chatId:{}", hrChatUnreadCountRecord, chatId);
         if (chatId == 0) {
             hrChatUnreadCountRecord.setHrChatTime(new Timestamp(System.currentTimeMillis()));
             hrChatUnreadCountRecord.setHrHaveUnreadMsg((byte) 0);
@@ -806,6 +817,7 @@ public class ChatService {
         } else {
             HrWxHrChatRecord chatRecord = chaoDao.getChat(chatId);
             if (chatRecord != null) {
+                logger.info("ChatService updateLeaveTime chatRecord:{}, chatId:{}", chatRecord, chatId);
                 if (hrChatUnreadCountRecord.getHrChatTime() == null || hrChatUnreadCountRecord.getHrChatTime().getTime() < chatRecord.getCreateTime().getTime()) {
                     hrChatUnreadCountRecord.setHrChatTime(chatRecord.getCreateTime());
                     hrChatUnreadCountRecord.setHrHaveUnreadMsg((byte) 0);
@@ -865,10 +877,13 @@ public class ChatService {
     }
 
     public void roleLeaveChatRoom(int roleId, byte speaker) {
+        logger.info("ChatService roleLeaveChatRoom roleId:{}, speaker:{}",roleId, speaker);
         if (chaoDao.roleExist(roleId, speaker)) {
             List<Integer> roomIdList = chaoDao.fetchRoomIdByRole(roleId, speaker);
+            logger.info("ChatService roleLeaveChatRoom roomIdList::{}",roomIdList);
             if (roomIdList != null && roomIdList.size() > 0) {
                 pool.startTast(() -> {
+                    logger.info("ChatService roleLeaveChatRoom roomIdList::{}",roomIdList);
                     roomIdList.forEach(roomId -> leaveChatRoom(roomId, speaker));
                     return true;
                 });
