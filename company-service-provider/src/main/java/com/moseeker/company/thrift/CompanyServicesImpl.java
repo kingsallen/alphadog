@@ -55,7 +55,7 @@ public class CompanyServicesImpl implements Iface {
         try{
             return service.getAllCompanies(query);
         }catch(Exception e){
-            return ResponseUtils.fail(1,"查询失败");
+            return ResponseUtils.fail(e.getMessage());
         }
     }
 
