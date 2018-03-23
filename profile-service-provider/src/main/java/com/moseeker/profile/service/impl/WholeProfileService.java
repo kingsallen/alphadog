@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
@@ -13,6 +14,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
@@ -46,6 +48,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -102,6 +105,9 @@ public class WholeProfileService {
 
     @Autowired
     private JobPositionDao jobPositionDao;
+
+    @Autowired
+    private JobApplicationDao jobApplicationDao;
 
     @Autowired
     private UserSettingsDao userSettingsDao;
@@ -734,6 +740,13 @@ public class WholeProfileService {
         Query query = new Query.QueryBuilder().where(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountId)
                 .and(JobPosition.JOB_POSITION.ID.getName(), positionId).buildQuery();
         JobPositionDO positionDO = jobPositionDao.getData(query);
+        return positionDO;
+    }
+
+    public JobApplicationDO getApplicationByposition(int applier_id, int positionId) throws TException {
+        Query query = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionId)
+                .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), applier_id).buildQuery();
+        JobApplicationDO positionDO = jobApplicationDao.getData(query);
         return positionDO;
     }
 
