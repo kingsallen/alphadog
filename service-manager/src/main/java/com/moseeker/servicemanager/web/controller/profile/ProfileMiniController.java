@@ -65,7 +65,7 @@ public class ProfileMiniController {
             // GET方法 通用参数解析并赋值
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
             int accountId = form.getInt("accountId", 0);
-            int userId = form.getInt("userId");
+            int userId = form.getInt("userId",0);
             int positionId = form.getInt("positionId", 0);
             Response result = profileService.getProfileInfo(userId, accountId, positionId);
 
