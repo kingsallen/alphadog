@@ -5,6 +5,7 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.position.service.position.base.sync.check.AbstractTransferCheck;
 import com.moseeker.position.service.position.base.sync.check.ITransferCheck;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,15 +20,15 @@ public class TransferCheckUtil {
     @Autowired
     List<AbstractTransferCheck> checkList;
 
-    public List<String> checkBeforeTransfer(SyncRequestType requestType, ChannelType channelType, JSONObject jsonForm){
+    public List<String> checkBeforeTransfer(SyncRequestType requestType, ChannelType channelType, JSONObject jsonForm, JobPositionDO moseekerPosition){
         if(requestType==null || channelType==null || jsonForm==null || jsonForm.isEmpty()){
             return Collections.emptyList();
         }
 
         for(AbstractTransferCheck transferCheck:checkList){
             if(transferCheck.getChannelType()==channelType){
-                if(transferCheck.containsError(jsonForm)){
-                    return transferCheck.getError(jsonForm);
+                if(transferCheck.containsError(jsonForm,moseekerPosition)){
+                    return transferCheck.getError(jsonForm,moseekerPosition);
                 }
             }
         }

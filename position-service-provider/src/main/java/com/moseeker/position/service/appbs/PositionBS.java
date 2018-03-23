@@ -215,7 +215,7 @@ public class PositionBS {
             }
 
             //验证同步数据中的参数
-            List<String> checkMsg=transferCheckUtil.checkBeforeTransfer(requestType,channelType,p);
+            List<String> checkMsg=transferCheckUtil.checkBeforeTransfer(requestType,channelType,p,moseekerJobPosition);
             if(!StringUtils.isEmptyList(checkMsg)){
                 results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,JSON.toJSONString(checkMsg)));
                 continue;
@@ -235,7 +235,7 @@ public class PositionBS {
 
         // 提交到chaos处理
         logger.info("chaosService.synchronizePosition:{}", positionsForSynchronizations);
-        chaosService.synchronizePosition(positionsForSynchronizations);
+//        chaosService.synchronizePosition(positionsForSynchronizations);
 
         // 回写数据到第三方职位表表
         logger.info("write back to thirdpartyposition:{}", JSON.toJSONString(writeBackThirdPartyPositionList));
