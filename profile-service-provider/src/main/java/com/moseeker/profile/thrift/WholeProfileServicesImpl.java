@@ -142,7 +142,7 @@ public class WholeProfileServicesImpl implements Iface {
 
                 Map<String, Object> profile = (Map<String, Object>) JsonToMap.parseJSON2Map(response.getData());
                 if(positionDO != null){
-                    profile.put("position_name", positionDO.getTitle());
+                    profile.put("position_name", positionDO.getTitle()+"（"+positionDO.getCity()+"）");
                 }
                 if(applicationDO != null){
                     profile.put("status", applicationDO.getAppTplId());
