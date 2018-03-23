@@ -178,10 +178,9 @@ public class PositionPcService {
 			/*
 		 处理新的职位福利特色，兼容php老代码，不至于改了基础服务，PC端无法使用
 		 */
-        String feature=getPositionFeature(positionId);
-        if(StringUtils.isNotNullOrEmpty(feature)){
-            DO.setFeature(feature);
-        }
+		String feature=getPositionFeature(positionId);
+		DO.setFeature(feature);
+
 		this.handlerForPositionDetail(map,DO,positionId);
 		//获取母公司龚公众号
 		Map<String,Object> wxData=this.getHrWxChatBtyCompanyId(DO.getCompanyId());
