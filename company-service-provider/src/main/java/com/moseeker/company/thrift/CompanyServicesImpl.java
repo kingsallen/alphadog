@@ -52,7 +52,11 @@ public class CompanyServicesImpl implements Iface {
     private CompanyPcService companyPcService;
 
     public Response getAllCompanies(CommonQuery query) {
-       return service.getAllCompanies(query);
+        try{
+            return service.getAllCompanies(query);
+        }catch(Exception e){
+            return ResponseUtils.fail(1,"查询失败");
+        }
     }
 
 	@Override

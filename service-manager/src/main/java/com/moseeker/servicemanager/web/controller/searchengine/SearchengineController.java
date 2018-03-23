@@ -156,11 +156,15 @@ public class SearchengineController {
             	JSONObject es_data=JSON.parseObject(es_result.getData());
             	List<String> position_id_list=(List<String>) es_data.get("jd_id_list");
             	for(String position_id : position_id_list){
-            		String position=this.getJobPosition(Integer.parseInt(position_id));
-            		if(StringUtils.isNotNullOrEmpty(position)){
-            			searchengineServices.updateposition(position,Integer.parseInt(position_id));	
-            		}
-            		Thread.currentThread().sleep(600);
+            	    try {
+                        String position = this.getJobPosition(Integer.parseInt(position_id));
+                        if (StringUtils.isNotNullOrEmpty(position)) {
+                            searchengineServices.updateposition(position, Integer.parseInt(position_id));
+                        }
+                        Thread.currentThread().sleep(600);
+                    }catch(Exception e){
+
+                    }
             	} 	
             	result=ResponseUtils.success("");
             }else{
@@ -168,8 +172,6 @@ public class SearchengineController {
             }
              
         } catch (Exception e) {
-
-           e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
         }
         
