@@ -315,9 +315,28 @@ public class PositionService {
         if(!StringUtils.isEmptyList(positionFeature)){
             jobPositionPojo.position_feature=positionFeature;
         }
+        jobPositionPojo.feature=this.getFeatureString(positionFeature);
         return ResponseUtils.success(jobPositionPojo);
     }
-
+    /*
+     获取字符串形式的福利特色
+     */
+    private String getFeatureString( List<Map<String,Object>> list){
+        if(StringUtils.isEmptyList(list)){
+            return "";
+        }
+        String features="";
+        for(Map<String,Object> map:list){
+            String feature=(String)map.get("feature");
+            if(StringUtils.isNotNullOrEmpty(feature)){
+                features+=feature+"#";
+            }
+        }
+        if(StringUtils.isNotNullOrEmpty(features)){
+            features=features.substring(0,features.lastIndexOf("#"));
+        }
+        return features;
+    }
 
     /*
      * 获取城市

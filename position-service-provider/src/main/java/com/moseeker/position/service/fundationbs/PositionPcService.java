@@ -159,9 +159,7 @@ public class PositionPcService {
 		 处理新的职位福利特色，兼容php老代码，不至于改了基础服务，PC端无法使用
 		 */
 		String feature=getPositionFeature(positionId);
-		if(StringUtils.isNotNullOrEmpty(feature)){
-			DO.setFeature(feature);
-		}
+		DO.setFeature(feature);
 		String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
 		Map<String,Object> positionData= JSON.parseObject(DOs, Map.class);
 		map.put("position",positionData);
