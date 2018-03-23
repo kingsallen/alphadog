@@ -2,6 +2,7 @@ package com.moseeker.position.service.position.base.sync.check;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 
 import java.util.List;
 import java.util.Map;
@@ -18,17 +19,17 @@ public abstract class AbstractTransferCheck<T> implements ITransferCheck<T> {
      * @param jsonForm
      * @return
      */
-    public boolean containsError(JSONObject jsonForm){
-        return containsError(jsonForm.toJavaObject(getFormClass()));
+    public boolean containsError(JSONObject jsonForm, JobPositionDO moseekerPosition){
+        return containsError(jsonForm.toJavaObject(getFormClass()),moseekerPosition);
     }
 
-    public List<String> getError(JSONObject jsonForm){
-        return getError(jsonForm.toJavaObject(getFormClass()));
+    public List<String> getError(JSONObject jsonForm, JobPositionDO moseekerPosition){
+        return getError(jsonForm.toJavaObject(getFormClass()),moseekerPosition);
     }
 
     @Override
-    public boolean containsError(T t) {
-        return !StringUtils.isEmptyList(getError(t));
+    public boolean containsError(T t, JobPositionDO moseekerPosition) {
+        return !StringUtils.isEmptyList(getError(t,moseekerPosition));
     }
 
     /*public List<String> popErrorMsg(JSONObject jsonForm){
