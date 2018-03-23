@@ -156,15 +156,11 @@ public class SearchengineController {
             	JSONObject es_data=JSON.parseObject(es_result.getData());
             	List<String> position_id_list=(List<String>) es_data.get("jd_id_list");
             	for(String position_id : position_id_list){
-            	    try {
-                        String position = this.getJobPosition(Integer.parseInt(position_id));
-                        if (StringUtils.isNotNullOrEmpty(position)) {
-                            searchengineServices.updateposition(position, Integer.parseInt(position_id));
-                        }
-                        Thread.currentThread().sleep(600);
-                    }catch(Exception e){
-
-                    }
+            		String position=this.getJobPosition(Integer.parseInt(position_id));
+            		if(StringUtils.isNotNullOrEmpty(position)){
+            			searchengineServices.updateposition(position,Integer.parseInt(position_id));
+            		}
+            		Thread.currentThread().sleep(600);
             	} 	
             	result=ResponseUtils.success("");
             }else{
@@ -172,6 +168,8 @@ public class SearchengineController {
             }
              
         } catch (Exception e) {
+
+           e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
         }
         
@@ -184,29 +182,26 @@ public class SearchengineController {
 	    	  Response result = positonServices.getPositionById(id);
 	          position = result.data;
 	          Map position_map = (Map) JSON.parse(position);
-	          
+
 	          String company_id = BeanUtils.converToString(position_map.get("company_id"));
 	          CommonQuery query = new CommonQuery();
 	          query.setEqualFilter(new HashMap<String, String>(){{put("id", company_id);}});
 	          Response company_resp = companyServices.getAllCompanies(query);
-	          if(company_resp.getStatus()==0&&StringUtils.isNotNullOrEmpty(company_resp.getData())){
-                  String company = company_resp.data;
-                  List company_maps = (List) JSON.parse(company);
-                  Map company_map = (Map) company_maps.get(0);
-                  String company_name = (String) company_map.get("name");
-                  String scale = (String) company_map.get("scale");
-                  position_map.put("company_name",company_name);
-                  String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
-                  Integer degree_above =BeanUtils.converToInteger(position_map.get("degree_above"));
-                  if(degree_above==1){
-                      degree_name = degree_name+"及以上";
-                  }
-                  position_map.put("degree_name",degree_name);
-                  position_map.put("scale",scale);
-                  position = JSON.toJSONString(position_map);
-              }
-              return position;
-
+	          String company = company_resp.data;
+	          List company_maps = (List) JSON.parse(company);
+	          Map company_map = (Map) company_maps.get(0);
+	          String company_name = (String) company_map.get("name");
+	          String scale = (String) company_map.get("scale");
+	          position_map.put("company_name",company_name);
+	          String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
+	          Integer degree_above =BeanUtils.converToInteger(position_map.get("degree_above"));
+	          if(degree_above==1){
+	              degree_name = degree_name+"及以上";
+	          }
+	          position_map.put("degree_name",degree_name);
+	          position_map.put("scale",scale);
+	          position = JSON.toJSONString(position_map);
+	          return position;
         }catch(Exception e){
       	  logger.info(e.getMessage(),e);
         }
