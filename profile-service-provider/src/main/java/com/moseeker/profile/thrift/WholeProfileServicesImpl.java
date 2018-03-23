@@ -13,6 +13,7 @@ import com.moseeker.profile.service.impl.WholeProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices.Iface;
 
@@ -135,12 +136,22 @@ public class WholeProfileServicesImpl implements Iface {
         try {
 
             response = service.getResource(userId, -1, "");
-            JobPositionDO positionDO= service.getPositionById(accountId, positionId);
+
             if(response != null && response.getStatus() ==0 && response.getData() != null) {
 
                 Map<String, Object> profile = (Map<String, Object>) JsonToMap.parseJSON2Map(response.getData());
-                if(positionDO != null){
-                    profile.put("position_name", positionDO.getTitle());
+                if(positionId > 0) {
+                    JobPositionDO positionDO = service.getPositionById(accountId, positionId);
+                    JobApplicationDO applicationDO = service.getApplicationByposition(userId, positionId);
+                    Map<String, Object> applicationMap = new HashMap<>();
+                    if (positionDO != null) {
+                        applicationMap.put("position_name", positionDO.getTitle() + "（" + positionDO.getCity() + "）");
+                    }
+                    if (applicationDO != null) {
+                        applicationMap.put("status", applicationDO.getAppTplId());
+                    }
+                    applicationMap.put("positionId", positionId);
+                    profile.put("applicationPosition", applicationMap);
                 }
                 Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(profile);
                 return ResponseUtils.success(profilrCamle);
