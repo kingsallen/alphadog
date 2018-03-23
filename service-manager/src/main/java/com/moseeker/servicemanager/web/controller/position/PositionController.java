@@ -442,8 +442,10 @@ public class PositionController {
         try {
             BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseBatchHandlerJobPostionParam(request);
             Response res = positonServices.batchHandlerJobPostion(batchHandlerJobPostion);
+            logger.info("batchhandler result:{}",JSON.toJSONString(res));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
+            logger.info("batchhandler error result:{}",e);
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
