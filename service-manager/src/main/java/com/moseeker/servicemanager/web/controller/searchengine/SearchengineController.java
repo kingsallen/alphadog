@@ -189,21 +189,24 @@ public class SearchengineController {
 	          CommonQuery query = new CommonQuery();
 	          query.setEqualFilter(new HashMap<String, String>(){{put("id", company_id);}});
 	          Response company_resp = companyServices.getAllCompanies(query);
-	          String company = company_resp.data;
-	          List company_maps = (List) JSON.parse(company);
-	          Map company_map = (Map) company_maps.get(0);
-	          String company_name = (String) company_map.get("name");
-	          String scale = (String) company_map.get("scale");
-	          position_map.put("company_name",company_name);
-	          String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
-	          Integer degree_above =BeanUtils.converToInteger(position_map.get("degree_above"));
-	          if(degree_above==1){
-	              degree_name = degree_name+"及以上";
-	          }
-	          position_map.put("degree_name",degree_name);
-	          position_map.put("scale",scale);        
-	          position = JSON.toJSONString(position_map);
-	          return position;
+	          if(company_resp.getStatus()==0&&StringUtils.isNotNullOrEmpty(company_resp.getData())){
+                  String company = company_resp.data;
+                  List company_maps = (List) JSON.parse(company);
+                  Map company_map = (Map) company_maps.get(0);
+                  String company_name = (String) company_map.get("name");
+                  String scale = (String) company_map.get("scale");
+                  position_map.put("company_name",company_name);
+                  String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
+                  Integer degree_above =BeanUtils.converToInteger(position_map.get("degree_above"));
+                  if(degree_above==1){
+                      degree_name = degree_name+"及以上";
+                  }
+                  position_map.put("degree_name",degree_name);
+                  position_map.put("scale",scale);
+                  position = JSON.toJSONString(position_map);
+              }
+              return position;
+
         }catch(Exception e){
       	  logger.info(e.getMessage(),e);
         }
