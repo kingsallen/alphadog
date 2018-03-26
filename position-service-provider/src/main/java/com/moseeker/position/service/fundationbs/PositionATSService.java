@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
@@ -24,7 +23,6 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.HrCompanyFeatureDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
 import org.apache.thrift.TException;
@@ -286,17 +284,20 @@ public class PositionATSService {
         List<HrCompanyFeatureDO> companyFeatureAddList = new ArrayList<>();
 
         for (JobPostrionObj jobPositionHandlerDate : batchHandlerJobPostion.getData()){
-            JobPositionRecord jobPositionRecord = jobPositionDao.getUniquePosition(
-                    jobPositionHandlerDate.getCompany_id(),
-                    PositionSource.ATS.getCode(),
-                    jobPositionHandlerDate.getSource_id(),
-                    jobPositionHandlerDate.getJobnumber());
+            if(jobPositionHandlerDate.getId() == 0) {
 
-            if(jobPositionRecord == null){
-                continue;
+                JobPositionRecord jobPositionRecord = jobPositionDao.getUniquePosition(
+                        jobPositionHandlerDate.getCompany_id(),
+                        PositionSource.ATS.getCode(),
+                        jobPositionHandlerDate.getSource_id(),
+                        jobPositionHandlerDate.getJobnumber());
+
+                if (jobPositionRecord == null) {
+                    continue;
+                }
+
+                jobPositionHandlerDate.setId(jobPositionRecord.getId());
             }
-
-            jobPositionHandlerDate.setId(jobPositionRecord.getId());
 
             String feature = jobPositionHandlerDate.getFeature();
             if(feature == null){
@@ -398,7 +399,7 @@ public class PositionATSService {
         batchHandlerJobPostion.setNodelete(true);
         batchHandlerJobPostion.setIsCreateDeparment(false);
 
-        JobPostionResponse response=service.batchHandlerJobPostion(batchHandlerJobPostion);
+        JobPostionResponse response=service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
 
         JobPostrionObj postionObj = batchHandlerJobPostion.getData().get(0);
 
@@ -442,6 +443,23 @@ public class PositionATSService {
                 PositionSource.ATS.getCode(),
                 postionObj.getSource_id(),
                 postionObj.getJobnumber());
+    }
+
+    class FeatureThread extends Thread{
+        private BatchHandlerJobPostion batchHandlerJobPostion;
+
+        public FeatureThread(BatchHandlerJobPostion batchHandlerJobPostion){
+            this.batchHandlerJobPostion = batchHandlerJobPostion;
+        }
+
+        @Override
+        public void run() {
+            try {
+                atsUpdatePositionFeature(batchHandlerJobPostion);
+            } catch (TException e) {
+                logger.error("ats update position feature error:{}",e);
+            }
+        }
     }
 
 }

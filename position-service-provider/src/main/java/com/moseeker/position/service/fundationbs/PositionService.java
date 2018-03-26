@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.ValueFilter;
-import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
@@ -23,7 +22,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
@@ -59,7 +57,6 @@ import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -75,7 +72,6 @@ import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 
-import static java.lang.Math.log;
 import static java.lang.Math.round;
 import static java.lang.Math.toIntExact;
 import java.sql.Timestamp;
@@ -83,7 +79,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
@@ -507,6 +502,21 @@ public class PositionService {
     }
 
     /**
+     * 批量ATS职位适配器，包装batchHandlerJobPostion方法，
+     * 在执行完batchHandlerJobPostion后加上更新职位福利特色
+     * @param batchHandlerJobPosition
+     * @return
+     * @throws BIZException
+     */
+    public JobPostionResponse batchHandlerJobPostionAdapter(BatchHandlerJobPostion batchHandlerJobPosition) throws BIZException {
+        JobPostionResponse response = batchHandlerJobPostion(batchHandlerJobPosition);
+        // 更新职位福利特色,启动线程更新，避免时间太长
+        PositionATSService.FeatureThread featureThread =  positionATSService.new FeatureThread(batchHandlerJobPosition);
+        featureThread.start();
+        return response;
+    }
+
+    /**
      * 批量处理修改职位
      *
      * @param batchHandlerJobPosition
@@ -744,6 +754,8 @@ public class PositionService {
                 // 按company_id + .source_id + .jobnumber + source=9取得数据为空时，按Id进行更新
                 if (!com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
                     record.setId(jobPositionRecord.getId());
+                    // 把ID存入方法参数中，配合batchHandlerJobPostionAdapter方法
+                    jobPositionHandlerDate.setId(jobPositionRecord.getId());
                     jobPositionIds.add(jobPositionRecord.getId());
                 }
                 // 添加同步数据
@@ -851,6 +863,8 @@ public class PositionService {
                         jobPositionCityRecordsAddlist.addAll(jobPositionCityRecordList);
                     }
                 }
+                // 把ID存入方法参数中，配合batchHandlerJobPostionAdapter方法
+                jobPositionHandlerDate.setId(pid);
                 // 需要新增的JobPosition数据
                 jobPositionAddRecordList.add(record);
                 // 需要同步的数据
@@ -932,10 +946,6 @@ public class PositionService {
                 Condition condition=new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),thirdPartyPositionDisablelist,ValueOp.IN);
                 thirdpartyPositionDao.disable(Arrays.asList(condition));
                 logger.info("-------------作废thirdPartyPosition数据结束------------------");
-            }
-            if(jobPositionIds.size()>0) {
-                // 更新职位福利特色
-                positionATSService.atsUpdatePositionFeature(batchHandlerJobPosition);
             }
         } catch (Exception e) {
             logger.info("更新和插入数据发生异常,异常信息为：" + e.getMessage());
