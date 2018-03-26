@@ -2,7 +2,9 @@ package com.moseeker.position.service.fundationbs;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyCompanyChannelConfDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -16,6 +18,8 @@ import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyCompanyChannelConfDO;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
 import org.apache.thrift.TException;
@@ -26,9 +30,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class PositionATSService {
@@ -42,6 +45,28 @@ public class PositionATSService {
 
     @Autowired
     private HRThirdPartyPositionDao thirdPartyPositionDao;
+
+    @Autowired
+    private HrCompanyDao companyDao;
+
+    @Autowired
+    private ThirdpartyCompanyChannelConfDao thirdpartyCompanyChannelConfDao;
+
+    public List<Integer> getConfByCompanyId(int company_id){
+
+        // 如果是子公司，需要用母公司查询配置，因为只有母公司配置
+        HrCompanyDO companyDO = companyDao.getCompanyById(company_id);
+        if(companyDO.getParentId() != 0){
+            company_id = companyDO.getParentId();
+        }
+
+        List<ThirdpartyCompanyChannelConfDO> result = thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
+        if(StringUtils.isEmptyList(result)){
+            return Collections.emptyList();
+        }
+
+        return result.stream().map(c->c.getChannel()).collect(Collectors.toList());
+    }
 
     /**
      * ATS谷露新增职位
@@ -201,7 +226,7 @@ public class PositionATSService {
      * @param id
      * @return
      */
-    public Response addPositionUrlOnlySuccess(Response response, int id){
+    private Response addPositionUrlOnlySuccess(Response response, int id){
         try {
             if(response.getStatus()==0 && response.getMessage().equals("success")){
                 ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();

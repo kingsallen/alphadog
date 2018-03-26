@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompany;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyCompanyChannelConf;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
 
@@ -36,7 +37,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Thirdpartydb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1479652420;
+    private static final long serialVersionUID = 459790865;
 
     /**
      * The reference instance of <code>thirdpartydb</code>
@@ -67,6 +68,11 @@ public class Thirdpartydb extends SchemaImpl {
      * 一览人才的第三方发布网站表
      */
     public final ThirdpartyAccountJob1001Subsite THIRDPARTY_ACCOUNT_JOB1001_SUBSITE = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE;
+
+    /**
+     * 公司可同步渠道配置表
+     */
+    public final ThirdpartyCompanyChannelConf THIRDPARTY_COMPANY_CHANNEL_CONF = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF;
 
     /**
      * 一览人才的第三方职位子表
@@ -108,6 +114,7 @@ public class Thirdpartydb extends SchemaImpl {
             ThirdpartyAccountCompanyAddress.THIRDPARTY_ACCOUNT_COMPANY_ADDRESS,
             ThirdpartyAccountDepartment.THIRDPARTY_ACCOUNT_DEPARTMENT,
             ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE,
+            ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF,
             ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION,
             ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION);
     }
