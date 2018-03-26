@@ -14,6 +14,7 @@ public class CVCheckedWXMsgPojo {
     private String companyName;
     private String signature;
     private int applierId;
+    private boolean sendStatus;
 
     public int getApplicationId() {
         return applicationId;
@@ -61,5 +62,13 @@ public class CVCheckedWXMsgPojo {
 
     public void setApplierId(int applierId) {
         this.applierId = applierId;
+    }
+
+    public boolean isSendStatus() {
+        return sendStatus;
+    }
+
+    public void setSendStatus(boolean sendStatus) {
+        this.sendStatus = sendStatus;
     }
 }

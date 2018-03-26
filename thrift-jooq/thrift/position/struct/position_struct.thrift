@@ -269,7 +269,9 @@ struct JobPostrionObj{
     48:string requirement,
     49:string custom,
     50:string thirdParty_position,
-    51:i8 priority  //是否置顶
+    51:i8 priority,  //是否置顶
+    52:list<string> ccmail, //抄送邮箱
+    53: optional bool profile_cc_mail_enabled  //简历申请是否抄送邮箱,不传默认false
 }
 
 struct City{

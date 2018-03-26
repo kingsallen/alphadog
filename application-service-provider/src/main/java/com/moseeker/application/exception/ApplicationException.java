@@ -23,4 +23,5 @@ public class ApplicationException extends CommonException {
     public static final CommonException APPLICATION_HR_ACCOUT_TYPE_ILLEGAL = new CommonException(41013,  "HR账号类型异常!" );
     public static final CommonException APPLICATION_APPLICATION_ELLEGAL = new CommonException(41014,  "申请信息不正确!" );
     public static final CommonException APPLICATION_REDIS_CLIENT = new CommonException(41015,  "缺少Redis依赖!" );
+    public static final CommonException APPLICATION_NOTICCE_CLOSE = new CommonException(41016,  "模板开关关闭!" );
 }
