@@ -53,7 +53,13 @@ public class PositionATSService {
     private ThirdpartyCompanyChannelConfDao thirdpartyCompanyChannelConfDao;
 
 
-    public Response addCompanyChannelConf(int company_id,List<Integer> channel){
+    /**
+     * 更新公司可同步渠道配置，没有的新增，不在传入参数中的数据删除
+     * @param company_id
+     * @param channel
+     * @return
+     */
+    public List<ThirdpartyCompanyChannelConfDO> updateCompanyChannelConf(int company_id,List<Integer> channel){
         List<ThirdpartyCompanyChannelConfDO> confs = thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
 
         List<ThirdpartyCompanyChannelConfDO> toBeDeleted = new ArrayList<>();
@@ -66,7 +72,26 @@ public class PositionATSService {
             }
             toBeDeleted.add(conf);
         }
-        return null;
+
+        List<ThirdpartyCompanyChannelConfDO> toBeAdd = new ArrayList<>();
+        out:
+        for(Integer c:channel){
+            for(ThirdpartyCompanyChannelConfDO conf:confs){
+                if(conf.getChannel() == c){
+                    break out;
+                }
+            }
+            ThirdpartyCompanyChannelConfDO temp = new ThirdpartyCompanyChannelConfDO();
+            temp.setChannel(c);
+            temp.setCompanyId(company_id);
+
+            toBeAdd.add(temp);
+        }
+
+        thirdpartyCompanyChannelConfDao.deleteDatas(toBeDeleted);
+        thirdpartyCompanyChannelConfDao.addAllData(toBeAdd);
+
+        return thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
     }
 
     public List<Integer> getCompanyChannelConfByCompanyId(int company_id){
