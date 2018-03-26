@@ -433,11 +433,9 @@ public class ProfileValidation {
 	}
 
 	private static boolean lowerNow(long time) {
-		if (time > 0) {
-			if (time < System.currentTimeMillis() && time >= minTime) {
-				return true;
-			}
-		}
+        if (time < System.currentTimeMillis() && time >= minTime) {
+            return true;
+        }
 		return false;
 	}
 }
