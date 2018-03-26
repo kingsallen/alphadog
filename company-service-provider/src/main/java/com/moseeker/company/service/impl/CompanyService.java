@@ -953,6 +953,11 @@ public class CompanyService {
         if(StringUtils.isNullOrEmpty(hrCompanyFeatureDO.getFeature())){
             return 0;
         }
+        Query query=new Query.QueryBuilder().where("company_id",hrCompanyFeatureDO.getCompany_id()).and("disable",1).buildQuery();
+        int count=hrCompanyFeatureDao.getCount(query);
+        if((count+1)>8){
+            return -1;
+        }
         hrCompanyFeatureDO.setDisable(1);
         HrCompanyFeatureRecord hrCompanyFeatureRecord=BeanUtils.structToDB(hrCompanyFeatureDO, HrCompanyFeatureRecord.class);
         HrCompanyFeatureRecord result=hrCompanyFeatureDao.addRecord(hrCompanyFeatureRecord);
@@ -976,7 +981,13 @@ public class CompanyService {
                 }
             }
         }
+
         if(!StringUtils.isEmptyList(recordList)){
+            Query query=new Query.QueryBuilder().where("company_id",recordList.get(0).getCompanyId()).and("disable",1).buildQuery();
+            int count=hrCompanyFeatureDao.getCount(query);
+            if((count+recordList.size())>8){
+                return -1;
+            }
             hrCompanyFeatureDao.addAllRecord(recordList);
             return 1;
         }

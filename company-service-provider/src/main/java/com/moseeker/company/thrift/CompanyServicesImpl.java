@@ -458,7 +458,12 @@ public class CompanyServicesImpl implements Iface {
     public Response addCompanyFeatures(List<HrCompanyFeatureDO> dataList) throws BIZException, TException {
         try {
             int result= service.addCompanyFeatureList(dataList);
-            return ResponseUtils.success(result);
+            if(result>0){
+                return ResponseUtils.success(result);
+            }else{
+                return ResponseUtils.fail("福利特色最多只能有8个");
+            }
+
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
