@@ -101,6 +101,12 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(cityfilter);
         }
     }
+    public void handleMatchParse(String condition,QueryBuilder query,String conditionField){
+        if (StringUtils.isNotEmpty(condition)) {
+            QueryBuilder cityfilter = QueryBuilders.matchPhraseQuery(conditionField, condition);
+            ((BoolQueryBuilder) query).must(cityfilter);
+        }
+    }
     /*
      使用 filter的方式处理查询语句
      */
@@ -251,10 +257,10 @@ public class SearchUtil {
     				sb.append(words[i]+" or ");
     			}
     		}
-    		if(words.length>1){
-                sb.deleteCharAt(sb.lastIndexOf("r"));
-                sb.deleteCharAt(sb.lastIndexOf("o"));
-            }
+//    		if(words.length>1){
+//                sb.deleteCharAt(sb.lastIndexOf("r"));
+//                sb.deleteCharAt(sb.lastIndexOf("o"));
+//            }
     		String condition=sb.toString();
     		QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
     		for(String field:list){
@@ -305,10 +311,10 @@ public class SearchUtil {
                     sb.append(words[i]+" or ");
                 }
             }
-            if(words.length>1){
-                sb.deleteCharAt(sb.lastIndexOf("r"));
-                sb.deleteCharAt(sb.lastIndexOf("o"));
-            }
+//            if(words.length>1){
+//                sb.deleteCharAt(sb.lastIndexOf("r"));
+//                sb.deleteCharAt(sb.lastIndexOf("o"));
+//            }
             String condition=sb.toString();
             QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
             if(fieldList!=null&&fieldList.size()>0){

@@ -2,6 +2,8 @@ package com.moseeker.servicemanager.web.controller.position;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.StructSerializer;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -20,6 +22,11 @@ import java.util.Map;
 
 public class PositionParamUtils extends ParamUtils {
 
+    /**
+     * 解析一键同步参数
+     * @param request
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public static ThirdPartyPositionForm parseSyncParam(HttpServletRequest request) {
         ThirdPartyPositionForm form = new ThirdPartyPositionForm();
@@ -49,6 +56,42 @@ public class PositionParamUtils extends ParamUtils {
         return form;
     }
 
+    /**
+     * 解析谷露同步参数
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    public static BatchHandlerJobPostion parseGlluePostionParam(HttpServletRequest request) throws Exception {
+        HashMap<String, Object> data = parseRequestParam(request);
+
+        BatchHandlerJobPostion batchHandlerDate = initBatchHandlerJobPostion(data);
+
+        List<JobPostrionObj> cs = new ArrayList<>();
+        HashMap<String, Object> jobPostrionObj = (HashMap<String, Object>)data.get("data");
+        if (data != null && !data.isEmpty()) {
+            try {
+                JobPostrionObj c = ParamUtils.initModelForm(jobPostrionObj, JobPostrionObj.class);
+                c.setCity(parseCitys(jobPostrionObj));
+                cs.add(c);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LoggerFactory.getLogger(PositionParamUtils.class).error(e.getMessage(), e);
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+            }
+        }else{
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+        batchHandlerDate.setData(cs);
+        return batchHandlerDate;
+    }
+
+    /**
+     * 解析批量职位同步参数
+     * @param request
+     * @return
+     * @throws Exception
+     */
     public static BatchHandlerJobPostion parseBatchHandlerJobPostionParam(HttpServletRequest request) throws Exception {
         HashMap<String, Object> data = parseRequestParam(request);
 
@@ -65,8 +108,6 @@ public class PositionParamUtils extends ParamUtils {
                 } catch (Exception e) {
                     e.printStackTrace();
                     LoggerFactory.getLogger(PositionParamUtils.class).error(e.getMessage(), e);
-                } finally {
-                    //do nothing
                 }
             });
         }

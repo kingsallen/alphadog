@@ -4,6 +4,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.DelePostion;
@@ -103,6 +104,40 @@ public class PositionMiniController {
                 keyWords=StringUtils.filterStringForSearch(keyWords);
             }
             Response res = positonServices.getMiniPositionNumStatus(accountId,keyWords,page,pageSize);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 小程序中职位详情
+     */
+    @RequestMapping(value = "/api/mini/position/detail", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionDetail(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer positionId = params.getInt("positionId");
+            Response res = positonServices.getMiniPositionDetail(positionId);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 小程序中职位详情页分享标题
+     */
+    @RequestMapping(value = "/api/mini/position/share", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionShare(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer positionId = params.getInt("positionId");
+            Response res = positonServices.getMiniPositionShare(positionId);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

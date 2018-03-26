@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 
-    private static final long serialVersionUID = -1130512290;
+    private static final long serialVersionUID = -710121475;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_hr_chat</code>
@@ -89,12 +89,12 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     /**
      * The column <code>hrdb.hr_wx_hr_chat.origin</code>. 来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 
      */
-    public final TableField<HrWxHrChatRecord, Byte> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 ");
+    public final TableField<HrWxHrChatRecord, Byte> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 ");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 信息类型,暂定html、image、qrcode、radio_button
+     * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
      */
-    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "信息类型,暂定html、image、qrcode、radio_button");
+    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "消息类型");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url
@@ -102,9 +102,9 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     public final TableField<HrWxHrChatRecord, String> PIC_URL = createField("pic_url", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "图片url");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息
+     * The column <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息,当字段msg_type值为为"button_radio"时,会保存json格式:"[{"content": "\u662f"}, {"content": "\u5426"}]"
      */
-    public final TableField<HrWxHrChatRecord, String> BTN_CONTENT = createField("btn_content", org.jooq.impl.SQLDataType.CLOB, this, "控件类信息");
+    public final TableField<HrWxHrChatRecord, String> BTN_CONTENT = createField("btn_content", org.jooq.impl.SQLDataType.CLOB, this, "控件类信息,当字段msg_type值为为\"button_radio\"时,会保存json格式:\"[{\"content\": \"\\u662f\"}, {\"content\": \"\\u5426\"}]\"");
 
     /**
      * Create a <code>hrdb.hr_wx_hr_chat</code> table reference

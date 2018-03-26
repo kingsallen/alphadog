@@ -23,15 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChatUnreadCount implements Serializable {
 
-    private static final long serialVersionUID = -1281672860;
+    private static final long serialVersionUID = -1265170972;
 
     private Integer   roomId;
+    private Integer   hrId;
+    private Integer   userId;
     private Timestamp wxChatTime;
     private Timestamp hrChatTime;
     private Byte      hrHaveUnreadMsg;
     private Byte      userHaveUnreadMsg;
-    private Integer   hrId;
-    private Integer   userId;
     private Byte      apply;
     private Timestamp updateTime;
 
@@ -39,34 +39,34 @@ public class HrChatUnreadCount implements Serializable {
 
     public HrChatUnreadCount(HrChatUnreadCount value) {
         this.roomId = value.roomId;
+        this.hrId = value.hrId;
+        this.userId = value.userId;
         this.wxChatTime = value.wxChatTime;
         this.hrChatTime = value.hrChatTime;
         this.hrHaveUnreadMsg = value.hrHaveUnreadMsg;
         this.userHaveUnreadMsg = value.userHaveUnreadMsg;
-        this.hrId = value.hrId;
-        this.userId = value.userId;
         this.apply = value.apply;
         this.updateTime = value.updateTime;
     }
 
     public HrChatUnreadCount(
         Integer   roomId,
+        Integer   hrId,
+        Integer   userId,
         Timestamp wxChatTime,
         Timestamp hrChatTime,
         Byte      hrHaveUnreadMsg,
         Byte      userHaveUnreadMsg,
-        Integer   hrId,
-        Integer   userId,
         Byte      apply,
         Timestamp updateTime
     ) {
         this.roomId = roomId;
+        this.hrId = hrId;
+        this.userId = userId;
         this.wxChatTime = wxChatTime;
         this.hrChatTime = hrChatTime;
         this.hrHaveUnreadMsg = hrHaveUnreadMsg;
         this.userHaveUnreadMsg = userHaveUnreadMsg;
-        this.hrId = hrId;
-        this.userId = userId;
         this.apply = apply;
         this.updateTime = updateTime;
     }
@@ -77,6 +77,22 @@ public class HrChatUnreadCount implements Serializable {
 
     public void setRoomId(Integer roomId) {
         this.roomId = roomId;
+    }
+
+    public Integer getHrId() {
+        return this.hrId;
+    }
+
+    public void setHrId(Integer hrId) {
+        this.hrId = hrId;
+    }
+
+    public Integer getUserId() {
+        return this.userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Timestamp getWxChatTime() {
@@ -111,22 +127,6 @@ public class HrChatUnreadCount implements Serializable {
         this.userHaveUnreadMsg = userHaveUnreadMsg;
     }
 
-    public Integer getHrId() {
-        return this.hrId;
-    }
-
-    public void setHrId(Integer hrId) {
-        this.hrId = hrId;
-    }
-
-    public Integer getUserId() {
-        return this.userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
     public Byte getApply() {
         return this.apply;
     }
@@ -148,12 +148,12 @@ public class HrChatUnreadCount implements Serializable {
         StringBuilder sb = new StringBuilder("HrChatUnreadCount (");
 
         sb.append(roomId);
+        sb.append(", ").append(hrId);
+        sb.append(", ").append(userId);
         sb.append(", ").append(wxChatTime);
         sb.append(", ").append(hrChatTime);
         sb.append(", ").append(hrHaveUnreadMsg);
         sb.append(", ").append(userHaveUnreadMsg);
-        sb.append(", ").append(hrId);
-        sb.append(", ").append(userId);
         sb.append(", ").append(apply);
         sb.append(", ").append(updateTime);
 

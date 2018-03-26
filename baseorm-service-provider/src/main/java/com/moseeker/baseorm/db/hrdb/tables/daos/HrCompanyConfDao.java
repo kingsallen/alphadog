@@ -178,17 +178,17 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
     }
 
     /**
-     * Fetch records that have <code>newjd_status IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByNewjdStatus(Integer... values) {
-        return fetch(HrCompanyConf.HR_COMPANY_CONF.NEWJD_STATUS, values);
-    }
-
-    /**
      * Fetch records that have <code>application_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByApplicationTime(Timestamp... values) {
         return fetch(HrCompanyConf.HR_COMPANY_CONF.APPLICATION_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>newjd_status IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByNewjdStatus(Integer... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.NEWJD_STATUS, values);
     }
 
     /**

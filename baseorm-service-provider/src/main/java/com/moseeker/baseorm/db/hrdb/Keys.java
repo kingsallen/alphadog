@@ -41,7 +41,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
-import com.moseeker.baseorm.db.hrdb.tables.HrSurveyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
@@ -97,7 +96,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrRuleStatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrRuleUniqueStatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSuperaccountApplyRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrSurveyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTalentpoolRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamMemberRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
@@ -176,7 +174,6 @@ public class Keys {
     public static final Identity<HrRuleUniqueStatisticsRecord, Integer> IDENTITY_HR_RULE_UNIQUE_STATISTICS = Identities0.IDENTITY_HR_RULE_UNIQUE_STATISTICS;
     public static final Identity<HrSearchConditionRecord, Integer> IDENTITY_HR_SEARCH_CONDITION = Identities0.IDENTITY_HR_SEARCH_CONDITION;
     public static final Identity<HrSuperaccountApplyRecord, Integer> IDENTITY_HR_SUPERACCOUNT_APPLY = Identities0.IDENTITY_HR_SUPERACCOUNT_APPLY;
-    public static final Identity<HrSurveyConfRecord, Integer> IDENTITY_HR_SURVEY_CONF = Identities0.IDENTITY_HR_SURVEY_CONF;
     public static final Identity<HrTalentpoolRecord, Integer> IDENTITY_HR_TALENTPOOL = Identities0.IDENTITY_HR_TALENTPOOL;
     public static final Identity<HrTeamRecord, Integer> IDENTITY_HR_TEAM = Identities0.IDENTITY_HR_TEAM;
     public static final Identity<HrTeamMemberRecord, Integer> IDENTITY_HR_TEAM_MEMBER = Identities0.IDENTITY_HR_TEAM_MEMBER;
@@ -241,7 +238,6 @@ public class Keys {
     public static final UniqueKey<HrRuleUniqueStatisticsRecord> KEY_HR_RULE_UNIQUE_STATISTICS_PRIMARY = UniqueKeys0.KEY_HR_RULE_UNIQUE_STATISTICS_PRIMARY;
     public static final UniqueKey<HrSearchConditionRecord> KEY_HR_SEARCH_CONDITION_PRIMARY = UniqueKeys0.KEY_HR_SEARCH_CONDITION_PRIMARY;
     public static final UniqueKey<HrSuperaccountApplyRecord> KEY_HR_SUPERACCOUNT_APPLY_PRIMARY = UniqueKeys0.KEY_HR_SUPERACCOUNT_APPLY_PRIMARY;
-    public static final UniqueKey<HrSurveyConfRecord> KEY_HR_SURVEY_CONF_PRIMARY = UniqueKeys0.KEY_HR_SURVEY_CONF_PRIMARY;
     public static final UniqueKey<HrTalentpoolRecord> KEY_HR_TALENTPOOL_PRIMARY = UniqueKeys0.KEY_HR_TALENTPOOL_PRIMARY;
     public static final UniqueKey<HrTeamRecord> KEY_HR_TEAM_PRIMARY = UniqueKeys0.KEY_HR_TEAM_PRIMARY;
     public static final UniqueKey<HrTeamMemberRecord> KEY_HR_TEAM_MEMBER_PRIMARY = UniqueKeys0.KEY_HR_TEAM_MEMBER_PRIMARY;
@@ -305,7 +301,6 @@ public class Keys {
         public static Identity<HrRuleUniqueStatisticsRecord, Integer> IDENTITY_HR_RULE_UNIQUE_STATISTICS = createIdentity(HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS, HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS.ID);
         public static Identity<HrSearchConditionRecord, Integer> IDENTITY_HR_SEARCH_CONDITION = createIdentity(HrSearchCondition.HR_SEARCH_CONDITION, HrSearchCondition.HR_SEARCH_CONDITION.ID);
         public static Identity<HrSuperaccountApplyRecord, Integer> IDENTITY_HR_SUPERACCOUNT_APPLY = createIdentity(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY, HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.ID);
-        public static Identity<HrSurveyConfRecord, Integer> IDENTITY_HR_SURVEY_CONF = createIdentity(HrSurveyConf.HR_SURVEY_CONF, HrSurveyConf.HR_SURVEY_CONF.ID);
         public static Identity<HrTalentpoolRecord, Integer> IDENTITY_HR_TALENTPOOL = createIdentity(HrTalentpool.HR_TALENTPOOL, HrTalentpool.HR_TALENTPOOL.ID);
         public static Identity<HrTeamRecord, Integer> IDENTITY_HR_TEAM = createIdentity(HrTeam.HR_TEAM, HrTeam.HR_TEAM.ID);
         public static Identity<HrTeamMemberRecord, Integer> IDENTITY_HR_TEAM_MEMBER = createIdentity(HrTeamMember.HR_TEAM_MEMBER, HrTeamMember.HR_TEAM_MEMBER.ID);
@@ -368,7 +363,6 @@ public class Keys {
         public static final UniqueKey<HrRuleUniqueStatisticsRecord> KEY_HR_RULE_UNIQUE_STATISTICS_PRIMARY = createUniqueKey(HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS, "KEY_hr_rule_unique_statistics_PRIMARY", HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS.ID);
         public static final UniqueKey<HrSearchConditionRecord> KEY_HR_SEARCH_CONDITION_PRIMARY = createUniqueKey(HrSearchCondition.HR_SEARCH_CONDITION, "KEY_hr_search_condition_PRIMARY", HrSearchCondition.HR_SEARCH_CONDITION.ID);
         public static final UniqueKey<HrSuperaccountApplyRecord> KEY_HR_SUPERACCOUNT_APPLY_PRIMARY = createUniqueKey(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY, "KEY_hr_superaccount_apply_PRIMARY", HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.ID);
-        public static final UniqueKey<HrSurveyConfRecord> KEY_HR_SURVEY_CONF_PRIMARY = createUniqueKey(HrSurveyConf.HR_SURVEY_CONF, "KEY_hr_survey_conf_PRIMARY", HrSurveyConf.HR_SURVEY_CONF.ID);
         public static final UniqueKey<HrTalentpoolRecord> KEY_HR_TALENTPOOL_PRIMARY = createUniqueKey(HrTalentpool.HR_TALENTPOOL, "KEY_hr_talentpool_PRIMARY", HrTalentpool.HR_TALENTPOOL.ID);
         public static final UniqueKey<HrTeamRecord> KEY_HR_TEAM_PRIMARY = createUniqueKey(HrTeam.HR_TEAM, "KEY_hr_team_PRIMARY", HrTeam.HR_TEAM.ID);
         public static final UniqueKey<HrTeamMemberRecord> KEY_HR_TEAM_MEMBER_PRIMARY = createUniqueKey(HrTeamMember.HR_TEAM_MEMBER, "KEY_hr_team_member_PRIMARY", HrTeamMember.HR_TEAM_MEMBER.ID);

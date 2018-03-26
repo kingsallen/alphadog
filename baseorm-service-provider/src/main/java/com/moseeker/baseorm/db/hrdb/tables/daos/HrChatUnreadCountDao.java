@@ -66,6 +66,20 @@ public class HrChatUnreadCountDao extends DAOImpl<HrChatUnreadCountRecord, com.m
     }
 
     /**
+     * Fetch records that have <code>hr_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrChatUnreadCount> fetchByHrId(Integer... values) {
+        return fetch(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.HR_ID, values);
+    }
+
+    /**
+     * Fetch records that have <code>user_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrChatUnreadCount> fetchByUserId(Integer... values) {
+        return fetch(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.USER_ID, values);
+    }
+
+    /**
      * Fetch records that have <code>wx_chat_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrChatUnreadCount> fetchByWxChatTime(Timestamp... values) {
@@ -91,20 +105,6 @@ public class HrChatUnreadCountDao extends DAOImpl<HrChatUnreadCountRecord, com.m
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrChatUnreadCount> fetchByUserHaveUnreadMsg(Byte... values) {
         return fetch(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.USER_HAVE_UNREAD_MSG, values);
-    }
-
-    /**
-     * Fetch records that have <code>hr_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrChatUnreadCount> fetchByHrId(Integer... values) {
-        return fetch(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.HR_ID, values);
-    }
-
-    /**
-     * Fetch records that have <code>user_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrChatUnreadCount> fetchByUserId(Integer... values) {
-        return fetch(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.USER_ID, values);
     }
 
     /**
