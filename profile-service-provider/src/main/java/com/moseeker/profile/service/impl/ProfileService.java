@@ -75,6 +75,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -1255,7 +1257,6 @@ public class ProfileService {
         return ResponseUtils.success(result);
     }
 
-
     private HrCompanyDO selectSuperCompany(int companyId){
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
@@ -1264,5 +1265,9 @@ public class ProfileService {
             companyDO = selectSuperCompany(companyDO.getParentId());
         }
         return companyDO;
+    }
+
+    public List<UserProfile> fetchUserProfile(List<Integer> userIdList) {
+        return profileEntity.fetchUserProfile(userIdList);
     }
 }
