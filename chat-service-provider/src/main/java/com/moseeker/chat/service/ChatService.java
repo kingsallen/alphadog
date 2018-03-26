@@ -428,6 +428,9 @@ public class ChatService {
 
 
         resultOfSaveRoomVO.setChatDebut(chatDebut);
+        if(resultOfSaveRoomVO.getHr() == null){
+            resultOfSaveRoomVO.setHr(new HrVO());
+        }
         resultOfSaveRoomVO.getHr().setIsDelete(isHrDelete);
         logger.info("enterChatRoom result:{}", resultOfSaveRoomVO);
         return resultOfSaveRoomVO;
