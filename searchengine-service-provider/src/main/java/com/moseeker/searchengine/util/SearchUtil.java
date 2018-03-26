@@ -101,6 +101,12 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(cityfilter);
         }
     }
+    public void handleMatchParse(String condition,QueryBuilder query,String conditionField){
+        if (StringUtils.isNotEmpty(condition)) {
+            QueryBuilder cityfilter = QueryBuilders.matchPhraseQuery(conditionField, condition);
+            ((BoolQueryBuilder) query).must(cityfilter);
+        }
+    }
     /*
      使用 filter的方式处理查询语句
      */

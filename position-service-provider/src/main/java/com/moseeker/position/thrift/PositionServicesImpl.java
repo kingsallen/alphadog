@@ -241,7 +241,7 @@ public class PositionServicesImpl implements Iface {
                 }
             }
         } catch (Exception e) {
-            logger.info("save and sync error exception:",e);
+            logger.error("save and sync error exception:",e);
         }
 
         response.setSyncFailMessPojolist(syncFailMessPojolistList);
