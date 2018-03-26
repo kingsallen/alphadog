@@ -52,7 +52,24 @@ public class PositionATSService {
     @Autowired
     private ThirdpartyCompanyChannelConfDao thirdpartyCompanyChannelConfDao;
 
-    public List<Integer> getConfByCompanyId(int company_id){
+
+    public Response addCompanyChannelConf(int company_id,List<Integer> channel){
+        List<ThirdpartyCompanyChannelConfDO> confs = thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
+
+        List<ThirdpartyCompanyChannelConfDO> toBeDeleted = new ArrayList<>();
+        out:
+        for(ThirdpartyCompanyChannelConfDO conf:confs){
+            for(Integer c:channel){
+                if(conf.getChannel() == c){
+                    break out;
+                }
+            }
+            toBeDeleted.add(conf);
+        }
+        return null;
+    }
+
+    public List<Integer> getCompanyChannelConfByCompanyId(int company_id){
 
         // 如果是子公司，需要用母公司查询配置，因为只有母公司配置
         HrCompanyDO companyDO = companyDao.getCompanyById(company_id);
