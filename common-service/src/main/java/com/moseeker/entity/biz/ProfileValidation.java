@@ -355,7 +355,7 @@ public class ProfileValidation {
         logger.info("prfile resume birth:{}",basicRecord.getBirth());
 		ValidationMessage<ProfileBasicRecord> vm = new ValidationMessage<>();
 		if (basicRecord != null && basicRecord.getBirth() != null) {
-            if (!lowerNow(basicRecord.getBirth().getTime())) {
+            if (!lowerNow(basicRecord.getBirth())) {
                 vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
             }
 		}
@@ -441,6 +441,7 @@ public class ProfileValidation {
 		return false;
 	}
 
+
 	public static boolean lowerNow(String date) {
 		if (date == null) {
 			return false;
@@ -450,11 +451,9 @@ public class ProfileValidation {
 	}
 
 	private static boolean lowerNow(long time) {
-		if (time > 0) {
-			if (time < System.currentTimeMillis() && time >= minTime) {
-				return true;
-			}
-		}
+        if (time < System.currentTimeMillis() && time >= minTime) {
+            return true;
+        }
 		return false;
 	}
 }
