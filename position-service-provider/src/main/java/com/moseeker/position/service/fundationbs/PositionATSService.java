@@ -259,7 +259,9 @@ public class PositionATSService {
             }
 
             for(String featureName:feature.split("#")){
-                featureIds.add(featureMap.get(featureName).getId());
+                if(featureMap.containsKey(featureName)) {
+                    featureIds.add(featureMap.get(featureName).getId());
+                }
             }
             positionQxService.updatePositionFeatureList(jobPositionHandlerDate.getId(),featureIds);
         }
@@ -314,7 +316,10 @@ public class PositionATSService {
             }
 
         }
-        companyServices.addCompanyFeatures(companyFeatureAddList);
+        //公司福利特色不能超过8条
+        if(featureMap.size() <= 8){
+            companyServices.addCompanyFeatures(companyFeatureAddList);
+        }
 
         return batchHandlerJobPostion;
     }
