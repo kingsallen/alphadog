@@ -350,7 +350,7 @@ public class PositionATSService {
         if(StringUtils.isEmptyList(features)){
             return new HashMap<>();
         }
-        return features.stream().collect(Collectors.toMap(f->f.getFeature(),f->f));
+        return features.stream().filter(f->f.getCompanyId().equals(companyId)).collect(Collectors.toMap(f->f.getFeature(),f->f));
     }
 
     /**
