@@ -216,7 +216,7 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         try {
-            return ResponseUtils.success(service.batchHandlerJobPostion(batchHandlerJobPostion));
+            return ResponseUtils.success(service.batchHandlerJobPostionAdapter(batchHandlerJobPostion));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -225,7 +225,7 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public Response saveAndSync(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
-        JobPostionResponse response=service.batchHandlerJobPostion(batchHandlerJobPostion);
+        JobPostionResponse response=service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
 
         List<SyncFailMessPojo> syncFailMessPojolistList=new ArrayList<>();
         int syncingCounts=0;
