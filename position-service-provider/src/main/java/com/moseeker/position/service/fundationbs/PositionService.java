@@ -29,6 +29,7 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.daos.*;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
@@ -71,6 +72,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
@@ -499,6 +501,20 @@ public class PositionService {
         return dbOnlineList;
     }
 
+    private boolean containsFeature(Map<String,HrCompanyFeature> featureMap, JobPostrionObj jobPositionHandlerDate){
+        String feature = jobPositionHandlerDate.getFeature();
+        if(StringUtils.isNullOrEmpty(feature)){
+            return true;
+        }
+
+        for(String featureName:feature.split("#")){
+            if (!featureMap.containsKey(featureName)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     private JobPostrionObj buildPositionFeature(JobPostrionObj obj){
         JobPostrionObj positionFeature = new JobPostrionObj();
         positionFeature.setJobnumber(obj.getJobnumber());
@@ -511,16 +527,14 @@ public class PositionService {
 
     /**
      * 批量ATS职位适配器，包装batchHandlerJobPostion方法，
-     * 在执行完batchHandlerJobPostion后加上更新职位福利特色
+     * 原来准备在执行完batchHandlerJobPostion后加上更新职位福利特色
+     * 现将福利特色处理放在batchHandlerJobPostion中
      * @param batchHandlerJobPosition
      * @return
      * @throws BIZException
      */
-    public JobPostionResponse batchHandlerJobPostionAdapter(BatchHandlerJobPostion batchHandlerJobPosition) throws BIZException {
+    public JobPostionResponse batchHandlerJobPostionAdapter(BatchHandlerJobPostion batchHandlerJobPosition) throws TException {
         JobPostionResponse response = batchHandlerJobPostion(batchHandlerJobPosition);
-        // 更新职位福利特色,启动线程更新，避免时间太长
-        PositionATSService.FeatureThread featureThread =  positionATSService.new FeatureThread(batchHandlerJobPosition);
-        featureThread.start();
         return response;
     }
 
@@ -531,7 +545,7 @@ public class PositionService {
      * @return
      */
     @CounterIface
-    public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) throws BIZException {
+    public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) throws TException {
         logger.info("------开始批量修改职位--------");
         // 提交的数据为空
         if (batchHandlerJobPosition==null || com.moseeker.common.util.StringUtils.isEmptyList(batchHandlerJobPosition.getData())) {
@@ -551,8 +565,8 @@ public class PositionService {
         Map<String,JobCustomRecord> jobCustomMap = jobCustomGroupByName(companyId);
         // 数据库中该公司的职位列表
         Map<Integer,JobPositionRecord> dbListMap = dbListGroupById(companyId);
-        // 生成职位福利特色数据
-        BatchHandlerJobPostion forUpdatePositionFeature = new BatchHandlerJobPostion();
+        // 因为之前新增了不存在的福利特色，所以重新按照公司ID再查询一遍福利特色
+        Map<String,HrCompanyFeature> featureMap = positionATSService.getCompanyFeatureGroupByName(companyId);
         List<JobPositionRecord> dbOnlineList = getDBOnlineList(dbListMap);
 
         // 需要更新ES的jobpostionID
@@ -639,6 +653,8 @@ public class PositionService {
         List<Integer> deleteCitylist = new ArrayList<>();
         // 需要删除的抄送邮箱数据职位ID列表
         List<Integer> ccmailPositionIdsToDelete = new ArrayList<>();
+        // 需要更新的福利特色数据
+        List<JobPostrionObj> needBindFeatureData = new ArrayList<>();
         // 公司下HR账号ID
         Map<Integer,UserHrAccountDO> userHrAccountMap = userHrAccountGroupByID(companyId);
         // 处理数据
@@ -654,6 +670,13 @@ public class PositionService {
             if(!userHrAccountMap.containsKey(jobPositionHandlerDate.getPublisher())){
                 handlerFailMess(ConstantErrorCodeMessage.POSITION_PUBLISHER_NOT_EXIST, jobPositionFailMessPojos, jobPositionHandlerDate);
                 continue;
+            }
+
+            if (!containsFeature(featureMap,jobPositionHandlerDate)){
+                handlerFailMess(ConstantErrorCodeMessage.FEATURE_MUST_EXISTS, jobPositionFailMessPojos, jobPositionHandlerDate);
+                continue;
+            }else {
+                needBindFeatureData.add(jobPositionHandlerDate);
             }
 
             int team_id = 0;
@@ -955,6 +978,11 @@ public class PositionService {
                 thirdpartyPositionDao.disable(Arrays.asList(condition));
                 logger.info("-------------作废thirdPartyPosition数据结束------------------");
             }
+            if (needBindFeatureData.size() > 0){
+                BatchHandlerJobPostion featureData = new BatchHandlerJobPostion();
+                featureData.setData(needBindFeatureData);
+                positionATSService.updatePositionFeature(featureData);
+            }
         } catch (Exception e) {
             logger.info("更新和插入数据发生异常,异常信息为：" + e.getMessage());
             e.printStackTrace();
@@ -1125,6 +1153,7 @@ public class PositionService {
         jobPositionFailMessPojo.setSourceId(jobPostrionObj.getSource_id());
         jobPositionFailMessPojo.setJobPostionId(jobPostrionObj.getId());
         jobPositionFailMessPojo.setDepartment(jobPostrionObj.getDepartment());
+        jobPositionFailMessPojo.setFeature(jobPostrionObj.getFeature());
         JSONObject jsonObject = JSONObject.parseObject(message);
         jobPositionFailMessPojo.setMessage(jsonObject.getString("message"));
         jobPositionFailMessPojo.setStatus(jsonObject.getInteger("status"));
