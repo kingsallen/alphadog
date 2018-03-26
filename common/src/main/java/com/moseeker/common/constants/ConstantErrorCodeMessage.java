@@ -133,6 +133,7 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_ALREADY_BANNED = "{'status':51022,'message':'该职位已撤下!'}";
     public static final String POSITION_PUBLISHER_NOT_EXIST = "{'status':51023,'message':'发布者不存在'}";
     public static final String SOURCE_ERROR = "{'status':51024,'message':'来源错误！'}";
+    public static final String FEATURE_MUST_EXISTS="{'status':52003,'message':'福利特色不存在！'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
     //职位同步

@@ -236,7 +236,11 @@ public class PositionATSService {
      * @return
      * @throws TException
      */
-    private JobPostionResponse updatePositionFeature(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
+    JobPostionResponse updatePositionFeature(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
+        if(batchHandlerJobPostion == null || StringUtils.isEmptyList(batchHandlerJobPostion.getData())){
+            return new JobPostionResponse();
+        }
+
         // 返回新增或者更新失败的职位信息
         List<JobPositionFailMess> jobPositionFailMessPojos = new ArrayList<>();
 
@@ -259,9 +263,7 @@ public class PositionATSService {
             }
 
             for(String featureName:feature.split("#")){
-                if(featureMap.containsKey(featureName)) {
-                    featureIds.add(featureMap.get(featureName).getId());
-                }
+                featureIds.add(featureMap.get(featureName).getId());
             }
             positionQxService.updatePositionFeatureList(jobPositionHandlerDate.getId(),featureIds);
         }
@@ -273,12 +275,12 @@ public class PositionATSService {
     }
 
     /**
-     * 查找职位ID，以及新增不存在的福利特色
+     * 查找职位ID,默认福利特色都存在
      * @param batchHandlerJobPostion
      * @return
      * @throws TException
      */
-    private BatchHandlerJobPostion initPidAndFeature(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
+    BatchHandlerJobPostion initPidAndFeature(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         int companyId = batchHandlerJobPostion.getData().get(0).getCompany_id();
 
         Map<String,HrCompanyFeature> featureMap = getCompanyFeatureGroupByName(companyId);
@@ -316,10 +318,7 @@ public class PositionATSService {
             }
 
         }
-        //公司福利特色不能超过8条
-        if(featureMap.size() <= 8){
-            companyServices.addCompanyFeatures(companyFeatureAddList);
-        }
+//        companyServices.addCompanyFeatures(companyFeatureAddList);
 
         return batchHandlerJobPostion;
     }
@@ -344,7 +343,7 @@ public class PositionATSService {
      * @return
      * @throws TException
      */
-    private Map<String,HrCompanyFeature> getCompanyFeatureGroupByName(int companyId) throws TException {
+    Map<String,HrCompanyFeature> getCompanyFeatureGroupByName(int companyId) throws TException {
         Response response = companyServices.getFeatureByCompanyId(companyId);
         String data = response.getData();
         if(StringUtils.isNullOrEmpty(data)){
@@ -400,7 +399,7 @@ public class PositionATSService {
      * @return
      * @throws BIZException
      */
-    private Response callBatchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPostion) throws BIZException {
+    private Response callBatchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         batchHandlerJobPostion.setNodelete(true);
         batchHandlerJobPostion.setIsCreateDeparment(false);
 
