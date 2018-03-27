@@ -7,25 +7,25 @@ public enum ChatMsgType {
     HTML("html") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && StringUtils.isNullOrEmpty(chatVO.getContent());
+            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getContent());
         }
     },
     QRCODE("qrcode") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && StringUtils.isNullOrEmpty(chatVO.getPicUrl());
+            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getPicUrl());
         }
     },
     IMAGE("image") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && StringUtils.isNullOrEmpty(chatVO.getPicUrl());
+            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getPicUrl());
         }
     },
     BUTTON_RADIO("button_radio") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && StringUtils.isNullOrEmpty(chatVO.getBtnContent());
+            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getBtnContent());
         }
     };
 

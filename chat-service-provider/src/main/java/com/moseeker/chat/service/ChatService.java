@@ -329,7 +329,7 @@ public class ChatService {
         }
 
         if (!msgType.vaildChat(obj)){
-            logger.error("empty content ChatVO:{}",obj);
+            logger.error("unvalid chat ChatVO:{}",obj);
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
         }
 
