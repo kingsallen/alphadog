@@ -322,9 +322,15 @@ public class ChatService {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
-        if (StringUtils.isNullOrEmpty(obj.getContent()) || StringUtils.isNullOrEmpty(obj.getContent().trim())){
-            logger.error("empty content ChatVO:{}",obj);
+        ChatMsgType msgType = ChatMsgType.toChatMsgType(obj.getMsgType());
+        if(msgType == null){
+            logger.error("empty msgType ChatVO:{}",obj);
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
+        if (!msgType.vaildChat(obj)){
+            logger.error("empty content ChatVO:{}",obj);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
         }
 
         return obj;
