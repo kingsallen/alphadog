@@ -88,6 +88,18 @@ public class PositionATSService {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.SUB_COMPANY_CANT_CONF_CHANNEL);
         }
 
+        // 渠道号必须有效
+        List<ChannelTypePojo> channelTypePojoList = getSyncChannel();
+        out:
+        for(int c : channel){
+            for(ChannelTypePojo ctp : channelTypePojoList){
+                if(c == ctp.getCode()){
+                    continue out;
+                }
+            }
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.WRONG_SYNC_CHANNEL);
+        }
+
         List<ThirdpartyCompanyChannelConfDO> confs = thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
 
         List<ThirdpartyCompanyChannelConfDO> toBeDeleted = new ArrayList<>();
@@ -95,7 +107,7 @@ public class PositionATSService {
         for(ThirdpartyCompanyChannelConfDO conf:confs){
             for(Integer c:channel){
                 if(conf.getChannel() == c){
-                    break out;
+                    continue out;
                 }
             }
             toBeDeleted.add(conf);
@@ -106,7 +118,7 @@ public class PositionATSService {
         for(Integer c:channel){
             for(ThirdpartyCompanyChannelConfDO conf:confs){
                 if(conf.getChannel() == c){
-                    break out;
+                    continue out;
                 }
             }
             ThirdpartyCompanyChannelConfDO temp = new ThirdpartyCompanyChannelConfDO();
