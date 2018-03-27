@@ -10,12 +10,15 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.Position.PositionSource;
 import com.moseeker.common.constants.Position.PositionStatus;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.position.pojo.ChannelTypePojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
+import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -52,14 +55,39 @@ public class PositionATSService {
     @Autowired
     private ThirdpartyCompanyChannelConfDao thirdpartyCompanyChannelConfDao;
 
+    @Autowired
+    List<AbstractPositionTransfer> transferList;
 
     /**
-     * 更新公司可同步渠道配置，没有的新增，不在传入参数中的数据删除
-     * @param company_id
-     * @param channel
-     * @return
+     * 获取所有可同步的渠道信息
+     * @return  可同步的渠道信息
      */
-    public List<ThirdpartyCompanyChannelConfDO> updateCompanyChannelConf(int company_id,List<Integer> channel){
+    public List<ChannelTypePojo> getSyncChannel(){
+        return transferList.stream().map(p->{
+            ChannelTypePojo channelTypePojo = new ChannelTypePojo();
+            channelTypePojo.setCode(p.getChannel().getValue());
+            channelTypePojo.setText(p.getChannel().getAlias());
+            return channelTypePojo;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 更新公司可同步渠道配置，没有的新增，删除 不在传入参数中的数据
+     * @param company_id    公司ID
+     * @param channel       需要配置的渠道号
+     * @return  配置结果
+     */
+    public List<ThirdpartyCompanyChannelConfDO> updateCompanyChannelConf(int company_id,List<Integer> channel) throws BIZException {
+        HrCompanyDO companyDO = companyDao.getCompanyById(company_id);
+        if(companyDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
+        }
+
+        // 只能更新母公司
+        if(companyDO.getParentId() != 0){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.SUB_COMPANY_CANT_CONF_CHANNEL);
+        }
+
         List<ThirdpartyCompanyChannelConfDO> confs = thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
 
         List<ThirdpartyCompanyChannelConfDO> toBeDeleted = new ArrayList<>();
@@ -94,10 +122,19 @@ public class PositionATSService {
         return thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
     }
 
-    public List<Integer> getCompanyChannelConfByCompanyId(int company_id){
+    /**
+     * 根据公司ID获取配置的可同步渠道
+     * @param company_id    公司ID
+     * @return  配置的可同步渠道号
+     * @throws BIZException
+     */
+    public List<Integer> getCompanyChannelConfByCompanyId(int company_id) throws BIZException {
+        HrCompanyDO companyDO = companyDao.getCompanyById(company_id);
+        if(companyDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
+        }
 
         // 如果是子公司，需要用母公司查询配置，因为只有母公司配置
-        HrCompanyDO companyDO = companyDao.getCompanyById(company_id);
         if(companyDO.getParentId() != 0){
             company_id = companyDO.getParentId();
         }
