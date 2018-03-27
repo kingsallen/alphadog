@@ -66,3 +66,10 @@ struct SortResult {
     2: optional i32 rank,                   //排名
     3: optional i32 hongbao,                //红包金额
 }
+
+//候选人最近浏览的职位
+struct RecentPosition {
+    1: optional i32 positionId,             //职位编号
+    2: optional string positionName,        //职位名称
+    3: optional list<string> cities;        //职位城市
+}

@@ -562,6 +562,34 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         return null;
     }
 
+    public int fetchPublisher(int positionId) {
+	    Record1<Integer> record1 = create.select(JobPosition.JOB_POSITION.PUBLISHER)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.eq(positionId))
+                .fetchOne();
+	    if (record1 == null) {
+	        return 0;
+        } else {
+	        return record1.value1();
+        }
+    }
+
+    /**
+     * 查找指定HR发布的职位编号
+     * @param hrId
+     * @return
+     */
+    public List<Integer> getPositionIdByPublisher(int hrId) {
+        Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.PUBLISHER.eq(hrId))
+                .fetch();
+        if (result != null && result.size() > 0) {
+            return result.stream().filter(record1 -> record1.value1() != null && record1.value1().intValue() > 0)
+                    .map(record1 -> record1.value1()).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
+    }
     /**
      * 职位是否存在
      * @param companyId 公司ID
@@ -592,5 +620,4 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 .buildQuery();
         return getRecord(queryUtil);
     }
-
 }

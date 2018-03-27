@@ -23,5 +23,7 @@ service CandidateService {
     candidate_struct.RecommendResult ignore(1: i32 id, 2:i32 companyId, 3:i32 postUserId, 4:string clickTime) throws (1: common_struct.BIZException e);
      //潜在候选人详情
     common_struct.Response getCandidateInfo(1: i32 hrId, 2: i32 userId, 3: i32 positionId) throws (1: common_struct.BIZException e);
+    //查找候选人最近浏览的职位
+    candidate_struct.RecentPosition getRecentPosition(1:i32 hrId, 2:i32 userId) throws (1: common_struct.BIZException e);
 }
 

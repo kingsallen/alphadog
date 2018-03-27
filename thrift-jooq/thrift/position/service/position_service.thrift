@@ -106,6 +106,11 @@ service PositionServices {
 
     common_struct.Response getMiniPositionNumStatus(1:i32 accountId,2:string keyword,3:i32 page,4: i32 pageSize);
 
+    common_struct.Response getMiniPositionDetail(1:i32 positionId);
+
+    common_struct.Response getMiniPositionShare(1:i32 positionId);
+
+
      common_struct.Response getFeatureByPId(1:i32 pid);
 
      common_struct.Response updatePositionFeature(1:i32 pid,2:i32 fid);

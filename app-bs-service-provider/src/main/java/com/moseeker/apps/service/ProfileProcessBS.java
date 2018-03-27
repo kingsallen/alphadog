@@ -2,6 +2,7 @@ package com.moseeker.apps.service;
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.apps.bean.RecruitmentResult;
 import com.moseeker.apps.bean.RewardsToBeAddBean;
 import com.moseeker.apps.constants.TemplateMs;
@@ -20,8 +21,10 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -56,6 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +80,8 @@ public class ProfileProcessBS {
 
     CompanyServices.Iface companyService = ServiceManager.SERVICEMANAGER
             .getService(CompanyServices.Iface.class);
+
+    private final String ms = "{'tableName':'job_application'}";
 
     @Autowired
     private JobApplicationDao jobApplicationDao;
@@ -103,6 +109,10 @@ public class ProfileProcessBS {
 
     @Autowired
     private EmployeeEntity employeeEntity;
+
+    @Resource(name = "cacheClient")
+    private RedisClient client;
+
 
     public MqService.Iface getMqService() {
 		return mqService;
@@ -210,8 +220,10 @@ public class ProfileProcessBS {
                 //  对所有的
                 if (processStatus || progressStatus == 13 || progressStatus == 99) {
                 	List<HrAwardConfigTemplate> recruitProcesses=configSysPointsConfTplDao.findRecruitProcesses(companyId);
+                	logger.info("ProfileProcessBS processProfile excuteRecruitRewardOperation recruitOrder:{}, " +
+                            "progressStatus:{}, recruitProcesses:{}", recruitOrder, processStatus, recruitProcesses);
                     RecruitmentResult result = BusinessUtil.excuteRecruitRewardOperation(recruitOrder, progressStatus, recruitProcesses);
-                    logger.info("ProfileProcessBS processProfile result:{}", result);
+                    logger.info("ProfileProcessBS processProfile result:{}", JSON.toJSONString(result));
                     if (result.getStatus() == 0) {
                         List<Integer> recommenderIds = new ArrayList<Integer>();
                         List<RewardsToBeAddBean> rewardsToBeAdd = new ArrayList<RewardsToBeAddBean>();
@@ -221,7 +233,7 @@ public class ProfileProcessBS {
                         HrOperationRecordDO turnToCVChecked = null;
                         for (ProcessValidationStruct record : list) {
                             RecruitmentResult result1 = BusinessUtil.excuteRecruitRewardOperation(record.getRecruit_order(), progressStatus, recruitProcesses);
-                            logger.info("ProfileProcessBS processProfile result1:{}", result1);
+                            logger.info("ProfileProcessBS processProfile result1:{}", JSON.toJSONString(result1));
                             reward = new RewardsToBeAddBean();
                             reward.setAccount_id(accountId);
                             reward.setEmployee_id(0);
@@ -264,6 +276,14 @@ public class ProfileProcessBS {
                         this.updateRecruitState(progressStatus, list,
                                 turnToCVCheckeds, employeesToBeUpdates, result,
                                 rewardsToBeAdd);
+                        JSONObject jsb = JSONObject.parseObject(ms);
+                        jsb.put("application_id", list
+                                .stream()
+                                .map(applicationEntity -> applicationEntity.getId())
+                                .collect(Collectors.toList()));
+                        client.lpush(Constant.APPID_ALPHADOG,
+                                "ES_REALTIME_UPDATE_INDEX_USER_IDS", jsb.toJSONString());
+                        logger.info("lpush ES_REALTIME_UPDATE_INDEX_USER_IDS:{} success", jsb.toJSONString());
                         list.forEach(pvs -> {
                             //当为这三种状态时说明HR做了重新考虑
                             if(ProcessUtils.LETTERS_RECRUITMENT_REOFFERED.equals(result.getReason())
@@ -327,6 +347,7 @@ public class ProfileProcessBS {
             return;
         }
         MsInfo msInfo = tm.processStatus(status, userName);
+        logger.info("msInfo: {}", msInfo);
         if(msInfo == null){
             return ;
         }
@@ -334,7 +355,7 @@ public class ProfileProcessBS {
         int wechatId = 0;
         try {
             Response wechat = companyService.getWechat(companyId, 0);
-            if (wechat.getStatus() == 0) {
+            if (wechat.getStatus() == 0 && msInfo!=null) {
                 Map<String, Object> wechatData = JSON.parseObject(wechat
                         .getData());
                 signature = String.valueOf(wechatData.get("signature"));

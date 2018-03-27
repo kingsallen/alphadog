@@ -142,6 +142,7 @@ public class DictVeryeastOccupation extends TableImpl<DictVeryeastOccupationReco
     /**
      * Rename this table
      */
+    @Override
     public DictVeryeastOccupation rename(String name) {
         return new DictVeryeastOccupation(name, null);
     }
