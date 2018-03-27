@@ -533,17 +533,17 @@ public class ChatService {
      * @param resultOfSaveRoomVO 进入聊天室返回的结果
      * @return 聊天记录
      */
-    private HrWxHrChatDO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO, boolean is_gamma) {
+    private ChatVO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO, boolean is_gamma) throws BIZException {
 
         logger.info("createChat ResultOfSaveRoomVO:{}, is_gamma:{}", resultOfSaveRoomVO, is_gamma);
         //1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         //2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
-        HrWxHrChatDO chatDO = new HrWxHrChatDO();
-        chatDO.setChatlistId(resultOfSaveRoomVO.getRoomId());
+        ChatVO chatDO = new ChatVO();
+        chatDO.setRoomId(resultOfSaveRoomVO.getRoomId());
         chatDO.setSpeaker((byte)1);
         chatDO.setOrigin(ChatOrigin.System.getValue());
         String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
-        chatDO.setCreateTime(createTime);
+        chatDO.setCreate_time(createTime);
         String content;
         if(is_gamma) {
             content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
@@ -560,10 +560,10 @@ public class ChatService {
         }
         chatDO.setContent(content);
         if(resultOfSaveRoomVO.getPosition() != null) {
-            chatDO.setPid(resultOfSaveRoomVO.getPosition().getPositionId());
+            chatDO.setPositionId(resultOfSaveRoomVO.getPosition().getPositionId());
         }
         chatDO.setMsgType(ChatMsgType.HTML.value());
-        chaoDao.saveChat(chatDO);
+        saveChat(chatDO);
         logger.info("createChat result:{}", chatDO);
         return chatDO;
     }
