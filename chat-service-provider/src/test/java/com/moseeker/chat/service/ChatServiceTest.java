@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.chat.config.AppConfig;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
+import com.moseeker.chat.thriftservice.ChatThriftService;
 import com.moseeker.thrift.gen.chat.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -15,6 +16,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.tools.json.JSONArray;
 import org.junit.Before;
@@ -43,10 +45,10 @@ import static org.junit.Assert.assertEquals;
 public class ChatServiceTest {
 
     @Autowired
-    private ChatService chatService;
+    private ChatThriftService chatService;
 
     @Test
-    public void listChatLog(){
+    public void listChatLog() throws TException {
         System.out.println(JSON.toJSONString(chatService.listChatLogs(33 ,1, 10)));
     }
 
@@ -79,17 +81,63 @@ public class ChatServiceTest {
 
         try {
             chatVO =new ChatVO();
-            chatVO.setContent("");
             chatService.saveChat(chatVO);
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        chatVO =new ChatVO();
-        chatVO.setContent(" ");
+        try {
+            chatVO =new ChatVO();
+            chatVO.setMsgType("abc");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setContent("");
+            chatVO.setMsgType("html");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setContent(" ");
+            chatVO.setMsgType("html");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setMsgType("qrcode");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setMsgType("image");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setMsgType("button_radio");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        chatVO = JSON.parseObject(jsonChat,ChatVO.class);
         chatService.saveChat(chatVO);
-
-
 
 
         ChatsVO chatsVO=chatService.listChatLogs(1,1,10);
