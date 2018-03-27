@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAiConf extends TableImpl<HrAiConfRecord> {
 
-    private static final long serialVersionUID = 348106951;
+    private static final long serialVersionUID = 58528729;
 
     /**
      * The reference instance of <code>hrdb.hr_ai_conf</code>

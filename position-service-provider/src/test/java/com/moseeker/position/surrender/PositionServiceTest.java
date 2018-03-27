@@ -130,7 +130,7 @@ public class PositionServiceTest {
 		batchHandlerJobPostion.setIsCreateDeparment(true);
 
 
-		service.batchHandlerJobPostion(batchHandlerJobPostion);
+		service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
 	}
 
 	private String position="{\n" +
