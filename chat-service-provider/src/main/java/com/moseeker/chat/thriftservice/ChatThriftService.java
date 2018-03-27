@@ -4,6 +4,7 @@ import com.moseeker.chat.service.ChatService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.thrift.gen.chat.service.ChatService.Iface;
 import com.moseeker.thrift.gen.chat.struct.*;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -57,6 +58,9 @@ public class ChatThriftService implements Iface {
     public int saveChat(ChatVO chat) throws  TException {
         try {
             return chatService.saveChat(chat);
+        } catch (BIZException e){
+            logger.error(e.getMessage(), e);
+            return -1;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
