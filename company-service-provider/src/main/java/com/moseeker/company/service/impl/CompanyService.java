@@ -955,7 +955,7 @@ public class CompanyService {
         }
         Query query=new Query.QueryBuilder().where("company_id",hrCompanyFeatureDO.getCompany_id()).and("disable",1).buildQuery();
         int count=hrCompanyFeatureDao.getCount(query);
-        if((count+1)>8){
+        if((count+1)>20){
             return -1;
         }
         hrCompanyFeatureDO.setDisable(1);
@@ -985,7 +985,7 @@ public class CompanyService {
         if(!StringUtils.isEmptyList(recordList)){
             Query query=new Query.QueryBuilder().where("company_id",recordList.get(0).getCompanyId()).and("disable",1).buildQuery();
             int count=hrCompanyFeatureDao.getCount(query);
-            if((count+recordList.size())>8){
+            if((count+recordList.size())>20){
                 return -1;
             }
             hrCompanyFeatureDao.addAllRecord(recordList);
