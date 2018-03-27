@@ -1,6 +1,7 @@
 package com.moseeker.position;
 
 import com.moseeker.position.config.AppConfig;
+import com.moseeker.position.service.position.jobsdb.refresh.JobsDBParamRefresher;
 import com.moseeker.position.service.position.veryeast.refresh.VeryEastParamRefresher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +19,9 @@ import java.io.IOException;
 public class VeryEastParamRefreshTest{
 
     @Autowired
-    VeryEastParamRefresher refresh;
+    JobsDBParamRefresher refresh;
 
-    String file="C:\\Users\\xym-moseeker\\Desktop\\environ.response.json";
+    String file="/Users/pyb/Desktop/environ.response.json";
 
     @Test
     public void test(){

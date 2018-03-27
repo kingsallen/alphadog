@@ -477,6 +477,7 @@ public class ChatService {
      * @param hrId HR编号
      * @param positionId 职位编号
      * @param roomId 聊天室编号
+     * @param is_gamma 是否从聚合号进入
      * @return ResultOfSaveRoomVO
      */
     public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId, final boolean is_gamma) {

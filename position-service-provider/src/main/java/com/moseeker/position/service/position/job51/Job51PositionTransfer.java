@@ -19,7 +19,7 @@ import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer
 import com.moseeker.position.service.position.job51.pojo.Position51;
 import com.moseeker.position.service.position.job51.pojo.Position51WithAccount;
 import com.moseeker.position.service.position.qianxun.Degree;
-import com.moseeker.position.service.position.qianxun.WorkType;
+import com.moseeker.common.constants.WorkType;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -154,7 +153,7 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
             ThirdpartyAccountCompanyAddressDO addressDO=addressDao.getData(query);
 
             if(addressDO==null || addressDO.getId()==0){
-
+                address.setAddress(form.getAddressName());
             }else{
                 address.setCity(addressDO.getCity());
                 address.setAddress(addressDO.getAddress());
@@ -216,11 +215,7 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
         }
         data.setAddressId(position.getAddressId());
 
-        if(p.getAddress()==null) {
-            data.setAddressName(position.getAddressName());
-        }else{
-            data.setAddressName(p.getAddress().getCity()+p.getAddress().getAddress());
-        }
+        data.setAddressName(position.getAddressName());
 
         logger.info("回写到第三方职位对象:{}",data);
         return data;

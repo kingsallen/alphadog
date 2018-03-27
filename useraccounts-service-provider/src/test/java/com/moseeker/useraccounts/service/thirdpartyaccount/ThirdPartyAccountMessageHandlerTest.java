@@ -1,27 +1,9 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount;
 
-import com.alibaba.fastjson.JSON;
-import com.moseeker.entity.pojos.Address;
-import com.moseeker.entity.pojos.City;
-import com.moseeker.entity.pojos.Data;
-import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.useraccounts.config.AppConfig;
-import com.moseeker.useraccounts.pojo.BindResult;
-import com.rabbitmq.client.Channel;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageBuilder;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.ArrayList;
 
 /**
  * Created by jack on 28/09/2017.
@@ -75,7 +57,7 @@ public class ThirdPartyAccountMessageHandlerTest {
         accountExt.setStatus(0);
         accountExt.setMessage("success");
 
-        Data data = new Data();
+        ThirdPartyInfoData data = new ThirdPartyInfoData();
         data.setAccountId(8);
         data.setOperationType(1);
 

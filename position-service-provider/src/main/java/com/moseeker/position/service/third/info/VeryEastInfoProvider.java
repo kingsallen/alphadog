@@ -7,6 +7,8 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StructSerializer;
 import com.moseeker.common.constants.RefreshConstant;
+import com.moseeker.position.service.position.base.refresh.handler.ResultProvider;
+import com.moseeker.position.service.position.veryeast.refresh.handler.VERedisResultHandler;
 import com.moseeker.position.service.third.ThirdPartyAccountCompanyService;
 import com.moseeker.position.service.third.base.AbstractThirdInfoProvider;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -25,8 +27,8 @@ public class VeryEastInfoProvider extends AbstractThirdInfoProvider {
     @Autowired
     ThirdPartyAccountCompanyService companyService;
 
-    @Resource(name = "cacheClient")
-    private RedisClient redisClient;
+    @Resource(type = VERedisResultHandler.class)
+    private ResultProvider resultProvider;
 
     @Override
     public String provide(ThirdPartyAccountInfoParam param) throws Exception {
@@ -36,7 +38,7 @@ public class VeryEastInfoProvider extends AbstractThirdInfoProvider {
         obj.put(COMPANY,companyService.getCompanyByAccountId(accountId));
 
         //获取redis中的字段(提供食宿、计算机能力、语言能力等等)
-        String str=redisClient.get(RefreshConstant.APP_ID, RefreshConstant.VERY_EAST_REDIS_PARAM_KEY,"");
+        String str=resultProvider.getRedisResult();
         logger.info("VeryEast redis param :"+str);
         if(str==null){
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,accountId+"在最佳东方不存在提供食宿、计算机能力、语言能力等字段");

@@ -226,10 +226,13 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_WRONG_CHANNEL);
         }
 
-        JobPositionRecord jobPosition=positionDao.getPositionById(verifyParam.getPositionId());
-        if(jobPosition == null){
-            logger.error("验证处理--职位不存在：{}",param);
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_NO_POSITION);
+        // 手机验证(environ)可能会没有职位ID，所以只有传递positionId才校验
+        if(verifyParam.getPositionId()>0) {
+            JobPositionRecord jobPosition = positionDao.getPositionById(verifyParam.getPositionId());
+            if (jobPosition == null) {
+                logger.error("验证处理--职位不存在：{}", param);
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_NO_POSITION);
+            }
         }
 
         Query query=new Query.QueryBuilder()

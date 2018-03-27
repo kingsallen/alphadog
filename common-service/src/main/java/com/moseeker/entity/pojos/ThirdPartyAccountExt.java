@@ -7,10 +7,10 @@ public class ThirdPartyAccountExt {
 
     private int status;
     private String message;
-    private Data data;
+    private ThirdPartyInfoData data;
 
-    public Data createData() {
-        return new Data();
+    public ThirdPartyInfoData createData() {
+        return new ThirdPartyInfoData();
     }
 
     public City createCity() {
@@ -37,11 +37,11 @@ public class ThirdPartyAccountExt {
         this.message = message;
     }
 
-    public Data getData() {
+    public ThirdPartyInfoData getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(ThirdPartyInfoData data) {
         this.data = data;
     }
 }

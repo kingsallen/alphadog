@@ -3,8 +3,9 @@ package com.moseeker.position.service.position.base.sync;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.SyncRequestType;
-import com.moseeker.position.constants.CheckStrategy;
-import com.moseeker.position.service.position.base.config.TransferCheckConfigUtil;
+import com.moseeker.position.service.position.base.sync.check.AbstractTransferCheck;
+import com.moseeker.position.service.position.base.sync.check.ITransferCheck;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,42 +18,21 @@ import java.util.*;
 public class TransferCheckUtil {
 
     @Autowired
-    TransferCheckConfigUtil checkConfigUtil;
+    List<AbstractTransferCheck> checkList;
 
-    public List<String> checkBeforeTransfer(SyncRequestType requestType, ChannelType channelType, JSONObject jsonForm){
+    public List<String> checkBeforeTransfer(SyncRequestType requestType, ChannelType channelType, JSONObject jsonForm, JobPositionDO moseekerPosition){
         if(requestType==null || channelType==null || jsonForm==null || jsonForm.isEmpty()){
             return Collections.emptyList();
         }
 
-        Map<String,Map<CheckStrategy,String>> checkStrategy = getCheckStrategy(requestType,channelType);
-        if(checkStrategy==null || checkStrategy.isEmpty()){
-            return Collections.emptyList();
-        }
-
-        List<String> msgs=new ArrayList<>();
-        checkStrategy.forEach((param,strategies)->{
-            if(!jsonForm.containsKey(param)){
-                msgs.add(CheckStrategy.REQUIRED.errorMsg(param));
-            }else{
-                String value=jsonForm.getString(param);
-
-                strategies.forEach((strategy,strategyVal)->{
-                    if(!strategy.check(strategyVal,value)){
-                        msgs.add(strategy.errorMsg(value));
-                    }
-                });
+        for(AbstractTransferCheck transferCheck:checkList){
+            if(transferCheck.getChannelType()==channelType){
+                if(transferCheck.containsError(jsonForm,moseekerPosition)){
+                    return transferCheck.getError(jsonForm,moseekerPosition);
+                }
             }
-        });
-
+        }
         return Collections.emptyList();
     }
 
-
-
-    private Map<String, Map<CheckStrategy, String>> getCheckStrategy(SyncRequestType requestType,ChannelType channelType){
-        if(requestType==null || channelType==null){
-            return null;
-        }
-        return checkConfigUtil.getConfig(requestType,channelType);
-    }
 }

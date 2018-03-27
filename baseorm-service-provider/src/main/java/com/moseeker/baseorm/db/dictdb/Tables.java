@@ -52,7 +52,7 @@ public class Tables {
     public static final DictAlipaycampusCity DICT_ALIPAYCAMPUS_CITY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY;
 
     /**
-     * dict_alipaycampus_jobcategory[alipay校园招聘-职位类别]
+     * job_category[校园工作-基础数据-职位类别]
      */
     public static final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
 
@@ -67,7 +67,7 @@ public class Tables {
     public static final DictCity DICT_CITY = com.moseeker.baseorm.db.dictdb.tables.DictCity.DICT_CITY;
 
     /**
-     * 城市字典code映射表
+     * The table <code>dictdb.dict_city_map</code>.
      */
     public static final DictCityMap DICT_CITY_MAP = com.moseeker.baseorm.db.dictdb.tables.DictCityMap.DICT_CITY_MAP;
 
@@ -82,7 +82,7 @@ public class Tables {
     public static final DictCollege DICT_COLLEGE = com.moseeker.baseorm.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
     /**
-     * The table <code>dictdb.dict_constant</code>.
+     * 常量字典表
      */
     public static final DictConstant DICT_CONSTANT = com.moseeker.baseorm.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 

@@ -8,11 +8,13 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.position.service.position.base.refresh.handler.ResultProvider;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.veryeast.pojo.PositionVeryEast;
 import com.moseeker.position.service.position.veryeast.pojo.PositionVeryEastForm;
 import com.moseeker.position.service.position.veryeast.pojo.PositionVeryEastWithAccount;
 import com.moseeker.position.service.position.veryeast.pojo.VeryEastTransferStrategy;
+import com.moseeker.position.service.position.veryeast.refresh.handler.VERedisResultHandler;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -32,8 +34,8 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
 
     Logger logger= LoggerFactory.getLogger(VeryEastTransfer.class);
 
-    @Resource(name = "cacheClient")
-    private RedisClient redisClient;
+    @Resource(type = VERedisResultHandler.class)
+    private ResultProvider resultProvider;
 
     @Override
     public PositionVeryEastWithAccount changeToThirdPartyPosition(PositionVeryEastForm positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
@@ -102,7 +104,7 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         }
         //moseeker的薪资单位是K，所以要乘以1000
         salary_top=salary_top*1000;
-        String str=redisClient.get(RefreshConstant.APP_ID, RefreshConstant.VERY_EAST_REDIS_PARAM_KEY,"");
+        String str=resultProvider.getRedisResult();
         JSONObject param=JSONObject.parseObject(str);
         JSONArray salarys=param.getJSONArray("salary");
         if(StringUtils.isEmptyList(salarys)){
@@ -139,7 +141,7 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         }catch (NumberFormatException e){
             return "";
         }
-        String str=redisClient.get(RefreshConstant.APP_ID, RefreshConstant.VERY_EAST_REDIS_PARAM_KEY,"");
+        String str=resultProvider.getRedisResult();
         JSONObject param=JSONObject.parseObject(str);
         JSONArray experiences=param.getJSONArray("experience");
         if(StringUtils.isEmptyList(experiences)){
