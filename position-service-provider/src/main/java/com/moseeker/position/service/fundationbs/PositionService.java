@@ -32,6 +32,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
@@ -326,8 +327,33 @@ public class PositionService {
         if(jobPositionPojo.salary_bottom==0&&jobPositionPojo.salary_top==0){
             jobPositionPojo.salary="薪资面议";
         }
+        List<Map<String,Object>> positionFeature=positionEntity.getPositionFeatureList(positionId);
+        if(!StringUtils.isEmptyList(positionFeature)){
+            jobPositionPojo.position_feature=positionFeature;
+        }
+        jobPositionPojo.feature=this.getFeatureString(positionFeature);
         return ResponseUtils.success(jobPositionPojo);
     }
+    /*
+     获取字符串形式的福利特色
+     */
+    private String getFeatureString( List<Map<String,Object>> list){
+        if(StringUtils.isEmptyList(list)){
+            return "";
+        }
+        String features="";
+        for(Map<String,Object> map:list){
+            String feature=(String)map.get("feature");
+            if(StringUtils.isNotNullOrEmpty(feature)){
+                features+=feature+"#";
+            }
+        }
+        if(StringUtils.isNotNullOrEmpty(features)){
+            features=features.substring(0,features.lastIndexOf("#"));
+        }
+        return features;
+    }
+
     /*
      * 获取城市
      */

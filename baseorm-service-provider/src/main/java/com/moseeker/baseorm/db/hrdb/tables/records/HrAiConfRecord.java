@@ -75,14 +75,14 @@ public class HrAiConfRecord extends UpdatableRecordImpl<HrAiConfRecord> implemen
     }
 
     /**
-     * Setter for <code>hrdb.hr_ai_conf.follower_percent</code>. 粉丝推送比例: 0 &lt; x &lt;= 10
+     * Setter for <code>hrdb.hr_ai_conf.follower_percent</code>. 粉丝推送比例: 0.1 &lt;= x &lt;= 10
      */
     public void setFollowerPercent(Double value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_ai_conf.follower_percent</code>. 粉丝推送比例: 0 &lt; x &lt;= 10
+     * Getter for <code>hrdb.hr_ai_conf.follower_percent</code>. 粉丝推送比例: 0.1 &lt;= x &lt;= 10
      */
     public Double getFollowerPercent() {
         return (Double) get(3);
@@ -103,14 +103,14 @@ public class HrAiConfRecord extends UpdatableRecordImpl<HrAiConfRecord> implemen
     }
 
     /**
-     * Setter for <code>hrdb.hr_ai_conf.employee_percent</code>. 员工推送比例: 0 &lt; x &lt;= 10
+     * Setter for <code>hrdb.hr_ai_conf.employee_percent</code>. 员工推送比例: 0.1 &lt;= x &lt;= 10
      */
     public void setEmployeePercent(Double value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_ai_conf.employee_percent</code>. 员工推送比例: 0 &lt; x &lt;= 10
+     * Getter for <code>hrdb.hr_ai_conf.employee_percent</code>. 员工推送比例: 0.1 &lt;= x &lt;= 10
      */
     public Double getEmployeePercent() {
         return (Double) get(5);

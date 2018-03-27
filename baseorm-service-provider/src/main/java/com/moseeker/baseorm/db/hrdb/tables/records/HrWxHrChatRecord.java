@@ -131,28 +131,28 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.origin</code>. 来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 
+     * Setter for <code>hrdb.hr_wx_hr_chat.origin</code>. 来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入
      */
     public void setOrigin(Byte value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.origin</code>. 来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 
+     * Getter for <code>hrdb.hr_wx_hr_chat.origin</code>. 来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入
      */
     public Byte getOrigin() {
         return (Byte) get(7);
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
+     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio
      */
     public void setMsgType(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
+     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio
      */
     public String getMsgType() {
         return (String) get(8);

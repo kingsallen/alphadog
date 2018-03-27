@@ -19,6 +19,7 @@ import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import com.moseeker.thrift.gen.position.service.PositionServices;
+import com.moseeker.thrift.gen.profile.struct.WorkExp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sun.swing.StringUIClientPropertyKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -610,6 +612,114 @@ public class CompanyController {
             } else {
                 return ResponseLogNotification.fail(request, result);
             }
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    @RequestMapping(value = "/api/company/feature", method = RequestMethod.POST)
+    @ResponseBody
+    public String addCompanyFeature(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            HrCompanyFeatureDO DO=ParamUtils.initModelForm(data, HrCompanyFeatureDO.class);
+            Response res=companyServices.addCompanyFeature(DO);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature/list", method = RequestMethod.POST)
+    @ResponseBody
+    public String addCompanyFeatureList(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            List<Map<String,Object>> list= (List<Map<String, Object>>) data.get("data");
+            List<HrCompanyFeatureDO> dataList=new ArrayList<>();
+            for(Map<String,Object> map:list){
+                HrCompanyFeatureDO DO=ParamUtils.initModelForm(map, HrCompanyFeatureDO.class);
+                dataList.add(DO);
+            }
+            Response res=companyServices.addCompanyFeatures(dataList);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateCompanyFeature(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            HrCompanyFeatureDO DO=ParamUtils.initModelForm(data, HrCompanyFeatureDO.class);
+            Response res=companyServices.updateCompanyFeature(DO);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature/list", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateCompanyFeatureList(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            List<Map<String,Object>> list= (List<Map<String, Object>>) data.get("data");
+            List<HrCompanyFeatureDO> dataList=new ArrayList<>();
+            for(Map<String,Object> map:list){
+                HrCompanyFeatureDO DO=ParamUtils.initModelForm(map, HrCompanyFeatureDO.class);
+                dataList.add(DO);
+            }
+            Response res=companyServices.updateCompanyFeatures(dataList);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getSingleCompanyFeature(@PathVariable("id") int id, HttpServletRequest request) throws Exception {
+        try {
+            Response res= companyServices.getFeatureById(id);
+            return  ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCompanyFeatureByCompanyId(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            String companyId=(String)data.get("company_id");
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(companyId)){
+                return ResponseLogNotification.fail(request, "公司id不能为空或者为0");
+            }
+            Response res= companyServices.getFeatureByCompanyId(Integer.parseInt(companyId));
+            return  ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature/list", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCompanyFeatureByIdList(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            String ids=(String)data.get("data");
+            if(StringUtils.isNullOrEmpty(ids)){
+                return ResponseLogNotification.fail(request, "福利id不能为空或者为0");
+            }
+            List<Integer> dataList=ParamUtils.convertIntList(ids);
+            Response res= companyServices.getCompanyFeatureIdList(dataList);
+            return  ResponseLogNotification.success(request,res);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());

@@ -87,14 +87,14 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     public final TableField<HrWxHrChatRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.origin</code>. 来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 
+     * The column <code>hrdb.hr_wx_hr_chat.origin</code>. 来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入
      */
     public final TableField<HrWxHrChatRecord, Byte> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 ");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
+     * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio
      */
-    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "消息类型");
+    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "消息类型：html、qrcode、image、button_radio");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url

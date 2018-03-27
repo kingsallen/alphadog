@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = 7010626;
+    private static final long serialVersionUID = -2110736378;
 
     /**
      * The reference instance of <code>jobdb.job_position</code>
@@ -102,9 +102,9 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
     public final TableField<JobPositionRecord, Timestamp> STOP_DATE = createField("stop_date", org.jooq.impl.SQLDataType.TIMESTAMP, this, "截止日期");
 
     /**
-     * The column <code>jobdb.job_position.accountabilities</code>. Job responsibilities
+     * The column <code>jobdb.job_position.accountabilities</code>. Job responsibilities职位描述
      */
-    public final TableField<JobPositionRecord, String> ACCOUNTABILITIES = createField("accountabilities", org.jooq.impl.SQLDataType.CLOB, this, "Job responsibilities");
+    public final TableField<JobPositionRecord, String> ACCOUNTABILITIES = createField("accountabilities", org.jooq.impl.SQLDataType.CLOB, this, "Job responsibilities职位描述");
 
     /**
      * The column <code>jobdb.job_position.experience</code>. 工作经验
@@ -357,9 +357,9 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
     public final TableField<JobPositionRecord, Byte> TARGET_INDUSTRY = createField("target_industry", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "期望人选所在行业");
 
     /**
-     * The column <code>jobdb.job_position.current_status</code>. 已经弃用，0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
+     * The column <code>jobdb.job_position.current_status</code>. 已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
      */
-    public final TableField<JobPositionRecord, Byte> CURRENT_STATUS = createField("current_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "已经弃用，0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭");
+    public final TableField<JobPositionRecord, Byte> CURRENT_STATUS = createField("current_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭");
 
     /**
      * The column <code>jobdb.job_position.position_code</code>. 职能字典code, dict_position.code

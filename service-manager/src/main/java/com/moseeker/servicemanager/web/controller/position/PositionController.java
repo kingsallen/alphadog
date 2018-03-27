@@ -1016,4 +1016,94 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/api/position/feature/{pid}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionFeatureByPid(@PathVariable("pid") int pid, HttpServletRequest request, HttpServletResponse response){
+        try{
+            Response result=positonServices.getFeatureByPId(pid);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/position/feature/list", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateFeatureList( HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> fidList=(List<Integer>)params.get("fids");
+            int pid=(int)params.get("position_id");
+            Response result=positonServices.updatePositionFeatures(pid,fidList);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/position/feature", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateFeature( HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int fid=(int)params.get("fid");
+            int pid=(int)params.get("position_id");
+            Response result=positonServices.updatePositionFeature(pid,fid);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/position/feature/batch", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateFeatureBatch( HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Map<String,Object>> list= (List<Map<String, Object>>) params.get("data");
+            if(StringUtils.isEmptyList(list)){
+                return ResponseLogNotification.fail(request, "所传参数不能为空");
+            }
+            List<JobPositionHrCompanyFeatureDO> dataList=new ArrayList<>();
+            for(Map<String,Object> map:list){
+                int pid=(int)map.get("pid");
+                List<Integer> fidList=(List<Integer>)map.get("fids");
+                if(!StringUtils.isEmptyList(fidList)){
+                    for(Integer fid:fidList){
+                        JobPositionHrCompanyFeatureDO DO=new JobPositionHrCompanyFeatureDO();
+                        DO.setFid(fid);
+                        DO.setPid(pid);
+                        dataList.add(DO);
+                    }
+                }
+            }
+            if(StringUtils.isEmptyList(dataList)){
+                return ResponseLogNotification.fail(request, "所传参数不能为空");
+            }
+            Response result=positonServices.updatePositionFeatureBatch(dataList);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/position/feature/batch", method = RequestMethod.GET)
+    @ResponseBody
+    public String getFeatureBatch( HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> pidList=ParamUtils.convertIntList(String.valueOf(params.get("pids")));
+            if(StringUtils.isEmptyList(pidList)){
+                return ResponseLogNotification.fail(request, "职位id不能为空");
+            }
+            Response result=positonServices.getPositionFeatureBetch(pidList);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }
