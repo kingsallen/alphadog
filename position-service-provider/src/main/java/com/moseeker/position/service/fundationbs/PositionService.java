@@ -10,6 +10,15 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
+import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
@@ -20,6 +29,7 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
+import com.moseeker.baseorm.db.hrdb.tables.daos.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
@@ -53,7 +63,7 @@ import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.service.position.*;
 import com.moseeker.position.service.position.qianxun.Degree;
-import com.moseeker.position.service.position.qianxun.WorkType;
+import com.moseeker.common.constants.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.position.utils.SpecialProvince;
@@ -217,7 +227,7 @@ public class PositionService {
             return ResponseUtils
                     .fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
         }
-        // NullPoint check
+        // NullPoint checkFormWrong
         JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
         if (jobPositionPojo == null) {
             logger.error("无法根据ID查找到职位。 positionId:{}", positionId);
@@ -323,36 +333,33 @@ public class PositionService {
         if(jobPositionPojo.salary_bottom==0&&jobPositionPojo.salary_top==0){
             jobPositionPojo.salary="薪资面议";
         }
-        List<Map<String,Object>> positionFeature=this.getPositionFeatureList(positionId);
+        List<Map<String,Object>> positionFeature=positionEntity.getPositionFeatureList(positionId);
         if(!StringUtils.isEmptyList(positionFeature)){
             jobPositionPojo.position_feature=positionFeature;
         }
+        jobPositionPojo.feature=this.getFeatureString(positionFeature);
         return ResponseUtils.success(jobPositionPojo);
     }
-
-    private List<Map<String,Object>> getPositionFeatureList(int pid){
-        List<Integer> fidList=this.getFeatureIdList(pid);
-        if(StringUtils.isEmptyList(fidList)){
-            return null;
-        }
-        Query query=new Query.QueryBuilder().where(new Condition("id",fidList.toArray(),ValueOp.IN)).buildQuery();
-        List<Map<String,Object>> result=hrCompanyFeatureDao.getMaps(query);
-        return result;
-    }
     /*
-     获取职位的福利id
+     获取字符串形式的福利特色
      */
-    private List<Integer> getFeatureIdList(int pid){
-        List<JobPositionHrCompanyFeature> dataList=jobPositionHrCompanyFeatureDao.getPositionFeatureList(pid);
-        if(StringUtils.isEmptyList(dataList)){
-            return null;
+    private String getFeatureString( List<Map<String,Object>> list){
+        if(StringUtils.isEmptyList(list)){
+            return "";
         }
-        List<Integer> list=new ArrayList<>();
-        for(JobPositionHrCompanyFeature feature:dataList){
-            list.add(feature.getFid());
+        String features="";
+        for(Map<String,Object> map:list){
+            String feature=(String)map.get("feature");
+            if(StringUtils.isNotNullOrEmpty(feature)){
+                features+=feature+"#";
+            }
         }
-        return list;
+        if(StringUtils.isNotNullOrEmpty(features)){
+            features=features.substring(0,features.lastIndexOf("#"));
+        }
+        return features;
     }
+
     /*
      * 获取城市
      */

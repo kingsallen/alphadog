@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.iface.IChannelType;
 import com.moseeker.position.utils.PositionEmailNotification;
-import com.moseeker.position.utils.PositionRefreshUtils;
+import com.moseeker.position.utils.PositionParamRefreshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +76,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
         for(Occupation o:occupationList){
             List<String> texts=o.getText();
             List<String> codes=o.getCode();
-            if(PositionRefreshUtils.notEmptyAndSizeMatch(texts,codes)){
+            if(PositionParamRefreshUtils.notEmptyAndSizeMatch(texts,codes)){
                 logger.info("Invalid Occupation: text:{},code:{} ",texts,codes);
                 continue;
             }
@@ -134,21 +134,42 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
     }
 
     //职位在json中对应的key
+
+    /**
+     * 获取environ中职能的key名称
+     * @return environ中职能的key名称
+     */
     protected String occupationKey(){
         return "occupation";
     }
 
-    //将msg中的occupation转成List<Occupation>类
+    /**
+     * 将msg中的occupation转成List<Occupation>类
+     * @param msg   完整的environ的json数据
+     * @return
+     */
     protected List<Occupation> toList(JSONObject msg){
         return msg.getJSONArray(occupationKey()).toJavaList(Occupation.class);
     }
 
+    /**
+     * 为第三方code生成对应的本地code，作为主键,同时方便查询 第三方code的父code对应的 本地code
+     * @param otherCodes
+     * @param msg
+     * @return
+     */
     protected Map<String,Integer> generateNewKey(List<String> otherCodes,JSONObject msg) {
-        return PositionRefreshUtils.generateNewKey(otherCodes.iterator());
+        return PositionParamRefreshUtils.generateNewKey(otherCodes.iterator());
     }
 
 
-    public List<Occupation> splitOccupation(List<Occupation> occupationList){
+    /**
+     * 分割list，即分出1层有哪些，2层有哪些，3层有哪些。。。
+     * 比如传来的 IT,程序员，Java程序员-->IT/IT,程序员/IT,程序员，Java程序员
+     * @param occupationList 职能列表
+     * @return
+     */
+    protected List<Occupation> splitOccupation(List<Occupation> occupationList){
         //Map<第几层，Map<第几层职的某个位职能文字,对应生成的code>>
 
         Set<Occupation> result=new HashSet<>();
@@ -158,7 +179,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
             List<String> texts=o.getText();
             List<String> codes=o.getCode();
 
-            if(PositionRefreshUtils.notEmptyAndSizeMatch(texts,codes)){
+            if(PositionParamRefreshUtils.notEmptyAndSizeMatch(texts,codes)){
                 logger.info("Invalid Occupation: text:{},code:{} ",texts,codes);
                 continue;
             }
@@ -177,14 +198,14 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
         return new ArrayList<>(result);
     }
 
-    public Map<List<String>,String> getOrInitIfNotExist(Map<Integer,Map<List<String>,String>> allLevelOccupation,Integer j){
+    private Map<List<String>,String> getOrInitIfNotExist(Map<Integer,Map<List<String>,String>> allLevelOccupation,Integer j){
         if(!allLevelOccupation.containsKey(j)){
             allLevelOccupation.put(j,new HashMap<>());
         }
         return allLevelOccupation.get(j);
     }
 
-    public void generateNewCode(List<Occupation> occupationList,String... seeds){
+    protected void generateNewCode(List<Occupation> occupationList,String... seeds){
 
         try {
             String code="";

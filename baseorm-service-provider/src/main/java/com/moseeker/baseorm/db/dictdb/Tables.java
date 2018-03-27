@@ -6,6 +6,7 @@ package com.moseeker.baseorm.db.dictdb;
 
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
+import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategoryBak;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityPostcode;
@@ -15,9 +16,11 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
+import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
@@ -49,9 +52,14 @@ public class Tables {
     public static final DictAlipaycampusCity DICT_ALIPAYCAMPUS_CITY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY;
 
     /**
-     * dict_alipaycampus_jobcategory[alipay校园招聘-职位类别]
+     * job_category[校园工作-基础数据-职位类别]
      */
     public static final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
+
+    /**
+     * job_category[校园工作-基础数据-职位类别]
+     */
+    public static final DictAlipaycampusJobcategoryBak DICT_ALIPAYCAMPUS_JOBCATEGORY_BAK = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategoryBak.DICT_ALIPAYCAMPUS_JOBCATEGORY_BAK;
 
     /**
      * 城市字典表
@@ -59,7 +67,7 @@ public class Tables {
     public static final DictCity DICT_CITY = com.moseeker.baseorm.db.dictdb.tables.DictCity.DICT_CITY;
 
     /**
-     * 城市字典code映射表
+     * The table <code>dictdb.dict_city_map</code>.
      */
     public static final DictCityMap DICT_CITY_MAP = com.moseeker.baseorm.db.dictdb.tables.DictCityMap.DICT_CITY_MAP;
 
@@ -74,7 +82,7 @@ public class Tables {
     public static final DictCollege DICT_COLLEGE = com.moseeker.baseorm.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
     /**
-     * The table <code>dictdb.dict_constant</code>.
+     * 常量字典表
      */
     public static final DictConstant DICT_CONSTANT = com.moseeker.baseorm.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
@@ -84,7 +92,7 @@ public class Tables {
     public static final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
     public static final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -97,6 +105,11 @@ public class Tables {
      * 一览人才的职位表
      */
     public static final DictJob1001Occupation DICT_JOB1001_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation.DICT_JOB1001_OCCUPATION;
+
+    /**
+     * JobsDB的职位职能表
+     */
+    public static final DictJobsdbOccupation DICT_JOBSDB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION;
 
     /**
      * The table <code>dictdb.dict_liepin_occupation</code>.
@@ -112,6 +125,11 @@ public class Tables {
      * 职能分类字典表
      */
     public static final DictPosition DICT_POSITION = com.moseeker.baseorm.db.dictdb.tables.DictPosition.DICT_POSITION;
+
+    /**
+     * The table <code>dictdb.dict_test_mobile</code>.
+     */
+    public static final DictTestMobile DICT_TEST_MOBILE = com.moseeker.baseorm.db.dictdb.tables.DictTestMobile.DICT_TEST_MOBILE;
 
     /**
      * 最佳东方的职位职能表

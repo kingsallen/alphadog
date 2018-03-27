@@ -48,6 +48,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
+import com.moseeker.thrift.gen.chat.service.ChatService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -120,6 +121,8 @@ public class JobApplicataionService {
     @Autowired
     EmployeeEntity employeeEntity;
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+
+    ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
 
     @Autowired
     ApplicationRepository applicationRepository;
@@ -199,6 +202,7 @@ public class JobApplicataionService {
                     addApplicationCountAtCompany(jobApplication,jobPositionRecord.getCandidateSource());
                 }
             }
+
             return jobApplicationVO.getApplicationId();
         }  catch (Exception e) {
             logger.error("postResources JobApplication error: ", e);
@@ -933,10 +937,20 @@ public class JobApplicataionService {
 
         }
         logger.info("JobApplicataionService saveJobApplication jobApplicationRecord:{}", jobApplicationRecord);
+
         ApplicationSaveResultVO resultVO = jobApplicationDao.addIfNotExists(jobApplicationRecord);
         if (!resultVO.isCreate()) {
             HrOperationRecordRecord hrOperationRecord = getHrOperationRecordRecord(resultVO.getApplicationId(), jobApplicationRecord, jobPositionRecord);
             hrOperationRecordDao.addRecord(hrOperationRecord);
+        }
+        try {
+            ThreadPool.Instance.startTast(() -> {
+                logger.info("saveJobApplication updateApplyStatus applier_id:{}, position_id:{}", jobApplicationRecord.getApplierId(), jobApplicationRecord.getPositionId());
+                chatService.updateApplyStatus(jobApplicationRecord.getApplierId(), jobApplicationRecord.getPositionId());
+                return 0;
+            });
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
         return resultVO;
     }

@@ -65,8 +65,9 @@ public class ProfileMiniController {
             // GET方法 通用参数解析并赋值
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
             int accountId = form.getInt("accountId", 0);
-            int userId = form.getInt("userId");
-            Response result = profileService.getProfileInfo(userId, accountId);
+            int userId = form.getInt("userId",0);
+            int positionId = form.getInt("positionId", 0);
+            Response result = profileService.getProfileInfo(userId, accountId, positionId);
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -86,7 +87,8 @@ public class ProfileMiniController {
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
             int accountId = form.getInt("accountId", 0);
             int userId = form.getInt("userId");
-            Response result = profileOtherService.getProfileOtherByPosition(userId, accountId);
+            int positionId = form.getInt("positionId", 0);
+            Response result = profileOtherService.getProfileOtherByPosition(userId, accountId, positionId);
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -94,6 +96,35 @@ public class ProfileMiniController {
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
+        }
+    }
+
+    /**
+     * 小程序获取sug提示词
+     */
+    @RequestMapping(value = "/api/mini/profile/suggest", method = RequestMethod.POST)
+    @ResponseBody
+    public String getProfileSuggest(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            int page= 1;
+            int pageSize=20;
+            if(map.get("pageNum")!=null){
+                page=(int)map.get("pageNum");
+            }
+            if(map.get("pageSize")!=null){
+                pageSize=(int)map.get("pageSize");
+            }
+            int accountId=(int)map.get("accountId");
+            String keyWords=(String)map.get("keyword");
+            if(StringUtils.isNotNullOrEmpty(keyWords)){
+                keyWords=StringUtils.filterStringForSearch(keyWords);
+            }
+            Response res = profileService.getMiniProfileSuggest(accountId,keyWords,page,pageSize);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
 }

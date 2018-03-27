@@ -10,6 +10,7 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddre
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
 
 import javax.annotation.Generated;
@@ -57,6 +58,11 @@ public class Tables {
      * 一览人才的第三方职位子表
      */
     public static final ThirdpartyJob1001Position THIRDPARTY_JOB1001_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION;
+
+    /**
+     * JobsDB的第三方职位子表
+     */
+    public static final ThirdpartyJobsdbPosition THIRDPARTY_JOBSDB_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION;
 
     /**
      * 最佳东方的第三方职位子表

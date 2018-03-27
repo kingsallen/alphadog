@@ -1,12 +1,16 @@
 package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionHrCompanyFeatureDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -34,6 +38,12 @@ public class PositionEntity {
 
     @Autowired
     private DictCityDao cityDao;
+
+    @Autowired
+    private JobPositionHrCompanyFeatureDao jobPositionHrCompanyFeatureDao;
+
+    @Autowired
+    private HrCompanyFeatureDao hrCompanyFeatureDao;
 
     /**
      * 查找职位信息
@@ -150,6 +160,30 @@ public class PositionEntity {
         List<JobPositionDO> jobPositionList = positionDao.getDatas(queryBuilder.buildQuery());
         return (jobPositionList == null || jobPositionList.isEmpty()) ? new HashMap<>() :
                 jobPositionList.parallelStream().collect(Collectors.toMap(k -> k.getId(), v -> v.getAppCvConfigId()));
+    }
+
+    public List<Map<String,Object>> getPositionFeatureList(int pid){
+        List<Integer> fidList=this.getFeatureIdList(pid);
+        if(StringUtils.isEmptyList(fidList)){
+            return null;
+        }
+        Query query=new Query.QueryBuilder().where(new Condition("id",fidList.toArray(),ValueOp.IN)).buildQuery();
+        List<Map<String,Object>> result=hrCompanyFeatureDao.getMaps(query);
+        return result;
+    }
+    /*
+     获取职位的福利id
+     */
+    private List<Integer> getFeatureIdList(int pid){
+        List<JobPositionHrCompanyFeature> dataList=jobPositionHrCompanyFeatureDao.getPositionFeatureList(pid);
+        if(StringUtils.isEmptyList(dataList)){
+            return null;
+        }
+        List<Integer> list=new ArrayList<>();
+        for(JobPositionHrCompanyFeature feature:dataList){
+            list.add(feature.getFid());
+        }
+        return list;
     }
 
 }

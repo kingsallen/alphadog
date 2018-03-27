@@ -3,6 +3,7 @@ package com.moseeker.position.thrift;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -20,6 +21,7 @@ import com.moseeker.position.pojo.SyncFailMessPojo;
 import com.moseeker.position.service.JobOccupationService;
 import com.moseeker.position.service.appbs.PositionBS;
 import com.moseeker.position.service.fundationbs.*;
+import com.moseeker.position.service.position.pojo.PositionFeaturePojo;
 import com.moseeker.position.service.third.ThirdPositionService;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -579,6 +581,34 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
+    public Response getMiniPositionDetail(int positionId) throws TException {
+        try {
+            Map<String,Object>  result=positionPcService.getMiniPositionDetails(positionId);
+            if(result==null){
+                return  ResponseUtils.success(new HashMap<>());
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getMiniPositionShare(int positionId) throws TException {
+        try {
+            Map<String,Object>  result= positionMiniService.getPositionShareInfo(positionId);
+            if(result==null){
+                return  ResponseUtils.success(new HashMap<>());
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
     public Response getFeatureByPId(int pid) throws TException {
         try {
             List<HrCompanyFeature> result=positionQxService.getPositionFeature(pid);
@@ -609,6 +639,29 @@ public class PositionServicesImpl implements Iface {
         try {
             int  result=positionQxService.updatePositionFeatureList(pid,fidList);
             return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response updatePositionFeatureBatch(List<JobPositionHrCompanyFeatureDO> featureList) throws TException {
+        try {
+            int  result=positionQxService.updatePositionFeatureBatch(featureList);
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getPositionFeatureBetch(List<Integer> pidList) throws TException {
+        try {
+            List<PositionFeaturePojo> list=positionQxService.getPositionFeatureBatch(pidList);
+            String res=JSON.toJSONString(list,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+            return  ResponseUtils.successWithoutStringify(res);
         }catch (Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);

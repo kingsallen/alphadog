@@ -20,7 +20,7 @@ public class Job51ParamRefresher extends AbstractRabbitMQParamRefresher {
 
     @Override
     public void addSendParam(JSONObject jsonSend) {
-
+        jsonSend.put("moseeker_region",moseekerRegin());
     }
 
     @Override

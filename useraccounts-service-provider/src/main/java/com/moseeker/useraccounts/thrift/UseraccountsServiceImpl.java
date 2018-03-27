@@ -34,6 +34,8 @@ public class UseraccountsServiceImpl implements Iface {
 	@Autowired
 	private UseraccountsService service;
 
+
+
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
 	 */
