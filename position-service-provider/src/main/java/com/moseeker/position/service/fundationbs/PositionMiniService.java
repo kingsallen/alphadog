@@ -1,43 +1,44 @@
 package com.moseeker.position.service.fundationbs;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrRecruitStatisticsDao;
-import com.moseeker.baseorm.dao.hrdb.HrRecruitUniqueStatisticsDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionShareTplConfDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrRecruitStatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrRecruitUniqueStatisticsRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
-import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.constants.PositionDescriptionType;
+import com.moseeker.common.constants.PositionTitleType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.TalentPoolEntity;
-import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.position.pojo.CompanyAccount;
 import com.moseeker.position.pojo.PositionMiniBean;
 import com.moseeker.position.pojo.PositionMiniInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbConfigDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbPositionBindingDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionShareTplConfDO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * Created by zztaiwll on 18/1/24.
@@ -58,6 +59,13 @@ public class PositionMiniService {
     public TalentPoolEntity talentPoolEntity;
     @Autowired
     public HrRecruitUniqueStatisticsDao hrRecruitUniqueStatisticsDao;
+    @Autowired
+    public HrHbConfigDao hrHbConfigDao;
+    @Autowired
+    public HrHbPositionBindingDao bindingDao;
+    @Autowired
+    public JobPositionShareTplConfDao tplConfDao;
+
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
     @CounterIface
     public PositionMiniBean getPositionMiniList(int accountId,String keyword,int page,int pageSize) throws TException {
@@ -90,6 +98,68 @@ public class PositionMiniService {
         return result;
     }
 
+    @CounterIface
+    public Map<String, Object> getPositionShareInfo(int position_id) throws TException {
+        Map<String, Object> params = new HashMap<>();
+        Query query=new Query.QueryBuilder().where(JobPosition.JOB_POSITION.ID.getName(), position_id).buildQuery();
+        JobPositionDO positionDO = jobPositionDao.getData(query);
+        if(positionDO == null )
+            return new HashMap<>();
+        HrCompanyDO companyDO = hrCompanyDao.getCompanyById(positionDO.getCompanyId());
+        HrHbConfigDO configDO = getHrHbConfigDOByCompanyId(positionDO.getCompanyId(), position_id);
+
+        if(configDO != null){
+            params.put("title", positionDO.getTitle()+configDO.getShareTitle());
+            params.put("description", configDO.getShareDesc().split(""));
+        }else{
+            String title = positionDO.getTitle();
+            String description = "点击即可快速申请！";
+
+            if(positionDO.getShareTplId()>0 && companyDO != null){
+                if(positionDO.getShareTplId()>3){
+                    Query shareQuery=new Query.QueryBuilder().where(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID.getName(), (int)positionDO.getShareTplId()).buildQuery();
+                    JobPositionShareTplConfDO tplConfDO = tplConfDao.getData(shareQuery);
+                    if(tplConfDO != null){
+                        if(StringUtils.isNotNullOrEmpty(tplConfDO.getTitle())){
+                            title = tplConfDO.getTitle();
+                        }
+                        if(StringUtils.isNotNullOrEmpty(tplConfDO.getDescription())){
+                            description = tplConfDO.getDescription();
+                        }
+                    }
+                }else if(positionDO.getShareTplId()>0){
+                    title = PositionTitleType.instanceFromByte((int)positionDO.getShareTplId()).toString();
+                    title = title.replace("{1}", companyDO.getAbbreviation());
+                    title = title.replace("{2}", positionDO.getTitle());
+                    description = PositionDescriptionType.instanceFromByte((int)positionDO.getShareTplId()).toString();
+                }
+            }
+            params.put("title", title);
+            params.put("description", description);
+        }
+        return  params;
+    }
+
+    private HrHbConfigDO getHrHbConfigDOByCompanyId(int companyId, int positionId){
+        Query query = new Query.QueryBuilder().where(HrHbConfig.HR_HB_CONFIG.COMPANY_ID.getName(), companyId)
+                .and(HrHbConfig.HR_HB_CONFIG.STATUS.getName(),3).buildQuery();
+        List<HrHbConfigDO> configDOList = hrHbConfigDao.getDatas(query);
+        if(configDOList != null && configDOList.size()>0) {
+            List<Integer> configIdList = configDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            Query bindingQuery = new Query.QueryBuilder().where(HrHbPositionBinding.HR_HB_POSITION_BINDING.POSITION_ID.getName(), positionId)
+                    .and(new Condition(HrHbPositionBinding.HR_HB_POSITION_BINDING.HB_CONFIG_ID.getName(), configIdList, ValueOp.IN)).buildQuery();
+            List<HrHbPositionBindingDO> bindingDOList = bindingDao.getDatas(bindingQuery);
+            if(bindingDOList != null && bindingDOList.size()>0){
+                HrHbPositionBindingDO bindingDO = bindingDOList.get(0);
+                for(HrHbConfigDO configDO : configDOList){
+                    if(configDO.getId() == bindingDO.getHbConfigId()){
+                        return configDO;
+                    }
+                }
+            }
+        }
+        return  null;
+    }
 
     /*
       获取请求es的参数
@@ -359,7 +429,7 @@ public class PositionMiniService {
             HrCompanyAccountRecord companyAccount=getHrCompanyAccount(accountId);
             if(companyAccount!=null){
                 int companyId=companyAccount.getCompanyId();
-                HrCompany hrCompany=hrCompanyDao.getHrCompanyById(companyId);
+                com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany hrCompany=hrCompanyDao.getHrCompanyById(companyId);
                 if(hrCompany!=null){
                     companyAccountBean.setHrCompany(hrCompany);
                     companyAccountBean.setUserHrAccount(account);

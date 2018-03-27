@@ -532,4 +532,19 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
         return record;
 
     }
+
+    public int fetchSuperHRByHrId(int id) {
+        Record1<Integer> companyIdRecord = create
+                .select(UserHrAccount.USER_HR_ACCOUNT.COMPANY_ID)
+                .from(UserHrAccount.USER_HR_ACCOUNT)
+                .where(UserHrAccount.USER_HR_ACCOUNT.ID.eq(id))
+                .fetchOne();
+        if (companyIdRecord != null) {
+            UserHrAccountRecord record = fetchSuperHR(companyIdRecord.value1());
+            if (record != null) {
+                return record.getId();
+            }
+        }
+        return 0;
+    }
 }
