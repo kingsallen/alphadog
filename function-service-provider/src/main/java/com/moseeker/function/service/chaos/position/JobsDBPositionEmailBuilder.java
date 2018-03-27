@@ -67,7 +67,7 @@ public class JobsDBPositionEmailBuilder extends AbstractPositionEmailBuilder<Thi
                     .append(accounTabilities);
         }
         if (StringUtils.isNotNullOrEmpty(requirement)) {
-            descript.append("\nJob requirements:\n").append(requirement);
+            descript.append("\n\nJob requirements:\n").append(requirement);
         }
         return descript.toString();
     }
