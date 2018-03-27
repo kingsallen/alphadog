@@ -466,11 +466,11 @@ public class ChatService {
      * @param chat 聊天信息
      */
     public int saveChat(ChatVO chat) throws BIZException {
-        /*requiredValidChat(chat);
+        requiredValidChat(chat);
 
         HrWxHrChatListDO chatRoom = requiredNotNullChatRoom(chat.getRoomId());
 
-        requiredNotNullHr(chatRoom.getHraccountId());*/
+        requiredNotNullHr(chatRoom.getHraccountId());
 
         logger.info("saveChat chat:{}", JSON.toJSONString(chat));
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
