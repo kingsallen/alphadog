@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyCompanyChannelConfDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.common.constants.CompanyType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.Position.PositionSource;
 import com.moseeker.common.constants.Position.PositionStatus;
@@ -78,9 +79,17 @@ public class PositionATSService {
      * @return  配置结果
      */
     public List<ThirdpartyCompanyChannelConfDO> updateCompanyChannelConf(int company_id,List<Integer> channel) throws BIZException {
+        if(company_id == 0 || channel == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
         HrCompanyDO companyDO = companyDao.getCompanyById(company_id);
         if(companyDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
+        }
+
+        if(companyDO.getType() != CompanyType.PAY.getCode()){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.ONLY_PAY_COMPANY_CAN_CONF_CHANNEL);
         }
 
         // 只能更新母公司
@@ -128,8 +137,11 @@ public class PositionATSService {
             toBeAdd.add(temp);
         }
 
+
         thirdpartyCompanyChannelConfDao.deleteDatas(toBeDeleted);
+        logger.info("be delete company channel conf:{}",toBeDeleted);
         thirdpartyCompanyChannelConfDao.addAllData(toBeAdd);
+        logger.info("be add company channel conf:{}",toBeAdd);
 
         return thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
     }

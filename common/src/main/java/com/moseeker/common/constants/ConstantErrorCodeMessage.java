@@ -148,6 +148,7 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_SYNC_INFO_SENDED = "{'status':61010,'message':'验证信息发送成功'}";
     public static final String WRONG_SYNC_CHANNEL = "{'status':61011,'message':'第三方渠道不存在！'}";
     public static final String SUB_COMPANY_CANT_CONF_CHANNEL = "{'status':61012,'message':'不能给子公司配置同步渠道！'}";
+    public static final String ONLY_PAY_COMPANY_CAN_CONF_CHANNEL = "{'status':61015,'message':'只能给付费公司配置同步渠道！'}";
 
 
     //mq服务提示信息说明
