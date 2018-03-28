@@ -8,11 +8,13 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -30,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
 
@@ -47,6 +50,9 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
 
     @Autowired
     private UserHrAccountDao userHrAccountDao;
+
+    @Autowired
+    private PositionQxService positionQxService;
 
     /**
      * 将仟寻职位转成第卅方职位
@@ -150,22 +156,16 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
     /**
      * 设置职位福利特色
      *
-     * @param feature  福利特色
+     * @param positionDB  仟寻职位
      */
-    protected static List<String> getFeature(String feature) {
-        if (StringUtils.isNotNullOrEmpty(feature)) {
-            String[] featureArray = feature.trim().split("#");
-            List<String> featureList = new ArrayList<>();
-            for (String featureElement : featureArray) {
-                if (!featureElement.trim().equals("")) {
-                    featureList.add(featureElement);
-                }
-            }
-            if (featureList.size() > 0) {
-                return featureList;
-            }
+    protected List<String> getFeature(JobPositionDO positionDB) {
+        List<HrCompanyFeature> features = positionQxService.getPositionFeature(positionDB.getId());
+        if(StringUtils.isEmptyList(features)){
+            //爬虫需要即使数据库这个字段为空，也需要要一个空列表
+            return new ArrayList<>();
+        }else {
+            return features.stream().map(f->f.getFeature()).collect(Collectors.toList());
         }
-        return Collections.emptyList();
     }
 
     /**
