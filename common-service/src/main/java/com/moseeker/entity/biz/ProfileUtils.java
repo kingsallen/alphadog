@@ -242,9 +242,9 @@ public class ProfileUtils {
 		if (skills != null && skills.size() > 0) {
 			skills.forEach(skill -> {
 				ProfileSkillRecord record = BeanUtils.MapToRecord(skill, ProfileSkillRecord.class);
+				this.skillMaxLimit(record);
 				ValidationMessage<ProfileSkillRecord> vm = ProfileValidation.verifySkill(record);
 				if (record != null && vm.isPass()) {
-					this.skillMaxLimit(record);
 					skillRecords.add(record);
 				}
 			});
