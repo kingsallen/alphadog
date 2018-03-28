@@ -2,7 +2,6 @@ package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
-import com.moseeker.common.annotation.iface.CounterInfo;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
@@ -10,7 +9,6 @@ import com.moseeker.common.log.ReqParams;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
-import com.moseeker.entity.pojos.Data;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;

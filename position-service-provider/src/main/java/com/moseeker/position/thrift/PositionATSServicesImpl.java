@@ -58,4 +58,14 @@ public class PositionATSServicesImpl implements PositionATSServices.Iface{
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
+
+    @Override
+    public Response atsUpdatePositionFeature(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
+        try {
+            return ResponseUtils.success(positionATSService.atsUpdatePositionFeature(batchHandlerJobPostion));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 }

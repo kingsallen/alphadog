@@ -45,7 +45,6 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,I
 
         jsonSend.put("account_id",account_id++);
         jsonSend.put("channel",getChannelType().getValue());
-        jsonSend.put("moseeker_region",moseekerRegin());
 
         addUserParam(jsonSend);
         addSendParam(jsonSend);
@@ -62,7 +61,7 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,I
      * @return 一个储存JSONObject的JSONArray，每个JSONObject都有两个字段，code和text，对应完整的城市code链和name链
      * 例如 {"code":[130000,130100,130111],"text":["河北省","石家庄","栾城区"]}
      */
-    public JSONArray moseekerRegin(){
+    protected JSONArray moseekerRegin(){
         JSONArray moseekerReginArray=new JSONArray();
 
         List<DictCityDO> fullCity=cityDao.getFullCity().stream().filter(c->c.getLevel()!=0).collect(Collectors.toList());

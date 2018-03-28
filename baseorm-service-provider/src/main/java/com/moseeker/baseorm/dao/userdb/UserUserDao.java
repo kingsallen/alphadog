@@ -6,18 +6,18 @@ import com.moseeker.baseorm.db.userdb.Userdb;
 import com.moseeker.baseorm.db.userdb.tables.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.util.query.*;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
-import java.util.ArrayList;
-import java.util.List;
 import org.jooq.*;
-import org.jooq.Condition;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * @author xxx
@@ -336,5 +336,80 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
         String sql = "select " + selectColumn + " from " + Userdb.USERDB.getName() + "." + tableName + " where id = " + userId;
         Record result = create.fetchOne(sql);
         return result == null ? "" : result.get(selectColumn);
+    }
+
+    /**
+     * 根据用户名称查找制定范围内的用户
+     * @param userIdList 制定范围内的用户编号
+     * @param keyword
+     * @return
+     */
+    public List<Integer> fetchIdByIdListAndName(List<Integer> userIdList, String keyword) {
+        if (userIdList == null || userIdList.size() == 0) {
+            return new ArrayList<>();
+        }
+        String key = "%"+keyword+"%";
+        Result<Record1<Integer>> result = create.select(UserUser.USER_USER.ID)
+                .from(UserUser.USER_USER)
+                .where(UserUser.USER_USER.ID.in(userIdList))
+                .and(UserUser.USER_USER.NAME.like(key))
+                .fetch();
+
+        Result<Record1<Integer>> result1 = create.select(UserUser.USER_USER.ID)
+                .from(UserUser.USER_USER)
+                .where(UserUser.USER_USER.ID.in(userIdList))
+                .and(UserUser.USER_USER.NAME.isNull().or(UserUser.USER_USER.NAME.eq("")))
+                .and(UserUser.USER_USER.NICKNAME.like(key))
+                .fetch();
+        if (result == null) {
+            result = result1;
+        } else {
+            result.addAll(result1);
+        }
+        if (result != null) {
+            return result
+                    .stream()
+                    .map(record -> record.value1())
+                    .distinct()
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<String> fetchIdByIdListAndName(List<Integer> chatUserIdList, String keyword, int pageSize) {
+        if (chatUserIdList == null || chatUserIdList.size() == 0) {
+            return new ArrayList<>();
+        }
+        String key = "%"+keyword+"%";
+        Result<Record1<String>> result = create.select(UserUser.USER_USER.NAME)
+                .from(UserUser.USER_USER)
+                .where(UserUser.USER_USER.ID.in(chatUserIdList))
+                .and(UserUser.USER_USER.NAME.like(key))
+                .fetch();
+
+        Result<Record1<String>> result1 = create.select(UserUser.USER_USER.NICKNAME)
+                .from(UserUser.USER_USER)
+                .where(UserUser.USER_USER.ID.in(chatUserIdList))
+                .and(UserUser.USER_USER.NAME.isNull().or(UserUser.USER_USER.NAME.eq("")))
+                .and(UserUser.USER_USER.NICKNAME.like(key))
+                .fetch();
+
+        if (result != null) {
+            result.addAll(result1);
+        } else {
+            result = result1;
+        }
+
+        if (result != null) {
+            return result
+                    .stream()
+                    .map(record -> record.value1())
+                    .distinct()
+                    .limit(pageSize)
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

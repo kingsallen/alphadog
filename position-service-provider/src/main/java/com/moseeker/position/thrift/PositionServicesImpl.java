@@ -1,7 +1,11 @@
 package com.moseeker.position.thrift;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -17,6 +21,7 @@ import com.moseeker.position.pojo.SyncFailMessPojo;
 import com.moseeker.position.service.JobOccupationService;
 import com.moseeker.position.service.appbs.PositionBS;
 import com.moseeker.position.service.fundationbs.*;
+import com.moseeker.position.service.position.pojo.PositionFeaturePojo;
 import com.moseeker.position.service.third.ThirdPositionService;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -42,6 +47,13 @@ import org.springframework.stereotype.Service;
 public class PositionServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public PositionServicesImpl(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
     @Autowired
     private PositionService service;
     @Autowired
@@ -204,7 +216,7 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         try {
-            return ResponseUtils.success(service.batchHandlerJobPostion(batchHandlerJobPostion));
+            return ResponseUtils.success(service.batchHandlerJobPostionAdapter(batchHandlerJobPostion));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -213,7 +225,7 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public Response saveAndSync(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
-        JobPostionResponse response=service.batchHandlerJobPostion(batchHandlerJobPostion);
+        JobPostionResponse response=service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
 
         List<SyncFailMessPojo> syncFailMessPojolistList=new ArrayList<>();
         int syncingCounts=0;
@@ -562,6 +574,94 @@ public class PositionServicesImpl implements Iface {
                 return  ResponseUtils.success(new PositionMiniBean());
             }
             return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getMiniPositionDetail(int positionId) throws TException {
+        try {
+            Map<String,Object>  result=positionPcService.getMiniPositionDetails(positionId);
+            if(result==null){
+                return  ResponseUtils.success(new HashMap<>());
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getMiniPositionShare(int positionId) throws TException {
+        try {
+            Map<String,Object>  result= positionMiniService.getPositionShareInfo(positionId);
+            if(result==null){
+                return  ResponseUtils.success(new HashMap<>());
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getFeatureByPId(int pid) throws TException {
+        try {
+            List<HrCompanyFeature> result=positionQxService.getPositionFeature(pid);
+            if(StringUtils.isEmptyList(result)){
+                result=new ArrayList<>();
+            }
+            String res=JSON.toJSONString(result,serializeConfig);
+            return  ResponseUtils.successWithoutStringify(res);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response updatePositionFeature(int pid, int fid) throws TException {
+        try {
+            int result=positionQxService.updatePositionFeature(pid,fid);
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response updatePositionFeatures(int pid, List<Integer> fidList) throws TException {
+        try {
+            int  result=positionQxService.updatePositionFeatureList(pid,fidList);
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response updatePositionFeatureBatch(List<JobPositionHrCompanyFeatureDO> featureList) throws TException {
+        try {
+            int  result=positionQxService.updatePositionFeatureBatch(featureList);
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getPositionFeatureBetch(List<Integer> pidList) throws TException {
+        try {
+            List<PositionFeaturePojo> list=positionQxService.getPositionFeatureBatch(pidList);
+            String res=JSON.toJSONString(list,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+            return  ResponseUtils.successWithoutStringify(res);
         }catch (Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);

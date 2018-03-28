@@ -13,10 +13,5 @@ public class RefreshConstant {
     //最佳东方职位参数redis配置
     public final static String VERY_EAST_REDIS_PARAM_KEY="VERY_EAST_PARAM";
 
-    //一览人才参数redis配置
-    public final static String JOB1001_REDIS_PARAM_KEY="JOB1001_REFRESH_PARAM";
-
-    public final static String REFRESH_THIRD_PARTY_PARAM="REFRESH_THIRD_PARTY_PARAM";
-
     public final static int  REFRESH_THIRD_PARTY_PARAM_TIMEOUT=3000;
 }

@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = 988869384;
+    private static final long serialVersionUID = 854719034;
 
     /**
      * Setter for <code>jobdb.job_position.id</code>.
@@ -170,14 +170,14 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     }
 
     /**
-     * Setter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities
+     * Setter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities职位描述
      */
     public void setAccountabilities(String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities
+     * Getter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities职位描述
      */
     public String getAccountabilities() {
         return (String) get(10);
@@ -884,14 +884,14 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     }
 
     /**
-     * Setter for <code>jobdb.job_position.current_status</code>. 已经弃用，0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
+     * Setter for <code>jobdb.job_position.current_status</code>. 已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
      */
     public void setCurrentStatus(Byte value) {
         set(61, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position.current_status</code>. 已经弃用，0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
+     * Getter for <code>jobdb.job_position.current_status</code>. 已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
      */
     public Byte getCurrentStatus() {
         return (Byte) get(61);

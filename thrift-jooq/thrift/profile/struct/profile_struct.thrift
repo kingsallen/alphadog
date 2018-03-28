@@ -242,3 +242,8 @@ struct ProfileApplicationForm{
     6: optional map<string,list<string>> filter,
     7: optional map<string,string> conditions
 }
+
+struct UserProfile {
+    1: optional i32 userId;             //用户编号
+    2: optional bool haveProfile;       //是否拥有简历
+}

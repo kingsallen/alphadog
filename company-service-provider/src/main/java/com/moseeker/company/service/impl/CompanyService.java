@@ -8,7 +8,16 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.hrdb.tables.*;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
+import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.*;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyFeatureRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
@@ -37,6 +46,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.*;
+import com.moseeker.thrift.gen.company.struct.HrCompanyConf;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
@@ -114,6 +124,9 @@ public class CompanyService {
     private UserHrAccountDao userHrAccountDao;
     @Autowired
     private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
+
+    @Autowired
+    private HrCompanyFeatureDao hrCompanyFeatureDao;
 
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
@@ -833,5 +846,151 @@ public class CompanyService {
         passwordArray[0] = plainPassword;
         passwordArray[1] = MD5Util.encryptSHA(MD5Util.md5(plainPassword));
         return passwordArray;
+    }
+
+    /*
+     根据id查询公司的福利
+     */
+    @CounterIface
+    public HrCompanyFeature getCompanyFeatureById(int id){
+        HrCompanyFeature result=hrCompanyFeatureDao.getFeatureListById(id);
+        return result;
+    }
+    /*
+     根据公司查询公司福利特色
+     */
+    @CounterIface
+    public List<HrCompanyFeature> getCompanyFeatureByCompanyId(int companyId){
+        List<HrCompanyFeature> list=new ArrayList<>();
+        com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany hrCompanyDO=companyDao.getHrCompanyById(companyId);
+        if(hrCompanyDO==null){
+            return new ArrayList<>();
+        }
+        if(hrCompanyDO.getParentId()>0){
+            list=hrCompanyFeatureDao.getFeatureListByCompanyId(companyId);
+        }else{
+            List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> companyList=companyDao.getChildHrCompanyById(companyId);
+            List<Integer> idList=this.getCompanyIdList(companyList);
+            if(StringUtils.isEmptyList(idList)){
+                list=hrCompanyFeatureDao.getFeatureListByCompanyId(companyId);
+            }else{
+                idList.add(companyId);
+                list=hrCompanyFeatureDao.getFeatureListByCompanyIdList(idList);
+            }
+        }
+        return list;
+    }
+    private List<Integer> getCompanyIdList(List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> companyList){
+        if(StringUtils.isEmptyList(companyList)){
+            return null;
+        }
+        List<Integer> list=new ArrayList<>();
+        for(com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany hrCompany:companyList){
+            list.add(hrCompany.getId());
+        }
+        return list;
+    }
+
+    @CounterIface
+    public List<HrCompanyFeature> getCompanyFeatureByIdList(List<Integer> dataList){
+        List<HrCompanyFeature> list=hrCompanyFeatureDao.getFeatureListByIdList(dataList);
+        return list;
+    }
+    /*
+     单个修改
+     */
+    @CounterIface
+    public int updateCompanyFeature(HrCompanyFeatureDO hrCompanyFeatureDO){
+        if(hrCompanyFeatureDO==null){
+            return 0;
+        }
+        if(hrCompanyFeatureDO.isSetFeature()){
+            if(StringUtils.isNullOrEmpty(hrCompanyFeatureDO.getFeature())){
+                return 0;
+            }
+        }
+        HrCompanyFeatureRecord hrCompanyFeatureRecord=BeanUtils.structToDB(hrCompanyFeatureDO, HrCompanyFeatureRecord.class);
+        int result =hrCompanyFeatureDao.updateRecord(hrCompanyFeatureRecord);
+        return result;
+    }
+    /*
+     批量修改
+     */
+    @CounterIface
+    public int updateCompanyFeatureList(List<HrCompanyFeatureDO> dataList){
+        if(StringUtils.isEmptyList(dataList)){
+            return 0;
+        }
+        List<HrCompanyFeatureDO> recordList=new ArrayList<>();
+        for(HrCompanyFeatureDO DO:dataList){
+            if(DO.isSetFeature()){
+                if(StringUtils.isNullOrEmpty(DO.getFeature())){
+                    continue;
+                }
+            }
+            recordList.add(DO);
+        }
+        if(StringUtils.isEmptyList(recordList)){
+            return 0;
+        }
+        List<HrCompanyFeatureRecord> list=BeanUtils.structToDB(dataList,HrCompanyFeatureRecord.class);
+        int[] result =hrCompanyFeatureDao.updateRecords(list);
+        if(result[0]>0) {
+            return 1;
+        }
+        return 0;
+
+    }
+    /*
+     单个增加
+     */
+    @CounterIface
+    public int addCompanyFeature(HrCompanyFeatureDO hrCompanyFeatureDO){
+        if(hrCompanyFeatureDO==null){
+            return 0;
+        }
+        if(StringUtils.isNullOrEmpty(hrCompanyFeatureDO.getFeature())){
+            return 0;
+        }
+        Query query=new Query.QueryBuilder().where("company_id",hrCompanyFeatureDO.getCompany_id()).and("disable",1).buildQuery();
+        int count=hrCompanyFeatureDao.getCount(query);
+        if((count+1)>20){
+            return -1;
+        }
+        hrCompanyFeatureDO.setDisable(1);
+        HrCompanyFeatureRecord hrCompanyFeatureRecord=BeanUtils.structToDB(hrCompanyFeatureDO, HrCompanyFeatureRecord.class);
+        HrCompanyFeatureRecord result=hrCompanyFeatureDao.addRecord(hrCompanyFeatureRecord);
+        return result.getId();
+    }
+    /*
+     批量增加
+     */
+    @CounterIface
+    public int addCompanyFeatureList(List<HrCompanyFeatureDO> dataList){
+        if(StringUtils.isEmptyList(dataList)){
+            return 0;
+        }
+        List<HrCompanyFeatureRecord> list=BeanUtils.structToDB(dataList,HrCompanyFeatureRecord.class);
+        List<HrCompanyFeatureRecord> recordList=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(HrCompanyFeatureRecord record:list){
+                String feature=record.getFeature();
+                if(StringUtils.isNotNullOrEmpty(feature)){
+                    recordList.add(record);
+                }
+            }
+        }
+
+        if(!StringUtils.isEmptyList(recordList)){
+            Query query=new Query.QueryBuilder().where("company_id",recordList.get(0).getCompanyId()).and("disable",1).buildQuery();
+            int count=hrCompanyFeatureDao.getCount(query);
+            if((count+recordList.size())>20){
+                return -1;
+            }
+            hrCompanyFeatureDao.addAllRecord(recordList);
+            return 1;
+        }
+
+        return 0;
     }
 }

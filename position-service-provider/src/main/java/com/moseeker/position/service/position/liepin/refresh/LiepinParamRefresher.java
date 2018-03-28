@@ -17,7 +17,7 @@ public class LiepinParamRefresher extends AbstractRabbitMQParamRefresher {
 
     @Override
     public void addSendParam(JSONObject jsonSend) {
-
+        jsonSend.put("moseeker_region",moseekerRegin());
     }
 
     @Override

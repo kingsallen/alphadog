@@ -45,6 +45,14 @@ service CompanyServices {
     common_struct.Response updateHrCompanyConf(1:company_struct.HrCompanyConf hrCompanyConf)throws (1: common_struct.BIZException e)
     common_struct.Response addHrAccountAndCompany(1:string companyName, 2: string mobile, 3:i32 wxuserId, 4:string remoteIp, 5:i32 source) throws (1: common_struct.BIZException e)
 
+    common_struct.Response getFeatureById(1:i32 id) throws (1: common_struct.BIZException e)
+    common_struct.Response getFeatureByCompanyId(1:i32 companyId) throws (1: common_struct.BIZException e)
+    common_struct.Response updateCompanyFeature(1:company_struct.HrCompanyFeatureDO data) throws (1: common_struct.BIZException e)
+    common_struct.Response updateCompanyFeatures(1:list<company_struct.HrCompanyFeatureDO> dataList) throws (1: common_struct.BIZException e)
+    common_struct.Response addCompanyFeature(1:company_struct.HrCompanyFeatureDO data) throws (1: common_struct.BIZException e)
+    common_struct.Response addCompanyFeatures(1:list<company_struct.HrCompanyFeatureDO> dataList) throws (1: common_struct.BIZException e)
+    common_struct.Response getCompanyFeatureIdList(1:list<i32> dataList) throws (1: common_struct.BIZException e)
+
 }
 
 service HrTeamServices {

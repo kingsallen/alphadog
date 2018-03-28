@@ -100,7 +100,8 @@ public class DictOccupationService {
 		ZhiLian(ChannelType.ZHILIAN.getValue(),"zPinList",ZhilianOccupationHandler.class),
 		LiePin(ChannelType.LIEPIN.getValue(),"liePinList",LiepinOccupationHandler.class),
 		VeryEast(ChannelType.VERYEAST.getValue(),"veryEastList",VeryEastOccupationHandler.class),
-		Job1001(ChannelType.JOB1001.getValue(),"Job1001",Job1001OccupationHandler.class);
+		Job1001(ChannelType.JOB1001.getValue(),"Job1001",Job1001OccupationHandler.class),
+		JobsDB(ChannelType.JOBSDB.getValue(),"JobsDB",JobsDBOccupationHandler.class);
 
 		OccupationChannel(int code,String key,Class<? extends AbstractOccupationHandler> clazz){
 			this.code=code;

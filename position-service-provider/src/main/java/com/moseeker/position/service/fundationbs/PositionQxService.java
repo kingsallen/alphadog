@@ -1,13 +1,21 @@
 package com.moseeker.position.service.fundationbs;
 
 import com.moseeker.baseorm.dao.campaigndb.CampaignHeadImageDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionHrCompanyFeatureDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionHrCompanyFeatureRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.position.service.position.pojo.PositionFeaturePojo;
 import com.moseeker.position.utils.CommonMessage;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignHeadImageDO;
+import com.moseeker.thrift.gen.position.struct.JobPositionHrCompanyFeatureDO;
 import com.moseeker.thrift.gen.position.struct.PositionDetails;
 import com.moseeker.thrift.gen.position.struct.PositionDetailsListVO;
 import com.moseeker.thrift.gen.position.struct.PositionDetailsVO;
@@ -17,6 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,7 +47,10 @@ public class PositionQxService {
     private CampaignHeadImageDao campaignHeadImageDao;
     @Autowired
     private JobPositionDao jobPositionDao;
-
+    @Autowired
+    private JobPositionHrCompanyFeatureDao jobPositionHrCompanyFeatureDao;
+    @Autowired
+    private HrCompanyFeatureDao hrCompanyFeatureDao;
 
     /**
      * 职位头图查询
@@ -173,6 +187,118 @@ public class PositionQxService {
         }
         return positionDetailsList;
     }
+    /*
+     根据positionId获取公司福利
+     */
+    @CounterIface
+    public List<HrCompanyFeature> getPositionFeature(int pid){
+        List<JobPositionHrCompanyFeature> positionFeatureList=jobPositionHrCompanyFeatureDao.getPositionFeatureList(pid);
+        List<Integer> fidList=this.getFidList(positionFeatureList);
+        if(StringUtils.isEmptyList(fidList)){
+            return null;
+        }
+        List<HrCompanyFeature> result=hrCompanyFeatureDao.getFeatureListByIdList(fidList);
+        return result;
+    }
+
+    private List<Integer> getFidList(List<JobPositionHrCompanyFeature> positionFeatureList){
+        if(StringUtils.isEmptyList(positionFeatureList)){
+            return null;
+        }
+        List<Integer> list=new ArrayList<>();
+        for(JobPositionHrCompanyFeature jobPositionHrCompanyFeature:positionFeatureList){
+            list.add(jobPositionHrCompanyFeature.getFid());
+        }
+        return list;
+    }
+    /*
+     更新职位福利特色
+     */
+    @CounterIface
+    @Transactional
+    public int updatePositionFeature(int pid,int fid){
+        jobPositionHrCompanyFeatureDao.deletePositionFeature(pid);
+        jobPositionHrCompanyFeatureDao.addPositionFeature(pid,fid);
+        return 1;
+    }
+    @CounterIface
+    @Transactional
+    public int updatePositionFeatureList(int pid,List<Integer> fidList){
+        jobPositionHrCompanyFeatureDao.deletePositionFeature(pid);
+        List<JobPositionHrCompanyFeatureRecord> list=new ArrayList<>();
+        for(Integer fid:fidList){
+            JobPositionHrCompanyFeatureRecord record=new JobPositionHrCompanyFeatureRecord();
+            record.setFid(fid);
+            record.setPid(pid);
+            list.add(record);
+        }
+        jobPositionHrCompanyFeatureDao.addAllRecord(list);
+
+        return 0;
+    }
+    @CounterIface
+    @Transactional
+    public int updatePositionFeatureBatch(List<JobPositionHrCompanyFeatureDO> list){
+        if(StringUtils.isEmptyList(list)){
+            return 0;
+        }
+        List<JobPositionHrCompanyFeatureRecord> featureList=new ArrayList<>();
+        List<Integer> pidList=new ArrayList<>();
+        for(JobPositionHrCompanyFeatureDO DO:list){
+            JobPositionHrCompanyFeatureRecord record=new JobPositionHrCompanyFeatureRecord();
+            record.setPid(DO.getPid());
+            record.setFid(DO.getFid());
+            if(!pidList.contains(DO.getPid())){
+                pidList.add(DO.getPid());
+            }
+            featureList.add(record);
+        }
+        if(!StringUtils.isEmptyList(pidList)){
+            jobPositionHrCompanyFeatureDao.deletePositionFeatureBatch(pidList);
+            jobPositionHrCompanyFeatureDao.addAllRecord(featureList);
+            return 1;
+        }
+        return 0;
+    }
+    @CounterIface
+    public List<PositionFeaturePojo> getPositionFeatureBatch(List<Integer> pidList){
+        if(StringUtils.isEmptyList(pidList)){
+            return new ArrayList<>();
+        }
+        List<JobPositionHrCompanyFeature> dataList=jobPositionHrCompanyFeatureDao.getPositionFeatureBatch(pidList);
+        List<Integer> fidList=this.getFidList(dataList);
+        if(!StringUtils.isEmptyList(fidList)){
+            List<HrCompanyFeature> data=hrCompanyFeatureDao.getFeatureListByIdList(fidList);
+            if(!StringUtils.isEmptyList(data)){
+                List<PositionFeaturePojo> result=new ArrayList<>();
+                for(Integer pid:pidList){
+                    List<HrCompanyFeature> resultElem=new ArrayList<>();
+                    for(JobPositionHrCompanyFeature positionFeature:dataList){
+                        int positionId=positionFeature.getPid();
+                        int featureId=positionFeature.getFid();
+                        if(pid==positionId){
+                            for(HrCompanyFeature hrCompanyFeature:data){
+                                if(hrCompanyFeature.getId()==featureId){
+                                    resultElem.add(hrCompanyFeature);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if(!StringUtils.isEmptyList(resultElem)){
+                        PositionFeaturePojo pojo=new PositionFeaturePojo();
+                        pojo.setFeatureList(resultElem);
+                        pojo.setPid(pid);
+                        result.add(pojo);
+                    }
+                }
+                return result;
+            }
+        }
+        return new ArrayList<>();
+
+    }
+
 
 
 }
