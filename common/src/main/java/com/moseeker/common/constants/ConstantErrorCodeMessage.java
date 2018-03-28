@@ -157,6 +157,10 @@ public final class ConstantErrorCodeMessage {
     public static final String MQ_WECHAT_NOT_INFO = "{'status':71001,'message':'公众号信息不存在！'}";
     public static final String THIRD_PARTY_CHANNEL_NOT_EXIST = "{'status':61011,'message':'第三方渠道不存在！'}";
 
+
+    //IM服务
+    public static final String CHAT_ROOM_NOT_EXIST = "{'status':91001,'message':'聊天室不存在！'}";
+
     //APPBS错误代码61000
 
 

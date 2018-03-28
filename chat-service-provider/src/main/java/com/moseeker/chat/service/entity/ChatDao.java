@@ -81,6 +81,16 @@ public class ChatDao {
     ThreadPool threadPool = ThreadPool.Instance;
 
     /**
+     * 根据聊天室ID获取聊天室
+     * @param roomId 聊天室ID
+     * @return
+     */
+    public HrWxHrChatListDO getChatRoomById(int roomId){
+        Query query=new Query.QueryBuilder().where(HrWxHrChatList.HR_WX_HR_CHAT_LIST.ID.getName(),roomId).buildQuery();
+        return hrWxHrChatListDao.getData(query);
+    }
+
+    /**
      * 按照未阅读对聊天室排序
      * @param type 聊天对象类型
      * @param id 编号
@@ -286,7 +296,7 @@ public class ChatDao {
                 QueryUtil findCompany = new QueryUtil();
                 findCompany.addSelectAttribute("id").addSelectAttribute("logo");
                 findCompany.addEqualFilter("id",companyIdStr);
-                Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(queryUtil));
+                Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(findCompany));
 
 
                 /** 过滤头像不存在的HR，匹配公司logo*/
