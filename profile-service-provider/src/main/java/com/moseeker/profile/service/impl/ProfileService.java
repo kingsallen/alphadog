@@ -663,7 +663,7 @@ public class ProfileService {
                     }
                     company.setCompanyScale(String.valueOf(DictCode.companyScale(companyScaleMaxValue)));
                     workexps.setCompany(company);
-                    workexps.setDescription(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_desc(), jobExpObj.getJob_content()));
+                    workexps.setDescription(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_content(),jobExpObj.getJob_cpy_desc()));
                     try {
                         workexps.setStartDate(DateUtils.dateRepair(jobExpObj.getStart_date(), "\\."));
                         if (jobExpObj.getEnd_date() != null && jobExpObj.getEnd_date().equals("至今")) {
