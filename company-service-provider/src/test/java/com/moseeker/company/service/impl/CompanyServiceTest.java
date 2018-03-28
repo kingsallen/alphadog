@@ -1,14 +1,19 @@
 package com.moseeker.company.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.company.config.AppConfig;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.HrCompanyFeatureDO;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lucky8987 on 17/5/10.
@@ -69,6 +74,55 @@ public class CompanyServiceTest {
         int companyId=242645;
         int result=service.getTalentPoolSwitch(hrId,companyId);
         System.out.println(result);
+    }
+
+    @Test
+    public void testGetFeature(){
+        int companyId=39978;
+        System.out.println(JSON.toJSONString(service.getCompanyFeatureByCompanyId(companyId)));
+    }
+    @Test
+    public void testGetFeatureById(){
+        int id=19;
+        System.out.println(JSON.toJSONString(service.getCompanyFeatureById(id)));
+    }
+    @Test
+    public void testAddFeature(){
+        HrCompanyFeatureDO DO=new HrCompanyFeatureDO();
+        DO.setCompany_id(1);
+        DO.setDisable(0);
+        DO.setFeature("1111111");
+        System.out.println(JSON.toJSONString(service.addCompanyFeature(DO)));
+    }
+    @Test
+    public void testAddFeatureList(){
+        List<HrCompanyFeatureDO> list=new ArrayList<>();
+        HrCompanyFeatureDO DO=new HrCompanyFeatureDO();
+        DO.setCompany_id(1);
+        DO.setFeature("1111111");
+        list.add(DO);
+        HrCompanyFeatureDO DO1=new HrCompanyFeatureDO();
+        DO1.setCompany_id(1);
+        DO1.setFeature("222222222222");
+        list.add(DO1);
+        System.out.println(JSON.toJSONString(service.addCompanyFeatureList(list)));
+    }
+    @Test
+    public void testUpdateFeatureList(){
+        List<HrCompanyFeatureDO> list=new ArrayList<>();
+        HrCompanyFeatureDO DO=new HrCompanyFeatureDO();
+        DO.setId(489);
+        DO.setCompany_id(1);
+        DO.setDisable(1);
+        DO.setFeature(";dddd)ddd");
+        list.add(DO);
+        HrCompanyFeatureDO DO1=new HrCompanyFeatureDO();
+        DO1.setId(490);
+        DO1.setCompany_id(1);
+        DO1.setDisable(1);
+        DO1.setFeature("ssssss");
+        list.add(DO1);
+        System.out.println(JSON.toJSONString(service.updateCompanyFeatureList(list)));
     }
 
 

@@ -6,6 +6,7 @@ package com.moseeker.baseorm.db.dictdb;
 
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
+import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategoryBak;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityPostcode;
@@ -19,6 +20,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
+import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
@@ -47,7 +49,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1914622672;
+    private static final long serialVersionUID = -807868608;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -65,9 +67,14 @@ public class Dictdb extends SchemaImpl {
     public final DictAlipaycampusCity DICT_ALIPAYCAMPUS_CITY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY;
 
     /**
-     * job_category[校园工作-基础数据-职位类别]
+     * dict_alipaycampus_jobcategory[alipay校园招聘-职位类别]
      */
     public final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
+
+    /**
+     * job_category[校园工作-基础数据-职位类别]
+     */
+    public final DictAlipaycampusJobcategoryBak DICT_ALIPAYCAMPUS_JOBCATEGORY_BAK = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategoryBak.DICT_ALIPAYCAMPUS_JOBCATEGORY_BAK;
 
     /**
      * 城市字典表
@@ -75,7 +82,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCity DICT_CITY = com.moseeker.baseorm.db.dictdb.tables.DictCity.DICT_CITY;
 
     /**
-     * The table <code>dictdb.dict_city_map</code>.
+     * 城市字典code映射表
      */
     public final DictCityMap DICT_CITY_MAP = com.moseeker.baseorm.db.dictdb.tables.DictCityMap.DICT_CITY_MAP;
 
@@ -90,7 +97,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCollege DICT_COLLEGE = com.moseeker.baseorm.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
     /**
-     * 常量字典表
+     * The table <code>dictdb.dict_constant</code>.
      */
     public final DictConstant DICT_CONSTANT = com.moseeker.baseorm.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
@@ -135,6 +142,11 @@ public class Dictdb extends SchemaImpl {
     public final DictPosition DICT_POSITION = com.moseeker.baseorm.db.dictdb.tables.DictPosition.DICT_POSITION;
 
     /**
+     * The table <code>dictdb.dict_test_mobile</code>.
+     */
+    public final DictTestMobile DICT_TEST_MOBILE = com.moseeker.baseorm.db.dictdb.tables.DictTestMobile.DICT_TEST_MOBILE;
+
+    /**
      * 最佳东方的职位职能表
      */
     public final DictVeryeastOccupation DICT_VERYEAST_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION;
@@ -172,6 +184,7 @@ public class Dictdb extends SchemaImpl {
             Dict_51jobOccupation.DICT_51JOB_OCCUPATION,
             DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
             DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY,
+            DictAlipaycampusJobcategoryBak.DICT_ALIPAYCAMPUS_JOBCATEGORY_BAK,
             DictCity.DICT_CITY,
             DictCityMap.DICT_CITY_MAP,
             DictCityPostcode.DICT_CITY_POSTCODE,
@@ -185,6 +198,7 @@ public class Dictdb extends SchemaImpl {
             DictLiepinOccupation.DICT_LIEPIN_OCCUPATION,
             DictMajor.DICT_MAJOR,
             DictPosition.DICT_POSITION,
+            DictTestMobile.DICT_TEST_MOBILE,
             DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION,
             DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION);
     }

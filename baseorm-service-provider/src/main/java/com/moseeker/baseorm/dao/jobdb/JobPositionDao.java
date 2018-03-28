@@ -19,6 +19,7 @@ import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -29,7 +30,6 @@ import com.moseeker.thrift.gen.position.struct.PositionDetails;
 
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -560,5 +560,64 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                     .map(record1 -> record1.value1()).collect(Collectors.toList());
         }
         return null;
+    }
+
+    public int fetchPublisher(int positionId) {
+	    Record1<Integer> record1 = create.select(JobPosition.JOB_POSITION.PUBLISHER)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.eq(positionId))
+                .fetchOne();
+	    if (record1 == null) {
+	        return 0;
+        } else {
+	        return record1.value1();
+        }
+    }
+
+    /**
+     * 查找指定HR发布的职位编号
+     * @param hrId
+     * @return
+     */
+    public List<Integer> getPositionIdByPublisher(int hrId) {
+        Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.PUBLISHER.eq(hrId))
+                .fetch();
+        if (result != null && result.size() > 0) {
+            return result.stream().filter(record1 -> record1.value1() != null && record1.value1().intValue() > 0)
+                    .map(record1 -> record1.value1()).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
+    }
+    /**
+     * 职位是否存在
+     * @param companyId 公司ID
+     * @param source    来源
+     * @param sourceId  来源ID
+     * @param jobnumber 职位编号
+     * @return true：存在，false：不存在
+     */
+    public boolean positionAlreadyExist(int companyId,int source,int sourceId,String jobnumber) {
+        return getUniquePosition(companyId,source,sourceId,jobnumber)!=null;
+    }
+
+    /**
+     * 查询职位，用来查询唯一职位
+     * @param companyId 公司ID
+     * @param source    来源
+     * @param sourceId  来源ID
+     * @param jobnumber 职位编号
+     * @return 查询到的职位
+     */
+    public JobPositionRecord getUniquePosition(int companyId, int source, int sourceId, String jobnumber) {
+        Query queryUtil = new Query.QueryBuilder()
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.getName(), companyId)
+                .and(JobPosition.JOB_POSITION.SOURCE.getName(), source)
+                .and(JobPosition.JOB_POSITION.SOURCE_ID.getName(), sourceId)
+                .and(JobPosition.JOB_POSITION.JOBNUMBER.getName(), jobnumber)
+                .and(new com.moseeker.common.util.query.Condition(JobPosition.JOB_POSITION.STATUS.getName(), PositionStatus.DELETED.getValue(),ValueOp.NEQ))
+                .buildQuery();
+        return getRecord(queryUtil);
     }
 }

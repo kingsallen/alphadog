@@ -9,7 +9,8 @@ struct HRChatRoomVO {
     4:  optional string headImgUrl,         //用户头像 userdb.user_user.headimg > user_wx_user.headimg
     5:  optional string createTime,         //聊天室创建时间
     6:  optional i32 status,                //聊天室状态
-    7:  optional i32 unReadNum              //未读信息数量
+    7:  optional i32 unReadNum,             //未读信息数量
+    8:  optional bool apply                 //未读信息数量
 }
 
 struct HRChatRoomsVO {
@@ -18,6 +19,13 @@ struct HRChatRoomsVO {
     3:  optional i32 totalPage,             //页数
     4:  optional i32 totalRow,              //聊天室总数
     5:  optional list<HRChatRoomVO> rooms   //HR聊天室信息集合
+}
+
+struct HRChatRoomsIndexVO {
+    1:  optional i32 userId,                //页码
+    2:  optional i32 pageSize,              //每页显示的数量
+    3:  optional i32 totalRow,              //聊天室总数
+    4:  optional list<HRChatRoomVO> rooms   //HR聊天室信息集合
 }
 
 struct UserChatRoomVO {
@@ -54,6 +62,14 @@ struct ChatVO {
     11: optional i32 positionId             //职位Id
 }
 
+struct ChatHistory {
+    1: optional i32 conversationId;         //聊天室编号
+    2: optional bool hasMore;               //是否有更多的聊天记录
+    3: optional list<ChatVO> chatList;      //聊天列表
+    4: optional string hrLeaveTime;         //hr离开聊天室的时间
+    5: optional i32 userId;                 // 用户编号
+    6: optional string name;                //用户名称
+}
 
 struct ChatsVO {
     1:  optional i32 pageNo,                //页码
@@ -67,6 +83,7 @@ struct HrVO {
     1:  optional i32 hrId,                  //HR编号
     2:  optional string hrName,             //HR名称
     3:  optional string hrHeadImg           //HR头像
+    4:  optional bool isDelete              //HR是否存在
 }
 
 struct UserVO {

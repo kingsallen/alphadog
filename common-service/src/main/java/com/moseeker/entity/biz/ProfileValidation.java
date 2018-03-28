@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.Constant.UntitlNow;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
@@ -326,9 +327,11 @@ public class ProfileValidation {
 		ValidationMessage<Basic> vm = new ValidationMessage<>();
 		if (basicRecord != null && basicRecord.getBirth() != null) {
 			DateTime birth = DateTime.parse(basicRecord.getBirth());
-			if (birth.getMillis() > System.currentTimeMillis()) {
-				vm.addFailedElement("生日", "生日不能超过当前时间");
-			}
+            if (birth != null && !lowerNow(birth.getMillis())) {
+                vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
+            }else{
+                logger.error("简历生日导入失败：{}", DateUtils.dateToShortTime(new Date(birth.getMillis())));
+            }
 		}
 		return vm;
 	}
@@ -336,9 +339,9 @@ public class ProfileValidation {
 	public static ValidationMessage<ProfileBasicRecord> verifyBasic(ProfileBasicRecord basicRecord) {
 		ValidationMessage<ProfileBasicRecord> vm = new ValidationMessage<>();
 		if (basicRecord != null && basicRecord.getBirth() != null) {
-			if (basicRecord.getBirth().getTime() > System.currentTimeMillis()) {
-				vm.addFailedElement("生日", "生日不能超过当前时间");
-			}
+            if (!lowerNow(basicRecord.getBirth().getTime())) {
+                vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
+            }
 		}
 		return vm;
 	}
@@ -346,8 +349,8 @@ public class ProfileValidation {
 	public static ValidationMessage<ProfileAwardsRecord> verifyAward(ProfileAwardsRecord awardsRecord) {
 		ValidationMessage<ProfileAwardsRecord> vm = new ValidationMessage<>();
 		if (awardsRecord != null && awardsRecord.getRewardDate() != null) {
-			if (awardsRecord.getRewardDate().getTime() > System.currentTimeMillis()) {
-				vm.addFailedElement("获奖日期", "获奖日期不能超过当前时间");
+			if (!lowerNow(awardsRecord.getRewardDate().getTime())) {
+				vm.addFailedElement("获奖日期", "时间限制在1900-01-01~至今之间");
 			}
 		}
 		return vm;
@@ -358,8 +361,8 @@ public class ProfileValidation {
 		if (awards != null && awards.getReward_date() != null) {
 			Timestamp timestamp = BeanUtils.convertToSQLTimestamp(awards.getReward_date());
 			if (timestamp != null) {
-				if (timestamp.getTime() > System.currentTimeMillis()) {
-					vm.addFailedElement("获奖日期", "获奖日期不能超过当前时间");
+				if (!lowerNow(timestamp.getTime())) {
+					vm.addFailedElement("获奖日期", "时间限制在1900-01-01~至今之间");
 				}
 			}
 
@@ -430,11 +433,9 @@ public class ProfileValidation {
 	}
 
 	private static boolean lowerNow(long time) {
-		if (time > 0) {
-			if (time < System.currentTimeMillis() && time >= minTime) {
-				return true;
-			}
-		}
+        if (time < System.currentTimeMillis() && time >= minTime) {
+            return true;
+        }
 		return false;
 	}
 }

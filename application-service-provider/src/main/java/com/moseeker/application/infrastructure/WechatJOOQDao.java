@@ -1,6 +1,7 @@
 package com.moseeker.application.infrastructure;
 
 import com.moseeker.baseorm.db.hrdb.tables.daos.HrWxWechatDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechat;
 import org.jooq.Configuration;
 import org.jooq.Record;
 import org.jooq.Record2;
@@ -30,14 +31,14 @@ public class WechatJOOQDao extends HrWxWechatDao {
      * @param companyIdList 公司编号
      * @return 公司的signature信息集合
      */
-    public List<Record2<Integer,String>> getCompanyIdAndSignatureByCompanyId(List<Integer> companyIdList) {
+    public List<HrWxWechat> getCompanyIdAndSignatureByCompanyId(List<Integer> companyIdList) {
         if (companyIdList != null && companyIdList.size() > 0) {
-            Result<Record2<Integer, String>> result = using(configuration())
-                    .select(HR_WX_WECHAT.COMPANY_ID, HR_WX_WECHAT.SIGNATURE)
+            List<HrWxWechat> result = using(configuration())
+                    .select()
                     .from(HR_WX_WECHAT)
                     .where(HR_WX_WECHAT.COMPANY_ID.in(companyIdList))
                     .and(HR_WX_WECHAT.AUTHORIZED.eq((byte) 1))
-                    .fetch();
+                    .fetchInto(HrWxWechat.class);
             if (result != null) {
                 return result;
             }

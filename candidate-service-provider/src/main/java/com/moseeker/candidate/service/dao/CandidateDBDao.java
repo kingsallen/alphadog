@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.candidate.constant.EmployeeType;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
@@ -398,5 +399,15 @@ public class CandidateDBDao {
             (List<Map<Integer, Integer>> param) {
         return candidatePositionDao.listCandidatePositionsByPositionIDUserID(param);
 
+    }
+
+    /**
+     * 查找最新的浏览职位记录
+     * @param userId
+     * @param positionIdList
+     * @return
+     */
+    public CandidatePositionRecord fetchRecentViewedPosition(int userId, List<Integer> positionIdList) {
+        return candidatePositionDao.fetchRecentViewedPosition(userId, positionIdList);
     }
 }

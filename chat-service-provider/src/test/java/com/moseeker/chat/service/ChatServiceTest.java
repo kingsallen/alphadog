@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.chat.config.AppConfig;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
+import com.moseeker.chat.thriftservice.ChatThriftService;
 import com.moseeker.thrift.gen.chat.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -12,6 +13,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.tools.json.JSONArray;
 import org.junit.Before;
@@ -40,10 +42,10 @@ import static org.junit.Assert.assertEquals;
 public class ChatServiceTest {
 
     @Autowired
-    private ChatService chatService;
+    private ChatThriftService chatService;
 
     @Test
-    public void listChatLog(){
+    public void listChatLog() throws TException {
         System.out.println(JSON.toJSONString(chatService.listChatLogs(33 ,1, 10)));
     }
 
@@ -66,10 +68,73 @@ public class ChatServiceTest {
 
         String jsonChat="{\"btnContent\":\"\",\"content\":\"您可以扫描二维码关注我们的公众号，通过“高级搜索”查找目标职位。\",\"id\":0,\"msgType\":\"qrcode\",\"origin\":2,\"picUrl\":\"http://mmbiz.qpic.cn/mmbiz_jpg/F1aY0QXqBALe5UtYccHct4SMBj0ttNKyibEutrvModlnYW8D5fCMLibhexAFJGYN469edHDgb6tOQMtHhBpeGxQA/0\",\"positionId\":1922881,\"roomId\":603845,\"setBtnContent\":true,\"setContent\":true,\"setCreate_time\":false,\"setId\":false,\"setMsgType\":true,\"setOrigin\":true,\"setOrigin_str\":false,\"setPicUrl\":true,\"setPositionId\":true,\"setRoomId\":true,\"setSpeaker\":true,\"speaker\":2}";
 
-        ChatVO chatVO=JSON.toJavaObject(JSON.parseObject(jsonChat),ChatVO.class);
+        ChatVO chatVO=null;
 
+        try {
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setMsgType("abc");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setContent("");
+            chatVO.setMsgType("html");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setContent(" ");
+            chatVO.setMsgType("html");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setMsgType("qrcode");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setMsgType("image");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            chatVO =new ChatVO();
+            chatVO.setMsgType("button_radio");
+            chatService.saveChat(chatVO);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        chatVO = JSON.parseObject(jsonChat,ChatVO.class);
         chatService.saveChat(chatVO);
-
 
 
         ChatsVO chatsVO=chatService.listChatLogs(1,1,10);

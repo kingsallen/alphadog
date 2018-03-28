@@ -237,10 +237,10 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     }
 
     @Override
-    public Response getProfileOtherByPosition(int userId, int accountId) throws BIZException, TException {
+    public Response getProfileOtherByPosition(int userId, int accountId, int positionId) throws BIZException, TException {
         try {
             long start = System.currentTimeMillis();
-            Map<String, Object> others = profileService.getApplicationOther(userId, accountId);
+            Map<String, Object> others = profileService.getApplicationOther(userId, accountId, positionId);
             Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(others);
             long end = System.currentTimeMillis();
             logger.info("getProfileOtherByPosition others time :{}", end-start);
