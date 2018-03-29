@@ -75,19 +75,6 @@ public class ProfileUtilsTest {
     }};
 
     @Test
-    public void mapToSkillRecords(){
-        List<Map<String, Object>> skills = new ArrayList<>();
-
-        Map<String,Object> map = new HashMap<>();
-        map.put("name","仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻仟寻");
-        skills.add(map);
-
-        ProfileUtils profileUtils = new ProfileUtils();
-
-        profileUtils.mapToSkillRecords(skills);
-    }
-
-    @Test
     public void mapToWorkExpRecords() throws Exception {
 
 
