@@ -42,6 +42,135 @@ public class WholeProfileServicesImplTest {
 
 
     @Test
+    public void createProfile() throws TException {
+        String profile = "{\n" +
+                "  \"profile\": {\n" +
+                "    \"workexps\": [\n" +
+                "      {\n" +
+                "        \"description\": \"未填写\",\n" +
+                "        \"end_date\": \"2017-11-01\",\n" +
+                "        \"company\": {\n" +
+                "          \"company_name\": \"Liberty Living in Britain\"\n" +
+                "        },\n" +
+                "        \"job\": \"Bilingual Residence Coordinator\",\n" +
+                "        \"city_name\": \"英国\",\n" +
+                "        \"start_date\": \"2017-07-01\",\n" +
+                "        \"achievement\": \"使用 CRM 系统整理追踪公司客户信息，与客户保持通讯联系 协助总经理完成每天的任务，整理分类客户信息资料 负责维护公司与客户间良好关系，提供优质的客户服务\"\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"description\": \"未填写\",\n" +
+                "        \"end_date\": \"2017-07-01\",\n" +
+                "        \"company\": {\n" +
+                "          \"company_name\": \"the University of Liverpool\"\n" +
+                "        },\n" +
+                "        \"job\": \"Social Media Event Support\",\n" +
+                "        \"city_name\": \"英国\",\n" +
+                "        \"start_date\": \"2016-09-01\",\n" +
+                "        \"achievement\": \"123\"\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"description\": \"未填写\",\n" +
+                "        \"end_date\": \"2016-08-01\",\n" +
+                "        \"company\": {\n" +
+                "          \"company_name\": \"海口雅思\"\n" +
+                "        },\n" +
+                "        \"job\": \"雅思老师\",\n" +
+                "        \"city_code\": 460100,\n" +
+                "        \"city_name\": \"海口\",\n" +
+                "        \"start_date\": \"2013-07-01\",\n" +
+                "        \"achievement\": \"1 中英⽂双语教授学⽣雅思课程 2 设计书写适合学⽣个⼈的教学计划 3 给予学⽣学习上的指导并且给予作业上的反馈 4 定期做学⽣学习报告，总结学⽣整体表现情况，反馈给家长 5 与公司客户（学⽣和家长）维持长期良好的关系\"\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"educations\": [\n" +
+                "      {\n" +
+                "        \"start_date\": \"2016-09-01\",\n" +
+                "        \"end_date\": \"2017-09-01\",\n" +
+                "        \"major_name\": \"英语应用语言学\",\n" +
+                "        \"degree\": \"6\",\n" +
+                "        \"college_name\": \"英国利物浦大学\"\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"start_date\": \"2009-09-01\",\n" +
+                "        \"end_date\": \"2013-06-01\",\n" +
+                "        \"major_name\": \"英美文学\",\n" +
+                "        \"degree\": \"5\",\n" +
+                "        \"college_name\": \"天津外国语大学\"\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"start_date\": \"2006-09-01\",\n" +
+                "        \"end_date\": \"2009-06-01\",\n" +
+                "        \"major_name\": \"文科教育\",\n" +
+                "        \"degree\": \"3\",\n" +
+                "        \"college_name\": \"海南中学\"\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"intentions\": [\n" +
+                "      {\n" +
+                "        \"industries\": [\n" +
+                "          {\n" +
+                "            \"industry_name\": \"银行\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"industry_name\": \"奢侈品/收藏品\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"industry_name\": \"教育/培训/学术/科研/院校\"\n" +
+                "          }\n" +
+                "        ],\n" +
+                "        \"positions\": [\n" +
+                "          {\n" +
+                "            \"position_name\": \"大学教师/教授\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"position_name\": \"外语教师\"\n" +
+                "          }\n" +
+                "        ],\n" +
+                "        \"cities\": [\n" +
+                "          {\n" +
+                "            \"city_name\": \"上海\",\n" +
+                "            \"city_code\": 310000\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"city_name\": \"北京\",\n" +
+                "            \"city_code\": 110000\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"city_name\": \"广州\",\n" +
+                "            \"city_code\": 440100\n" +
+                "          }\n" +
+                "        ],\n" +
+                "        \"workstate\": 4\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"other\": {\n" +
+                "      \"workyears\": \"5\",\n" +
+                "      \"degree\": \"硕士\"\n" +
+                "    },\n" +
+                "    \"user\": {\n" +
+                "      \"mobile\": \"18789770679\",\n" +
+                "      \"name\": \"石羚\",\n" +
+                "      \"email\": \"402842341@qq.com\"\n" +
+                "    },\n" +
+                "    \"basic\": {\n" +
+                "      \"qq\": \"402842341\",\n" +
+                "      \"name\": \"石羚\",\n" +
+                "      \"self_introduction\": \"双语⼈才，中⽂母语，英⽂专业⼋级，听说读写流利 良好的信息分类和时间管理能⼒ 良好的⼈际交流和灵活的⼯作能⼒ 在压⼒下能按时并⾼质量的完成⼯作 在团队⼯作中认真负责，积极主动地完成⼯作 熟练使⽤Microsoft word, excel, power point 办公软件, 提供优质的客户服务，主动学习能⼒强\",\n" +
+                "      \"gender\": \"2\",\n" +
+                "      \"age\": \"26\",\n" +
+                "      \"nationality_name\": \"中国\",\n" +
+                "      \"city_name\": \"海口-龙华区\",\n" +
+                "      \"city_code\": 460100\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"position_id\": 1923138,\n" +
+                "  \"channel\": 2,\n" +
+                "  \"appid\": 30\n" +
+                "}";
+        Map<String, Object> resume = JSON.parseObject(profile);
+        service.createProfile(profile);
+    }
+
+    @Test
     public void testgetResource() throws TException {
         response = service.getResource(677697, 64028, "");
         System.out.println(response);
