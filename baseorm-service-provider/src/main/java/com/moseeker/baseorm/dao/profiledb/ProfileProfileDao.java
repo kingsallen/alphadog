@@ -8,6 +8,7 @@ import com.moseeker.baseorm.constant.EmployeeActivedState;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileDownloadService;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.dictdb.tables.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
@@ -27,6 +28,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import org.jooq.Condition;
@@ -1052,6 +1054,16 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 .map(record -> new AbstractMap.SimpleEntry<>(record.into(jobposition).intoMap(), record.into(jobApplication).intoMap()))
                 .collect(Collectors.toList());
 
+        System.out.println(create.select()
+                .from(jobposition.join(jobApplication).on(JobPosition.JOB_POSITION.ID.eq(JobApplication.JOB_APPLICATION.POSITION_ID)))
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(profileApplicationForm.getCompany_id()))
+                .and(JobPosition.JOB_POSITION.SOURCE_ID.eq(profileApplicationForm.getSource_id()))
+                .and(JobApplication.JOB_APPLICATION.ATS_STATUS.eq(profileApplicationForm.getAts_status()))
+                .and(buildProfileCondition(profileApplicationForm.getConditions()))
+                .orderBy(JobApplication.JOB_APPLICATION._CREATE_TIME.desc())
+                .limit(pageSize)
+                .offset((page - 1) * pageSize).toString());
+
         List<Integer> appIdList = positionApplications.stream().map(entry -> (Integer) entry.getValue().get("id")).collect(Collectors.toList());
         List<JobApplicationAtsRecord> atsRecordList = create.select()
                 .from(JobApplicationAts.JOB_APPLICATION_ATS)
@@ -1166,6 +1178,24 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .from(UserThirdpartyUser.USER_THIRDPARTY_USER)
                     .where(UserThirdpartyUser.USER_THIRDPARTY_USER.USER_ID.in(applierIds))
                     .fetchMaps();
+        }
+
+        logger.debug("getResourceByApplication:=============={}:{}", "allThirdPartyUser耗时", System.currentTimeMillis() - startTime);
+        startTime = System.currentTimeMillis();
+
+        //所有的候选人推荐记录
+        Map<Integer, List<CandidateRecomRecordDO>> allCandidateRecomRecord = new HashMap<>();
+        if (!filterTable(filter, "candidate_recom_record") && applicationIds.size() > 0) {
+            List<CandidateRecomRecordDO> tempRecomRecords = create
+                    .select()
+                    .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.in(applicationIds))
+                    .fetchInto(CandidateRecomRecordDO.class);
+
+            if(!StringUtils.isEmptyList(tempRecomRecords)){
+                allCandidateRecomRecord = tempRecomRecords.stream().collect(Collectors.groupingBy(r->r.getAppId()));
+            }
+
         }
 
         logger.debug("getResourceByApplication:=============={}:{}", "allThirdPartyUser耗时", System.currentTimeMillis() - startTime);
@@ -1607,6 +1637,24 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             recommenderMap.put("custom_field_values", mp.get("custom_field_values"));
                             recommenderMap.put("auth_method", mp.get("auth_method"));
                             recommenderMap.put("employee_email", mp.get("email"));
+
+                            if(allCandidateRecomRecord.containsKey(applicationId)){
+                                CandidateRecomRecordDO recomRecord = allCandidateRecomRecord.get(applicationId).get(0);
+
+                                // 因为申请里的推荐人只会保存分享链路的第一个分享者，所以可能发生：张三(员工)-->李四-->王五-->申请人
+                                // 此时申请的推荐人是张三，但是已经不是张三直接分享给他的，所以不算一度人脉
+                                // 只有当：张三(员工)-->申请人，的时候，才是一度人脉
+                                // 所以depth必须小于1，且申请人是员工
+
+                                // 1）逻辑走到这里的时候就代表推荐人是员工了
+                                // 2）所以只要确定是推荐者直接分享给申请人就行
+                                // 用申请ID查到对应的candidate_recom_record，申请中的推荐人ID就是candidate_recom_record的post_user_id
+                                // 如果对应的candidate_recom_record.depth（即分享链路深度），小于1，那就代表是，申请人看到的职位是推荐人直接分享给他的
+                                if (recomRecord.getDepth() <= 1  && recommenderId ==  recomRecord.getPostUserId()){
+                                    recommenderMap.put("is_first_post_user", true);
+                                }
+                            }
+
                             break;
                         }
                     }

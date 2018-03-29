@@ -286,10 +286,27 @@ public class ProfileServicesImplTest {
         }
     }
 
-    ////@Test
+    @Test
     public void getProfileByApplication() throws TException {
         try {
-
+            String json = "{" +
+                    "  \"ats_status\": 0," +
+                    "  \"company_id\": 39978," +
+                    "  \"conditions\": {" +
+                    "    \"page\": \"1\"," +
+                    "    \"page_size\": \"1000\"" +
+                    "  }," +
+                    "  \"dl_url_required\": true," +
+                    "  \"filter\": {" +
+                    "    " +
+                    "  }," +
+                    "  \"filterSize\": 0," +
+                    "  \"recommender\": true," +
+                    "  \"source_id\": 10," +
+                    "  \"appid\": 4" +
+                    "}";
+            ProfileApplicationForm profileApplicationForm = JSON.parseObject(json,ProfileApplicationForm.class);
+            response = profileService.getProfileByApplication(profileApplicationForm);
         } catch (Exception e) {
             e.printStackTrace();
 
