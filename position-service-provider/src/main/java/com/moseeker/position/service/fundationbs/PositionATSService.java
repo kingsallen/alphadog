@@ -61,6 +61,10 @@ public class PositionATSService {
 
     /**
      * 获取所有可同步的渠道信息
+     * 这里获取的channel不是所有channelType的类型
+     * 而是所有实现了AbstractPositionTransfer的渠道类型
+     * 因为不是所有的ChannelType都可以同步，
+     * 但是可同步的渠道必须实现AbstractPositionTransfer
      * @return  可同步的渠道信息
      */
     public List<ChannelTypePojo> getSyncChannel(){
@@ -73,7 +77,8 @@ public class PositionATSService {
     }
 
     /**
-     * 更新公司可同步渠道配置，没有的新增，删除 不在传入参数中的数据
+     * 更新公司可同步渠道配置，没有的新增，并且删除 不在传入参数中的数据
+     * 如果传入的channel为空列表，则会删除所有可同步渠道，deleteAllChannelByCompanyId
      * @param company_id    公司ID
      * @param channel       需要配置的渠道号
      * @return  配置结果
@@ -88,6 +93,7 @@ public class PositionATSService {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
         }
 
+        //必须是付费公司
         if(companyDO.getType() != CompanyType.PAY.getCode()){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.ONLY_PAY_COMPANY_CAN_CONF_CHANNEL);
         }
@@ -111,6 +117,7 @@ public class PositionATSService {
 
         List<ThirdpartyCompanyChannelConfDO> confs = thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
 
+        //找出在数据库，但不在本次要设置的渠道，后面删除
         List<ThirdpartyCompanyChannelConfDO> toBeDeleted = new ArrayList<>();
         out:
         for(ThirdpartyCompanyChannelConfDO conf:confs){
@@ -122,6 +129,7 @@ public class PositionATSService {
             toBeDeleted.add(conf);
         }
 
+        //找出在本次要设置的渠道，但不在数据库，后面新增
         List<ThirdpartyCompanyChannelConfDO> toBeAdd = new ArrayList<>();
         out:
         for(Integer c:channel){
@@ -158,7 +166,7 @@ public class PositionATSService {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
         }
 
-        // 如果是子公司，需要用母公司查询配置，因为只有母公司配置
+        // 如果是子公司，需要用母公司查询配置，因为只有母公司才能配置可发布渠道
         if(companyDO.getParentId() != 0){
             company_id = companyDO.getParentId();
         }
