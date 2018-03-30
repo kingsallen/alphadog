@@ -127,22 +127,23 @@ public class PositionServiceTest {
     	service.cityCode(cities,1909944);
 	}*/
 
-	@Test
-	@Commit
-	public void batchHandlerJobPostion() throws TException {
-		BatchHandlerJobPostion batchHandlerJobPostion=new BatchHandlerJobPostion();
 
-		JobPostrionObj jobPostrionObj=JSON.toJavaObject(JSON.parseObject(position),JobPostrionObj.class);
-
-		batchHandlerJobPostion.setData(Arrays.asList(jobPostrionObj,jobPostrionObj));
-		batchHandlerJobPostion.setFields_nooverwrite("");
-		batchHandlerJobPostion.setNodelete(true);
-		batchHandlerJobPostion.setFields_nohash("");
-		batchHandlerJobPostion.setIsCreateDeparment(true);
-
-
-		service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
-	}
+//	@Test
+//	@Commit
+//	public void batchHandlerJobPostion() throws BIZException {
+//		BatchHandlerJobPostion batchHandlerJobPostion=new BatchHandlerJobPostion();
+//
+//		JobPostrionObj jobPostrionObj=JSON.toJavaObject(JSON.parseObject(position),JobPostrionObj.class);
+//
+//		batchHandlerJobPostion.setData(Arrays.asList(jobPostrionObj,jobPostrionObj));
+//		batchHandlerJobPostion.setFields_nooverwrite("");
+//		batchHandlerJobPostion.setNodelete(true);
+//		batchHandlerJobPostion.setFields_nohash("");
+//		batchHandlerJobPostion.setIsCreateDeparment(true);
+//
+//
+//		service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
+//	}
 
 	private String position="{\n" +
 			"  'degree': 0,\n" +
