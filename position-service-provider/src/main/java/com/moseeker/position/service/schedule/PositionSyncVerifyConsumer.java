@@ -7,6 +7,7 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.base.PositionFactory;
+import com.moseeker.position.service.position.base.sync.verify.MobileEnvironVerifyHandler;
 import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
 import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyReceiver;
 import com.moseeker.position.utils.PositionEmailNotification;
@@ -31,6 +32,10 @@ public class PositionSyncVerifyConsumer {
 
     @Autowired
     PositionFactory verifyHandlerFactory;
+
+    @Resource(type = MobileEnvironVerifyHandler.class)
+    PositionSyncVerifyReceiver environVerifyHandler;
+
 
     @Resource(name = "cacheClient")
     protected RedisClient redisClient;
@@ -66,7 +71,7 @@ public class PositionSyncVerifyConsumer {
                     break;
                 case "environ": //刷新验证
                     logger.info("刷新验证 json：{}",json);
-                    wxVerifyHandler(obj);
+                    environVerifyHandler.receive(obj.toJSONString());
 
                     break;
                 default:
