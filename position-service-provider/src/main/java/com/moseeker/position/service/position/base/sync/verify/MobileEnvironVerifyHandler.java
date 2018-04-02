@@ -10,20 +10,27 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.position.service.position.base.sync.PositionSyncVerifyHandlerUtil;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.apache.commons.lang.time.FastDateFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
-public class MobileEnvironVerifyHandler extends MobileVeifyHandler {
+public class MobileEnvironVerifyHandler implements PositionSyncVerifyReceiver<String> {
+    Logger logger = LoggerFactory.getLogger(MobileEnvironVerifyHandler.class);
 
     @Autowired
     private UserHrAccountDao userHrAccountDao;
+
+    @Autowired
+    private PositionSyncVerifyHandlerUtil verifyHandlerUtil;
 
     @Override
     public void receive(String json) throws BIZException {
@@ -42,7 +49,7 @@ public class MobileEnvironVerifyHandler extends MobileVeifyHandler {
         thirdPartyPosition.setSyncTime(FastDateFormat.getInstance(DateUtils.SHOT_TIME).format(new Date()));
 
         //发送消息模板
-        sendMobileCodeTemplate(channelType,userHrAccountDO,thirdPartyPosition,jsonParam);
+        verifyHandlerUtil.sendMobileCodeTemplate(channelType,userHrAccountDO,thirdPartyPosition,jsonParam);
 
         logger.info("verifyHandler success jsonParam:{}",jsonParam.toJSONString());
     }
