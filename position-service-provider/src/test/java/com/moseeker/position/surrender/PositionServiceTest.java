@@ -127,7 +127,6 @@ public class PositionServiceTest {
     	service.cityCode(cities,1909944);
 	}*/
 
-
 //	@Test
 //	@Commit
 //	public void batchHandlerJobPostion() throws BIZException {
