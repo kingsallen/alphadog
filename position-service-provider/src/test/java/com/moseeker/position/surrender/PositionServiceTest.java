@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.position.service.third.ThirdPositionService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.position.struct.*;
+import org.apache.thrift.TException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,7 +119,7 @@ public class PositionServiceTest {
 
 	@Test
 	@Commit
-	public void batchHandlerJobPostion() throws BIZException {
+	public void batchHandlerJobPostion() throws TException {
 		BatchHandlerJobPostion batchHandlerJobPostion=new BatchHandlerJobPostion();
 
 		JobPostrionObj jobPostrionObj=JSON.toJavaObject(JSON.parseObject(position),JobPostrionObj.class);
