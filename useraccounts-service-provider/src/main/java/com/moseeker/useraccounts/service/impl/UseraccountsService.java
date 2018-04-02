@@ -117,13 +117,18 @@ public class UseraccountsService {
             Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("unionid", unionid).and("wechat_id", wechatId);
             UserWxUserDO userWxUserDO = wxuserdao.getData(query.buildQuery());
-            // 新微信为找到，说明绑定有问题
+            // 新微信未找到，说明绑定有问题
             if (userWxUserDO == null) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.WEXIN_IS_INVALID);
             }
             // 需要新绑定的微信已经被其他用户绑定
             if (userWxUserDO.getSysuserId() != 0) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.WEIXIN_HASBEEN_BIND);
+                UserUserRecord user = userdao.getUserById(userWxUserDO.getSysuserId());
+                if(!user.getUsername().equals(unionid)){
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.WEIXIN_HASBEEN_BIND);
+                }
+
+                postuserbindmobile(1,unionid,"",countryCode,mobile,BindType.WECHAT);
             } else {  // 新绑定的微信未被其他用户绑定
                 query.clear();
                 query.where("username", mobile).and("country_code",countryCode);
