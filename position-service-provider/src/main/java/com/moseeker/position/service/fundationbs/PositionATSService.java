@@ -258,13 +258,16 @@ public class PositionATSService {
             List<Integer> featureIds = new ArrayList<>();
 
             String feature = jobPositionHandlerDate.getFeature();
-            if(feature == null){
-                continue;
+            if(StringUtils.isNotNullOrEmpty(feature)){
+                for(String featureName:feature.split("#")){
+                    if(!featureMap.containsKey(featureName)){
+                        logger.error("ats update position feature error companyId:{} feature:{}",companyId,featureName);
+                        continue;
+                    }
+                    featureIds.add(featureMap.get(featureName).getId());
+                }
             }
 
-            for(String featureName:feature.split("#")){
-                featureIds.add(featureMap.get(featureName).getId());
-            }
             positionQxService.updatePositionFeatureList(jobPositionHandlerDate.getId(),featureIds);
         }
 
