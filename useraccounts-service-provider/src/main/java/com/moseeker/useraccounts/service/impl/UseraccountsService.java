@@ -129,6 +129,7 @@ public class UseraccountsService {
                 }
 
                 postuserbindmobile(1,unionid,"",countryCode,mobile,BindType.WECHAT);
+
             } else {  // 新绑定的微信未被其他用户绑定
                 query.clear();
                 query.where("username", mobile).and("country_code",countryCode);
@@ -149,8 +150,8 @@ public class UseraccountsService {
                 userWxUserDO.setSysuserId(userUserDO.getId());
                 userWxUserDO.setUnionid(unionid);
                 wxuserdao.updateData(userWxUserDO);
-                return ResponseUtils.success(null);
             }
+            return ResponseUtils.success(null);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
