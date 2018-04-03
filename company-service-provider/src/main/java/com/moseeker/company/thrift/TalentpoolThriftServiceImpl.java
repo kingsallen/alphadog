@@ -1,6 +1,9 @@
 package com.moseeker.company.thrift;
 
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.common.exception.Category;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -22,6 +25,12 @@ import java.util.Set;
 @Service
 public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public TalentpoolThriftServiceImpl(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
     @Autowired
     private TalentPoolService talentPoolService;
 
@@ -245,6 +254,25 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     public Response getCompanyTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
         try{
             return talentPoolService.getCompanyTagList(hr_id,company_id,page_number, page_size);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response deleteCompanyIds(int hr_id, int company_id, List<Integer> company_ids) throws BIZException, TException {
+        try{
+            int result =  talentPoolService.deleteCompanyTags(hr_id,company_id,company_ids);
+            if(result == 0){
+                return ResponseUtils.success("");
+            }else if(result == 1){
+                return ResponseUtils.fail(1, "根据公司编号和Hr编号没有查到相应的智能人才库信息");
+            }else if(result == 2 ){
+                return ResponseUtils.fail(1, "子账号不能删除企业标签规则");
+            }else{
+                return ResponseUtils.fail(1, "参数错误");
+            }
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);

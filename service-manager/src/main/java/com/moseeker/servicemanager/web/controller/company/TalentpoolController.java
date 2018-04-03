@@ -12,6 +12,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
+import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -480,10 +481,10 @@ public class TalentpoolController {
             String hrId=String.valueOf(params.get("hr_id"));
             String companyId=String.valueOf(params.get("company_id"));
             if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
-                ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
             if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
-                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
             Response result = service.upsertTalentPoolApp(Integer.parseInt(hrId),Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, result);
@@ -506,10 +507,10 @@ public class TalentpoolController {
             int page_number = params.getInt("page_number", 1);
             int page_size = params.getInt("page_size",0);
             if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
-                ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
             if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
-                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
             Response result = service.getCompanyTagList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
             return ResponseLogNotification.success(request, result);
@@ -529,15 +530,21 @@ public class TalentpoolController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             String hrId=String.valueOf(params.get("hr_id"));
             String companyId=String.valueOf(params.get("company_id"));
-            int page_number = params.getInt("page_number", 1);
-            int page_size = params.getInt("page_size",0);
+
             if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
-                ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
             if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
-                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
-            Response result = service.getCompanyTagList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
+            if(params.get("company_tags") ==null ){
+                return ResponseLogNotification.fail(request,"company_tags不可以为空");
+            }
+            List<Integer>  company_tags = (List<Integer>)params.get("company_tags");
+            if(company_tags.size()<1){
+                return ResponseLogNotification.fail(request,"company_tags长度不可以为0");
+            }
+            Response result = service.deleteCompanyIds(Integer.parseInt(hrId),Integer.parseInt(companyId),company_tags);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
