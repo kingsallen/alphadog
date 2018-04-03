@@ -266,6 +266,16 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
 
     }
 
+    @Override
+    public Response getCompanyTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
+        try{
+            return talentPoolService.getCompanyTagList(hr_id,company_id,page_number, page_size);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
     private Set<Integer> ConvertListToSet(List<Integer> list){
         Set<Integer> param=new HashSet<>();
         for(Integer id :list){

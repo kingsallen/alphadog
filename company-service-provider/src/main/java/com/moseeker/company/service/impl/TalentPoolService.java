@@ -1,12 +1,15 @@
 package com.moseeker.company.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
@@ -25,7 +28,9 @@ import com.moseeker.company.utils.ValidateTalent;
 import com.moseeker.company.utils.ValidateTalentTag;
 import com.moseeker.company.utils.ValidateUtils;
 import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.entity.pojo.talentpool.PageInfo;
 import com.moseeker.thrift.gen.common.struct.Response;
+import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +47,13 @@ import java.util.*;
 @Transactional
 public class TalentPoolService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public TalentPoolService(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
+
     @Autowired
     private TalentpoolHrTalentDao talentpoolHrTalentDao;
     @Autowired
@@ -847,6 +859,67 @@ public class TalentPoolService {
         }
         return list;
     }
+
+
+    @CounterIface
+    public Response getCompanyTagList(int hrId,int companyId, int page_number, int page_size){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag==0){
+            return ResponseUtils.fail(1,"根据HR和公司信息没有查到开启智能人才库");
+        }
+        PageInfo info = new PageInfo();
+        if(flag == 2) {
+            info = this.getLimitStart(flag, page_number, page_size);
+        }else{
+            if(page_number == 0){
+                page_number = 1;
+            }
+            if(page_size == 0){
+                page_size = 8;
+            }
+            info.setLimit((page_number-1)*page_size);
+            info.setPageSize(page_size);
+        }
+        Map<String, Object> tagListInfo = new HashMap<>();
+        List<TalentpoolCompanyTag> tagList = talentPoolEntity.handlerCompanyTagBycompanyId(companyId, info.getLimit(), info.getPageSize());
+        int count = talentPoolEntity.handlerCompanyTagCountBycompanyId(companyId);
+        if(tagList != null && tagList.size()>0){
+            List<Map<String, Object>> tagProfileList = talentPoolEntity.handlerTagCountByTagIdList(tagList);
+            tagListInfo.put("tags", tagProfileList);
+        }
+        tagListInfo.put("total", count);
+        tagListInfo.put("page_number", page_number);
+        tagListInfo.put("page_size", info.getPageSize());
+        String result=JSON.toJSONString(tagListInfo,serializeConfig);
+        return ResponseUtils.successWithoutStringify(result);
+    }
+
+    /**
+     * 获取分页数据
+     * @param flag  2 表示主账号分页
+     * @param page_number 当前页数
+     * @param page_size   每页数据量
+     * @return  list.get(0) 查询从第几条开始查询 list.get(1) 每页的数据量
+     */
+    private PageInfo getLimitStart(int flag, int page_number, int page_size){
+        int limit = 0;
+        if(page_number == 0 || page_number == 1){
+            limit = 0;
+            if(page_size == 0){
+                page_size = 7;
+            }
+        }else{
+            if(page_size == 0){
+                page_size = 8;
+            }
+            limit = (page_number-1)*page_size - 1;
+        }
+        PageInfo info = new PageInfo();
+        info.setLimit(limit);
+        info.setPageSize(page_size);
+        return  info;
+    }
+
     //处理批量操作的结果
     private Map<String,Object> handlerBatchTalentResult( Set<Integer> unUseList,Set<Integer>unApplierIdList,Set<Integer> idList ,int companyd){
         List<Map<String,Object>> userHrList=talentPoolEntity.getCompanyHrList(companyd);

@@ -240,7 +240,13 @@ public class TalentPoolServiceTest {
         Response res=talentPoolService.getPublicAndHrTalentByUserIdList(hrId,companyId,userIdSet);
         System.out.println(res);
     }
-
+    @Test
+    public void testCompanyTagIdList() throws TException {
+        int hrId=82752;
+        int companyId=39978;
+        Response res=talentPoolService.getCompanyTagList(hrId,companyId,0, 0);
+        System.out.println(res);
+    }
 
 
 
