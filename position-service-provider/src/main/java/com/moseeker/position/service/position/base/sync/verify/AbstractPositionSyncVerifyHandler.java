@@ -258,7 +258,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
      * @return
      * @throws BIZException
      */
-    private boolean alreadyInRedis(JsonVerifyParam verifyParam) throws BIZException {
+    boolean alreadyInRedis(JsonVerifyParam verifyParam) throws BIZException {
         String timeoutKey=redisTimeoutKey(verifyParam);
         long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.POSITION_SYNC_VERIFY_TIMEOUT.toString(), timeoutKey);
         if (check>1) {
@@ -293,7 +293,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
         return keyBuilder.toString();
     }
 
-    private static class JsonVerifyParam extends JSONObject{
+    static class JsonVerifyParam extends JSONObject{
 
         public static final String ENVIRON = "environ";
 
