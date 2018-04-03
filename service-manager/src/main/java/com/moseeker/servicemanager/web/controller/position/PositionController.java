@@ -679,7 +679,6 @@ public class PositionController {
         }
     }
 
-
     /**
      * 第三方职位列表详情
      */

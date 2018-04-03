@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public enum ChannelType {
 
-	JOB51(1, "51job","51job","common_retrieval_flow") {
+	JOB51(1, "51job","前程无忧","common_retrieval_flow") {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -57,7 +57,7 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	}, ZHILIAN(3, "zhaopin","智联","common_retrieval_flow") {
+	}, ZHILIAN(3, "zhaopin","智联招聘","common_retrieval_flow") {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
