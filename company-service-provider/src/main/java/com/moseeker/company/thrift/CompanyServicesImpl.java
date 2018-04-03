@@ -16,6 +16,7 @@ import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.company.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -487,6 +488,12 @@ public class CompanyServicesImpl implements Iface {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
         }
+    }
+
+    @Override
+    public Response getWechatBySignature(String signature, int companyId) throws BIZException, TException {
+        HrWxWechatDO wechatDO = companyPcService.getHrWxWechatDOBySignature(signature, companyId);
+        return ResponseUtils.success(wechatDO);
     }
 
 

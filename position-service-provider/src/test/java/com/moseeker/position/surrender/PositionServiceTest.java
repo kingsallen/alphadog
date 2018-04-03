@@ -78,6 +78,7 @@
 //    }
 //
 //    @Test
+
 //	public void testCitys(){
 //    	List<City> list=new ArrayList<>();
 //    	City city=new City();
@@ -116,6 +117,7 @@
 //    	service.cityCode(cities,1909944);
 //	}*/
 //
+
 //	@Test
 //	@Commit
 //	public void batchHandlerJobPostion() throws BIZException {
@@ -132,6 +134,7 @@
 //
 //		service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
 //	}
+
 //
 //	private String position="{\n" +
 //			"  'degree': 0,\n" +
