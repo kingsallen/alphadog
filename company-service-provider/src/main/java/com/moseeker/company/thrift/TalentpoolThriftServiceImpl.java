@@ -1,6 +1,12 @@
 package com.moseeker.company.thrift;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.common.exception.Category;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -22,13 +28,19 @@ import java.util.Set;
 @Service
 public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public TalentpoolThriftServiceImpl(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
     @Autowired
     private TalentPoolService talentPoolService;
 
     @Override
-    public Response upsertTalentPoolApp(int hrId, int companyId) throws BIZException, TException {
+    public Response upsertTalentPoolApp(int hrId, int companyId,int type) throws BIZException, TException {
         try{
-            Response result=talentPoolService.upsertTalentPoolApplication(hrId,companyId);
+            Response result=talentPoolService.upsertTalentPoolApplication(hrId,companyId,type);
             return result;
         }catch(Exception e){
             logger.info(e.getMessage(),e);
@@ -239,6 +251,19 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
+    }
+
+    @Override
+    public Response getPositionOrCompanyPast(int company_id, int type, int flag) throws BIZException, TException {
+        try{
+            List<TalentpoolPast> list=talentPoolService.getPastPositionOrCompany(company_id,type,flag);
+            String res= JSON.toJSONString(list,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+            return ResponseUtils.successWithoutStringify(res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+
     }
 
     private Set<Integer> ConvertListToSet(List<Integer> list){

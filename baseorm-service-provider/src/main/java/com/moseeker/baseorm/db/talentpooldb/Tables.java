@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
@@ -68,6 +69,11 @@ public class Tables {
      * 人才库人收藏记录
      */
     public static final TalentpoolHrTalent TALENTPOOL_HR_TALENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent.TALENTPOOL_HR_TALENT;
+
+    /**
+     * 人才库使用的曾任职务和曾任公司
+     */
+    public static final TalentpoolPast TALENTPOOL_PAST = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast.TALENTPOOL_PAST;
 
     /**
      * 简历筛选表

@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
@@ -24,6 +25,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagU
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolEmailRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolExecuteRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrTalentRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolPastRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileFilterExecuteRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileFilterRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTagRecord;
@@ -60,6 +62,7 @@ public class Keys {
     public static final Identity<TalentpoolCompanyTagRecord, Integer> IDENTITY_TALENTPOOL_COMPANY_TAG = Identities0.IDENTITY_TALENTPOOL_COMPANY_TAG;
     public static final Identity<TalentpoolEmailRecord, Integer> IDENTITY_TALENTPOOL_EMAIL = Identities0.IDENTITY_TALENTPOOL_EMAIL;
     public static final Identity<TalentpoolExecuteRecord, Integer> IDENTITY_TALENTPOOL_EXECUTE = Identities0.IDENTITY_TALENTPOOL_EXECUTE;
+    public static final Identity<TalentpoolPastRecord, Integer> IDENTITY_TALENTPOOL_PAST = Identities0.IDENTITY_TALENTPOOL_PAST;
     public static final Identity<TalentpoolProfileFilterRecord, Integer> IDENTITY_TALENTPOOL_PROFILE_FILTER = Identities0.IDENTITY_TALENTPOOL_PROFILE_FILTER;
     public static final Identity<TalentpoolTagRecord, Integer> IDENTITY_TALENTPOOL_TAG = Identities0.IDENTITY_TALENTPOOL_TAG;
     public static final Identity<TalentpoolUploadRecord, Integer> IDENTITY_TALENTPOOL_UPLOAD = Identities0.IDENTITY_TALENTPOOL_UPLOAD;
@@ -75,6 +78,7 @@ public class Keys {
     public static final UniqueKey<TalentpoolEmailRecord> KEY_TALENTPOOL_EMAIL_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_EMAIL_PRIMARY;
     public static final UniqueKey<TalentpoolExecuteRecord> KEY_TALENTPOOL_EXECUTE_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_EXECUTE_PRIMARY;
     public static final UniqueKey<TalentpoolHrTalentRecord> KEY_TALENTPOOL_HR_TALENT_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_HR_TALENT_PRIMARY;
+    public static final UniqueKey<TalentpoolPastRecord> KEY_TALENTPOOL_PAST_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_PAST_PRIMARY;
     public static final UniqueKey<TalentpoolProfileFilterRecord> KEY_TALENTPOOL_PROFILE_FILTER_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_PROFILE_FILTER_PRIMARY;
     public static final UniqueKey<TalentpoolProfileFilterExecuteRecord> KEY_TALENTPOOL_PROFILE_FILTER_EXECUTE_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_PROFILE_FILTER_EXECUTE_PRIMARY;
     public static final UniqueKey<TalentpoolProfileFilterExecuteRecord> KEY_TALENTPOOL_PROFILE_FILTER_EXECUTE_PID_FID = UniqueKeys0.KEY_TALENTPOOL_PROFILE_FILTER_EXECUTE_PID_FID;
@@ -97,6 +101,7 @@ public class Keys {
         public static Identity<TalentpoolCompanyTagRecord, Integer> IDENTITY_TALENTPOOL_COMPANY_TAG = createIdentity(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG, TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID);
         public static Identity<TalentpoolEmailRecord, Integer> IDENTITY_TALENTPOOL_EMAIL = createIdentity(TalentpoolEmail.TALENTPOOL_EMAIL, TalentpoolEmail.TALENTPOOL_EMAIL.ID);
         public static Identity<TalentpoolExecuteRecord, Integer> IDENTITY_TALENTPOOL_EXECUTE = createIdentity(TalentpoolExecute.TALENTPOOL_EXECUTE, TalentpoolExecute.TALENTPOOL_EXECUTE.ID);
+        public static Identity<TalentpoolPastRecord, Integer> IDENTITY_TALENTPOOL_PAST = createIdentity(TalentpoolPast.TALENTPOOL_PAST, TalentpoolPast.TALENTPOOL_PAST.ID);
         public static Identity<TalentpoolProfileFilterRecord, Integer> IDENTITY_TALENTPOOL_PROFILE_FILTER = createIdentity(TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER, TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.ID);
         public static Identity<TalentpoolTagRecord, Integer> IDENTITY_TALENTPOOL_TAG = createIdentity(TalentpoolTag.TALENTPOOL_TAG, TalentpoolTag.TALENTPOOL_TAG.ID);
         public static Identity<TalentpoolUploadRecord, Integer> IDENTITY_TALENTPOOL_UPLOAD = createIdentity(TalentpoolUpload.TALENTPOOL_UPLOAD, TalentpoolUpload.TALENTPOOL_UPLOAD.ID);
@@ -110,6 +115,7 @@ public class Keys {
         public static final UniqueKey<TalentpoolEmailRecord> KEY_TALENTPOOL_EMAIL_PRIMARY = createUniqueKey(TalentpoolEmail.TALENTPOOL_EMAIL, "KEY_talentpool_email_PRIMARY", TalentpoolEmail.TALENTPOOL_EMAIL.ID);
         public static final UniqueKey<TalentpoolExecuteRecord> KEY_TALENTPOOL_EXECUTE_PRIMARY = createUniqueKey(TalentpoolExecute.TALENTPOOL_EXECUTE, "KEY_talentpool_execute_PRIMARY", TalentpoolExecute.TALENTPOOL_EXECUTE.ID);
         public static final UniqueKey<TalentpoolHrTalentRecord> KEY_TALENTPOOL_HR_TALENT_PRIMARY = createUniqueKey(TalentpoolHrTalent.TALENTPOOL_HR_TALENT, "KEY_talentpool_hr_talent_PRIMARY", TalentpoolHrTalent.TALENTPOOL_HR_TALENT.HR_ID, TalentpoolHrTalent.TALENTPOOL_HR_TALENT.USER_ID);
+        public static final UniqueKey<TalentpoolPastRecord> KEY_TALENTPOOL_PAST_PRIMARY = createUniqueKey(TalentpoolPast.TALENTPOOL_PAST, "KEY_talentpool_past_PRIMARY", TalentpoolPast.TALENTPOOL_PAST.ID);
         public static final UniqueKey<TalentpoolProfileFilterRecord> KEY_TALENTPOOL_PROFILE_FILTER_PRIMARY = createUniqueKey(TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER, "KEY_talentpool_profile_filter_PRIMARY", TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.ID);
         public static final UniqueKey<TalentpoolProfileFilterExecuteRecord> KEY_TALENTPOOL_PROFILE_FILTER_EXECUTE_PRIMARY = createUniqueKey(TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE, "KEY_talentpool_profile_filter_execute_PRIMARY", TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE.FILTER_ID);
         public static final UniqueKey<TalentpoolProfileFilterExecuteRecord> KEY_TALENTPOOL_PROFILE_FILTER_EXECUTE_PID_FID = createUniqueKey(TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE, "KEY_talentpool_profile_filter_execute_pid_fid", TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE.FILTER_ID, TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE.EXECUTE_ID);
