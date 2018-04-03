@@ -63,6 +63,8 @@ public class PositionATSService {
 
 
     CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+
+    @Autowired
     private HrCompanyDao companyDao;
 
     @Autowired
