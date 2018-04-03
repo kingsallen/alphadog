@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> implements Record11<Integer, Integer, String, Integer, Byte, Byte, Timestamp, Byte, String, String, String> {
 
-    private static final long serialVersionUID = -348387238;
+    private static final long serialVersionUID = -582346806;
 
     /**
      * Setter for <code>hrdb.hr_wx_hr_chat.id</code>. ID
@@ -131,14 +131,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.origin</code>. 来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入
+     * Setter for <code>hrdb.hr_wx_hr_chat.origin</code>. 来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 
      */
     public void setOrigin(Byte value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.origin</code>. 来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入
+     * Getter for <code>hrdb.hr_wx_hr_chat.origin</code>. 来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 
      */
     public Byte getOrigin() {
         return (Byte) get(7);

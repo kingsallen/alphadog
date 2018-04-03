@@ -6,7 +6,13 @@ package com.moseeker.baseorm.db.talentpooldb;
 
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload;
@@ -34,14 +40,44 @@ public class Tables {
     public static final TalentpoolApplication TALENTPOOL_APPLICATION = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication.TALENTPOOL_APPLICATION;
 
     /**
-     * 人才库人HR与备注的关系
+     * 人才库人HR与标签的关系
      */
     public static final TalentpoolComment TALENTPOOL_COMMENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment.TALENTPOOL_COMMENT;
+
+    /**
+     * 企业标签表
+     */
+    public static final TalentpoolCompanyTag TALENTPOOL_COMPANY_TAG = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG;
+
+    /**
+     * 企业标签和人才关系表
+     */
+    public static final TalentpoolCompanyTagUser TALENTPOOL_COMPANY_TAG_USER = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER;
+
+    /**
+     * 人才库邮件模板表
+     */
+    public static final TalentpoolEmail TALENTPOOL_EMAIL = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail.TALENTPOOL_EMAIL;
+
+    /**
+     * 具体执行规则配置表
+     */
+    public static final TalentpoolExecute TALENTPOOL_EXECUTE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute.TALENTPOOL_EXECUTE;
 
     /**
      * 人才库人收藏记录
      */
     public static final TalentpoolHrTalent TALENTPOOL_HR_TALENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent.TALENTPOOL_HR_TALENT;
+
+    /**
+     * 简历筛选表
+     */
+    public static final TalentpoolProfileFilter TALENTPOOL_PROFILE_FILTER = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER;
+
+    /**
+     * 简历筛选项执行表
+     */
+    public static final TalentpoolProfileFilterExecute TALENTPOOL_PROFILE_FILTER_EXECUTE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE;
 
     /**
      * 人才库标签表

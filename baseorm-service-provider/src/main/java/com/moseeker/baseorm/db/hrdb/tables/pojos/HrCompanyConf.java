@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = 1373866938;
+    private static final long serialVersionUID = 183227688;
 
     private Integer   companyId;
     private Integer   themeId;
@@ -49,6 +49,7 @@ public class HrCompanyConf implements Serializable {
     private String    employeeSlug;
     private String    displayLocale;
     private Byte      talentpoolStatus;
+    private Integer   emailBalance;
 
     public HrCompanyConf() {}
 
@@ -77,6 +78,7 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = value.employeeSlug;
         this.displayLocale = value.displayLocale;
         this.talentpoolStatus = value.talentpoolStatus;
+        this.emailBalance = value.emailBalance;
     }
 
     public HrCompanyConf(
@@ -103,7 +105,8 @@ public class HrCompanyConf implements Serializable {
         Byte      showInQx,
         String    employeeSlug,
         String    displayLocale,
-        Byte      talentpoolStatus
+        Byte      talentpoolStatus,
+        Integer   emailBalance
     ) {
         this.companyId = companyId;
         this.themeId = themeId;
@@ -129,6 +132,7 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = employeeSlug;
         this.displayLocale = displayLocale;
         this.talentpoolStatus = talentpoolStatus;
+        this.emailBalance = emailBalance;
     }
 
     public Integer getCompanyId() {
@@ -323,6 +327,14 @@ public class HrCompanyConf implements Serializable {
         this.talentpoolStatus = talentpoolStatus;
     }
 
+    public Integer getEmailBalance() {
+        return this.emailBalance;
+    }
+
+    public void setEmailBalance(Integer emailBalance) {
+        this.emailBalance = emailBalance;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrCompanyConf (");
@@ -351,6 +363,7 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(employeeSlug);
         sb.append(", ").append(displayLocale);
         sb.append(", ").append(talentpoolStatus);
+        sb.append(", ").append(emailBalance);
 
         sb.append(")");
         return sb.toString();

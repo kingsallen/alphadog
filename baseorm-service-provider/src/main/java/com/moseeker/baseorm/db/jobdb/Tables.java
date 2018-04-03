@@ -17,6 +17,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
@@ -102,6 +103,11 @@ public class Tables {
      * 职位福利特色-关系表
      */
     public static final JobPositionHrCompanyFeature JOB_POSITION_HR_COMPANY_FEATURE = com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE;
+
+    /**
+     * 简历筛选关联职位中间表
+     */
+    public static final JobPositionProfileFilter JOB_POSITION_PROFILE_FILTER = com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER;
 
     /**
      * 职位分享描述配置模板
