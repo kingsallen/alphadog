@@ -52,6 +52,11 @@ public class ChatServiceTest {
         System.out.println(JSON.toJSONString(chatService.listChatLogs(33 ,1, 10)));
     }
 
+    @Test
+    public void enterChatRoom() throws TException {
+
+        chatService.enterRoom(2191525,87759, 0,0, false);
+    }
 
     @Test
     public void saveChat() throws Exception {
