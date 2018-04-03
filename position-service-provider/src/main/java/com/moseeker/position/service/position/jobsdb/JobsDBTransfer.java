@@ -243,6 +243,7 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
         return "";
     }
 
+
     @Override
     protected String getDescription(String accounTabilities, String requirement) {
         StringBuffer descript = new StringBuffer();

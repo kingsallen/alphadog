@@ -329,8 +329,6 @@ public class ProfileValidation {
 			DateTime birth = DateTime.parse(basicRecord.getBirth());
             if (birth != null && !lowerNow(birth.getMillis())) {
                 vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
-            }else{
-                logger.error("简历生日导入失败：{}", DateUtils.dateToShortTime(new Date(birth.getMillis())));
             }
 		}
 		return vm;
