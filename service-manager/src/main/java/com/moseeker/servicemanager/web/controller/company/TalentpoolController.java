@@ -480,13 +480,39 @@ public class TalentpoolController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             String hrId=String.valueOf(params.get("hr_id"));
             String companyId=String.valueOf(params.get("company_id"));
+            String type=String.valueOf(params.get("type"));
             if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
             if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
                 return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
-            Response result = service.upsertTalentPoolApp(Integer.parseInt(hrId),Integer.parseInt(companyId));
+            if(StringUtils.isNullOrEmpty(type)){
+                type="0";
+            }
+            Response result = service.upsertTalentPoolApp(Integer.parseInt(hrId),Integer.parseInt(companyId),Integer.parseInt(type));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+    获取简历筛选项或者企业标签的曾任职务或者曾任公司
+    */
+    @RequestMapping(value = "/api/talentpool/past", method = RequestMethod.POST)
+    @ResponseBody
+    public String getPast(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String type=String.valueOf(params.get("type"));
+            String companyId=String.valueOf(params.get("company_id"));
+            String flag=String.valueOf(params.get("flag"));
+            if(StringUtils.isNullOrEmpty(companyId)){
+                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            Response result = service.upsertTalentPoolApp(Integer.parseInt(companyId),Integer.parseInt(type),Integer.parseInt(flag));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);

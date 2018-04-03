@@ -714,17 +714,14 @@ public class CompanyService {
     public int getTalentPoolSwitch(int hrId,int companyId){
         int count=this.validateHrAndCompany(hrId,companyId);
         if(count==0){
-            return 2;
+            return -1;
         }
         HrCompanyConfRecord record=this.getHrCompanyConfRecordByCompanyId(companyId);
         if(record==null){
-            return 3;
+            return -2;
         }
         int talentPoolStatus=record.getTalentpoolStatus();
-        if(talentPoolStatus>0){
-            return 1;
-        }
-        return 0;
+        return talentPoolStatus;
     }
     /*
      获取此账号是不是此公司的账号

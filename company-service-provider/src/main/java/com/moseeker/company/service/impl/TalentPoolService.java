@@ -10,6 +10,8 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -18,6 +20,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
+import com.moseeker.company.bean.TalentTagPOJO;
 import com.moseeker.company.bean.ValidateCommonBean;
 import com.moseeker.company.bean.ValidateTagBean;
 import com.moseeker.company.bean.ValidateTalentBean;
@@ -77,12 +80,14 @@ public class TalentPoolService {
     private ValidateTalentTag validateTalentTag;
     @Autowired
     private ValidateUtils validateUtils;
+    @Autowired
+    private TalentpoolPastDao talentpoolPastDao;
 
     /*
       修改开启人才库的申请记录
      */
     @CounterIface
-    public Response upsertTalentPoolApplication(int hrId,int companyId){
+    public Response upsertTalentPoolApplication(int hrId,int companyId,int type){
         int count=this.validateHrAndCompany(hrId,companyId);
         if(count==0){
             return ResponseUtils.fail(1,"此账号不是主账号");
@@ -91,7 +96,7 @@ public class TalentPoolService {
         if(record==null){
             return ResponseUtils.fail(1,"此公司无配置");
         }
-        int result=talentpoolApplicationDao.inserOrUpdateTalentPoolApplication(hrId,companyId);
+        int result=talentpoolApplicationDao.inserOrUpdateTalentPoolApplication(hrId,companyId,type);
         if(result==0){
             return ResponseUtils.fail(1,"操作失败");
         }
@@ -520,7 +525,7 @@ public class TalentPoolService {
             result.put("allpublic",companyPublicNum);
             result.put("hrpublic",hrPublicNum);
             result.put("talent",talentNum);
-            result.put("tag",list);
+//            result.put("tag",list);
             result.put("alltalent",allTalentNum);
         }else if(type==1){
             int hrPublicNum=this.getHrPublicTalentCount(hrId);
@@ -528,14 +533,23 @@ public class TalentPoolService {
         }else if(type==2){
             int talentNum=this.getAllHrTalent(hrId);
             result.put("talent",talentNum);
-        }else if(type==3){
-            int companyPublicNum=talentPoolEntity.getPublicTalentCount(companyId);
-            result.put("allpublic",companyPublicNum);
-        }else if(type==4){
-            List<Map<String,Object>> list=talentPoolEntity.getTagByHr(hrId,0,Integer.MAX_VALUE);
-            result.put("tag",list);
+        }else if(type==3) {
+            int companyPublicNum = talentPoolEntity.getPublicTalentCount(companyId);
+            result.put("allpublic", companyPublicNum);
         }
+//        }else if(type==4){
+//            List<Map<String,Object>> list=talentPoolEntity.getTagByHr(hrId,0,Integer.MAX_VALUE);
+//            result.put("tag",list);
+//        }
         return ResponseUtils.success(result);
+    }
+
+    //分页获取标签
+    @CounterIface
+    public TalentTagPOJO getTalentTagByPage(int hrId,int page,int pageSize){
+
+        TalentTagPOJO pojo= this.getTagData(hrId,page,pageSize);
+        return pojo;
     }
     /*
       人才的来源来源
@@ -830,6 +844,21 @@ public class TalentPoolService {
         }
         return ResponseUtils.success(result);
     }
+    /*
+    @Params:
+         company_id 公司id
+         type :0职位 1公司
+         flag 0标签 1筛选规则
+    @user:zzt
+     */
+    @CounterIface
+    public List<TalentpoolPast> getPastPositionOrCompany(int companyId, int type, int flag){
+        List<TalentpoolPast> list=talentpoolPastDao.getPastList(companyId,type,flag);
+        if(StringUtils.isEmptyList(list)){
+            list=new ArrayList<>();
+        }
+        return list;
+    }
 
 
     @CounterIface
@@ -931,14 +960,6 @@ public class TalentPoolService {
         result.put("use",hrMap);
         return result;
 
-    }
-    /*
-     获得标签下的人才数量
-     */
-    private Map<String,Object> handlerTagTalentNum(int hrId){
-        List<Map<String,Object>> list=talentPoolEntity.getTagByHr(hrId,0,Integer.MAX_VALUE);
-        Map<String,Object> tagResult=new HashMap<>();
-        return tagResult;
     }
     /*
 
@@ -1141,6 +1162,17 @@ public class TalentPoolService {
         result.put("total_row",count);
         result.put("data",hrTagList);
         return result;
+    }
+
+    private TalentTagPOJO getTagData(int hrId, int pageNum, int pageSize){
+        int count=this.getTagByHrCount(hrId);
+        List<TalentpoolTag> hrTagList=talentpoolTagDao.getTagByPage(hrId,pageNum,pageSize);
+        TalentTagPOJO talentTagPOJO=new TalentTagPOJO();
+        talentTagPOJO.setPage_number(pageNum);
+        talentTagPOJO.setPage_size(pageSize);
+        talentTagPOJO.setTags(hrTagList);
+        talentTagPOJO.setTotal(count);
+        return talentTagPOJO;
     }
 
     /*

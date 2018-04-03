@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
@@ -42,7 +43,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Talentpooldb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1711866962;
+    private static final long serialVersionUID = -700500264;
 
     /**
      * The reference instance of <code>talentpooldb</code>
@@ -83,6 +84,11 @@ public class Talentpooldb extends SchemaImpl {
      * 人才库人收藏记录
      */
     public final TalentpoolHrTalent TALENTPOOL_HR_TALENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent.TALENTPOOL_HR_TALENT;
+
+    /**
+     * 人才库使用的曾任职务和曾任公司
+     */
+    public final TalentpoolPast TALENTPOOL_PAST = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast.TALENTPOOL_PAST;
 
     /**
      * 简历筛选表
@@ -146,6 +152,7 @@ public class Talentpooldb extends SchemaImpl {
             TalentpoolEmail.TALENTPOOL_EMAIL,
             TalentpoolExecute.TALENTPOOL_EXECUTE,
             TalentpoolHrTalent.TALENTPOOL_HR_TALENT,
+            TalentpoolPast.TALENTPOOL_PAST,
             TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER,
             TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE,
             TalentpoolTag.TALENTPOOL_TAG,

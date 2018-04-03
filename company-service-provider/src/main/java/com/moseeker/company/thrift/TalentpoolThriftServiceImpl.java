@@ -1,7 +1,10 @@
 package com.moseeker.company.thrift;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.exception.ExceptionFactory;
@@ -35,9 +38,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     private TalentPoolService talentPoolService;
 
     @Override
-    public Response upsertTalentPoolApp(int hrId, int companyId) throws BIZException, TException {
+    public Response upsertTalentPoolApp(int hrId, int companyId,int type) throws BIZException, TException {
         try{
-            Response result=talentPoolService.upsertTalentPoolApplication(hrId,companyId);
+            Response result=talentPoolService.upsertTalentPoolApplication(hrId,companyId,type);
             return result;
         }catch(Exception e){
             logger.info(e.getMessage(),e);
@@ -248,6 +251,19 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
+    }
+
+    @Override
+    public Response getPositionOrCompanyPast(int company_id, int type, int flag) throws BIZException, TException {
+        try{
+            List<TalentpoolPast> list=talentPoolService.getPastPositionOrCompany(company_id,type,flag);
+            String res= JSON.toJSONString(list,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+            return ResponseUtils.successWithoutStringify(res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+
     }
 
     @Override
