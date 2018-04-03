@@ -4,10 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyCompanyChannelConfDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.common.constants.CompanyType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.Position.PositionSource;
 import com.moseeker.common.constants.Position.PositionStatus;
@@ -16,6 +19,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.position.pojo.ChannelTypePojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -23,6 +27,9 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.HrCompanyFeatureDO;
+import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyCompanyChannelConfDO;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
 import org.apache.thrift.TException;
@@ -54,6 +61,135 @@ public class PositionATSService {
 
 
     CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+
+    @Autowired
+    private HrCompanyDao companyDao;
+
+    @Autowired
+    private ThirdpartyCompanyChannelConfDao thirdpartyCompanyChannelConfDao;
+
+    @Autowired
+    List<AbstractPositionTransfer> transferList;
+
+    /**
+     * 获取所有可同步的渠道信息
+     * 这里获取的channel不是所有channelType的类型
+     * 而是所有实现了AbstractPositionTransfer的渠道类型
+     * 因为不是所有的ChannelType都可以同步，
+     * 但是可同步的渠道必须实现AbstractPositionTransfer
+     * @return  可同步的渠道信息
+     */
+    public List<ChannelTypePojo> getSyncChannel(){
+        return transferList.stream().map(p->{
+            ChannelTypePojo channelTypePojo = new ChannelTypePojo();
+            channelTypePojo.setCode(p.getChannel().getValue());
+            channelTypePojo.setText(p.getChannel().getAlias());
+            return channelTypePojo;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 更新公司可同步渠道配置，没有的新增，并且删除 不在传入参数中的数据
+     * 如果传入的channel为空列表，则会删除所有可同步渠道，deleteAllChannelByCompanyId
+     * @param company_id    公司ID
+     * @param channel       需要配置的渠道号
+     * @return  配置结果
+     */
+    public List<ThirdpartyCompanyChannelConfDO> updateCompanyChannelConf(int company_id,List<Integer> channel) throws BIZException {
+        if(company_id == 0 || channel == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
+        HrCompanyDO companyDO = companyDao.getCompanyById(company_id);
+        if(companyDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
+        }
+
+        //必须是付费公司
+        if(companyDO.getType() != CompanyType.PAY.getCode()){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.ONLY_PAY_COMPANY_CAN_CONF_CHANNEL);
+        }
+
+        // 只能更新母公司
+        if(companyDO.getParentId() != 0){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.SUB_COMPANY_CANT_CONF_CHANNEL);
+        }
+
+        // 渠道号必须有效
+        List<ChannelTypePojo> channelTypePojoList = getSyncChannel();
+        out:
+        for(int c : channel){
+            for(ChannelTypePojo ctp : channelTypePojoList){
+                if(c == ctp.getCode()){
+                    continue out;
+                }
+            }
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.WRONG_SYNC_CHANNEL);
+        }
+
+        List<ThirdpartyCompanyChannelConfDO> confs = thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
+
+        //找出在数据库，但不在本次要设置的渠道，后面删除
+        List<ThirdpartyCompanyChannelConfDO> toBeDeleted = new ArrayList<>();
+        out:
+        for(ThirdpartyCompanyChannelConfDO conf:confs){
+            for(Integer c:channel){
+                if(conf.getChannel() == c){
+                    continue out;
+                }
+            }
+            toBeDeleted.add(conf);
+        }
+
+        //找出在本次要设置的渠道，但不在数据库，后面新增
+        List<ThirdpartyCompanyChannelConfDO> toBeAdd = new ArrayList<>();
+        out:
+        for(Integer c:channel){
+            for(ThirdpartyCompanyChannelConfDO conf:confs){
+                if(conf.getChannel() == c){
+                    continue out;
+                }
+            }
+            ThirdpartyCompanyChannelConfDO temp = new ThirdpartyCompanyChannelConfDO();
+            temp.setChannel(c);
+            temp.setCompanyId(company_id);
+
+            toBeAdd.add(temp);
+        }
+
+
+        thirdpartyCompanyChannelConfDao.deleteDatas(toBeDeleted);
+        logger.info("be delete company channel conf:{}",toBeDeleted);
+        thirdpartyCompanyChannelConfDao.addAllData(toBeAdd);
+        logger.info("be add company channel conf:{}",toBeAdd);
+
+        return thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
+    }
+
+    /**
+     * 根据公司ID获取配置的可同步渠道
+     * @param company_id    公司ID
+     * @return  配置的可同步渠道号
+     * @throws BIZException
+     */
+    public List<Integer> getCompanyChannelConfByCompanyId(int company_id) throws BIZException {
+        HrCompanyDO companyDO = companyDao.getCompanyById(company_id);
+        if(companyDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
+        }
+
+        // 如果是子公司，需要用母公司查询配置，因为只有母公司才能配置可发布渠道
+        if(companyDO.getParentId() != 0){
+            company_id = companyDO.getParentId();
+        }
+
+        List<ThirdpartyCompanyChannelConfDO> result = thirdpartyCompanyChannelConfDao.getConfByCompanyId(company_id);
+        if(StringUtils.isEmptyList(result)){
+            return Collections.emptyList();
+        }
+
+        return result.stream().map(c->c.getChannel()).collect(Collectors.toList());
+    }
 
     /**
      * ATS谷露新增职位
@@ -258,13 +394,16 @@ public class PositionATSService {
             List<Integer> featureIds = new ArrayList<>();
 
             String feature = jobPositionHandlerDate.getFeature();
-            if(feature == null){
-                continue;
+            if(StringUtils.isNotNullOrEmpty(feature)){
+                for(String featureName:feature.split("#")){
+                    if(!featureMap.containsKey(featureName)){
+                        logger.error("ats update position feature error companyId:{} feature:{}",companyId,featureName);
+                        continue;
+                    }
+                    featureIds.add(featureMap.get(featureName).getId());
+                }
             }
 
-            for(String featureName:feature.split("#")){
-                featureIds.add(featureMap.get(featureName).getId());
-            }
             positionQxService.updatePositionFeatureList(jobPositionHandlerDate.getId(),featureIds);
         }
 
