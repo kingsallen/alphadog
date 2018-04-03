@@ -529,7 +529,8 @@ public class TalentpoolController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             String hrId=String.valueOf(params.get("hr_id"));
             String companyId=String.valueOf(params.get("company_id"));
-            int page_number = params.("company_tags");
+            int page_number = params.getInt("page_number", 1);
+            int page_size = params.getInt("page_size",0);
             if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
                 ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
