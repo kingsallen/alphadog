@@ -1,0 +1,17 @@
+version 'unspecified'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project (":baseorm-service-provider")
+    compile deps["spring-rabbit"]
+    testCompile deps["junit"]
+    testCompile deps["mockito"]
+}
