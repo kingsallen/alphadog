@@ -867,7 +867,16 @@ public class TalentPoolService {
         }
         return list;
     }
-
+    /*
+     添加曾任职务和曾任公司
+     */
+    public int addPastPositionOrCompany(int companyId, int type, int flag,String name){
+        if(StringUtils.isNullOrEmpty(name)){
+            return -1;
+        }
+        int result=talentpoolPastDao.upsertPast(companyId,type,flag,name);
+        return result;
+    }
 
     @CounterIface
     public Response getCompanyTagList(int hrId,int companyId, int page_number, int page_size){
@@ -969,6 +978,7 @@ public class TalentPoolService {
         return result;
 
     }
+
     /*
 
 

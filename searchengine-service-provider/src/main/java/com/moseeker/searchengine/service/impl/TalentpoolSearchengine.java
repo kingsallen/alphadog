@@ -99,6 +99,25 @@ public class TalentpoolSearchengine {
         }
         return result;
     }
+    @CounterIface
+    public List<Integer> getUserListByCompanyTagId(Map<String,String> params){
+        TransportClient client =null;
+        try{
+            client=searchUtil.getEsClient();
+
+        }catch(Exception e){
+            logger.info(e.getMessage()+"=================");
+        }
+        return null;
+    }
+
+    public QueryBuilder getQueryByTag(Map<String,String> params){
+        int companyId=Integer.parseInt(params.get("companyId"));
+        String origins=params.get("origins");
+        String workYear=params.get("work_years");
+        String submitTime=params.get("submit_time");
+        return null;
+    }
 
     /*
      组装查询语句

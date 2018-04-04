@@ -268,6 +268,20 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
+    public Response addPositionOrCompanyPast(int company_id, int type, int flag, String name) throws BIZException, TException {
+        try{
+            int result=talentPoolService.addPastPositionOrCompany(company_id,type,flag,name);
+            if(result==-1){
+                return ResponseUtils.fail(1,"职务或公司名称不能为空");
+            }
+            return ResponseUtils.success(result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
     public Response getCompanyTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
         try{
             return talentPoolService.getCompanyTagList(hr_id,company_id,page_number, page_size);

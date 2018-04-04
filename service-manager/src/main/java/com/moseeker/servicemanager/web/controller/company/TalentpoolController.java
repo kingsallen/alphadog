@@ -501,7 +501,7 @@ public class TalentpoolController {
     /*
     获取简历筛选项或者企业标签的曾任职务或者曾任公司
     */
-    @RequestMapping(value = "/api/talentpool/past", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/talentpool/past", method = RequestMethod.GET)
     @ResponseBody
     public String getPast(HttpServletRequest request) throws Exception {
         try {
@@ -512,14 +512,38 @@ public class TalentpoolController {
             if(StringUtils.isNullOrEmpty(companyId)){
                 ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
-            Response result = service.upsertTalentPoolApp(Integer.parseInt(companyId),Integer.parseInt(type),Integer.parseInt(flag));
+            Response result = service.getPositionOrCompanyPast(Integer.parseInt(companyId),Integer.parseInt(type),Integer.parseInt(flag));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
+    /*
+        获取简历筛选项或者企业标签的曾任职务或者曾任公司
+        */
+    @RequestMapping(value = "/api/talentpool/past", method = RequestMethod.POST)
+    @ResponseBody
+    public String addPast(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String type=String.valueOf(params.get("type"));
+            String companyId=String.valueOf(params.get("company_id"));
+            String flag=String.valueOf(params.get("flag"));
+            String name= (String) params.get("name");
+            if(StringUtils.isNullOrEmpty(companyId)){
+                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(name)){
+                ResponseLogNotification.fail(request,"曾任职位的名称或者公司不能为空");
+            }
+            Response result = service.addPositionOrCompanyPast(Integer.parseInt(companyId),Integer.parseInt(type),Integer.parseInt(flag),name);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
     /*
     获取企业标签列表
    */
