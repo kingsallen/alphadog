@@ -108,3 +108,4 @@ struct HrCompanyFeatureDO {
     5: optional  string update_time,
     6: optional  i32    disable
 }
+

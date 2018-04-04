@@ -2,6 +2,7 @@ package com.moseeker.company.service.impl;
 
 import com.moseeker.company.config.AppConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import org.apache.thrift.TException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by zztaiwll on 17/12/6.
@@ -246,6 +248,28 @@ public class TalentPoolServiceTest {
         int companyId=39978;
         Response res=talentPoolService.getCompanyTagList(hrId,companyId,0, 0);
         System.out.println(res);
+    }
+
+    @Test
+    public void testDeleteCompanyTagIdList() throws TException {
+        int hrId=82752;
+        int companyId=39978;
+        List<Integer> companyTagIds = new ArrayList<>();
+        companyTagIds.add(2);
+        int res=talentPoolService.deleteCompanyTags(hrId,companyId,companyTagIds);
+        System.out.println(res+"");
+    }
+
+    @Test
+    public void testaddCompanyTagIdList() throws TException {
+        int hrId=82752;
+        TalentpoolCompanyTagDO companyTagDO = new TalentpoolCompanyTagDO();
+        companyTagDO.setCompany_id(39978);
+        companyTagDO.setName("assdkahsdagdjkhajksdajkhdjkadjkah");
+        companyTagDO.setSex(2);
+        companyTagDO.setCity_name("上海");
+        Response res=talentPoolService.addCompanyTag(companyTagDO, hrId);
+        System.out.println(res+"");
     }
 
 

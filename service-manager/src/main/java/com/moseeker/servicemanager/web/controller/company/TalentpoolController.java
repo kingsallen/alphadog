@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.company;
 
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -11,6 +12,7 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
+import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import java.util.ArrayList;
 import org.slf4j.Logger;
@@ -570,7 +572,7 @@ public class TalentpoolController {
             if(company_tags.size()<1){
                 return ResponseLogNotification.fail(request,"company_tags长度不可以为0");
             }
-            Response result = service.deleteCompanyIds(Integer.parseInt(hrId),Integer.parseInt(companyId),company_tags);
+            Response result = service.deleteCompanyTagByIds(Integer.parseInt(hrId),Integer.parseInt(companyId),company_tags);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
@@ -578,4 +580,82 @@ public class TalentpoolController {
         }
     }
 
+    /*
+   获取企业标签信息
+  */
+    @RequestMapping(value = "/api/talentpool/companytag", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCompanyTag(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(params.get("hr_id"));
+            String companyId=String.valueOf(params.get("company_id"));
+            String company_tag_id = String.valueOf(params.get("company_tag_id"));
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(company_tag_id)||"0".equals(company_tag_id)){
+                return ResponseLogNotification.fail(request,"company_tag_id不可以为空或者为0");
+            }
+
+            Response result = service.getCompanyIdInfo(Integer.parseInt(hrId),Integer.parseInt(companyId),Integer.parseInt(company_tag_id));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+    保存企业标签信息
+    */
+    @RequestMapping(value = "/api/talentpool/companytag", method = RequestMethod.POST)
+    @ResponseBody
+    public String handerCompanyTag(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> data = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(data.get("hr_id"));
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            TalentpoolCompanyTagDO companyTagDO = ParamUtils.initModelForm(data, TalentpoolCompanyTagDO.class);
+            if(companyTagDO.getCompany_id()<=0){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            Response result = service.addCompanyTag(companyTagDO, Integer.parseInt(hrId));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+    修改企业标签信息
+    */
+    @RequestMapping(value = "/api/talentpool/companytag", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateCompanyTag(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> data = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(data.get("hr_id"));
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            TalentpoolCompanyTagDO companyTagDO = ParamUtils.initModelForm(data, TalentpoolCompanyTagDO.class);
+            if(companyTagDO.getCompany_id()<=0){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(companyTagDO.getId()<=0){
+                return ResponseLogNotification.fail(request,"id不可以为空或者为0");
+            }
+            Response result = service.updateCompanyTag(companyTagDO, Integer.parseInt(hrId));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

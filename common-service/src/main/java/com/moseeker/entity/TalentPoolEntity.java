@@ -24,6 +24,8 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -133,6 +135,57 @@ public class TalentPoolEntity {
     }
 
     /**
+     * 验证标签名称是否符合规则
+     * @param name
+     * @param companyId
+     * @return
+     */
+    public String validateCompanyTalentPoolV3ByTagName(String name, int companyId, int id){
+        ValidateUtil vu = new ValidateUtil();
+        vu.addRequiredStringValidate("标签名称", name, null,null);
+        vu.addStringLengthValidate("标签名称", name, null, null, 1, 41);
+        String result = vu.validate();
+        if(!StringUtils.isNotNullOrEmpty(result)) {
+            Query query = null;
+            if(id > 0){
+                query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(), companyId)
+                        .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.NAME.getName(), name)
+                        .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.DISABLE.getName(), 1)
+                        .and(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.getName(), id, ValueOp.NEQ))
+                        .buildQuery();
+            }else {
+                query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(), companyId)
+                        .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.NAME.getName(), name)
+                        .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.DISABLE.getName(), 1)
+                        .buildQuery();
+            }
+            List<TalentpoolCompanyTag> companyTagList = talentpoolCompanyTagDao.getDatas(query);
+            if(companyTagList != null && companyTagList.size()>0){
+                result = "标签名称重复";
+            }else{
+                return "OK";
+            }
+        }
+
+        return result;
+    }
+    /**
+     * 验证标签规则不能全为默认值
+     * @param companyTagDO
+     * @return
+     */
+    public boolean validateCompanyTalentPoolV3ByFilter(TalentpoolCompanyTagDO companyTagDO){
+        if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins()) || StringUtils.isNotNullOrEmpty(companyTagDO.getWork_years())
+                || StringUtils.isNotNullOrEmpty(companyTagDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getDegree())
+                || StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position()) || companyTagDO.getMin_age() > 0 || companyTagDO.getMax_age()>0
+                || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_city_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_salary_code())
+                || companyTagDO.getSex() !=2 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1){
+            return true;
+        }
+        return false;
+    }
+
+    /**
      *把企业标签的状态置位删除，删除标签和人才之间的关系
      * @param companyId     公司编号
      * @param companyTags   企业标签编号
@@ -149,13 +202,47 @@ public class TalentPoolEntity {
             newTagRecordList.add(tagRecord);
         }
         talentpoolCompanyTagDao.updateRecords(newTagRecordList);
-        List<TalentpoolCompanyTagUserRecord> tagUserRecords = this.getTalentpoolCompanyTagUserRecordByTagIds(companyTags);
-        talentpoolCompanyTagUserDao.deleteRecords(tagUserRecords);
+        //ES更新标签数据以及标签和人之间的关系
         return 0;
     }
 
 
+    /**
+     *获取企业标签信息
+     * @param companyId     公司编号
+     * @param company_tag_id   企业标签编号
+     * @return
+     */
+    public Map<String, Object> getCompanyTagInfo(int companyId, int company_tag_id){
 
+        List<Map<String, Object>> tagRecordList = getCompanyTagByTagIdAndCompanyId(companyId, company_tag_id);
+        if(tagRecordList == null || tagRecordList.size()==0 ){
+            return new HashMap<>();
+        }
+        return tagRecordList.get(0);
+    }
+
+    /**
+     * 插入标签信息
+     * @param companyTagDO
+     * @return
+     */
+    public int addCompanyTag(TalentpoolCompanyTagDO companyTagDO){
+        TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecord(companyTagDO);
+        talentpoolCompanyTagDao.addRecord(tagRecord);
+        return tagRecord.getId();
+    }
+
+    /**
+     * 更新标签信息
+     * @param companyTagDO
+     * @return
+     */
+    public int updateCompanyTag(TalentpoolCompanyTagDO companyTagDO){
+        TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecord(companyTagDO);
+        talentpoolCompanyTagDao.updateRecord(tagRecord);
+        return tagRecord.getId();
+    }
 
     /*
      通过TalentpoolHrTalentRecord 的集合获取User_id的list
@@ -1589,5 +1676,12 @@ public class TalentPoolEntity {
     private List<TalentpoolCompanyTagUserRecord> getTalentpoolCompanyTagUserRecordByTagIds(List<Integer> companyTags){
         Query query = new Query.QueryBuilder().where(new Condition(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID.getName(), companyTags, ValueOp.IN)).buildQuery();
         return talentpoolCompanyTagUserDao.getRecords(query);
+    }
+
+    public List<Map<String,Object>> getCompanyTagByTagIdAndCompanyId(int companyId, int company_tag_id){
+        Query query=new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(), companyId)
+                .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.getName(), company_tag_id).buildQuery();
+        List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);
+        return list;
     }
 }

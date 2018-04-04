@@ -17,6 +17,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
@@ -30,6 +31,7 @@ import com.moseeker.company.utils.ValidateUtils;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.talentpool.PageInfo;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -924,19 +926,88 @@ public class TalentPoolService {
      * 删除企业标签以及和人才之间的关系表，更新ES
      * @param hrId
      * @param companyId
-     * @param company_ids
+     * @param company_tag_ids
      * @return
      */
     @Transactional
-    public int deleteCompanyTags(int hrId, int companyId, List<Integer> company_ids){
+    public int deleteCompanyTags(int hrId, int companyId, List<Integer> company_tag_ids){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
         if(flag==0){
             return 1;
         }else if(flag == 1){
             return 2;
         }
-        int result = talentPoolEntity.deleteCompanyTags(companyId, company_ids);
+        int result = talentPoolEntity.deleteCompanyTags(companyId, company_tag_ids);
         return result;
+    }
+
+    /**
+     * 获取企业标签信息
+     * @param hrId          hr编号
+     * @param companyId     公司编号
+     * @param company_tag_id 标签编号
+     * @return
+     */
+    public Map<String, Object> getCompanyTagInfo(int hrId, int companyId, int company_tag_id){
+        Map<String, Object> params = new HashMap<>();
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag==0){
+            params.put("responseStatus", 1);
+            return  params;
+        }else if(flag == 1){
+            params.put("responseStatus", 2);
+            return  params;
+        }
+        Map<String, Object> companyTag = talentPoolEntity.getCompanyTagInfo(companyId, company_tag_id);
+        params.put("responseStatus", 0);
+        params.put("data", companyTag);
+        return params;
+    }
+
+
+
+    @Transactional
+    public Response addCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
+        if(flag==0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_STATUS);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
+        if("OK".equals(result)){
+            boolean bool = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+            if(bool){
+                int id = talentPoolEntity.addCompanyTag(companyTagDO);
+                //ES更新
+
+            }else{
+                return ResponseUtils.fail(1, "标签规则全为默认值");
+            }
+        }
+        return ResponseUtils.fail(1, result);
+    }
+
+    @Transactional
+    public Response updateCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
+        if(flag==0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_STATUS);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
+        if("OK".equals(result)){
+            boolean bool = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+            if(bool){
+                int id = talentPoolEntity.updateCompanyTag(companyTagDO);
+                //ES更新
+
+            }else{
+                return ResponseUtils.fail(1, "标签规则全为默认值");
+            }
+        }
+        return ResponseUtils.fail(1, result);
     }
 
     //处理批量操作的结果
