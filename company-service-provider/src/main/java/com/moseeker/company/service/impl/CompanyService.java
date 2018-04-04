@@ -133,6 +133,20 @@ public class CompanyService {
     public Response getResource(CommonQuery query) throws TException {
         try {
             Hrcompany data = companyDao.getData(QueryConvert.commonQueryConvertToQuery(query), Hrcompany.class);
+            if(data!=null){
+                int companyId=data.getId();
+                List<HrCompanyFeature> list=hrCompanyFeatureDao.getFeatureListByCompanyId(companyId);
+                if(!StringUtils.isEmptyList(list)){
+                    String feature="";
+                    for(HrCompanyFeature hrCompanyFeature:list){
+                        feature+=hrCompanyFeature.getFeature()+"#";
+                    }
+                    if(StringUtils.isNotNullOrEmpty(feature)){
+                        feature=feature.substring(0,feature.lastIndexOf("#"));
+                        data.setFeature(feature);
+                    }
+                }
+            }
             return ResponseUtils.success(data);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -143,6 +157,7 @@ public class CompanyService {
     public Response getResources(CommonQuery query) throws TException {
         try {
             List<Hrcompany> list = companyDao.getDatas(QueryConvert.commonQueryConvertToQuery(query), Hrcompany.class);
+            list=this.handlerCompanyFeature(list);
             return ResponseUtils.success(list);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -150,12 +165,45 @@ public class CompanyService {
         }
 
     }
+    private List<Hrcompany> handlerCompanyFeature(List<Hrcompany> list){
+        if(StringUtils.isEmptyList(list)){
+            return new ArrayList<>();
+        }
+        List<Integer> companyIdList=new ArrayList<>();
+        for(Hrcompany hrcompany:list){
+            companyIdList.add(hrcompany.getId());
+        }
+        if(StringUtils.isEmptyList(companyIdList)){
+            return list;
+        }
+        List<HrCompanyFeature> dataList=hrCompanyFeatureDao.getFeatureListByIdList(companyIdList);
+        if(StringUtils.isEmptyList(dataList)){
+            return list;
+        }
+        for(Hrcompany hrcompany:list){
+            int companyId=hrcompany.getId();
+            String feature="";
+            for(HrCompanyFeature hrCompanyFeature:dataList){
+                int id=hrCompanyFeature.getCompanyId();
+                if(id==companyId){
+                    feature+=hrCompanyFeature.getFeature()+"#";
+                }
+            }
+            if(StringUtils.isNotNullOrEmpty(feature)){
+                feature=feature.substring(0,feature.lastIndexOf("#"));
+                hrcompany.setFeature(feature);
+            }
+        }
+        return list;
+    }
+
 
     @CounterIface
     public Response getAllCompanies(CommonQuery query) {
         try {
             List<Hrcompany> structs = companyDao.getDatas(QueryConvert.commonQueryConvertToQuery(query), Hrcompany.class);
             if (!structs.isEmpty()) {
+                structs=this.handlerCompanyFeature(structs);
                 return ResponseUtils.success(structs);
             }
         } catch (Exception e) {
