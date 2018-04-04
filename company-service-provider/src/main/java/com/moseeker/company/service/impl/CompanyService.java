@@ -176,7 +176,7 @@ public class CompanyService {
         if(StringUtils.isEmptyList(companyIdList)){
             return list;
         }
-        List<HrCompanyFeature> dataList=hrCompanyFeatureDao.getFeatureListByIdList(companyIdList);
+        List<HrCompanyFeature> dataList=hrCompanyFeatureDao.getFeatureListByCompanyIdList(companyIdList);
         if(StringUtils.isEmptyList(dataList)){
             return list;
         }
