@@ -1,4 +1,6 @@
-package com.moseeker.consistencysuport.db;
+package com.moseeker.consistencysuport.config;
+
+import com.moseeker.consistencysuport.db.Message;
 
 import java.util.List;
 
@@ -9,6 +11,14 @@ import java.util.List;
  * Created by jack on 03/04/2018.
  */
 public interface MessageRepository {
+
+    /**
+     * 初始化数据库
+     * 1. create database if not exists `consistencydb`;
+     * 2. select `TABLE_NAME` from `INFORMATION_SCHEMA`.`TABLES` where `TABLE_SCHEMA`= 'consistencydb' and `TABLE_NAME` = 'consistency_message';
+     * 3. create tables;
+     */
+    void initDatabase();
 
     /**
      * 根据消息编号查找消息
@@ -40,5 +50,5 @@ public interface MessageRepository {
      * @param second
      * @return
      */
-    List<Message> fetchUnfinishMessageBySpecifiedSecond(long second);
+    List<Message> fetchUnFinishMessageBySpecifiedSecond(long second);
 }

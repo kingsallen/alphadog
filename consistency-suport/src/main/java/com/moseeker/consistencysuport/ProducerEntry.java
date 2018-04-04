@@ -14,4 +14,12 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProducerEntry {
+
+    String name() default "";
+
+    String className() default "";
+
+    String method() default "";
+
+    int period() default 5*60;
 }

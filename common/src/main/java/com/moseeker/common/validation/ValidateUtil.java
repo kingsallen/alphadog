@@ -150,6 +150,21 @@ public class ValidateUtil {
 	}
 
 	/**
+	 * 往验证器添加一个RequiredStringValidateRule
+	 *
+	 * @param paramName
+	 *            参数名称
+	 * @param beanToBeValidated
+	 *            被校验的对象
+	 * @return DasValidateRule 校验规则
+	 */
+	public ValidateRule addRequiredStringValidate(String paramName,
+												  Object beanToBeValidated)
+			throws ValidateNotAppointParamException {
+		return addRequiredStringValidate(paramName, beanToBeValidated, null, null);
+	}
+
+	/**
 	 * 往验证器中添加一个StringLengthValidateRule
 	 * 
 	 * @param param

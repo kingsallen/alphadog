@@ -1,5 +1,7 @@
 package com.moseeker.consistencysuport.db;
 
+import com.moseeker.common.validation.ValidateUtil;
+
 import java.util.List;
 
 /**
@@ -19,6 +21,9 @@ public class Message {
     private long lastRetryTime; //上一次重试的时间
     private String param;       //参数
     private boolean finish;     //是否完成
+    private String className;   //类名
+    private String method;      //方法名
+    private int period;         //时间间隔 单位是秒
 
     public String getMessageId() {
         return messageId;
@@ -98,5 +103,29 @@ public class Message {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
     }
 }
