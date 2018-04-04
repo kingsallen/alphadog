@@ -13,8 +13,9 @@ public class TalentTagPOJO implements Serializable{
     private static final long serialVersionUID = 1193221362;
     private List<TalentpoolTag> tags;
     private Integer page_number;
-    private  Integer page_size;
+    private Integer page_size;
     private Integer total;
+    private Integer flag;
 
     public List<TalentpoolTag> getTags() {
         return tags;
@@ -46,5 +47,13 @@ public class TalentTagPOJO implements Serializable{
 
     public void setTotal(Integer total) {
         this.total = total;
+    }
+
+    public Integer getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Integer flag) {
+        this.flag = flag;
     }
 }

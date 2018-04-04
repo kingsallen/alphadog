@@ -82,6 +82,8 @@ public class TalentPoolService {
     private ValidateUtils validateUtils;
     @Autowired
     private TalentpoolPastDao talentpoolPastDao;
+    @Autowired
+    private TalentpoolCompanyTagDao talentpoolCompanyTagDao;
 
     /*
       修改开启人才库的申请记录
@@ -525,8 +527,9 @@ public class TalentPoolService {
             result.put("allpublic",companyPublicNum);
             result.put("hrpublic",hrPublicNum);
             result.put("talent",talentNum);
-//            result.put("tag",list);
+            result.put("tag",list);
             result.put("alltalent",allTalentNum);
+            result.put("company_tag",getCompanyTagList(companyId));
         }else if(type==1){
             int hrPublicNum=this.getHrPublicTalentCount(hrId);
             result.put("hrpublic",hrPublicNum);
@@ -536,19 +539,24 @@ public class TalentPoolService {
         }else if(type==3) {
             int companyPublicNum = talentPoolEntity.getPublicTalentCount(companyId);
             result.put("allpublic", companyPublicNum);
+        }else if(type==4){
+            List<Map<String,Object>> list=talentPoolEntity.getTagByHr(hrId,0,Integer.MAX_VALUE);
+            result.put("tag",list);
         }
-//        }else if(type==4){
-//            List<Map<String,Object>> list=talentPoolEntity.getTagByHr(hrId,0,Integer.MAX_VALUE);
-//            result.put("tag",list);
-//        }
         return ResponseUtils.success(result);
     }
 
     //分页获取标签
     @CounterIface
-    public TalentTagPOJO getTalentTagByPage(int hrId,int page,int pageSize){
-
-        TalentTagPOJO pojo= this.getTagData(hrId,page,pageSize);
+    public TalentTagPOJO getTalentTagByPage(int hrId,int companyId,int page,int pageSize){
+        TalentTagPOJO pojo=new TalentTagPOJO();
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            pojo.setFlag(1);
+            return pojo;
+        }
+        PageInfo pageInfo=getLimitStart(page,pageSize);
+        pojo= this.getTagData(hrId,pageInfo.getLimit(),pageSize);
         return pojo;
     }
     /*
@@ -869,7 +877,7 @@ public class TalentPoolService {
         }
         PageInfo info = new PageInfo();
         if(flag == 2) {
-            info = this.getLimitStart(flag, page_number, page_size);
+            info = this.getLimitStart( page_number, page_size);
         }else{
             if(page_number == 0){
                 page_number = 1;
@@ -896,12 +904,12 @@ public class TalentPoolService {
 
     /**
      * 获取分页数据
-     * @param flag  2 表示主账号分页
+     *
      * @param page_number 当前页数
      * @param page_size   每页数据量
      * @return  list.get(0) 查询从第几条开始查询 list.get(1) 每页的数据量
      */
-    private PageInfo getLimitStart(int flag, int page_number, int page_size){
+    private PageInfo getLimitStart( int page_number, int page_size){
         int limit = 0;
         if(page_number == 0 || page_number == 1){
             limit = 0;
@@ -1504,6 +1512,10 @@ public class TalentPoolService {
         HrCompanyConfRecord hrCompanyConfRecord=hrCompanyConfDao.getRecord(query);
         return hrCompanyConfRecord;
     }
-
+    private List<Map<String,Object>> getCompanyTagList(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",0).buildQuery();
+        List<Map<String,Object>> list=talentpoolCompanyTagDao.getMaps(query);
+        return list;
+    }
 
 }

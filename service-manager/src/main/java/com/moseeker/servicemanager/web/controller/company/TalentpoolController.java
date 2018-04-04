@@ -570,5 +570,30 @@ public class TalentpoolController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+    /*
+       获取人才标签列表
+    */
+    @RequestMapping(value = "/api/talentpool/talenttag", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String getTalentTag(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(params.get("hr_id"));
+            String companyId=String.valueOf(params.get("company_id"));
+            int page_number = params.getInt("page_number", 1);
+            int page_size = params.getInt("page_size",0);
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            Response result = service.getTalentTagList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
 }

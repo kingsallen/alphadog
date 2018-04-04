@@ -7,6 +7,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.company.bean.TalentTagPOJO;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -270,6 +271,21 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     public Response getCompanyTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
         try{
             return talentPoolService.getCompanyTagList(hr_id,company_id,page_number, page_size);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getTalentTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
+        try{
+            TalentTagPOJO pojo=talentPoolService.getTalentTagByPage(hr_id,company_id,page_number,page_size);
+            if(pojo.getFlag()==1){
+                return ResponseUtils.fail(1,"该hr不属于该company_id");
+            }
+            String res= JSON.toJSONString(pojo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+            return ResponseUtils.successWithoutStringify(res);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
