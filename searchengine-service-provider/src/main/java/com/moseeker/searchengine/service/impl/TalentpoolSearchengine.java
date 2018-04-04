@@ -110,14 +110,140 @@ public class TalentpoolSearchengine {
         }
         return null;
     }
-
     public QueryBuilder getQueryByTag(Map<String,String> params){
         int companyId=Integer.parseInt(params.get("companyId"));
         String origins=params.get("origins");
-        String workYear=params.get("work_years");
+        String workYears=params.get("work_years");
         String submitTime=params.get("submit_time");
-        return null;
+        String cityName=params.get("city_name");
+        String degree=params.get("degree");
+        String pastPosition=params.get("past_position");
+        String minAge=params.get("min_age");
+        String maxAge=params.get("max_age");
+        String intentionCityName=params.get("intention_city_name");
+        String intentionSalaryCode=params.get("intention_salary_code");
+        String sex=params.get("sex");
+        String isRecommend=params.get("is_recommend");
+        String companyName=params.get("company_name");
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+
+        if(StringUtils.isNotNullOrEmpty(workYears)){
+            this.queryByWorkYear(workYears,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(submitTime)){
+            this.queryBySubmitTime(submitTime, query);
+        }
+        if(StringUtils.isNotNullOrEmpty(cityName)){
+            this.queryByHome(cityName,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(degree)){
+            this.QueryByDegree(degree,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(pastPosition)){
+            String lastPosition=params.get("in_last_job_search_position");
+            if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
+                this.queryByLastPositions(lastPosition,query);
+            }else{
+                this.queryByWorkJob(pastPosition,query);
+            }
+        }
+        if(((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge)))){
+            List<Map<String,Integer>> ages=new ArrayList<>();
+            Map<String,Integer> age=new HashMap<>();
+            if(StringUtils.isNotNullOrEmpty(minAge)){
+                age.put("min",Integer.parseInt(minAge));
+            }
+            if(StringUtils.isNotNullOrEmpty(maxAge)){
+                age.put("max",Integer.parseInt(maxAge));
+            }
+            ages.add(age);
+            this.queryByAge(ages,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(intentionCityName)){
+            this.queryByIntentionCity(intentionCityName,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
+            this.queryBySlalryCode(intentionSalaryCode,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(sex)){
+            this.queryByGender(sex,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(isRecommend)){
+            this.queryByRecom(query);
+        }
+        if(StringUtils.isNotNullOrEmpty(companyName)){
+            String lastCompany=params.get("in_last_job_search_company");
+            if(StringUtils.isNotNullOrEmpty(lastCompany)&&"1".equals(lastCompany)){
+                this.queryByLastCompany(companyName,query);
+            }else {
+                this.queryByCompany(companyName, query);
+            }
+        }
+        if(StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||StringUtils.isNotNullOrEmpty(isRecommend)){
+            //这里是处理groovy语法的位置
+            StringBuffer sb=new StringBuffer();
+            sb.append("user=_source.user;if(user){applications=user.applications;;origins=user.origin_data;if(applications){for(val in applications){if(");
+            sb.append("val.company_id=="+companyId+"&&");
+            if(StringUtils.isNotNullOrEmpty(submitTime)){
+                long longTime=this.getLongTime(submitTime);
+                sb.append(" val.submit_time>'"+longTime+"'&&");
+            }
+            if(StringUtils.isNotNullOrEmpty(isRecommend)){
+                sb.append("val.recommender_user_id>0 &&");
+            }
+            if(StringUtils.isNotNullOrEmpty(origins)){
+                List<String> list=searchUtil.stringConvertList(origins);
+                sb.append("(");
+                for(String origin:list){
+                    if("-99".equals(origin)||"99".equals(origin)){
+                        sb.append(" (val.origin==1 ||val.origin==2 ||val.origin==4 ||val.origin==128 || val.origin==256 ||val.origin==512 ||val.origin==1024) ||");
+                    }else{
+                        if(origin.length()>8){
+                            sb.append("('"+origin+"' in origins)||");
+                        }else{
+                            sb.append(" (val.origin=="+origin+")||");
+                        }
+                    }
+                }
+                sb.deleteCharAt(sb.lastIndexOf("|"));
+                sb.deleteCharAt(sb.lastIndexOf("|"));
+                sb.append(")");
+            }else{
+                sb.deleteCharAt(sb.lastIndexOf("&"));
+                sb.deleteCharAt(sb.lastIndexOf("&"));
+            }
+            sb.append("){return true}}}");
+            if(StringUtils.isNotNullOrEmpty(origins)){
+                List<String> list=searchUtil.stringConvertList(origins);
+                int flag=0;
+                for(String origin:list){
+                    if(!"-99".equals(origin)&&!"99".equals(origin)){
+                        if(flag==0){
+                            sb.append("else{if(");
+                            flag=1;
+                        }
+                        sb.append("('"+origin+"' in origins)||");
+                    }
+                }
+                if(flag==1){
+                    sb.deleteCharAt(sb.lastIndexOf("|"));
+                    sb.deleteCharAt(sb.lastIndexOf("|"));
+                    sb.append("){return true;}}");
+                    sb.append("}");
+                }else{
+                    sb.append("}");
+                }
+
+            }else{
+                sb.append("}");
+            }
+            ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
+            ((BoolQueryBuilder) query).filter(script);
+        }
+        return query;
     }
+
 
     /*
      组装查询语句
