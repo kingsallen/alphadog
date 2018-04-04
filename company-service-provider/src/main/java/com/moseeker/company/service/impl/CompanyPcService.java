@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
@@ -680,6 +681,21 @@ public class CompanyPcService {
     private DictIndustryDO getDictIndustryByName(String name){
         Query query=new Query.QueryBuilder().where("name",name).buildQuery();
         DictIndustryDO DO=dictIndustryDao.getData(query);
+        return DO;
+    }
+
+    /*
+        获取企业微信号配置
+         */
+    public HrWxWechatDO  getHrWxWechatDOBySignature(String signature, int companyId){
+        HrWxWechatDO DO= new HrWxWechatDO();
+        if(StringUtils.isNotNullOrEmpty(signature)){
+            Query query = new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),signature).buildQuery();
+            DO = hrWxWechatDao.getData(query);
+        }else if(companyId > 0){
+            Query query = new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),companyId).buildQuery();
+            DO = hrWxWechatDao.getData(query);
+        }
         return DO;
     }
 }

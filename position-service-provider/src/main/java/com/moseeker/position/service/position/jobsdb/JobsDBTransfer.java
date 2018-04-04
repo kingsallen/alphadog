@@ -70,7 +70,7 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
         positionInfo.setEmployment_type(Arrays.asList(employment_type));
         positionInfo.setSalary_bottom(positionForm.getSalaryBottom());
         positionInfo.setSalary_top(positionForm.getSalaryTop());
-        positionInfo.setBenefits(getFeature(positionDB.getFeature()));
+        positionInfo.setBenefits(getFeature(positionDB));
 
 
         return positionInfo;

@@ -983,7 +983,7 @@ public class PositionService {
                 positionATSService.updatePositionFeature(featureData);
             }
         } catch (Exception e) {
-            logger.info("更新和插入数据发生异常,异常信息为：" + e.getMessage());
+            logger.error("更新和插入数据发生异常,异常信息为：" + e.getMessage());
             e.printStackTrace();
         }
         JobPostionResponse jobPostionResponse = new JobPostionResponse();
