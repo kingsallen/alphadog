@@ -28,8 +28,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.HrCompanyFeatureDO;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
-import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyCompanyChannelConfDO;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
@@ -396,13 +394,16 @@ public class PositionATSService {
             List<Integer> featureIds = new ArrayList<>();
 
             String feature = jobPositionHandlerDate.getFeature();
-            if(feature == null){
-                continue;
+            if(StringUtils.isNotNullOrEmpty(feature)){
+                for(String featureName:feature.split("#")){
+                    if(!featureMap.containsKey(featureName)){
+                        logger.error("ats update position feature error companyId:{} feature:{}",companyId,featureName);
+                        continue;
+                    }
+                    featureIds.add(featureMap.get(featureName).getId());
+                }
             }
 
-            for(String featureName:feature.split("#")){
-                featureIds.add(featureMap.get(featureName).getId());
-            }
             positionQxService.updatePositionFeatureList(jobPositionHandlerDate.getId(),featureIds);
         }
 
