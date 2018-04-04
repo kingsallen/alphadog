@@ -12,6 +12,7 @@ import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
@@ -130,6 +131,31 @@ public class TalentPoolEntity {
         }
         return 1;
     }
+
+    /**
+     *把企业标签的状态置位删除，删除标签和人才之间的关系
+     * @param companyId     公司编号
+     * @param companyTags   企业标签编号
+     * @return 0 执行成功  3 数据有误(根据公司编号和标签编号没有查到足量的数据)
+     */
+    public int deleteCompanyTags(int companyId, List<Integer> companyTags){
+        List<TalentpoolCompanyTagRecord> tagRecordList = getTalentpoolCompanyTagRecordByTagIds(companyId, companyTags);
+        if(tagRecordList == null || tagRecordList.size()==0 || tagRecordList.size() != companyTags.size()){
+            return 3;
+        }
+        List<TalentpoolCompanyTagRecord> newTagRecordList = new ArrayList<>();
+        for(TalentpoolCompanyTagRecord tagRecord : tagRecordList){
+            tagRecord.setDisable(0);
+            newTagRecordList.add(tagRecord);
+        }
+        talentpoolCompanyTagDao.updateRecords(newTagRecordList);
+        List<TalentpoolCompanyTagUserRecord> tagUserRecords = this.getTalentpoolCompanyTagUserRecordByTagIds(companyTags);
+        talentpoolCompanyTagUserDao.deleteRecords(tagUserRecords);
+        return 0;
+    }
+
+
+
 
     /*
      通过TalentpoolHrTalentRecord 的集合获取User_id的list
@@ -1541,5 +1567,27 @@ public class TalentPoolEntity {
                 .and("hr_id",hrId).buildQuery();
         List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);
         return list;
+    }
+
+    /**
+     * 批量获取企业标签record
+     * @param companyId     企业编号
+     * @param companyTags   标签编号
+     * @return  标签record对象
+     */
+    private List<TalentpoolCompanyTagRecord> getTalentpoolCompanyTagRecordByTagIds(int companyId, List<Integer> companyTags){
+        Query query = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.getName(), companyTags, ValueOp.IN))
+                .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(), companyId).buildQuery();
+        return talentpoolCompanyTagDao.getRecords(query);
+    }
+
+    /**
+     * 获取标签与人之间关系对象
+     * @param companyTags   标签编号
+     * @return
+     */
+    private List<TalentpoolCompanyTagUserRecord> getTalentpoolCompanyTagUserRecordByTagIds(List<Integer> companyTags){
+        Query query = new Query.QueryBuilder().where(new Condition(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID.getName(), companyTags, ValueOp.IN)).buildQuery();
+        return talentpoolCompanyTagUserDao.getRecords(query);
     }
 }

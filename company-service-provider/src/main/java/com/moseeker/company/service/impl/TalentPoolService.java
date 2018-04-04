@@ -928,6 +928,25 @@ public class TalentPoolService {
         return  info;
     }
 
+    /**
+     * 删除企业标签以及和人才之间的关系表，更新ES
+     * @param hrId
+     * @param companyId
+     * @param company_ids
+     * @return
+     */
+    @Transactional
+    public int deleteCompanyTags(int hrId, int companyId, List<Integer> company_ids){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag==0){
+            return 1;
+        }else if(flag == 1){
+            return 2;
+        }
+        int result = talentPoolEntity.deleteCompanyTags(companyId, company_ids);
+        return result;
+    }
+
     //处理批量操作的结果
     private Map<String,Object> handlerBatchTalentResult( Set<Integer> unUseList,Set<Integer>unApplierIdList,Set<Integer> idList ,int companyd){
         List<Map<String,Object>> userHrList=talentPoolEntity.getCompanyHrList(companyd);

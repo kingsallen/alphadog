@@ -292,6 +292,25 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
         }
     }
 
+    @Override
+    public Response deleteCompanyIds(int hr_id, int company_id, List<Integer> company_ids) throws BIZException, TException {
+        try{
+            int result =  talentPoolService.deleteCompanyTags(hr_id,company_id,company_ids);
+            if(result == 0){
+                return ResponseUtils.success("");
+            }else if(result == 1){
+                return ResponseUtils.fail(1, "根据公司编号和Hr编号没有查到相应的智能人才库信息");
+            }else if(result == 2 ){
+                return ResponseUtils.fail(1, "子账号不能删除企业标签规则");
+            }else{
+                return ResponseUtils.fail(1, "参数错误");
+            }
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
     private Set<Integer> ConvertListToSet(List<Integer> list){
         Set<Integer> param=new HashSet<>();
         for(Integer id :list){
