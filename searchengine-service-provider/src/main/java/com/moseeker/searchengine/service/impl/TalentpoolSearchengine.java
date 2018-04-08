@@ -510,9 +510,10 @@ public class TalentpoolSearchengine {
                 StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)
                 ) {
             String tagIds=params.get("tag_ids");
+            String company_tag=params.get("company_tag");
             String favoriteHrs=params.get("favorite_hrs");
             String isPublic=params.get("is_public");
-            if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
+            if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(company_tag)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
                 if (StringUtils.isNotNullOrEmpty(publisherIds)) {
                     this.queryByPublisher(publisherIds, query);
                 }
@@ -551,6 +552,7 @@ public class TalentpoolSearchengine {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         String tagIds=params.get("tag_ids");
+        String companyTag=params.get("company_tag");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
         if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
@@ -561,6 +563,9 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(tagIds)){
             String hrId=params.get("hr_account_id");
             this.queryByTagId(tagIds,hrId,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(companyTag)){
+            this.queryByCompanyTag(companyTag,query);
         }
         if(StringUtils.isNotNullOrEmpty(favoriteHrs)){
             this.queryTagHrId(favoriteHrs,query);
@@ -588,6 +593,7 @@ public class TalentpoolSearchengine {
         String progressStatus=params.get("progress_status");
         String positionId=params.get("position_id");
         String tagIds=params.get("tag_ids");
+        String companyTag=params.get("company_tag");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
         String companyId=params.get("company_id");
@@ -598,7 +604,7 @@ public class TalentpoolSearchengine {
         StringBuffer sb=new StringBuffer();
         sb.append("user=_source.user;if(user){applications=user.applications;;origins=user.origin_data;if(applications){for(val in applications){if(");
 
-        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
+        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(companyTag)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
                 List<Integer> publisherIdList=this.convertStringToList(publisherIds);
                 if(!StringUtils.isEmptyList(publisherIdList)){
@@ -769,8 +775,13 @@ public class TalentpoolSearchengine {
       构建按招标签的查询语句
      */
     private void queryByTagId(String tagIds,String hrId,QueryBuilder queryBuilder){
-
         searchUtil.handlerTagIds(tagIds,hrId,queryBuilder);
+    }
+    /*
+      构建按招标签的查询语句
+     */
+    private void queryByCompanyTag(String companyTag,QueryBuilder queryBuilder){
+        searchUtil.handlerCompanyTag(companyTag,queryBuilder);
     }
     /*
      构建和公司相关的人才库

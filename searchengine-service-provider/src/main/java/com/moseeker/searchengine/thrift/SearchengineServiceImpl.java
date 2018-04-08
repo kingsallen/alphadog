@@ -132,6 +132,7 @@ public class SearchengineServiceImpl implements Iface {
 //			logger.info("+++++++++++++++++++");
 			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
 			if(res==null||res.isEmpty()){
+
 				return ResponseUtils.success("");
 			}
 			return ResponseUtils.success(res);

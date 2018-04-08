@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
@@ -815,29 +816,52 @@ public class TalentPoolService {
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
         //获取hr下所有的tag
+        List<Map<String,Object>> tagList = new ArrayList<>();
         List<Map<String,Object>> hrTagList=talentPoolEntity.getTagByHr(hrId,0,Integer.MAX_VALUE);
-        if(StringUtils.isEmptyList(hrTagList)){
-            return ResponseUtils.success("");
-        }
-        //获取hr下所有的tagId
-        Set<Integer> hrTagIdList=validateTalentTag.getIdByTagList(hrTagList);
-        Set<Integer> tagIdList=validateTalentTag.getUserTagIdList(userId,hrTagIdList);
-        List<Map<String,Object>> allTagList=this.getUserTagByUserIdAndTagIdMap(userId,hrTagIdList);
-        if(StringUtils.isEmptyList(allTagList)){
-            return ResponseUtils.success("");
-        }else{
-            for(Map<String,Object> map:allTagList){
-                int tagId= (int) map.get("tag_id");
-                for(Map<String,Object> map1:hrTagList){
-                    int id= (int) map1.get("id");
-                    String name=(String)map1.get("name");
-                    if(id==tagId){
-                        map.put("name",name);
+        if(hrTagList != null && hrTagList.size()>0){
+            //获取hr下所有的tagId
+            Set<Integer> hrTagIdList=validateTalentTag.getIdByTagList(hrTagList);
+            Set<Integer> tagIdList=validateTalentTag.getUserTagIdList(userId,hrTagIdList);
+            List<Map<String,Object>> allTagList=this.getUserTagByUserIdAndTagIdMap(userId,hrTagIdList);
+            if(StringUtils.isEmptyList(allTagList)){
+                return ResponseUtils.success("");
+            }else{
+                for(Map<String,Object> map:allTagList){
+                    int tagId= (int) map.get("tag_id");
+                    for(Map<String,Object> map1:hrTagList){
+                        int id= (int) map1.get("id");
+                        String name=(String)map1.get("name");
+                        if(id==tagId){
+                            map.put("name",name);
+                        }
                     }
+                    tagList.add(map);
                 }
             }
         }
-        return  ResponseUtils.success(allTagList);
+        //获取人才的公司标签
+        List<Map<String,Object>> companyTagList=talentPoolEntity.getCompanyTagByCompanyId(companyId,0,Integer.MAX_VALUE);
+        if(companyTagList!= null && companyTagList.size()>0){
+            Set<Integer> companyTagIdList = validateTalentTag.getIdByTagList(hrTagList);
+            List<Map<String,Object>> allCompanyTagList=this.getUserCompanyTagByUserIdAndTagIdMap(userId,companyTagIdList);
+            if(StringUtils.isEmptyList(allCompanyTagList)){
+                return ResponseUtils.success("");
+            }else{
+                for(Map<String,Object> map:allCompanyTagList){
+                    int tagId= (int) map.get("tag_id");
+                    for(Map<String,Object> map1:hrTagList){
+                        int id= (int) map1.get("id");
+                        String name=(String)map1.get("name");
+                        if(id==tagId){
+                            map.put("name",name);
+                            map.put("color",map1.get("color"));
+                        }
+                    }
+                    tagList.add(map);
+                }
+            }
+        }
+        return  ResponseUtils.success(tagList);
     }
     /*
      获取user集合下所有的收藏的和公开的hr
@@ -1456,6 +1480,19 @@ public class TalentPoolService {
             return null;
         }
         Query query=new Query.QueryBuilder().where("user_id",userId).and(new Condition("tag_id",tagIdList.toArray(),ValueOp.IN)).orderBy("create_time",Order.DESC).buildQuery();
+        List<Map<String,Object>> list=talentpoolUserTagDao.getMaps(query);
+        return list;
+    }
+
+    /*
+       获取一个人才在这个公司下拥有的标签map
+    */
+    private List<Map<String,Object>> getUserCompanyTagByUserIdAndTagIdMap(int userId,Set<Integer> tagIdList){
+        if(StringUtils.isEmptySet(tagIdList)){
+            return null;
+        }
+        Query query=new Query.QueryBuilder().where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.getName(),userId)
+                .and(new Condition(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID.getName(),tagIdList.toArray(),ValueOp.IN)).orderBy("create_time",Order.DESC).buildQuery();
         List<Map<String,Object>> list=talentpoolUserTagDao.getMaps(query);
         return list;
     }

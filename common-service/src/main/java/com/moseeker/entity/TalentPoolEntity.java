@@ -929,6 +929,18 @@ public class TalentPoolEntity {
         List<Map<String,Object>> list= talentpoolTagDao.getMaps(query);
         return list;
     }
+
+    /*
+    查询公司下所有的标签
+    */
+    public List<Map<String,Object>> getCompanyTagByCompanyId(int companyId,int pageNum,int pageSize){
+        Query query=new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(), companyId)
+                .setPageNum(pageNum).setPageSize(pageSize)
+                .orderBy(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.CREATE_TIME.getName(), Order.DESC)
+                .buildQuery();
+        List<Map<String,Object>> list= talentpoolCompanyTagDao.getMaps(query);
+        return list;
+    }
     /*
      判断是否收藏
      */
