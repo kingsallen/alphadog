@@ -1340,7 +1340,7 @@ public class WholeProfileService {
             }else{
                 Map<String,Object> profileMap=new HashMap<>();
                 profileMap.put("user_id",newUserId);
-                profileMap.put("origin",0);
+                profileMap.put("origin","0");
                 resume.put("profile",profileMap);
             }
         }
