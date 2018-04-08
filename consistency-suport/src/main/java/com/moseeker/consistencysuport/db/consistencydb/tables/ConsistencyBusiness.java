@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConsistencyBusiness extends TableImpl<ConsistencyBusinessRecord> {
 
-    private static final long serialVersionUID = -1544585027;
+    private static final long serialVersionUID = 298211825;
 
     /**
      * The reference instance of <code>consistencydb.consistency_business</code>
@@ -80,6 +80,16 @@ public class ConsistencyBusiness extends TableImpl<ConsistencyBusinessRecord> {
      * The column <code>consistencydb.consistency_business.last_shake_hand_time</code>. 最后握手的时间
      */
     public final TableField<ConsistencyBusinessRecord, Timestamp> LAST_SHAKE_HAND_TIME = createField("last_shake_hand_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后握手的时间");
+
+    /**
+     * The column <code>consistencydb.consistency_business.receive_email</code>. 接收告警邮件通知的邮箱
+     */
+    public final TableField<ConsistencyBusinessRecord, String> RECEIVE_EMAIL = createField("receive_email", org.jooq.impl.SQLDataType.VARCHAR.length(120).nullable(false), this, "接收告警邮件通知的邮箱");
+
+    /**
+     * The column <code>consistencydb.consistency_business.message_id</code>. 消息编号
+     */
+    public final TableField<ConsistencyBusinessRecord, String> MESSAGE_ID = createField("message_id", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false), this, "消息编号");
 
     /**
      * Create a <code>consistencydb.consistency_business</code> table reference

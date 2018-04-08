@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConsistencyMessage extends TableImpl<ConsistencyMessageRecord> {
 
-    private static final long serialVersionUID = -1142732453;
+    private static final long serialVersionUID = -601293427;
 
     /**
      * The reference instance of <code>consistencydb.consistency_message</code>
@@ -104,6 +104,11 @@ public class ConsistencyMessage extends TableImpl<ConsistencyMessageRecord> {
      * The column <code>consistencydb.consistency_message.method</code>. 记录消息的类方法名称
      */
     public final TableField<ConsistencyMessageRecord, String> METHOD = createField("method", org.jooq.impl.SQLDataType.VARCHAR.length(60), this, "记录消息的类方法名称");
+
+    /**
+     * The column <code>consistencydb.consistency_message.period</code>. 任务调度时间间隔  单位是秒
+     */
+    public final TableField<ConsistencyMessageRecord, Integer> PERIOD = createField("period", org.jooq.impl.SQLDataType.INTEGER, this, "任务调度时间间隔  单位是秒");
 
     /**
      * Create a <code>consistencydb.consistency_message</code> table reference

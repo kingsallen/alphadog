@@ -21,5 +21,7 @@ public @interface ProducerEntry {
 
     String method() default "";
 
+    String params() default "";
+
     int period() default 5*60;
 }

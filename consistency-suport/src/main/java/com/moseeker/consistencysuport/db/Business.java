@@ -1,5 +1,7 @@
 package com.moseeker.consistencysuport.db;
 
+import java.util.List;
+
 /**
  *
  * 用于记录注册进来业务处理方
@@ -14,6 +16,8 @@ public class Business {
     private String name;            //业务名称
     private boolean finish;         //业务是否已经成功处理
     private long lastShakeHandTime; //最后一次握手时间
+    private List<String> emails;    //业务报警通知人
+    private String messageId;       //消息编号
 
     public int getId() {
         return id;
@@ -61,5 +65,21 @@ public class Business {
 
     public void setLastShakeHandTime(long lastShakeHandTime) {
         this.lastShakeHandTime = lastShakeHandTime;
+    }
+
+    public List<String> getEmails() {
+        return emails;
+    }
+
+    public void setEmails(List<String> emails) {
+        this.emails = emails;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 }

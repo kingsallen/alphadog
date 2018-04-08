@@ -1,12 +1,19 @@
 package com.moseeker.consistencysuport.db.impl;
 
+import com.moseeker.consistencysuport.db.Business;
 import com.moseeker.consistencysuport.db.Message;
 import com.moseeker.consistencysuport.config.MessageRepository;
+import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusiness;
+import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessage;
+import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyBusinessRecord;
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyMessageRecord;
+import org.jooq.Result;
 import org.jooq.impl.DefaultDSLContext;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by jack on 03/04/2018.
@@ -108,6 +115,96 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public List<Message> fetchUnFinishMessageBySpecifiedSecond(long second) {
-        return null;
+
+        List<Message> messageList = new ArrayList<>();
+        Timestamp timestamp = new Timestamp(second);
+        Result<ConsistencyMessageRecord> consistencyMessageRecords =
+                create.selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE)
+                .where(ConsistencyMessage.CONSISTENCY_MESSAGE.LAST_RETRY_TIME.lt(timestamp))
+                .and(ConsistencyMessage.CONSISTENCY_MESSAGE.LAST_RETRY_TIME.lt(timestamp))
+                .and(ConsistencyMessage.CONSISTENCY_MESSAGE.FINISH.eq((byte) 0))
+                .fetch();
+
+        if (consistencyMessageRecords != null && consistencyMessageRecords.size() > 0) {
+            List<String> messageIdList = consistencyMessageRecords
+                    .stream()
+                    .map(consistencyMessageRecord -> consistencyMessageRecord.getMessageId())
+                    .collect(Collectors.toList());
+            Result<ConsistencyBusinessRecord> businessRecordResult =
+                    create.selectFrom(ConsistencyBusiness.CONSISTENCY_BUSINESS)
+                    .where(ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID.in(messageIdList))
+                    .fetch();
+
+            consistencyMessageRecords.forEach(consistencyMessageRecord -> {
+
+                List<ConsistencyBusinessRecord> recordList = businessRecordResult
+                        .stream()
+                        .filter(consistencyBusinessRecord
+                                -> consistencyBusinessRecord.getMessageId().equals(consistencyMessageRecord.getMessageId()))
+                        .collect(Collectors.toList());
+                if (recordList != null && recordList.size() > 0) {
+
+                    List<Business> businessList = new ArrayList<>();
+                    recordList.forEach(consistencyBusinessRecord -> {
+                        Business business = recordToBusiness(consistencyBusinessRecord);
+                        businessList.add(business);
+                    });
+                    Message message = recordToMessage(consistencyMessageRecord, businessList);
+                    messageList.add(message);
+                }
+            });
+        }
+        return messageList;
+    }
+
+    /**
+     *
+     * jooq ConsistencyBusinessRecord 转 Business
+     *
+     * @param consistencyBusinessRecord
+     * @return
+     */
+    private Business recordToBusiness(ConsistencyBusinessRecord consistencyBusinessRecord) {
+        Business business = new Business();
+        business.setId(consistencyBusinessRecord.getId());
+        business.setName(consistencyBusinessRecord.getName());
+        business.setRegisterTime(consistencyBusinessRecord.getRegisterTime().getTime());
+        if (consistencyBusinessRecord.getUpdateTime() != null) {
+            business.setUpdateTime(consistencyBusinessRecord.getUpdateTime().getTime());
+        }
+        business.setFinish(consistencyBusinessRecord.getFinish() == 1 ? true:false);
+        if (consistencyBusinessRecord.getLastShakeHandTime() != null) {
+            business.setLastShakeHandTime(consistencyBusinessRecord.getLastShakeHandTime().getTime());
+        }
+        business.setMessageId(consistencyBusinessRecord.getMessageId());
+        return business;
+    }
+
+    /**
+     * jooq onsistencyMessageRecord 转 Message
+     * @param consistencyMessageRecord
+     * @param businessList
+     * @return
+     */
+    private Message recordToMessage(ConsistencyMessageRecord consistencyMessageRecord, List<Business> businessList) {
+        Message message = new Message();
+        message.setBusinessList(businessList);
+        message.setName(consistencyMessageRecord.getName());
+        message.setMessageId(consistencyMessageRecord.getMessageId());
+        message.setPeriod(consistencyMessageRecord.getPeriod());
+        message.setCreateTime(consistencyMessageRecord.getCreateTime().getTime());
+        if (consistencyMessageRecord.getUpdateTime() != null) {
+            message.setUpdateTime(consistencyMessageRecord.getUpdateTime().getTime());
+        }
+        message.setVersion(consistencyMessageRecord.getVersion());
+        message.setRetry(consistencyMessageRecord.getRetry());
+        if (consistencyMessageRecord.getLastRetryTime() != null) {
+            message.setLastRetryTime(consistencyMessageRecord.getLastRetryTime().getTime());
+        }
+        message.setParam(consistencyMessageRecord.getParam());
+        message.setFinish(consistencyMessageRecord.getFinish() == 1 ? true:false);
+        message.setClassName(consistencyMessageRecord.getClassName());
+        message.setMethod(consistencyMessageRecord.getMethod());
+        return message;
     }
 }

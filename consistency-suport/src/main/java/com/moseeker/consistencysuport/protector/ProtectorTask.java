@@ -14,6 +14,14 @@ public interface ProtectorTask {
 
     /**
      * 启动守护任务
+     * @param initialDelay 延迟启动
+     * @param period 任务运行的时间间隔
      */
-    void startProtectorTask();
+    void startProtectorTask(long initialDelay, long period);
+
+    /**
+     * 重新执行调用方法
+     * @param message 消息
+     */
+    void reHandler(Message message);
 }

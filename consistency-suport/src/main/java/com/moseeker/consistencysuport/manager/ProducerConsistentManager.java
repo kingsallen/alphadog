@@ -24,6 +24,9 @@ public class ProducerConsistentManager {
     private Map<String, ParamConvertTool> paramConvertToolMap;  //参数与持久化字段的转换工具
     private List<String> warningEmailList;                      //报警通知接收人员
     private Notification notification;                          //通知功能
+
+    private long period = 5*60*1000;                            //时间间隔
+
     private ThreadPool threadPool = ThreadPool.Instance;
 
     public ProducerConsistentManager(MessageHandler messageHandler,

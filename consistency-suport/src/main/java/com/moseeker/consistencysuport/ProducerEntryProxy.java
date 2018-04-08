@@ -56,7 +56,7 @@ public class ProducerEntryProxy {
         }
         String className = producerEntry.className();
         String method = producerEntry.method();
-        String params = paramConvertToolOptional.get().convertParamToStorage(call.getArgs());
+        String params = producerEntry.params();
         int period = producerEntry.period();
         manager.logMessage(UUID.randomUUID().toString(), producerEntry.name(), params, className, method, period);
     }
