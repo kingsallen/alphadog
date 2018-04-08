@@ -16,4 +16,5 @@ public class ConsistencyException extends CommonException {
 
     public static final ConsistencyException CONSISTENCY_CONFLICTS_CONVERTTOOL = new ConsistencyException(81001, "重复的参数转换工具");
     public static final ConsistencyException CONSISTENCY_UNBIND_CONVERTTOOL = new ConsistencyException(81002, "重复的参数转换工具");
+    public static final ConsistencyException CONSISTENCY_INVOKE_ERROR = new ConsistencyException(81003, "重复的参数转换工具");
 }

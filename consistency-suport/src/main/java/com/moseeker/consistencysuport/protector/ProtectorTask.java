@@ -1,6 +1,7 @@
 package com.moseeker.consistencysuport.protector;
 
 import com.moseeker.consistencysuport.db.Message;
+import com.moseeker.consistencysuport.exception.ConsistencyException;
 
 /**
  *
@@ -23,5 +24,5 @@ public interface ProtectorTask {
      * 重新执行调用方法
      * @param message 消息
      */
-    void reHandler(Message message);
+    void reHandler(Message message) throws ConsistencyException;
 }

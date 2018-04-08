@@ -4,6 +4,7 @@ import com.moseeker.consistencysuport.config.MessageRepository;
 import com.moseeker.consistencysuport.config.Notification;
 import com.moseeker.consistencysuport.config.ParamConvertTool;
 import com.moseeker.consistencysuport.db.impl.MessageRepositoryImpl;
+import com.moseeker.consistencysuport.protector.ProtectorTask;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,10 @@ public class ProducerManagerSpringProxy {
 
     private MessageHandler messageHandler;                          //消息持久化工具
     private Notification notification;
+    private ProtectorTask protectorTask;                            //守护任务
+
+    private long period = 5*60*1000;                                //时间间隔
+    private long initialDelay = 10*1000;                            //延迟启动时间
 
     private static ProducerConsistentManager manager;
 
@@ -62,11 +67,29 @@ public class ProducerManagerSpringProxy {
     }
 
     /**
+     * 构建保护程序
+     * @param protectorTask
+     * @return
+     */
+    public ProducerManagerSpringProxy buildProtectorTask(ProtectorTask protectorTask, long initialDelay, long period) {
+        if (initialDelay > 0) {
+            this.initialDelay = initialDelay;
+        }
+        if (period > 0) {
+            this.period = period;
+        }
+        this.protectorTask = protectorTask;
+        return this;
+    }
+
+    /**
      * 构建一致性客户端工具
      * @return
      */
     public ProducerConsistentManager buildManager() {
-        ProducerConsistentManager producerConsistentManager = new ProducerConsistentManager(messageHandler, paramConvertToolMap, notification);
+        ProducerConsistentManager producerConsistentManager = new ProducerConsistentManager(messageHandler,
+                paramConvertToolMap, notification, protectorTask, initialDelay, period);
+        producerConsistentManager.startProtectorTask();
         return producerConsistentManager;
     }
 }

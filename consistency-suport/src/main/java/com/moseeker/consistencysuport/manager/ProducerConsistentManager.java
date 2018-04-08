@@ -4,6 +4,7 @@ import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.consistencysuport.config.Notification;
 import com.moseeker.consistencysuport.config.ParamConvertTool;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
+import com.moseeker.consistencysuport.protector.ProtectorTask;
 
 import java.util.List;
 import java.util.Map;
@@ -24,15 +25,32 @@ public class ProducerConsistentManager {
     private Map<String, ParamConvertTool> paramConvertToolMap;  //参数与持久化字段的转换工具
     private List<String> warningEmailList;                      //报警通知接收人员
     private Notification notification;                          //通知功能
+    private ProtectorTask protectorTask;                        //启动保护任务
 
     private long period = 5*60*1000;                            //时间间隔
+    private long initialDelay = 10*1000;                        //延迟启动时间
 
     private ThreadPool threadPool = ThreadPool.Instance;
 
     public ProducerConsistentManager(MessageHandler messageHandler,
-                                     Map<String, ParamConvertTool> paramConvertToolMap, Notification notification) {
+                                     Map<String, ParamConvertTool> paramConvertToolMap, Notification notification,
+                                     ProtectorTask protectorTask, long initialDelay, long period) {
         this.messageHandler = messageHandler;
         this.paramConvertToolMap = paramConvertToolMap;
+        this.protectorTask = protectorTask;
+        if (period > 0) {
+            this.period = period;
+        }
+        if (initialDelay > 0) {
+            this.initialDelay = initialDelay;
+        }
+    }
+
+    /**
+     * 启动守护任务
+     */
+    public void startProtectorTask() {
+        protectorTask.startProtectorTask(this.initialDelay, this.period);
     }
 
     /**
