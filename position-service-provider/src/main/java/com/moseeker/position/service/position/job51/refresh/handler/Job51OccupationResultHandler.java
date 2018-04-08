@@ -7,4 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Job51OccupationResultHandler extends DefaultOccupationResultHandler<Dict51jobOccupationDO> implements Job51ResultHandlerAdapter {
 
+    @Override
+    protected Class<Dict51jobOccupationDO> getOccupationClass() {
+        return Dict51jobOccupationDO.class;
+    }
 }

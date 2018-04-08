@@ -31,6 +31,11 @@ public class CarnocOccupationResultHandler extends DefaultOccupationResultHandle
         return "functions";
     }
 
+    @Override
+    protected Class<DictCarnocOccupationDO> getOccupationClass() {
+        return DictCarnocOccupationDO.class;
+    }
+
     /**
      * 复用jobsdb的处理策略，因为民航传过来的职能和jobsdb的职能格式相同
      */

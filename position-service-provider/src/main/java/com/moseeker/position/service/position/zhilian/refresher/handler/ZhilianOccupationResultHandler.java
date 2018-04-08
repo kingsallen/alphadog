@@ -17,4 +17,8 @@ import java.util.Map;
 @Component
 public class ZhilianOccupationResultHandler extends DefaultOccupationResultHandler<DictZhilianOccupationDO> implements ZhilianResultHandlerAdapter {
 
+    @Override
+    protected Class<DictZhilianOccupationDO> getOccupationClass() {
+        return DictZhilianOccupationDO.class;
+    }
 }

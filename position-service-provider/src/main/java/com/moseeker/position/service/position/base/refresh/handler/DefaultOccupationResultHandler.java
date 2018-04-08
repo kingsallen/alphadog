@@ -34,10 +34,10 @@ public abstract class DefaultOccupationResultHandler<T> extends AbstractOccupati
         temp.setParentId(newCode.get(PositionParamRefreshUtils.parentCode(codes)));
         temp.setStatus((short) 1);
 
-        TypeReference<T> typeRef = new TypeReference<T>() {
-        };
-        return JSON.parseObject(JSON.toJSONString(temp), typeRef);
+        return JSON.parseObject(JSON.toJSONString(temp), getOccupationClass());
     }
+
+    protected abstract Class<T> getOccupationClass();
 
     private static class DefaultOccupationDO {
         private int code;

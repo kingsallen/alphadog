@@ -73,6 +73,11 @@ public class JobsDBOccupationResultHandler extends DefaultOccupationResultHandle
         return "job_functions";
     }
 
+    @Override
+    protected Class<DictJobsDBOccupationDO> getOccupationClass() {
+        return DictJobsDBOccupationDO.class;
+    }
+
     private static class JobFunction {
         private int id;
         private String name;

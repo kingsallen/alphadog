@@ -18,4 +18,8 @@ import java.util.Map;
 @Component
 public class VEOccupationResultHandler extends DefaultOccupationResultHandler<DictVeryEastOccupationDO> implements VEResultHandlerAdapter {
 
+    @Override
+    protected Class<DictVeryEastOccupationDO> getOccupationClass() {
+        return DictVeryEastOccupationDO.class;
+    }
 }
