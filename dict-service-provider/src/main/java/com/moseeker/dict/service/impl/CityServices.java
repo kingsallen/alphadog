@@ -107,13 +107,14 @@ public class CityServices {
     public Response getAllCitiesByLevelOrUsing(String level, int is_using, int hot_city) {
         Response result;
         try {
-            String cachKey = "raw_levelUsingHot_" + level+is_using+hot_city;
-            String patternString = "DICT_CITY";
-            int appid = 0; // 允许所有app_id的请求缓存
-            String cachedResult = redisClient.get(appid, patternString, cachKey, () -> {
-                return JSON.toJSONString(this.getCitiesResponseByLevelUsingHot(false, level, is_using, hot_city));
-            });
-            result = JSON.parseObject(cachedResult, Response.class);
+//            String cachKey = "raw_levelUsingHot_" + level+is_using+hot_city;
+//            String patternString = "DICT_CITY";
+//            int appid = 0; // 允许所有app_id的请求缓存
+//            String cachedResult = redisClient.get(appid, patternString, cachKey, () -> {
+//                return JSON.toJSONString(this.getCitiesResponseByLevelUsingHot(false, level, is_using, hot_city));
+//            });
+//            result = JSON.parseObject(cachedResult, Response.class);
+            result = this.getCitiesResponseByLevelUsingHot(false, level, is_using, hot_city);
         } catch (RedisException e) {
             WarnService.notify(e);
             result = this.getCitiesResponseByLevelUsingHot(false, level, is_using, hot_city);

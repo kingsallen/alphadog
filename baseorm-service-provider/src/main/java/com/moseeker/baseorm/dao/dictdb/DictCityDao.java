@@ -64,16 +64,16 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
         }
         if (is_using >= 0) { // all
             if(cond != null) {
-                cond.and(DictCity.DICT_CITY.IS_USING.equal((byte) is_using));
+                cond = cond.and(DictCity.DICT_CITY.IS_USING.eq((byte) is_using));
             }else{
-                cond = DictCity.DICT_CITY.IS_USING.equal((byte) is_using);
+                cond = DictCity.DICT_CITY.IS_USING.eq((byte) is_using);
             }
         }
         if (hot_city >= 0) {
             if(cond != null) {
-                cond.and(DictCity.DICT_CITY.HOT_CITY.equal((byte) hot_city));
+                cond = cond.and(DictCity.DICT_CITY.HOT_CITY.eq((byte) hot_city));
             }else{
-                cond = (DictCity.DICT_CITY.HOT_CITY.equal((byte) hot_city));
+                cond = (DictCity.DICT_CITY.HOT_CITY.eq((byte) hot_city));
             }
         }
         List<CityPojo> cities = create.select().from(table).where(cond).orderBy(DictCity.DICT_CITY.LEVEL.asc()).fetchInto(CityPojo.class);
