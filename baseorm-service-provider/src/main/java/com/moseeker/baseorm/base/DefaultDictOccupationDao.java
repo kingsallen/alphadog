@@ -17,11 +17,11 @@ public abstract class DefaultDictOccupationDao<S, R extends UpdatableRecord<R>> 
         super(table, sClass);
     }
 
-    private static final String CODE = "code";
-    private static final String PARENT_ID = "parent_id";
-    private static final String LEVEL = "level";
-    private static final String CODE_OTHER = "code_other";
-    private static final String STATUS = "status";
+    private static final String CODE = "CODE";
+    private static final String PARENT_ID = "PARENT_ID";
+    private static final String LEVEL = "LEVEL";
+    private static final String CODE_OTHER = "CODE_OTHER";
+    private static final String STATUS = "STATUS";
 
     @Override
     protected Condition statusCondition() {
@@ -31,9 +31,9 @@ public abstract class DefaultDictOccupationDao<S, R extends UpdatableRecord<R>> 
     @Override
     protected Map<String, Object> queryEQParam(JSONObject obj) {
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put(CODE, obj.getInteger(CODE));
-        paramMap.put(PARENT_ID, obj.getInteger(PARENT_ID));
-        paramMap.put(LEVEL, obj.getInteger(LEVEL));
+        paramMap.put(CODE, obj.getInteger("code"));
+        paramMap.put(PARENT_ID, obj.getInteger("parent_id"));
+        paramMap.put(LEVEL, obj.getInteger("level"));
         return paramMap;
     }
 
