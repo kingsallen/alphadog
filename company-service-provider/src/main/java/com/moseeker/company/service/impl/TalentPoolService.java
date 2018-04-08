@@ -1653,7 +1653,7 @@ public class TalentPoolService {
         return hrCompanyConfRecord;
     }
     private List<Map<String,Object>> getCompanyTagList(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",0).buildQuery();
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1).buildQuery();
         List<Map<String,Object>> list=talentpoolCompanyTagDao.getMaps(query);
         return list;
     }
