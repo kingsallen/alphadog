@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.dictdb.DictJobsDBOccupationDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
+import com.moseeker.position.service.position.base.refresh.handler.DefaultOccupationResultHandler;
 import com.moseeker.position.utils.PositionParamRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictJobsDBOccupationDO;
 import org.slf4j.Logger;
@@ -20,29 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandler<DictJobsDBOccupationDO> implements JobsDBResultHandlerAdapter {
+public class JobsDBOccupationResultHandler extends DefaultOccupationResultHandler<DictJobsDBOccupationDO> implements JobsDBResultHandlerAdapter {
     Logger logger = LoggerFactory.getLogger(JobsDBOccupationResultHandler.class);
-
-    @Override
-    protected DictJobsDBOccupationDO buildOccupation(List<String> texts, List<String> codes, Map<String, Integer> newCode, JSONObject msg) {
-        DictJobsDBOccupationDO temp = new DictJobsDBOccupationDO();
-
-        temp.setCodeOther(codes.get(codes.size() - 1));
-        temp.setCode(newCode.get(temp.getCodeOther()));
-        temp.setLevel((short) codes.size());
-        temp.setName(PositionParamRefreshUtils.lastString(texts));
-        temp.setParentId(newCode.get(PositionParamRefreshUtils.parentCode(codes)));
-        temp.setStatus((short) 1);
-
-        return temp;
-    }
-
-    @Override
-    protected boolean equals(DictJobsDBOccupationDO oldData, DictJobsDBOccupationDO newData) {
-        return oldData.getName().equals(newData.getName())
-                && oldData.getCodeOther().equals(newData.getCodeOther())
-                && oldData.getLevel() == newData.getLevel();
-    }
 
     @Override
     protected List<Occupation> toList(JSONObject msg) {

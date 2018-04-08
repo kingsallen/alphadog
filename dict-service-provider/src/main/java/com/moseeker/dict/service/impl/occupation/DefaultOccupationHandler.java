@@ -3,13 +3,17 @@ package com.moseeker.dict.service.impl.occupation;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.dict.service.base.AbstractOccupationHandler;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DefaultOccupationHandler extends AbstractOccupationHandler<DefaultOccupationHandler.DefaultOccupationDO> {
+public class DefaultOccupationHandler<T> extends AbstractOccupationHandler<T> {
 
     @Override
-    public JSONObject toJsonObject(DefaultOccupationDO occupation) {
+    public JSONObject toJsonObject(T t) {
+        DefaultOccupationDO occupation = new DefaultOccupationDO();
+        BeanUtils.copyProperties(t,occupation);
+
         JSONObject obj=new JSONObject();
 
         obj.put("code", occupation.getCode());
