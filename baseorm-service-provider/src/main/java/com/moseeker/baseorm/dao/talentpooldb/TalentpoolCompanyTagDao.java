@@ -29,5 +29,13 @@ public class TalentpoolCompanyTagDao extends JooqCrudImpl<com.moseeker.baseorm.d
         return result;
     }
 
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> getCompanyTagByTagIdAndCompanyId(int companyId, int company_tag_id){
+        List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> result=create.selectFrom(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG)
+                .where(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.eq(companyId))
+                .and(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.eq(company_tag_id))
+                .fetchInto(com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag.class);
+        return result;
+    }
+
 
 }

@@ -9,10 +9,12 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast.TALENTPOOL_PAST;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by zztaiwll on 18/4/3.
  */
+@Service
 public class TalentpoolPastDao extends JooqCrudImpl<TalentpoolPast,TalentpoolPastRecord> {
     public TalentpoolPastDao(){
         super(TALENTPOOL_PAST,TalentpoolPast.class);

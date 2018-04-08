@@ -251,6 +251,8 @@ public class ValidateTalentTag {
         }
         return result;
     }
+
+
     /*
    获取任意一个人才在这家公司下的所有的标签的id
    */

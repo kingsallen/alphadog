@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
@@ -17,6 +18,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
@@ -30,6 +32,7 @@ import com.moseeker.company.utils.ValidateUtils;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.talentpool.PageInfo;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -62,6 +65,8 @@ public class TalentPoolService {
     private TalentpoolTagDao talentpoolTagDao;
     @Autowired
     private TalentpoolUserTagDao talentpoolUserTagDao;
+    @Autowired
+    private TalentpoolCompanyTagUserDao talentpoolCompanyTagUserDao;
     @Autowired
     private TalentpoolCommentDao talentpoolCommentDao;
     @Autowired
@@ -813,29 +818,52 @@ public class TalentPoolService {
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
         //获取hr下所有的tag
+        List<Map<String,Object>> tagList = new ArrayList<>();
         List<Map<String,Object>> hrTagList=talentPoolEntity.getTagByHr(hrId,0,Integer.MAX_VALUE);
-        if(StringUtils.isEmptyList(hrTagList)){
-            return ResponseUtils.success("");
-        }
-        //获取hr下所有的tagId
-        Set<Integer> hrTagIdList=validateTalentTag.getIdByTagList(hrTagList);
-        Set<Integer> tagIdList=validateTalentTag.getUserTagIdList(userId,hrTagIdList);
-        List<Map<String,Object>> allTagList=this.getUserTagByUserIdAndTagIdMap(userId,hrTagIdList);
-        if(StringUtils.isEmptyList(allTagList)){
-            return ResponseUtils.success("");
-        }else{
-            for(Map<String,Object> map:allTagList){
-                int tagId= (int) map.get("tag_id");
-                for(Map<String,Object> map1:hrTagList){
-                    int id= (int) map1.get("id");
-                    String name=(String)map1.get("name");
-                    if(id==tagId){
-                        map.put("name",name);
+        if(hrTagList != null && hrTagList.size()>0){
+            //获取hr下所有的tagId
+            Set<Integer> hrTagIdList=validateTalentTag.getIdByTagList(hrTagList);
+            Set<Integer> tagIdList=validateTalentTag.getUserTagIdList(userId,hrTagIdList);
+            List<Map<String,Object>> allTagList=this.getUserTagByUserIdAndTagIdMap(userId,hrTagIdList);
+            if(StringUtils.isEmptyList(allTagList)){
+                return ResponseUtils.success("");
+            }else{
+                for(Map<String,Object> map:allTagList){
+                    int tagId= (int) map.get("tag_id");
+                    for(Map<String,Object> map1:hrTagList){
+                        int id= (int) map1.get("id");
+                        String name=(String)map1.get("name");
+                        if(id==tagId){
+                            map.put("name",name);
+                        }
                     }
+                    tagList.add(map);
                 }
             }
         }
-        return  ResponseUtils.success(allTagList);
+        //获取人才的公司标签
+        List<Map<String,Object>> companyTagList=talentPoolEntity.getCompanyTagByCompanyId(companyId,0,Integer.MAX_VALUE);
+        if(companyTagList!= null && companyTagList.size()>0){
+            Set<Integer> companyTagIdList = validateTalentTag.getIdByTagList(companyTagList);
+            List<Map<String,Object>> allCompanyTagList=this.getUserCompanyTagByUserIdAndTagIdMap(userId,companyTagIdList);
+            if(StringUtils.isEmptyList(allCompanyTagList)){
+                return ResponseUtils.success("");
+            }else{
+                for(Map<String,Object> map:allCompanyTagList){
+                    int tagId= (int) map.get("tag_id");
+                    for(Map<String,Object> map1:companyTagList){
+                        int id= (int) map1.get("id");
+                        String name=(String)map1.get("name");
+                        if(id==tagId){
+                            map.put("name",name);
+                            map.put("color",map1.get("color"));
+                        }
+                    }
+                    tagList.add(map);
+                }
+            }
+        }
+        return  ResponseUtils.success(tagList);
     }
     /*
      获取user集合下所有的收藏的和公开的hr
@@ -941,19 +969,88 @@ public class TalentPoolService {
      * 删除企业标签以及和人才之间的关系表，更新ES
      * @param hrId
      * @param companyId
-     * @param company_ids
+     * @param company_tag_ids
      * @return
      */
     @Transactional
-    public int deleteCompanyTags(int hrId, int companyId, List<Integer> company_ids){
+    public int deleteCompanyTags(int hrId, int companyId, List<Integer> company_tag_ids){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
         if(flag==0){
             return 1;
         }else if(flag == 1){
             return 2;
         }
-        int result = talentPoolEntity.deleteCompanyTags(companyId, company_ids);
+        int result = talentPoolEntity.deleteCompanyTags(companyId, company_tag_ids);
         return result;
+    }
+
+    /**
+     * 获取企业标签信息
+     * @param hrId          hr编号
+     * @param companyId     公司编号
+     * @param company_tag_id 标签编号
+     * @return
+     */
+    public Map<String, Object> getCompanyTagInfo(int hrId, int companyId, int company_tag_id){
+        Map<String, Object> params = new HashMap<>();
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag==0){
+            params.put("responseStatus", 1);
+            return  params;
+        }else if(flag == 1){
+            params.put("responseStatus", 2);
+            return  params;
+        }
+        Map<String, Object> companyTag = talentPoolEntity.getCompanyTagInfo(companyId, company_tag_id);
+        params.put("responseStatus", 0);
+        params.put("data", companyTag);
+        return params;
+    }
+
+
+
+    @Transactional
+    public Response addCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
+        if(flag==0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_STATUS);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
+        if("OK".equals(result)){
+            boolean bool = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+            if(bool){
+                int id = talentPoolEntity.addCompanyTag(companyTagDO);
+                //ES更新
+
+            }else{
+                return ResponseUtils.fail(1, "标签规则全为默认值");
+            }
+        }
+        return ResponseUtils.fail(1, result);
+    }
+
+    @Transactional
+    public Response updateCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
+        if(flag==0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_STATUS);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
+        if("OK".equals(result)){
+            boolean bool = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+            if(bool){
+                int id = talentPoolEntity.updateCompanyTag(companyTagDO);
+                //ES更新
+
+            }else{
+                return ResponseUtils.fail(1, "标签规则全为默认值");
+            }
+        }
+        return ResponseUtils.fail(1, result);
     }
 
     //处理批量操作的结果
@@ -1389,6 +1486,20 @@ public class TalentPoolService {
         return list;
     }
 
+    /*
+       获取一个人才在这个公司下拥有的标签map
+    */
+    private List<Map<String,Object>> getUserCompanyTagByUserIdAndTagIdMap(int userId,Set<Integer> tagIdList){
+        if(StringUtils.isEmptySet(tagIdList)){
+            return null;
+        }
+        Query query=new Query.QueryBuilder().where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.getName(),userId)
+                .and(new Condition(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID.getName(),tagIdList.toArray(),ValueOp.IN))
+                .buildQuery();
+        List<Map<String,Object>> list=talentpoolCompanyTagUserDao.getMaps(query);
+        return list;
+    }
+
 
 
 
@@ -1542,7 +1653,7 @@ public class TalentPoolService {
         return hrCompanyConfRecord;
     }
     private List<Map<String,Object>> getCompanyTagList(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",0).buildQuery();
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1).buildQuery();
         List<Map<String,Object>> list=talentpoolCompanyTagDao.getMaps(query);
         return list;
     }
