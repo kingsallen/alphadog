@@ -13,6 +13,7 @@ import org.jooq.Condition;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -59,7 +60,7 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
             for(String str : levels){
                 levelList.add(Byte.valueOf(str));
             }
-            cond  = DictCity.DICT_CITY.IS_USING.in(levelList);
+            cond  = DictCity.DICT_CITY.LEVEL.in(levelList);
         }
         if (is_using >= 0) { // all
             if(cond != null) {
@@ -75,7 +76,7 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
                 cond = (DictCity.DICT_CITY.HOT_CITY.equal((byte) hot_city));
             }
         }
-        List<CityPojo> cities = create.select().from(table).where(cond).fetchInto(CityPojo.class);
+        List<CityPojo> cities = create.select().from(table).where(cond).orderBy(DictCity.DICT_CITY.LEVEL.asc()).fetchInto(CityPojo.class);
         return cities;
     }
 
