@@ -1264,6 +1264,8 @@ public class WholeProfileService {
                 map.put("company",company);
                 if(map.get("position_name")!=null){
                     map.put("job",map.get("position_name"));
+                } else {
+                    map.put("job",map.get("job"));
                 }
             }
         }
