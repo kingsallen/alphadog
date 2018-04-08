@@ -3,7 +3,6 @@ package com.moseeker.baseorm.dao.dictdb;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.AbstractDictOccupationDao;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictZhilianOccupationRecord;
 import com.moseeker.common.constants.ChannelType;
@@ -62,7 +61,7 @@ public class DictZhilianOccupationDao extends AbstractDictOccupationDao<DictZhil
     }
 
     public int deleteAll(){
-        Condition condition=new Condition(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE.getName(),0, ValueOp.NEQ);
+        Condition condition=new Condition(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE.getName(),0, ValueOp.NEQ);
         return delete(condition);
     }
 
