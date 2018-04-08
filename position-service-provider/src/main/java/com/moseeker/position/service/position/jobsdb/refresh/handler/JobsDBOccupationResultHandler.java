@@ -21,37 +21,20 @@ import java.util.Map;
 
 @Component
 public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandler<DictJobsDBOccupationDO> implements JobsDBResultHandlerAdapter {
-    Logger logger= LoggerFactory.getLogger(JobsDBOccupationResultHandler.class);
-
-    @Autowired
-    private DictJobsDBOccupationDao occupationDao;
+    Logger logger = LoggerFactory.getLogger(JobsDBOccupationResultHandler.class);
 
     @Override
-    protected DictJobsDBOccupationDO buildOccupation(List<String> texts,List<String> codes,Map<String, Integer> newCode,JSONObject msg) {
-        DictJobsDBOccupationDO temp=new DictJobsDBOccupationDO();
+    protected DictJobsDBOccupationDO buildOccupation(List<String> texts, List<String> codes, Map<String, Integer> newCode, JSONObject msg) {
+        DictJobsDBOccupationDO temp = new DictJobsDBOccupationDO();
 
-        temp.setCodeOther(codes.get(codes.size()-1));
+        temp.setCodeOther(codes.get(codes.size() - 1));
         temp.setCode(newCode.get(temp.getCodeOther()));
-        temp.setLevel((short)codes.size());
+        temp.setLevel((short) codes.size());
         temp.setName(PositionParamRefreshUtils.lastString(texts));
         temp.setParentId(newCode.get(PositionParamRefreshUtils.parentCode(codes)));
-        temp.setStatus((short)1);
+        temp.setStatus((short) 1);
 
         return temp;
-    }
-
-    @Override
-    @Transactional
-    protected void persistent(List<DictJobsDBOccupationDO> data) {
-        int delCount=occupationDao.deleteAll();
-        logger.info("jobsdb delete old Occupation "+delCount);
-        occupationDao.addAllData(data);
-        logger.info("jobsdb insert success");
-    }
-
-    @Override
-    protected List<DictJobsDBOccupationDO> getAll() {
-        return occupationDao.getAllOccupation();
     }
 
     @Override
@@ -64,14 +47,15 @@ public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandl
     @Override
     protected List<Occupation> toList(JSONObject msg) {
         TypeReference<List<JobFunction>> typeRef
-                = new TypeReference<List<JobFunction>>() {};
+                = new TypeReference<List<JobFunction>>() {
+        };
 
-        List<JobFunction> occupations= JSON.parseObject(msg.getString(occupationKey()),typeRef);
+        List<JobFunction> occupations = JSON.parseObject(msg.getString(occupationKey()), typeRef);
 
-        List<Occupation> result=new ArrayList<>();
+        List<Occupation> result = new ArrayList<>();
 
-        for(JobFunction jobFunction:occupations){
-            recursiveOccupation(jobFunction,result,null);
+        for (JobFunction jobFunction : occupations) {
+            recursiveOccupation(jobFunction, result, null);
         }
 
         return result;
@@ -79,14 +63,15 @@ public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandl
 
     /**
      * 递归生成occupation
+     *
      * @param jobFunction
      * @param result
      */
-    private void recursiveOccupation(JobFunction jobFunction,List<Occupation> result,Occupation parent){
-        Occupation thisOccupation=new Occupation();
+    private void recursiveOccupation(JobFunction jobFunction, List<Occupation> result, Occupation parent) {
+        Occupation thisOccupation = new Occupation();
         thisOccupation.setCode(new ArrayList<>());
         thisOccupation.setText(new ArrayList<>());
-        if(parent!=null){
+        if (parent != null) {
             thisOccupation.getCode().addAll(parent.getCode());
             thisOccupation.getText().addAll(parent.getText());
         }
@@ -96,15 +81,15 @@ public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandl
 
         result.add(thisOccupation);
 
-        if(!StringUtils.isEmptyList(jobFunction.getChildren())){
-            for(JobFunction childJobFunction:jobFunction.getChildren()) {
-                recursiveOccupation(childJobFunction,result,thisOccupation);
+        if (!StringUtils.isEmptyList(jobFunction.getChildren())) {
+            for (JobFunction childJobFunction : jobFunction.getChildren()) {
+                recursiveOccupation(childJobFunction, result, thisOccupation);
             }
         }
     }
 
     @Override
-    protected String occupationKey(){
+    protected String occupationKey() {
         return "job_functions";
     }
 
@@ -113,7 +98,7 @@ public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandl
         return ChannelType.JOBSDB;
     }
 
-    private static class JobFunction{
+    private static class JobFunction {
         private int id;
         private String name;
         private List<JobFunction> Children;

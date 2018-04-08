@@ -6,7 +6,7 @@ package com.moseeker.baseorm.db.dictdb;
 
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
-import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategoryBak;
+import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityPostcode;
@@ -52,14 +52,14 @@ public class Tables {
     public static final DictAlipaycampusCity DICT_ALIPAYCAMPUS_CITY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY;
 
     /**
-     * job_category[校园工作-基础数据-职位类别]
+     * dict_alipaycampus_jobcategory[alipay校园招聘-职位类别]
      */
     public static final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
 
     /**
-     * job_category[校园工作-基础数据-职位类别]
+     * 民航招聘的职位职能表
      */
-    public static final DictAlipaycampusJobcategoryBak DICT_ALIPAYCAMPUS_JOBCATEGORY_BAK = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategoryBak.DICT_ALIPAYCAMPUS_JOBCATEGORY_BAK;
+    public static final DictCarnocOccupation DICT_CARNOC_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation.DICT_CARNOC_OCCUPATION;
 
     /**
      * 城市字典表
@@ -67,7 +67,7 @@ public class Tables {
     public static final DictCity DICT_CITY = com.moseeker.baseorm.db.dictdb.tables.DictCity.DICT_CITY;
 
     /**
-     * The table <code>dictdb.dict_city_map</code>.
+     * 城市字典code映射表
      */
     public static final DictCityMap DICT_CITY_MAP = com.moseeker.baseorm.db.dictdb.tables.DictCityMap.DICT_CITY_MAP;
 
@@ -82,7 +82,7 @@ public class Tables {
     public static final DictCollege DICT_COLLEGE = com.moseeker.baseorm.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
     /**
-     * 常量字典表
+     * The table <code>dictdb.dict_constant</code>.
      */
     public static final DictConstant DICT_CONSTANT = com.moseeker.baseorm.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
@@ -92,7 +92,7 @@ public class Tables {
     public static final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * 行业二级分类字典表
+     * The table <code>dictdb.dict_industry</code>.
      */
     public static final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
