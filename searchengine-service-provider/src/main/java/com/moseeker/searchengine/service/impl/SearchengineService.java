@@ -1059,7 +1059,7 @@ public class SearchengineService {
             flag="0";
         }
         if(StringUtils.isNotBlank(publisherCompanyId)){
-            searchUtil.handleTerms(companyIds,query,"publisher_company_id");
+            searchUtil.handleTerms(publisherCompanyId,query,"publisher_company_id");
         }
         if(Integer.parseInt(flag)==0){
             searchUtil.handleMatch(0,query,"status");

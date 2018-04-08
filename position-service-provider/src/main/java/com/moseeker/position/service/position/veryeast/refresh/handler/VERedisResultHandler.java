@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position.veryeast.refresh.handler;
 
+import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractRedisResultHandler;
 import org.springframework.stereotype.Component;
 
