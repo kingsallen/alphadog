@@ -93,11 +93,6 @@ public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandl
         return "job_functions";
     }
 
-    @Override
-    public ChannelType getChannelType() {
-        return ChannelType.JOBSDB;
-    }
-
     private static class JobFunction {
         private int id;
         private String name;

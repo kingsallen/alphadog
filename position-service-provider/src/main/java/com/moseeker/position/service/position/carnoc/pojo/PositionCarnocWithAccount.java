@@ -2,10 +2,10 @@ package com.moseeker.position.service.position.carnoc.pojo;
 
 public class PositionCarnocWithAccount {
     private PositionCarnoc position_info;
-    private String account_id;
+    private int account_id;
     private String channel;
     private String password;
-    private String position_id;
+    private int position_id;
     private String user_name;
 
     public PositionCarnoc getPosition_info() {
@@ -16,11 +16,11 @@ public class PositionCarnocWithAccount {
         this.position_info = position_info;
     }
 
-    public String getAccount_id() {
+    public int getAccount_id() {
         return account_id;
     }
 
-    public void setAccount_id(String account_id) {
+    public void setAccount_id(int account_id) {
         this.account_id = account_id;
     }
 
@@ -40,11 +40,11 @@ public class PositionCarnocWithAccount {
         this.password = password;
     }
 
-    public String getPosition_id() {
+    public int getPosition_id() {
         return position_id;
     }
 
-    public void setPosition_id(String position_id) {
+    public void setPosition_id(int position_id) {
         this.position_id = position_id;
     }
 
