@@ -66,6 +66,8 @@ public class TalentPoolService {
     @Autowired
     private TalentpoolUserTagDao talentpoolUserTagDao;
     @Autowired
+    private TalentpoolCompanyTagUserDao talentpoolCompanyTagUserDao;
+    @Autowired
     private TalentpoolCommentDao talentpoolCommentDao;
     @Autowired
     private TalentpoolTalentDao talentpoolTalentDao;
@@ -842,14 +844,14 @@ public class TalentPoolService {
         //获取人才的公司标签
         List<Map<String,Object>> companyTagList=talentPoolEntity.getCompanyTagByCompanyId(companyId,0,Integer.MAX_VALUE);
         if(companyTagList!= null && companyTagList.size()>0){
-            Set<Integer> companyTagIdList = validateTalentTag.getIdByTagList(hrTagList);
+            Set<Integer> companyTagIdList = validateTalentTag.getIdByTagList(companyTagList);
             List<Map<String,Object>> allCompanyTagList=this.getUserCompanyTagByUserIdAndTagIdMap(userId,companyTagIdList);
             if(StringUtils.isEmptyList(allCompanyTagList)){
                 return ResponseUtils.success("");
             }else{
                 for(Map<String,Object> map:allCompanyTagList){
                     int tagId= (int) map.get("tag_id");
-                    for(Map<String,Object> map1:hrTagList){
+                    for(Map<String,Object> map1:companyTagList){
                         int id= (int) map1.get("id");
                         String name=(String)map1.get("name");
                         if(id==tagId){
@@ -1492,8 +1494,9 @@ public class TalentPoolService {
             return null;
         }
         Query query=new Query.QueryBuilder().where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.getName(),userId)
-                .and(new Condition(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID.getName(),tagIdList.toArray(),ValueOp.IN)).orderBy("create_time",Order.DESC).buildQuery();
-        List<Map<String,Object>> list=talentpoolUserTagDao.getMaps(query);
+                .and(new Condition(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID.getName(),tagIdList.toArray(),ValueOp.IN))
+                .buildQuery();
+        List<Map<String,Object>> list=talentpoolCompanyTagUserDao.getMaps(query);
         return list;
     }
 
