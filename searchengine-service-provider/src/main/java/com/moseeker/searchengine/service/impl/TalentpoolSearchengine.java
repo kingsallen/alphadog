@@ -99,16 +99,43 @@ public class TalentpoolSearchengine {
         }
         return result;
     }
+    /*
+     根据企业标签的规则获取符合该规则的人才id
+     */
     @CounterIface
     public List<Integer> getUserListByCompanyTagId(Map<String,String> params){
-        TransportClient client =null;
+        List<Integer> list=new ArrayList<>();
         try{
-            client=searchUtil.getEsClient();
+            TransportClient client=searchUtil.getEsClient();
+            QueryBuilder query = this.getQueryByTag(params);
+            SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
+            String[] returnParams={"user.profiles.profile.user_id"};
+            builder.setFetchSource(returnParams,null);
+            SearchResponse response = builder.execute().actionGet();
+            Map<String,Object> result = searchUtil.handleData(response,"userIdList");
+            if(result!=null&&!result.isEmpty()){
+                long totalNum=(long)result.get("totalNum");
+                if(totalNum>0){
+                    List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
+                    for(Map<String,Object> map:dataList){
+                        if(map!=null&&!map.isEmpty()){
+                            Map<String,Object> profiles=(Map<String,Object>)map.get("profiles");
+                            if(profiles!=null&&!profiles.isEmpty()){
+                                Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
+                                if(profile!=null&&!profile.isEmpty()){
+                                    int userId=(int)profile.get("user_id");
+                                    list.add(userId);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
         }catch(Exception e){
             logger.info(e.getMessage()+"=================");
         }
-        return null;
+        return list;
     }
     public QueryBuilder getQueryByTag(Map<String,String> params){
         int companyId=Integer.parseInt(params.get("companyId"));
@@ -241,6 +268,14 @@ public class TalentpoolSearchengine {
             ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
             ((BoolQueryBuilder) query).filter(script);
         }
+        QueryBuilder nestQuery=this.queryTalentNest(companyId);
+        ((BoolQueryBuilder)query).filter(nestQuery);
+        return query;
+    }
+    public QueryBuilder queryTalentNest(Integer companyId){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        this.queryByNestCompanyId(companyId,query);
         return query;
     }
 
