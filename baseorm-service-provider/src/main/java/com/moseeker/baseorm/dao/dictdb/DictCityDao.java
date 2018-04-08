@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.dictdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -49,6 +50,35 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
         List<CityPojo> cities = create.select().from(table).where(cond).fetchInto(CityPojo.class);
         return cities;
     }
+
+    public List<CityPojo> getCitiesByLevelUsingHot(String level, int is_using, int hot_city) {
+        Condition cond = null;
+        if(StringUtils.isNotNullOrEmpty(level)){
+            String[] levels = level.split(",");
+            List<Byte> levelList = new ArrayList<>();
+            for(String str : levels){
+                levelList.add(Byte.valueOf(str));
+            }
+            cond  = DictCity.DICT_CITY.IS_USING.in(levelList);
+        }
+        if (is_using >= 0) { // all
+            if(cond != null) {
+                cond.and(DictCity.DICT_CITY.IS_USING.equal((byte) is_using));
+            }else{
+                cond = DictCity.DICT_CITY.IS_USING.equal((byte) is_using);
+            }
+        }
+        if (hot_city >= 0) {
+            if(cond != null) {
+                cond.and(DictCity.DICT_CITY.HOT_CITY.equal((byte) hot_city));
+            }else{
+                cond = (DictCity.DICT_CITY.HOT_CITY.equal((byte) hot_city));
+            }
+        }
+        List<CityPojo> cities = create.select().from(table).where(cond).fetchInto(CityPojo.class);
+        return cities;
+    }
+
 
     public List<CityPojo> getCitiesById(int id) {
         int provinceCode = id / 1000 * 1000;

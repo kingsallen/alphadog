@@ -64,6 +64,17 @@ public class CityServices {
         }
     }
 
+    @CounterIface
+    public Response getCitiesResponseByLevelUsingHot(boolean transform, String level, int is_using, int hot_city) {
+        List<CityPojo> cities = this.dao.getCitiesByLevelUsingHot(level, is_using, hot_city);
+        if (transform) {
+            HashMap transformed = transformData(cities);
+            return ResponseUtils.success(transformed);
+        } else {
+            return ResponseUtils.success(cities);
+        }
+    }
+
     private HashMap transformData(List<CityPojo> s) {
         DictCityHashMap dictCity = new DictCityHashMap(s);
         HashMap hm = dictCity.getHashMap();
@@ -88,6 +99,27 @@ public class CityServices {
         } catch (CacheConfigNotExistException e) {
             logger.error(e.getMessage(), e);
             result = this.getCitiesResponse(false, level);
+        }
+        return result;
+    }
+
+    @CounterIface
+    public Response getAllCitiesByLevelOrUsing(String level, int is_using, int hot_city) {
+        Response result;
+        try {
+            String cachKey = "raw_levelUsingHot_" + level+is_using+hot_city;
+            String patternString = "DICT_CITY";
+            int appid = 0; // 允许所有app_id的请求缓存
+            String cachedResult = redisClient.get(appid, patternString, cachKey, () -> {
+                return JSON.toJSONString(this.getCitiesResponseByLevelUsingHot(false, level, is_using, hot_city));
+            });
+            result = JSON.parseObject(cachedResult, Response.class);
+        } catch (RedisException e) {
+            WarnService.notify(e);
+            result = this.getCitiesResponseByLevelUsingHot(false, level, is_using, hot_city);
+        } catch (CacheConfigNotExistException e) {
+            logger.error(e.getMessage(), e);
+            result = this.getCitiesResponseByLevelUsingHot(false, level, is_using, hot_city);
         }
         return result;
     }
