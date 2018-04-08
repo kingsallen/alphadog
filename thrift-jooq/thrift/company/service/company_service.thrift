@@ -87,9 +87,11 @@ service TalentpoolServices {
     common_struct.Response getUserOrigin(1:i32 hr_id,2:i32 company_id,3:i32 user_id) throws (1: common_struct.BIZException e)
     common_struct.Response getTalentAndPublicHr(1:i32 hr_id,2:i32 company_id,3:list<i32> user_ids) throws (1: common_struct.BIZException e)
     common_struct.Response getPositionOrCompanyPast(1:i32 company_id,2:i32 type,3: i32 flag) throws (1: common_struct.BIZException e)
+    common_struct.Response addPositionOrCompanyPast(1:i32 company_id,2:i32 type,3: i32 flag,4: string name) throws (1: common_struct.BIZException e)
     common_struct.Response getCompanyTagList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
     common_struct.Response deleteCompanyTagByIds(1:i32 hr_id,2:i32 company_id,3:list<i32> company_tag_ids) throws (1: common_struct.BIZException e)
     common_struct.Response getCompanyIdInfo(1:i32 hr_id,2:i32 company_id,3:i32 company_tag_id) throws (1: common_struct.BIZException e)
     common_struct.Response addCompanyTag(1:talentpool_struct.TalentpoolCompanyTagDO companyTagDO, 2:i32 hr_id) throws (1: common_struct.BIZException e)
     common_struct.Response updateCompanyTag(1:talentpool_struct.TalentpoolCompanyTagDO companyTagDO, 2:i32 hr_id) throws (1: common_struct.BIZException e)
+    common_struct.Response getTalentTagList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
 }

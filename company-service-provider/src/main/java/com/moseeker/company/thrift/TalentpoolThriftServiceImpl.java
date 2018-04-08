@@ -9,6 +9,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.company.bean.TalentTagPOJO;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -271,6 +272,20 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
+    public Response addPositionOrCompanyPast(int company_id, int type, int flag, String name) throws BIZException, TException {
+        try{
+            int result=talentPoolService.addPastPositionOrCompany(company_id,type,flag,name);
+            if(result==-1){
+                return ResponseUtils.fail(1,"职务或公司名称不能为空");
+            }
+            return ResponseUtils.success(result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
     public Response getCompanyTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
         try{
             return talentPoolService.getCompanyTagList(hr_id,company_id,page_number, page_size);
@@ -281,7 +296,22 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response deleteCompanyTagByIds(int hr_id, int company_id, List<Integer> company_tag_ids) throws BIZException, TException {
+    public Response getTalentTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
+        try{
+            TalentTagPOJO pojo=talentPoolService.getTalentTagByPage(hr_id,company_id,page_number,page_size);
+            if(pojo.getFlag()==1){
+                return ResponseUtils.fail(1,"该hr不属于该company_id");
+            }
+            String res= JSON.toJSONString(pojo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+            return ResponseUtils.successWithoutStringify(res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+        public Response deleteCompanyTagByIds(int hr_id, int company_id, List<Integer> company_tag_ids) throws BIZException, TException {
         try{
             int result =  talentPoolService.deleteCompanyTags(hr_id,company_id,company_tag_ids);
             if(result == 0){

@@ -503,7 +503,7 @@ public class TalentpoolController {
     /*
     获取简历筛选项或者企业标签的曾任职务或者曾任公司
     */
-    @RequestMapping(value = "/api/talentpool/past", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/talentpool/past", method = RequestMethod.GET)
     @ResponseBody
     public String getPast(HttpServletRequest request) throws Exception {
         try {
@@ -514,14 +514,38 @@ public class TalentpoolController {
             if(StringUtils.isNullOrEmpty(companyId)){
                 ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
-            Response result = service.upsertTalentPoolApp(Integer.parseInt(companyId),Integer.parseInt(type),Integer.parseInt(flag));
+            Response result = service.getPositionOrCompanyPast(Integer.parseInt(companyId),Integer.parseInt(type),Integer.parseInt(flag));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
+    /*
+        获取简历筛选项或者企业标签的曾任职务或者曾任公司
+        */
+    @RequestMapping(value = "/api/talentpool/past", method = RequestMethod.POST)
+    @ResponseBody
+    public String addPast(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String type=String.valueOf(params.get("type"));
+            String companyId=String.valueOf(params.get("company_id"));
+            String flag=String.valueOf(params.get("flag"));
+            String name= (String) params.get("name");
+            if(StringUtils.isNullOrEmpty(companyId)){
+                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(name)){
+                ResponseLogNotification.fail(request,"曾任职位的名称或者公司不能为空");
+            }
+            Response result = service.addPositionOrCompanyPast(Integer.parseInt(companyId),Integer.parseInt(type),Integer.parseInt(flag),name);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
     /*
     获取企业标签列表
    */
@@ -573,6 +597,31 @@ public class TalentpoolController {
                 return ResponseLogNotification.fail(request,"company_tags长度不可以为0");
             }
             Response result = service.deleteCompanyTagByIds(Integer.parseInt(hrId),Integer.parseInt(companyId),company_tags);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+       获取人才标签列表
+    */
+    @RequestMapping(value = "/api/talentpool/talenttag", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String getTalentTag(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(params.get("hr_id"));
+            String companyId=String.valueOf(params.get("company_id"));
+            int page_number = params.getInt("page_number", 1);
+            int page_size = params.getInt("page_size",0);
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            Response result = service.getTalentTagList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
