@@ -1,11 +1,22 @@
 package com.moseeker.consistencysuport.manager;
 
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.consistencysuport.config.MessageRepository;
 import com.moseeker.consistencysuport.config.Notification;
 import com.moseeker.consistencysuport.config.ParamConvertTool;
+import com.moseeker.consistencysuport.db.Message;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
+import com.moseeker.consistencysuport.persistence.MessagePersistence;
+import com.moseeker.consistencysuport.persistence.MessagePersistenceImpl;
 import com.moseeker.consistencysuport.protector.ProtectorTask;
+import com.moseeker.consistencysuport.protector.ProtectorTaskConfigImpl;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,28 +32,49 @@ import java.util.Optional;
  */
 public class ProducerConsistentManager {
 
-    private MessageHandler messageHandler;                      //消息持久化工具
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private MessagePersistence messagePersistence;                      //消息持久化工具
     private Map<String, ParamConvertTool> paramConvertToolMap;  //参数与持久化字段的转换工具
-    private List<String> warningEmailList;                      //报警通知接收人员
+    private List<String> warningEmailList = new ArrayList<>();  //报警通知接收人员
+    private List<String> errorEmailList = new ArrayList<>();  //报警通知接收人员
     private Notification notification;                          //通知功能
     private ProtectorTask protectorTask;                        //启动保护任务
+    private long initialDelay;
+    private long period;
 
-    private long period = 5*60*1000;                            //时间间隔
-    private long initialDelay = 10*1000;                        //延迟启动时间
+    private ConfigPropertiesUtil configPropertiesUtil = ConfigPropertiesUtil.getInstance();
 
     private ThreadPool threadPool = ThreadPool.Instance;
 
-    public ProducerConsistentManager(MessageHandler messageHandler,
+    public ProducerConsistentManager(MessageRepository messageRepository,
                                      Map<String, ParamConvertTool> paramConvertToolMap, Notification notification,
-                                     ProtectorTask protectorTask, long initialDelay, long period) {
-        this.messageHandler = messageHandler;
+                                     long initialDelay, long period) throws ConsistencyException {
+        this.initialDelay = initialDelay;
+        this.period = period;
+        this.messagePersistence = new MessagePersistenceImpl(messageRepository);
         this.paramConvertToolMap = paramConvertToolMap;
-        this.protectorTask = protectorTask;
-        if (period > 0) {
-            this.period = period;
+        this.protectorTask = new ProtectorTaskConfigImpl(initialDelay, period, notification, messageRepository, paramConvertToolMap);
+        this.notification = notification;
+        initConfig();
+    }
+
+    private void initConfig() throws ConsistencyException {
+        String errorEmails = configPropertiesUtil.get("consistency_suport.error_emails", String.class);
+        if (StringUtils.isNotBlank(errorEmails)) {
+            for (String s : errorEmails.split(",")) {
+                errorEmailList.add(s.trim());
+            }
+        } else {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_ERROR_EMAIL;
         }
-        if (initialDelay > 0) {
-            this.initialDelay = initialDelay;
+        String warnEmails = configPropertiesUtil.get("consistency_suport.exception_emails", String.class);
+        if (StringUtils.isNotBlank(warnEmails)) {
+            for (String s : warnEmails.split(",")) {
+                warningEmailList.add(s.trim());
+            }
+        } else {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_EXCEPTION_EMAIL;
         }
     }
 
@@ -50,17 +82,18 @@ public class ProducerConsistentManager {
      * 启动守护任务
      */
     public void startProtectorTask() {
-        protectorTask.startProtectorTask(this.initialDelay, this.period);
+        protectorTask.startProtectorTask();
     }
 
     /**
      * 注册业务对应的
-     * @param name
-     * @param paramConvertTool
-     * @throws ConsistencyException
+     * @param name 业务名称
+     * @param paramConvertTool 参数与字符串转换工具
+     * @throws ConsistencyException 工具重复注册异常
      */
     public void registerParamConvertTool(String name, ParamConvertTool paramConvertTool) throws ConsistencyException {
         if (paramConvertToolMap.containsKey(name)) {
+            notification.noticeForException(warningEmailList, ConsistencyException.CONSISTENCY_CONFLICTS_CONVERTTOOL);
             throw ConsistencyException.CONSISTENCY_CONFLICTS_CONVERTTOOL;
         }
         paramConvertToolMap.put(name, paramConvertTool);
@@ -68,20 +101,50 @@ public class ProducerConsistentManager {
 
     /**
      * 查找注册好的参数转换工具
-     * @param name
-     * @return
+     * @param name 业务名称
+     * @return 对应的参数字符串转换工具
      */
     public Optional<ParamConvertTool> getParamConvertTool(String name) {
-
         return Optional.ofNullable(paramConvertToolMap.get(name));
     }
 
     /**
      * 记录消息
-     * @param name
-     * @param period
+     * @param messageId 消息编号必填项
+     * @param name 业务名称
+     * @param className 类名
+     * @param method 方法名
+     * @param param 参数
      */
-    public void logMessage(String messageId, String name, String param, String className, String method, int period) throws ConsistencyException {
-        messageHandler.logMessage(messageId, name, param, className, method, period);
+    public void logMessage(String messageId, String name, String className, String method,
+                           Object[] param, int period) throws ConsistencyException {
+        Message message = new Message();
+        message.setMessageId(messageId);
+        message.setName(name);
+        message.setClassName(className);
+        message.setMethod(method);
+        message.setParam(paramConvertToolMap.get(name).convertParamToStorage(param));
+        message.setPeriod(period);
+        messagePersistence.logMessage(message);
+    }
+
+    /**
+     * 记录消息
+     * @param messageId 消息编号必填项
+     * @param name 业务名称
+     * @param method 方法
+     * @param param 参数
+     * @param period 时间间隔
+     */
+    public void logMessage(String messageId, String name, Method method, Object[] param,
+                           int period) throws ConsistencyException {
+        Message message = new Message();
+        message.setMessageId(messageId);
+        message.setName(name);
+        message.setClassName(method.getClass().getTypeName());
+        message.setMethod(method.getName());
+        message.setParam(paramConvertToolMap.get(name).convertParamToStorage(param));
+        message.setPeriod(period);
+        messagePersistence.logMessage(message);
     }
 }

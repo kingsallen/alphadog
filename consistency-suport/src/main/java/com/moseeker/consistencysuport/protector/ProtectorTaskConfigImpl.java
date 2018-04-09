@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
@@ -37,15 +38,20 @@ public class ProtectorTaskConfigImpl implements ProtectorTask, Runnable {
     private Notification notification;              //通知
     private MessageRepository messageRepository;    //消息持久化操作
     private ApplicationContext applicationContext;  //Spring容器
-    private ParamConvertTool paramConvertTool;      //参数转换工具
+    private Map<String, ParamConvertTool> paramConvertToolMap;      //参数转换工具
 
     private long period = 5*60*1000;                //时间间隔
     private long initialDelay = 3*1000;             //延迟启动
+
     ThreadPool threadPool = ThreadPool.Instance;
 
-    public ProtectorTaskConfigImpl(long initialDelay, long period) {
+    public ProtectorTaskConfigImpl(long initialDelay, long period, Notification notification,
+                                   MessageRepository messageRepository, Map<String, ParamConvertTool> paramConvertToolMap) {
         this.period = period;
         this.initialDelay = initialDelay;
+        this.notification = notification;
+        this.messageRepository = messageRepository;
+        this.paramConvertToolMap = paramConvertToolMap;
     }
 
     // 定时任务
@@ -59,7 +65,7 @@ public class ProtectorTaskConfigImpl implements ProtectorTask, Runnable {
     });
 
     @Override
-    public void startProtectorTask(long initialDelay, long period) {
+    public void startProtectorTask() {
         schedual.scheduleAtFixedRate(this, initialDelay, period, TimeUnit.MILLISECONDS);
     }
 
@@ -75,6 +81,10 @@ public class ProtectorTaskConfigImpl implements ProtectorTask, Runnable {
                     throw ConsistencyException.CONSISTENCY_INVOKE_ERROR;
                 }
                 Class clazz = object.getClass();
+                ParamConvertTool paramConvertTool = paramConvertToolMap.get(message.getName());
+                if (paramConvertTool == null) {
+                    throw ConsistencyException.CONSISTENCY_UNBIND_CONVERTTOOL;
+                }
                 Object[] paramArray = paramConvertTool.convertStorageToParam(params);
                 Class[] paramClassArray = null;
                 List<Class> classList = null;
@@ -119,9 +129,14 @@ public class ProtectorTaskConfigImpl implements ProtectorTask, Runnable {
         List<Message> messageList = fetchNotFinishedMessage();
         if (messageList != null && messageList.size() > 0) {
             messageList.forEach(message -> threadPool.startTast(() -> {
-                    reHandler(message);
-                    return true;
-                })
+                        try {
+                            reHandler(message);
+                            return true;
+                        } catch (ConsistencyException e) {
+                            logger.error(e.getMessage(), e);
+                            return false;
+                        }
+                    })
             );
         }
     }

@@ -15,10 +15,8 @@ public interface ProtectorTask {
 
     /**
      * 启动守护任务
-     * @param initialDelay 延迟启动
-     * @param period 任务运行的时间间隔
      */
-    void startProtectorTask(long initialDelay, long period);
+    void startProtectorTask();
 
     /**
      * 重新执行调用方法

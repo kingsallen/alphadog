@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConsistencyMessage extends TableImpl<ConsistencyMessageRecord> {
 
-    private static final long serialVersionUID = -601293427;
+    private static final long serialVersionUID = -504428334;
 
     /**
      * The reference instance of <code>consistencydb.consistency_message</code>
@@ -56,9 +56,9 @@ public class ConsistencyMessage extends TableImpl<ConsistencyMessageRecord> {
     public final TableField<ConsistencyMessageRecord, String> MESSAGE_ID = createField("message_id", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false), this, "消息编号");
 
     /**
-     * The column <code>consistencydb.consistency_message.name</code>. 业务名称，不允许重复
+     * The column <code>consistencydb.consistency_message.name</code>. 业务名称
      */
-    public final TableField<ConsistencyMessageRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "业务名称，不允许重复");
+    public final TableField<ConsistencyMessageRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "业务名称");
 
     /**
      * The column <code>consistencydb.consistency_message.create_time</code>. 创建时间
@@ -76,9 +76,9 @@ public class ConsistencyMessage extends TableImpl<ConsistencyMessageRecord> {
     public final TableField<ConsistencyMessageRecord, Integer> VERSION = createField("version", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "版本");
 
     /**
-     * The column <code>consistencydb.consistency_message.retry</code>. 重试次数
+     * The column <code>consistencydb.consistency_message.retried</code>. 已经重试的次数
      */
-    public final TableField<ConsistencyMessageRecord, Byte> RETRY = createField("retry", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "重试次数");
+    public final TableField<ConsistencyMessageRecord, Byte> RETRIED = createField("retried", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "已经重试的次数");
 
     /**
      * The column <code>consistencydb.consistency_message.last_retry_time</code>. 最后重试的时间
@@ -94,21 +94,6 @@ public class ConsistencyMessage extends TableImpl<ConsistencyMessageRecord> {
      * The column <code>consistencydb.consistency_message.finish</code>. 是否完成, 0 未完成， 1 完成
      */
     public final TableField<ConsistencyMessageRecord, Byte> FINISH = createField("finish", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否完成, 0 未完成， 1 完成");
-
-    /**
-     * The column <code>consistencydb.consistency_message.class_name</code>. 记录消息的类对象名称
-     */
-    public final TableField<ConsistencyMessageRecord, String> CLASS_NAME = createField("class_name", org.jooq.impl.SQLDataType.VARCHAR.length(60), this, "记录消息的类对象名称");
-
-    /**
-     * The column <code>consistencydb.consistency_message.method</code>. 记录消息的类方法名称
-     */
-    public final TableField<ConsistencyMessageRecord, String> METHOD = createField("method", org.jooq.impl.SQLDataType.VARCHAR.length(60), this, "记录消息的类方法名称");
-
-    /**
-     * The column <code>consistencydb.consistency_message.period</code>. 任务调度时间间隔  单位是秒
-     */
-    public final TableField<ConsistencyMessageRecord, Integer> PERIOD = createField("period", org.jooq.impl.SQLDataType.INTEGER, this, "任务调度时间间隔  单位是秒");
 
     /**
      * Create a <code>consistencydb.consistency_message</code> table reference
@@ -153,7 +138,7 @@ public class ConsistencyMessage extends TableImpl<ConsistencyMessageRecord> {
      */
     @Override
     public List<UniqueKey<ConsistencyMessageRecord>> getKeys() {
-        return Arrays.<UniqueKey<ConsistencyMessageRecord>>asList(Keys.KEY_CONSISTENCY_MESSAGE_PRIMARY, Keys.KEY_CONSISTENCY_MESSAGE_CONSISTENCY_MESSAGE_NAME);
+        return Arrays.<UniqueKey<ConsistencyMessageRecord>>asList(Keys.KEY_CONSISTENCY_MESSAGE_PRIMARY);
     }
 
     /**

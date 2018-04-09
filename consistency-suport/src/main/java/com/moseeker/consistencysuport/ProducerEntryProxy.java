@@ -1,6 +1,7 @@
 package com.moseeker.consistencysuport;
 
 import com.moseeker.consistencysuport.config.ParamConvertTool;
+import com.moseeker.consistencysuport.db.Message;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import com.moseeker.consistencysuport.manager.ProducerConsistentManager;
 import com.moseeker.consistencysuport.manager.ProducerManagerSpringProxy;
@@ -54,10 +55,17 @@ public class ProducerEntryProxy {
         if (!paramConvertToolOptional.isPresent()) {
             throw ConsistencyException.CONSISTENCY_UNBIND_CONVERTTOOL;
         }
-        String className = producerEntry.className();
-        String method = producerEntry.method();
-        String params = producerEntry.params();
+        Object[] objects = call.getArgs();
+        if (producerEntry.index() >= objects.length) {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_LOST_MESSAGEID;
+        }
+        String className = call.getTarget().getClass().getName();
+        String method = call.getSignature().getName();
+        String name = producerEntry.name();
         int period = producerEntry.period();
-        manager.logMessage(UUID.randomUUID().toString(), producerEntry.name(), params, className, method, period);
+
+        String messageId = objects[producerEntry.index()].toString();
+
+        manager.logMessage(messageId, name, className, method, objects, period);
     }
 }

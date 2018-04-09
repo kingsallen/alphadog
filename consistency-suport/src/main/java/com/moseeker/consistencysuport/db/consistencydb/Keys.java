@@ -6,8 +6,10 @@ package com.moseeker.consistencysuport.db.consistencydb;
 
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusiness;
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessage;
+import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessageType;
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyBusinessRecord;
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyMessageRecord;
+import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyMessageTypeRecord;
 
 import javax.annotation.Generated;
 
@@ -43,7 +45,7 @@ public class Keys {
     public static final UniqueKey<ConsistencyBusinessRecord> KEY_CONSISTENCY_BUSINESS_PRIMARY = UniqueKeys0.KEY_CONSISTENCY_BUSINESS_PRIMARY;
     public static final UniqueKey<ConsistencyBusinessRecord> KEY_CONSISTENCY_BUSINESS_CONSISTENCY_BUSINESS_NAME = UniqueKeys0.KEY_CONSISTENCY_BUSINESS_CONSISTENCY_BUSINESS_NAME;
     public static final UniqueKey<ConsistencyMessageRecord> KEY_CONSISTENCY_MESSAGE_PRIMARY = UniqueKeys0.KEY_CONSISTENCY_MESSAGE_PRIMARY;
-    public static final UniqueKey<ConsistencyMessageRecord> KEY_CONSISTENCY_MESSAGE_CONSISTENCY_MESSAGE_NAME = UniqueKeys0.KEY_CONSISTENCY_MESSAGE_CONSISTENCY_MESSAGE_NAME;
+    public static final UniqueKey<ConsistencyMessageTypeRecord> KEY_CONSISTENCY_MESSAGE_TYPE_PRIMARY = UniqueKeys0.KEY_CONSISTENCY_MESSAGE_TYPE_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -62,6 +64,6 @@ public class Keys {
         public static final UniqueKey<ConsistencyBusinessRecord> KEY_CONSISTENCY_BUSINESS_PRIMARY = createUniqueKey(ConsistencyBusiness.CONSISTENCY_BUSINESS, "KEY_consistency_business_PRIMARY", ConsistencyBusiness.CONSISTENCY_BUSINESS.ID);
         public static final UniqueKey<ConsistencyBusinessRecord> KEY_CONSISTENCY_BUSINESS_CONSISTENCY_BUSINESS_NAME = createUniqueKey(ConsistencyBusiness.CONSISTENCY_BUSINESS, "KEY_consistency_business_consistency_business_name", ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME);
         public static final UniqueKey<ConsistencyMessageRecord> KEY_CONSISTENCY_MESSAGE_PRIMARY = createUniqueKey(ConsistencyMessage.CONSISTENCY_MESSAGE, "KEY_consistency_message_PRIMARY", ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID);
-        public static final UniqueKey<ConsistencyMessageRecord> KEY_CONSISTENCY_MESSAGE_CONSISTENCY_MESSAGE_NAME = createUniqueKey(ConsistencyMessage.CONSISTENCY_MESSAGE, "KEY_consistency_message_consistency_message_name", ConsistencyMessage.CONSISTENCY_MESSAGE.NAME);
+        public static final UniqueKey<ConsistencyMessageTypeRecord> KEY_CONSISTENCY_MESSAGE_TYPE_PRIMARY = createUniqueKey(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE, "KEY_consistency_message_type_PRIMARY", ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.NAME);
     }
 }

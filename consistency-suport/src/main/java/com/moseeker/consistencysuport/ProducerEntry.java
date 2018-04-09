@@ -15,13 +15,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProducerEntry {
 
-    String name() default "";
+    String name() default "";   //业务名称
 
-    String className() default "";
+    int period() default 5*60;  //方法检查周期
 
-    String method() default "";
-
-    String params() default "";
-
-    int period() default 5*60;
+    int index() default 0;      //messageId默认所处的参数的位置
 }

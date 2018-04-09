@@ -6,6 +6,7 @@ package com.moseeker.consistencysuport.db.consistencydb;
 
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusiness;
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessage;
+import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessageType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Consistencydb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1680402377;
+    private static final long serialVersionUID = 826097596;
 
     /**
      * The reference instance of <code>consistencydb</code>
@@ -47,6 +48,11 @@ public class Consistencydb extends SchemaImpl {
      * 消息表
      */
     public final ConsistencyMessage CONSISTENCY_MESSAGE = com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessage.CONSISTENCY_MESSAGE;
+
+    /**
+     * 消息类型表
+     */
+    public final ConsistencyMessageType CONSISTENCY_MESSAGE_TYPE = com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE;
 
     /**
      * No further instances allowed
@@ -74,6 +80,7 @@ public class Consistencydb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             ConsistencyBusiness.CONSISTENCY_BUSINESS,
-            ConsistencyMessage.CONSISTENCY_MESSAGE);
+            ConsistencyMessage.CONSISTENCY_MESSAGE,
+            ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE);
     }
 }

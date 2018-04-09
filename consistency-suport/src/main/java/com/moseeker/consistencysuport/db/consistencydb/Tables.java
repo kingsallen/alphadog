@@ -6,6 +6,7 @@ package com.moseeker.consistencysuport.db.consistencydb;
 
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusiness;
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessage;
+import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessageType;
 
 import javax.annotation.Generated;
 
@@ -32,4 +33,9 @@ public class Tables {
      * 消息表
      */
     public static final ConsistencyMessage CONSISTENCY_MESSAGE = com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessage.CONSISTENCY_MESSAGE;
+
+    /**
+     * 消息类型表
+     */
+    public static final ConsistencyMessageType CONSISTENCY_MESSAGE_TYPE = com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE;
 }

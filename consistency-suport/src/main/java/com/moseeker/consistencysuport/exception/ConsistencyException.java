@@ -14,7 +14,11 @@ public class ConsistencyException extends CommonException {
         super(status, message);
     }
 
-    public static final ConsistencyException CONSISTENCY_CONFLICTS_CONVERTTOOL = new ConsistencyException(81001, "重复的参数转换工具");
-    public static final ConsistencyException CONSISTENCY_UNBIND_CONVERTTOOL = new ConsistencyException(81002, "重复的参数转换工具");
-    public static final ConsistencyException CONSISTENCY_INVOKE_ERROR = new ConsistencyException(81003, "重复的参数转换工具");
+    public static final ConsistencyException CONSISTENCY_CONFLICTS_CONVERTTOOL = new ConsistencyException(81001, "重复的参数转换工具！");
+    public static final ConsistencyException CONSISTENCY_UNBIND_CONVERTTOOL = new ConsistencyException(81002, "未找到参数转换工具！");
+    public static final ConsistencyException CONSISTENCY_INVOKE_ERROR = new ConsistencyException(81003, "未找到消息重试处理组件！");
+    public static final ConsistencyException CONSISTENCY_PRODUCER_LOST_MESSAGEID = new ConsistencyException(81004, "消息编号配置错误！");
+
+    public static final ConsistencyException CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_ERROR_EMAIL = new ConsistencyException(81005, "没有配置程序错误报警接收邮件!");
+    public static final ConsistencyException CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_EXCEPTION_EMAIL = new ConsistencyException(81006, "没有配置业务错误报警接收邮件!");
 }
