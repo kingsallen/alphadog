@@ -27,6 +27,11 @@ public class CarnocOccupationResultHandler extends DefaultOccupationResultHandle
     }
 
     @Override
+    protected String occupationKey() {
+        return "functions";
+    }
+
+    @Override
     protected Class<DictCarnocOccupationDO> getOccupationClass() {
         return DictCarnocOccupationDO.class;
     }
