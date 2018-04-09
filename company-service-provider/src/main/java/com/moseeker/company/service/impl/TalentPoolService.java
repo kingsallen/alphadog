@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
@@ -43,6 +44,7 @@ import java.util.stream.Collectors;
 
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import org.apache.thrift.TException;
+import org.omg.CORBA.INTERNAL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,17 +156,33 @@ public class TalentPoolService {
         return ResponseUtils.success(result);
     }
 
-    private void handlerCompanyTagTalent(List<Integer> idList,int companyId){
+    private void handlerCompanyTagTalent(List<Integer> idList,int companyId) throws TException {
+        List<TalentpoolCompanyTagUserRecord> list=new ArrayList<>();
         List<TalentpoolCompanyTag> tagList=talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId,0,Integer.MAX_VALUE);
         if(!StringUtils.isEmptyList(tagList)){
-
+            for(Integer userId:idList){
+                Response res=profileService.getResource(userId,0,null);
+                if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())) {
+                    Map<String, Object> profiles = JSON.parseObject(res.getData());
+                    for(TalentpoolCompanyTag tag:tagList){
+                        boolean isflag=this.validateProfileAndComapnyTag(profiles,userId,companyId,tag);
+                        if(isflag){
+                            TalentpoolCompanyTagUserRecord record=new TalentpoolCompanyTagUserRecord();
+                            record.setUserId(userId);
+                            record.setTagId(tag.getId());
+                            list.add(record);
+                        }
+                    }
+                }
+            }
+        }
+        if(!StringUtils.isEmptyList(list)){
+            talentpoolCompanyTagUserDao.addAllRecord(list);
         }
     }
 
-    private boolean  validateProfileAndComapnyTag(int userId,int companyId,TalentpoolCompanyTag tag) throws TException {
-        Response res=profileService.getResource(userId,0,null);
-        if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
-            Map<String,Object> profiles=JSON.parseObject(res.getData());
+    private boolean  validateProfileAndComapnyTag(Map<String,Object> profiles,int userId,int companyId,TalentpoolCompanyTag tag) throws TException {
+
             List<JobApplicationRecord> applist=new ArrayList<>();
             if(StringUtils.isNotNullOrEmpty(tag.getOrigins())||StringUtils.isNotNullOrEmpty(tag.getSubmitTime())||tag.getIsRecommend()>0) {
                 if(tag.getIsRecommend()>0){
@@ -186,33 +204,261 @@ public class TalentPoolService {
                 }
             }
             if(StringUtils.isNotNullOrEmpty(tag.getCityCode())){
-
+                boolean flag=this.validateCity(tag.getCityCode(),profiles);
+                if(flag==false){
+                    return false;
+                }
             }
             if(StringUtils.isNotNullOrEmpty(tag.getDegree())){
+                boolean flag=this.validateDegree(tag.getDegree(),profiles);
+                if(flag==false){
+                    return false;
+                }
 
             }
             if(StringUtils.isNotNullOrEmpty(tag.getPastPosition())){
+                int isPast=tag.getInLastJobSearchPosition();
+                boolean flag=this.validatePastPosition(tag.getPastPosition(),isPast,profiles);
+                if(flag==false){
+                    return false;
+                }
 
             }
             if(StringUtils.isNotNullOrEmpty(tag.getCompanyName())){
-
+                int isPast=tag.getInLastJobSearchCompany();
+                boolean flag=this.validatePastCompany(tag.getCompanyName(),isPast,profiles);
+                if(flag==false){
+                    return false;
+                }
             }
             if(StringUtils.isNotNullOrEmpty(tag.getIntentionCityCode())){
-
+                boolean flag=this.validateIntentionCity(tag.getIntentionCityCode(),profiles);
+                if(flag==false){
+                    return false;
+                }
             }
             if(StringUtils.isNotNullOrEmpty(tag.getIntentionSalaryCode())){
-
+                boolean flag=this.validateIntentionSalaryCode(tag.getIntentionSalaryCode(),profiles);
+                if(flag==false){
+                    return false;
+                }
             }
             if(tag.getSex()!=2){
-
+                boolean flag=this.validateSex(tag.getSex(),profiles);
+                if(flag==false){
+                    return false;
+                }
             }
             if(tag.getMinAge()!=0||tag.getMaxAge()!=0){
+                boolean flag=this.validateAge(tag.getMinAge(),tag.getMaxAge(),profiles);
+                if(flag==false){
+                    return false;
+                }
+            }
 
+        return true;
+    }
+    /*
+      校验曾经工作的公司
+     */
+    private boolean validatePastCompany(String pastCompanys,int isPast,Map<String,Object> profiles){
+        if(profiles==null||profiles.isEmpty()){
+            return false;
+        }
+        List<Map<String,Object>> workExpList= (List<Map<String, Object>>) profiles.get("workexps");
+        if(StringUtils.isEmptyList(workExpList)){
+            return false;
+        }
+        String[] array=pastCompanys.split(",");
+        if(isPast==1){
+            Map<String,Object> workExp=workExpList.get(0);
+            if(workExp==null||workExp.isEmpty()){
+                return false;
+            }
+            String companyName=(String)workExp.get("company_name");
+            if(StringUtils.isNullOrEmpty(companyName)){
+                return false;
+            }
+            for(String item:array){
+                if(item.equals(companyName)){
+                    return true;
+                }
+            }
+
+        }else{
+            for(String item:array){
+                for(Map<String,Object> workExp:workExpList){
+                    String companyName=(String)workExp.get("company_name");
+                    if(item.equals(companyName)){
+                        return true;
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+    /*
+    校验曾任职务
+     */
+    private boolean validatePastPosition(String pastPositions,int isPast,Map<String,Object> profiles){
+        if(profiles==null||profiles.isEmpty()){
+            return false;
+        }
+        List<Map<String,Object>> workExpList= (List<Map<String, Object>>) profiles.get("workexps");
+        if(StringUtils.isEmptyList(workExpList)){
+            return false;
+        }
+        String[] array=pastPositions.split(",");
+        if(isPast==1){
+           Map<String,Object> workExp=workExpList.get(0);
+           if(workExp==null||workExp.isEmpty()){
+               return false;
+           }
+           String position=(String)workExp.get("job");
+           if(StringUtils.isNullOrEmpty(position)){
+               return false;
+           }
+           for(String item:array){
+               if(item.equals(position)){
+                   return true;
+               }
+           }
+
+        }else{
+            for(String item:array){
+                for(Map<String,Object> workExp:workExpList){
+                    String position=(String)workExp.get("job");
+                    if(item.equals(position)){
+                        return true;
+                    }
+                }
+
+            }
+        }
+        return false;
+
+    }
+
+    /*
+      校验期望工资
+     */
+    private boolean validateIntentionSalaryCode(String salaryCodes,Map<String,Object> profiles){
+        if(profiles==null||profiles.isEmpty()){
+            return false;
+        }
+        List<Map<String,Object>> intentions= (List<Map<String, Object>>) profiles.get("intentions");
+        if(StringUtils.isEmptyList(intentions)){
+            return false;
+        }
+        String []array=salaryCodes.split(",");
+        for(String item:array){
+            int salaryCode= Integer.parseInt(item);
+            for(Map<String,Object> intention:intentions){
+                int code=(int)intention.get("salary_code");
+                if(code==salaryCode){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /*
+    校验期望城市
+     */
+    private boolean validateIntentionCity(String cityCodes,Map<String,Object> profiles){
+        if(profiles==null||profiles.isEmpty()){
+            return false;
+        }
+        List<Map<String,Object>> intentions= (List<Map<String, Object>>) profiles.get("intentions");
+        if(StringUtils.isEmptyList(intentions)){
+            return false;
+        }
+        String []array=cityCodes.split(",");
+        for(String item:array){
+            int cityCode= Integer.parseInt(item);
+            for(Map<String,Object> intention:intentions){
+                List<Map<String,Object>> citys=( List<Map<String,Object>>)intention.get("cities");
+                if(!StringUtils.isEmptyList(citys)){
+                   for(Map<String,Object> city:citys){
+                      int code=(int)city.get("code") ;
+                       if(code==cityCode){
+                           return true;
+                       }
+                   }
+                }
             }
 
         }
-        return true;
+
+        return false;
     }
+
+    /*
+     校验学历
+     */
+    private boolean validateDegree(String degrees,Map<String,Object> profiles){
+        String[] array=degrees.split(",");
+        if(profiles==null||profiles.isEmpty()){
+            return false;
+        }
+        List<Map<String,Object>> edutionExps= (List<Map<String, Object>>) profiles.get("educations");
+        if(StringUtils.isEmptyList(edutionExps)){
+            return false;
+        }
+        Map<String,Object> education=edutionExps.get(0);
+        int degree= (int) education.get("degree");
+        for(String item:array){
+            if(StringUtils.isNotNullOrEmpty(item)&&Integer.parseInt(item)==degree){
+                return true;
+            }
+        }
+
+        return false;
+    }
+    /*
+      校验性别
+     */
+    private boolean validateSex(int sex,Map<String,Object> profiles){
+        if(profiles==null||profiles.isEmpty()){
+            return false;
+        }
+        Map<String,Object> basic= (Map<String, Object>) profiles.get("basic");
+        if(basic==null||basic.isEmpty()){
+            return false;
+        }
+        int gender=(int)basic.get("gender");
+        if(sex==gender){
+            return true;
+        }
+        return false;
+    }
+    /*
+    校验年龄
+     */
+    private boolean validateAge(int minAge,int maxAge,Map<String,Object> profiles ){
+        if(profiles==null||profiles.isEmpty()){
+            return false;
+        }
+        Map<String,Object> basic= (Map<String, Object>) profiles.get("basic");
+        if(basic==null||basic.isEmpty()){
+            return false;
+
+        }
+        String birth=(String)basic.get("birth");
+        if(StringUtils.isNullOrEmpty(birth)){
+            return false;
+        }
+        int time=Integer.parseInt(birth.substring(0,4));
+        int age=new Date().getYear()-time+1;
+        if(age>minAge&&age<maxAge){
+            return true;
+        }
+        return false;
+    }
+    /*
+    校验城市
+     */
     private boolean validateCity(String cityCodes,Map<String,Object> profiles){
         if(profiles==null||profiles.isEmpty()){
             return false;
@@ -221,6 +467,16 @@ public class TalentPoolService {
         if(basic==null||basic.isEmpty()){
             return false;
 
+        }
+        int profileCityCode=(int)basic.get("city_code");
+        if(profileCityCode==0){
+            return false;
+        }
+        String []array=cityCodes.split(",");
+        for(String item:array){
+            if(profileCityCode==Integer.parseInt(item)){
+                return true;
+            }
         }
         return false;
     }
