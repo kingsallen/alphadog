@@ -1220,11 +1220,11 @@ public class TalentPoolService {
     public Response getCompanyTagList(int hrId,int companyId, int page_number, int page_size){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
         if(flag == -1){
-            return ResponseUtils.fail(1,"免费公司没有权限");
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
         }else if(flag == -2){
-            return ResponseUtils.fail(1,"该公司还没有开启智能人才库");
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
         }else if(flag == -3){
-            return ResponseUtils.fail(1,"该hr不属于该company_id");
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
         }
         PageInfo info = new PageInfo();
         if(flag == 2 || flag == 0) {
@@ -1292,9 +1292,9 @@ public class TalentPoolService {
         if(flag == -1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
         }else if(flag == -2){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
-        }else if(flag == -3){
             return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
         }else if(flag == 1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
@@ -1340,9 +1340,9 @@ public class TalentPoolService {
         if(flag == -1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
         }else if(flag == -2){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
-        }else if(flag == -3){
             return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
         }else if(flag == 1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
@@ -1371,9 +1371,9 @@ public class TalentPoolService {
         if(flag == -1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
         }else if(flag == -2){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
-        }else if(flag == -3){
             return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
         }else if(flag == 1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }

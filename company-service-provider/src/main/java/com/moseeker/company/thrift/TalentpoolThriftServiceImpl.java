@@ -337,9 +337,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
                 } else if (resultStatus == -1) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
                 } else if (resultStatus == -2) {
-                    return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
-                } else if (resultStatus == -3) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+                } else if (resultStatus == -3) {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
                 } else {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
                 }

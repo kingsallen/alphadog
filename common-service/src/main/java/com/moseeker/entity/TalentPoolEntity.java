@@ -121,16 +121,16 @@ public class TalentPoolEntity {
         if(companyDO == null){
             return -1;
         }
-        HrCompanyConfDO companyConfDO = getCompanyConfDOByCompanyId(companyId);
-        if(companyConfDO == null){
-            return -2;
-        }
         List<Map<String,Object>> hrList=getCompanyHrList(companyId);
         Set<Integer> hrIdList=this.getIdListByUserHrAccountList(hrList);
         if(StringUtils.isEmptyList(hrList)){
-            return -3;
+            return -2;
         }
         if(!hrIdList.contains(hrId)){
+            return -2;
+        }
+        HrCompanyConfDO companyConfDO = getCompanyConfDOByCompanyId(companyId);
+        if(companyConfDO == null){
             return -3;
         }
         com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount account = userHrAccountDao.getHrAccount(hrId);
@@ -397,6 +397,15 @@ public class TalentPoolEntity {
         return result;
     }
 
+    /*
+     获取公司下所有公司标签信息
+    */
+    public List<Map<String,Object>> getCompanyTagList(int companyId){
+        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(), companyId)
+                .where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.DISABLE.getName(), 1).buildQuery();
+        List<Map<String, Object>> companyTagList = talentpoolCompanyTagDao.getMaps(query);
+        return companyTagList;
+    }
     /*
       获取公司下所有的hr信息
      */
@@ -1230,6 +1239,8 @@ public class TalentPoolEntity {
         //取消收藏时删除标签，并且计算标签数
 //            this.handleCancleTag(hrId,idList);
         this.handlerPublicTag(idList,companyId);
+        //删除企业标签
+        this.handlerCompanyTag(idList,companyId);
     }
 
     /*
@@ -1393,7 +1404,7 @@ public class TalentPoolEntity {
     /*
      取消时处理标签
      */
-    public void handlerPublicTag(Set<Integer> userIds,int companyId){
+       public void handlerPublicTag(Set<Integer> userIds,int companyId){
         userIds=this.getNoPublicUserId(userIds,companyId);
         List<Map<String,Integer>> data=this.getHandlerData(userIds,companyId);
         List<TalentpoolUserTagRecord> delData=this.getDelTalentpoolUserTag(data);
@@ -1403,6 +1414,57 @@ public class TalentPoolEntity {
         }
 
     }
+
+    /*
+     取消时处理标签
+     */
+    public void handlerCompanyTag(Set<Integer> userIds,int companyId){
+        userIds=this.getNoPublicUserId(userIds,companyId);
+        List<TalentpoolCompanyTagUserRecord> data=this.getHandlerCompanyTagData(userIds,companyId);
+        if(!StringUtils.isEmptyList(data)){
+            int [] result=talentpoolCompanyTagUserDao.deleteRecords(data);
+        }
+
+    }
+
+    private List<TalentpoolCompanyTagUserRecord> getHandlerCompanyTagData(Set<Integer> userIds,int companyId){
+        if(StringUtils.isEmptySet(userIds)){
+            return null;
+        }
+        /*
+         获取userid的所有的tag
+         */
+        List<TalentpoolCompanyTagUserRecord> userTagList=this.getAllCompanyTag(userIds);
+
+        /*
+         过滤掉不属于本公司人才-企业标签关系数据
+         */
+        userTagList=this.filterOtherCompany(companyId,userTagList);
+
+        return  userTagList;
+    }
+
+    /*
+     过滤掉不属于本公司人才-企业标签关系数据
+     */
+    private List<TalentpoolCompanyTagUserRecord> filterOtherCompany(int companyId,List<TalentpoolCompanyTagUserRecord> tagList){
+        if(StringUtils.isEmptyList(tagList)){
+            return null;
+        }
+        List<Map<String,Object>> companyTagList=this.getCompanyTagList(companyId);
+        Set<Integer> companyTagIdList=this.getIdListByUserHrAccountList(companyTagList);
+        if(StringUtils.isEmptySet(companyTagIdList)){
+            return  null;
+        }
+        List<TalentpoolCompanyTagUserRecord> list=new ArrayList<>();
+        for(TalentpoolCompanyTagUserRecord record:tagList){
+            if(companyTagIdList.contains(record.getTagId())){
+                list.add(record);
+            }
+        }
+        return list;
+    }
+
     private List<Map<String,Integer>> getHandlerData(Set<Integer> userIds,int companyId){
         if(StringUtils.isEmptySet(userIds)){
             return null;
@@ -1654,6 +1716,21 @@ public class TalentPoolEntity {
     }
 
     /*
+      获取tagId
+     */
+    private List<Integer> getTagIdByTalentpoolCompanyTagUserRecord(List<TalentpoolCompanyTagUserRecord> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(TalentpoolCompanyTagUserRecord record:list){
+            result.add(record.getTagId());
+        }
+
+        return result;
+    }
+
+    /*
        获取所有公开人的标签
        */
     private List<TalentpoolUserTagRecord> getAllPublicTag(Set<Integer> userIds){
@@ -1662,6 +1739,18 @@ public class TalentPoolEntity {
         }
         Query query=new Query.QueryBuilder().where(new Condition("user_id",userIds.toArray(),ValueOp.IN)).buildQuery();
         List<TalentpoolUserTagRecord> records=talentpoolUserTagDao.getRecords(query);
+        return records;
+    }
+
+    /*
+     获取所有公开人的企业标签
+     */
+    private List<TalentpoolCompanyTagUserRecord> getAllCompanyTag(Set<Integer> userIds){
+        if(StringUtils.isEmptySet(userIds)){
+            return null;
+        }
+        Query query=new Query.QueryBuilder().where(new Condition("user_id",userIds.toArray(),ValueOp.IN)).buildQuery();
+        List<TalentpoolCompanyTagUserRecord> records=talentpoolCompanyTagUserDao.getRecords(query);
         return records;
     }
     /*
