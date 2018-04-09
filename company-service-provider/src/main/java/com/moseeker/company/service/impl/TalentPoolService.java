@@ -909,11 +909,15 @@ public class TalentPoolService {
     @CounterIface
     public Response getCompanyTagList(int hrId,int companyId, int page_number, int page_size){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
-        if(flag==0){
-            return ResponseUtils.fail(1,"根据HR和公司信息没有查到开启智能人才库");
+        if(flag == -1){
+            return ResponseUtils.fail(1,"免费公司没有权限");
+        }else if(flag == -2){
+            return ResponseUtils.fail(1,"该公司还没有开启智能人才库");
+        }else if(flag == -3){
+            return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
         PageInfo info = new PageInfo();
-        if(flag == 2) {
+        if(flag == 2 || flag == 0) {
             info = this.getLimitStart( page_number, page_size);
         }else{
             if(page_number == 0){
@@ -973,15 +977,19 @@ public class TalentPoolService {
      * @return
      */
     @Transactional
-    public int deleteCompanyTags(int hrId, int companyId, List<Integer> company_tag_ids){
+    public Response deleteCompanyTags(int hrId, int companyId, List<Integer> company_tag_ids){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
-        if(flag==0){
-            return 1;
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
         }else if(flag == 1){
-            return 2;
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
         int result = talentPoolEntity.deleteCompanyTags(companyId, company_tag_ids);
-        return result;
+        return ResponseUtils.success("");
     }
 
     /**
@@ -994,11 +1002,14 @@ public class TalentPoolService {
     public Map<String, Object> getCompanyTagInfo(int hrId, int companyId, int company_tag_id){
         Map<String, Object> params = new HashMap<>();
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
-        if(flag==0){
-            params.put("responseStatus", 1);
+        if(flag == -1){
+            params.put("responseStatus", -1);
             return  params;
-        }else if(flag == 1){
-            params.put("responseStatus", 2);
+        }else if(flag == -2){
+            params.put("responseStatus", -2);
+            return  params;
+        }else if(flag == -3){
+            params.put("responseStatus", -3);
             return  params;
         }
         Map<String, Object> companyTag = talentPoolEntity.getCompanyTagInfo(companyId, company_tag_id);
@@ -1012,8 +1023,12 @@ public class TalentPoolService {
     @Transactional
     public Response addCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
-        if(flag==0){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_STATUS);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
         }else if(flag == 1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
@@ -1034,8 +1049,12 @@ public class TalentPoolService {
     @Transactional
     public Response updateCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
-        if(flag==0){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_STATUS);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
         }else if(flag == 1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }

@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -27,6 +28,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -115,23 +117,24 @@ public class TalentPoolEntity {
      * @return 0 公司和HR信息不能验证通过人才库开启 1 开启智能人才库hr账号为子账号 2 超级账号
      */
     public int validateCompanyTalentPoolV3(int hrId, int companyId){
+        HrCompanyDO companyDO = getCompanyDOByCompanyId(companyId);
+        if(companyDO == null){
+            return -1;
+        }
         HrCompanyConfDO companyConfDO = getCompanyConfDOByCompanyId(companyId);
         if(companyConfDO == null){
-            return 0;
+            return -2;
         }
         List<Map<String,Object>> hrList=getCompanyHrList(companyId);
         Set<Integer> hrIdList=this.getIdListByUserHrAccountList(hrList);
         if(StringUtils.isEmptyList(hrList)){
-            return 0;
+            return -3;
         }
         if(!hrIdList.contains(hrId)){
-            return 0;
+            return -3;
         }
         com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount account = userHrAccountDao.getHrAccount(hrId);
-        if(account.getAccountType().intValue() == 0 || account.getAccountType().intValue() ==2){
-            return 2;
-        }
-        return 1;
+        return account.getAccountType();
     }
 
     /**
@@ -413,6 +416,15 @@ public class TalentPoolEntity {
         return companyConfDO;
     }
 
+    /*
+    获取公司是否开启智能人才库
+   */
+    public HrCompanyDO getCompanyDOByCompanyId(int companyId){
+        Query query = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(), companyId)
+                .and(HrCompany.HR_COMPANY.TYPE.getName(), 0).buildQuery();
+        HrCompanyDO companyDO = hrCompanyDao.getData(query);
+        return companyDO;
+    }
 
 
     /*
