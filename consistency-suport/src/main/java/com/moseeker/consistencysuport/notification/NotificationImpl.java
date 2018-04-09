@@ -5,6 +5,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.consistencysuport.config.Notification;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,17 +26,18 @@ public class NotificationImpl implements Notification {
     private List<String> errorReceivers = new ArrayList<>();            //程序异常报警接收邮件
     private List<String> exceptionReceives = new ArrayList<>();         //业务异常报警接收邮件
 
-    public NotificationImpl() {
+    public NotificationImpl() throws ConsistencyException {
         try {
             ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
             String errorReceivers = propertiesUtils.get("consistency_suport.error_emails", String.class);
-            parseEmail(this.errorReceivers, errorReceivers);
+            parseEmail(this.errorReceivers, errorReceivers, ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_ERROR_EMAIL);
 
             String exceptionReceives = propertiesUtils.get("consistency_suport.exception_emails", String.class);
-            parseEmail(this.exceptionReceives, exceptionReceives);
+            parseEmail(this.exceptionReceives, exceptionReceives, ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_EXCEPTION_EMAIL);
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            throw ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_NOTIFACATION_ERROR;
         }
     }
 
@@ -44,21 +46,25 @@ public class NotificationImpl implements Notification {
      * @param errorReceivers
      * @param emailStr
      */
-    private void parseEmail(List<String> errorReceivers, String emailStr) {
-        if (emailStr != null) {
+    private void parseEmail(List<String> errorReceivers, String emailStr, ConsistencyException e) {
+        if (StringUtils.isNotBlank(emailStr)) {
             String[] errorReceiversArray = emailStr.split(",");
             if (errorReceiversArray.length > 0) {
                 for (String errorReceiver : errorReceiversArray) {
                     if (FormCheck.isEmail(errorReceiver)) {
                         errorReceivers.add(errorReceiver);
+                    } else {
+                        throw e;
                     }
                 }
             }
+        } else {
+            throw e;
         }
     }
 
     @Override
-    public void noticeForError(List<String> receivers, Exception e) {
+    public void noticeForError(Exception e) {
         if (this.errorReceivers.size() == 0) {
             logger.error("没有配置程序错误报警邮件的接收人员邮箱！");
             return;
@@ -68,7 +74,7 @@ public class NotificationImpl implements Notification {
     }
 
     @Override
-    public void noticeForException(List<String> receivers, ConsistencyException e) {
+    public void noticeForException(ConsistencyException e) {
 
         if (this.exceptionReceives.size() == 0) {
             logger.error("没有配置业务异常报警邮件的接收人员邮箱！");

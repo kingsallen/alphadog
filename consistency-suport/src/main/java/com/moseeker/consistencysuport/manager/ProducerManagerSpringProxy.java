@@ -5,6 +5,7 @@ import com.moseeker.consistencysuport.config.Notification;
 import com.moseeker.consistencysuport.config.ParamConvertTool;
 import com.moseeker.consistencysuport.db.impl.MessageRepositoryImpl;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
+import com.moseeker.consistencysuport.notification.NotificationImpl;
 import com.moseeker.consistencysuport.persistence.MessagePersistenceImpl;
 import com.moseeker.consistencysuport.protector.ProtectorTask;
 import com.moseeker.consistencysuport.protector.ProtectorTaskConfigImpl;
@@ -24,11 +25,13 @@ import java.util.Map;
 @Component
 public class ProducerManagerSpringProxy {
 
-    private MessageRepository messageRepository;                   //消息持久化工具
-    private Notification notification;
+    private MessageRepository messageRepository;                    //消息持久化工具
+    private Notification notification;                              //消息通知
 
-    private long initialDelay;                                       //延迟启动
-    private long period;                                             //任务时间间隔
+    private long initialDelay = 5*1000;                             //延迟启动
+    private long period = 5*60*1000;                                //任务时间间隔
+
+    private static final int MIN_PERIOD = 3*1000;                   //时间间隔下限
 
     private static ProducerConsistentManager manager;
 
@@ -75,18 +78,37 @@ public class ProducerManagerSpringProxy {
      */
     public ProducerManagerSpringProxy buildProtectorTimeConfig(long initialDelay, long period) {
         this.initialDelay = initialDelay;
+        if (this.initialDelay < 0) {
+            this.initialDelay = 0;
+        }
         this.period = period;
         return this;
     }
 
     /**
-     * 构建一致性客户端工具
-     * @return
+     * 构建一致性管理工具
+     * @return 一致性管理工具
+     * @throws ConsistencyException ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_REPOSITORY_NOT_FOUND;
+     * ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_PERIOD_ERROR; ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_ERROR_EMAIL;
+     * ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_EXCEPTION_EMAIL;ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_NOTIFACATION_ERROR;
+     *
      */
-    public ProducerConsistentManager buildManager() throws ConsistencyException {
-        ProducerConsistentManager producerConsistentManager = new ProducerConsistentManager(messageRepository,
+    public synchronized ProducerConsistentManager buildManager() throws ConsistencyException {
+        if (manager != null) {
+            return manager;
+        }
+        if (messageRepository == null) {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_REPOSITORY_NOT_FOUND;
+        }
+        if (period < MIN_PERIOD) {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_PERIOD_ERROR;
+        }
+        if (notification == null) {
+            notification = new NotificationImpl();
+        }
+        manager = new ProducerConsistentManager(messageRepository,
                 paramConvertToolMap, notification, initialDelay, period);
-        producerConsistentManager.startProtectorTask();
-        return producerConsistentManager;
+        manager.startProtectorTask();
+        return manager;
     }
 }

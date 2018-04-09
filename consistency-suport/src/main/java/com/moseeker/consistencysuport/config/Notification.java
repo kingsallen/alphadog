@@ -14,15 +14,13 @@ public interface Notification {
 
     /**
      * 程序异常时，通知相关人员
-     * @param receivers 相关人员名单
      * @param e 异常信息
      */
-    void noticeForError(List<String> receivers, Exception e);
+    void noticeForError(Exception e);
 
     /**
      * 业务异常时，通知相关人员
-     * @param receivers 相关人员名单
      * @param e 异常信息
      */
-    void noticeForException(List<String> receivers, ConsistencyException e);
+    void noticeForException(ConsistencyException e);
 }

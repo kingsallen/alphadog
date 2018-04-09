@@ -19,6 +19,10 @@ public class ConsistencyException extends CommonException {
     public static final ConsistencyException CONSISTENCY_INVOKE_ERROR = new ConsistencyException(81003, "未找到消息重试处理组件！");
     public static final ConsistencyException CONSISTENCY_PRODUCER_LOST_MESSAGEID = new ConsistencyException(81004, "消息编号配置错误！");
 
-    public static final ConsistencyException CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_ERROR_EMAIL = new ConsistencyException(81005, "没有配置程序错误报警接收邮件!");
-    public static final ConsistencyException CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_EXCEPTION_EMAIL = new ConsistencyException(81006, "没有配置业务错误报警接收邮件!");
+    public static final ConsistencyException CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_ERROR_EMAIL = new ConsistencyException(81005, "没有配置程序错误报警接收邮件！");
+    public static final ConsistencyException CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_EXCEPTION_EMAIL = new ConsistencyException(81006, "没有配置业务错误报警接收邮件！");
+    public static final ConsistencyException CONSISTENCY_PRODUCER_CONFIGURATION_NOTIFACATION_ERROR = new ConsistencyException(81007, "消息处理工具构建失败！");
+
+    public static final ConsistencyException CONSISTENCY_PRODUCER_CONFIGURATION_REPOSITORY_NOT_FOUND= new ConsistencyException(81008, "消息持久化配置错误！");
+    public static final ConsistencyException CONSISTENCY_PRODUCER_CONFIGURATION_PERIOD_ERROR = new ConsistencyException(81009, "消息守护任务间隔时间太短！");
 }

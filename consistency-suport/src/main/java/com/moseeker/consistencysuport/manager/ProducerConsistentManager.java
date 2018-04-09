@@ -36,8 +36,6 @@ public class ProducerConsistentManager {
 
     private MessagePersistence messagePersistence;                      //消息持久化工具
     private Map<String, ParamConvertTool> paramConvertToolMap;  //参数与持久化字段的转换工具
-    private List<String> warningEmailList = new ArrayList<>();  //报警通知接收人员
-    private List<String> errorEmailList = new ArrayList<>();  //报警通知接收人员
     private Notification notification;                          //通知功能
     private ProtectorTask protectorTask;                        //启动保护任务
     private long initialDelay;
@@ -56,26 +54,6 @@ public class ProducerConsistentManager {
         this.paramConvertToolMap = paramConvertToolMap;
         this.protectorTask = new ProtectorTaskConfigImpl(initialDelay, period, notification, messageRepository, paramConvertToolMap);
         this.notification = notification;
-        initConfig();
-    }
-
-    private void initConfig() throws ConsistencyException {
-        String errorEmails = configPropertiesUtil.get("consistency_suport.error_emails", String.class);
-        if (StringUtils.isNotBlank(errorEmails)) {
-            for (String s : errorEmails.split(",")) {
-                errorEmailList.add(s.trim());
-            }
-        } else {
-            throw ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_ERROR_EMAIL;
-        }
-        String warnEmails = configPropertiesUtil.get("consistency_suport.exception_emails", String.class);
-        if (StringUtils.isNotBlank(warnEmails)) {
-            for (String s : warnEmails.split(",")) {
-                warningEmailList.add(s.trim());
-            }
-        } else {
-            throw ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_NOT_FOUND_EXCEPTION_EMAIL;
-        }
     }
 
     /**
@@ -93,7 +71,7 @@ public class ProducerConsistentManager {
      */
     public void registerParamConvertTool(String name, ParamConvertTool paramConvertTool) throws ConsistencyException {
         if (paramConvertToolMap.containsKey(name)) {
-            notification.noticeForException(warningEmailList, ConsistencyException.CONSISTENCY_CONFLICTS_CONVERTTOOL);
+            notification.noticeForException(null, ConsistencyException.CONSISTENCY_CONFLICTS_CONVERTTOOL);
             throw ConsistencyException.CONSISTENCY_CONFLICTS_CONVERTTOOL;
         }
         paramConvertToolMap.put(name, paramConvertTool);
