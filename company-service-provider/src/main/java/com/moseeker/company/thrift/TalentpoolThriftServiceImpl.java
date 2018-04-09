@@ -313,16 +313,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     @Override
         public Response deleteCompanyTagByIds(int hr_id, int company_id, List<Integer> company_tag_ids) throws BIZException, TException {
         try{
-            int result =  talentPoolService.deleteCompanyTags(hr_id,company_id,company_tag_ids);
-            if(result == 0){
-                return ResponseUtils.success("");
-            }else if(result == 1){
-                return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_STATUS);
-            }else if(result == 2 ){
-                return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
-            }else{
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
-            }
+            return talentPoolService.deleteCompanyTags(hr_id,company_id,company_tag_ids);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
@@ -343,10 +334,12 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
                     }else{
                         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
                     }
-                } else if (resultStatus == 1) {
-                    return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_STATUS);
-                } else if (resultStatus == 2) {
-                    return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+                } else if (resultStatus == -1) {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+                } else if (resultStatus == -2) {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+                } else if (resultStatus == -3) {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
                 } else {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
                 }
