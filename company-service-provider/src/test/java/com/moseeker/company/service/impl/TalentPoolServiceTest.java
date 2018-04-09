@@ -276,9 +276,10 @@ public class TalentPoolServiceTest {
 
     @Test
     public void testUpdateEs() throws TException {
-        int tagId=1;
+        List<Integer> tagIDList=new ArrayList<>();
+        tagIDList.add(1);
         int type=0;
-        companyTagService.handlerCompanyTag(tagId,type);
+        companyTagService.handlerCompanyTag(tagIDList,type);
     }
 
 
