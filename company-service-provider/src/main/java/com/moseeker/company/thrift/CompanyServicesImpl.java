@@ -345,6 +345,9 @@ public class CompanyServicesImpl implements Iface {
             if(result==-2){
                 return ResponseUtils.fail(1,"此公司无配置,联系客服人员");
             }
+            if(result==-3){
+                return ResponseUtils.fail(1,"该公司不是付费公司，无法使用该功能");
+            }
             map.put("open",result);
             return ResponseUtils.success(map);
         }catch(Exception e){

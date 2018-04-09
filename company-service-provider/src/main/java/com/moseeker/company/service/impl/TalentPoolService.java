@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
@@ -32,9 +34,14 @@ import com.moseeker.company.utils.ValidateTalentTag;
 import com.moseeker.company.utils.ValidateUtils;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.talentpool.PageInfo;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
+
+import java.sql.Timestamp;
 import java.util.stream.Collectors;
+
+import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +98,10 @@ public class TalentPoolService {
     private TalentpoolPastDao talentpoolPastDao;
     @Autowired
     private TalentpoolCompanyTagDao talentpoolCompanyTagDao;
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
 
+    WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
     /*
       修改开启人才库的申请记录
      */
@@ -142,6 +152,269 @@ public class TalentPoolService {
             return  ResponseUtils.success("");
         }
         return ResponseUtils.success(result);
+    }
+
+    private void handlerCompanyTagTalent(List<Integer> idList,int companyId){
+        List<TalentpoolCompanyTag> tagList=talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId,0,Integer.MAX_VALUE);
+        if(!StringUtils.isEmptyList(tagList)){
+
+        }
+    }
+
+    private boolean  validateProfileAndComapnyTag(int userId,int companyId,TalentpoolCompanyTag tag) throws TException {
+        Response res=profileService.getResource(userId,0,null);
+        if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
+            Map<String,Object> profiles=JSON.parseObject(res.getData());
+            List<JobApplicationRecord> applist=new ArrayList<>();
+            if(StringUtils.isNotNullOrEmpty(tag.getOrigins())||StringUtils.isNotNullOrEmpty(tag.getSubmitTime())||tag.getIsRecommend()>0) {
+                if(tag.getIsRecommend()>0){
+                    applist=this.getJobApplicationByCompanyIdAndUserId(companyId,userId);
+                }else{
+                    applist=getJobAppRecommendByCompanyIdAndUserId(companyId,userId);
+                }
+
+                boolean flag=this.validateApp(tag.getOrigins(),applist,profiles,tag.getSubmitTime());
+                if(flag==false){
+                   return false;
+                }
+            }
+            if(StringUtils.isNotNullOrEmpty(tag.getWorkYears())){
+                //校验工作年限
+                boolean flag=validateWorkYear(tag.getWorkYears(),profiles);
+                if(flag==false){
+                    return false;
+                }
+            }
+            if(StringUtils.isNotNullOrEmpty(tag.getCityCode())){
+
+            }
+            if(StringUtils.isNotNullOrEmpty(tag.getDegree())){
+
+            }
+            if(StringUtils.isNotNullOrEmpty(tag.getPastPosition())){
+
+            }
+            if(StringUtils.isNotNullOrEmpty(tag.getCompanyName())){
+
+            }
+            if(StringUtils.isNotNullOrEmpty(tag.getIntentionCityCode())){
+
+            }
+            if(StringUtils.isNotNullOrEmpty(tag.getIntentionSalaryCode())){
+
+            }
+            if(tag.getSex()!=2){
+
+            }
+            if(tag.getMinAge()!=0||tag.getMaxAge()!=0){
+
+            }
+
+        }
+        return true;
+    }
+    private boolean validateCity(String cityCodes,Map<String,Object> profiles){
+        if(profiles==null||profiles.isEmpty()){
+            return false;
+        }
+        Map<String,Object> basic= (Map<String, Object>) profiles.get("basic");
+        if(basic==null||basic.isEmpty()){
+            return false;
+
+        }
+        return false;
+    }
+    /*
+     获取提交的时间戳
+     */
+    private Long getLongTime(String submitTime){
+
+        Date date=new Date();
+        long time=Long.parseLong(submitTime);
+        if(time==1){
+            time=3L;
+        }else if(time==2){
+            time=7L;
+        }else if(time==3){
+            time=30L;
+        }
+        long datetime=date.getTime();
+        long preTime=time*3600*24*1000;
+        long longTime=datetime-preTime;
+        return longTime;
+    }
+    /*
+     校验工作年限
+     */
+    private boolean validateWorkYear(String workyears,Map<String,Object> profiles){
+        if(profiles==null||profiles.isEmpty()){
+            return false;
+        }
+        List<Map<String,Object>> workExpList= (List<Map<String, Object>>) profiles.get("workexps");
+        if(StringUtils.isEmptyList(workExpList)){
+            return false;
+        }
+        long end=0;
+        long start=0;
+        if(workExpList.size()>1){
+            Map<String,Object> endExp=workExpList.get(0);
+            Map<String,Object> startExp=workExpList.get(workExpList.size()-1);
+            int now=(int)endExp.get("end_until_now");
+            if(now==1){
+                end=new Date().getTime();
+            }else{
+                end=new Date((String)endExp.get("end_date")).getTime();
+            }
+            start=new Date((String)startExp.get("start_date")).getTime();
+        }else{
+            Map<String,Object> workexp=workExpList.get(0);
+            int now=(int)workexp.get("end_until_now");
+            if(now==1){
+                end=new Date().getTime();
+            }else{
+                end=new Date((String)workexp.get("end_date")).getTime();
+            }
+            start=new Date((String)workexp.get("start_date")).getTime();
+
+        }
+        int resultYear=(int)Math.ceil(((double)end-(double)start)/(3600*24*30*12));
+        int year=Integer.parseInt(workyears);
+        int min=0;
+        int max=0;
+        if(year==2){
+            min=0;
+            max=1;
+        }else if(year==3){
+            min=1;
+            max=3;
+        }else if(year==4){
+            min=3;
+            max=5;
+        }else if(year==5){
+            min=5;
+            max=10;
+        }else{
+            min=10;
+            max=100;
+        }
+        if(min<resultYear&&max>resultYear){
+            return true;
+        }
+        return false;
+
+    }
+
+    /*
+     校验该人才的来源
+     */
+    private boolean validateApp(String origins, List<JobApplicationRecord> applist,Map<String,Object> profiles,String submitTime ){
+        if(StringUtils.isEmptyList(applist)){
+            return false;
+        }
+        if(StringUtils.isNotNullOrEmpty(origins)){
+            String[] originArray=origins.split(",");
+            boolean flag=false;
+            for(JobApplicationRecord record:applist){
+                int appOrigin=record.getOrigin();
+                flag=this.validateEqual(originArray,appOrigin);
+                if(flag==true){
+                    if(StringUtils.isNotNullOrEmpty(submitTime)){
+                        long apptime=record.getSubmitTime().getTime();
+                        long time=this.getLongTime(submitTime);
+                        if(time<apptime){
+                            flag=true;
+                        }
+                    }
+                }
+                if(flag==true){
+                    break;
+                }
+            }
+            if(flag==false){
+                if(profiles==null||profiles.isEmpty()){
+                    return false;
+                }
+                Map<String,Object> profile= (Map<String, Object>) profiles.get("profile");
+                if(profile==null||profile.isEmpty()){
+                    return false;
+                }
+                String profileOrigin=(String)profile.get("origin");
+                if(StringUtils.isNullOrEmpty(profileOrigin)){
+                    return false;
+                }
+                for(String item:originArray){
+                    if(item.length()>10){
+                        int length=item.length();
+                        if(length<=profileOrigin.length()){
+                            char profileChar=profileOrigin.charAt(profileOrigin.length()-length);
+                            if(profileChar=='1'){
+                                flag= true;
+                            }
+                        }
+
+                    }
+                }
+                if(flag==false){
+                    return false;
+                }else{
+                    for(JobApplicationRecord record:applist){
+                        if(StringUtils.isNotNullOrEmpty(submitTime)){
+                            long apptime=record.getSubmitTime().getTime();
+                            long time=this.getLongTime(submitTime);
+                            if(time<apptime){
+                                flag=true;
+                                break;
+                            }
+                        }
+                    }
+                    if(flag==false){
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+        }
+        if(StringUtils.isNotNullOrEmpty(submitTime)){
+            for(JobApplicationRecord record:applist){
+                if(StringUtils.isNotNullOrEmpty(submitTime)){
+                    long apptime=record.getSubmitTime().getTime();
+                    long time=this.getLongTime(submitTime);
+                    if(time<apptime){
+                        return true;
+                    }
+                }
+            }
+        }
+        return true;
+
+
+    }
+    private boolean validateEqual(String[] array,int origin){
+        if(array==null||array.length==0){
+            return false;
+        }
+        for(String item:array){
+            if(StringUtils.isNotNullOrEmpty(item)){
+                if(Integer.parseInt(item)==origin){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /*
+     获取这个人在这家公司下的所有投递
+     */
+    private List<JobApplicationRecord> getJobApplicationByCompanyIdAndUserId(int companyId,int userId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("applier_id",userId).buildQuery();
+        List<JobApplicationRecord> list=jobApplicationDao.getRecords(query);
+        return list;
+    }
+    private List<JobApplicationRecord> getJobAppRecommendByCompanyIdAndUserId(int companyId,int userId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("applier_id",userId).and(new Condition("recommender_user_id",0,ValueOp.GT)).buildQuery();
+        List<JobApplicationRecord> list=jobApplicationDao.getRecords(query);
+        return list;
     }
 
     /*
@@ -664,6 +937,16 @@ public class TalentPoolService {
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
+        int validateFlag=validateCompany(companyId);
+        if(validateFlag==-1){
+            return ResponseUtils.fail(1,"该公司不存在");
+        }
+        if(validateFlag==-2){
+            return ResponseUtils.fail(1,"该公司不是付费公司无法使用该功能");
+        }
+        if(validateFlag==1){
+            return ResponseUtils.fail(1,"该公司是付费普通账号，无法使用公开功能");
+        }
         int validate=this.validatePublic(hrId,userIdList);
         if(validate==0){
             return ResponseUtils.fail(1,"无法满足操作条件");
@@ -688,7 +971,22 @@ public class TalentPoolService {
         return ResponseUtils.success(result);
     }
 
-
+    private int validateCompany(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+        HrCompanyRecord record=hrCompanyDao.getRecord(query);
+        if(record==null){
+           return -1;
+        }
+        if(record.getType()!=1){
+            return -2;
+        }
+        Query query1=new Query.QueryBuilder().where("company_id",companyId).and("disable",1).and("activation",1).and("account_type",2).buildQuery();
+        int count=userHrAccountDao.getCount(query1);
+        if(count==0){
+            return 0;
+        }
+        return 1;
+    }
     /*
      批量取消公开
      @auth:zzt
@@ -704,6 +1002,16 @@ public class TalentPoolService {
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
+        }
+        int validateFlag=validateCompany(companyId);
+        if(validateFlag==-1){
+            return ResponseUtils.fail(1,"该公司不存在");
+        }
+        if(validateFlag==-2){
+            return ResponseUtils.fail(1,"该公司不是付费公司无法使用该功能");
+        }
+        if(validateFlag==1){
+            return ResponseUtils.fail(1,"该公司是付费普通账号，无法使用公开功能");
         }
         boolean validate=this.validateCanclePublic(hrId,userIdList);
         if(!validate){

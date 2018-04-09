@@ -606,7 +606,7 @@ public class TalentpoolController {
     /*
        获取人才标签列表
     */
-    @RequestMapping(value = "/api/talentpool/talenttag", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/api/talentpool/talenttag", method = RequestMethod.GET)
     @ResponseBody
     public String getTalentTag(HttpServletRequest request) throws Exception {
         try {
