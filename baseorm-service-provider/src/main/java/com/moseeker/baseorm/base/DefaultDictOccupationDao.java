@@ -26,7 +26,7 @@ public abstract class DefaultDictOccupationDao<S, R extends UpdatableRecord<R>> 
 
     @Override
     protected Condition statusCondition() {
-        return new Condition(STATUS, 1);
+        return new Condition(fieldIgnoreCase(STATUS), 1);
     }
 
     @Override
