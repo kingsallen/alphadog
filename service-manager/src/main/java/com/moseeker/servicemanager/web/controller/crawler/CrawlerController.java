@@ -69,7 +69,7 @@ public class CrawlerController {
 			ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
 			// GET方法 通用参数解析并赋值
 			ValidateUtil vu = new ValidateUtil();
-			vu.addIntTypeValidate("导入方式", form.getType(), null, null, 1, 6);
+			vu.addIntTypeValidate("导入方式", form.getType(), null, null, 1, 7);
 			vu.addIntTypeValidate("用户编号", form.getUser_id(), null, null, 1, Integer.MAX_VALUE);
 			vu.addIntTypeValidate("项目编号", form.getAppid(), null, null, 0, 100);
 			if (form.getType() == 4) {
