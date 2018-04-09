@@ -364,7 +364,12 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
 
     @Override
     public Response updateCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id) throws BIZException, TException {
-        return null;
+        try{
+            return talentPoolService.updateCompanyTag(companyTagDO, hr_id);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     private Set<Integer> ConvertListToSet(List<Integer> list){
