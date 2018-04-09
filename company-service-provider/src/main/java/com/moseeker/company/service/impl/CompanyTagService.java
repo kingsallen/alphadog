@@ -41,53 +41,62 @@ public class CompanyTagService {
       type=1 修改标签
       type=2 删除标签
      */
-    public void handlerCompanyTag(int tagId, int type) throws TException {
-        //新增标签，不用调用删除原有表中的标签和人才的对应关系，只需要增加就可以
-        Map<String,Object> map=talentpoolCompanyTagDao.getTagById(tagId);
-        Map<String,String> params=new HashMap<>();
-        if(map!=null&&!map.isEmpty()){
-            for(String key:map.keySet()){
-                params.put(key,String.valueOf(map.get(key)));
-            }
-            List<Integer> userIdList=service.queryCompanyTagUserIdList(params);
-            if(type==0){
-                if(!StringUtils.isEmptyList(userIdList)) {
-                    List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
-                    for (Integer userId : userIdList) {
-                        TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
-                        record.setTagId(tagId);
-                        record.setUserId(userId);
-                        list.add(record);
-                    }
-                    talentpoolCompanyTagUserDao.batchAddTagAndUser(list);
+    public void handlerCompanyTag(List<Integer> tagIdList, int type) throws TException {
+        if(type==2){//删除标签只需要执行删除操作即可
+            talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
+        }else{
+            //新增标签，不用调用删除原有表中的标签和人才的对应关系，只需要增加就可以
+            Map<String,Object> map=talentpoolCompanyTagDao.getTagById(tagIdList.get(0));
+            Map<String,String> params=new HashMap<>();
+            if(map!=null&&!map.isEmpty()){
+                for(String key:map.keySet()){
+                    params.put(key,String.valueOf(map.get(key)));
                 }
-
-            }else if(type==1){//修改标签需要把表中原有的数据全部删除，
-                talentpoolCompanyTagUserDao.deleteByTag(tagId);
-                if(!StringUtils.isEmptyList(userIdList)){
-                    List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
-                    for (Integer userId : userIdList) {
-                        TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
-                        record.setTagId(tagId);
-                        record.setUserId(userId);
-                        list.add(record);
+                List<Integer> userIdList=service.queryCompanyTagUserIdList(params);
+                if(type==0){
+                    if(!StringUtils.isEmptyList(userIdList)) {
+                        List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
+                        for (Integer userId : userIdList) {
+                            TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
+                            record.setTagId(tagIdList.get(0));
+                            record.setUserId(userId);
+                            list.add(record);
+                        }
+                        talentpoolCompanyTagUserDao.batchAddTagAndUser(list);
                     }
-                    talentpoolCompanyTagUserDao.batchAddTagAndUser(list);
-                }
 
-            }else if(type==2){//删除标签只需要执行删除操作即可
-                talentpoolCompanyTagUserDao.deleteByTag(tagId);
-            }
-            //更新es中tag_id和人才的关系
-            Map<String,Integer> result=new HashMap<>();
-            result.put("tagId",tagId);
-            result.put("type",type);
-            client.lpush(Constant.APPID_ALPHADOG,
-                    "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
-            //将这个的tag置位更新状态0是更新 1是更新完成
-            client.set(Constant.APPID_ALPHADOG, COMPANYTAG_ES_STATUS,
-                    String.valueOf(tagId), String.valueOf(0));
+                }else if(type==1){//修改标签需要把表中原有的数据全部删除，
+                    talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
+                    if(!StringUtils.isEmptyList(userIdList)){
+                        List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
+                        for (Integer userId : userIdList) {
+                            TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
+                            record.setTagId(tagIdList.get(0));
+                            record.setUserId(userId);
+                            list.add(record);
+                        }
+                        talentpoolCompanyTagUserDao.batchAddTagAndUser(list);
+                    }
+
+                }
         }
+
+        //更新es中tag_id和人才的关系
+        if(!StringUtils.isEmptyList(tagIdList)){
+            for(Integer tagId:tagIdList){
+                Map<String,Object> result=new HashMap<>();
+                result.put("tagId",tagId);
+                result.put("type",type);
+                client.lpush(Constant.APPID_ALPHADOG,
+                        "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
+                //将这个的tag置位更新状态0是更新 1是更新完成
+                client.set(Constant.APPID_ALPHADOG, COMPANYTAG_ES_STATUS,
+                        String.valueOf(tagId), String.valueOf(0));
+            }
+
+        }
+        }
+
 
     }
 

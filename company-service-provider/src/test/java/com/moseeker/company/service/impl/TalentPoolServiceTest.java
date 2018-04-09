@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class TalentPoolServiceTest {
     @Autowired
     private TalentPoolService talentPoolService;
+    @Autowired
+    private CompanyTagService companyTagService;
 
     @Test
     public void testBatchAddTalent() throws TException {
@@ -272,6 +274,12 @@ public class TalentPoolServiceTest {
         System.out.println(res+"");
     }
 
+    @Test
+    public void testUpdateEs() throws TException {
+        int tagId=1;
+        int type=0;
+        companyTagService.handlerCompanyTag(tagId,type);
+    }
 
 
 }

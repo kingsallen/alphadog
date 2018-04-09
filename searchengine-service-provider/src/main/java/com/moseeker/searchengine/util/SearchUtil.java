@@ -507,6 +507,18 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
     }
+    public void shouldMatchParseQuery(Map<String, Object> map, QueryBuilder query){
+        if (map != null && !map.isEmpty()) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String key : map.keySet()) {
+                String list=(String)map.get(key);
+                QueryBuilder fullf = QueryBuilders.matchPhraseQuery(key, list);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
     //将xx,xx,xx格式的字符串转化为list
     public List<String> stringConvertList(String keyWords) {
         if (StringUtils.isNotEmpty(keyWords)) {

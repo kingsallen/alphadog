@@ -45,7 +45,7 @@ public class TalentpoolCompanyTagDao extends JooqCrudImpl<com.moseeker.baseorm.d
          */
     public Map<String,Object> getTagById(int tagId){
         Map<String,Object> result= create.selectFrom(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG)
-                .where(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.eq(tagId)).fetchOneInto(Map.class);
+                .where(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.eq(tagId)).fetchAnyMap();
         return result;
     }
 }

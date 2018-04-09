@@ -111,6 +111,9 @@ public class TalentpoolSearchengine {
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
             String[] returnParams={"user.profiles.profile.user_id"};
             builder.setFetchSource(returnParams,null);
+            logger.info("============================================");
+            logger.info(builder.toString());
+            logger.info("============================================");
             SearchResponse response = builder.execute().actionGet();
             Map<String,Object> result = searchUtil.handleData(response,"userIdList");
             if(result!=null&&!result.isEmpty()){
@@ -172,9 +175,9 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(pastPosition)){
             String lastPosition=params.get("in_last_job_search_position");
             if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
-                this.queryByLastPositions(lastPosition,query);
+                this.queryParseByLastPositions(lastPosition,query);
             }else{
-                this.queryByWorkJob(pastPosition,query);
+                this.queryParseByWorkJob(pastPosition,query);
             }
         }
         if(((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge)))){
@@ -204,9 +207,9 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(companyName)){
             String lastCompany=params.get("in_last_job_search_company");
             if(StringUtils.isNotNullOrEmpty(lastCompany)&&"1".equals(lastCompany)){
-                this.queryByLastCompany(companyName,query);
+                this.queryParseByLastCompany(companyName,query);
             }else {
-                this.queryByCompany(companyName, query);
+                this.queryParseByCompany(companyName, query);
             }
         }
         if(StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||StringUtils.isNotNullOrEmpty(isRecommend)){
@@ -850,11 +853,17 @@ public class TalentpoolSearchengine {
     private void queryByLastCompany(String companys,QueryBuilder queryBuilder){
         searchUtil.handleMatch(companys,queryBuilder,"user.profiles.recent_job.company_name");
     }
+    private void queryParseByLastCompany(String companys,QueryBuilder queryBuilder){
+        searchUtil.handleMatchParse(companys,queryBuilder,"user.profiles.recent_job.company_name");
+    }
     /*
       按照最后工作的职位名称查询
      */
     private void queryByLastPositions(String positions,QueryBuilder queryBuilder){
         searchUtil.handleMatch(positions,queryBuilder,"user.profiles.recent_job.job");
+    }
+    private void queryParseByLastPositions(String positions,QueryBuilder queryBuilder){
+        searchUtil.handleMatchParse(positions,queryBuilder,"user.profiles.recent_job.job");
     }
     /*
       按照现居住地查询
@@ -885,6 +894,12 @@ public class TalentpoolSearchengine {
         queryMap.put("user.profiles.workexps.job",works);
         searchUtil.shouldMatchQuery(queryMap,queryBuilder);
     }
+    private void queryParseByWorkJob(String works,QueryBuilder queryBuilder){
+        Map<String,Object> queryMap=new HashMap<>();
+        queryMap.put("user.profiles.recent_job.job",works);
+        queryMap.put("user.profiles.workexps.job",works);
+        searchUtil.shouldMatchParseQuery(queryMap,queryBuilder);
+    }
     /*
      构建通过曾经工作的公司查询
      */
@@ -893,6 +908,12 @@ public class TalentpoolSearchengine {
         queryMap.put("user.profiles.recent_job.company_name",companys);
         queryMap.put("user.profiles.workexps.company_name",companys);
         searchUtil.shouldMatchQuery(queryMap,queryBuilder);
+    }
+    private void queryParseByCompany(String companys,QueryBuilder queryBuilder){
+        Map<String,Object> queryMap=new HashMap<>();
+        queryMap.put("user.profiles.recent_job.company_name",companys);
+        queryMap.put("user.profiles.workexps.company_name",companys);
+        searchUtil.shouldMatchParseQuery(queryMap,queryBuilder);
     }
     /*
       按照性别查询
