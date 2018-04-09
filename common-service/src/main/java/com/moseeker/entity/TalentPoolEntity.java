@@ -121,16 +121,16 @@ public class TalentPoolEntity {
         if(companyDO == null){
             return -1;
         }
-        HrCompanyConfDO companyConfDO = getCompanyConfDOByCompanyId(companyId);
-        if(companyConfDO == null){
-            return -2;
-        }
         List<Map<String,Object>> hrList=getCompanyHrList(companyId);
         Set<Integer> hrIdList=this.getIdListByUserHrAccountList(hrList);
         if(StringUtils.isEmptyList(hrList)){
-            return -3;
+            return -2;
         }
         if(!hrIdList.contains(hrId)){
+            return -2;
+        }
+        HrCompanyConfDO companyConfDO = getCompanyConfDOByCompanyId(companyId);
+        if(companyConfDO == null){
             return -3;
         }
         com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount account = userHrAccountDao.getHrAccount(hrId);
