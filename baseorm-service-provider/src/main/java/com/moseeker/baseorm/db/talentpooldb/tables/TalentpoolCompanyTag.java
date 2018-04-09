@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolCompanyTag extends TableImpl<TalentpoolCompanyTagRecord> {
 
-    private static final long serialVersionUID = -1966578942;
+    private static final long serialVersionUID = -1501151715;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_company_tag</code>
@@ -62,14 +62,14 @@ public class TalentpoolCompanyTag extends TableImpl<TalentpoolCompanyTagRecord> 
     public final TableField<TalentpoolCompanyTagRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司主键");
 
     /**
-     * The column <code>talentpooldb.talentpool_company_tag.name</code>. 标签颜色
+     * The column <code>talentpooldb.talentpool_company_tag.name</code>. 标签的名称
      */
-    public final TableField<TalentpoolCompanyTagRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "标签颜色");
+    public final TableField<TalentpoolCompanyTagRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "标签的名称");
 
     /**
-     * The column <code>talentpooldb.talentpool_company_tag.color</code>. 过滤项的名称
+     * The column <code>talentpooldb.talentpool_company_tag.color</code>. 标签颜色
      */
-    public final TableField<TalentpoolCompanyTagRecord, String> COLOR = createField("color", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "过滤项的名称");
+    public final TableField<TalentpoolCompanyTagRecord, String> COLOR = createField("color", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "标签颜色");
 
     /**
      * The column <code>talentpooldb.talentpool_company_tag.origins</code>. 来源
@@ -90,6 +90,11 @@ public class TalentpoolCompanyTag extends TableImpl<TalentpoolCompanyTagRecord> 
      * The column <code>talentpooldb.talentpool_company_tag.city_name</code>. 现居住地
      */
     public final TableField<TalentpoolCompanyTagRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "现居住地");
+
+    /**
+     * The column <code>talentpooldb.talentpool_company_tag.city_code</code>. 城市的code
+     */
+    public final TableField<TalentpoolCompanyTagRecord, String> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "城市的code");
 
     /**
      * The column <code>talentpooldb.talentpool_company_tag.degree</code>. 学历 传code
@@ -120,6 +125,11 @@ public class TalentpoolCompanyTag extends TableImpl<TalentpoolCompanyTagRecord> 
      * The column <code>talentpooldb.talentpool_company_tag.intention_city_name</code>. 期待工作地
      */
     public final TableField<TalentpoolCompanyTagRecord, String> INTENTION_CITY_NAME = createField("intention_city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "期待工作地");
+
+    /**
+     * The column <code>talentpooldb.talentpool_company_tag.intention_city_code</code>. 期望城市的code
+     */
+    public final TableField<TalentpoolCompanyTagRecord, String> INTENTION_CITY_CODE = createField("intention_city_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "期望城市的code");
 
     /**
      * The column <code>talentpooldb.talentpool_company_tag.intention_salary_code</code>. 期待薪资

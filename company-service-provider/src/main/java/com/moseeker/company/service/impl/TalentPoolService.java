@@ -856,7 +856,7 @@ public class TalentPoolService {
                         String name=(String)map1.get("name");
                         if(id==tagId){
                             map.put("name",name);
-                            map.put("color",map1.get("color"));
+                            map.put("Talent",map1.get("color"));
                         }
                     }
                     tagList.add(map);

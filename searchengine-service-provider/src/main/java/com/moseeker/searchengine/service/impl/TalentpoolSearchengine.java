@@ -103,7 +103,7 @@ public class TalentpoolSearchengine {
      根据企业标签的规则获取符合该规则的人才id
      */
     @CounterIface
-    public List<Integer> getUserListByCompanyTagId(Map<String,String> params){
+    public List<Integer> getUserListByCompanyTag(Map<String,String> params){
         List<Integer> list=new ArrayList<>();
         try{
             TransportClient client=searchUtil.getEsClient();
@@ -131,14 +131,16 @@ public class TalentpoolSearchengine {
                     }
                 }
             }
-
         }catch(Exception e){
             logger.info(e.getMessage()+"=================");
         }
         return list;
     }
-    public QueryBuilder getQueryByTag(Map<String,String> params){
-        int companyId=Integer.parseInt(params.get("companyId"));
+    /*
+      组装查询标签内容的部分，用于查处es中哪些标签是企业标签
+     */
+    private QueryBuilder getQueryByTag(Map<String,String> params){
+        int companyId=Integer.parseInt(params.get("company_id"));
         String origins=params.get("origins");
         String workYears=params.get("work_years");
         String submitTime=params.get("submit_time");

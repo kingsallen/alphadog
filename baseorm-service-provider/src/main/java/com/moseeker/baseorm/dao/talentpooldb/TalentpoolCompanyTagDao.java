@@ -2,8 +2,11 @@ package com.moseeker.baseorm.dao.talentpooldb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagRecord;
 import java.util.List;
+import java.util.Map;
+
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +40,12 @@ public class TalentpoolCompanyTagDao extends JooqCrudImpl<com.moseeker.baseorm.d
         return result;
     }
 
-
+    /*
+         获取单个标签的map
+         */
+    public Map<String,Object> getTagById(int tagId){
+        Map<String,Object> result= create.selectFrom(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG)
+                .where(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.eq(tagId)).fetchOneInto(Map.class);
+        return result;
+    }
 }

@@ -42,6 +42,26 @@ public class TalentpoolCompanyTagUserDao extends JooqCrudImpl<com.moseeker.baseo
             return null;
         }
     }
+    /*
+     根据tagId删除打标签的用户
+     */
+    public int deleteByTag(int companyTagId){
+        int result=create.deleteFrom(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER).where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID.eq(companyTagId)).execute();
+        return result;
+    }
+    /*
+    批量添加企业标签和人才关系表
+     */
+    public int batchAddTagAndUser(List<TalentpoolCompanyTagUserRecord> list){
+        create.execute("set names utf8mb4");
+        create.attach(list);
+        int[] result=create.batchInsert(list).execute();
+        if(result!=null&&result.length>0){
+            return 1;
+        }
+        return 0;
+    }
+
 
 
 }

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolCompanyTag implements Serializable {
 
-    private static final long serialVersionUID = -1939432423;
+    private static final long serialVersionUID = -92382487;
 
     private Integer   id;
     private Integer   companyId;
@@ -33,12 +33,14 @@ public class TalentpoolCompanyTag implements Serializable {
     private String    workYears;
     private String    submitTime;
     private String    cityName;
+    private String    cityCode;
     private String    degree;
     private String    pastPosition;
     private Integer   inLastJobSearchPosition;
     private Integer   minAge;
     private Integer   maxAge;
     private String    intentionCityName;
+    private String    intentionCityCode;
     private String    intentionSalaryCode;
     private Integer   sex;
     private Integer   isRecommend;
@@ -59,12 +61,14 @@ public class TalentpoolCompanyTag implements Serializable {
         this.workYears = value.workYears;
         this.submitTime = value.submitTime;
         this.cityName = value.cityName;
+        this.cityCode = value.cityCode;
         this.degree = value.degree;
         this.pastPosition = value.pastPosition;
         this.inLastJobSearchPosition = value.inLastJobSearchPosition;
         this.minAge = value.minAge;
         this.maxAge = value.maxAge;
         this.intentionCityName = value.intentionCityName;
+        this.intentionCityCode = value.intentionCityCode;
         this.intentionSalaryCode = value.intentionSalaryCode;
         this.sex = value.sex;
         this.isRecommend = value.isRecommend;
@@ -84,12 +88,14 @@ public class TalentpoolCompanyTag implements Serializable {
         String    workYears,
         String    submitTime,
         String    cityName,
+        String    cityCode,
         String    degree,
         String    pastPosition,
         Integer   inLastJobSearchPosition,
         Integer   minAge,
         Integer   maxAge,
         String    intentionCityName,
+        String    intentionCityCode,
         String    intentionSalaryCode,
         Integer   sex,
         Integer   isRecommend,
@@ -107,12 +113,14 @@ public class TalentpoolCompanyTag implements Serializable {
         this.workYears = workYears;
         this.submitTime = submitTime;
         this.cityName = cityName;
+        this.cityCode = cityCode;
         this.degree = degree;
         this.pastPosition = pastPosition;
         this.inLastJobSearchPosition = inLastJobSearchPosition;
         this.minAge = minAge;
         this.maxAge = maxAge;
         this.intentionCityName = intentionCityName;
+        this.intentionCityCode = intentionCityCode;
         this.intentionSalaryCode = intentionSalaryCode;
         this.sex = sex;
         this.isRecommend = isRecommend;
@@ -187,6 +195,14 @@ public class TalentpoolCompanyTag implements Serializable {
         this.cityName = cityName;
     }
 
+    public String getCityCode() {
+        return this.cityCode;
+    }
+
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode;
+    }
+
     public String getDegree() {
         return this.degree;
     }
@@ -233,6 +249,14 @@ public class TalentpoolCompanyTag implements Serializable {
 
     public void setIntentionCityName(String intentionCityName) {
         this.intentionCityName = intentionCityName;
+    }
+
+    public String getIntentionCityCode() {
+        return this.intentionCityCode;
+    }
+
+    public void setIntentionCityCode(String intentionCityCode) {
+        this.intentionCityCode = intentionCityCode;
     }
 
     public String getIntentionSalaryCode() {
@@ -311,12 +335,14 @@ public class TalentpoolCompanyTag implements Serializable {
         sb.append(", ").append(workYears);
         sb.append(", ").append(submitTime);
         sb.append(", ").append(cityName);
+        sb.append(", ").append(cityCode);
         sb.append(", ").append(degree);
         sb.append(", ").append(pastPosition);
         sb.append(", ").append(inLastJobSearchPosition);
         sb.append(", ").append(minAge);
         sb.append(", ").append(maxAge);
         sb.append(", ").append(intentionCityName);
+        sb.append(", ").append(intentionCityCode);
         sb.append(", ").append(intentionSalaryCode);
         sb.append(", ").append(sex);
         sb.append(", ").append(isRecommend);

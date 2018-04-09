@@ -115,6 +115,13 @@ public class TalentpoolCompanyTagDao extends DAOImpl<TalentpoolCompanyTagRecord,
     }
 
     /**
+     * Fetch records that have <code>city_code IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> fetchByCityCode(String... values) {
+        return fetch(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.CITY_CODE, values);
+    }
+
+    /**
      * Fetch records that have <code>degree IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> fetchByDegree(String... values) {
@@ -154,6 +161,13 @@ public class TalentpoolCompanyTagDao extends DAOImpl<TalentpoolCompanyTagRecord,
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> fetchByIntentionCityName(String... values) {
         return fetch(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.INTENTION_CITY_NAME, values);
+    }
+
+    /**
+     * Fetch records that have <code>intention_city_code IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> fetchByIntentionCityCode(String... values) {
+        return fetch(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.INTENTION_CITY_CODE, values);
     }
 
     /**
