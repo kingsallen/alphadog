@@ -27,11 +27,6 @@ public class CarnocOccupationResultHandler extends DefaultOccupationResultHandle
     }
 
     @Override
-    protected String occupationKey() {
-        return "functions";
-    }
-
-    @Override
     protected Class<DictCarnocOccupationDO> getOccupationClass() {
         return DictCarnocOccupationDO.class;
     }
@@ -48,6 +43,11 @@ public class CarnocOccupationResultHandler extends DefaultOccupationResultHandle
         @Override
         public List<Occupation> toList(JSONObject msg) {
             return super.toList(msg);
+        }
+
+        @Override
+        protected String occupationKey() {
+            return "functions";
         }
     }
 }
