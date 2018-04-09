@@ -110,9 +110,7 @@ public class ResumeDeliveryService {
 
         logger.info("sendMessageAndEmail messageEmailStruct :{}", messageEmailStruct);
 
-
-
-        if(messageEmailStruct != null && messageEmailStruct.getPosition_id() >0 && messageEmailStruct.getApplier_id()>0){
+        if(messageEmailStruct != null && messageEmailStruct.getPosition_id() >0 && messageEmailStruct.getApplier_id()>0 && messageEmailStruct.getOrigin() != 128){
             if(messageEmailStruct.getApply_type() == 1 && messageEmailStruct.getEmail_status() != 0){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             }
