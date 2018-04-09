@@ -91,4 +91,7 @@ public abstract class AbstractDictOccupationDao<S,R extends UpdatableRecord<R>> 
     //第三方职位职能code的参数名称
     protected abstract String otherCodeName();
 
+    //删除所有
+    public abstract int deleteAll();
+
 }

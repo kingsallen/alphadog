@@ -111,18 +111,18 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
     }
 
     protected void setOccupation(ThirdPartyPosition positionForm, Position51 position) {
-        List<String> list=new ArrayList<>();
+        List<String> list = new ArrayList<>();
 
-        Query query=new Query.QueryBuilder().
-                where(new Condition("code_other",positionForm.getOccupation(), ValueOp.IN))
-                .and(new Condition("code_other",0,ValueOp.NEQ)).buildQuery();
+        Query query = new Query.QueryBuilder().
+                where(new Condition("code_other", positionForm.getOccupation(), ValueOp.IN))
+                .and(new Condition("code_other", 0, ValueOp.NEQ)).buildQuery();
 
-        List<Dict51jobOccupationDO> occupations=dict51OccupationDao.getDatas(query);
+        List<Dict51jobOccupationDO> occupations = dict51OccupationDao.getDatas(query);
 
         if (positionForm.getOccupation() != null) {
-            for(String id:positionForm.getOccupation()){
-                for(Dict51jobOccupationDO occupation:occupations){
-                    if(id.equals(occupation.getCodeOther()+"")){
+            for (String id : positionForm.getOccupation()) {
+                for (Dict51jobOccupationDO occupation : occupations) {
+                    if (id.equals(occupation.getCodeOther() + "")) {
                         list.add(occupation.getName());
                     }
                 }
