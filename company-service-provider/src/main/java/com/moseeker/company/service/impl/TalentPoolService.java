@@ -20,6 +20,7 @@ import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.company.bean.TalentTagPOJO;
@@ -55,8 +56,9 @@ public class TalentPoolService {
     public TalentPoolService(){
         serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
     }
-
-
+    private ThreadPool tp = ThreadPool.Instance;
+    @Autowired
+    CompanyTagService tagService;
     @Autowired
     private TalentpoolHrTalentDao talentpoolHrTalentDao;
     @Autowired
@@ -976,7 +978,7 @@ public class TalentPoolService {
      * @param company_tag_ids
      * @return
      */
-    @Transactional
+
     public Response deleteCompanyTags(int hrId, int companyId, List<Integer> company_tag_ids){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
         if(flag == -1){
@@ -989,6 +991,10 @@ public class TalentPoolService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
         int result = talentPoolEntity.deleteCompanyTags(companyId, company_tag_ids);
+        tp.startTast(() -> {
+            tagService.handlerCompanyTag(company_tag_ids, 2);
+            return 0;
+        });
         return ResponseUtils.success("");
     }
 
@@ -1020,7 +1026,7 @@ public class TalentPoolService {
 
 
 
-    @Transactional
+
     public Response addCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
         if(flag == -1){
@@ -1037,8 +1043,13 @@ public class TalentPoolService {
             boolean bool = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
             if(bool){
                 int id = talentPoolEntity.addCompanyTag(companyTagDO);
+                List<Integer> idList = new ArrayList<>();
+                idList.add(id);
                 //ES更新
-
+                tp.startTast(() -> {
+                    tagService.handlerCompanyTag(idList,0);
+                    return 0;
+                });
             }else{
                 return ResponseUtils.fail(1, "标签规则全为默认值");
             }
@@ -1046,7 +1057,7 @@ public class TalentPoolService {
         return ResponseUtils.fail(1, result);
     }
 
-    @Transactional
+
     public Response updateCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
         if(flag == -1){
@@ -1063,8 +1074,13 @@ public class TalentPoolService {
             boolean bool = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
             if(bool){
                 int id = talentPoolEntity.updateCompanyTag(companyTagDO);
+                List<Integer> idList = new ArrayList<>();
+                idList.add(id);
                 //ES更新
-
+                tp.startTast(() -> {
+                    tagService.handlerCompanyTag(idList,1);
+                    return 0;
+                });
             }else{
                 return ResponseUtils.fail(1, "标签规则全为默认值");
             }

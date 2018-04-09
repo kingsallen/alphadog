@@ -194,6 +194,7 @@ public class TalentPoolEntity {
      * @param companyTags   企业标签编号
      * @return 0 执行成功  3 数据有误(根据公司编号和标签编号没有查到足量的数据)
      */
+    @Transactional
     public int deleteCompanyTags(int companyId, List<Integer> companyTags){
         List<TalentpoolCompanyTagRecord> tagRecordList = getTalentpoolCompanyTagRecordByTagIds(companyId, companyTags);
         if(tagRecordList == null || tagRecordList.size()==0 || tagRecordList.size() != companyTags.size()){
@@ -230,6 +231,7 @@ public class TalentPoolEntity {
      * @param companyTagDO
      * @return
      */
+    @Transactional
     public int addCompanyTag(TalentpoolCompanyTagDO companyTagDO){
         TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecord(companyTagDO);
         talentpoolCompanyTagDao.addRecord(tagRecord);
@@ -241,6 +243,7 @@ public class TalentPoolEntity {
      * @param companyTagDO
      * @return
      */
+    @Transactional
     public int updateCompanyTag(TalentpoolCompanyTagDO companyTagDO){
         TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecord(companyTagDO);
         talentpoolCompanyTagDao.updateRecord(tagRecord);
