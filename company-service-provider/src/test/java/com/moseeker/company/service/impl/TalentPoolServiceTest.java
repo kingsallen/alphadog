@@ -256,8 +256,8 @@ public class TalentPoolServiceTest {
         int companyId=39978;
         List<Integer> companyTagIds = new ArrayList<>();
         companyTagIds.add(2);
-        int res=talentPoolService.deleteCompanyTags(hrId,companyId,companyTagIds);
-        System.out.println(res+"");
+        Response res=talentPoolService.deleteCompanyTags(hrId,companyId,companyTagIds);
+        System.out.println(res);
     }
 
     @Test
