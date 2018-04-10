@@ -221,9 +221,12 @@ public class TalentPoolEntity {
 
         List<Map<String, Object>> tagRecordList = getCompanyTagByTagIdAndCompanyId(companyId, company_tag_id);
         if(tagRecordList == null || tagRecordList.size()==0 ){
-            return new HashMap<>();
+            return null;
         }
-        return tagRecordList.get(0);
+        Map<String, Object> params = new HashMap<>();
+        params.put("company_tag", tagRecordList.get(0));
+        params.put("expire_time","2h");
+        return params;
     }
 
     /**
