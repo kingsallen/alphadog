@@ -91,7 +91,7 @@ public class CompanyTagService {
         if(!StringUtils.isEmptyList(tagIdList)){
             for(Integer tagId:tagIdList){
                 Map<String,Object> result=new HashMap<>();
-                result.put("tagId",tagId);
+                result.put("tag_id",tagId);
                 result.put("type",type);
                 client.lpush(Constant.APPID_ALPHADOG,
                         "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
@@ -102,7 +102,6 @@ public class CompanyTagService {
 
         }
         }
-
 
     }
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws TException {
@@ -127,7 +126,12 @@ public class CompanyTagService {
         }
         if(!StringUtils.isEmptyList(list)){
             talentpoolCompanyTagUserDao.addAllRecord(list);
-
+            for(Integer userId:idList){
+                Map<String,Object> result=new HashMap<>();
+                result.put("user_id",userId);
+                client.lpush(Constant.APPID_ALPHADOG,
+                        "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
+            }
         }
     }
 

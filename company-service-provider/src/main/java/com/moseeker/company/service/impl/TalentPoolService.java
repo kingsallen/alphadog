@@ -40,6 +40,8 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import java.util.*;
+
+import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +98,7 @@ public class TalentPoolService {
     private TalentpoolCompanyTagDao talentpoolCompanyTagDao;
     @Autowired
     private HrCompanyDao hrCompanyDao;
+    SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
 
     /*
@@ -992,6 +995,14 @@ public class TalentPoolService {
         String result=JSON.toJSONString(tagListInfo,serializeConfig);
         return ResponseUtils.successWithoutStringify(result);
     }
+    private Map<String, Object> getTagtalentNum(int hrId,int companyId,int tagId){
+        Map<String,String> params=new HashMap<>();
+        params.put("","");
+        params.put("","");
+        params.put("","");
+        params.put("","");
+        return null;
+    }
 
     /**
      * 获取分页数据
@@ -1071,6 +1082,7 @@ public class TalentPoolService {
         params.put("data", companyTag);
         return params;
     }
+
 
 
 
