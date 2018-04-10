@@ -992,8 +992,8 @@ public class TalentPoolService {
 
             if(!StringUtils.isEmptyList(tagProfileList)){
                 for(Map<String, Object> map:tagProfileList){
-                    Map<String,Object> companyTag= (Map<String, Object>) map.get("company_tag");
-                    int id=(int)companyTag.get("id");
+                    TalentpoolCompanyTag companyTag= (TalentpoolCompanyTag) map.get("company_tag");
+                    int id=companyTag.getId();
                     //获取企业标签下人数
                     int totalNum=tagService.getTagtalentNum(hrId,companyId,id);
                     map.put("person_num",totalNum);
@@ -1090,19 +1090,17 @@ public class TalentPoolService {
             return  params;
         }
         Map<String, Object> companyTag = talentPoolEntity.getCompanyTagInfo(companyId, company_tag_id);
-        Map<String,Object> result=new HashMap<>();
         if(companyTag!=null&&!companyTag.isEmpty()){
-            result.put("company_tag",companyTag);
             boolean  isEXecute=tagService.getCompanyTagIsExecute(company_tag_id);
-            result.put("is_execute",isEXecute);
+            companyTag.put("is_execute",isEXecute);
+            companyTag.put("expire_time",2);
             if(isEXecute){
                 //此处预估时间统一2h
-                result.put("expire_time",2);
+                companyTag.put("expire_time",2);
             }
-
         }
         params.put("responseStatus", 0);
-        params.put("data", result);
+        params.put("data", companyTag);
         return params;
     }
 
@@ -1123,8 +1121,8 @@ public class TalentPoolService {
         }
         String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
         if("OK".equals(result)){
-            boolean bool = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
-            if(bool){
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+            if(StringUtils.isNullOrEmpty(filterString)){
                 int id = talentPoolEntity.addCompanyTag(companyTagDO);
                 List<Integer> idList = new ArrayList<>();
                 idList.add(id);
@@ -1133,8 +1131,9 @@ public class TalentPoolService {
                     tagService.handlerCompanyTag(idList,0);
                     return 0;
                 });
+                return  ResponseUtils.success("");
             }else{
-                return ResponseUtils.fail(1, "标签规则全为默认值");
+                return ResponseUtils.fail(1, filterString);
             }
         }
         return ResponseUtils.fail(1, result);
@@ -1154,9 +1153,10 @@ public class TalentPoolService {
         }
         String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
         if("OK".equals(result)){
-            boolean bool = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
-            boolean statusBool = talentPoolEntity.validateCompanyTalentPoolV3ByStatus(companyTagDO);
-            if(bool && statusBool){
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+            String statusString = talentPoolEntity.validateCompanyTalentPoolV3ByStatus(companyTagDO);
+            statusString = statusString + filterString;
+            if(StringUtils.isNullOrEmpty(statusString)){
                 int id = talentPoolEntity.updateCompanyTag(companyTagDO);
                 List<Integer> idList = new ArrayList<>();
                 idList.add(id);
@@ -1165,8 +1165,9 @@ public class TalentPoolService {
                     tagService.handlerCompanyTag(idList,1);
                     return 0;
                 });
+                return  ResponseUtils.success("");
             }else{
-                return ResponseUtils.fail(1, "标签规则全为默认值");
+                return ResponseUtils.fail(1, statusString);
             }
         }
         return ResponseUtils.fail(1, result);

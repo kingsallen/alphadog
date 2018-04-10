@@ -177,30 +177,30 @@ public class TalentPoolEntity {
      * @param companyTagDO
      * @return
      */
-    public boolean validateCompanyTalentPoolV3ByFilter(TalentpoolCompanyTagDO companyTagDO){
+    public String validateCompanyTalentPoolV3ByFilter(TalentpoolCompanyTagDO companyTagDO){
 
         if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins()) || StringUtils.isNotNullOrEmpty(companyTagDO.getWork_years())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getDegree())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position()) || companyTagDO.getMin_age() > 0 || companyTagDO.getMax_age()>0
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_city_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_salary_code())
                 || companyTagDO.getSex() !=2 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1){
-            return true;
+            return "";
         }
-        return false;
+        return "标签规则全为默认值;";
     }
 
     /**
-     * 验证标签规则不能全为默认值
+     * 查询标签为有效状态
      * @param companyTagDO
      * @return
      */
-    public boolean validateCompanyTalentPoolV3ByStatus(TalentpoolCompanyTagDO companyTagDO){
+    public String validateCompanyTalentPoolV3ByStatus(TalentpoolCompanyTagDO companyTagDO){
         Query query = new Query.QueryBuilder().where("id", companyTagDO.getId()).and("disable", 1).buildQuery();
         List<TalentpoolCompanyTag> companyTag = talentpoolCompanyTagDao.getDatas(query);
         if(companyTag!=null && companyTag.size()==1){
-            return true;
+            return "";
         }
-        return false;
+        return "没有找到要修改的标签;";
     }
 
     /**
@@ -240,7 +240,6 @@ public class TalentPoolEntity {
         }
         Map<String, Object> params = new HashMap<>();
         params.put("company_tag", tagRecordList.get(0));
-        params.put("expire_time","2h");
         return params;
     }
 
@@ -483,7 +482,8 @@ public class TalentPoolEntity {
     通过CompanyId获取企业标签
     */
     public int handlerCompanyTagCountBycompanyId(int companyId){
-        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(),companyId).buildQuery();
+        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(),companyId)
+                .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.DISABLE.getName(),1).buildQuery();
         int count = talentpoolCompanyTagDao.getCount(query);
         return count;
     }
@@ -508,7 +508,7 @@ public class TalentPoolEntity {
 //                    }
 //                }
 //            }
-//            companyTagMapList.add(tagMap);
+            companyTagMapList.add(tagMap);
         }
         return companyTagMapList;
     }
