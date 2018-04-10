@@ -160,7 +160,7 @@ public class TalentpoolSearchengine {
                                     Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
                                     logger.info("============================================profile");
                                     if(profile!=null&&!profile.isEmpty()){
-                                        int userId=(int)profile.get("user_id");
+                                        int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
                                         logger.info("============================================user_id"+userId);
                                         list.add(userId);
                                     }
