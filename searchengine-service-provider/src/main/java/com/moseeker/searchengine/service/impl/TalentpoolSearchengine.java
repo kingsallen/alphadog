@@ -305,6 +305,7 @@ public class TalentpoolSearchengine {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         this.queryByNestCompanyId(companyId,query);
+        query=QueryBuilders.nestedQuery("user.talent_pool",query);
         return query;
     }
 
