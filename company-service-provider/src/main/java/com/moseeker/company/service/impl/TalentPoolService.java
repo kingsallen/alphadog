@@ -1133,6 +1133,7 @@ public class TalentPoolService {
                     tagService.handlerCompanyTag(idList,0);
                     return 0;
                 });
+                return  ResponseUtils.success("");
             }else{
                 return ResponseUtils.fail(1, filterString);
             }
@@ -1166,6 +1167,7 @@ public class TalentPoolService {
                     tagService.handlerCompanyTag(idList,1);
                     return 0;
                 });
+                return  ResponseUtils.success("");
             }else{
                 return ResponseUtils.fail(1, statusString);
             }
