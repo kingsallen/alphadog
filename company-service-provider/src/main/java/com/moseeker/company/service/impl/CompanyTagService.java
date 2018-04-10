@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -53,6 +54,7 @@ public class CompanyTagService {
       type=1 修改标签
       type=2 删除标签
      */
+    @CounterIface
     public void handlerCompanyTag(List<Integer> tagIdList, int type) throws TException {
         if(type==2){//删除标签只需要执行删除操作即可
             talentpoolCompanyTagUserDao.deleteByTag(tagIdList);

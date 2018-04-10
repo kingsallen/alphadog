@@ -1,5 +1,6 @@
 package com.moseeker.searchengine.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -161,6 +162,9 @@ public class TalentpoolSearchengine {
         }catch(Exception e){
             logger.info(e.getMessage()+"=================");
         }
+        logger.info("==========================");
+        logger.info(JSON.toJSONString(list));
+        logger.info("==========================");
         return list;
     }
     /*
