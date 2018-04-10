@@ -713,7 +713,7 @@ public class CompanyService {
     @CounterIface
     public int getTalentPoolSwitch(int hrId,int companyId){
         HrCompanyRecord companyRecord=this.getCompanyById(companyId);
-        if(companyRecord.getType()!=1){
+        if(companyRecord.getType()!=0){
             return -3;
         }
         int count=this.validateHrAndCompany(hrId,companyId);

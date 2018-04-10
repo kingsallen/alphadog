@@ -191,5 +191,16 @@ public class SearchengineServiceImpl implements Iface {
 		return new ArrayList<>();
 	}
 
+	@Override
+	public int talentSearchNum(Map<String, String> params) throws TException {
+		try{
+			int res=talentpoolSearchengine.talentSearchNum(params);
+			return res;
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+		}
+		return 0;
+	}
+
 
 }

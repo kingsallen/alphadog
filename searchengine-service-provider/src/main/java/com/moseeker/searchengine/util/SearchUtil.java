@@ -654,18 +654,21 @@ public class SearchUtil {
      */
     public void handlerCompanyTag(String CompanyTag,QueryBuilder builder){
         List<String> tagIdList=this.stringConvertList(CompanyTag);
+
         if(tagIdList != null && tagIdList.size() >0){
-            if(tagIdList.size()==1){
-                handleMatch(Integer.parseInt(tagIdList.get(0)),builder,"user.talent_pool.company_tags.id");
-            }else{
-                QueryBuilder keyand = QueryBuilders.boolQuery();
-                if(tagIdList.size()>0){
-                    QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.company_tags.id",tagIdList);
-                    ((BoolQueryBuilder) keyand).should(query2);
-                }
-                ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
-                ((BoolQueryBuilder) builder).must(keyand);
-            }
+            QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.company_tags.id",tagIdList);
+            ((BoolQueryBuilder) builder).must(query2);
+//            if(tagIdList.size()==1){
+//                handleMatch(Integer.parseInt(tagIdList.get(0)),builder,"user.talent_pool.company_tags.id");
+//            }else{
+//                QueryBuilder keyand = QueryBuilders.boolQuery();
+//                if(tagIdList.size()>0){
+//                    QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.company_tags.id",tagIdList);
+//                    ((BoolQueryBuilder) keyand).should(query2);
+//                }
+//                ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+//                ((BoolQueryBuilder) builder).must(keyand);
+//            }
         }
     }
 
