@@ -225,11 +225,4 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByTalentpoolStatus(Byte... values) {
         return fetch(HrCompanyConf.HR_COMPANY_CONF.TALENTPOOL_STATUS, values);
     }
-
-    /**
-     * Fetch records that have <code>email_balance IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByEmailBalance(Integer... values) {
-        return fetch(HrCompanyConf.HR_COMPANY_CONF.EMAIL_BALANCE, values);
-    }
 }

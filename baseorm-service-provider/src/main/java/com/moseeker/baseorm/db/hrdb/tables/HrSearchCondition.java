@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 795206714;
+    private static final long serialVersionUID = -1441208083;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
@@ -190,6 +190,16 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
      * The column <code>hrdb.hr_search_condition.favorite_hrs</code>.
      */
     public final TableField<HrSearchConditionRecord, String> FAVORITE_HRS = createField("favorite_hrs", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.city_code</code>.
+     */
+    public final TableField<HrSearchConditionRecord, String> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.intention_city_code</code>.
+     */
+    public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_CODE = createField("intention_city_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>hrdb.hr_search_condition</code> table reference
