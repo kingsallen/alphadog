@@ -13,19 +13,19 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
-import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.*;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.company.bean.TalentTagPOJO;
 import com.moseeker.company.bean.ValidateCommonBean;
 import com.moseeker.company.bean.ValidateTagBean;
@@ -38,20 +38,14 @@ import com.moseeker.entity.pojo.talentpool.PageInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
-
-import java.sql.Timestamp;
-import java.util.stream.Collectors;
-
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
+import java.util.*;
 import org.apache.thrift.TException;
-import org.omg.CORBA.INTERNAL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import javax.annotation.Resource;
-import java.util.*;
 
 /**
  * Created by zztaiwll on 17/12/4.
