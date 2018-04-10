@@ -480,16 +480,17 @@ public class TalentPoolEntity {
         for(TalentpoolCompanyTag companyTag : companyTagList){
             Map<String, Object> tagMap = new HashMap<>();
             tagMap.put("company_tag", companyTag);
-            tagMap.put("person_num", 0);
-            if(tagRecordList != null && tagRecordList.size() > 0) {
-                Set<Map.Entry<Integer, Integer>> entries = tagRecordList.entrySet();
-                for (Map.Entry<Integer, Integer> entry : entries) {
-                    if(entry.getKey().intValue() == companyTag.getId()){
-                        tagMap.put("person_num", entry.getValue());
-                    }
-                }
-            }
-            companyTagMapList.add(tagMap);
+
+//            tagMap.put("person_num", 0);
+//            if(tagRecordList != null && tagRecordList.size() > 0) {
+//                Set<Map.Entry<Integer, Integer>> entries = tagRecordList.entrySet();
+//                for (Map.Entry<Integer, Integer> entry : entries) {
+//                    if(entry.getKey().intValue() == companyTag.getId()){
+//                        tagMap.put("person_num", entry.getValue());
+//                    }
+//                }
+//            }
+//            companyTagMapList.add(tagMap);
         }
         return companyTagMapList;
     }
@@ -1819,5 +1820,20 @@ public class TalentPoolEntity {
                 .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.getName(), company_tag_id).buildQuery();
         List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);
         return list;
+    }
+
+    public String convertToString(Set<Integer> list){
+        if(StringUtils.isEmptySet(list)){
+            return "";
+        }
+        String result="";
+        for(Integer id:list){
+            result+=id+",";
+        }
+        if(StringUtils.isNotNullOrEmpty(result)){
+            result=result.substring(0,result.lastIndexOf(","));
+            return result;
+        }
+        return "";
     }
 }

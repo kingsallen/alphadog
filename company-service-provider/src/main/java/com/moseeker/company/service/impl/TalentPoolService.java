@@ -63,7 +63,7 @@ public class TalentPoolService {
     }
     private ThreadPool tp = ThreadPool.Instance;
     @Autowired
-    CompanyTagService tagService;
+    private CompanyTagService tagService;
     @Autowired
     private TalentpoolHrTalentDao talentpoolHrTalentDao;
     @Autowired
@@ -98,7 +98,7 @@ public class TalentPoolService {
     private TalentpoolCompanyTagDao talentpoolCompanyTagDao;
     @Autowired
     private HrCompanyDao hrCompanyDao;
-    SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
+
 
 
     /*
@@ -962,7 +962,7 @@ public class TalentPoolService {
     }
 
     @CounterIface
-    public Response getCompanyTagList(int hrId,int companyId, int page_number, int page_size){
+    public Response getCompanyTagList(int hrId,int companyId, int page_number, int page_size) throws TException {
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
         if(flag == -1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
@@ -989,6 +989,24 @@ public class TalentPoolService {
         int count = talentPoolEntity.handlerCompanyTagCountBycompanyId(companyId);
         if(tagList != null && tagList.size()>0){
             List<Map<String, Object>> tagProfileList = talentPoolEntity.handlerTagCountByTagIdList(tagList);
+
+            if(!StringUtils.isEmptyList(tagProfileList)){
+                for(Map<String, Object> map:tagProfileList){
+                    Map<String,Object> companyTag= (Map<String, Object>) map.get("company_tag");
+                    int id=(int)companyTag.get("id");
+                    //获取企业标签下人数
+                    int totalNum=tagService.getTagtalentNum(hrId,companyId,id);
+                    map.put("person_num",totalNum);
+                    //从redis获取正在执行
+                    boolean  isEXecute=tagService.getCompanyTagIsExecute(id);
+                    map.put("is_execute",isEXecute);
+                    if(isEXecute){
+                        //此处预估时间统一2h
+                        map.put("expire_time",2);
+                    }
+
+                }
+            }
             tagListInfo.put("tags", tagProfileList);
         }
         tagListInfo.put("total", count);
@@ -997,37 +1015,7 @@ public class TalentPoolService {
         String result=JSON.toJSONString(tagListInfo,serializeConfig);
         return ResponseUtils.successWithoutStringify(result);
     }
-    private Map<String, Object> getTagtalentNum(int hrId,int companyId,int tagId){
-        Map<String,String> params=new HashMap<>();
-        int count=talentPoolEntity.valiadteMainAccount(hrId,companyId);
-        if(count>0){
-            List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
-            Set<Integer> hrIdList=talentPoolEntity.getIdListByUserHrAccountList(hrList);
-            params.put("publisher","");
-        }else{
-            params.put("","");
-        }
 
-
-        params.put("","");
-        params.put("","");
-        params.put("","");
-        return null;
-    }
-    private String convertToString(Set<Integer> list){
-        if(StringUtils.isEmptySet(list)){
-            return "";
-        }
-        String result="";
-        for(Integer id:list){
-            result+=id+",";
-        }
-        if(StringUtils.isNotNullOrEmpty(result)){
-            result=result.substring(0,result.lastIndexOf(","));
-            return result;
-        }
-        return "";
-    }
     /**
      * 获取分页数据
      *
@@ -1102,8 +1090,19 @@ public class TalentPoolService {
             return  params;
         }
         Map<String, Object> companyTag = talentPoolEntity.getCompanyTagInfo(companyId, company_tag_id);
+        Map<String,Object> result=new HashMap<>();
+        if(companyTag!=null&&!companyTag.isEmpty()){
+            result.put("company_tag",companyTag);
+            boolean  isEXecute=tagService.getCompanyTagIsExecute(company_tag_id);
+            result.put("is_execute",isEXecute);
+            if(isEXecute){
+                //此处预估时间统一2h
+                result.put("expire_time",2);
+            }
+
+        }
         params.put("responseStatus", 0);
-        params.put("data", companyTag);
+        params.put("data", result);
         return params;
     }
 
