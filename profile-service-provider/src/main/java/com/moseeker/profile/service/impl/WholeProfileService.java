@@ -1264,6 +1264,8 @@ public class WholeProfileService {
                 map.put("company",company);
                 if(map.get("position_name")!=null){
                     map.put("job",map.get("position_name"));
+                } else {
+                    map.put("job",map.get("job"));
                 }
             }
         }
@@ -1340,7 +1342,7 @@ public class WholeProfileService {
             }else{
                 Map<String,Object> profileMap=new HashMap<>();
                 profileMap.put("user_id",newUserId);
-                profileMap.put("origin",0);
+                profileMap.put("origin","0");
                 resume.put("profile",profileMap);
             }
         }

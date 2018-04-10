@@ -10,6 +10,7 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
