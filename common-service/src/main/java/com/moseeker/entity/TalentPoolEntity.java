@@ -483,7 +483,8 @@ public class TalentPoolEntity {
     通过CompanyId获取企业标签
     */
     public int handlerCompanyTagCountBycompanyId(int companyId){
-        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(),companyId).buildQuery();
+        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(),companyId)
+                .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.DISABLE.getName(),1).buildQuery();
         int count = talentpoolCompanyTagDao.getCount(query);
         return count;
     }
