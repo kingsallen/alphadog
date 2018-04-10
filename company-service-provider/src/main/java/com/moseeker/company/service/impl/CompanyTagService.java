@@ -20,6 +20,8 @@ import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,7 @@ import java.util.*;
  */
 @Service
 public class CompanyTagService {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private TalentpoolCompanyTagUserDao talentpoolCompanyTagUserDao;
     @Autowired
@@ -62,6 +65,9 @@ public class CompanyTagService {
                     params.put(key,String.valueOf(map.get(key)));
                 }
                 List<Integer> userIdList=service.queryCompanyTagUserIdList(params);
+                logger.info("=========================");
+                logger.info(JSON.toJSONString(userIdList));
+                logger.info("=========================");
                 if(type==0){
                     if(!StringUtils.isEmptyList(userIdList)) {
                         List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
