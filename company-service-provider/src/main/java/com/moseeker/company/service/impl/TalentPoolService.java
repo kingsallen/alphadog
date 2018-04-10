@@ -880,9 +880,7 @@ public class TalentPoolService {
             Set<Integer> hrTagIdList=validateTalentTag.getIdByTagList(hrTagList);
             Set<Integer> tagIdList=validateTalentTag.getUserTagIdList(userId,hrTagIdList);
             List<Map<String,Object>> allTagList=this.getUserTagByUserIdAndTagIdMap(userId,hrTagIdList);
-            if(StringUtils.isEmptyList(allTagList)){
-                return ResponseUtils.success("");
-            }else{
+            if(!StringUtils.isEmptyList(allTagList)){
                 for(Map<String,Object> map:allTagList){
                     int tagId= (int) map.get("tag_id");
                     for(Map<String,Object> map1:hrTagList){
@@ -901,9 +899,7 @@ public class TalentPoolService {
         if(companyTagList!= null && companyTagList.size()>0){
             Set<Integer> companyTagIdList = validateTalentTag.getIdByTagList(companyTagList);
             List<Map<String,Object>> allCompanyTagList=this.getUserCompanyTagByUserIdAndTagIdMap(userId,companyTagIdList);
-            if(StringUtils.isEmptyList(allCompanyTagList)){
-                return ResponseUtils.success("");
-            }else{
+            if(!StringUtils.isEmptyList(allCompanyTagList)){
                 for(Map<String,Object> map:allCompanyTagList){
                     int tagId= (int) map.get("tag_id");
                     for(Map<String,Object> map1:companyTagList){
