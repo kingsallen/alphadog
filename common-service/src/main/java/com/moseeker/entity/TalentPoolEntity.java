@@ -1832,7 +1832,7 @@ public class TalentPoolEntity {
     public List<Map<String,Object>> getCompanyTagByTagIdAndCompanyId(int companyId, int company_tag_id){
         Query query=new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(), companyId)
                 .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.getName(), company_tag_id).buildQuery();
-        List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);
+        List<Map<String,Object>> list=talentpoolCompanyTagDao.getMaps(query);
         return list;
     }
 }

@@ -636,7 +636,7 @@ public class TalentpoolController {
             if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
-            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(companyId)){
                 return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
             if(StringUtils.isNullOrEmpty(company_tag_id)||"0".equals(company_tag_id)){
