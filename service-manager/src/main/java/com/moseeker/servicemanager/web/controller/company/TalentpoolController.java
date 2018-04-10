@@ -585,11 +585,12 @@ public class TalentpoolController {
             if(params.get("company_tags") ==null ){
                 return ResponseLogNotification.fail(request,"company_tags不可以为空");
             }
-            List<Integer>  company_tags = (List<Integer>)params.get("company_tags");
-            if(company_tags.size()<1){
+            String  company_tags = (String)params.get("company_tags");
+            List<Integer> company_tagList = ParamUtils.convertIntList(company_tags);
+            if(company_tagList.size()<1){
                 return ResponseLogNotification.fail(request,"company_tags长度不可以为0");
             }
-            Response result = service.deleteCompanyTagByIds(Integer.parseInt(hrId),Integer.parseInt(companyId),company_tags);
+            Response result = service.deleteCompanyTagByIds(Integer.parseInt(hrId),Integer.parseInt(companyId),company_tagList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
