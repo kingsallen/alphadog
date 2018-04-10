@@ -1093,6 +1093,7 @@ public class TalentPoolService {
         if(companyTag!=null&&!companyTag.isEmpty()){
             boolean  isEXecute=tagService.getCompanyTagIsExecute(company_tag_id);
             companyTag.put("is_execute",isEXecute);
+            companyTag.put("expire_time",2);
             if(isEXecute){
                 //此处预估时间统一2h
                 companyTag.put("expire_time",2);
