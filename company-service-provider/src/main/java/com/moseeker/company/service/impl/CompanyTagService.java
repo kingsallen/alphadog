@@ -13,6 +13,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
@@ -41,6 +42,8 @@ public class CompanyTagService {
     SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
     private static String COMPANYTAG_ES_STATUS="COMPANY_TAG_ES_STATUS";
+    @Autowired
+    private TalentPoolEntity talentPoolEntity;
 
     /*
       type=0 新增标签
@@ -133,6 +136,39 @@ public class CompanyTagService {
                         "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
             }
         }
+    }
+    public int getTagtalentNum(int hrId,int companyId,int tagId) throws TException {
+        Map<String,String> params=new HashMap<>();
+        int count=talentPoolEntity.valiadteMainAccount(hrId,companyId);
+        if(count>0){
+            List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
+            Set<Integer> hrIdList=talentPoolEntity.getIdListByUserHrAccountList(hrList);
+            params.put("publisher",talentPoolEntity.convertToString(hrIdList));
+            params.put("all_publisher","1");
+
+        }else{
+            params.put("publisher",hrId+"");
+        }
+        params.put("hr_id",hrId+"");
+        params.put("tag_ids","talent");
+        params.put("company_id",companyId+"");
+        params.put("hr_account_id",hrId+"");
+        int totalNum=service.talentSearchNum(params);
+        return totalNum;
+    }
+    //获取企业标签是否正在执行
+    public boolean getCompanyTagIsExecute(int tagId){
+        String result=client.get(Constant.APPID_ALPHADOG, COMPANYTAG_ES_STATUS,
+                String.valueOf(tagId));
+        if(StringUtils.isNotNullOrEmpty(result)){
+            if(Integer.parseInt(result)>0){
+                return false;
+            }else{
+                return true;
+            }
+
+        }
+        return false;
     }
 
     private boolean  validateProfileAndComapnyTag(Map<String,Object> profiles,int userId,int companyId,TalentpoolCompanyTag tag) throws TException {
