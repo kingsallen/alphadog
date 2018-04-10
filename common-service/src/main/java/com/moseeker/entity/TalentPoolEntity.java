@@ -508,7 +508,7 @@ public class TalentPoolEntity {
 //                    }
 //                }
 //            }
-//            companyTagMapList.add(tagMap);
+            companyTagMapList.add(tagMap);
         }
         return companyTagMapList;
     }
