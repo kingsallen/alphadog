@@ -154,7 +154,7 @@ public class TalentpoolSearchengine {
                             Map<String,Object> userMap=(Map<String,Object>)map.get("user");
                             logger.info("============================================user");
                             if(userMap!=null&&!userMap.isEmpty()){
-                                Map<String,Object> profiles=(Map<String,Object>)map.get("profiles");
+                                Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
                                 logger.info("============================================profiles");
                                 logger.info(JSON.toJSONString(profiles));
                                 if(profiles!=null&&!profiles.isEmpty()){
