@@ -141,6 +141,9 @@ public class TalentpoolSearchengine {
             logger.info("============================================");
             SearchResponse response = builder.execute().actionGet();
             Map<String,Object> result = searchUtil.handleData(response,"userIdList");
+            logger.info("==========================");
+            logger.info(JSON.toJSONString(response));
+            logger.info("==========================");
             if(result!=null&&!result.isEmpty()){
                 long totalNum=(long)result.get("totalNum");
                 if(totalNum>0){
