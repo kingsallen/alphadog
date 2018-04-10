@@ -1155,7 +1155,8 @@ public class TalentPoolService {
         String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
         if("OK".equals(result)){
             boolean bool = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
-            if(bool){
+            boolean statusBool = talentPoolEntity.validateCompanyTalentPoolV3ByStatus(companyTagDO);
+            if(bool && statusBool){
                 int id = talentPoolEntity.updateCompanyTag(companyTagDO);
                 List<Integer> idList = new ArrayList<>();
                 idList.add(id);
