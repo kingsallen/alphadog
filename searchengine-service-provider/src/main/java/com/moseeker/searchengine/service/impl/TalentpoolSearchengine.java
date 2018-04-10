@@ -222,10 +222,10 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
             this.queryBySlalryCode(intentionSalaryCode,query);
         }
-        if(StringUtils.isNotNullOrEmpty(sex)){
+        if(Integer.parseInt(sex)!=2){
             this.queryByGender(sex,query);
         }
-        if(StringUtils.isNotNullOrEmpty(isRecommend)){
+        if(Integer.parseInt(isRecommend)>0){
             this.queryByRecom(query);
         }
         if(StringUtils.isNotNullOrEmpty(companyName)){

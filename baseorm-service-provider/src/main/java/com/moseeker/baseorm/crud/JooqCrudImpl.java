@@ -131,16 +131,13 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         if(map==null||map.isEmpty()){
             return null;
         }
-        SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for(String key:map.keySet()){
             if(key.contains("_time")&&map.get(key) instanceof Date){
                 String time=map.get(key).toString();
-                if(StringUtils.isNotNullOrEmpty(time)){
-                    String resultTime=ff.format(new Date(time));
-                    map.put(key,resultTime);
-                }else{
-                    map.put(key,ff.format(new Date()));
+                if(time.length()>19){
+                    time=time.substring(0,19);
                 }
+                map.put(key,time);
             }
         }
         return map;
@@ -151,17 +148,14 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         if(StringUtils.isEmptyList(list)){
             return null;
         }
-        SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for(Map<String,Object> map:list){
             for(String key:map.keySet()){
                 if(key.contains("_time")&&map.get(key) instanceof Date){
                     String time=map.get(key).toString();
-                    if(StringUtils.isNotNullOrEmpty(time)){
-                        String resultTime=ff.format(new Date(time));
-                        map.put(key,resultTime);
-                    }else{
-                        map.put(key,ff.format(new Date()));
+                    if(time.length()>19){
+                        time=time.substring(0,19);
                     }
+                    map.put(key,time);
                 }
             }
         }
