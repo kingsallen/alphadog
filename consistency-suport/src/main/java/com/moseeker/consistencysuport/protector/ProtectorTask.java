@@ -17,10 +17,4 @@ public interface ProtectorTask {
      * 启动守护任务
      */
     void startProtectorTask();
-
-    /**
-     * 重新执行调用方法
-     * @param message 消息
-     */
-    void reHandler(Message message) throws ConsistencyException;
 }

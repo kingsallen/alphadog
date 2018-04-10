@@ -1,7 +1,6 @@
 package com.moseeker.consistencysuport.manager;
 
 import com.moseeker.common.thread.ThreadPool;
-import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.consistencysuport.config.MessageRepository;
 import com.moseeker.consistencysuport.config.Notification;
 import com.moseeker.consistencysuport.config.ParamConvertTool;
@@ -9,15 +8,13 @@ import com.moseeker.consistencysuport.db.Message;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import com.moseeker.consistencysuport.persistence.MessagePersistence;
 import com.moseeker.consistencysuport.persistence.MessagePersistenceImpl;
+import com.moseeker.consistencysuport.protector.InvokeHandler;
 import com.moseeker.consistencysuport.protector.ProtectorTask;
 import com.moseeker.consistencysuport.protector.ProtectorTaskConfigImpl;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,21 +35,25 @@ public class ProducerConsistentManager {
     private Map<String, ParamConvertTool> paramConvertToolMap;  //参数与持久化字段的转换工具
     private Notification notification;                          //通知功能
     private ProtectorTask protectorTask;                        //启动保护任务
+    private InvokeHandler invokeHandler;
     private long initialDelay;
     private long period;
-
-    private ConfigPropertiesUtil configPropertiesUtil = ConfigPropertiesUtil.getInstance();
+    private byte retriedUpper;
 
     private ThreadPool threadPool = ThreadPool.Instance;
 
     public ProducerConsistentManager(MessageRepository messageRepository,
                                      Map<String, ParamConvertTool> paramConvertToolMap, Notification notification,
-                                     long initialDelay, long period) throws ConsistencyException {
+                                     InvokeHandler invokeHandler,
+                                     long initialDelay, long period, byte retriedUpper) throws ConsistencyException {
         this.initialDelay = initialDelay;
         this.period = period;
+        this.retriedUpper = retriedUpper;
         this.messagePersistence = new MessagePersistenceImpl(messageRepository);
         this.paramConvertToolMap = paramConvertToolMap;
-        this.protectorTask = new ProtectorTaskConfigImpl(initialDelay, period, notification, messageRepository, paramConvertToolMap);
+        this.invokeHandler = invokeHandler;
+        this.protectorTask = new ProtectorTaskConfigImpl(this.initialDelay, this.period, this.retriedUpper,
+                notification, messageRepository, paramConvertToolMap, invokeHandler);
         this.notification = notification;
     }
 
@@ -71,7 +72,7 @@ public class ProducerConsistentManager {
      */
     public void registerParamConvertTool(String name, ParamConvertTool paramConvertTool) throws ConsistencyException {
         if (paramConvertToolMap.containsKey(name)) {
-            notification.noticeForException(null, ConsistencyException.CONSISTENCY_CONFLICTS_CONVERTTOOL);
+            notification.noticeForException(ConsistencyException.CONSISTENCY_CONFLICTS_CONVERTTOOL);
             throw ConsistencyException.CONSISTENCY_CONFLICTS_CONVERTTOOL;
         }
         paramConvertToolMap.put(name, paramConvertTool);

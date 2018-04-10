@@ -1,7 +1,5 @@
 package com.moseeker.consistencysuport.db;
 
-import com.moseeker.common.validation.ValidateUtil;
-
 import java.util.List;
 
 /**
@@ -17,7 +15,7 @@ public class Message {
     private long updateTime;    //修改时间
     private int version;        //版本
     private List<Business> businessList;    //业务
-    private int retry;          //重试次数
+    private int retried;        //重试次数
     private long lastRetryTime; //上一次重试的时间
     private String param;       //参数
     private boolean finish;     //是否完成
@@ -65,12 +63,12 @@ public class Message {
         this.businessList = businessList;
     }
 
-    public int getRetry() {
-        return retry;
+    public int getRetried() {
+        return retried;
     }
 
-    public void setRetry(int retry) {
-        this.retry = retry;
+    public void setRetried(int retried) {
+        this.retried = retried;
     }
 
     public long getLastRetryTime() {

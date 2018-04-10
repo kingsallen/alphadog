@@ -64,24 +64,44 @@ public class NotificationImpl implements Notification {
     }
 
     @Override
-    public void noticeForError(Exception e) {
+    public void noticeForError(String content) {
         if (this.errorReceivers.size() == 0) {
             logger.error("没有配置程序错误报警邮件的接收人员邮箱！");
             return;
         }
 
-        sendEmail(this.errorReceivers, e);
+        sendEmail(this.errorReceivers, "程序异常", content);
     }
 
     @Override
-    public void noticeForException(ConsistencyException e) {
+    public void noticeForException(String content) {
 
         if (this.exceptionReceives.size() == 0) {
             logger.error("没有配置业务异常报警邮件的接收人员邮箱！");
             return;
         }
 
-        sendEmail(this.exceptionReceives, e);
+        sendEmail(this.exceptionReceives, "业务异常", content);
+    }
+
+    @Override
+    public void noticeForError(Exception e) {
+        if (this.errorReceivers.size() == 0) {
+            logger.error("没有配置程序错误报警邮件的接收人员邮箱！");
+            return;
+        }
+
+        sendEmail(this.errorReceivers, "程序异常", e);
+    }
+
+    @Override
+    public void noticeForException(Exception e) {
+        if (this.exceptionReceives.size() == 0) {
+            logger.error("没有配置业务异常报警邮件的接收人员邮箱！");
+            return;
+        }
+
+        sendEmail(this.exceptionReceives, "业务异常", e);
     }
 
     /**
@@ -89,14 +109,32 @@ public class NotificationImpl implements Notification {
      * @param receivers
      * @param e
      */
-    private void sendEmail(List<String> receivers, Exception e) {
+    private void sendEmail(List<String> receivers, String subject, Exception e) {
         try {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(receivers);
-            emailBuilder.setSubject(convertExceptionToString(e));
+            emailBuilder.setSubject(subject);
+            emailBuilder.setContent(convertExceptionToString(e));
             Email email = emailBuilder.build();
             email.send();
         } catch (Exception e1) {
             logger.error(e1.getMessage(), e);
+        }
+    }
+
+    /**
+     * 发送错误邮件
+     * @param receivers
+     * @param content
+     */
+    private void sendEmail(List<String> receivers, String subject, String content) {
+        try {
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(receivers);
+            emailBuilder.setSubject(subject);
+            emailBuilder.setContent(content);
+            Email email = emailBuilder.build();
+            email.send();
+        } catch (Exception e1) {
+            logger.error(e1.getMessage(), e1);
         }
     }
 

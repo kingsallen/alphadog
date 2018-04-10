@@ -25,4 +25,7 @@ public class ConsistencyException extends CommonException {
 
     public static final ConsistencyException CONSISTENCY_PRODUCER_CONFIGURATION_REPOSITORY_NOT_FOUND= new ConsistencyException(81008, "消息持久化配置错误！");
     public static final ConsistencyException CONSISTENCY_PRODUCER_CONFIGURATION_PERIOD_ERROR = new ConsistencyException(81009, "消息守护任务间隔时间太短！");
+    public static final ConsistencyException CONSISTENCY_PRODUCER_RETRY_OVER_LIMIT = new ConsistencyException(81010, "超过配置的重复次数上限！");
+
+    public static final ConsistencyException CONSISTENCY_PRODUCER_UPDATE_RETRIED_FAILED = new ConsistencyException(81011, "更新消息重试次数失败！");
 }

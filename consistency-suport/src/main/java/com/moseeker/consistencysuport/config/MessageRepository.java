@@ -1,6 +1,7 @@
 package com.moseeker.consistencysuport.config;
 
 import com.moseeker.consistencysuport.db.Message;
+import com.moseeker.consistencysuport.exception.ConsistencyException;
 
 import java.util.List;
 
@@ -47,8 +48,15 @@ public interface MessageRepository {
 
     /**
      * 查询距离指定时间之外还未完成的消息集合
-     * @param second
+     * @param second 时间范围
      * @return
      */
     List<Message> fetchUnFinishMessageBySpecifiedSecond(long second);
+
+    /**
+     * 更新消息的重试次数
+     * @param messageList 需要被更新的消息
+     * @throws ConsistencyException ConsistencyException.CONSISTENCY_PRODUCER_UPDATE_RETRIED_FAILED
+     */
+    void updateRetried(List<Message> messageList) throws ConsistencyException;
 }

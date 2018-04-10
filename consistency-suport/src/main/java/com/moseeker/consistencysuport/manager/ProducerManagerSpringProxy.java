@@ -7,10 +7,13 @@ import com.moseeker.consistencysuport.db.impl.MessageRepositoryImpl;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import com.moseeker.consistencysuport.notification.NotificationImpl;
 import com.moseeker.consistencysuport.persistence.MessagePersistenceImpl;
+import com.moseeker.consistencysuport.protector.InvokeHandler;
+import com.moseeker.consistencysuport.protector.InvokeHandlerImpl;
 import com.moseeker.consistencysuport.protector.ProtectorTask;
 import com.moseeker.consistencysuport.protector.ProtectorTaskConfigImpl;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -30,13 +33,18 @@ public class ProducerManagerSpringProxy {
 
     private long initialDelay = 5*1000;                             //延迟启动
     private long period = 5*60*1000;                                //任务时间间隔
+    private byte retriedUpper = 3;                                  //重试次数上限
 
     private static final int MIN_PERIOD = 3*1000;                   //时间间隔下限
+    private InvokeHandler invokeHandler;                            //重试调用方式
 
     private static ProducerConsistentManager manager;
 
     @Autowired
     private Map<String, ParamConvertTool> paramConvertToolMap;
+
+    @Autowired
+    ApplicationContext applicationContext;
 
     public ProducerManagerSpringProxy(){}
 
@@ -71,15 +79,29 @@ public class ProducerManagerSpringProxy {
     }
 
     /**
+     * 构建重试调用方法
+     * @param invokeHandler 消息重试调用方法
+     * @return
+     */
+    public ProducerManagerSpringProxy buildInvokeHandler(InvokeHandler invokeHandler) {
+        this.invokeHandler = invokeHandler;
+        return this;
+    }
+
+    /**
      * 构建保护程序
      * @param initialDelay
      * @param period
      * @return
      */
-    public ProducerManagerSpringProxy buildProtectorTimeConfig(long initialDelay, long period) {
+    public ProducerManagerSpringProxy buildProtectorTimeConfig(long initialDelay, long period, byte retriedUpper) {
         this.initialDelay = initialDelay;
         if (this.initialDelay < 0) {
             this.initialDelay = 0;
+        }
+        this.retriedUpper = retriedUpper;
+        if (this.retriedUpper <= 0 || this.retriedUpper > 10) {
+            this.retriedUpper = 3;
         }
         this.period = period;
         return this;
@@ -106,8 +128,11 @@ public class ProducerManagerSpringProxy {
         if (notification == null) {
             notification = new NotificationImpl();
         }
+        if (invokeHandler == null) {
+            this.invokeHandler = new InvokeHandlerImpl(applicationContext, paramConvertToolMap, notification);
+        }
         manager = new ProducerConsistentManager(messageRepository,
-                paramConvertToolMap, notification, initialDelay, period);
+                paramConvertToolMap, notification, invokeHandler, initialDelay, period, retriedUpper);
         manager.startProtectorTask();
         return manager;
     }

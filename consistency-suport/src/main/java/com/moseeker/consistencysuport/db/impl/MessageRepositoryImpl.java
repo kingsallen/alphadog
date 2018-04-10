@@ -11,6 +11,7 @@ import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessage
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyBusinessRecord;
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyMessageRecord;
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyMessageTypeRecord;
+import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.jooq.Result;
 import org.jooq.impl.DefaultDSLContext;
 import org.slf4j.Logger;
@@ -131,8 +132,8 @@ public class MessageRepositoryImpl implements MessageRepository {
             version = message.getVersion();
         }
         byte retried = 0;
-        if (message.getRetry() > 0) {
-            retried = (byte) message.getRetry();
+        if (message.getRetried() > 0) {
+            retried = (byte) message.getRetried();
         }
         byte finish = 0;
         if (message.isFinish()) {
@@ -222,6 +223,60 @@ public class MessageRepositoryImpl implements MessageRepository {
         return messageList;
     }
 
+    @Override
+    public void updateRetried(List<Message> messageList) throws ConsistencyException {
+        List<Message> needRetry = new ArrayList<>();
+        messageList.forEach(message -> {
+            int execute = create.update(ConsistencyMessage.CONSISTENCY_MESSAGE)
+                    .set(ConsistencyMessage.CONSISTENCY_MESSAGE.RETRIED, (byte)message.getRetried())
+                    .set(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION, ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.add(1))
+                    .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(message.getMessageId()))
+                    .and(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.eq(message.getVersion()))
+                    .execute();
+            if (execute == 0) {
+                needRetry.add(message);
+            }
+        });
+        retryLockedRecord(needRetry, 0);
+    }
+
+    private void retryLockedRecord(List<Message> needRetry, int retried) throws ConsistencyException {
+        if (retried < 3) {
+            List<String> messageIdList = needRetry.stream().map(Message::getMessageId).collect(Collectors.toList());
+            if (messageIdList != null && messageIdList.size() > 0) {
+                List<ConsistencyMessageRecord> consistencyMessageRecordList = create
+                        .selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE)
+                        .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.in(messageIdList))
+                        .fetch();
+                if (consistencyMessageRecordList != null && consistencyMessageRecordList.size() > 0) {
+                    List<Message> messageList = new ArrayList<>();
+                    consistencyMessageRecordList.forEach(consistencyMessageRecord -> {
+                        int execute = create.update(ConsistencyMessage.CONSISTENCY_MESSAGE)
+                                .set(ConsistencyMessage.CONSISTENCY_MESSAGE.RETRIED, (byte)consistencyMessageRecord.getRetried())
+                                .set(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION, ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.add(1))
+                                .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(consistencyMessageRecord.getMessageId()))
+                                .and(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.eq(consistencyMessageRecord.getVersion()))
+                                .execute();
+                        if (execute == 0) {
+                            Message message = new Message();
+                            message.setMessageId(consistencyMessageRecord.getMessageId());
+                            message.setName(consistencyMessageRecord.getName());
+                            message.setRetried(consistencyMessageRecord.getRetried());
+                            messageList.add(message);
+                        }
+                    });
+                    if (messageIdList.size() > 0) {
+                        retryLockedRecord(messageList, retried+1);
+                    }
+                }
+            }
+
+        } else {
+            logger.error("超过重试次数上线");
+            throw ConsistencyException.CONSISTENCY_PRODUCER_UPDATE_RETRIED_FAILED;
+        }
+    }
+
     /**
      *
      * jooq ConsistencyBusinessRecord 转 Business
@@ -263,7 +318,7 @@ public class MessageRepositoryImpl implements MessageRepository {
             message.setUpdateTime(consistencyMessageRecord.getUpdateTime().getTime());
         }
         message.setVersion(consistencyMessageRecord.getVersion());
-        message.setRetry(consistencyMessageRecord.getRetried());
+        message.setRetried(consistencyMessageRecord.getRetried());
         if (consistencyMessageRecord.getLastRetryTime() != null) {
             message.setLastRetryTime(consistencyMessageRecord.getLastRetryTime().getTime());
         }
