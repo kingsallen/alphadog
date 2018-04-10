@@ -64,6 +64,30 @@ public class TalentpoolSearchengine {
         }
         return result;
     }
+    /*
+     查询企业标签的人才数量
+     */
+    public int talentSearchNum(Map<String, String> params) {
+        Map<String, Object> result=new HashMap<>();
+        TransportClient client=null;
+        try {
+            client = searchUtil.getEsClient();
+            QueryBuilder query = this.query(params);
+            SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
+            builder.setSize(0);
+            logger.info(builder.toString());
+            SearchResponse response = builder.execute().actionGet();
+            result = searchUtil.handleData(response, "users");
+            int total=(int)((long)result.get("totalNum"));
+            return total;
+        } catch (Exception e) {
+            logger.info(e.getMessage()+"=================");
+            if (e.getMessage().contains("all shards")) {
+                return 0;
+            }
+        }
+        return 0;
+    }
 
     @CounterIface
     public Map<String,Object> getAggInfo(Map<String, String> params){
@@ -450,12 +474,14 @@ public class TalentpoolSearchengine {
         String companyName=params.get("company_name");
         String pastPosition=params.get("past_position");
         String intentionCity=params.get("intention_city_name");
+        String companyTag=params.get("company_tag");
         if(
                 StringUtils.isNotNullOrEmpty(keyword)||
                         StringUtils.isNotNullOrEmpty(cityName)||
                         StringUtils.isNotNullOrEmpty(companyName)||
                         StringUtils.isNotNullOrEmpty(pastPosition)||
-                        StringUtils.isNotNullOrEmpty(intentionCity)
+                        StringUtils.isNotNullOrEmpty(intentionCity)||
+                        StringUtils.isNotNullOrEmpty(companyTag)
                 ){
             if(StringUtils.isNotNullOrEmpty(intentionCity)){
                 this.queryByIntentionCity(intentionCity,query);
@@ -481,6 +507,9 @@ public class TalentpoolSearchengine {
                 }else{
                     this.queryByWorkJob(pastPosition,query);
                 }
+            }
+            if(StringUtils.isNotNullOrEmpty(companyTag)){
+                this.queryByCompanyTag(companyTag,query);
             }
         }
 
@@ -592,7 +621,7 @@ public class TalentpoolSearchengine {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         String tagIds=params.get("tag_ids");
-        String companyTag=params.get("company_tag");
+
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
         if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
@@ -604,9 +633,7 @@ public class TalentpoolSearchengine {
             String hrId=params.get("hr_account_id");
             this.queryByTagId(tagIds,hrId,query);
         }
-        if(StringUtils.isNotNullOrEmpty(companyTag)){
-            this.queryByCompanyTag(companyTag,query);
-        }
+
         if(StringUtils.isNotNullOrEmpty(favoriteHrs)){
             this.queryTagHrId(favoriteHrs,query);
         }

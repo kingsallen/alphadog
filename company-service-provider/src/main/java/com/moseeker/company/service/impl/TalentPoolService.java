@@ -713,7 +713,9 @@ public class TalentPoolService {
         }
         return ResponseUtils.success(result);
     }
-
+    /*
+     验证公司
+     */
     private int validateCompany(int companyId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
         HrCompanyRecord record=hrCompanyDao.getRecord(query);
@@ -997,13 +999,35 @@ public class TalentPoolService {
     }
     private Map<String, Object> getTagtalentNum(int hrId,int companyId,int tagId){
         Map<String,String> params=new HashMap<>();
-        params.put("","");
+        int count=talentPoolEntity.valiadteMainAccount(hrId,companyId);
+        if(count>0){
+            List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
+            Set<Integer> hrIdList=talentPoolEntity.getIdListByUserHrAccountList(hrList);
+            params.put("publisher","");
+        }else{
+            params.put("","");
+        }
+
+
         params.put("","");
         params.put("","");
         params.put("","");
         return null;
     }
-
+    private String convertToString(Set<Integer> list){
+        if(StringUtils.isEmptySet(list)){
+            return "";
+        }
+        String result="";
+        for(Integer id:list){
+            result+=id+",";
+        }
+        if(StringUtils.isNotNullOrEmpty(result)){
+            result=result.substring(0,result.lastIndexOf(","));
+            return result;
+        }
+        return "";
+    }
     /**
      * 获取分页数据
      *
