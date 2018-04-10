@@ -234,7 +234,7 @@ public class TalentPoolEntity {
      */
     public Map<String, Object> getCompanyTagInfo(int companyId, int company_tag_id){
 
-        List<Map<String, Object>> tagRecordList = getCompanyTagByTagIdAndCompanyId(companyId, company_tag_id);
+        List<TalentpoolCompanyTag> tagRecordList = getCompanyTagByTagIdAndCompanyId(companyId, company_tag_id);
         if(tagRecordList == null || tagRecordList.size()==0 ){
             return null;
         }
@@ -1848,10 +1848,8 @@ public class TalentPoolEntity {
         return talentpoolCompanyTagUserDao.getRecords(query);
     }
 
-    public List<Map<String,Object>> getCompanyTagByTagIdAndCompanyId(int companyId, int company_tag_id){
-        Query query=new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.getName(), companyId)
-                .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.getName(), company_tag_id).buildQuery();
-        List<Map<String,Object>> list=talentpoolCompanyTagDao.getMaps(query);
+    public List<TalentpoolCompanyTag> getCompanyTagByTagIdAndCompanyId(int companyId, int company_tag_id){
+        List<TalentpoolCompanyTag> list=talentpoolCompanyTagDao.getCompanyTagByTagIdAndCompanyId(companyId,company_tag_id);
         return list;
     }
 
