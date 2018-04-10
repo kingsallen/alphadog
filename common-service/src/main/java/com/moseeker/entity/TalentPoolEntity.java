@@ -240,7 +240,6 @@ public class TalentPoolEntity {
         }
         Map<String, Object> params = new HashMap<>();
         params.put("company_tag", tagRecordList.get(0));
-        params.put("expire_time","2h");
         return params;
     }
 

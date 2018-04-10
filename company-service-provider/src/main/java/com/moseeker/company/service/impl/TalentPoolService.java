@@ -1090,19 +1090,16 @@ public class TalentPoolService {
             return  params;
         }
         Map<String, Object> companyTag = talentPoolEntity.getCompanyTagInfo(companyId, company_tag_id);
-        Map<String,Object> result=new HashMap<>();
         if(companyTag!=null&&!companyTag.isEmpty()){
-            result.put("company_tag",companyTag);
             boolean  isEXecute=tagService.getCompanyTagIsExecute(company_tag_id);
-            result.put("is_execute",isEXecute);
+            companyTag.put("is_execute",isEXecute);
             if(isEXecute){
                 //此处预估时间统一2h
-                result.put("expire_time",2);
+                companyTag.put("expire_time",2);
             }
-
         }
         params.put("responseStatus", 0);
-        params.put("data", result);
+        params.put("data", companyTag);
         return params;
     }
 
