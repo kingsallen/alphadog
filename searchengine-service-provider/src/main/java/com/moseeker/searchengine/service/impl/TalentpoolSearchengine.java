@@ -141,21 +141,21 @@ public class TalentpoolSearchengine {
             logger.info("============================================");
             SearchResponse response = builder.execute().actionGet();
             Map<String,Object> result = searchUtil.handleData(response,"userIdList");
-            logger.info("==========================");
-            logger.info(JSON.toJSONString(response));
-            logger.info("==========================");
             if(result!=null&&!result.isEmpty()){
                 long totalNum=(long)result.get("totalNum");
                 if(totalNum>0){
                     List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
                     for(Map<String,Object> map:dataList){
                         if(map!=null&&!map.isEmpty()){
-                            Map<String,Object> profiles=(Map<String,Object>)map.get("profiles");
-                            if(profiles!=null&&!profiles.isEmpty()){
-                                Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
-                                if(profile!=null&&!profile.isEmpty()){
-                                    int userId=(int)profile.get("user_id");
-                                    list.add(userId);
+                            Map<String,Object> userMap=(Map<String,Object>)map.get("user");
+                            if(userMap!=null&&!userMap.isEmpty()){
+                                Map<String,Object> profiles=(Map<String,Object>)map.get("profiles");
+                                if(profiles!=null&&!profiles.isEmpty()){
+                                    Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
+                                    if(profile!=null&&!profile.isEmpty()){
+                                        int userId=(int)profile.get("user_id");
+                                        list.add(userId);
+                                    }
                                 }
                             }
                         }
