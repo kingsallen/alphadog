@@ -96,8 +96,8 @@ public class CompanyTagService {
                     }
 
                 }
+            }
         }
-
         //更新es中tag_id和人才的关系
         if(!StringUtils.isEmptyList(tagIdList)){
             for(Integer tagId:tagIdList){
@@ -115,8 +115,6 @@ public class CompanyTagService {
             }
 
         }
-        }
-
     }
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws TException {
         List<TalentpoolCompanyTagUserRecord> list=new ArrayList<>();
