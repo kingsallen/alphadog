@@ -1621,16 +1621,16 @@ public class TalentPoolEntity {
         Set<Integer> result=filterUserIdForNoPublic(pubSet,userIds);
         return result;
     }
-    /*
-     过滤点还在公开的人才
-     */
-    private Set<Integer> getNoCollectionUserId(Set<Integer> userIds,int companyId){
-        Set<Integer> pubSet=this.getPublicUserIdSet(pubList);
-        List<TalentpoolTalentRecord> pubList=getCompanyByCompanyAndUserId(userIds,companyId);
-        Set<Integer> pubSet=this.getPublicUserIdSet(pubList);
-        Set<Integer> result=filterUserIdForNoPublic(pubSet,userIds);
-        return result;
-    }
+//    /*
+//     过滤点还在公开的人才
+//     */
+//    private Set<Integer> getNoCollectionUserId(Set<Integer> userIds,int companyId){
+//        Set<Integer> pubSet=this.getPublicUserIdSet(pubList);
+//        List<TalentpoolTalentRecord> pubList=getCompanyByCompanyAndUserId(userIds,null);
+//        Set<Integer> pubSet=this.getPublicUserIdSet(pubList);
+//        Set<Integer> result=filterUserIdForNoPublic(pubSet,userIds);
+//        return result;
+//    }
 
     /*
      过滤掉这些数据中已公开的人才
@@ -1675,7 +1675,7 @@ public class TalentPoolEntity {
         if(StringUtils.isEmptySet(userIds)){
             return null;
         }
-        Query query=new Query.QueryBuilder().where(new Condition("user_id",userIds.toArray(),ValueOp.IN)).and("company_id",companyId)
+        Query query=new Query.QueryBuilder().where(new Condition("user_id",userIds.toArray(),ValueOp.IN))
                 .and(new Condition("hr_id",hrIdList.toArray(),ValueOp.IN)).buildQuery();
         List<TalentpoolHrTalentRecord>  list=talentpoolHrTalentDao.getRecords(query);
         return list;
