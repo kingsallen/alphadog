@@ -1419,7 +1419,7 @@ public class TalentPoolEntity {
      取消时处理标签
      */
     public void handlerCompanyTag(Set<Integer> userIds,int companyId){
-        userIds=this.getNoPublicUserId(userIds,companyId);
+        userIds=this.getNoCollectionUserId(userIds,companyId);
         List<TalentpoolCompanyTagUserRecord> data=this.getHandlerCompanyTagData(userIds,companyId);
         if(!StringUtils.isEmptyList(data)){
             int [] result=talentpoolCompanyTagUserDao.deleteRecords(data);
@@ -1613,7 +1613,7 @@ public class TalentPoolEntity {
 
 
     /*
-    过滤掉还有收藏关系的人才
+    过滤掉还公开的人才
     */
     private Set<Integer> getNoPublicUserId(Set<Integer> userIds,int companyId){
         List<TalentpoolTalentRecord> pubList=getPublicByCompanyAndUserId(userIds,companyId);
@@ -1621,16 +1621,31 @@ public class TalentPoolEntity {
         Set<Integer> result=filterUserIdForNoPublic(pubSet,userIds);
         return result;
     }
-//    /*
-//     过滤点还在公开的人才
-//     */
-//    private Set<Integer> getNoCollectionUserId(Set<Integer> userIds,int companyId){
-//        Set<Integer> pubSet=this.getPublicUserIdSet(pubList);
-//        List<TalentpoolTalentRecord> pubList=getCompanyByCompanyAndUserId(userIds,null);
-//        Set<Integer> pubSet=this.getPublicUserIdSet(pubList);
-//        Set<Integer> result=filterUserIdForNoPublic(pubSet,userIds);
-//        return result;
-//    }
+    /*
+     过滤掉还有收藏关系的人才
+     */
+    private Set<Integer> getNoCollectionUserId(Set<Integer> userIds,int companyId){
+        List<Map<String, Object>> htList=this.getCompanyHrList(companyId);
+        Set<Integer> hrSet = this.getIdListByUserHrAccountList(htList);
+        List<TalentpoolHrTalentRecord> pubList=getCompanyByCompanyAndUserId(userIds,hrSet);
+        Set<Integer> collectionUserSet = getUserIdForCollection(pubList);
+        Set<Integer> result=filterUserIdForNoPublic(collectionUserSet,userIds);
+        return result;
+    }
+
+    /*
+    过滤掉这些数据中已公开的人才
+    */
+    public Set<Integer> getUserIdForCollection( List<TalentpoolHrTalentRecord> pubList){
+        if(StringUtils.isEmptyList(pubList)){
+            return null;
+        }
+        Set<Integer> result=new HashSet<>();
+        for(TalentpoolHrTalentRecord record:pubList){
+            result.add(record.getUserId());
+        }
+        return result;
+    }
 
     /*
      过滤掉这些数据中已公开的人才
