@@ -236,7 +236,7 @@ public class TalentpoolSearchengine {
                 this.queryParseByCompany(companyName, query);
             }
         }
-        if(StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||StringUtils.isNotNullOrEmpty(isRecommend)){
+        if(StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||Integer.parseInt(isRecommend)>0){
             //这里是处理groovy语法的位置
             StringBuffer sb=new StringBuffer();
             sb.append("user=_source.user;if(user){applications=user.applications;;origins=user.origin_data;if(applications){for(val in applications){if(");
@@ -245,7 +245,7 @@ public class TalentpoolSearchengine {
                 long longTime=this.getLongTime(submitTime);
                 sb.append(" val.submit_time>'"+longTime+"'&&");
             }
-            if(StringUtils.isNotNullOrEmpty(isRecommend)){
+            if(Integer.parseInt(isRecommend)>0){
                 sb.append("val.recommender_user_id>0 &&");
             }
             if(StringUtils.isNotNullOrEmpty(origins)){
