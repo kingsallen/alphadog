@@ -149,14 +149,19 @@ public class TalentpoolSearchengine {
                 if(totalNum>0){
                     List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
                     for(Map<String,Object> map:dataList){
+                        logger.info("============================================userIdList");
                         if(map!=null&&!map.isEmpty()){
                             Map<String,Object> userMap=(Map<String,Object>)map.get("user");
+                            logger.info("============================================user");
                             if(userMap!=null&&!userMap.isEmpty()){
                                 Map<String,Object> profiles=(Map<String,Object>)map.get("profiles");
+                                logger.info("============================================profiles");
                                 if(profiles!=null&&!profiles.isEmpty()){
                                     Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
+                                    logger.info("============================================profile");
                                     if(profile!=null&&!profile.isEmpty()){
                                         int userId=(int)profile.get("user_id");
+                                        logger.info("============================================user_id"+userId);
                                         list.add(userId);
                                     }
                                 }
