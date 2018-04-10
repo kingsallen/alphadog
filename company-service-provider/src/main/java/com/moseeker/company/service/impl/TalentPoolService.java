@@ -1124,8 +1124,8 @@ public class TalentPoolService {
         }
         String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
         if("OK".equals(result)){
-            boolean bool = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
-            if(bool){
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+            if(StringUtils.isNullOrEmpty(filterString)){
                 int id = talentPoolEntity.addCompanyTag(companyTagDO);
                 List<Integer> idList = new ArrayList<>();
                 idList.add(id);
@@ -1135,7 +1135,7 @@ public class TalentPoolService {
                     return 0;
                 });
             }else{
-                return ResponseUtils.fail(1, "标签规则全为默认值");
+                return ResponseUtils.fail(1, filterString);
             }
         }
         return ResponseUtils.fail(1, result);
@@ -1155,9 +1155,10 @@ public class TalentPoolService {
         }
         String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
         if("OK".equals(result)){
-            boolean bool = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
-            boolean statusBool = talentPoolEntity.validateCompanyTalentPoolV3ByStatus(companyTagDO);
-            if(bool && statusBool){
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+            String statusString = talentPoolEntity.validateCompanyTalentPoolV3ByStatus(companyTagDO);
+            statusString = statusString + filterString;
+            if(StringUtils.isNullOrEmpty(statusString)){
                 int id = talentPoolEntity.updateCompanyTag(companyTagDO);
                 List<Integer> idList = new ArrayList<>();
                 idList.add(id);
@@ -1167,7 +1168,7 @@ public class TalentPoolService {
                     return 0;
                 });
             }else{
-                return ResponseUtils.fail(1, "标签规则全为默认值");
+                return ResponseUtils.fail(1, statusString);
             }
         }
         return ResponseUtils.fail(1, result);
