@@ -399,6 +399,14 @@ public class TalentPoolEntity {
         List<TalentpoolTalentRecord> list=talentpoolTalentDao.getRecords(query);
         return list;
     }
+    /*
+     获取公司下所有的人才
+     */
+    public List<TalentpoolTalentRecord> getTalentByCompanyIdUserSet(int companyId,Set<Integer> userIdSet){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("user_id",userIdSet.toArray(),ValueOp.IN)).buildQuery();
+        List<TalentpoolTalentRecord> list=talentpoolTalentDao.getRecords(query);
+        return list;
+    }
 
     /*
       根据TalentpoolTalentRecord获取userId
