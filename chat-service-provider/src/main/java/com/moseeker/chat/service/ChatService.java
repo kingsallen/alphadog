@@ -473,8 +473,8 @@ public class ChatService {
      */
     
     public int saveChat(ChatVO chat) throws BIZException {
-        // TODO: 2018/4/11  
-        throw new BIZException();
+        // TODO: 2018/4/11
+        throw new NullPointerException();
         /*requiredValidChat(chat);
 
         HrWxHrChatListDO chatRoom = requiredNotNullChatRoom(chat.getRoomId());
