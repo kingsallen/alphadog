@@ -162,6 +162,7 @@ public class CompanyTagService {
         params.put("tag_ids","talent");
         params.put("company_id",companyId+"");
         params.put("hr_account_id",hrId+"");
+        params.put("company_tag",tagId+"");
         int totalNum=service.talentSearchNum(params);
         return totalNum;
     }

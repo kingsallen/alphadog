@@ -766,7 +766,10 @@ public class TalentPoolEntity {
       验证是否是主账号
      */
     public int valiadteMainAccount(int hrId,int companyId){
-        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("account_type",0).buildQuery();
+        List<Integer> accountTypeList=new ArrayList<>();
+        accountTypeList.add(0);
+        accountTypeList.add(2);
+        Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and(new Condition("account_type",accountTypeList.toArray(),ValueOp.IN)).buildQuery();
         int result=userHrAccountDao.getCount(query);
         return result;
     }
