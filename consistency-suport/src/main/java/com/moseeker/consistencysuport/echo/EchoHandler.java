@@ -13,8 +13,8 @@ public interface EchoHandler {
 
     /**
      * 消息处理
-     * @param message 消息体
+     * @param content 消息体
      * @throws ConsistencyException
      */
-    void handlerMessage(String message) throws ConsistencyException;
+    void handlerMessage(String content) throws ConsistencyException;
 }

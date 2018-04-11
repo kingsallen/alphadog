@@ -42,9 +42,9 @@ public interface MessageRepository {
      * 想一个消息中注册业务
      * @param messageId 消息编号
      * @param name 业务名称
-     * @return 业务编号
+     * @return 业务编号 ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS
      */
-    int registerBusiness(String messageId, String name);
+    String registerBusiness(String messageId, String name) throws ConsistencyException;
 
     /**
      * 查询距离指定时间之外还未完成的消息集合
@@ -59,4 +59,20 @@ public interface MessageRepository {
      * @throws ConsistencyException ConsistencyException.CONSISTENCY_PRODUCER_UPDATE_RETRIED_FAILED
      */
     void updateRetried(List<Message> messageList) throws ConsistencyException;
+
+    /**
+     *
+     * @param messageId
+     * @param name
+     * @throws ConsistencyException
+     */
+    void finishBusiness(String messageId, String name) throws ConsistencyException;
+
+    /**
+     *
+     * @param messageId
+     * @param name
+     * @throws ConsistencyException
+     */
+    void heartBeat(String messageId, String name) throws ConsistencyException;
 }

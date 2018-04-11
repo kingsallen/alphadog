@@ -1,17 +1,17 @@
 package com.moseeker.consistencysuport.db.impl;
 
-import com.moseeker.common.constants.AbleFlag;
-import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.consistencysuport.config.MessageRepository;
 import com.moseeker.consistencysuport.db.Business;
 import com.moseeker.consistencysuport.db.Message;
-import com.moseeker.consistencysuport.config.MessageRepository;
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusiness;
+import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusinessType;
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessage;
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessageType;
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyBusinessRecord;
+import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyBusinessTypeRecord;
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyMessageRecord;
-import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyMessageTypeRecord;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
+import com.sun.tools.corba.se.idl.constExpr.Times;
 import org.jooq.Result;
 import org.jooq.impl.DefaultDSLContext;
 import org.slf4j.Logger;
@@ -21,8 +21,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -31,8 +29,6 @@ import java.util.stream.Collectors;
 public class MessageRepositoryImpl implements MessageRepository {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private ThreadPool threadPool = ThreadPool.Instance;
 
     public MessageRepositoryImpl(DefaultDSLContext create) {
         this.create = create;
@@ -75,6 +71,17 @@ public class MessageRepositoryImpl implements MessageRepository {
             "  UNIQUE KEY `consistency_business_name` (`name`)\n" +
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息业务表';";
 
+    private static final String CONSISTENCY_BUSINESS_TYPE = "CREATE TABLE `cnosistency_business_type` (\n" +
+            "\t`name` varchar(20) NOT NULL COMMENT '业务名称，不允许重复',\n" +
+            "\t`message_name` varchar(20) NOT NULL COMMENT 'consistency_message.name',\n" +
+            "\t`register_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '业务注册时间',\n" +
+            "\t`update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
+            "\t`last_shake_hand_time` timestamp COMMENT '最后握手的时间',\n" +
+            "\t`receive_email` varchar(120) NOT NULL COMMENT '接收告警邮件通知的邮箱',\n" +
+            "\t`enable` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否是正常的数据 0：表示逻辑删除，1表示正常数据',\n" +
+            "\tPRIMARY KEY (`name`)\n" +
+            ")ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息业务类型表';";
+
     private DefaultDSLContext create;
 
     @Override
@@ -93,6 +100,11 @@ public class MessageRepositoryImpl implements MessageRepository {
         int businessCount = create.execute(String.format("select count(*) from `INFORMATION_SCHEMA`.`TABLES` where `TABLE_SCHEMA`= '%s' and `TABLE_NAME` = '%s'", DATABASE, "consistency_business"));
         if (businessCount == 0) {
             create.execute(CONSISTENCY_BUSINESS);
+        }
+
+        int businessTypeCount = create.execute(String.format("select count(*) from `INFORMATION_SCHEMA`.`TABLES` where `TABLE_SCHEMA`= '%s' and `TABLE_NAME` = '%s'", DATABASE, "cnosistency_business_type"));
+        if (businessTypeCount == 0) {
+            create.execute(CONSISTENCY_BUSINESS_TYPE);
         }
     }
 
@@ -148,12 +160,27 @@ public class MessageRepositoryImpl implements MessageRepository {
                 .onDuplicateKeyUpdate()
                 .set(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID, message.getMessageId())
                 .execute();
+
         return message.getMessageId();
     }
 
     @Override
-    public int registerBusiness(String messageId, String name) {
-        return 0;
+    public String registerBusiness(String messageId, String name) throws ConsistencyException {
+        ConsistencyMessageRecord consistencyMessageRecord = create
+                .selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE)
+                .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
+                .fetchOne();
+        if (consistencyMessageRecord == null) {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS;
+        }
+        ConsistencyBusinessTypeRecord consistencyBusinessType = new ConsistencyBusinessTypeRecord();
+        consistencyBusinessType.setName(name);
+        consistencyBusinessType.setMessageName(consistencyMessageRecord.getName());
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        consistencyBusinessType.setRegisterTime(now);
+        create.attach(consistencyBusinessType);
+        consistencyBusinessType.insert();
+        return consistencyBusinessType.getName();
     }
 
     @Override
@@ -170,54 +197,9 @@ public class MessageRepositoryImpl implements MessageRepository {
 
         if (consistencyMessageRecords != null && consistencyMessageRecords.size() > 0) {
 
-            Future<List<ConsistencyBusinessRecord>> businessFuture = threadPool.startTast(() -> {
-                List<String> messageIdList = consistencyMessageRecords
-                        .stream()
-                        .map(ConsistencyMessageRecord::getMessageId)
-                        .collect(Collectors.toList());
-
-                return (List<ConsistencyBusinessRecord>) create.selectFrom(ConsistencyBusiness.CONSISTENCY_BUSINESS)
-                                .where(ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID.in(messageIdList))
-                                .and(ConsistencyBusiness.CONSISTENCY_BUSINESS.ENABLE.eq((byte) AbleFlag.ENABLE.getValue()))
-                                .fetch();
-            });
-
-
-            Future<List<ConsistencyMessageTypeRecord>> messageTypeFuture = threadPool.startTast(() -> {
-                List<String> nameList = consistencyMessageRecords
-                        .stream()
-                        .map(ConsistencyMessageRecord::getName)
-                        .collect(Collectors.toList());
-                return (List<ConsistencyMessageTypeRecord>) create.selectFrom(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE)
-                        .where(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.NAME.in(nameList))
-                        .fetch();
-            });
-
-
             consistencyMessageRecords.forEach(consistencyMessageRecord -> {
-
-                try {
-                    List<ConsistencyBusinessRecord> businessRecordResult = businessFuture.get();
-                    List<ConsistencyMessageTypeRecord> messageTypeRecordResult = messageTypeFuture.get();
-
-                    List<ConsistencyBusinessRecord> recordList = businessRecordResult
-                            .stream()
-                            .filter(consistencyBusinessRecord
-                                    -> consistencyBusinessRecord.getMessageId().equals(consistencyMessageRecord.getMessageId()))
-                            .collect(Collectors.toList());
-                    if (recordList != null && recordList.size() > 0) {
-
-                        List<Business> businessList = new ArrayList<>();
-                        recordList.forEach(consistencyBusinessRecord -> {
-                            Business business = recordToBusiness(consistencyBusinessRecord);
-                            businessList.add(business);
-                        });
-                        Message message = recordToMessage(consistencyMessageRecord, businessList, messageTypeRecordResult);
-                        messageList.add(message);
-                    }
-                } catch (InterruptedException | ExecutionException e) {
-                    logger.error(e.getMessage(), e);
-                }
+                Message message = recordToMessage(consistencyMessageRecord);
+                messageList.add(message);
             });
         }
         return messageList;
@@ -240,6 +222,43 @@ public class MessageRepositoryImpl implements MessageRepository {
         retryLockedRecord(needRetry, 0);
     }
 
+    @Override
+    public void finishBusiness(String messageId, String name) throws ConsistencyException {
+        ConsistencyMessageRecord consistencyMessageRecord = create
+                .selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE)
+                .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
+                .fetchOne();
+        if (consistencyMessageRecord == null) {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS;
+        }
+        ConsistencyBusinessTypeRecord consistencyBusinessTypeRecord = create
+                .selectFrom(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                .where(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME.eq(name))
+                .and(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME.eq(consistencyMessageRecord.getName()))
+                .fetchOne();
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        if (consistencyBusinessTypeRecord == null) {
+            create.insertInto(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                    .columns(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME,
+                            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME,
+                            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.REGISTER_TIME)
+                    .values(name, consistencyMessageRecord.getName(), now)
+                    .onDuplicateKeyIgnore();
+        }
+
+    }
+
+    @Override
+    public void heartBeat(String messageId, String name) throws ConsistencyException {
+        ConsistencyMessageRecord consistencyMessageRecord = create
+                .selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE)
+                .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
+                .fetchOne();
+        if (consistencyMessageRecord == null) {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS;
+        }
+    }
+
     private void retryLockedRecord(List<Message> needRetry, int retried) throws ConsistencyException {
         if (retried < 3) {
             List<String> messageIdList = needRetry.stream().map(Message::getMessageId).collect(Collectors.toList());
@@ -252,7 +271,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                     List<Message> messageList = new ArrayList<>();
                     consistencyMessageRecordList.forEach(consistencyMessageRecord -> {
                         int execute = create.update(ConsistencyMessage.CONSISTENCY_MESSAGE)
-                                .set(ConsistencyMessage.CONSISTENCY_MESSAGE.RETRIED, (byte)consistencyMessageRecord.getRetried())
+                                .set(ConsistencyMessage.CONSISTENCY_MESSAGE.RETRIED, consistencyMessageRecord.getRetried())
                                 .set(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION, ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.add(1))
                                 .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(consistencyMessageRecord.getMessageId()))
                                 .and(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.eq(consistencyMessageRecord.getVersion()))
@@ -277,25 +296,34 @@ public class MessageRepositoryImpl implements MessageRepository {
         }
     }
 
+
+
     /**
      *
      * jooq ConsistencyBusinessRecord 转 Business
      *
      * @param consistencyBusinessRecord 注册的业务
+     * @param optional 业务类型
      * @return 业务
      */
-    private Business recordToBusiness(ConsistencyBusinessRecord consistencyBusinessRecord) {
+    private Business recordToBusiness(ConsistencyBusinessRecord consistencyBusinessRecord, Optional<ConsistencyBusinessTypeRecord> optional) {
+        if (!optional.isPresent() || optional.get().getEnable() == 0) {
+            return null;
+        }
         Business business = new Business();
         business.setId(consistencyBusinessRecord.getId());
         business.setName(consistencyBusinessRecord.getName());
-        business.setRegisterTime(consistencyBusinessRecord.getRegisterTime().getTime());
+
+        business.setRegisterTime(optional.get().getRegisterTime().getTime());
+        if (optional.get().getLastShakeHandTime() != null) {
+            business.setLastShakeHandTime(optional.get().getLastShakeHandTime().getTime());
+        }
+
         if (consistencyBusinessRecord.getUpdateTime() != null) {
             business.setUpdateTime(consistencyBusinessRecord.getUpdateTime().getTime());
         }
         business.setFinish(consistencyBusinessRecord.getFinish() == 1);
-        if (consistencyBusinessRecord.getLastShakeHandTime() != null) {
-            business.setLastShakeHandTime(consistencyBusinessRecord.getLastShakeHandTime().getTime());
-        }
+
         business.setMessageId(consistencyBusinessRecord.getMessageId());
         return business;
     }
@@ -303,14 +331,10 @@ public class MessageRepositoryImpl implements MessageRepository {
     /**
      * jooq onsistencyMessageRecord 转 Message
      * @param consistencyMessageRecord 消息体
-     * @param businessList  注册的业务
-     * @param messageTypeRecordList 消息类型
      * @return 消息
      */
-    private Message recordToMessage(ConsistencyMessageRecord consistencyMessageRecord, List<Business> businessList,
-                                    List<ConsistencyMessageTypeRecord> messageTypeRecordList) {
+    private Message recordToMessage(ConsistencyMessageRecord consistencyMessageRecord) {
         Message message = new Message();
-        message.setBusinessList(businessList);
         message.setName(consistencyMessageRecord.getName());
         message.setMessageId(consistencyMessageRecord.getMessageId());
         message.setCreateTime(consistencyMessageRecord.getCreateTime().getTime());
@@ -324,20 +348,6 @@ public class MessageRepositoryImpl implements MessageRepository {
         }
         message.setParam(consistencyMessageRecord.getParam());
         message.setFinish(consistencyMessageRecord.getFinish() == 1);
-
-        if (messageTypeRecordList != null) {
-            Optional<ConsistencyMessageTypeRecord> optional = messageTypeRecordList
-                    .stream()
-                    .filter(consistencyMessageTypeRecord
-                            -> consistencyMessageTypeRecord.getName().equals(consistencyMessageRecord.getName()))
-                    .findAny();
-            if (optional.isPresent()) {
-                message.setClassName(optional.get().getClassName());
-                message.setMethod(optional.get().getMethod());
-                message.setPeriod(optional.get().getPeriod());
-            }
-        }
-
         return message;
     }
 }

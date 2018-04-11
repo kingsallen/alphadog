@@ -5,6 +5,7 @@ package com.moseeker.consistencysuport.db.consistencydb;
 
 
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusiness;
+import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusinessType;
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessage;
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessageType;
 
@@ -28,6 +29,11 @@ public class Tables {
      * 消息业务表
      */
     public static final ConsistencyBusiness CONSISTENCY_BUSINESS = com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusiness.CONSISTENCY_BUSINESS;
+
+    /**
+     * 消息业务类型表
+     */
+    public static final ConsistencyBusinessType CONSISTENCY_BUSINESS_TYPE = com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE;
 
     /**
      * 消息表

@@ -5,6 +5,7 @@ package com.moseeker.consistencysuport.db.consistencydb;
 
 
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusiness;
+import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusinessType;
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessage;
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessageType;
 
@@ -32,7 +33,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Consistencydb extends SchemaImpl {
 
-    private static final long serialVersionUID = 826097596;
+    private static final long serialVersionUID = -1250921339;
 
     /**
      * The reference instance of <code>consistencydb</code>
@@ -43,6 +44,11 @@ public class Consistencydb extends SchemaImpl {
      * 消息业务表
      */
     public final ConsistencyBusiness CONSISTENCY_BUSINESS = com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusiness.CONSISTENCY_BUSINESS;
+
+    /**
+     * 消息业务类型表
+     */
+    public final ConsistencyBusinessType CONSISTENCY_BUSINESS_TYPE = com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE;
 
     /**
      * 消息表
@@ -80,6 +86,7 @@ public class Consistencydb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             ConsistencyBusiness.CONSISTENCY_BUSINESS,
+            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE,
             ConsistencyMessage.CONSISTENCY_MESSAGE,
             ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE);
     }
