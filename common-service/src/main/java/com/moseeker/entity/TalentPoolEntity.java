@@ -6,15 +6,23 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionProfileFilterDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionProfileFilterRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
+import com.moseeker.baseorm.db.talentpooldb.tables.daos.TalentpoolExecuteDao;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolExecute;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilterExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -29,6 +37,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -73,9 +82,17 @@ public class TalentPoolEntity {
     @Autowired
     private TalentpoolCompanyTagDao talentpoolCompanyTagDao;
     @Autowired
+    private TalentpoolProfileFilterDao talentpoolProfileFilterDao;
+    @Autowired
+    private TalentpoolProfileFilterExcuteDao talentpoolProfileFilterExcuteDao;
+    @Autowired
     private TalentpoolCompanyTagUserDao talentpoolCompanyTagUserDao;
     @Autowired
     private UserUserDao userUserDao;
+    @Autowired
+    private JobPositionProfileFilterDao jobPositionProfileFilterDao;
+    @Autowired
+    private TalentpoolExcuteDao talentpoolExcuteDao;
 
     /*
         验证hr操作user_id是否合法
@@ -114,7 +131,7 @@ public class TalentPoolEntity {
      * 验证这个公司是否开启只能人才库
      * @param hrId
      * @param companyId
-     * @return 0 公司和HR信息不能验证通过人才库开启 1 开启智能人才库hr账号为子账号 2 超级账号
+     * @return -1 免费企业 -2 hr不属于这个公司 -3 没有开启智能人才库 0 超级账号 1 子账号 2 免费账号
      */
     public int validateCompanyTalentPoolV3(int hrId, int companyId){
         HrCompanyDO companyDO = getCompanyDOByCompanyId(companyId);
@@ -223,6 +240,107 @@ public class TalentPoolEntity {
         talentpoolCompanyTagDao.updateRecords(newTagRecordList);
         //ES更新标签数据以及标签和人之间的关系
         return 0;
+    }
+
+    /**
+     *简历筛选的状态置位传入值，删除时把职位和规则的关系删除
+     * @param companyId     公司编号
+     * @param filterIds     企业筛选规则编号
+     * @return 0 执行成功  3 数据有误(根据公司编号和标签编号没有查到足量的数据)
+     */
+    @Transactional
+    public int updateProfileFilterStatusByFilterIds(int companyId, int disable, List<Integer> filterIds){
+        List<TalentpoolProfileFilterRecord> tagRecordList = getTalentpoolProfileFilterRecordByIds(companyId, filterIds);
+        if(tagRecordList == null || tagRecordList.size()==0 || tagRecordList.size() != filterIds.size()){
+            return 3;
+        }
+        List<TalentpoolProfileFilterRecord> newTagRecordList = new ArrayList<>();
+        for(TalentpoolProfileFilterRecord tagRecord : tagRecordList){
+            tagRecord.setDisable(disable);
+            newTagRecordList.add(tagRecord);
+        }
+        talentpoolProfileFilterDao.updateRecords(newTagRecordList);
+        if(disable == 0){
+            List<JobPositionProfileFilter> filterList = jobPositionProfileFilterDao.getFilterPositionByfilterIdList(filterIds);
+            if(filterList != null && filterList.size() >0 ) {
+                jobPositionProfileFilterDao.deleteDatas(filterList);
+            }
+        }
+        return 0;
+    }
+
+    /**
+     *获取企业筛选规则信息
+     * @param companyId     公司编号
+     * @param filter_id   企业筛选编号
+     * @return
+     */
+    public Map<String, Object> getProfileFilterInfo(int companyId, int filter_id){
+
+        TalentpoolProfileFilter filter = getTalentpoolProfileFilterByIdAndCompanyId(companyId, filter_id);
+        if(filter == null){
+            return null;
+        }
+        Map<String, Object> params = new HashMap<>();
+        List<TalentpoolProfileFilterExecute> filterExecutes = getTalentpoolProfileFilterExecuteByFilterId(filter_id);
+        if(filterExecutes != null && filterExecutes.size()>0) {
+            List<Integer> excureIds = filterExecutes.stream().map(m -> m.getExecuteId()).collect(Collectors.toList());
+            List<TalentpoolExecute> executeList = getTalentpoolExecuteByExcuteId(excureIds);
+            if(executeList!=null && executeList.size()>0){
+                List<Map<String, Object>> actionList = new ArrayList<>();
+                for (TalentpoolExecute execute : executeList){
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("type", execute.getType());
+                    map.put("value", execute.getValue());
+                    actionList.add(map);
+                }
+                params.put("action", actionList);
+            }
+        }
+        List<Integer> filterIds = new ArrayList<>();
+        filterIds.add(filter.getId());
+        List<JobPositionProfileFilter> jobPositionProfileFilters = jobPositionProfileFilterDao.getFilterPositionByfilterIdList(filterIds);
+        if(jobPositionProfileFilters != null && jobPositionProfileFilters.size()>0) {
+            List<Integer> positionIds = jobPositionProfileFilters.stream().map(m -> m.getPid()).collect(Collectors.toList());
+            //获取与筛选规则有关系的职位数据
+            Query query = new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.ID.getName(), positionIds, ValueOp.IN))
+                    .and(JobPosition.JOB_POSITION.COMPANY_ID.getName(),companyId).buildQuery();
+            List<JobPositionDO> positionDOS = jobPositionDao.getDatas(query);
+            List<Map<String, Object>> positionList = new ArrayList<>();
+            if ( positionDOS != null && positionDOS.size() > 0) {
+                for (JobPositionDO positionDO : positionDOS) {
+                    Map<String, Object> positionMap = new HashMap<>();
+                    positionMap.put("title", positionDO.getTitle());
+                    positionMap.put("status", positionDO.getStatus());
+                    positionMap.put("id", positionDO.getId());
+                    positionList.add(positionMap);
+                }
+            }
+            params.put("position", positionList);
+        }
+        params.put("company_filter", filter);
+
+        return params;
+    }
+
+    private TalentpoolProfileFilter getTalentpoolProfileFilterByIdAndCompanyId(int companyId, int filter_id){
+        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.ID.getName(), filter_id)
+                .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.COMPANY_ID.getName(),companyId)
+                .buildQuery();
+        TalentpoolProfileFilter filter = talentpoolProfileFilterDao.getData(query);
+        return filter;
+    }
+    private List<TalentpoolProfileFilterExecute> getTalentpoolProfileFilterExecuteByFilterId( int filter_id){
+        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE.FILTER_ID.getName(), filter_id)
+                .buildQuery();
+        List<TalentpoolProfileFilterExecute> filterExecuteList = talentpoolProfileFilterExcuteDao.getDatas(query);
+        return filterExecuteList;
+    }
+    private List<TalentpoolExecute> getTalentpoolExecuteByExcuteId( List<Integer> excureIds){
+        Query query = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute.TALENTPOOL_EXECUTE.ID.getName(), excureIds, ValueOp.IN))
+                .buildQuery();
+        List<TalentpoolExecute> filterExecuteList = talentpoolExcuteDao.getDatas(query);
+        return filterExecuteList;
     }
 
 
@@ -479,6 +597,17 @@ public class TalentPoolEntity {
     }
 
     /*
+     通过CompanyId获取简历筛选列表数据
+     */
+    public List<TalentpoolProfileFilter> handlerProfileFiltercompanyId(int companyId, int pageNum, int pageSize){
+        List<Integer> disable = new ArrayList<>();
+        disable.add(1);
+        disable.add(2);
+        List<TalentpoolProfileFilter> filterList = talentpoolProfileFilterDao.getProfileFilterByCompanyId(companyId, disable, pageNum, pageSize);
+        return filterList;
+    }
+
+    /*
     通过CompanyId获取企业标签
     */
     public int handlerCompanyTagCountBycompanyId(int companyId){
@@ -486,6 +615,61 @@ public class TalentPoolEntity {
                 .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.DISABLE.getName(),1).buildQuery();
         int count = talentpoolCompanyTagDao.getCount(query);
         return count;
+    }
+    /*
+   通过CompanyId获取企业筛选规则数量
+   */
+    public int handlerProfileFilterCountBycompanyId(int companyId){
+        List<Integer> disable = new ArrayList<>();
+        disable.add(1);
+        disable.add(2);
+        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.COMPANY_ID.getName(),companyId)
+                .and(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.DISABLE.getName(), disable, ValueOp.IN)).buildQuery();
+        int count = talentpoolProfileFilterDao.getCount(query);
+        return count;
+    }
+
+
+    /**
+     * 组装简历筛选规则列表数据
+     * @param profileFilterList 简历筛选规则列表
+     * @return
+     */
+    public List<Map<String, Object>> handlerFilterPositionCountByFilterIdList(List<TalentpoolProfileFilter> profileFilterList){
+        List<Integer> filterIds = profileFilterList.stream().map(m -> m.getId()).collect(Collectors.toList());
+        List<Map<String, Object>> companyTagMapList = new ArrayList<>();
+        //获取筛选规则和职位的关系数据
+        List<JobPositionProfileFilter> jobPositionProfileFilters = jobPositionProfileFilterDao.getFilterPositionByfilterIdList(filterIds);
+        if(jobPositionProfileFilters != null && jobPositionProfileFilters.size()>0) {
+            List<Integer> positionIds = jobPositionProfileFilters.stream().map(m -> m.getPid()).collect(Collectors.toList());
+            //获取与筛选规则有关系的职位数据
+            Query query = new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.ID.getName(), positionIds, ValueOp.IN)).buildQuery();
+            List<JobPositionDO> positionDOS = jobPositionDao.getDatas(query);
+            for (TalentpoolProfileFilter filter : profileFilterList) {
+                Map<String, Object> filterMap = new HashMap<>();
+                filterMap.put("profile_filter", filter);
+                filterMap.put("position_num", 0);
+                List<Map<String, Object>> position = new ArrayList<>();
+                if (positionDOS != null && positionDOS.size() > 0) {
+                    for (JobPositionProfileFilter positionFilter : jobPositionProfileFilters) {
+                        if (positionFilter.getPfid() == filter.getId()) {
+                            for (JobPositionDO positionDO : positionDOS) {
+                                if (positionDO.getId() == positionFilter.getPid()) {
+                                    Map<String, Object> params = new HashMap<>();
+                                    params.put("title", positionDO.getTitle());
+                                    params.put("status", positionDO.getStatus());
+                                    position.add(params);
+                                }
+                            }
+                        }
+                    }
+                }
+                filterMap.put("position", position);
+                filterMap.put("position_num", position.size());
+                companyTagMapList.add(filterMap);
+            }
+        }
+        return companyTagMapList;
     }
 
     /*
@@ -1839,6 +2023,18 @@ public class TalentPoolEntity {
     }
 
     /**
+     * 批量获取企业筛选规则record
+     * @param companyId     企业编号
+     * @param filterIds     筛选规则编号
+     * @return  标签record对象
+     */
+    private List<TalentpoolProfileFilterRecord> getTalentpoolProfileFilterRecordByIds(int companyId, List<Integer> filterIds){
+        Query query = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.ID.getName(), filterIds, ValueOp.IN))
+                .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.COMPANY_ID.getName(), companyId).buildQuery();
+        return talentpoolProfileFilterDao.getRecords(query);
+    }
+
+    /**
      * 获取标签与人之间关系对象
      * @param companyTags   标签编号
      * @return
@@ -1852,6 +2048,7 @@ public class TalentPoolEntity {
         List<TalentpoolCompanyTag> list=talentpoolCompanyTagDao.getCompanyTagByTagIdAndCompanyId(companyId,company_tag_id);
         return list;
     }
+
 
     public String convertToString(Set<Integer> list){
         if(StringUtils.isEmptySet(list)){

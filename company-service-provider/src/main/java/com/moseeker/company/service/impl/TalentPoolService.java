@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
@@ -1045,7 +1046,6 @@ public class TalentPoolService {
      * @param company_tag_ids
      * @return
      */
-
     public Response deleteCompanyTags(int hrId, int companyId, List<Integer> company_tag_ids){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
         if(flag == -1){
@@ -1167,6 +1167,91 @@ public class TalentPoolService {
             }
         }
         return ResponseUtils.fail(1, result);
+    }
+
+
+    /**
+     * 获取简历筛选规则的列表
+     * @param hrId          hr编号
+     * @param companyId     公司编号
+     * @param page_number   当前页数
+     * @param page_size     每页数据量
+     * @return              筛选列表
+     * @throws TException
+     */
+    public Response getProfileFilterList(int hrId,int companyId, int page_number, int page_size) throws TException {
+
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        PageInfo info = this.getLimitStart( page_number, page_size);
+        Map<String, Object> filterListInfo = new HashMap<>();
+        List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter> filterList = talentPoolEntity
+                .handlerProfileFiltercompanyId(companyId, info.getLimit(), info.getPageSize());
+        int count = talentPoolEntity.handlerProfileFilterCountBycompanyId(companyId);
+        if(filterList != null && filterList.size()>0){
+            List<Map<String, Object>> profileFilterList = talentPoolEntity.handlerFilterPositionCountByFilterIdList(filterList);
+
+            filterListInfo.put("filter_data", profileFilterList);
+        }
+        filterListInfo.put("total", count);
+        filterListInfo.put("page_number", page_number);
+        filterListInfo.put("page_size", info.getPageSize());
+        String result=JSON.toJSONString(filterListInfo,serializeConfig);
+        return ResponseUtils.successWithoutStringify(result);
+    }
+
+    /**
+     * 更新简历筛选规则的标签状态
+     * @param hrId          hr编号
+     * @param companyId     公司编号
+     * @param disable       规则状态
+     * @param filter_ids    规则标签
+     * @return
+     */
+    public Response handerProfileFilters(int hrId, int companyId, int disable, List<Integer> filter_ids){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        int result = talentPoolEntity.updateProfileFilterStatusByFilterIds(companyId, disable, filter_ids);
+        return ResponseUtils.success("");
+    }
+
+    /**
+     * 获取企业筛选规则信息
+     * @param hrId          hr编号
+     * @param companyId     公司编号
+     * @param filter_id     筛选规则编号
+     * @return
+     */
+    public Response getProfileFilterInfo(int hrId, int companyId, int filter_id){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        Map<String, Object> profileFilterInfo = talentPoolEntity.getProfileFilterInfo(companyId, filter_id);
+
+        return ResponseUtils.successWithoutStringify(JSON.toJSONString(profileFilterInfo, serializeConfig));
     }
 
     //处理批量操作的结果

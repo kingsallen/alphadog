@@ -15,6 +15,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
+import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -309,7 +310,47 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-        public Response deleteCompanyTagByIds(int hr_id, int company_id, List<Integer> company_tag_ids) throws BIZException, TException {
+    public Response getProfileFilterList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
+        try{
+            return talentPoolService.getProfileFilterList(hr_id,company_id,page_number, page_size);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response handerProfileFilterByIds(int hr_id, int company_id, int disable, List<Integer> filter_ids) throws BIZException, TException {
+        try{
+            return talentPoolService.handerProfileFilters(hr_id, company_id, disable, filter_ids);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getProfileFilterInfo(int hr_id, int company_id, int filter_id) throws BIZException, TException {
+        try{
+            return talentPoolService.getProfileFilterInfo(hr_id, company_id, filter_id);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response addProfileFilter(TalentpoolProfileFilterDO companyTagDO, int hr_id) throws BIZException, TException {
+        return null;
+    }
+
+    @Override
+    public Response updateProfileFilter(TalentpoolProfileFilterDO companyTagDO, int hr_id) throws BIZException, TException {
+        return null;
+    }
+
+    @Override
+    public Response deleteCompanyTagByIds(int hr_id, int company_id, List<Integer> company_tag_ids) throws BIZException, TException {
         try{
             return talentPoolService.deleteCompanyTags(hr_id,company_id,company_tag_ids);
         }catch(Exception e){
