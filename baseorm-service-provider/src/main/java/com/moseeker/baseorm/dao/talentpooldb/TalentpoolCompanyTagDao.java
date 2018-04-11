@@ -26,6 +26,7 @@ public class TalentpoolCompanyTagDao extends JooqCrudImpl<com.moseeker.baseorm.d
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> getCompanyTagByCompanyId(int companyId, int pageNum, int pageSize ){
         List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> result=create.selectFrom(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG)
                 .where(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.eq(companyId))
+                .and(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.DISABLE.eq(1))
                 .orderBy(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.UPDATE_TIME.desc())
                 .limit(pageSize).offset(pageNum)
                 .fetchInto(com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag.class);
