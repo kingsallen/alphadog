@@ -135,12 +135,12 @@ public class TalentpoolController {
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
             String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
-            if(StringUtils.isNullOrEmpty(page)){
+            if(StringUtils.isNotNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
             }
             String size=String.valueOf(data.get("page_size"));
             int pageSize=10;
-            if(StringUtils.isNullOrEmpty(size)){
+            if(StringUtils.isNotNullOrEmpty(size)){
                 pageSize=Integer.parseInt(size);
 
             }
@@ -256,13 +256,13 @@ public class TalentpoolController {
             int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
             String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
-            if(StringUtils.isNullOrEmpty(page)){
+            if(StringUtils.isNotNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
 
             }
             String size=String.valueOf(data.get("page_size"));
             int pageSize=10;
-            if(StringUtils.isNullOrEmpty(size)){
+            if(StringUtils.isNotNullOrEmpty(size)){
                 pageSize=Integer.parseInt(size);
 
             }
@@ -341,13 +341,13 @@ public class TalentpoolController {
             int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
             String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
-            if(StringUtils.isNullOrEmpty(page)){
+            if(StringUtils.isNotNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
 
             }
             String size=String.valueOf(data.get("page_size"));
             int pageSize=10;
-            if(StringUtils.isNullOrEmpty(size)){
+            if(StringUtils.isNotNullOrEmpty(size)){
                 pageSize=Integer.parseInt(size);
 
             }
