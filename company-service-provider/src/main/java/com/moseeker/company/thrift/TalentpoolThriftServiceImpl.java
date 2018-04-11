@@ -1,20 +1,29 @@
 package com.moseeker.company.thrift;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.company.bean.TalentTagPOJO;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
+import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by zztaiwll on 17/12/7.
@@ -22,13 +31,19 @@ import java.util.Set;
 @Service
 public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public TalentpoolThriftServiceImpl(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
     @Autowired
     private TalentPoolService talentPoolService;
 
     @Override
-    public Response upsertTalentPoolApp(int hrId, int companyId) throws BIZException, TException {
+    public Response upsertTalentPoolApp(int hrId, int companyId,int type) throws BIZException, TException {
         try{
-            Response result=talentPoolService.upsertTalentPoolApplication(hrId,companyId);
+            Response result=talentPoolService.upsertTalentPoolApplication(hrId,companyId,type);
             return result;
         }catch(Exception e){
             logger.info(e.getMessage(),e);
@@ -237,6 +252,120 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getPublicAndHrTalentByUserIdList(hr_id,company_id,this.ConvertListToSet(user_ids));
         }catch(Exception e){
             logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getPositionOrCompanyPast(int company_id, int type, int flag) throws BIZException, TException {
+        try{
+            List<TalentpoolPast> list=talentPoolService.getPastPositionOrCompany(company_id,type,flag);
+            String res= JSON.toJSONString(list,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+            return ResponseUtils.successWithoutStringify(res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+
+    }
+
+    @Override
+    public Response addPositionOrCompanyPast(int company_id, int type, int flag, String name) throws BIZException, TException {
+        try{
+            int result=talentPoolService.addPastPositionOrCompany(company_id,type,flag,name);
+            if(result==-1){
+                return ResponseUtils.fail(1,"职务或公司名称不能为空");
+            }
+            return ResponseUtils.success(result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getCompanyTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
+        try{
+            return talentPoolService.getCompanyTagList(hr_id,company_id,page_number, page_size);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getTalentTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
+        try{
+            TalentTagPOJO pojo=talentPoolService.getTalentTagByPage(hr_id,company_id,page_number,page_size);
+            if(pojo.getFlag()==1){
+                return ResponseUtils.fail(1,"该hr不属于该company_id");
+            }
+            String res= JSON.toJSONString(pojo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+            return ResponseUtils.successWithoutStringify(res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+        public Response deleteCompanyTagByIds(int hr_id, int company_id, List<Integer> company_tag_ids) throws BIZException, TException {
+        try{
+            return talentPoolService.deleteCompanyTags(hr_id,company_id,company_tag_ids);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getCompanyIdInfo(int hr_id, int company_id, int company_tag_id) throws BIZException, TException {
+        try{
+            Map<String, Object> result =  talentPoolService.getCompanyTagInfo(hr_id,company_id, company_tag_id);
+            if(result != null && result.get("responseStatus")!=null) {
+                int resultStatus = (Integer)result.get("responseStatus");
+                if (resultStatus == 0) {
+                    if(result.get("data") != null) {
+                        Map<String, Object> resultData = (Map<String, Object>)result.get("data");
+                        String result1 = JSON.toJSONString(resultData, serializeConfig);
+                        return ResponseUtils.successWithoutStringify(result1);
+                    }else{
+                        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+                    }
+                } else if (resultStatus == -1) {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+                } else if (resultStatus == -2) {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+                } else if (resultStatus == -3) {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+                } else {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+                }
+            }else{
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            }
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response addCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id) throws BIZException, TException {
+        try{
+            return talentPoolService.addCompanyTag(companyTagDO, hr_id);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response updateCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id) throws BIZException, TException {
+        try{
+            return talentPoolService.updateCompanyTag(companyTagDO, hr_id);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
     }

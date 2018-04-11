@@ -760,19 +760,20 @@ public class CompanyService {
      */
     @CounterIface
     public int getTalentPoolSwitch(int hrId,int companyId){
+        HrCompanyRecord companyRecord=this.getCompanyById(companyId);
+        if(companyRecord.getType()!=0){
+            return -3;
+        }
         int count=this.validateHrAndCompany(hrId,companyId);
         if(count==0){
-            return 2;
+            return -1;
         }
         HrCompanyConfRecord record=this.getHrCompanyConfRecordByCompanyId(companyId);
         if(record==null){
-            return 3;
+            return -2;
         }
         int talentPoolStatus=record.getTalentpoolStatus();
-        if(talentPoolStatus>0){
-            return 1;
-        }
-        return 0;
+        return talentPoolStatus;
     }
     /*
      获取此账号是不是此公司的账号
@@ -781,6 +782,14 @@ public class CompanyService {
         Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("activation",1).and("disable",1).buildQuery();
         int count =userHrAccountDao.getCount(query);
         return count;
+    }
+    /*
+    根据id获取公司的信息
+     */
+    private HrCompanyRecord getCompanyById(int companyId){
+        Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
+        HrCompanyRecord record=companyDao.getRecord(query);
+        return record;
     }
 
     /*

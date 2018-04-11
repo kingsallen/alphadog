@@ -6,7 +6,14 @@ package com.moseeker.baseorm.db.talentpooldb;
 
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload;
@@ -36,7 +43,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Talentpooldb extends SchemaImpl {
 
-    private static final long serialVersionUID = 28425341;
+    private static final long serialVersionUID = -700500264;
 
     /**
      * The reference instance of <code>talentpooldb</code>
@@ -49,14 +56,49 @@ public class Talentpooldb extends SchemaImpl {
     public final TalentpoolApplication TALENTPOOL_APPLICATION = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication.TALENTPOOL_APPLICATION;
 
     /**
-     * 人才库人HR与备注的关系
+     * 人才库人HR与标签的关系
      */
     public final TalentpoolComment TALENTPOOL_COMMENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment.TALENTPOOL_COMMENT;
+
+    /**
+     * 企业标签表
+     */
+    public final TalentpoolCompanyTag TALENTPOOL_COMPANY_TAG = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG;
+
+    /**
+     * 企业标签和人才关系表
+     */
+    public final TalentpoolCompanyTagUser TALENTPOOL_COMPANY_TAG_USER = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER;
+
+    /**
+     * 人才库邮件模板表
+     */
+    public final TalentpoolEmail TALENTPOOL_EMAIL = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail.TALENTPOOL_EMAIL;
+
+    /**
+     * 具体执行规则配置表
+     */
+    public final TalentpoolExecute TALENTPOOL_EXECUTE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute.TALENTPOOL_EXECUTE;
 
     /**
      * 人才库人收藏记录
      */
     public final TalentpoolHrTalent TALENTPOOL_HR_TALENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent.TALENTPOOL_HR_TALENT;
+
+    /**
+     * 人才库使用的曾任职务和曾任公司
+     */
+    public final TalentpoolPast TALENTPOOL_PAST = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast.TALENTPOOL_PAST;
+
+    /**
+     * 简历筛选表
+     */
+    public final TalentpoolProfileFilter TALENTPOOL_PROFILE_FILTER = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER;
+
+    /**
+     * 简历筛选项执行表
+     */
+    public final TalentpoolProfileFilterExecute TALENTPOOL_PROFILE_FILTER_EXECUTE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE;
 
     /**
      * 人才库标签表
@@ -105,7 +147,14 @@ public class Talentpooldb extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             TalentpoolApplication.TALENTPOOL_APPLICATION,
             TalentpoolComment.TALENTPOOL_COMMENT,
+            TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG,
+            TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER,
+            TalentpoolEmail.TALENTPOOL_EMAIL,
+            TalentpoolExecute.TALENTPOOL_EXECUTE,
             TalentpoolHrTalent.TALENTPOOL_HR_TALENT,
+            TalentpoolPast.TALENTPOOL_PAST,
+            TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER,
+            TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE,
             TalentpoolTag.TALENTPOOL_TAG,
             TalentpoolTalent.TALENTPOOL_TALENT,
             TalentpoolUpload.TALENTPOOL_UPLOAD,

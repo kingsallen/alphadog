@@ -17,6 +17,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
@@ -46,7 +47,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -19215629;
+    private static final long serialVersionUID = 722876357;
 
     /**
      * The reference instance of <code>jobdb</code>
@@ -119,6 +120,11 @@ public class Jobdb extends SchemaImpl {
     public final JobPositionHrCompanyFeature JOB_POSITION_HR_COMPANY_FEATURE = com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE;
 
     /**
+     * 简历筛选关联职位中间表
+     */
+    public final JobPositionProfileFilter JOB_POSITION_PROFILE_FILTER = com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER;
+
+    /**
      * 职位分享描述配置模板
      */
     public final JobPositionShareTplConf JOB_POSITION_SHARE_TPL_CONF = com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF;
@@ -176,6 +182,7 @@ public class Jobdb extends SchemaImpl {
             JobPositionCity.JOB_POSITION_CITY,
             JobPositionExt.JOB_POSITION_EXT,
             JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE,
+            JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER,
             JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,
             JobPositionTopic.JOB_POSITION_TOPIC,
             JobResumeOther.JOB_RESUME_OTHER,

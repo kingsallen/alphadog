@@ -15,6 +15,7 @@ import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -132,14 +133,17 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         }
         for(String key:map.keySet()){
             if(key.contains("_time")&&map.get(key) instanceof Date){
-                map.put(key,map.get(key).toString());
+                String time=map.get(key).toString();
+                if(time.length()>19){
+                    time=time.substring(0,19);
+                }
+                map.put(key,time);
             }
         }
         return map;
     }
 
     public List<Map<String,Object>> getMaps(Query query) {
-
         List<Map<String,Object>> list=new LocalQuery<>(create, table, query).convertToResultLimit().fetchMaps();
         if(StringUtils.isEmptyList(list)){
             return null;
@@ -147,7 +151,11 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         for(Map<String,Object> map:list){
             for(String key:map.keySet()){
                 if(key.contains("_time")&&map.get(key) instanceof Date){
-                    map.put(key,map.get(key).toString());
+                    String time=map.get(key).toString();
+                    if(time.length()>19){
+                        time=time.substring(0,19);
+                    }
+                    map.put(key,time);
                 }
             }
         }
