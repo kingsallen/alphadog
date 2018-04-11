@@ -138,6 +138,7 @@ public class TalentpoolSearchengine {
             SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
             String[] returnParams={"user.profiles.profile.user_id"};
             builder.setFetchSource(returnParams,null);
+            builder.setSize(100000);
             logger.info("============================================");
             logger.info(builder.toString());
             logger.info("============================================");
