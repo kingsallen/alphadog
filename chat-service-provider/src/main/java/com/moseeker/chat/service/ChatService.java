@@ -471,8 +471,11 @@ public class ChatService {
      * 添加聊天内容，并修改未读消息数量
      * @param chat 聊天信息
      */
+    
     public int saveChat(ChatVO chat) throws BIZException {
-        requiredValidChat(chat);
+        // TODO: 2018/4/11
+        throw new NullPointerException();
+        /*requiredValidChat(chat);
 
         HrWxHrChatListDO chatRoom = requiredNotNullChatRoom(chat.getRoomId());
 
@@ -507,7 +510,7 @@ public class ChatService {
 
         //修改未读消息数量
         pool.startTast(() -> chaoDao.addUnreadCount(chat.getRoomId(), chat.getSpeaker(), date));
-        return result;
+        return result;*/
     }
 
     /**
