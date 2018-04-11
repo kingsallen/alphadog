@@ -146,6 +146,7 @@ public class CompanyTagService {
             }
         }
     }
+
     public int getTagtalentNum(int hrId,int companyId,int tagId) throws TException {
         Map<String,String> params=new HashMap<>();
         int count=talentPoolEntity.valiadteMainAccount(hrId,companyId);
@@ -162,9 +163,11 @@ public class CompanyTagService {
         params.put("tag_ids","talent");
         params.put("company_id",companyId+"");
         params.put("hr_account_id",hrId+"");
+        params.put("company_tag",tagId+"");
         int totalNum=service.talentSearchNum(params);
         return totalNum;
     }
+
     //获取企业标签是否正在执行
     public boolean getCompanyTagIsExecute(int tagId){
         String result=client.get(Constant.APPID_ALPHADOG, COMPANYTAG_ES_STATUS,
