@@ -683,8 +683,9 @@ public class TalentpoolController {
     public String updateCompanyTag(HttpServletRequest request) throws Exception {
         try {
             Params<String, Object> data = ParamUtils.parseRequestParam(request);
+
             String hrId=String.valueOf(data.get("hr_id"));
-            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+            if(data.get("hr_id") == null || StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
             TalentpoolCompanyTagDO companyTagDO = ParamUtils.initModelForm(data, TalentpoolCompanyTagDO.class);
