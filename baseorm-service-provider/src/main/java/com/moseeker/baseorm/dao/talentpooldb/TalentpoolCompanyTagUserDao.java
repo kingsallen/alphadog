@@ -6,6 +6,8 @@ import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagU
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.moseeker.common.util.StringUtils;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -61,7 +63,17 @@ public class TalentpoolCompanyTagUserDao extends JooqCrudImpl<com.moseeker.baseo
         }
         return 0;
     }
-
+    //删除人才和标签的关系
+    public int batchDeleteTagAndUser(List<TalentpoolCompanyTagUserRecord> list){
+        if(StringUtils.isEmptyList(list)){
+            return 1;
+        }
+        for(TalentpoolCompanyTagUserRecord record:list){
+            create.deleteFrom(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER).where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID.eq(record.getTagId()))
+                    .and(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.eq(record.getUserId())).execute();
+        }
+        return 1;
+    }
 
 
 }
