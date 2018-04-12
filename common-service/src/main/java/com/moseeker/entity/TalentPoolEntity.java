@@ -261,9 +261,13 @@ public class TalentPoolEntity {
         }
         talentpoolProfileFilterDao.updateRecords(newTagRecordList);
         if(disable == 0){
-            List<JobPositionProfileFilter> filterList = jobPositionProfileFilterDao.getFilterPositionByfilterIdList(filterIds);
+            List<JobPositionProfileFilterRecord> filterList = jobPositionProfileFilterDao.getFilterPositionRecordByfilterIdList(filterIds);
             if(filterList != null && filterList.size() >0 ) {
-                jobPositionProfileFilterDao.deleteDatas(filterList);
+                jobPositionProfileFilterDao.deleteRecords(filterList);
+            }
+            List<TalentpoolProfileFilterExecuteRecord> filterExecuteList = talentpoolProfileFilterExcuteDao.getFilterExecuteRecordByfilterIdList(filterIds);
+            if(filterExecuteList != null && filterExecuteList.size() >0 ) {
+                talentpoolProfileFilterExcuteDao.deleteRecords(filterExecuteList);
             }
         }
         return 0;
@@ -324,22 +328,23 @@ public class TalentPoolEntity {
     }
 
     private TalentpoolProfileFilter getTalentpoolProfileFilterByIdAndCompanyId(int companyId, int filter_id){
-        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.ID.getName(), filter_id)
-                .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.COMPANY_ID.getName(),companyId)
-                .buildQuery();
-        TalentpoolProfileFilter filter = talentpoolProfileFilterDao.getData(query);
-        return filter;
+        List<Integer> disable = new ArrayList<>();
+        disable.add(1);
+        disable.add(2);
+        List<TalentpoolProfileFilter> filter = talentpoolProfileFilterDao.getTalentpoolProfileFilterByIdAndCompanyId(companyId, disable, filter_id);
+        if(filter != null && filter.size()==1){
+            return filter.get(0);
+        }
+        return null;
     }
     private List<TalentpoolProfileFilterExecute> getTalentpoolProfileFilterExecuteByFilterId( int filter_id){
-        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE.FILTER_ID.getName(), filter_id)
-                .buildQuery();
-        List<TalentpoolProfileFilterExecute> filterExecuteList = talentpoolProfileFilterExcuteDao.getDatas(query);
+        List<Integer> filterIdList = new ArrayList<>();
+        filterIdList.add(filter_id);
+        List<TalentpoolProfileFilterExecute> filterExecuteList = talentpoolProfileFilterExcuteDao.getFilterExecuteByfilterIdList(filterIdList);
         return filterExecuteList;
     }
     private List<TalentpoolExecute> getTalentpoolExecuteByExcuteId( List<Integer> excureIds){
-        Query query = new Query.QueryBuilder().where(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute.TALENTPOOL_EXECUTE.ID.getName(), excureIds, ValueOp.IN))
-                .buildQuery();
-        List<TalentpoolExecute> filterExecuteList = talentpoolExcuteDao.getDatas(query);
+        List<TalentpoolExecute> filterExecuteList = talentpoolExcuteDao.getTalentpoolExecuteByExcuteId(excureIds);
         return filterExecuteList;
     }
 
@@ -573,6 +578,16 @@ public class TalentPoolEntity {
         return companyDO;
     }
 
+    /*
+   获取公司是否是母公司
+  */
+    public HrCompanyDO getCompanyDOByCompanyIdAndParentId(int companyId){
+        Query query = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(), companyId)
+                .and(HrCompany.HR_COMPANY.PARENT_ID.getName(), 0).buildQuery();
+        HrCompanyDO companyDO = hrCompanyDao.getData(query);
+        return companyDO;
+    }
+
 
     /*
      通过user_Hr_Account的list获取hrIdList
@@ -635,40 +650,44 @@ public class TalentPoolEntity {
      * @param profileFilterList 简历筛选规则列表
      * @return
      */
-    public List<Map<String, Object>> handlerFilterPositionCountByFilterIdList(List<TalentpoolProfileFilter> profileFilterList){
+    public List<Map<String, Object>> handlerFilterPositionCountByFilterIdList(List<TalentpoolProfileFilter> profileFilterList, int company_id){
         List<Integer> filterIds = profileFilterList.stream().map(m -> m.getId()).collect(Collectors.toList());
         List<Map<String, Object>> companyTagMapList = new ArrayList<>();
         //获取筛选规则和职位的关系数据
         List<JobPositionProfileFilter> jobPositionProfileFilters = jobPositionProfileFilterDao.getFilterPositionByfilterIdList(filterIds);
+        List<JobPositionDO> positionDOS = new ArrayList<>();
         if(jobPositionProfileFilters != null && jobPositionProfileFilters.size()>0) {
             List<Integer> positionIds = jobPositionProfileFilters.stream().map(m -> m.getPid()).collect(Collectors.toList());
             //获取与筛选规则有关系的职位数据
-            Query query = new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.ID.getName(), positionIds, ValueOp.IN)).buildQuery();
-            List<JobPositionDO> positionDOS = jobPositionDao.getDatas(query);
-            for (TalentpoolProfileFilter filter : profileFilterList) {
-                Map<String, Object> filterMap = new HashMap<>();
-                filterMap.put("profile_filter", filter);
-                filterMap.put("position_num", 0);
-                List<Map<String, Object>> position = new ArrayList<>();
-                if (positionDOS != null && positionDOS.size() > 0) {
-                    for (JobPositionProfileFilter positionFilter : jobPositionProfileFilters) {
-                        if (positionFilter.getPfid() == filter.getId()) {
-                            for (JobPositionDO positionDO : positionDOS) {
-                                if (positionDO.getId() == positionFilter.getPid()) {
-                                    Map<String, Object> params = new HashMap<>();
-                                    params.put("title", positionDO.getTitle());
-                                    params.put("status", positionDO.getStatus());
-                                    position.add(params);
-                                }
+            Query query = new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.ID.getName(), positionIds, ValueOp.IN))
+                    .and(JobPosition.JOB_POSITION.COMPANY_ID.getName(), company_id).buildQuery();
+            positionDOS = jobPositionDao.getDatas(query);
+        }
+
+        for (TalentpoolProfileFilter filter : profileFilterList) {
+            Map<String, Object> filterMap = new HashMap<>();
+            filterMap.put("profile_filter", filter);
+            filterMap.put("position_num", 0);
+            List<Map<String, Object>> position = new ArrayList<>();
+            if (positionDOS != null && positionDOS.size() > 0 && jobPositionProfileFilters != null && jobPositionProfileFilters.size()>0) {
+                for (JobPositionProfileFilter positionFilter : jobPositionProfileFilters) {
+                    if (positionFilter.getPfid() == filter.getId()) {
+                        for (JobPositionDO positionDO : positionDOS) {
+                            if (positionDO.getId() == positionFilter.getPid()) {
+                                Map<String, Object> params = new HashMap<>();
+                                params.put("title", positionDO.getTitle());
+                                params.put("status", positionDO.getStatus());
+                                position.add(params);
                             }
                         }
                     }
                 }
-                filterMap.put("position", position);
-                filterMap.put("position_num", position.size());
-                companyTagMapList.add(filterMap);
             }
+            filterMap.put("position", position);
+            filterMap.put("position_num", position.size());
+            companyTagMapList.add(filterMap);
         }
+
         return companyTagMapList;
     }
 

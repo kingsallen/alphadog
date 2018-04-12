@@ -39,6 +39,7 @@ import com.moseeker.entity.pojo.talentpool.PageInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import java.util.*;
 
@@ -1180,7 +1181,10 @@ public class TalentPoolService {
      * @throws TException
      */
     public Response getProfileFilterList(int hrId,int companyId, int page_number, int page_size) throws TException {
-
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(companyId);
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
         if(flag == -1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
@@ -1197,7 +1201,7 @@ public class TalentPoolService {
                 .handlerProfileFiltercompanyId(companyId, info.getLimit(), info.getPageSize());
         int count = talentPoolEntity.handlerProfileFilterCountBycompanyId(companyId);
         if(filterList != null && filterList.size()>0){
-            List<Map<String, Object>> profileFilterList = talentPoolEntity.handlerFilterPositionCountByFilterIdList(filterList);
+            List<Map<String, Object>> profileFilterList = talentPoolEntity.handlerFilterPositionCountByFilterIdList(filterList, companyId);
 
             filterListInfo.put("filter_data", profileFilterList);
         }
@@ -1217,6 +1221,10 @@ public class TalentPoolService {
      * @return
      */
     public Response handerProfileFilters(int hrId, int companyId, int disable, List<Integer> filter_ids){
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(companyId);
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
         if(flag == -1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
@@ -1239,6 +1247,10 @@ public class TalentPoolService {
      * @return
      */
     public Response getProfileFilterInfo(int hrId, int companyId, int filter_id){
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(companyId);
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
         if(flag == -1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);

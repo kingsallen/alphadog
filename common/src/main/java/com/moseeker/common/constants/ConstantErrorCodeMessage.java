@@ -78,8 +78,8 @@ public final class ConstantErrorCodeMessage {
     public static final String COMPANY_STATUS_NOT_AUTHORITY = "{'status':34001,'message':'免费公司没有权限'}";
     public static final String COMPANY_CONF_TALENTPOOL_NOT = "{'status':34002,'message':'该公司还没有开启智能人才库'}";
     public static final String HR_NOT_IN_COMPANY = "{'status':34003,'message':'该hr不属于该company_id'}";
-    public static final String TALENT_POOL_ACCOUNT_STATUS = "{'status':34002,'message':'子账号没有操作权限'}";
-
+    public static final String TALENT_POOL_ACCOUNT_STATUS = "{'status':34005,'message':'子账号没有操作权限'}";
+    public static final String COMPANY_NOT_MU = "{'status':34006,'message':'company_id不为母公司编号'}";
     public static final String COMPANY_SUPER_REPEART_NAME = "{'status':33001, 'message':'和超级账号重名'}";
 
     // 申请服务ERRCODE说明定义 4字头
