@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -276,8 +277,9 @@ public class ChatService {
      * @param pageSize 分页信息
      * @return 聊天室分页信息
      */
-    public UserChatRoomsVO listUserChatRoom(int userId, int pageNo, int pageSize) {
-        logger.info("userChatRoomsVO userId:{}, pageNo:{} pageSize:{}", userId, pageNo, pageSize);
+    public UserChatRoomsVO listUserChatRoom(int userId, int pageNo, int pageSize) throws SQLException {
+        throw new SQLException();
+        /*logger.info("userChatRoomsVO userId:{}, pageNo:{} pageSize:{}", userId, pageNo, pageSize);
         UserChatRoomsVO userChatRoomsVO = new UserChatRoomsVO();
 
         //计算数量的操作理论上是最快的，所以用它去判断是否有聊天室
@@ -299,7 +301,7 @@ public class ChatService {
                 logger.info("roomIdArray:{}", roomIdArray);
                 logger.info("hrIdArray:{}", hrIdArray);
 
-                /** 异步查找聊天室内容，HR信息，HR所属的公司信息 */
+                *//** 异步查找聊天室内容，HR信息，HR所属的公司信息 *//*
                 Future chatRoomsFuture = pool.startTast(() -> chaoDao.listChatRoom(roomIdArray));
                 Future hrsFuture = pool.startTast(() -> chaoDao.listHr(hrIdArray));
                 Future companyFuture = pool.startTast(() -> chaoDao.listCompany(hrIdArray));
@@ -309,7 +311,7 @@ public class ChatService {
                     UserChatRoomVO userChatRoomVO = new UserChatRoomVO();
                     userChatRoomVO.setId(hrChatUnreadCountDO.getRoomId());
 
-                    /** 匹配聊天室的状态的和最后发送消息的时间 */
+                    *//** 匹配聊天室的状态的和最后发送消息的时间 *//*
                     try {
                         List<HrWxHrChatListDO> chatRooms = (List<HrWxHrChatListDO>) chatRoomsFuture.get();
                         if(chatRooms != null && chatRooms.size() > 0) {
@@ -325,7 +327,7 @@ public class ChatService {
                         logger.error(e.getMessage(), e);
                     }
 
-                    /** 匹配HR的编号、头像和名称 */
+                    *//** 匹配HR的编号、头像和名称 *//*
                     try {
                         List<UserHrAccountDO> hrAccountDOList = (List<UserHrAccountDO>) hrsFuture.get();
                         if(hrAccountDOList != null && hrAccountDOList.size() > 0) {
@@ -337,7 +339,7 @@ public class ChatService {
                                 userChatRoomVO.setName(hrAccountDOOptional.get().getUsername());
                                 userChatRoomVO.setHeadImgUrl(hrAccountDOOptional.get().getHeadimgurl());
 
-                                /** 根据HR所属公司，匹配公司的名称和logo */
+                                *//** 根据HR所属公司，匹配公司的名称和logo *//*
                                 Map<Integer, HrCompanyDO> companyDOMap = (Map<Integer, HrCompanyDO>) companyFuture.get();
                                 if(companyDOMap != null && companyDOMap.size() > 0) {
                                     if(companyDOMap.containsKey(hrAccountDOOptional.get().getId()) && companyDOMap.get(hrAccountDOOptional.get().getId()).getId() > 0) {
@@ -363,7 +365,7 @@ public class ChatService {
             }
         }
         logger.info("userChatRoomsVO result:{}", userChatRoomsVO);
-        return userChatRoomsVO;
+        return userChatRoomsVO;*/
     }
 
     /**
