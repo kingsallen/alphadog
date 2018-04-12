@@ -81,6 +81,9 @@ public class TalentpoolSearchengine {
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleData(response, "users");
+            logger.info("=========================================");
+            logger.info(JSON.toJSONString(result));
+            logger.info("=========================================");
             int total=(int)((long)result.get("totalNum"));
             return total;
         } catch (Exception e) {
