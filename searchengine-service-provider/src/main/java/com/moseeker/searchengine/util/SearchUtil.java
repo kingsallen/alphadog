@@ -661,7 +661,7 @@ public class SearchUtil {
         List<String> tagIdList=this.stringConvertList(CompanyTag);
 
         if(tagIdList != null && tagIdList.size() >0){
-            QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.company_tags.id",tagIdList);
+            QueryBuilder query2=QueryBuilders.termsQuery("user.company_tag.id",tagIdList);
             ((BoolQueryBuilder) builder).must(query2);
 //            if(tagIdList.size()==1){
 //                handleMatch(Integer.parseInt(tagIdList.get(0)),builder,"user.talent_pool.company_tags.id");
