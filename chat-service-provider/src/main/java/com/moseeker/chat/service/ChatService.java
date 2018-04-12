@@ -474,7 +474,7 @@ public class ChatService {
      * @param chat 聊天信息
      */
     
-    public int saveChat(ChatVO chat) throws BIZException, SQLException {
+    public int saveChat(ChatVO chat) throws BIZException {
         requiredValidChat(chat);
 
         HrWxHrChatListDO chatRoom = requiredNotNullChatRoom(chat.getRoomId());
@@ -679,7 +679,7 @@ public class ChatService {
      * @param resultOfSaveRoomVO 进入聊天室返回的结果
      * @return 聊天记录
      */
-    private ChatVO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO, boolean is_gamma) throws BIZException, SQLException {
+    private ChatVO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO, boolean is_gamma) throws BIZException {
 
         logger.info("createChat ResultOfSaveRoomVO:{}, is_gamma:{}", resultOfSaveRoomVO, is_gamma);
         //1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
