@@ -49,5 +49,10 @@ public class CarnocOccupationResultHandler extends DefaultOccupationResultHandle
         public List<Occupation> toList(JSONObject msg) {
             return super.toList(msg);
         }
+
+        @Override
+        protected String occupationKey() {
+            return "functions";
+        }
     }
 }
