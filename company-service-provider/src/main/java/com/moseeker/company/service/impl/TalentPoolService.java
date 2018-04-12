@@ -746,12 +746,12 @@ public class TalentPoolService {
      验证公司
      */
     private int validateCompany(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+        Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
         HrCompanyRecord record=hrCompanyDao.getRecord(query);
         if(record==null){
            return -1;
         }
-        if(record.getType()!=1){
+        if(record.getType()!=0){
             return -2;
         }
         Query query1=new Query.QueryBuilder().where("company_id",companyId).and("disable",1).and("activation",1).and("account_type",2).buildQuery();
