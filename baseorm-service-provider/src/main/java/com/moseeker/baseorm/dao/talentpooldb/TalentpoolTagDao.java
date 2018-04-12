@@ -41,7 +41,7 @@ public class TalentpoolTagDao extends JooqCrudImpl<TalentpoolTag,TalentpoolTagRe
      */
     public List<TalentpoolTag> getTagByPage(int hrId,int pageFrom,int pageSize){
         List<TalentpoolTag> list=create.selectFrom(TALENTPOOL_TAG).where(TALENTPOOL_TAG.HR_ID.eq(hrId))
-                .orderBy(TALENTPOOL_TAG.UPDATE_TIME).fetchInto(TalentpoolTag.class);
+                .orderBy(TALENTPOOL_TAG.UPDATE_TIME.desc()).limit(pageSize).offset(pageFrom).fetchInto(TalentpoolTag.class);
         return list;
     }
 }

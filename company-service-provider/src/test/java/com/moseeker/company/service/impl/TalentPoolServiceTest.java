@@ -10,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -86,7 +84,7 @@ public class TalentPoolServiceTest {
     public void testGetAllHrTag() throws TException {
         int hrId=82690;
         int companyId=4;
-        Response res=talentPoolService.getAllHrTag(hrId,companyId,1,100);
+        Map<String,Object> res=talentPoolService.getAllHrTag(hrId,companyId,1,100);
         System.out.println(res);
 
     }
