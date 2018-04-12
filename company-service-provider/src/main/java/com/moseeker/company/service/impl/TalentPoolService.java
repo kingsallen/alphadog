@@ -466,15 +466,18 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
-    public Response getAllHrTag(int hrId,int companyId,int pageNum,int pageSize)throws TException{
+    public Map<String,Object> getAllHrTag(int hrId,int companyId,int pageNum,int pageSize)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
-            return ResponseUtils.fail(1,"该hr不属于该company_id");
+            Map<String,Object> result=new HashMap<>();
+            result.put("flag",1);
+            return result;
         }
-        Map<String,Object> result=this.handleTagData(hrId,pageNum,pageSize);
+        PageInfo info=this.getLimitStart(pageNum,pageSize);
+        Map<String,Object> result=this.handleTagData(hrId,pageNum,info.getLimit(),info.getPageSize());
         logger.info("======================");
         logger.info(JSON.toJSONString(result));
-        return ResponseUtils.success(result);
+        return result;
     }
 
     @CounterIface
@@ -578,7 +581,7 @@ public class TalentPoolService {
             return pojo;
         }
         PageInfo pageInfo=getLimitStart(page,pageSize);
-        pojo= this.getTagData(hrId,pageInfo.getLimit(),pageSize);
+        pojo= this.getTagData(hrId,page,pageInfo.getLimit(),pageSize);
         return pojo;
     }
 
@@ -933,7 +936,7 @@ public class TalentPoolService {
                         String name=(String)map1.get("name");
                         if(id==tagId){
                             map.put("name",name);
-                            map.put("Talent",map1.get("color"));
+                            map.put("color",map1.get("color"));
                         }
                     }
                     tagList.add(map);
@@ -1416,11 +1419,12 @@ public class TalentPoolService {
     /*
      处理hr下分页获取人才数据
      */
-    private Map<String,Object> handleTagData(int hrId,int pageNum,int pageSize){
+    private Map<String,Object> handleTagData(int hrId,int pageNum,int pageFrom,int pageSize){
         int count=this.getTagByHrCount(hrId);
         double page=((double)count)/pageSize;
         int total= (int) Math.ceil(page);
-        List<Map<String,Object>> hrTagList=talentPoolEntity.getTagByHr(hrId,pageNum,pageSize);
+//        List<Map<String,Object>> hrTagList=talentPoolEntity.getTagByHr(hrId,pageNum,pageSize);
+        List<TalentpoolTag> hrTagList=talentpoolTagDao.getTagByPage(hrId,pageFrom,pageSize);
         Map<String,Object> result=new HashMap<>();
         result.put("page_number",pageNum);
         result.put("page_size",pageSize);
@@ -1430,9 +1434,9 @@ public class TalentPoolService {
         return result;
     }
 
-    private TalentTagPOJO getTagData(int hrId, int pageNum, int pageSize){
+    private TalentTagPOJO getTagData(int hrId,int pageNum, int pageForm, int pageSize){
         int count=this.getTagByHrCount(hrId);
-        List<TalentpoolTag> hrTagList=talentpoolTagDao.getTagByPage(hrId,pageNum,pageSize);
+        List<TalentpoolTag> hrTagList=talentpoolTagDao.getTagByPage(hrId,pageForm,pageSize);
         TalentTagPOJO talentTagPOJO=new TalentTagPOJO();
         talentTagPOJO.setPage_number(pageNum);
         talentTagPOJO.setPage_size(pageSize);
