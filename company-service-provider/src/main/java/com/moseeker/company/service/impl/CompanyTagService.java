@@ -245,7 +245,7 @@ public class CompanyTagService {
                 return false;
             }
         }
-        if(tag.getSex()!=2){
+        if(tag.getSex()!=0){
             boolean flag=this.validateSex(tag.getSex(),profiles);
             if(flag==false){
                 return false;
