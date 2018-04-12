@@ -1452,7 +1452,7 @@ public class TalentPoolEntity {
         userIds=this.getNoCollectionUserId(userIds,companyId);
         List<TalentpoolCompanyTagUserRecord> data=this.getHandlerCompanyTagData(userIds,companyId);
         if(!StringUtils.isEmptyList(data)){
-            int [] result=talentpoolCompanyTagUserDao.deleteRecords(data);
+            int result=talentpoolCompanyTagUserDao.batchDeleteTagAndUser(data);
         }
 
     }
