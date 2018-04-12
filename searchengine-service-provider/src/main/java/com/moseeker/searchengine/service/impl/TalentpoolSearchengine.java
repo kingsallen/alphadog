@@ -640,7 +640,16 @@ public class TalentpoolSearchengine {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         String tagIds=params.get("tag_ids");
-
+        //此处尤其要记住。当企业标签不为空时，根据是否是主账号将tagids置位alltalent和talent
+        String company_tag=params.get("company_tag");
+        if(StringUtils.isNotNullOrEmpty(company_tag)){
+            String allPublisher=params.get("all_publisher");
+            if(StringUtils.isNotNullOrEmpty(allPublisher)&&"1".equals(allPublisher)){
+                tagIds="alltalent";
+            }else{
+                tagIds="talent";
+            }
+        }
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
         if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
