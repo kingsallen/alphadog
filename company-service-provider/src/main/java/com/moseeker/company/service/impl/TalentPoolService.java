@@ -38,7 +38,7 @@ import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.talentpool.PageInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.struct.ActiveForm;
+import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.PositionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
@@ -1266,7 +1266,7 @@ public class TalentPoolService {
         return ResponseUtils.successWithoutStringify(JSON.toJSONString(profileFilterInfo, serializeConfig));
     }
 
-    public Response addProfileFilter(TalentpoolProfileFilterDO filterDO, List<ActiveForm> activeFormList, List<PositionForm> positionFormList, int hr_id){
+    public Response addProfileFilter(TalentpoolProfileFilterDO filterDO, List<ActionForm> ActionFormList, List<PositionForm> positionFormList, int hr_id){
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(filterDO.getCompany_id());
         if(companyDO == null){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
@@ -1285,7 +1285,31 @@ public class TalentPoolService {
         if("OK".equals(result)){
             String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
             if(StringUtils.isNullOrEmpty(filterString)){
-                int id = talentPoolEntity.addCompanyProfileFilter(filterDO, activeFormList, positionFormList);
+                int id = talentPoolEntity.addCompanyProfileFilter(filterDO, ActionFormList, positionFormList);
+                return  ResponseUtils.success("");
+            }else{
+                return ResponseUtils.fail(1, filterString);
+            }
+        }
+        return ResponseUtils.fail(1, result);
+    }
+
+    public Response updateProfileFilter(TalentpoolProfileFilterDO filterDO, List<ActionForm> ActionFormList, List<PositionForm> positionFormList, int hr_id){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,filterDO.getCompany_id());
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        String result = talentPoolEntity.validateCompanyTalentPoolV3ByFilterName(filterDO.getName(), filterDO.getCompany_id(), filterDO.getId());
+        if("OK".equals(result)){
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
+            if(StringUtils.isNullOrEmpty(filterString)){
+                int id = talentPoolEntity.updateCompanyProfileFilter(filterDO, ActionFormList, positionFormList);
                 return  ResponseUtils.success("");
             }else{
                 return ResponseUtils.fail(1, filterString);

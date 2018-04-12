@@ -14,7 +14,7 @@ import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
-import com.moseeker.thrift.gen.company.struct.ActiveForm;
+import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.PositionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
@@ -342,7 +342,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response addProfileFilter(TalentpoolProfileFilterDO companyTagDO, List<ActiveForm> actionForm, List<PositionForm> positionForm, int hr_id) throws BIZException, TException {
+    public Response addProfileFilter(TalentpoolProfileFilterDO companyTagDO, List<ActionForm> actionForm, List<PositionForm> positionForm, int hr_id) throws BIZException, TException {
         try{
             return talentPoolService.addProfileFilter(companyTagDO, actionForm, positionForm, hr_id);
         }catch(Exception e){
@@ -352,8 +352,13 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response updateProfileFilter(TalentpoolProfileFilterDO companyTagDO, List<ActiveForm> actionForm, List<PositionForm> positionForm, int hr_id) throws BIZException, TException {
-        return null;
+    public Response updateProfileFilter(TalentpoolProfileFilterDO companyTagDO, List<ActionForm> actionForm, List<PositionForm> positionForm, int hr_id) throws BIZException, TException {
+        try{
+            return talentPoolService.updateProfileFilter(companyTagDO, actionForm, positionForm, hr_id);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
 

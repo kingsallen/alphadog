@@ -34,7 +34,7 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.thrift.gen.company.struct.ActiveForm;
+import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.PositionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
@@ -432,33 +432,61 @@ public class TalentPoolEntity {
     /**
      * 插入筛选规则信息
      * @param profileFilterDO
-     * @param activeFormList
+     * @param actionFormList
      * @param positionFormList
      * @return
      */
     @Transactional
-    public int addCompanyProfileFilter(TalentpoolProfileFilterDO profileFilterDO, List<ActiveForm> activeFormList, List<PositionForm> positionFormList){
+    public int addCompanyProfileFilter(TalentpoolProfileFilterDO profileFilterDO, List<ActionForm> actionFormList, List<PositionForm> positionFormList){
         TalentpoolProfileFilterRecord filterRecord = talentpoolProfileFilterDao.dataToRecord(profileFilterDO);
         talentpoolProfileFilterDao.addRecord(filterRecord);
+        insertTalentpoolProfileFilterExecuteRecord(actionFormList, filterRecord.getId());
+        insertJobPositionProfileFilterRecord(positionFormList, filterRecord.getId(), profileFilterDO.getCompany_id());
+        return filterRecord.getId();
+    }
+
+    private void insertTalentpoolProfileFilterExecuteRecord(List<ActionForm> actionFormList, int filterId){
         List<TalentpoolProfileFilterExecuteRecord> executeRecordList = new ArrayList<>();
-        for(ActiveForm activeForm : activeFormList){
-            TalentpoolExecuteRecord record = getTalentpoolExecuteRecord(activeForm.getType(), activeForm.getValue());
+        for(ActionForm ActionForm : actionFormList){
+            TalentpoolExecuteRecord record = getTalentpoolExecuteRecord(ActionForm.getType(), ActionForm.getValue());
             TalentpoolProfileFilterExecuteRecord executeRecord = new TalentpoolProfileFilterExecuteRecord();
             executeRecord.setExecuteId(record.getId());
-            executeRecord.setFilterId(filterRecord.getId());
+            executeRecord.setFilterId(filterId);
             executeRecordList.add(executeRecord);
         }
         talentpoolProfileFilterExcuteDao.addAllRecord(executeRecordList);
+    }
+
+    private void insertJobPositionProfileFilterRecord(List<PositionForm> positionFormList, int filterId, int company_id){
         List<JobPositionProfileFilterRecord> filterRecordList = new ArrayList<>();
         List<Integer> positionIdList = positionFormList.stream().map(m -> m.getId()).collect(Collectors.toList());
-        List<JobPositionDO> positionDOList = getTalentpoolExecuteRecord(positionIdList, profileFilterDO.getCompany_id());
+        List<JobPositionDO> positionDOList = getTalentpoolExecuteRecord(positionIdList, company_id);
         for(JobPositionDO positionDO: positionDOList){
             JobPositionProfileFilterRecord record = new JobPositionProfileFilterRecord();
-            record.setPfid(filterRecord.getId());
+            record.setPfid(filterId);
             record.setPid(positionDO.getId());
             filterRecordList.add(record);
         }
         jobPositionProfileFilterDao.addAllRecord(filterRecordList);
+    }
+
+    /**
+     * 更新筛选规则信息
+     * @param profileFilterDO
+     * @param actionFormList
+     * @param positionFormList
+     * @return
+     */
+    @Transactional
+    public int updateCompanyProfileFilter(TalentpoolProfileFilterDO profileFilterDO, List<ActionForm> actionFormList, List<PositionForm> positionFormList){
+        TalentpoolProfileFilterRecord filterRecord = talentpoolProfileFilterDao.dataToRecord(profileFilterDO);
+        talentpoolProfileFilterDao.updateRecord(filterRecord);
+        List<Integer> filterIds = new ArrayList<>();
+        filterIds.add(profileFilterDO.getId());
+        jobPositionProfileFilterDao.deleteFilterPositionByFilterIdList(filterIds);
+        talentpoolProfileFilterExcuteDao.deleteFilterExcuteByFilterIdList(filterIds);
+        insertTalentpoolProfileFilterExecuteRecord(actionFormList, filterRecord.getId());
+        insertJobPositionProfileFilterRecord(positionFormList, filterRecord.getId(), profileFilterDO.getCompany_id());
         return filterRecord.getId();
     }
 

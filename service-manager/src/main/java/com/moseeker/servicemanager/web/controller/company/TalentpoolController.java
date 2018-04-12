@@ -8,7 +8,7 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
-import com.moseeker.thrift.gen.company.struct.ActiveForm;
+import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.PositionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
@@ -846,14 +846,14 @@ public class TalentpoolController {
             if(profileFilterDO.getCompany_id()<=0){
                 return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
-            List<ActiveForm> activeFormList = new ArrayList<>();
-            if(data.get("active") != null) {
-                List<Map<String, Object>> activeMapList = (List<Map<String, Object>>) data.get("active");
-                if(activeMapList != null && activeMapList.size()>0) {
-                    activeFormList = activeMapList.stream().map(m -> {
-                        ActiveForm form = new ActiveForm();
+            List<ActionForm> actionFormList = new ArrayList<>();
+            if(data.get("action") != null) {
+                List<Map<String, Object>> actionMapList = (List<Map<String, Object>>) data.get("action");
+                if(actionMapList != null && actionMapList.size()>0) {
+                    actionFormList = actionMapList.stream().map(m -> {
+                        ActionForm form = new ActionForm();
                         try {
-                            form = ParamUtils.initModelForm(m, ActiveForm.class);
+                            form = ParamUtils.initModelForm(m, ActionForm.class);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -862,6 +862,8 @@ public class TalentpoolController {
                 }else{
                     return  ResponseLogNotification.fail(request, "可执行操作不能为空");
                 }
+            }else{
+                return  ResponseLogNotification.fail(request, "可执行操作不能为空");
             }
             List<PositionForm> positionFormList = new ArrayList<>();
             if(data.get("position") != null) {
@@ -879,8 +881,10 @@ public class TalentpoolController {
                 }else{
                     return  ResponseLogNotification.fail(request, "职位至少选择一个");
                 }
+            }else{
+                return  ResponseLogNotification.fail(request, "职位至少选择一个");
             }
-            Response result = service.addProfileFilter(profileFilterDO, activeFormList, positionFormList, Integer.parseInt(hrId));
+            Response result = service.addProfileFilter(profileFilterDO, actionFormList, positionFormList, Integer.parseInt(hrId));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
@@ -909,14 +913,14 @@ public class TalentpoolController {
             if(profileFilterDO.getId()<=0){
                 return ResponseLogNotification.fail(request,"id不可以为空或者为0");
             }
-            List<ActiveForm> activeFormList = new ArrayList<>();
-            if(data.get("active") != null) {
-                List<Map<String, Object>> activeMapList = (List<Map<String, Object>>) data.get("active");
-                if(activeMapList != null && activeMapList.size()>0) {
-                    activeFormList = activeMapList.stream().map(m -> {
-                        ActiveForm form = new ActiveForm();
+            List<ActionForm> actionFormList = new ArrayList<>();
+            if(data.get("action") != null) {
+                List<Map<String, Object>> actionMapList = (List<Map<String, Object>>) data.get("action");
+                if(actionMapList != null && actionMapList.size()>0) {
+                    actionFormList = actionMapList.stream().map(m -> {
+                        ActionForm form = new ActionForm();
                         try {
-                            form = ParamUtils.initModelForm(m, ActiveForm.class);
+                            form = ParamUtils.initModelForm(m, ActionForm.class);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -925,12 +929,14 @@ public class TalentpoolController {
                 }else{
                     return  ResponseLogNotification.fail(request, "可执行操作不能为空");
                 }
+            }else{
+                return  ResponseLogNotification.fail(request, "可执行操作不能为空");
             }
             List<PositionForm> positionFormList = new ArrayList<>();
             if(data.get("position") != null) {
-                List<Map<String, Object>> activeMapList = (List<Map<String, Object>>) data.get("position");
-                if(activeMapList != null && activeMapList.size()>0) {
-                    positionFormList = activeMapList.stream().map(m -> {
+                List<Map<String, Object>> positionMapList = (List<Map<String, Object>>) data.get("position");
+                if(positionMapList != null && positionMapList.size()>0) {
+                    positionFormList = positionMapList.stream().map(m -> {
                         PositionForm form = new PositionForm();
                         try {
                             form = ParamUtils.initModelForm(m, PositionForm.class);
@@ -942,8 +948,10 @@ public class TalentpoolController {
                 }else{
                     return  ResponseLogNotification.fail(request, "职位至少选择一个");
                 }
+            }else{
+                return  ResponseLogNotification.fail(request, "职位至少选择一个");
             }
-            Response result = service.updateProfileFilter(profileFilterDO, activeFormList, positionFormList, Integer.parseInt(hrId));
+            Response result = service.updateProfileFilter(profileFilterDO, actionFormList, positionFormList, Integer.parseInt(hrId));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage(),e);

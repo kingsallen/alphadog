@@ -61,7 +61,7 @@ struct TalentpoolCompanyTagDO {
     23: optional i32 disable
  }
 
- struct ActiveForm {
+ struct ActionForm {
      1: optional i32 type,
      2: optional i32 value
   }
