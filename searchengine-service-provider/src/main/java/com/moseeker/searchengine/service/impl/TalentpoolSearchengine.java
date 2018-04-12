@@ -240,7 +240,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
             this.queryBySlalryCode(intentionSalaryCode,query);
         }
-        if(Integer.parseInt(sex)!=2){
+        if(StringUtils.isNotNullOrEmpty(sex)&&Integer.parseInt(sex)!=0){
             this.queryByGender(sex,query);
         }
         if(Integer.parseInt(isRecommend)>0){
@@ -556,7 +556,7 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
                 this.queryBySlalryCode(intentionSalaryCode,query);
             }
-            if(StringUtils.isNotNullOrEmpty(sex)){
+            if(StringUtils.isNotNullOrEmpty(sex)&&!"0".equals(sex)){
                 this.queryByGender(sex,query);
             }
             if(StringUtils.isNotNullOrEmpty(workYears)){
