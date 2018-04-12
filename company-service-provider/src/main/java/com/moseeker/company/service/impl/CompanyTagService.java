@@ -155,12 +155,12 @@ public class CompanyTagService {
             Set<Integer> hrIdList=talentPoolEntity.getIdListByUserHrAccountList(hrList);
             params.put("publisher",talentPoolEntity.convertToString(hrIdList));
             params.put("all_publisher","1");
-
+            params.put("tag_ids","alltalent");
         }else{
             params.put("publisher",hrId+"");
+            params.put("tag_ids","talent");
         }
         params.put("hr_id",hrId+"");
-        params.put("tag_ids","talent");
         params.put("company_id",companyId+"");
         params.put("hr_account_id",hrId+"");
         params.put("company_tag",tagId+"");
