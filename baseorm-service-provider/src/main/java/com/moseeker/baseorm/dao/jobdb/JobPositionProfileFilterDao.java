@@ -34,5 +34,22 @@ public class JobPositionProfileFilterDao extends JooqCrudImpl<com.moseeker.baseo
         return result;
     }
 
+    public void deleteFilterPositionRecordList(List<JobPositionProfileFilterRecord> filterRecordList){
+        if(filterRecordList != null && filterRecordList.size()>0) {
+            for(JobPositionProfileFilterRecord record : filterRecordList) {
+                create.deleteFrom(JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER)
+                        .where(JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER.PFID.in(record.getPfid()))
+                        .and(JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER.PID.in(record.getPid())).execute();
+            }
+        }
+    }
+
+    public void deleteFilterPositionByFilterIdList(List<Integer> filterIdList){
+        if(filterIdList != null && filterIdList.size()>0) {
+            create.deleteFrom(JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER)
+                    .where(JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER.PFID.in(filterIdList))
+                    .execute();
+        }
+    }
 
 }

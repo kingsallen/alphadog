@@ -33,6 +33,24 @@ public class TalentpoolProfileFilterExcuteDao extends JooqCrudImpl<com.moseeker.
         return result;
     }
 
+    public void deleteFilterExcuteRecordList(List<TalentpoolProfileFilterExecuteRecord> filterRecordList){
+        if(filterRecordList != null && filterRecordList.size()>0) {
+            for(TalentpoolProfileFilterExecuteRecord record : filterRecordList) {
+                create.deleteFrom(TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE)
+                        .where(TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE.FILTER_ID.in(record.getFilterId()))
+                        .and(TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE.EXECUTE_ID.in(record.getExecuteId()))
+                        .execute();
+            }
+        }
+    }
 
+    public void deleteFilterExcuteByFilterIdList(List<Integer> filterIdList){
+        if(filterIdList != null && filterIdList.size()>0) {
+            create.deleteFrom(TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE)
+                    .where(TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE.FILTER_ID.in(filterIdList))
+                    .execute();
+
+        }
+    }
 
 }

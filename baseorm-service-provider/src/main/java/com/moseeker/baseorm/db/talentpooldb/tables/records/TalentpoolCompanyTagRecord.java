@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolCompanyTagRecord extends UpdatableRecordImpl<TalentpoolCompanyTagRecord> {
 
-    private static final long serialVersionUID = 1534217573;
+    private static final long serialVersionUID = -1317694629;
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.id</code>.
@@ -58,28 +58,28 @@ public class TalentpoolCompanyTagRecord extends UpdatableRecordImpl<TalentpoolCo
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_company_tag.name</code>. 标签的名称
+     * Setter for <code>talentpooldb.talentpool_company_tag.name</code>. 过滤项的名称
      */
     public void setName(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_company_tag.name</code>. 标签的名称
+     * Getter for <code>talentpooldb.talentpool_company_tag.name</code>. 过滤项的名称
      */
     public String getName() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_company_tag.color</code>. 标签颜色
+     * Setter for <code>talentpooldb.talentpool_company_tag.color</code>.  标签颜色
      */
     public void setColor(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_company_tag.color</code>. 标签颜色
+     * Getter for <code>talentpooldb.talentpool_company_tag.color</code>.  标签颜色
      */
     public String getColor() {
         return (String) get(3);
@@ -268,14 +268,14 @@ public class TalentpoolCompanyTagRecord extends UpdatableRecordImpl<TalentpoolCo
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 0男，1女 2不限
+     * Setter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 1男，2女 0不限
      */
     public void setSex(Integer value) {
         set(17, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 0男，1女 2不限
+     * Getter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 1男，2女 0不限
      */
     public Integer getSex() {
         return (Integer) get(17);

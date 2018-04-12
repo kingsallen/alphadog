@@ -97,7 +97,7 @@ service TalentpoolServices {
     common_struct.Response getProfileFilterList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
     common_struct.Response handerProfileFilterByIds(1:i32 hr_id,2:i32 company_id,3:i32 disable, 4:list<i32> filter_ids) throws (1: common_struct.BIZException e)
     common_struct.Response getProfileFilterInfo(1:i32 hr_id,2:i32 company_id,3:i32 filter_id) throws (1: common_struct.BIZException e)
-    common_struct.Response addProfileFilter(1:talentpool_struct.TalentpoolProfileFilterDO companyTagDO, 2:i32 hr_id) throws (1: common_struct.BIZException e)
-    common_struct.Response updateProfileFilter(1:talentpool_struct.TalentpoolProfileFilterDO companyTagDO, 2:i32 hr_id) throws (1: common_struct.BIZException e)
+    common_struct.Response addProfileFilter(1:talentpool_struct.TalentpoolProfileFilterDO companyTagDO, 2:list<talentpool_struct.ActiveForm> actionForm,3:list<talentpool_struct.PositionForm> positionForm, 4:i32 hr_id) throws (1: common_struct.BIZException e)
+    common_struct.Response updateProfileFilter(1:talentpool_struct.TalentpoolProfileFilterDO companyTagDO, 2:list<talentpool_struct.ActiveForm> actionForm,3:list<talentpool_struct.PositionForm> positionForm, 4:i32 hr_id) throws (1: common_struct.BIZException e)
 
 }

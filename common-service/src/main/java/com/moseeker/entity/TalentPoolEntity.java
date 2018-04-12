@@ -34,7 +34,10 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.thrift.gen.company.struct.ActiveForm;
+import com.moseeker.thrift.gen.company.struct.PositionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
+import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -189,21 +192,74 @@ public class TalentPoolEntity {
 
         return result;
     }
+
+    /**
+     * 验证筛选规则名称是否符合规则
+     * @param name
+     * @param companyId
+     * @return
+     */
+    public String validateCompanyTalentPoolV3ByFilterName(String name, int companyId, int id){
+        ValidateUtil vu = new ValidateUtil();
+        vu.addRequiredStringValidate("筛选规则名称", name, null,null);
+        vu.addStringLengthValidate("筛选规则名称", name, null, null, 1, 41);
+        String result = vu.validate();
+        if(!StringUtils.isNotNullOrEmpty(result)) {
+            Query query = null;
+            if(id > 0){
+                query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.COMPANY_ID.getName(), companyId)
+                        .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.NAME.getName(), name)
+                        .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.DISABLE.getName(), 1)
+                        .and(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.ID.getName(), id, ValueOp.NEQ))
+                        .buildQuery();
+            }else {
+                query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.COMPANY_ID.getName(), companyId)
+                        .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.NAME.getName(), name)
+                        .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.DISABLE.getName(), 1)
+                        .buildQuery();
+            }
+            List<TalentpoolProfileFilter> profileFilterList = talentpoolProfileFilterDao.getDatas(query);
+            if(profileFilterList != null && profileFilterList.size()>0){
+                result = "筛选规则名称重复";
+            }else{
+                return "OK";
+            }
+        }
+
+        return result;
+    }
     /**
      * 验证标签规则不能全为默认值
      * @param companyTagDO
      * @return
      */
-    public String validateCompanyTalentPoolV3ByFilter(TalentpoolCompanyTagDO companyTagDO){
+    public String validateCompanyTalentPoolV3ByTag(TalentpoolCompanyTagDO companyTagDO){
 
         if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins()) || StringUtils.isNotNullOrEmpty(companyTagDO.getWork_years())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getDegree())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position()) || companyTagDO.getMin_age() > 0 || companyTagDO.getMax_age()>0
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_city_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_salary_code())
-                || companyTagDO.getSex() !=2 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1){
+                || companyTagDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1){
             return "";
         }
-        return "标签规则全为默认值;";
+        return "标签全为默认值;";
+    }
+
+    /**
+     * 验证筛选规则不能全为默认值
+     * @param companyFilterDO
+     * @return
+     */
+    public String validateCompanyTalentPoolV3ByFilter(TalentpoolProfileFilterDO companyFilterDO){
+
+        if(StringUtils.isNotNullOrEmpty(companyFilterDO.getOrigins()) || StringUtils.isNotNullOrEmpty(companyFilterDO.getWork_years())
+                || StringUtils.isNotNullOrEmpty(companyFilterDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyFilterDO.getDegree())
+                || StringUtils.isNotNullOrEmpty(companyFilterDO.getPast_position()) || companyFilterDO.getMin_age() > 0 || companyFilterDO.getMax_age()>0
+                || StringUtils.isNotNullOrEmpty(companyFilterDO.getIntention_city_name()) || StringUtils.isNotNullOrEmpty(companyFilterDO.getIntention_salary_code())
+                || companyFilterDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyFilterDO.getCompany_name()) || companyFilterDO.getIs_recommend() == 1){
+            return "";
+        }
+        return "规则全为默认值;";
     }
 
     /**
@@ -261,14 +317,8 @@ public class TalentPoolEntity {
         }
         talentpoolProfileFilterDao.updateRecords(newTagRecordList);
         if(disable == 0){
-            List<JobPositionProfileFilterRecord> filterList = jobPositionProfileFilterDao.getFilterPositionRecordByfilterIdList(filterIds);
-            if(filterList != null && filterList.size() >0 ) {
-                jobPositionProfileFilterDao.deleteRecords(filterList);
-            }
-            List<TalentpoolProfileFilterExecuteRecord> filterExecuteList = talentpoolProfileFilterExcuteDao.getFilterExecuteRecordByfilterIdList(filterIds);
-            if(filterExecuteList != null && filterExecuteList.size() >0 ) {
-                talentpoolProfileFilterExcuteDao.deleteRecords(filterExecuteList);
-            }
+            jobPositionProfileFilterDao.deleteFilterPositionByFilterIdList(filterIds);
+            talentpoolProfileFilterExcuteDao.deleteFilterExcuteByFilterIdList(filterIds);
         }
         return 0;
     }
@@ -378,6 +428,53 @@ public class TalentPoolEntity {
         return tagRecord.getId();
     }
 
+
+    /**
+     * 插入筛选规则信息
+     * @param profileFilterDO
+     * @param activeFormList
+     * @param positionFormList
+     * @return
+     */
+    @Transactional
+    public int addCompanyProfileFilter(TalentpoolProfileFilterDO profileFilterDO, List<ActiveForm> activeFormList, List<PositionForm> positionFormList){
+        TalentpoolProfileFilterRecord filterRecord = talentpoolProfileFilterDao.dataToRecord(profileFilterDO);
+        talentpoolProfileFilterDao.addRecord(filterRecord);
+        List<TalentpoolProfileFilterExecuteRecord> executeRecordList = new ArrayList<>();
+        for(ActiveForm activeForm : activeFormList){
+            TalentpoolExecuteRecord record = getTalentpoolExecuteRecord(activeForm.getType(), activeForm.getValue());
+            TalentpoolProfileFilterExecuteRecord executeRecord = new TalentpoolProfileFilterExecuteRecord();
+            executeRecord.setExecuteId(record.getId());
+            executeRecord.setFilterId(filterRecord.getId());
+            executeRecordList.add(executeRecord);
+        }
+        talentpoolProfileFilterExcuteDao.addAllRecord(executeRecordList);
+        List<JobPositionProfileFilterRecord> filterRecordList = new ArrayList<>();
+        List<Integer> positionIdList = positionFormList.stream().map(m -> m.getId()).collect(Collectors.toList());
+        List<JobPositionDO> positionDOList = getTalentpoolExecuteRecord(positionIdList, profileFilterDO.getCompany_id());
+        for(JobPositionDO positionDO: positionDOList){
+            JobPositionProfileFilterRecord record = new JobPositionProfileFilterRecord();
+            record.setPfid(filterRecord.getId());
+            record.setPid(positionDO.getId());
+            filterRecordList.add(record);
+        }
+        jobPositionProfileFilterDao.addAllRecord(filterRecordList);
+        return filterRecord.getId();
+    }
+
+    private List<JobPositionDO> getTalentpoolExecuteRecord(List<Integer> positionIdList, int companyId){
+        Query query = new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.ID.getName(), positionIdList, ValueOp.IN))
+                .and(JobPosition.JOB_POSITION.COMPANY_ID.getName(),companyId)
+                .buildQuery();
+        return jobPositionDao.getDatas(query);
+    }
+
+    private TalentpoolExecuteRecord getTalentpoolExecuteRecord(int type, int value){
+        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute.TALENTPOOL_EXECUTE.TYPE.getName(),type)
+                .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute.TALENTPOOL_EXECUTE.VALUE.getName(),value)
+                .buildQuery();
+        return talentpoolExcuteDao.getRecord(query);
+    }
     /**
      * 更新标签信息
      * @param companyTagDO

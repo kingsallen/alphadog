@@ -8,10 +8,14 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
+import com.moseeker.thrift.gen.company.struct.ActiveForm;
+import com.moseeker.thrift.gen.company.struct.PositionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -835,11 +839,48 @@ public class TalentpoolController {
             if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
-            TalentpoolProfileFilterDO profileFilterDO = ParamUtils.initModelForm(data, TalentpoolProfileFilterDO.class);
+            TalentpoolProfileFilterDO profileFilterDO = new TalentpoolProfileFilterDO();
+            if(data.get("company_filter") != null) {
+                profileFilterDO = ParamUtils.initModelForm((Map<String, Object>) data.get("company_filter"), TalentpoolProfileFilterDO.class);
+            }
             if(profileFilterDO.getCompany_id()<=0){
                 return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
-            Response result = service.addProfileFilter(profileFilterDO, Integer.parseInt(hrId));
+            List<ActiveForm> activeFormList = new ArrayList<>();
+            if(data.get("active") != null) {
+                List<Map<String, Object>> activeMapList = (List<Map<String, Object>>) data.get("active");
+                if(activeMapList != null && activeMapList.size()>0) {
+                    activeFormList = activeMapList.stream().map(m -> {
+                        ActiveForm form = new ActiveForm();
+                        try {
+                            form = ParamUtils.initModelForm(m, ActiveForm.class);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return form;
+                    }).collect(Collectors.toList());
+                }else{
+                    return  ResponseLogNotification.fail(request, "可执行操作不能为空");
+                }
+            }
+            List<PositionForm> positionFormList = new ArrayList<>();
+            if(data.get("position") != null) {
+                List<Map<String, Object>> activeMapList = (List<Map<String, Object>>) data.get("position");
+                if(activeMapList != null && activeMapList.size()>0) {
+                    positionFormList = activeMapList.stream().map(m -> {
+                        PositionForm form = new PositionForm();
+                        try {
+                            form = ParamUtils.initModelForm(m, PositionForm.class);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return form;
+                    }).collect(Collectors.toList());
+                }else{
+                    return  ResponseLogNotification.fail(request, "职位至少选择一个");
+                }
+            }
+            Response result = service.addProfileFilter(profileFilterDO, activeFormList, positionFormList, Integer.parseInt(hrId));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
@@ -858,14 +899,51 @@ public class TalentpoolController {
             if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
-            TalentpoolProfileFilterDO profileFilterDO = ParamUtils.initModelForm(data, TalentpoolProfileFilterDO.class);
+            TalentpoolProfileFilterDO profileFilterDO = new TalentpoolProfileFilterDO();
+            if(data.get("company_filter") != null) {
+                profileFilterDO = ParamUtils.initModelForm((Map<String, Object>) data.get("company_filter"), TalentpoolProfileFilterDO.class);
+            }
             if(profileFilterDO.getCompany_id()<=0){
                 return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
             if(profileFilterDO.getId()<=0){
                 return ResponseLogNotification.fail(request,"id不可以为空或者为0");
             }
-            Response result = service.updateProfileFilter(profileFilterDO, Integer.parseInt(hrId));
+            List<ActiveForm> activeFormList = new ArrayList<>();
+            if(data.get("active") != null) {
+                List<Map<String, Object>> activeMapList = (List<Map<String, Object>>) data.get("active");
+                if(activeMapList != null && activeMapList.size()>0) {
+                    activeFormList = activeMapList.stream().map(m -> {
+                        ActiveForm form = new ActiveForm();
+                        try {
+                            form = ParamUtils.initModelForm(m, ActiveForm.class);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return form;
+                    }).collect(Collectors.toList());
+                }else{
+                    return  ResponseLogNotification.fail(request, "可执行操作不能为空");
+                }
+            }
+            List<PositionForm> positionFormList = new ArrayList<>();
+            if(data.get("position") != null) {
+                List<Map<String, Object>> activeMapList = (List<Map<String, Object>>) data.get("position");
+                if(activeMapList != null && activeMapList.size()>0) {
+                    positionFormList = activeMapList.stream().map(m -> {
+                        PositionForm form = new PositionForm();
+                        try {
+                            form = ParamUtils.initModelForm(m, PositionForm.class);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return form;
+                    }).collect(Collectors.toList());
+                }else{
+                    return  ResponseLogNotification.fail(request, "职位至少选择一个");
+                }
+            }
+            Response result = service.updateProfileFilter(profileFilterDO, activeFormList, positionFormList, Integer.parseInt(hrId));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage(),e);

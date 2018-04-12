@@ -38,7 +38,10 @@ import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.talentpool.PageInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.ActiveForm;
+import com.moseeker.thrift.gen.company.struct.PositionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
+import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import java.util.*;
@@ -1102,9 +1105,6 @@ public class TalentPoolService {
     }
 
 
-
-
-
     public Response addCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
         if(flag == -1){
@@ -1118,7 +1118,7 @@ public class TalentPoolService {
         }
         String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
         if("OK".equals(result)){
-            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByTag(companyTagDO);
             if(StringUtils.isNullOrEmpty(filterString)){
                 int id = talentPoolEntity.addCompanyTag(companyTagDO);
                 List<Integer> idList = new ArrayList<>();
@@ -1150,7 +1150,7 @@ public class TalentPoolService {
         }
         String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
         if("OK".equals(result)){
-            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByTag(companyTagDO);
             String statusString = talentPoolEntity.validateCompanyTalentPoolV3ByStatus(companyTagDO);
             statusString = statusString + filterString;
             if(StringUtils.isNullOrEmpty(statusString)){
@@ -1266,6 +1266,33 @@ public class TalentPoolService {
         return ResponseUtils.successWithoutStringify(JSON.toJSONString(profileFilterInfo, serializeConfig));
     }
 
+    public Response addProfileFilter(TalentpoolProfileFilterDO filterDO, List<ActiveForm> activeFormList, List<PositionForm> positionFormList, int hr_id){
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(filterDO.getCompany_id());
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,filterDO.getCompany_id());
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        String result = talentPoolEntity.validateCompanyTalentPoolV3ByFilterName(filterDO.getName(), filterDO.getCompany_id(), filterDO.getId());
+        if("OK".equals(result)){
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
+            if(StringUtils.isNullOrEmpty(filterString)){
+                int id = talentPoolEntity.addCompanyProfileFilter(filterDO, activeFormList, positionFormList);
+                return  ResponseUtils.success("");
+            }else{
+                return ResponseUtils.fail(1, filterString);
+            }
+        }
+        return ResponseUtils.fail(1, result);
+    }
     //处理批量操作的结果
     private Map<String,Object> handlerBatchTalentResult( Set<Integer> unUseList,Set<Integer>unApplierIdList,Set<Integer> idList ,int companyd){
         List<Map<String,Object>> userHrList=talentPoolEntity.getCompanyHrList(companyd);
