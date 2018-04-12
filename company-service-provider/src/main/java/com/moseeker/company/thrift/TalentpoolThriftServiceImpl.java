@@ -64,7 +64,13 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     @Override
     public Response getHrTag(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
         try{
-            return talentPoolService.getAllHrTag(hr_id,company_id,page_number,page_size);
+            Map<String,Object> result=talentPoolService.getAllHrTag(hr_id,company_id,page_number,page_size);
+            if(result.get("flag")!=null){
+                return ResponseUtils.fail(1,"该hr不属于该company_id");
+            }else{
+                String res= JSON.toJSONString(result,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+                return ResponseUtils.successWithoutStringify(res);
+            }
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
