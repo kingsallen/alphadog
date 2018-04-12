@@ -475,7 +475,7 @@ public class ChatService {
      */
     
     public int saveChat(ChatVO chat) throws BIZException, SQLException {
-        throw new SQLException();
+        throw new SQLException("123");
         /*requiredValidChat(chat);
 
         HrWxHrChatListDO chatRoom = requiredNotNullChatRoom(chat.getRoomId());

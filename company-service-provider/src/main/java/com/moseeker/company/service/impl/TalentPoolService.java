@@ -1173,6 +1173,7 @@ public class TalentPoolService {
         }else if(flag == 1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
+
         String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
         if("OK".equals(result)){
             String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
