@@ -424,6 +424,9 @@ public class TalentPoolEntity {
         }
         return result;
     }
+    /*
+
+     */
 
     /*
      获取公司下所有公司标签信息
