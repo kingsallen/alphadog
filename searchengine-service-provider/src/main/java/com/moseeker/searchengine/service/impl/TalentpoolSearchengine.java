@@ -85,6 +85,7 @@ public class TalentpoolSearchengine {
             logger.info(JSON.toJSONString(result));
             logger.info("=========================================");
             int total=(int)((long)result.get("totalNum"));
+            logger.info(JSON.toJSONString(result));
             return total;
         } catch (Exception e) {
             logger.info(e.getMessage()+"=================");

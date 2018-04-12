@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
@@ -211,13 +212,19 @@ public class SearchUtil {
     	SearchHits hit=response.getHits();
     	long totalNum=hit.getTotalHits();
     	data.put("totalNum", totalNum);
+
     	SearchHit[] searchData=hit.getHits();
+        logger.info("===================================");
+        logger.info(JSON.toJSONString(searchData));
+        logger.info("===================================");
     	if(totalNum>0){
     		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
-    		for(SearchHit ss:searchData){
-    			Map<String,Object> obj=ss.getSource();
-    			list.add(obj);
-    		}
+    		if(searchData!=null&&searchData.length>0){
+                for(SearchHit ss:searchData){
+                    Map<String,Object> obj=ss.getSource();
+                    list.add(obj);
+                }
+            }
     		data.put(dataName, list);
     	}
     	return data;
