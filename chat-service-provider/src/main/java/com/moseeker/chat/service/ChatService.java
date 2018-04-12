@@ -475,8 +475,7 @@ public class ChatService {
      */
     
     public int saveChat(ChatVO chat) throws BIZException, SQLException {
-        throw new SQLException("123");
-        /*requiredValidChat(chat);
+        requiredValidChat(chat);
 
         HrWxHrChatListDO chatRoom = requiredNotNullChatRoom(chat.getRoomId());
 
@@ -511,7 +510,7 @@ public class ChatService {
 
         //修改未读消息数量
         pool.startTast(() -> chaoDao.addUnreadCount(chat.getRoomId(), chat.getSpeaker(), date));
-        return result;*/
+        return result;
     }
 
     /**
