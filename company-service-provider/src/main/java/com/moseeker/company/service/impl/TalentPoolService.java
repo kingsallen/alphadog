@@ -1022,10 +1022,9 @@ public class TalentPoolService {
                     //从redis获取正在执行
                     boolean  isEXecute=tagService.getCompanyTagIsExecute(id);
                     map.put("is_execute",isEXecute);
-                    if(isEXecute){
-                        //此处预估时间统一2h
-                        map.put("expire_time",2);
-                    }
+                    //此处预估时间统一2h
+                    map.put("expire_time",2);
+
 
                 }
             }
@@ -1116,10 +1115,8 @@ public class TalentPoolService {
             boolean  isEXecute=tagService.getCompanyTagIsExecute(company_tag_id);
             companyTag.put("is_execute",isEXecute);
             companyTag.put("expire_time",2);
-            if(isEXecute){
-                //此处预估时间统一2h
-                companyTag.put("expire_time",2);
-            }
+            //此处预估时间统一2h
+            companyTag.put("expire_time",2);
         }
         params.put("responseStatus", 0);
         params.put("data", companyTag);
