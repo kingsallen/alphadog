@@ -85,12 +85,9 @@ public class ChatThriftService implements Iface {
     public int saveChat(ChatVO chat) throws  TException {
         try {
             return chatService.saveChat(chat);
-        } catch (BIZException e){
-            logger.error(JSON.toJSONString(chat) + e.getMessage(), e);
-            return -1;
         } catch (Exception e) {
             logger.error(JSON.toJSONString(chat) + e.getMessage(), e);
-            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+            throw e;
         }
     }
 

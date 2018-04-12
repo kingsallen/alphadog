@@ -271,6 +271,8 @@ public class ResumeDeliveryService {
                 link += "?wechat_signature=";
                 link = link + hrChatDO.getSignature();
                 response =  msgHttp.handleApplierTemplate(positionDO, companyDO, hrChatDO, userWxDO.getOpenid(), url, link, templateMessageDO);
+            }else {
+                return  ResponseUtils.fail(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
             }
         }
         logger.info("sendEmailToHr sendTemplateMessageToApplier:{}", response);
@@ -300,7 +302,10 @@ public class ResumeDeliveryService {
             if (wxNoticeMessageDO == null || wxNoticeMessageDO.size() == 0)
                 send_applier = false;
         }
-        if(templateMessageDO != null && qxChatDO != null && send_applier){
+        if(!send_applier){
+            return   ResponseUtils.fail(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
+        }
+        if(templateMessageDO != null && qxChatDO != null){
             String url = handlerUrl().replace("{}", qxChatDO.getAccessToken());
             UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(),
                     userUserDO.getId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), qxChatDO.getId()).buildQuery());
@@ -378,6 +383,8 @@ public class ResumeDeliveryService {
                 if(userWxDO == null) return response;
                 String link = handlerLink("recom") + "?wechat_signature="+ hrChatDO.getSignature();
                 response = msgHttp.handleRecomTemplate(positionDO, hrChatDO, templateMessageDO, userDO, workExp, lastWorkName, userWxDO.getOpenid(), url, link);
+            }else{
+                return   ResponseUtils.fail(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
             }
         }
         logger.info("sendMessageAndEmail sendTemplateMessageToRecom response:{}", response);
@@ -426,6 +433,8 @@ public class ResumeDeliveryService {
                         .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.DISABLE.getName(), "0").buildQuery());
                 String link = handlerLink("recom")+ "?wechat_signature="+ qxChatDO.getSignature();;
                 response = msgHttp.handleRecomTemplate(positionDO, qxChatDO, templateMessageDOQX, userRecomDO, workExp, lastWorkName, qx_userWxDO.getOpenid(), url, link);
+            }else {
+                return   ResponseUtils.fail(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
             }
         }
         logger.info("sendMessageAndEmail sendTemplateMessageToRecomByQX response:{}", response);
@@ -461,7 +470,10 @@ public class ResumeDeliveryService {
             if (wxNoticeMessageDO == null || wxNoticeMessageDO.size() == 0)
                 send_applier = false;
         }
-        if(hrWxUserDo != null && templateMessageDO != null && send_applier){
+        if(!send_applier){
+            return   ResponseUtils.fail(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
+        }
+        if(hrWxUserDo != null && templateMessageDO != null ){
             String appid = handlerMiniappId();
             response = msgHttp.handleHrTemplate(accountDO, positionDO, hrWxWechatDO, templateMessageDO, userUserDO, workExp, lastWorkName , hrWxUserDo.getOpenid(), url, appid);
         }
