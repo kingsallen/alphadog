@@ -149,7 +149,7 @@ public class TalentPoolService {
             return  ResponseUtils.success("");
         }
         tp.startTast(() -> {
-            tagService.handlerCompanyTagTalent(idList, 2);
+            tagService.handlerCompanyTagTalent(idList, companyId);
             return 0;
         });
         return ResponseUtils.success(result);
