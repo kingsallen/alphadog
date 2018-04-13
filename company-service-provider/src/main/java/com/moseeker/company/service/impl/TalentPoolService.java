@@ -37,8 +37,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import java.util.*;
-
-import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -721,7 +719,7 @@ public class TalentPoolService {
         Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
         HrCompanyRecord record=hrCompanyDao.getRecord(query);
         if(record==null){
-           return -1;
+            return -1;
         }
         if(record.getType()!=0){
             return -2;
@@ -1145,6 +1143,7 @@ public class TalentPoolService {
         }else if(flag == 1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
+
         String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
         if("OK".equals(result)){
             String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
@@ -1195,7 +1194,14 @@ public class TalentPoolService {
         return result;
 
     }
-
+    /*
+     获得标签下的人才数量
+     */
+    private Map<String,Object> handlerTagTalentNum(int hrId){
+        List<Map<String,Object>> list=talentPoolEntity.getTagByHr(hrId,0,Integer.MAX_VALUE);
+        Map<String,Object> tagResult=new HashMap<>();
+        return tagResult;
+    }
     /*
 
 
@@ -1520,10 +1526,10 @@ public class TalentPoolService {
                         for(Map<String,Object> map:companyTagList){
                             int id=(int)map.get("id");
                             for(Integer tagId:userTagIdSet){
-                               if(id==tagId){
-                                   tagList.add(map);
-                                   break;
-                               }
+                                if(id==tagId){
+                                    tagList.add(map);
+                                    break;
+                                }
                             }
                         }
                         //将这个人才下的企业标签塞到他的人才库标签列表下
@@ -1600,6 +1606,7 @@ public class TalentPoolService {
                     tagIdset.add(tagUser.getTagId());
                 }
             }
+            bean.setCompanytagidList(tagIdset);
             result.add(bean);
         }
         return result;
@@ -1759,6 +1766,15 @@ public class TalentPoolService {
                 .setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<Map<String,Object>> list=talentpoolTalentDao.getMaps(query);
         return list;
+    }
+    /*
+    获取公司下所有的人才
+   */
+    private List<Map<String,Object>> getPublicTalentByCompanyId(Set<Integer> hrIdSet,int pageNum,int pageSize){
+//        Query query=new Query.QueryBuilder().select(new Select("'user_id",SelectOp.DISTINCT)).where(new Condition("hr_id",hrIdSet.toArray(),ValueOp.IN)).and(new Condition("public",1,ValueOp.GT))
+//                .setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+//        List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);
+        return talentpoolHrTalentDao.getAllPublicTalent(hrIdSet,pageNum,pageSize);
     }
 
     /*

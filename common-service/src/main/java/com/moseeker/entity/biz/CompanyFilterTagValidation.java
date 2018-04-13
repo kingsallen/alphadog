@@ -1,5 +1,6 @@
 package com.moseeker.entity.biz;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
@@ -12,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,19 +23,25 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CompanyFilterTagValidation {
-
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private JobApplicationDao jobApplicationDao;
 
     public boolean  validateProfileAndComapnyTag(Map<String, Object> profiles, int userId, int companyId, Map<String, Object> tag) throws Exception {
+        logger.info("简历数据是=================");
+        logger.info(JSON.toJSONString(profiles));
+        logger.info("===========================");
+        logger.info("标签数据是=================");
+        logger.info(JSON.toJSONString(tag));
+        logger.info("===========================");
         List<JobApplicationRecord> applist=new ArrayList<>();
         if((tag.get("origins") != null && StringUtils.isNotNullOrEmpty((String)tag.get("origins")))
                 ||(tag.get("submitTime") != null && StringUtils.isNotNullOrEmpty((String)tag.get("submitTime")))
                 ||(tag.get("isRecommend") != null && (int)tag.get("isRecommend")>0)) {
             if((int)tag.get("isRecommend")>0){
-                applist=this.getJobApplicationByCompanyIdAndUserId(companyId,userId);
+                applist=this.getJobAppRecommendByCompanyIdAndUserId(companyId,userId);
             }else{
-                applist=getJobAppRecommendByCompanyIdAndUserId(companyId,userId);
+                applist=this.getJobApplicationByCompanyIdAndUserId(companyId,userId);
             }
 
             boolean flag=this.validateApp((String)tag.get("origins"),applist,profiles,(String)tag.get("submitTime"));
@@ -517,28 +526,31 @@ public class CompanyFilterTagValidation {
      校验该人才的来源
      */
     private boolean validateApp(String origins, List<JobApplicationRecord> applist,Map<String,Object> profiles,String submitTime ){
-        if(StringUtils.isEmptyList(applist)){
-            return false;
-        }
+        logger.info("来源数据是===============================");
+        logger.info(origins +"============"+submitTime);
+        logger.info("========================================");
         if(StringUtils.isNotNullOrEmpty(origins)){
             String[] originArray=origins.split(",");
             boolean flag=false;
-            for(JobApplicationRecord record:applist){
-                int appOrigin=record.getOrigin();
-                flag=this.validateEqual(originArray,appOrigin);
-                if(flag==true){
-                    if(StringUtils.isNotNullOrEmpty(submitTime)){
-                        long apptime=record.getSubmitTime().getTime();
-                        long time=this.getLongTime(submitTime);
-                        if(time<apptime){
-                            flag=true;
+            if(!StringUtils.isEmptyList(applist)){
+                for(JobApplicationRecord record:applist){
+                    int appOrigin=record.getOrigin();
+                    flag=this.validateEqual(originArray,appOrigin);
+                    if(flag==true){
+                        if(StringUtils.isNotNullOrEmpty(submitTime)){
+                            long apptime=record.getSubmitTime().getTime();
+                            long time=this.getLongTime(submitTime);
+                            if(time<apptime){
+                                flag=true;
+                            }
                         }
                     }
-                }
-                if(flag==true){
-                    break;
+                    if(flag==true){
+                        break;
+                    }
                 }
             }
+
             if(flag==false){
                 if(profiles==null||profiles.isEmpty()){
                     return false;
@@ -583,18 +595,23 @@ public class CompanyFilterTagValidation {
                 return true;
             }
 
-        }
-        if(StringUtils.isNotNullOrEmpty(submitTime)){
-            for(JobApplicationRecord record:applist){
-                if(StringUtils.isNotNullOrEmpty(submitTime)){
-                    long apptime=record.getSubmitTime().getTime();
-                    long time=this.getLongTime(submitTime);
-                    if(time<apptime){
-                        return true;
+        }else{
+            if(StringUtils.isNotNullOrEmpty(submitTime)){
+                if(StringUtils.isEmptyList(applist)){
+                    return false;
+                }
+                for(JobApplicationRecord record:applist){
+                    if(StringUtils.isNotNullOrEmpty(submitTime)){
+                        long apptime=record.getSubmitTime().getTime();
+                        long time=this.getLongTime(submitTime);
+                        if(time<apptime){
+                            return true;
+                        }
                     }
                 }
             }
         }
+
         return true;
 
 
@@ -605,8 +622,23 @@ public class CompanyFilterTagValidation {
         }
         for(String item:array){
             if(StringUtils.isNotNullOrEmpty(item)){
-                if(Integer.parseInt(item)==origin){
-                    return true;
+                //当查找来源是99时特殊处理
+                if(Integer.parseInt(item)==99||Integer.parseInt(item)==-99){
+                    List<Integer> list=new ArrayList<>();
+                    list.add(1);
+                    list.add(2);
+                    list.add(3);
+                    list.add(128);
+                    list.add(256);
+                    list.add(512);
+                    list.add(1024);
+                    if(list.contains(origin)){
+                        return true;
+                    }
+                }else{
+                    if(Integer.parseInt(item)==origin){
+                        return true;
+                    }
                 }
             }
         }
