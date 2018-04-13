@@ -719,7 +719,7 @@ public class TalentPoolService {
         Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
         HrCompanyRecord record=hrCompanyDao.getRecord(query);
         if(record==null){
-           return -1;
+            return -1;
         }
         if(record.getType()!=0){
             return -2;
@@ -1526,10 +1526,10 @@ public class TalentPoolService {
                         for(Map<String,Object> map:companyTagList){
                             int id=(int)map.get("id");
                             for(Integer tagId:userTagIdSet){
-                               if(id==tagId){
-                                   tagList.add(map);
-                                   break;
-                               }
+                                if(id==tagId){
+                                    tagList.add(map);
+                                    break;
+                                }
                             }
                         }
                         //将这个人才下的企业标签塞到他的人才库标签列表下
