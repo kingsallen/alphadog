@@ -1166,6 +1166,12 @@ public class TalentPoolService {
         }
         return ResponseUtils.fail(1, result);
     }
+    /*
+     处理建简历和企业标签的关系，用于其他服务远程调用的
+     */
+    public void handlerProfileCompanyTag(Set<Integer> userIdSet,int companyId) throws Exception {
+        tagService.handlerCompanyTagTalent(userIdSet,companyId);
+    }
 
     //处理批量操作的结果
     private Map<String,Object> handlerBatchTalentResult( Set<Integer> unUseList,Set<Integer>unApplierIdList,Set<Integer> idList ,int companyd){

@@ -10,6 +10,7 @@ import com.moseeker.common.exception.Category;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.bean.TalentTagPOJO;
 import com.moseeker.company.exception.ExceptionFactory;
+import com.moseeker.company.service.impl.CompanyTagService;
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -308,6 +309,16 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             }
             String res= JSON.toJSONString(pojo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
             return ResponseUtils.successWithoutStringify(res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public void handlerCompanyTagAndProfile(Set<Integer> userid_list, int company_id) throws BIZException, TException {
+        try{
+            talentPoolService.handlerProfileCompanyTag(userid_list,company_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
