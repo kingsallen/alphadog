@@ -14,4 +14,10 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConsumerEntry {
+
+    String name() default "";   //业务名称
+
+    int period() default 5*60;  //方法检查周期
+
+    int index() default 0;      //messageId默认所处的参数的位置
 }

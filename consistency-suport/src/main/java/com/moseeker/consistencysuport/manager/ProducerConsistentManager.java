@@ -1,11 +1,12 @@
 package com.moseeker.consistencysuport.manager;
 
-import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.consistencysuport.config.MessageRepository;
 import com.moseeker.consistencysuport.config.Notification;
 import com.moseeker.consistencysuport.config.ParamConvertTool;
 import com.moseeker.consistencysuport.db.Message;
+import com.moseeker.consistencysuport.echo.MessageChannel;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
+import com.moseeker.consistencysuport.notification.NotificationImpl;
 import com.moseeker.consistencysuport.persistence.MessagePersistence;
 import com.moseeker.consistencysuport.persistence.MessagePersistenceImpl;
 import com.moseeker.consistencysuport.protector.InvokeHandler;
@@ -31,30 +32,66 @@ public class ProducerConsistentManager {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private MessagePersistence messagePersistence;                      //消息持久化工具
+    private MessageChannel messageChannel;
+
+    private MessagePersistence messagePersistence;              //消息持久化工具
     private Map<String, ParamConvertTool> paramConvertToolMap;  //参数与持久化字段的转换工具
     private Notification notification;                          //通知功能
     private ProtectorTask protectorTask;                        //启动保护任务
     private InvokeHandler invokeHandler;
-    private long initialDelay;
-    private long period;
-    private byte retriedUpper;
 
-    private ThreadPool threadPool = ThreadPool.Instance;
+    private long initialDelay = 5*1000;                         //任务延迟启动时间
+    private long period = 5*60*1000;                            //守护任务时间间隔
+
+    private long heartBeatTimeout = 2*60*60*1000;               //业务心跳超时时间
+
+    private byte retriedUpper = 3;                              //重试次数上线
+
+    private static final int MIN_PERIOD = 3*1000;                   //时间间隔下限
+
+    private ValidateBusiness validateBusiness;
 
     public ProducerConsistentManager(MessageRepository messageRepository,
                                      Map<String, ParamConvertTool> paramConvertToolMap, Notification notification,
                                      InvokeHandler invokeHandler,
-                                     long initialDelay, long period, byte retriedUpper) throws ConsistencyException {
+                                     long initialDelay, long period, long heartBeatTimeout, byte retriedUpper,
+                                     MessageChannel messageChannel) throws ConsistencyException {
+
+        logger.debug("ProducerConsistentManager init...");
+
         this.initialDelay = initialDelay;
         this.period = period;
         this.retriedUpper = retriedUpper;
+        this.heartBeatTimeout = heartBeatTimeout;
+
+        if (period < MIN_PERIOD) {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_CONFIGURATION_PERIOD_ERROR;
+        }
+        if (notification == null) {
+            notification = new NotificationImpl();
+        }
+
+        logger.debug("ProducerConsistentManager init messagePersistence");
         this.messagePersistence = new MessagePersistenceImpl(messageRepository);
         this.paramConvertToolMap = paramConvertToolMap;
         this.invokeHandler = invokeHandler;
+
+        logger.debug("ProducerConsistentManager init protectorTask");
         this.protectorTask = new ProtectorTaskConfigImpl(this.initialDelay, this.period, this.retriedUpper,
-                notification, messageRepository, paramConvertToolMap, invokeHandler);
+                notification, messageRepository, paramConvertToolMap, this.invokeHandler);
+
+        this.protectorTask.startProtectorTask();
+
+
         this.notification = notification;
+        this.messageChannel = messageChannel;
+        logger.debug("ProducerConsistentManager init channel");
+        this.messageChannel.initChannel();
+
+        this.validateBusiness = new ValidateBusiness(initialDelay, period, heartBeatTimeout, notification, messageRepository);
+        logger.debug("ProducerConsistentManager start ValidateBusiness");
+        this.validateBusiness.startValidateBusinessTask();
+        logger.debug("ProducerConsistentManager init finish");
     }
 
     /**
@@ -62,6 +99,13 @@ public class ProducerConsistentManager {
      */
     public void startProtectorTask() {
         protectorTask.startProtectorTask();
+    }
+
+    /**
+     * 启动检查
+     */
+    public void startValidateBusiness() {
+        validateBusiness.startValidateBusinessTask();
     }
 
     /**
@@ -125,5 +169,9 @@ public class ProducerConsistentManager {
         message.setParam(paramConvertToolMap.get(name).convertParamToStorage(param));
         message.setPeriod(period);
         messagePersistence.logMessage(message);
+    }
+
+    private void validateBusiness() {
+
     }
 }

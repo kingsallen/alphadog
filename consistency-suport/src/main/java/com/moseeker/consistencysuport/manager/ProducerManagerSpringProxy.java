@@ -4,16 +4,18 @@ import com.moseeker.consistencysuport.config.MessageRepository;
 import com.moseeker.consistencysuport.config.Notification;
 import com.moseeker.consistencysuport.config.ParamConvertTool;
 import com.moseeker.consistencysuport.db.impl.MessageRepositoryImpl;
+import com.moseeker.consistencysuport.echo.EchoHandler;
+import com.moseeker.consistencysuport.echo.EchoHandlerImpl;
+import com.moseeker.consistencysuport.echo.MessageChannel;
+import com.moseeker.consistencysuport.echo.MessageChannelImpl;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import com.moseeker.consistencysuport.notification.NotificationImpl;
-import com.moseeker.consistencysuport.persistence.MessagePersistenceImpl;
 import com.moseeker.consistencysuport.protector.InvokeHandler;
 import com.moseeker.consistencysuport.protector.InvokeHandlerImpl;
-import com.moseeker.consistencysuport.protector.ProtectorTask;
-import com.moseeker.consistencysuport.protector.ProtectorTaskConfigImpl;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -28,7 +30,9 @@ import java.util.Map;
 @Component
 public class ProducerManagerSpringProxy {
 
+    @Autowired
     private MessageRepository messageRepository;                    //消息持久化工具
+
     private Notification notification;                              //消息通知
 
     private long initialDelay = 5*1000;                             //延迟启动
@@ -36,7 +40,13 @@ public class ProducerManagerSpringProxy {
     private byte retriedUpper = 3;                                  //重试次数上限
 
     private static final int MIN_PERIOD = 3*1000;                   //时间间隔下限
+
+    private long heartBeatTimeout = 2*60*60*1000;                   //心跳超时时间
+
     private InvokeHandler invokeHandler;                            //重试调用方式
+
+    private MessageChannel messageChannel;                          //消息通道
+    private EchoHandler echoHandler;                                //消息处理
 
     private static ProducerConsistentManager manager;
 
@@ -46,6 +56,9 @@ public class ProducerManagerSpringProxy {
     @Autowired
     ApplicationContext applicationContext;
 
+    @Autowired
+    private Environment env;
+
     public ProducerManagerSpringProxy(){}
 
     /**
@@ -53,7 +66,7 @@ public class ProducerManagerSpringProxy {
      * @param create
      * @return
      */
-    public ProducerManagerSpringProxy buildMessageHandler(DefaultDSLContext create) {
+    public ProducerManagerSpringProxy buildMessageRepository(DefaultDSLContext create) {
         messageRepository = new MessageRepositoryImpl(create);
         return this;
     }
@@ -63,7 +76,7 @@ public class ProducerManagerSpringProxy {
      * @param messageRepository
      * @return
      */
-    public ProducerManagerSpringProxy buildMessageHandler(MessageRepository messageRepository) {
+    public ProducerManagerSpringProxy buildMessageRepository(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
         return this;
     }
@@ -88,6 +101,11 @@ public class ProducerManagerSpringProxy {
         return this;
     }
 
+    public ProducerManagerSpringProxy buildEchoHandler(EchoHandler echoHandler) {
+        this.echoHandler = echoHandler;
+        return this;
+    }
+
     /**
      * 构建保护程序
      * @param initialDelay
@@ -104,6 +122,11 @@ public class ProducerManagerSpringProxy {
             this.retriedUpper = 3;
         }
         this.period = period;
+        return this;
+    }
+
+    public ProducerManagerSpringProxy buildHeartBeatTimeout(long heartBeatTimeout) {
+        this.heartBeatTimeout = heartBeatTimeout;
         return this;
     }
 
@@ -131,9 +154,13 @@ public class ProducerManagerSpringProxy {
         if (invokeHandler == null) {
             this.invokeHandler = new InvokeHandlerImpl(applicationContext, paramConvertToolMap, notification);
         }
+        if (echoHandler == null) {
+            echoHandler = new EchoHandlerImpl(messageRepository, notification);
+        }
+        this.messageChannel = new MessageChannelImpl(applicationContext, env, echoHandler);
         manager = new ProducerConsistentManager(messageRepository,
-                paramConvertToolMap, notification, invokeHandler, initialDelay, period, retriedUpper);
-        manager.startProtectorTask();
+                paramConvertToolMap, notification, invokeHandler, initialDelay, period, heartBeatTimeout, retriedUpper,
+                messageChannel);
         return manager;
     }
 }

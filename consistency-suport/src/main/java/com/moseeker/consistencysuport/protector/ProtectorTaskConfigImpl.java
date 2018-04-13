@@ -9,14 +9,9 @@ import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ProtectorTaskConfigImpl implements ProtectorTask, Runnable {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private volatile boolean start = false;         //守护任务是否启动
 
     private Notification notification;              //通知
     private MessageRepository messageRepository;    //消息持久化操作
@@ -67,8 +64,11 @@ public class ProtectorTaskConfigImpl implements ProtectorTask, Runnable {
     });
 
     @Override
-    public void startProtectorTask() {
-        schedual.scheduleAtFixedRate(this, initialDelay, period, TimeUnit.MILLISECONDS);
+    public synchronized void startProtectorTask() {
+        if (!start) {
+            start = true;
+            schedual.scheduleAtFixedRate(this, initialDelay, period, TimeUnit.MILLISECONDS);
+        }
     }
 
     /**

@@ -1,6 +1,9 @@
 package com.moseeker.consistencysuport.db.impl;
 
+import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.consistencysuport.config.MessageRepository;
+import com.moseeker.consistencysuport.constant.MessageState;
 import com.moseeker.consistencysuport.db.Business;
 import com.moseeker.consistencysuport.db.Message;
 import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyBusiness;
@@ -11,11 +14,15 @@ import com.moseeker.consistencysuport.db.consistencydb.tables.records.Consistenc
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyBusinessTypeRecord;
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyMessageRecord;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
-import com.sun.tools.corba.se.idl.constExpr.Times;
+import org.joda.time.DateTime;
+import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.impl.DefaultDSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -24,15 +31,24 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
+ *
+ * 消息持久化
+ *
  * Created by jack on 03/04/2018.
  */
+@Component
 public class MessageRepositoryImpl implements MessageRepository {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    public MessageRepositoryImpl() {}
+
     public MessageRepositoryImpl(DefaultDSLContext create) {
         this.create = create;
     }
+
+    @Autowired
+    DefaultDSLContext create;
 
     private static final String DATABASE = "consistencydb";
 
@@ -82,8 +98,7 @@ public class MessageRepositoryImpl implements MessageRepository {
             "\tPRIMARY KEY (`name`)\n" +
             ")ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息业务类型表';";
 
-    private DefaultDSLContext create;
-
+    @Transactional
     @Override
     public void initDatabase() {
         create.execute(String.format("create database if not exists `%s`", DATABASE));
@@ -113,6 +128,7 @@ public class MessageRepositoryImpl implements MessageRepository {
         return null;
     }
 
+    @Transactional
     @Override
     public String saveMessage(Message message) {
 
@@ -164,6 +180,7 @@ public class MessageRepositoryImpl implements MessageRepository {
         return message.getMessageId();
     }
 
+    @Transactional
     @Override
     public String registerBusiness(String messageId, String name) throws ConsistencyException {
         ConsistencyMessageRecord consistencyMessageRecord = create
@@ -180,9 +197,11 @@ public class MessageRepositoryImpl implements MessageRepository {
         consistencyBusinessType.setRegisterTime(now);
         create.attach(consistencyBusinessType);
         consistencyBusinessType.insert();
+
         return consistencyBusinessType.getName();
     }
 
+    @Transactional
     @Override
     public List<Message> fetchUnFinishMessageBySpecifiedSecond(long second) {
 
@@ -205,6 +224,7 @@ public class MessageRepositoryImpl implements MessageRepository {
         return messageList;
     }
 
+    @Transactional
     @Override
     public void updateRetried(List<Message> messageList) throws ConsistencyException {
         List<Message> needRetry = new ArrayList<>();
@@ -222,6 +242,7 @@ public class MessageRepositoryImpl implements MessageRepository {
         retryLockedRecord(needRetry, 0);
     }
 
+    @Transactional
     @Override
     public void finishBusiness(String messageId, String name) throws ConsistencyException {
         ConsistencyMessageRecord consistencyMessageRecord = create
@@ -244,10 +265,86 @@ public class MessageRepositoryImpl implements MessageRepository {
                             ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.REGISTER_TIME)
                     .values(name, consistencyMessageRecord.getName(), now)
                     .onDuplicateKeyIgnore();
+        } else {
+            if (consistencyBusinessTypeRecord.getEnable() == AbleFlag.DISABLE.getValue()) {
+                consistencyBusinessTypeRecord.setEnable((byte) AbleFlag.ENABLE.getValue());
+                create.attach(consistencyBusinessTypeRecord);
+                consistencyBusinessTypeRecord.update();
+            }
         }
 
+        ConsistencyBusinessRecord consistencyBusinessRecord = create
+                .selectFrom(ConsistencyBusiness.CONSISTENCY_BUSINESS)
+                .where(ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID.eq(messageId))
+                .and(ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME.eq(name))
+                .fetchOne();
+
+        //查找正常业务未完成消息的数量。如果未查到任何信息，则表明该业务已经完全处理完毕
+        Record1<Integer> countResult = create
+                .selectCount()
+                .from(ConsistencyBusiness.CONSISTENCY_BUSINESS)
+                .innerJoin(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                .on(ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME.eq(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME))
+                .where(ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID.eq(messageId))
+                .and(ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME.ne(name))
+                .and(ConsistencyBusiness.CONSISTENCY_BUSINESS.FINISH.eq(MessageState.UnFinish.getValue()))
+                .and(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.ENABLE.eq((byte) AbleFlag.ENABLE.getValue()))
+                .fetchOne();
+
+        if (consistencyBusinessRecord == null) {
+            create.insertInto(ConsistencyBusiness.CONSISTENCY_BUSINESS)
+                    .columns(ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID,
+                            ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME,
+                            ConsistencyBusiness.CONSISTENCY_BUSINESS.FINISH)
+                    .values(messageId, name, MessageState.Finish.getValue())
+                    .onDuplicateKeyIgnore();
+        } else {
+            consistencyBusinessRecord.setFinish(MessageState.Finish.getValue());
+            create.attach(consistencyBusinessRecord);
+            consistencyBusinessRecord.update();
+        }
+
+        if (countResult.value1() == 0 && consistencyMessageRecord.getFinish() == MessageState.UnFinish.getValue()) {
+            int execute = create.update(ConsistencyMessage.CONSISTENCY_MESSAGE)
+                    .set(ConsistencyMessage.CONSISTENCY_MESSAGE.FINISH, MessageState.Finish.getValue())
+                    .set(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION, ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.add(1))
+                    .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
+                    .and(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.eq(consistencyMessageRecord.getVersion()))
+                    .execute();
+            if (execute == 0) {
+                retryFinishMessage(messageId, 0);
+            }
+        }
     }
 
+    @Transactional
+    private void retryFinishMessage(String messageId, int index) throws ConsistencyException {
+        if (index <= Constant.RETRY_UPPER) {
+            index ++;
+            ConsistencyMessageRecord consistencyMessageRecord = create
+                    .selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE)
+                    .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
+                    .fetchOne();
+            if (consistencyMessageRecord == null) {
+                throw ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS;
+            }
+            int execute = create.update(ConsistencyMessage.CONSISTENCY_MESSAGE)
+                    .set(ConsistencyMessage.CONSISTENCY_MESSAGE.FINISH, MessageState.Finish.getValue())
+                    .set(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION, ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.add(1))
+                    .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
+                    .and(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.eq(consistencyMessageRecord.getVersion()))
+                    .execute();
+            if (execute == 0) {
+                retryFinishMessage(messageId, index);
+            }
+        } else {
+
+            logger.error("finishBusiness over retry upper limit!  messageId : {}", messageId);
+            throw ConsistencyException.CONSISTENCY_PRODUCER_RETRY_OVER_LIMIT;
+        }
+    }
+
+    @Transactional
     @Override
     public void heartBeat(String messageId, String name) throws ConsistencyException {
         ConsistencyMessageRecord consistencyMessageRecord = create
@@ -257,10 +354,67 @@ public class MessageRepositoryImpl implements MessageRepository {
         if (consistencyMessageRecord == null) {
             throw ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS;
         }
+        ConsistencyBusinessTypeRecord consistencyBusinessTypeRecord = create
+                .selectFrom(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                .where(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME.eq(name))
+                .and(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME
+                        .eq(consistencyMessageRecord.getName()))
+                .fetchOne();
+        if (consistencyBusinessTypeRecord == null) {
+            int count = create.insertInto(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                    .columns(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME,
+                            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME,
+                            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.LAST_SHAKE_HAND_TIME)
+                    .values(name, consistencyMessageRecord.getName(), new Timestamp(System.currentTimeMillis()))
+                    .onDuplicateKeyIgnore()
+                    .execute();
+            if (count == 0) {
+                updateLastShakeHandTime(consistencyMessageRecord.getName(), name);
+            }
+        } else {
+            updateLastShakeHandTime(consistencyMessageRecord.getName(), name);
+        }
+    }
+
+    @Override
+    public void disableBusinessTypeBySpecifiedShakeHandTime(long lostTime) throws ConsistencyException {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis() - lostTime);
+        List<ConsistencyBusinessTypeRecord> businessTypeRecordList =
+                create.selectFrom(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                .where(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.ENABLE.eq((byte) AbleFlag.ENABLE.getValue()))
+                .and(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.LAST_SHAKE_HAND_TIME.lt(timestamp))
+                .fetch();
+        if (businessTypeRecordList != null && businessTypeRecordList.size() > 0) {
+            businessTypeRecordList.forEach(consistencyBusinessTypeRecord -> {
+                logger.info("disableBusinessTypeBySpecifiedShakeHandTime consistencyBusinessTypeRecord name:{}, " +
+                        "message_name:{}, time:{}",
+                        consistencyBusinessTypeRecord.getName(),
+                        consistencyBusinessTypeRecord.getMessageName(),
+                        new DateTime().toString("YYYY-MM-dd HH:mm:ss"));
+                consistencyBusinessTypeRecord.setEnable((byte) AbleFlag.DISABLE.getValue());
+                create.attach(consistencyBusinessTypeRecord);
+                consistencyBusinessTypeRecord.update();
+            });
+        }
+    }
+
+    private void updateLastShakeHandTime(String messageName, String name) {
+        ConsistencyBusinessTypeRecord consistencyBusinessTypeRecord = create
+                .selectFrom(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                .where(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME.eq(name))
+                .and(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME
+                        .eq(messageName))
+                .fetchOne();
+        if (consistencyBusinessTypeRecord != null) {
+            consistencyBusinessTypeRecord.setLastShakeHandTime(new Timestamp(System.currentTimeMillis()));
+            consistencyBusinessTypeRecord.setEnable((byte) AbleFlag.ENABLE.getValue());
+            create.attach(consistencyBusinessTypeRecord);
+            consistencyBusinessTypeRecord.update();
+        }
     }
 
     private void retryLockedRecord(List<Message> needRetry, int retried) throws ConsistencyException {
-        if (retried < 3) {
+        if (retried < Constant.RETRY_UPPER) {
             List<String> messageIdList = needRetry.stream().map(Message::getMessageId).collect(Collectors.toList());
             if (messageIdList != null && messageIdList.size() > 0) {
                 List<ConsistencyMessageRecord> consistencyMessageRecordList = create

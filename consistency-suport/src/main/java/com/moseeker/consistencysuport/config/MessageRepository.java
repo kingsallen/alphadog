@@ -75,4 +75,10 @@ public interface MessageRepository {
      * @throws ConsistencyException
      */
     void heartBeat(String messageId, String name) throws ConsistencyException;
+
+    /**
+     * 将超过指定时间的消息业务类型的数据置为不可用
+     * @param lostTime 时间
+     */
+    void disableBusinessTypeBySpecifiedShakeHandTime(long lostTime) throws ConsistencyException;
 }

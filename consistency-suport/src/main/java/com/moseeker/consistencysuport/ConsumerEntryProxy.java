@@ -1,6 +1,13 @@
 package com.moseeker.consistencysuport;
 
+import com.moseeker.consistencysuport.exception.ConsistencyException;
+import com.moseeker.consistencysuport.manager.ProducerManagerSpringProxy;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.jooq.impl.DefaultDSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
 
@@ -14,4 +21,44 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class ConsumerEntryProxy {
+
+    @Autowired
+    DefaultDSLContext context;
+
+    @Autowired
+    ApplicationContext applicationContext;
+
+    /**
+     * 切入点
+     */
+    private static final String POINCUT = "@within(com.moseeker.consistencysuport.ProducerEntry) || @annotation(com.moseeker.consistencysuport.ProducerEntry)";
+
+    /**
+     *
+     * @param call
+     * @param producerEntry
+     * @throws ConsistencyException
+     */
+    @AfterReturning(value = POINCUT)
+    public void afterReturn(JoinPoint call, ProducerEntry producerEntry) throws ConsistencyException {
+
+        config.buildMessageRepository(context);
+        ProducerConsistentManager manager = config.buildManager();
+        Optional<ParamConvertTool> paramConvertToolOptional = manager.getParamConvertTool(producerEntry.name());
+        if (!paramConvertToolOptional.isPresent()) {
+            throw ConsistencyException.CONSISTENCY_UNBIND_CONVERTTOOL;
+        }
+        Object[] objects = call.getArgs();
+        if (producerEntry.index() >= objects.length) {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_LOST_MESSAGEID;
+        }
+        String className = call.getTarget().getClass().getName();
+        String method = call.getSignature().getName();
+        String name = producerEntry.name();
+        int period = producerEntry.period();
+
+        String messageId = objects[producerEntry.index()].toString();
+
+        manager.logMessage(messageId, name, className, method, objects, period);
+    }
 }

@@ -20,6 +20,8 @@ import org.springframework.core.env.Environment;
  *
  * 初始化消息处理的消息通道
  *
+ * 定时关闭心跳超时的业务
+ *
  * Created by jack on 09/04/2018.
  */
 public class MessageChannelImpl implements MessageChannel {
@@ -37,13 +39,17 @@ public class MessageChannelImpl implements MessageChannel {
     private static final String LISTENER_ADAPTER = "consistency_message_listener_adapter";
     private static final String LISTENER_CONTAINER = "consistency_message_listener_container";
 
-    public MessageChannelImpl(ApplicationContext applicationContext, Environment env) {
+    public MessageChannelImpl(ApplicationContext applicationContext, Environment env, EchoHandler echoHandler) {
         this.applicationContext = applicationContext;
         this.env = env;
+        this.echoHandler = echoHandler;
     }
 
     @Override
-    public void initChannel() throws ConsistencyException {
+    public synchronized void initChannel() throws ConsistencyException {
+
+        logger.debug("MessageChannelImpl initChannel");
+
         ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
         connectionFactory = applicationContext.getBean(CONNECTION_NAME, ConnectionFactory.class);
         if (connectionFactory == null) {

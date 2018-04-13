@@ -30,4 +30,6 @@ public class ConsistencyException extends CommonException {
     public static final ConsistencyException CONSISTENCY_PRODUCER_UPDATE_RETRIED_FAILED = new ConsistencyException(81011, "更新消息重试次数失败！");
 
     public static final ConsistencyException CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS = new ConsistencyException(81012, "消息不存在！");
+
+    public static final ConsistencyException CONSISTENCY_PRODUCER_UPDATE_FINISH_RETRY_OVER_LIMIT = new ConsistencyException(81013, "将消息更新成完成状态时，重试次数超过上线！");
 }
