@@ -239,7 +239,8 @@ public class TalentPoolEntity {
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getDegree())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position()) || companyTagDO.getMin_age() > 0 || companyTagDO.getMax_age()>0
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_city_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_salary_code())
-                || companyTagDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1){
+                || companyTagDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1
+                || StringUtils.isNullOrEmpty(companyTagDO.getSubmit_time())){
             return "";
         }
         return "标签全为默认值;";
@@ -256,7 +257,8 @@ public class TalentPoolEntity {
                 || StringUtils.isNotNullOrEmpty(companyFilterDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyFilterDO.getDegree())
                 || StringUtils.isNotNullOrEmpty(companyFilterDO.getPast_position()) || companyFilterDO.getMin_age() > 0 || companyFilterDO.getMax_age()>0
                 || StringUtils.isNotNullOrEmpty(companyFilterDO.getIntention_city_name()) || StringUtils.isNotNullOrEmpty(companyFilterDO.getIntention_salary_code())
-                || companyFilterDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyFilterDO.getCompany_name()) || companyFilterDO.getIs_recommend() == 1){
+                || companyFilterDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyFilterDO.getCompany_name()) || companyFilterDO.getIs_recommend() == 1
+                || StringUtils.isNullOrEmpty(companyFilterDO.getSubmit_time())){
             return "";
         }
         return "规则全为默认值;";
