@@ -81,7 +81,6 @@ public class TalentpoolCompanyTagUserDao extends JooqCrudImpl<com.moseeker.baseo
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser> getTagByUserIdSet(Set<Integer> userIdSet){
         List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser> list=create.selectFrom(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER)
                 .where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.in(userIdSet))
-                .groupBy(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID)
                 .fetchInto(com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser.class);
 
         return list;

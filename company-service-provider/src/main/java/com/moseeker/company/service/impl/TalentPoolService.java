@@ -1606,6 +1606,7 @@ public class TalentPoolService {
                     tagIdset.add(tagUser.getTagId());
                 }
             }
+            bean.setCompanytagidList(tagIdset);
             result.add(bean);
         }
         return result;

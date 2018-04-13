@@ -39,9 +39,9 @@ public class CompanyFilterTagValidation {
                 ||(tag.get("submitTime") != null && StringUtils.isNotNullOrEmpty((String)tag.get("submitTime")))
                 ||(tag.get("isRecommend") != null && (int)tag.get("isRecommend")>0)) {
             if((int)tag.get("isRecommend")>0){
-                applist=this.getJobApplicationByCompanyIdAndUserId(companyId,userId);
+                applist=this.getJobAppRecommendByCompanyIdAndUserId(companyId,userId);
             }else{
-                applist=getJobAppRecommendByCompanyIdAndUserId(companyId,userId);
+                applist=this.getJobApplicationByCompanyIdAndUserId(companyId,userId);
             }
 
             boolean flag=this.validateApp((String)tag.get("origins"),applist,profiles,(String)tag.get("submitTime"));
@@ -528,9 +528,6 @@ public class CompanyFilterTagValidation {
     private boolean validateApp(String origins, List<JobApplicationRecord> applist,Map<String,Object> profiles,String submitTime ){
         logger.info("来源数据是===============================");
         logger.info(origins +"============"+submitTime);
-        if(!StringUtils.isEmptyList(applist)){
-            logger.info(JSON.toJSONString(applist));
-        }
         logger.info("========================================");
         if(StringUtils.isNotNullOrEmpty(origins)){
             String[] originArray=origins.split(",");
@@ -625,8 +622,23 @@ public class CompanyFilterTagValidation {
         }
         for(String item:array){
             if(StringUtils.isNotNullOrEmpty(item)){
-                if(Integer.parseInt(item)==origin){
-                    return true;
+                //当查找来源是99时特殊处理
+                if(Integer.parseInt(item)==99||Integer.parseInt(item)==-99){
+                    List<Integer> list=new ArrayList<>();
+                    list.add(1);
+                    list.add(2);
+                    list.add(3);
+                    list.add(128);
+                    list.add(256);
+                    list.add(512);
+                    list.add(1024);
+                    if(list.contains(origin)){
+                        return true;
+                    }
+                }else{
+                    if(Integer.parseInt(item)==origin){
+                        return true;
+                    }
                 }
             }
         }
