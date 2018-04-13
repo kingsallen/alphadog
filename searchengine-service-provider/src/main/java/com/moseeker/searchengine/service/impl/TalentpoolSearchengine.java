@@ -223,7 +223,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(pastPosition)){
             String lastPosition=params.get("in_last_job_search_position");
             if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
-                this.queryParseByLastPositions(lastPosition,query);
+                this.queryParseByLastPositions(pastPosition,query);
             }else{
                 this.queryParseByWorkJob(pastPosition,query);
             }
@@ -947,13 +947,13 @@ public class TalentpoolSearchengine {
     private void queryByWorkJob(String works,QueryBuilder queryBuilder){
         List<String> list=new ArrayList<>();
         list.add("user.profiles.recent_job.job");
-        list.add("user.profiles.workexps.job");
+        list.add("user.profiles.other_workexps.job");
         searchUtil.shouldMatchQuery(list,works,queryBuilder);
     }
     private void queryParseByWorkJob(String works,QueryBuilder queryBuilder){
         List<String> list=new ArrayList<>();
         list.add("user.profiles.recent_job.job_name");
-        list.add("user.profiles.workexps.job_name");
+        list.add("user.profiles.other_workexps.job_name");
         searchUtil.shouldMatchParseQuery(list,works,queryBuilder);
     }
     /*
@@ -975,13 +975,13 @@ public class TalentpoolSearchengine {
     private void queryByCompany(String companys,QueryBuilder queryBuilder){
         List<String> list=new ArrayList<>();
         list.add("user.profiles.recent_job.company_name");
-        list.add("user.profiles.workexps.company_name");
+        list.add("user.profiles.other_workexps.company_name");
         searchUtil.shouldMatchQuery(list,companys,queryBuilder);
     }
     private void queryParseByCompanyTag(String companys,QueryBuilder queryBuilder){
         List<String> list=new ArrayList<>();
         list.add("user.profiles.recent_job.company_new_name");
-        list.add("user.profiles.workexps.company_new_name");
+        list.add("user.profiles.other_workexps.company_new_name");
         searchUtil.shouldMatchParseQuery(list,companys,queryBuilder);
     }
     /*
