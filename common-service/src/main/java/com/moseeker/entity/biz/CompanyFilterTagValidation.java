@@ -1,5 +1,6 @@
 package com.moseeker.entity.biz;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
@@ -12,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,11 +23,17 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CompanyFilterTagValidation {
-
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private JobApplicationDao jobApplicationDao;
 
     public boolean  validateProfileAndComapnyTag(Map<String, Object> profiles, int userId, int companyId, Map<String, Object> tag) throws Exception {
+        logger.info("简历数据是=================");
+        logger.info(JSON.toJSONString(profiles));
+        logger.info("===========================");
+        logger.info("标签数据是=================");
+        logger.info(JSON.toJSONString(tag));
+        logger.info("===========================");
         List<JobApplicationRecord> applist=new ArrayList<>();
         if((tag.get("origins") != null && StringUtils.isNotNullOrEmpty((String)tag.get("origins")))
                 ||(tag.get("submitTime") != null && StringUtils.isNotNullOrEmpty((String)tag.get("submitTime")))
@@ -517,28 +526,34 @@ public class CompanyFilterTagValidation {
      校验该人才的来源
      */
     private boolean validateApp(String origins, List<JobApplicationRecord> applist,Map<String,Object> profiles,String submitTime ){
-        if(StringUtils.isEmptyList(applist)){
-            return false;
+        logger.info("来源数据是===============================");
+        logger.info(origins +"============"+submitTime);
+        if(!StringUtils.isEmptyList(applist)){
+            logger.info(JSON.toJSONString(applist));
         }
+        logger.info("========================================");
         if(StringUtils.isNotNullOrEmpty(origins)){
             String[] originArray=origins.split(",");
             boolean flag=false;
-            for(JobApplicationRecord record:applist){
-                int appOrigin=record.getOrigin();
-                flag=this.validateEqual(originArray,appOrigin);
-                if(flag==true){
-                    if(StringUtils.isNotNullOrEmpty(submitTime)){
-                        long apptime=record.getSubmitTime().getTime();
-                        long time=this.getLongTime(submitTime);
-                        if(time<apptime){
-                            flag=true;
+            if(!StringUtils.isEmptyList(applist)){
+                for(JobApplicationRecord record:applist){
+                    int appOrigin=record.getOrigin();
+                    flag=this.validateEqual(originArray,appOrigin);
+                    if(flag==true){
+                        if(StringUtils.isNotNullOrEmpty(submitTime)){
+                            long apptime=record.getSubmitTime().getTime();
+                            long time=this.getLongTime(submitTime);
+                            if(time<apptime){
+                                flag=true;
+                            }
                         }
                     }
-                }
-                if(flag==true){
-                    break;
+                    if(flag==true){
+                        break;
+                    }
                 }
             }
+
             if(flag==false){
                 if(profiles==null||profiles.isEmpty()){
                     return false;
@@ -583,18 +598,23 @@ public class CompanyFilterTagValidation {
                 return true;
             }
 
-        }
-        if(StringUtils.isNotNullOrEmpty(submitTime)){
-            for(JobApplicationRecord record:applist){
-                if(StringUtils.isNotNullOrEmpty(submitTime)){
-                    long apptime=record.getSubmitTime().getTime();
-                    long time=this.getLongTime(submitTime);
-                    if(time<apptime){
-                        return true;
+        }else{
+            if(StringUtils.isNotNullOrEmpty(submitTime)){
+                if(StringUtils.isEmptyList(applist)){
+                    return false;
+                }
+                for(JobApplicationRecord record:applist){
+                    if(StringUtils.isNotNullOrEmpty(submitTime)){
+                        long apptime=record.getSubmitTime().getTime();
+                        long time=this.getLongTime(submitTime);
+                        if(time<apptime){
+                            return true;
+                        }
                     }
                 }
             }
         }
+
         return true;
 
 
