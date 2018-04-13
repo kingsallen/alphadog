@@ -223,7 +223,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(pastPosition)){
             String lastPosition=params.get("in_last_job_search_position");
             if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
-                this.queryParseByLastPositions(pastPosition,query);
+                this.queryParseByLastPositions(lastPosition,query);
             }else{
                 this.queryParseByWorkJob(pastPosition,query);
             }
