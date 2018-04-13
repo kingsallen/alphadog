@@ -11,8 +11,8 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
@@ -26,10 +26,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.company.bean.TalentTagPOJO;
-import com.moseeker.company.bean.ValidateCommonBean;
-import com.moseeker.company.bean.ValidateTagBean;
-import com.moseeker.company.bean.ValidateTalentBean;
+import com.moseeker.company.bean.*;
 import com.moseeker.company.utils.ValidateTalent;
 import com.moseeker.company.utils.ValidateTalentTag;
 import com.moseeker.company.utils.ValidateUtils;
@@ -151,7 +148,7 @@ public class TalentPoolService {
             return  ResponseUtils.success("");
         }
         tp.startTast(() -> {
-            tagService.handlerCompanyTagTalent(idList, 2);
+            tagService.handlerCompanyTagTalent(idList, companyId);
             return 0;
         });
         return ResponseUtils.success(result);
@@ -234,7 +231,7 @@ public class TalentPoolService {
         talentPoolEntity.realTimeUpdate(talentPoolEntity.converSetToList(idList));
         List<Map<String,Object>> hrTagList=validateResult.getHrTagList();
         Set<Integer> userTagIdList=validateResult.getUserTagIdList();
-        Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
+        Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,companyId,1);
         if(usertagMap==null||userIdList.isEmpty()){
             ResponseUtils.fail(1,"不满足添加标签的条件");
         }
@@ -295,7 +292,7 @@ public class TalentPoolService {
         talentPoolEntity.realTimeUpdate(talentPoolEntity.converSetToList(idList));
         List<Map<String,Object>> hrTagList=validateResult.getHrTagList();
         userTagIdList=tagIdList;
-        Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
+        Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,companyId,1);
         Map<String,Object> result=new HashMap<>();
         result.put("nopower",nouseList);
         result.put("use",usertagMap);
@@ -336,7 +333,7 @@ public class TalentPoolService {
         talentPoolEntity.realTimeUpdate(talentPoolEntity.converSetToList(idList));
         List<Map<String,Object>> hrTagList=validateResult.getHrTagList();
         Set<Integer> userTagIdList=validateResult.getUserTagIdList();
-        Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,0);
+        Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,companyId,0);
         if(usertagMap==null||userIdList.isEmpty()){
             ResponseUtils.fail(1,"不满足删除标签的条件");
         }
@@ -585,6 +582,7 @@ public class TalentPoolService {
         pojo= this.getTagData(hrId,page,pageInfo.getLimit(),pageSize);
         return pojo;
     }
+
     /*
       人才的来源来源
       @auth:zzt
@@ -1448,58 +1446,163 @@ public class TalentPoolService {
 
 
     /*
+       处理标签的添加和删除后返回的数据
+       type=1是添加的情况
+       type=2是删除的情况
+       本处采用一个接口，所有都视为添加
 
      */
-    private Map<Integer,Object> handlerUserTagResult( List<Map<String,Object>> hrTagList,Set<Integer> userTagIdList,Set<Integer> idList,Set<Integer> tagIdList,int type){
-        if(StringUtils.isEmptyList(hrTagList)){
+    private Map<Integer,Object> handlerUserTagResult( List<Map<String,Object>> hrTagList,Set<Integer> userTagIdList,Set<Integer> idList,Set<Integer> tagIdList,int companyId,int type){
+        Map<Integer,Object> result=new HashMap<>();
+        if(!StringUtils.isEmptyList(hrTagList)){
+            List<Map<String,Object>> handlerTag=this.getTagData(tagIdList);
+            List<Map<String,Object>> resultList=new ArrayList<>();
+            if(type==1){
+                if(StringUtils.isEmptySet(userTagIdList)){
+                    resultList=handlerTag;
+                }else {
+                    for (Integer tagId : userTagIdList) {
+                        for (Map<String,Object> record : hrTagList) {
+                            if (tagId == record.get("id")) {
+                                resultList.add(record);
+                                break;
+                            }
+                        }
+                    }
+                    resultList.addAll(handlerTag);
+                }
+
+            }else{
+                if(!StringUtils.isEmptySet(userTagIdList)){
+                    userTagIdList.removeAll(tagIdList);
+                    if(!StringUtils.isEmptySet(userTagIdList)){
+                        for (Integer tagId : userTagIdList) {
+                            for (Map<String,Object> record : hrTagList) {
+                                if (tagId == record.get("id")) {
+                                    resultList.add(record);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            for(Integer userId:idList){
+                result.put(userId,resultList);
+            }
+        }
+        this.handlerUserCompanyTagData(result,companyId,idList);
+        return result;
+    }
+    /*
+        获取被打标签的人在该公司该hr下的企业标签，母账号看到所有，子账号只能看到自己人才下的人才的企业标签
+        */
+    private void  handlerUserCompanyTagData(Map<Integer,Object> usertagMap,int companyId,Set<Integer> idList){
+        //获取人才和企业标签的关系，即这个人彩霞所哟肚饿企业标签（包含其他公司的，我们所做的就是把所有标签中的属于该公司的标签筛选出来）
+        List<TalentpoolCompanyTagUser> userTagList=this.getUserCompanyTagList(idList);
+        List<UserCompanyTagBean> list=this.getUserCompanyTagList(userTagList,idList);
+        Set<Integer> tagIdSet=this.getCompanyTagIdSet(userTagList);
+        if(!StringUtils.isEmptyList(list)&&!StringUtils.isEmptySet(tagIdSet)){
+            List<Map<String,Object>> companyTagList=this.getCompanyTagList(companyId,tagIdSet);
+            if(!StringUtils.isEmptyList(companyTagList)){
+                for(UserCompanyTagBean tagBean:list){
+                    int userId=tagBean.getUserId();
+                    //根据userid和companyTag.id的关系，取出所有在这公司下这个人才下的企业标签
+                    List<Map<String,Object>> tagList=new ArrayList<>();
+                    Set<Integer> userTagIdSet=tagBean.getCompanytagidList();
+                    if(!StringUtils.isEmptySet(userTagIdSet)){
+                        for(Map<String,Object> map:companyTagList){
+                            int id=(int)map.get("id");
+                            for(Integer tagId:userTagIdSet){
+                               if(id==tagId){
+                                   tagList.add(map);
+                                   break;
+                               }
+                            }
+                        }
+                        //将这个人才下的企业标签塞到他的人才库标签列表下
+                        if(!StringUtils.isEmptyList(tagList)){
+                            for(Integer key: usertagMap.keySet()){
+                                if(userId==key){
+                                    List<Map<String,Object>> tagMapList= (List<Map<String, Object>>) usertagMap.get(key);
+                                    if(tagMapList==null){
+                                        tagMapList=new ArrayList<>();
+                                    }
+                                    tagMapList.addAll(tagList);
+                                    break;
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+    /*
+     根绝tagId获取所有有效的companytag
+     */
+    private List<Map<String,Object>> getCompanyTagList(int companyId,Set<Integer> tagIdSet ){
+        Query query=new Query.QueryBuilder().where("company_id",companyId)
+                .and(new Condition("id",tagIdSet.toArray(),ValueOp.IN))
+                .and("disable",1).orderBy("update_time",Order.DESC).buildQuery();
+        List<Map<String,Object>> list=talentpoolCompanyTagDao.getMaps(query);
+        return list;
+    }
+    /*
+     获取人才和标签的关系表
+     */
+    private List<TalentpoolCompanyTagUser> getUserCompanyTagList(Set<Integer> idList){
+        if(StringUtils.isEmptySet(idList)){
             return null;
         }
-        List<Map<String,Object>> handlerTag=this.getTagData(tagIdList);
-        List<Map<String,Object>> resultList=new ArrayList<>();
-        Map<Integer,Object> result=new HashMap<>();
-        if(type==1){
-            if(StringUtils.isEmptySet(userTagIdList)){
-                resultList=handlerTag;
-            }else {
-                for (Integer tagId : userTagIdList) {
-                    for (Map<String,Object> record : hrTagList) {
-                        if (tagId == record.get("id")) {
-                            resultList.add(record);
-                            break;
-                        }
-                    }
-                }
-                resultList.addAll(handlerTag);
-            }
-
-        }else{
-            if(StringUtils.isEmptySet(userTagIdList)){
-                return null;
-            }else{
-                userTagIdList.removeAll(tagIdList);
-            }
-            if(!StringUtils.isEmptySet(userTagIdList)){
-                for (Integer tagId : userTagIdList) {
-                    for (Map<String,Object> record : hrTagList) {
-                        if (tagId == record.get("id")) {
-                            resultList.add(record);
-                            break;
-                        }
-                    }
-                }
-            }
+        List<TalentpoolCompanyTagUser> tagList=talentpoolCompanyTagUserDao.getTagByUserIdSet(idList);
+        if(StringUtils.isEmptyList(tagList)){
+            return null;
         }
+        return tagList;
+    }
+    /*
+     获取tagIdSet
+     */
+    private Set<Integer> getCompanyTagIdSet(List<TalentpoolCompanyTagUser> tagList){
+        if(StringUtils.isEmptyList(tagList)){
+            return null;
+        }
+        Set<Integer> tagIdset=new HashSet<>();
+        for(TalentpoolCompanyTagUser tagUser: tagList){
+            tagIdset.add(tagUser.getTagId());
+        }
+        return tagIdset;
+    }
+    /*
+     获取UserCompanyTagBean
+     */
+    private List<UserCompanyTagBean>  getUserCompanyTagList(List<TalentpoolCompanyTagUser> tagList,Set<Integer> idList){
+        if(StringUtils.isEmptyList(tagList)||StringUtils.isEmptySet(idList)){
+            return null;
+        }
+        List<UserCompanyTagBean> result=new ArrayList<>();
         for(Integer userId:idList){
-            result.put(userId,resultList);
+            UserCompanyTagBean bean=new UserCompanyTagBean();
+            bean.setUserId(userId);
+            Set<Integer> tagIdset=new HashSet<>();
+            for(TalentpoolCompanyTagUser tagUser:tagList){
+                int id=tagUser.getUserId();
+                if(id==userId){
+                    tagIdset.add(tagUser.getTagId());
+                }
+            }
+            result.add(bean);
         }
         return result;
     }
-
     /*
      根据tagid的集合获取tag信息
      */
     private List<Map<String,Object>> getTagData(Set<Integer> tagIdList){
-        Query query=new Query.QueryBuilder().where(new Condition("id",tagIdList.toArray(),ValueOp.IN)).buildQuery();
+        Query query=new Query.QueryBuilder().where(new Condition("id",tagIdList.toArray(),ValueOp.IN)).orderBy("update_time",Order.DESC).buildQuery();
         List<Map<String,Object>> list=talentpoolTagDao.getMaps(query);
         return list;
     }
@@ -1610,8 +1713,8 @@ public class TalentPoolService {
         if(StringUtils.isEmptySet(tagIdList)){
             return null;
         }
-        Query query=new Query.QueryBuilder().where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.getName(),userId)
-                .and(new Condition(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID.getName(),tagIdList.toArray(),ValueOp.IN))
+        Query query=new Query.QueryBuilder().where("user_id",userId)
+                .and(new Condition("tag_id",tagIdList.toArray(),ValueOp.IN))
                 .buildQuery();
         List<Map<String,Object>> list=talentpoolCompanyTagUserDao.getMaps(query);
         return list;

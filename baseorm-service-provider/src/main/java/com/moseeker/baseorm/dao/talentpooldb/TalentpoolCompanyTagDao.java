@@ -6,6 +6,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagRecord;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,16 @@ public class TalentpoolCompanyTagDao extends JooqCrudImpl<com.moseeker.baseorm.d
     public Map<String,Object> getTagById(int tagId){
         Map<String,Object> result= create.selectFrom(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG)
                 .where(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.eq(tagId)).fetchAnyMap();
+        return result;
+    }
+
+
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> getCompanyTagByTagIdSet(int companyId,Set<Integer> tagIdSet){
+        List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> result=create.selectFrom(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG)
+                .where(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.eq(companyId))
+                .and(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.in(tagIdSet))
+                .and(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.DISABLE.eq(1))
+                .fetchInto(com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag.class);
         return result;
     }
 
