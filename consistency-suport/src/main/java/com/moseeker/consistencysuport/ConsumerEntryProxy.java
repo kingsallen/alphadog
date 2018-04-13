@@ -1,7 +1,6 @@
 package com.moseeker.consistencysuport;
 
 import com.moseeker.consistencysuport.exception.ConsistencyException;
-import com.moseeker.consistencysuport.manager.ProducerManagerSpringProxy;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -42,23 +41,6 @@ public class ConsumerEntryProxy {
     @AfterReturning(value = POINCUT)
     public void afterReturn(JoinPoint call, ProducerEntry producerEntry) throws ConsistencyException {
 
-        config.buildMessageRepository(context);
-        ProducerConsistentManager manager = config.buildManager();
-        Optional<ParamConvertTool> paramConvertToolOptional = manager.getParamConvertTool(producerEntry.name());
-        if (!paramConvertToolOptional.isPresent()) {
-            throw ConsistencyException.CONSISTENCY_UNBIND_CONVERTTOOL;
-        }
-        Object[] objects = call.getArgs();
-        if (producerEntry.index() >= objects.length) {
-            throw ConsistencyException.CONSISTENCY_PRODUCER_LOST_MESSAGEID;
-        }
-        String className = call.getTarget().getClass().getName();
-        String method = call.getSignature().getName();
-        String name = producerEntry.name();
-        int period = producerEntry.period();
 
-        String messageId = objects[producerEntry.index()].toString();
-
-        manager.logMessage(messageId, name, className, method, objects, period);
     }
 }

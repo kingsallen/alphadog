@@ -49,6 +49,6 @@ public class ProducerEntryProxy {
     @AfterReturning(value = POINCUT)
     public void afterReturn(JoinPoint call, ConsumerEntry consumerEntry) throws ConsistencyException {
 
-        
+
     }
 }
