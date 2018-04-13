@@ -18,7 +18,6 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionProfileFilterRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
-import com.moseeker.baseorm.db.talentpooldb.tables.daos.TalentpoolExecuteDao;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter;
@@ -35,7 +34,6 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.company.struct.ActionForm;
-import com.moseeker.thrift.gen.company.struct.PositionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
@@ -435,15 +433,15 @@ public class TalentPoolEntity {
      * 插入筛选规则信息
      * @param profileFilterDO
      * @param actionFormList
-     * @param positionFormList
+     * @param positionIdList
      * @return
      */
     @Transactional
-    public int addCompanyProfileFilter(TalentpoolProfileFilterDO profileFilterDO, List<ActionForm> actionFormList, List<PositionForm> positionFormList){
+    public int addCompanyProfileFilter(TalentpoolProfileFilterDO profileFilterDO, List<ActionForm> actionFormList, List<Integer> positionIdList, int position_total){
         TalentpoolProfileFilterRecord filterRecord = talentpoolProfileFilterDao.dataToRecord(profileFilterDO);
         talentpoolProfileFilterDao.addRecord(filterRecord);
         insertTalentpoolProfileFilterExecuteRecord(actionFormList, filterRecord.getId());
-        insertJobPositionProfileFilterRecord(positionFormList, filterRecord.getId(), profileFilterDO.getCompany_id());
+        insertJobPositionProfileFilterRecord(positionIdList, filterRecord.getId(), profileFilterDO.getCompany_id(), position_total);
         return filterRecord.getId();
     }
 
@@ -459,14 +457,20 @@ public class TalentPoolEntity {
         talentpoolProfileFilterExcuteDao.addAllRecord(executeRecordList);
     }
 
-    private void insertJobPositionProfileFilterRecord(List<PositionForm> positionFormList, int filterId, int company_id){
+    private void insertJobPositionProfileFilterRecord(List<Integer> positionIdList, int filterId, int company_id, int position_total){
         List<JobPositionProfileFilterRecord> filterRecordList = new ArrayList<>();
-        List<Integer> positionIdList = positionFormList.stream().map(m -> m.getId()).collect(Collectors.toList());
-        List<JobPositionDO> positionDOList = getTalentpoolExecuteRecord(positionIdList, company_id);
-        for(JobPositionDO positionDO: positionDOList){
+        List<Integer> positionDOList = new ArrayList<>();
+        if(position_total == 1){
+            List<Integer> companyIdList = new ArrayList<>();
+            companyIdList.add(company_id);
+            positionDOList = jobPositionDao.getStstusPositionIds(companyIdList);
+        }else {
+            positionDOList = getTalentpoolExecuteRecord(positionIdList, company_id);
+        }
+        for(Integer positionId: positionDOList){
             JobPositionProfileFilterRecord record = new JobPositionProfileFilterRecord();
             record.setPfid(filterId);
-            record.setPid(positionDO.getId());
+            record.setPid(positionId);
             filterRecordList.add(record);
         }
         jobPositionProfileFilterDao.addAllRecord(filterRecordList);
@@ -476,11 +480,11 @@ public class TalentPoolEntity {
      * 更新筛选规则信息
      * @param profileFilterDO
      * @param actionFormList
-     * @param positionFormList
+     * @param positionIdList
      * @return
      */
     @Transactional
-    public int updateCompanyProfileFilter(TalentpoolProfileFilterDO profileFilterDO, List<ActionForm> actionFormList, List<PositionForm> positionFormList){
+    public int updateCompanyProfileFilter(TalentpoolProfileFilterDO profileFilterDO, List<ActionForm> actionFormList, List<Integer> positionIdList, int position_total){
         TalentpoolProfileFilterRecord filterRecord = talentpoolProfileFilterDao.dataToRecord(profileFilterDO);
         talentpoolProfileFilterDao.updateRecord(filterRecord);
         List<Integer> filterIds = new ArrayList<>();
@@ -488,17 +492,18 @@ public class TalentPoolEntity {
         jobPositionProfileFilterDao.deleteFilterPositionByFilterIdList(filterIds);
         talentpoolProfileFilterExcuteDao.deleteFilterExcuteByFilterIdList(filterIds);
         insertTalentpoolProfileFilterExecuteRecord(actionFormList, filterRecord.getId());
-        insertJobPositionProfileFilterRecord(positionFormList, filterRecord.getId(), profileFilterDO.getCompany_id());
+        insertJobPositionProfileFilterRecord(positionIdList, filterRecord.getId(), profileFilterDO.getCompany_id(), position_total);
         return filterRecord.getId();
     }
 
-    private List<JobPositionDO> getTalentpoolExecuteRecord(List<Integer> positionIdList, int companyId){
+    private List<Integer> getTalentpoolExecuteRecord(List<Integer> positionIdList, int companyId){
         Query query = new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.ID.getName(), positionIdList, ValueOp.IN))
                 .and(JobPosition.JOB_POSITION.COMPANY_ID.getName(),companyId)
                 .buildQuery();
-        return jobPositionDao.getDatas(query);
+         List<JobPositionDO> positionDOList = jobPositionDao.getDatas(query);
+         List<Integer> positionList = positionDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
+        return  positionList;
     }
-
     private TalentpoolExecuteRecord getTalentpoolExecuteRecord(int type, int value){
         Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute.TALENTPOOL_EXECUTE.TYPE.getName(),type)
                 .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute.TALENTPOOL_EXECUTE.VALUE.getName(),value)

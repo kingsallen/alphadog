@@ -15,7 +15,6 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.company.struct.ActionForm;
-import com.moseeker.thrift.gen.company.struct.PositionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
 import java.util.HashSet;
@@ -342,9 +341,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response addProfileFilter(TalentpoolProfileFilterDO companyTagDO, List<ActionForm> actionForm, List<PositionForm> positionForm, int hr_id) throws BIZException, TException {
+    public Response addProfileFilter(TalentpoolProfileFilterDO companyTagDO, List<ActionForm> actionForm, List<Integer> positionIdList, int hr_id, int position_total) throws BIZException, TException {
         try{
-            return talentPoolService.addProfileFilter(companyTagDO, actionForm, positionForm, hr_id);
+            return talentPoolService.addProfileFilter(companyTagDO, actionForm, positionIdList, hr_id, position_total);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
@@ -352,9 +351,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response updateProfileFilter(TalentpoolProfileFilterDO companyTagDO, List<ActionForm> actionForm, List<PositionForm> positionForm, int hr_id) throws BIZException, TException {
+    public Response updateProfileFilter(TalentpoolProfileFilterDO companyTagDO, List<ActionForm> actionForm, List<Integer> positionIdList, int hr_id, int position_total) throws BIZException, TException {
         try{
-            return talentPoolService.updateProfileFilter(companyTagDO, actionForm, positionForm, hr_id);
+            return talentPoolService.updateProfileFilter(companyTagDO, actionForm, positionIdList, hr_id, position_total);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);

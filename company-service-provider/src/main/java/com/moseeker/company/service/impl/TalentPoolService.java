@@ -12,7 +12,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
@@ -36,17 +35,12 @@ import com.moseeker.company.utils.ValidateTalentTag;
 import com.moseeker.company.utils.ValidateUtils;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.talentpool.PageInfo;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.ActionForm;
-import com.moseeker.thrift.gen.company.struct.PositionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import java.util.*;
-
-import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1266,7 +1260,7 @@ public class TalentPoolService {
         return ResponseUtils.successWithoutStringify(JSON.toJSONString(profileFilterInfo, serializeConfig));
     }
 
-    public Response addProfileFilter(TalentpoolProfileFilterDO filterDO, List<ActionForm> ActionFormList, List<PositionForm> positionFormList, int hr_id){
+    public Response addProfileFilter(TalentpoolProfileFilterDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(filterDO.getCompany_id());
         if(companyDO == null){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
@@ -1285,7 +1279,7 @@ public class TalentPoolService {
         if("OK".equals(result)){
             String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
             if(StringUtils.isNullOrEmpty(filterString)){
-                int id = talentPoolEntity.addCompanyProfileFilter(filterDO, ActionFormList, positionFormList);
+                int id = talentPoolEntity.addCompanyProfileFilter(filterDO, ActionFormList, positionIdList, position_total);
                 return  ResponseUtils.success("");
             }else{
                 return ResponseUtils.fail(1, filterString);
@@ -1294,7 +1288,7 @@ public class TalentPoolService {
         return ResponseUtils.fail(1, result);
     }
 
-    public Response updateProfileFilter(TalentpoolProfileFilterDO filterDO, List<ActionForm> ActionFormList, List<PositionForm> positionFormList, int hr_id){
+    public Response updateProfileFilter(TalentpoolProfileFilterDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,filterDO.getCompany_id());
         if(flag == -1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
@@ -1309,7 +1303,7 @@ public class TalentPoolService {
         if("OK".equals(result)){
             String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
             if(StringUtils.isNullOrEmpty(filterString)){
-                int id = talentPoolEntity.updateCompanyProfileFilter(filterDO, ActionFormList, positionFormList);
+                int id = talentPoolEntity.updateCompanyProfileFilter(filterDO, ActionFormList, positionIdList, position_total);
                 return  ResponseUtils.success("");
             }else{
                 return ResponseUtils.fail(1, filterString);

@@ -66,9 +66,4 @@ struct TalentpoolCompanyTagDO {
      2: optional i32 value
   }
 
- struct PositionForm {
-     1: optional i32 id,
-     2: optional string title,
-     3: optional i32 status
-  }
 

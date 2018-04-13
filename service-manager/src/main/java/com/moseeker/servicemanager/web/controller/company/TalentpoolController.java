@@ -865,26 +865,20 @@ public class TalentpoolController {
             }else{
                 return  ResponseLogNotification.fail(request, "可执行操作不能为空");
             }
-            List<PositionForm> positionFormList = new ArrayList<>();
-            if(data.get("position") != null) {
-                List<Map<String, Object>> activeMapList = (List<Map<String, Object>>) data.get("position");
-                if(activeMapList != null && activeMapList.size()>0) {
-                    positionFormList = activeMapList.stream().map(m -> {
-                        PositionForm form = new PositionForm();
-                        try {
-                            form = ParamUtils.initModelForm(m, PositionForm.class);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return form;
-                    }).collect(Collectors.toList());
-                }else{
-                    return  ResponseLogNotification.fail(request, "职位至少选择一个");
+            List<Integer> positionIdList = new ArrayList<>();
+            int position_total = data.getInt("position_total",0);
+            if(position_total!=1) {
+                if (data.get("position") != null) {
+                    String positionIds = (String) data.get("position");
+                    positionIdList = ParamUtils.convertIntList(positionIds);
+                    if (positionIdList == null || positionIdList.size() < 1) {
+                        return ResponseLogNotification.fail(request, "至少绑定一个职位选择一个");
+                    }
+                } else {
+                    return ResponseLogNotification.fail(request, "至少绑定一个职位选择一个");
                 }
-            }else{
-                return  ResponseLogNotification.fail(request, "职位至少选择一个");
             }
-            Response result = service.addProfileFilter(profileFilterDO, actionFormList, positionFormList, Integer.parseInt(hrId));
+            Response result = service.addProfileFilter(profileFilterDO, actionFormList, positionIdList, Integer.parseInt(hrId), position_total);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
@@ -932,26 +926,20 @@ public class TalentpoolController {
             }else{
                 return  ResponseLogNotification.fail(request, "可执行操作不能为空");
             }
-            List<PositionForm> positionFormList = new ArrayList<>();
-            if(data.get("position") != null) {
-                List<Map<String, Object>> positionMapList = (List<Map<String, Object>>) data.get("position");
-                if(positionMapList != null && positionMapList.size()>0) {
-                    positionFormList = positionMapList.stream().map(m -> {
-                        PositionForm form = new PositionForm();
-                        try {
-                            form = ParamUtils.initModelForm(m, PositionForm.class);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return form;
-                    }).collect(Collectors.toList());
-                }else{
-                    return  ResponseLogNotification.fail(request, "职位至少选择一个");
+            int position_total = data.getInt("position_total",0);
+            List<Integer> positionIdList = new ArrayList<>();
+            if(position_total!=1) {
+                if (data.get("position") != null) {
+                    String positionIds = (String) data.get("position");
+                    positionIdList = ParamUtils.convertIntList(positionIds);
+                    if (positionIdList == null || positionIdList.size() < 1) {
+                        return ResponseLogNotification.fail(request, "至少绑定一个职位选择一个");
+                    }
+                } else {
+                    return ResponseLogNotification.fail(request, "至少绑定一个职位选择一个");
                 }
-            }else{
-                return  ResponseLogNotification.fail(request, "职位至少选择一个");
             }
-            Response result = service.updateProfileFilter(profileFilterDO, actionFormList, positionFormList, Integer.parseInt(hrId));
+            Response result = service.updateProfileFilter(profileFilterDO, actionFormList, positionIdList, Integer.parseInt(hrId), position_total);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
