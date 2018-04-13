@@ -27,6 +27,13 @@ public class JobPositionProfileFilterDao extends JooqCrudImpl<com.moseeker.baseo
         return result;
     }
 
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter> getFilterPositionRecordByPositionId(Integer positionId){
+        List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter> result=create.selectFrom(JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER)
+                .where(JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER.PID.eq(positionId))
+                .fetchInto(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter.class);
+        return result;
+    }
+
     public List<JobPositionProfileFilterRecord> getFilterPositionRecordByfilterIdList(List<Integer> filterIdList){
         List<JobPositionProfileFilterRecord> result=create.selectFrom(JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER)
                 .where(JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER.PFID.in(filterIdList))

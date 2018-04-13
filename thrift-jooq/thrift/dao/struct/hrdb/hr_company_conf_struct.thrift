@@ -24,6 +24,8 @@ struct HrCompanyConfDO {
 	18: optional i32 newjdStatus,	//新jd页去设置状态 0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
 	19: optional double hrChat,	//IM聊天开关，0：不开启，1：开启
 	20: optional double showInQx,	//公司信息、团队信息、职位信息在仟寻展示，0: 否， 1: 是
-	21: optional string employeeSlug	//员工自定义称谓
+	21: optional string employeeSlug,	//员工自定义称谓
+	22: optional string displayLocale, //公司页面语言，格式:IETF language tag
+	23: optional i32 talentpoolStatus //人才库状态表 0未开启，1开启普通人才库，2开启高端人才库
 
 }

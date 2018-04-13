@@ -13,6 +13,8 @@ import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
+import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import java.util.*;
@@ -120,7 +122,7 @@ public class CompanyTagService {
                     Map<String, Object> profiles = JSON.parseObject(res.getData());
                     for(TalentpoolCompanyTag tag:tagList){
                         String tagStr = JSON.toJSONString(tag);
-                        Map<String, Object> tagMap = JSON.parseObject(tagStr, Map.class);
+                        Map<String, Object> tagMap = JSON.parseObject(tagStr);
                         boolean isflag=tagValidation.validateProfileAndComapnyTag(profiles,userId,companyId,tagMap);
                         if(isflag){
                             TalentpoolCompanyTagUserRecord record=new TalentpoolCompanyTagUserRecord();

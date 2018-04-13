@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
  * Created by zztaiwll on 17/12/1.
  */
 @Service
-public class TalentpoolExcuteDao extends JooqCrudImpl<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolExecute,TalentpoolExecuteRecord> {
+public class TalentpoolExecuteDao extends JooqCrudImpl<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolExecute,TalentpoolExecuteRecord> {
 
-    public TalentpoolExcuteDao(){
+    public TalentpoolExecuteDao(){
         super(TalentpoolExecute.TALENTPOOL_EXECUTE,com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolExecute.class);
     }
-    public TalentpoolExcuteDao(TableImpl<TalentpoolExecuteRecord> table, Class<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolExecute> talentpoolrExecuteClass) {
+    public TalentpoolExecuteDao(TableImpl<TalentpoolExecuteRecord> table, Class<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolExecute> talentpoolrExecuteClass) {
         super(table, talentpoolrExecuteClass);
     }
 

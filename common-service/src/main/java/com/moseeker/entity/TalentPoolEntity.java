@@ -93,7 +93,7 @@ public class TalentPoolEntity {
     @Autowired
     private JobPositionProfileFilterDao jobPositionProfileFilterDao;
     @Autowired
-    private TalentpoolExcuteDao talentpoolExcuteDao;
+    private TalentpoolExecuteDao talentpoolExcuteDao;
 
     /*
         验证hr操作user_id是否合法
