@@ -6,6 +6,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagU
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.moseeker.common.util.StringUtils;
 import org.jooq.Record;
@@ -74,6 +75,15 @@ public class TalentpoolCompanyTagUserDao extends JooqCrudImpl<com.moseeker.baseo
         }
         return 1;
     }
+    /*
+     根据userid集合获取其上标签集合
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser> getTagByUserIdSet(Set<Integer> userIdSet){
+        List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser> list=create.selectFrom(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER)
+                .where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.in(userIdSet))
+                .fetchInto(com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser.class);
 
+        return list;
 
+    }
 }

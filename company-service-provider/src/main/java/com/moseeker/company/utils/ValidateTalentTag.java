@@ -113,21 +113,46 @@ public class ValidateTalentTag {
                 applierIdList.addAll(uploadTalentIdList);
             }
         }
-        if(!StringUtils.isEmptySet(unUseList)){
+        if(!StringUtils.isEmptySet(unUseList)||StringUtils.isEmptySet(applierIdList)){
             int count=talentPoolEntity.valiadteMainAccount(hrId,companyId);
             if(count>0){
-                //查询不符合的人是不是公司的收藏的
-                List<TalentpoolTalentRecord> talentCompanyList=talentPoolEntity.getTalentByCompanyIdUserSet(companyId,unUseList);
-                Set<Integer> talentUserIdList=talentPoolEntity.getUserIdListByTalentpoolTalent(talentCompanyList);
-                if(!StringUtils.isEmptySet(talentUserIdList)){
-                    Set<Integer> finalUnSerIdList=new HashSet<>();
-                    for(Integer itemId:unUseList){
-                        if(!talentUserIdList.contains(itemId)){
-                            finalUnSerIdList.add(itemId);
+                if(!StringUtils.isEmptySet(unUseList)){
+                    List<TalentpoolTalentRecord> talentCompanyList=talentPoolEntity.getTalentByCompanyIdUserSet(companyId,unUseList);
+                    Set<Integer> talentUserIdList=talentPoolEntity.getUserIdListByTalentpoolTalent(talentCompanyList);
+                    if(!StringUtils.isEmptySet(talentUserIdList)){
+                        Set<Integer> finalUnSerIdList=new HashSet<>();
+                        for(Integer itemId:unUseList){
+                            if(!talentUserIdList.contains(itemId)){
+                                finalUnSerIdList.add(itemId);
+                            }
                         }
+                        unUseList=finalUnSerIdList;
+                        if(StringUtils.isEmptySet(applierIdList)){
+                            applierIdList=talentUserIdList;
+                        }else{
+                            applierIdList.addAll(talentUserIdList);
+                        }
+
                     }
-                    unUseList=finalUnSerIdList;
-                    applierIdList.addAll(talentUserIdList);
+                }
+                //查询不符合的人是不是公司的收藏的
+                if(StringUtils.isEmptySet(applierIdList)){
+                    List<TalentpoolTalentRecord> talentCompanyList=talentPoolEntity.getTalentByCompanyIdUserSet(companyId,useIdList);
+                    Set<Integer> talentUserIdList=talentPoolEntity.getUserIdListByTalentpoolTalent(talentCompanyList);
+                    if(!StringUtils.isEmptySet(talentUserIdList)){
+                        Set<Integer> finalUnSerIdList=new HashSet<>();
+                        for(Integer itemId:unUseList){
+                            if(!talentUserIdList.contains(itemId)){
+                                finalUnSerIdList.add(itemId);
+                            }
+                        }
+                        if(StringUtils.isEmptySet(unUseList)){
+                            unUseList=finalUnSerIdList;
+                        }else{
+                            unUseList.addAll(finalUnSerIdList);
+                        }
+                        applierIdList=talentUserIdList;
+                    }
                 }
             }
         }

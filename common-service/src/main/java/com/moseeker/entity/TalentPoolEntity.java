@@ -979,7 +979,7 @@ public class TalentPoolEntity {
     public List<Map<String,Object>> getTagByHr(int hrId,int pageNum,int pageSize){
         Query query=new Query.QueryBuilder().where("hr_id",hrId)
                 .setPageNum(pageNum).setPageSize(pageSize)
-                .orderBy("create_time", Order.DESC)
+                .orderBy("update_time", Order.DESC)
                 .buildQuery();
         List<Map<String,Object>> list= talentpoolTagDao.getMaps(query);
         return list;

@@ -217,7 +217,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(pastPosition)){
             String lastPosition=params.get("in_last_job_search_position");
             if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
-                this.queryParseByLastPositions(lastPosition,query);
+                this.queryParseByLastPositions(pastPosition,query);
             }else{
                 this.queryParseByWorkJob(pastPosition,query);
             }
@@ -235,7 +235,7 @@ public class TalentpoolSearchengine {
             this.queryByAge(ages,query);
         }
         if(StringUtils.isNotNullOrEmpty(intentionCityName)){
-            this.queryByIntentionCity(intentionCityName,query);
+            this.queryByIntentionCityTag(intentionCityName,query);
         }
         if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
             this.queryBySlalryCode(intentionSalaryCode,query);
@@ -249,9 +249,9 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(companyName)){
             String lastCompany=params.get("in_last_job_search_company");
             if(StringUtils.isNotNullOrEmpty(lastCompany)&&"1".equals(lastCompany)){
-                this.queryParseByLastCompany(companyName,query);
+                this.queryParseByLastCompanyTag(companyName,query);
             }else {
-                this.queryParseByCompany(companyName, query);
+                this.queryParseByCompanyTag(companyName, query);
             }
         }
         if(StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||Integer.parseInt(isRecommend)>0){
@@ -522,7 +522,7 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(pastPosition)){
                 String lastPosition=params.get("in_last_job_search_position");
                 if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
-                    this.queryByLastPositions(lastPosition,query);
+                    this.queryByLastPositions(pastPosition,query);
                 }else{
                     this.queryByWorkJob(pastPosition,query);
                 }
@@ -890,6 +890,12 @@ public class TalentpoolSearchengine {
     private void queryByIntentionCity(String cityNames,QueryBuilder queryBuilder){
         searchUtil.handleMatch(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
     }
+    private void queryByIntentionCityTag(String cityNames,QueryBuilder queryBuilder){
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.intentions.cities.city_name");
+        searchUtil.shouldMatchParseQuery(list,cityNames,queryBuilder);
+//        searchUtil.handleMatch(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
+    }
     /*
       按照公司名称查询
      */
@@ -902,12 +908,7 @@ public class TalentpoolSearchengine {
     private void QueryByDegree(String degrees,QueryBuilder queryBuilder){
         searchUtil.handleTermsFilter(degrees,queryBuilder,"user.profiles.basic.highest_degree");
     }
-    /*
-      按照最后工作的公司查询
-     */
-    private void queryByLastCompany(String companys,QueryBuilder queryBuilder){
-        searchUtil.handleMatch(companys,queryBuilder,"user.profiles.recent_job.company_name");
-    }
+
     private void queryParseByLastCompany(String companys,QueryBuilder queryBuilder){
         searchUtil.handleMatchParse(companys,queryBuilder,"user.profiles.recent_job.company_name");
     }
@@ -918,7 +919,10 @@ public class TalentpoolSearchengine {
         searchUtil.handleMatch(positions,queryBuilder,"user.profiles.recent_job.job");
     }
     private void queryParseByLastPositions(String positions,QueryBuilder queryBuilder){
-        searchUtil.handleMatchParse(positions,queryBuilder,"user.profiles.recent_job.job");
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.job_name");
+        searchUtil.shouldMatchParseQuery(list,positions,queryBuilder);
+//        searchUtil.handleMatchParse(positions,queryBuilder,"user.profiles.recent_job.job_name");
     }
     /*
       按照现居住地查询
@@ -944,31 +948,44 @@ public class TalentpoolSearchengine {
       按照曾任职务查询
      */
     private void queryByWorkJob(String works,QueryBuilder queryBuilder){
-        Map<String,Object> queryMap=new HashMap<>();
-        queryMap.put("user.profiles.recent_job.job",works);
-        queryMap.put("user.profiles.workexps.job",works);
-        searchUtil.shouldMatchQuery(queryMap,queryBuilder);
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.job");
+        list.add("user.profiles.other_workexps.job");
+        searchUtil.shouldMatchQuery(list,works,queryBuilder);
     }
     private void queryParseByWorkJob(String works,QueryBuilder queryBuilder){
-        Map<String,Object> queryMap=new HashMap<>();
-        queryMap.put("user.profiles.recent_job.job",works);
-        queryMap.put("user.profiles.workexps.job",works);
-        searchUtil.shouldMatchParseQuery(queryMap,queryBuilder);
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.job_name");
+        list.add("user.profiles.other_workexps.job_name");
+        searchUtil.shouldMatchParseQuery(list,works,queryBuilder);
+    }
+    /*
+  按照最后工作的公司查询
+ */
+    private void queryByLastCompany(String companys,QueryBuilder queryBuilder){
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.company_name");
+        searchUtil.shouldMatchQuery(list,companys,queryBuilder);
+    }
+    private void queryParseByLastCompanyTag(String companys,QueryBuilder queryBuilder){
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.company_new_name");
+        searchUtil.shouldMatchParseQuery(list,companys,queryBuilder);
     }
     /*
      构建通过曾经工作的公司查询
      */
     private void queryByCompany(String companys,QueryBuilder queryBuilder){
-        Map<String,Object> queryMap=new HashMap<>();
-        queryMap.put("user.profiles.recent_job.company_name",companys);
-        queryMap.put("user.profiles.workexps.company_name",companys);
-        searchUtil.shouldMatchQuery(queryMap,queryBuilder);
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.company_name");
+        list.add("user.profiles.other_workexps.company_name");
+        searchUtil.shouldMatchQuery(list,companys,queryBuilder);
     }
-    private void queryParseByCompany(String companys,QueryBuilder queryBuilder){
-        Map<String,Object> queryMap=new HashMap<>();
-        queryMap.put("user.profiles.recent_job.company_name",companys);
-        queryMap.put("user.profiles.workexps.company_name",companys);
-        searchUtil.shouldMatchParseQuery(queryMap,queryBuilder);
+    private void queryParseByCompanyTag(String companys,QueryBuilder queryBuilder){
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.company_new_name");
+        list.add("user.profiles.other_workexps.company_new_name");
+        searchUtil.shouldMatchParseQuery(list,companys,queryBuilder);
     }
     /*
       按照性别查询
