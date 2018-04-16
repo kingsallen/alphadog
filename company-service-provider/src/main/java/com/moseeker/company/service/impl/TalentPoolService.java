@@ -1690,7 +1690,7 @@ public class TalentPoolService {
     private List<Map<String,Object>> getTagByHrNoOrder(int hrId,int pageNum,int pageSize){
         Query query=new Query.QueryBuilder().where("hr_id",hrId)
                 .setPageNum(pageNum).setPageSize(pageSize)
-                .orderBy("create_time",Order.DESC)
+                .orderBy("update_time",Order.DESC)
                 .buildQuery();
         List<Map<String,Object>> list= talentpoolTagDao.getMaps(query);
         return list;
@@ -1887,7 +1887,7 @@ public class TalentPoolService {
     }
     private List<Map<String,Object>> getCompanyTagList(int companyId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1)
-                .orderBy("create_time", Order.DESC).buildQuery();
+                .orderBy("update_time", Order.DESC).buildQuery();
         List<Map<String,Object>> list=talentpoolCompanyTagDao.getMaps(query);
         return list;
     }
