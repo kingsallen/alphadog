@@ -149,6 +149,11 @@ public class ChatServiceTest {
         System.out.println(JSON.toJSONString(chatsVO));
     }
 
+    @Test
+    public void listUserChatRoom() throws TException {
+        System.out.println(JSON.toJSONString(chatService.listUserChatRoom(4,1,200)));
+    }
+
 
     /*@Mock
     private ChatDao chatDao;
