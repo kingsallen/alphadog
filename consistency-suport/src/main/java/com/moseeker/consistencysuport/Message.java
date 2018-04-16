@@ -11,6 +11,7 @@ public class Message {
     private String businessName;
     private MessageType messageType;
     private String messageId;
+    private String messageName;
 
     public String getBusinessName() {
         return businessName;
@@ -34,5 +35,13 @@ public class Message {
 
     public void setMessageId(String messageId) {
         this.messageId = messageId;
+    }
+
+    public String getMessageName() {
+        return messageName;
+    }
+
+    public void setMessageName(String messageName) {
+        this.messageName = messageName;
     }
 }

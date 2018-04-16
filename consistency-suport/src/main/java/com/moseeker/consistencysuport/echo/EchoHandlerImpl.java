@@ -5,6 +5,7 @@ import com.moseeker.consistencysuport.Message;
 import com.moseeker.consistencysuport.config.MessageRepository;
 import com.moseeker.consistencysuport.config.Notification;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,11 @@ public class EchoHandlerImpl implements EchoHandler {
 
     private void registerBusiness(Message message) {
         try {
-            messageRepository.registerBusiness(message.getMessageId(), message.getBusinessName());
+            if (StringUtils.isNotBlank(message.getMessageName()) && StringUtils.isNotBlank(message.getBusinessName())) {
+                messageRepository.registerBusiness(message.getMessageName().trim(), message.getBusinessName().trim());
+            } else {
+                notification.noticeForError(ConsistencyException.CONSISTENCY_PRODUCER_UPDATE_BUSINESS_REGISTER_PARAM_ERROR);
+            }
         } catch (ConsistencyException e) {
             notification.noticeForException(e);
         } catch (Exception e) {
@@ -52,7 +57,11 @@ public class EchoHandlerImpl implements EchoHandler {
 
     private void finishBusiness(Message message) {
         try {
-            messageRepository.finishBusiness(message.getMessageId(), message.getBusinessName());
+            if (StringUtils.isNotBlank(message.getMessageId()) && StringUtils.isNotBlank(message.getBusinessName())) {
+                messageRepository.finishBusiness(message.getMessageId(), message.getBusinessName());
+            } else {
+                notification.noticeForError(ConsistencyException.CONSISTENCY_PRODUCER_UPDATE_MESSAGE_FINISH_PARAM_ERROR);
+            }
         } catch (ConsistencyException e) {
             notification.noticeForException(e);
         } catch (Exception e) {
@@ -62,7 +71,11 @@ public class EchoHandlerImpl implements EchoHandler {
 
     private void heartBeat(Message message) {
         try {
-            messageRepository.heartBeat(message.getMessageId(), message.getBusinessName());
+            if (StringUtils.isNotBlank(message.getMessageName()) && StringUtils.isNotBlank(message.getBusinessName())) {
+                messageRepository.heartBeat(message.getMessageName(), message.getBusinessName());
+            } else {
+                notification.noticeForError(ConsistencyException.CONSISTENCY_PRODUCER_UPDATE_BUSINESS_HEARTBEAN_PARAM_ERROR);
+            }
         } catch (ConsistencyException e) {
             notification.noticeForException(e);
         } catch (Exception e) {

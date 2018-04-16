@@ -30,6 +30,14 @@ public class ConsistencyException extends CommonException {
     public static final ConsistencyException CONSISTENCY_PRODUCER_UPDATE_RETRIED_FAILED = new ConsistencyException(81011, "更新消息重试次数失败！");
 
     public static final ConsistencyException CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS = new ConsistencyException(81012, "消息不存在！");
+    public static final ConsistencyException CONSISTENCY_PRODUCER_MESSAGE_TYPE_NOT_EXISTS = new ConsistencyException(81014, "消息类型不存在！");
 
     public static final ConsistencyException CONSISTENCY_PRODUCER_UPDATE_FINISH_RETRY_OVER_LIMIT = new ConsistencyException(81013, "将消息更新成完成状态时，重试次数超过上线！");
+    public static final ConsistencyException CONSISTENCY_PRODUCER_UPDATE_MESSAGE_FINISH_PARAM_ERROR = new ConsistencyException(81017, "业务消息参数错误，更新完成消息失败！");
+
+    public static final ConsistencyException CONSISTENCY_PRODUCER_UPDATE_BUSINESS_REGISTER_FAILED = new ConsistencyException(81015, "业务消息注册失败！");
+
+    public static final ConsistencyException CONSISTENCY_PRODUCER_UPDATE_BUSINESS_REGISTER_PARAM_ERROR = new ConsistencyException(81016, "业务消息参数错误，注册失败！");
+
+    public static final ConsistencyException CONSISTENCY_PRODUCER_UPDATE_BUSINESS_HEARTBEAN_PARAM_ERROR = new ConsistencyException(81016, "业务消息参数错误，更新心跳时间失败！");
 }

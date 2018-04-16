@@ -13,6 +13,7 @@ import com.moseeker.consistencysuport.db.consistencydb.tables.ConsistencyMessage
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyBusinessRecord;
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyBusinessTypeRecord;
 import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyMessageRecord;
+import com.moseeker.consistencysuport.db.consistencydb.tables.records.ConsistencyMessageTypeRecord;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.joda.time.DateTime;
 import org.jooq.Record1;
@@ -182,23 +183,34 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Transactional
     @Override
-    public String registerBusiness(String messageId, String name) throws ConsistencyException {
-        ConsistencyMessageRecord consistencyMessageRecord = create
-                .selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE)
-                .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
+    public String registerBusiness(String messageName, String businessName) throws ConsistencyException {
+        ConsistencyMessageTypeRecord consistencyMessageTypeRecord = create
+                .selectFrom(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE)
+                .where(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.NAME.eq(messageName))
                 .fetchOne();
-        if (consistencyMessageRecord == null) {
-            throw ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS;
+        if (consistencyMessageTypeRecord == null) {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_TYPE_NOT_EXISTS;
         }
-        ConsistencyBusinessTypeRecord consistencyBusinessType = new ConsistencyBusinessTypeRecord();
-        consistencyBusinessType.setName(name);
-        consistencyBusinessType.setMessageName(consistencyMessageRecord.getName());
-        Timestamp now = new Timestamp(System.currentTimeMillis());
-        consistencyBusinessType.setRegisterTime(now);
-        create.attach(consistencyBusinessType);
-        consistencyBusinessType.insert();
-
-        return consistencyBusinessType.getName();
+        ConsistencyBusinessTypeRecord consistencyBusinessTypeRecord = create
+                .selectFrom(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                .where(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME.eq(businessName))
+                .and(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME.eq(messageName))
+                .fetchOne();
+        if (consistencyBusinessTypeRecord == null) {
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            int count = create.insertInto(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                    .columns(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME,
+                            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME,
+                            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.REGISTER_TIME,
+                            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.ENABLE)
+                    .values(businessName, messageName, now, (byte)AbleFlag.ENABLE.getValue())
+                    .onDuplicateKeyIgnore()
+                    .execute();
+            if (count ==  0) {
+                throw ConsistencyException.CONSISTENCY_PRODUCER_UPDATE_BUSINESS_REGISTER_FAILED;
+            }
+        }
+        return consistencyBusinessTypeRecord.getName();
     }
 
     @Transactional
@@ -346,33 +358,35 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Transactional
     @Override
-    public void heartBeat(String messageId, String name) throws ConsistencyException {
-        ConsistencyMessageRecord consistencyMessageRecord = create
-                .selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE)
-                .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
+    public void heartBeat(String messageName, String businessName) throws ConsistencyException {
+        ConsistencyMessageTypeRecord consistencyMessageTypeRecord = create
+                .selectFrom(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE)
+                .where(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.NAME.eq(messageName))
                 .fetchOne();
-        if (consistencyMessageRecord == null) {
-            throw ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS;
+        if (consistencyMessageTypeRecord == null) {
+            throw ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_TYPE_NOT_EXISTS;
         }
         ConsistencyBusinessTypeRecord consistencyBusinessTypeRecord = create
                 .selectFrom(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
-                .where(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME.eq(name))
+                .where(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME.eq(businessName))
                 .and(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME
-                        .eq(consistencyMessageRecord.getName()))
+                        .eq(messageName))
                 .fetchOne();
         if (consistencyBusinessTypeRecord == null) {
+            Timestamp now = new Timestamp(System.currentTimeMillis());
             int count = create.insertInto(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
                     .columns(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME,
                             ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME,
+                            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.REGISTER_TIME,
                             ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.LAST_SHAKE_HAND_TIME)
-                    .values(name, consistencyMessageRecord.getName(), new Timestamp(System.currentTimeMillis()))
+                    .values(businessName, messageName, now, now)
                     .onDuplicateKeyIgnore()
                     .execute();
             if (count == 0) {
-                updateLastShakeHandTime(consistencyMessageRecord.getName(), name);
+                updateLastShakeHandTime(messageName, businessName);
             }
         } else {
-            updateLastShakeHandTime(consistencyMessageRecord.getName(), name);
+            updateLastShakeHandTime(messageName, businessName);
         }
     }
 
@@ -398,6 +412,11 @@ public class MessageRepositoryImpl implements MessageRepository {
         }
     }
 
+    /**
+     * 更新心跳时间
+     * @param messageName 消息名称
+     * @param name 业务名称
+     */
     private void updateLastShakeHandTime(String messageName, String name) {
         ConsistencyBusinessTypeRecord consistencyBusinessTypeRecord = create
                 .selectFrom(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)

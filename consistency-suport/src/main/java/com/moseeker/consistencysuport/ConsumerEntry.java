@@ -15,9 +15,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConsumerEntry {
 
-    String name() default "";   //业务名称
+    String businessName() default "";       //消费方业务名称
 
-    int period() default 5*60;  //方法检查周期
+    String messageName() default "";        //生产方业务名称
 
-    int index() default 0;      //messageId默认所处的参数的位置
+    int period() default 5*60;              //方法检查周期
+
+    int index() default 0;                  //messageId默认所处的参数的位置
 }

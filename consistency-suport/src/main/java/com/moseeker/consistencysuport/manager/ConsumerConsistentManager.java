@@ -3,6 +3,9 @@ package com.moseeker.consistencysuport.manager;
 import com.moseeker.consistencysuport.config.Notification;
 
 /**
+ *
+ * 消费方
+ *
  * Created by jack on 13/04/2018.
  */
 public class ConsumerConsistentManager {
@@ -13,7 +16,7 @@ public class ConsumerConsistentManager {
 
     }
 
-    public void notification(Exception e) {
-        notification.noticeForException(e);
+    protected void startHeartBeat() {
+
     }
 }
