@@ -117,6 +117,9 @@ public abstract class RedisClient {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str);
 		try {
+			logger.info("set===");
+			logger.info("key_identifier{}===str=={}==value=={}===ttl==={}",key_identifier,str,value,redisKey.getTtl());
+			logger.info("=================");
 			return redisCluster.setex(cacheKey, redisKey.getTtl(), value);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
