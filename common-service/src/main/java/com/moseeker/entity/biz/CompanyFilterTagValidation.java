@@ -36,7 +36,6 @@ public class CompanyFilterTagValidation {
         logger.info("===========================");
         List<JobApplicationRecord> applist=new ArrayList<>();
         if((tag.get("origins") != null && StringUtils.isNotNullOrEmpty((String)tag.get("origins")))
-                ||(tag.get("submitTime") != null && StringUtils.isNotNullOrEmpty((String)tag.get("submitTime")))
                 ||(tag.get("isRecommend") != null && (int)tag.get("isRecommend")>0)) {
             if((int)tag.get("isRecommend")>0){
                 applist=this.getJobAppRecommendByCompanyIdAndUserId(companyId,userId);
@@ -44,7 +43,7 @@ public class CompanyFilterTagValidation {
                 applist=this.getJobApplicationByCompanyIdAndUserId(companyId,userId);
             }
 
-            boolean flag=this.validateApp((String)tag.get("origins"),applist,profiles,(String)tag.get("submitTime"));
+            boolean flag=this.validateApp((String)tag.get("origins"),applist,profiles);
             if(flag==false){
                 return false;
             }
@@ -449,9 +448,9 @@ public class CompanyFilterTagValidation {
     /*
      校验该人才的来源
      */
-    private boolean validateApp(String origins, List<JobApplicationRecord> applist,Map<String,Object> profiles,String submitTime ){
+    private boolean validateApp(String origins, List<JobApplicationRecord> applist,Map<String,Object> profiles ){
         logger.info("来源数据是===============================");
-        logger.info(origins +"============"+submitTime);
+        logger.info(origins +"============");
         logger.info("========================================");
         if(StringUtils.isNotNullOrEmpty(origins)){
             String[] originArray=origins.split(",");
@@ -460,15 +459,6 @@ public class CompanyFilterTagValidation {
                 for(JobApplicationRecord record:applist){
                     int appOrigin=record.getOrigin();
                     flag=this.validateEqual(originArray,appOrigin);
-                    if(flag==true){
-                        if(StringUtils.isNotNullOrEmpty(submitTime)){
-                            long apptime=record.getSubmitTime().getTime();
-                            long time=this.getLongTime(submitTime);
-                            if(time<apptime){
-                                flag=true;
-                            }
-                        }
-                    }
                     if(flag==true){
                         break;
                     }
@@ -501,39 +491,10 @@ public class CompanyFilterTagValidation {
                 }
                 if(flag==false){
                     return false;
-                }else{
-                    for(JobApplicationRecord record:applist){
-                        if(StringUtils.isNotNullOrEmpty(submitTime)){
-                            long apptime=record.getSubmitTime().getTime();
-                            long time=this.getLongTime(submitTime);
-                            if(time<apptime){
-                                flag=true;
-                                break;
-                            }
-                        }
-                    }
-                    if(flag==false){
-                        return false;
-                    }
                 }
                 return true;
             }
 
-        }else{
-            if(StringUtils.isNotNullOrEmpty(submitTime)){
-                if(StringUtils.isEmptyList(applist)){
-                    return false;
-                }
-                for(JobApplicationRecord record:applist){
-                    if(StringUtils.isNotNullOrEmpty(submitTime)){
-                        long apptime=record.getSubmitTime().getTime();
-                        long time=this.getLongTime(submitTime);
-                        if(time<apptime){
-                            return true;
-                        }
-                    }
-                }
-            }
         }
 
         return true;
@@ -545,7 +506,7 @@ public class CompanyFilterTagValidation {
             return false;
         }
         for(String item:array){
-            if(StringUtils.isNotNullOrEmpty(item)){
+            if(StringUtils.isNotNullOrEmpty(item)&&item.length()<8){
                 //当查找来源是99时特殊处理
                 if(Integer.parseInt(item)==99||Integer.parseInt(item)==-99){
                     List<Integer> list=new ArrayList<>();

@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolCompanyTagRecord extends UpdatableRecordImpl<TalentpoolCompanyTagRecord> {
 
-    private static final long serialVersionUID = 1534217573;
+    private static final long serialVersionUID = 1982214119;
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.id</code>.
@@ -58,28 +58,28 @@ public class TalentpoolCompanyTagRecord extends UpdatableRecordImpl<TalentpoolCo
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_company_tag.name</code>. 标签的名称
+     * Setter for <code>talentpooldb.talentpool_company_tag.name</code>. 过滤项的名称
      */
     public void setName(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_company_tag.name</code>. 标签的名称
+     * Getter for <code>talentpooldb.talentpool_company_tag.name</code>. 过滤项的名称
      */
     public String getName() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_company_tag.color</code>. 标签颜色
+     * Setter for <code>talentpooldb.talentpool_company_tag.color</code>.  标签颜色
      */
     public void setColor(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_company_tag.color</code>. 标签颜色
+     * Getter for <code>talentpooldb.talentpool_company_tag.color</code>.  标签颜色
      */
     public String getColor() {
         return (String) get(3);
@@ -114,255 +114,241 @@ public class TalentpoolCompanyTagRecord extends UpdatableRecordImpl<TalentpoolCo
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_company_tag.submit_time</code>. 投递时间，存储的是距当前的天数，是指不用这么长
-     */
-    public void setSubmitTime(String value) {
-        set(6, value);
-    }
-
-    /**
-     * Getter for <code>talentpooldb.talentpool_company_tag.submit_time</code>. 投递时间，存储的是距当前的天数，是指不用这么长
-     */
-    public String getSubmitTime() {
-        return (String) get(6);
-    }
-
-    /**
      * Setter for <code>talentpooldb.talentpool_company_tag.city_name</code>. 现居住地
      */
     public void setCityName(String value) {
-        set(7, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.city_name</code>. 现居住地
      */
     public String getCityName() {
-        return (String) get(7);
+        return (String) get(6);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.city_code</code>. 城市的code
      */
     public void setCityCode(String value) {
-        set(8, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.city_code</code>. 城市的code
      */
     public String getCityCode() {
-        return (String) get(8);
+        return (String) get(7);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.degree</code>. 学历 传code
      */
     public void setDegree(String value) {
-        set(9, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.degree</code>. 学历 传code
      */
     public String getDegree() {
-        return (String) get(9);
+        return (String) get(8);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.past_position</code>. 曾经工作过的职位
      */
     public void setPastPosition(String value) {
-        set(10, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.past_position</code>. 曾经工作过的职位
      */
     public String getPastPosition() {
-        return (String) get(10);
+        return (String) get(9);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.in_last_job_search_position</code>. 是否只搜索最近一份工作 0否 1是
      */
     public void setInLastJobSearchPosition(Integer value) {
-        set(11, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.in_last_job_search_position</code>. 是否只搜索最近一份工作 0否 1是
      */
     public Integer getInLastJobSearchPosition() {
-        return (Integer) get(11);
+        return (Integer) get(10);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.min_age</code>. 最小年龄
      */
     public void setMinAge(Integer value) {
-        set(12, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.min_age</code>. 最小年龄
      */
     public Integer getMinAge() {
-        return (Integer) get(12);
+        return (Integer) get(11);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.max_age</code>. 最大年龄
      */
     public void setMaxAge(Integer value) {
-        set(13, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.max_age</code>. 最大年龄
      */
     public Integer getMaxAge() {
-        return (Integer) get(13);
+        return (Integer) get(12);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.intention_city_name</code>. 期待工作地
      */
     public void setIntentionCityName(String value) {
-        set(14, value);
+        set(13, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.intention_city_name</code>. 期待工作地
      */
     public String getIntentionCityName() {
-        return (String) get(14);
+        return (String) get(13);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.intention_city_code</code>. 期望城市的code
      */
     public void setIntentionCityCode(String value) {
-        set(15, value);
+        set(14, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.intention_city_code</code>. 期望城市的code
      */
     public String getIntentionCityCode() {
-        return (String) get(15);
+        return (String) get(14);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.intention_salary_code</code>. 期待薪资
      */
     public void setIntentionSalaryCode(String value) {
-        set(16, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.intention_salary_code</code>. 期待薪资
      */
     public String getIntentionSalaryCode() {
-        return (String) get(16);
+        return (String) get(15);
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 0男，1女 2不限
+     * Setter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 1男，2女 0不限
      */
     public void setSex(Integer value) {
-        set(17, value);
+        set(16, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 0男，1女 2不限
+     * Getter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 1男，2女 0不限
      */
     public Integer getSex() {
-        return (Integer) get(17);
+        return (Integer) get(16);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.is_recommend</code>. 是否只看内推 0否，1是
      */
     public void setIsRecommend(Integer value) {
-        set(18, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.is_recommend</code>. 是否只看内推 0否，1是
      */
     public Integer getIsRecommend() {
-        return (Integer) get(18);
+        return (Integer) get(17);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.company_name</code>. 工作过的公司
      */
     public void setCompanyName(String value) {
-        set(19, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.company_name</code>. 工作过的公司
      */
     public String getCompanyName() {
-        return (String) get(19);
+        return (String) get(18);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.in_last_job_search_company</code>. 是否只搜最近一个公司 0否，1是
      */
     public void setInLastJobSearchCompany(Integer value) {
-        set(20, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.in_last_job_search_company</code>. 是否只搜最近一个公司 0否，1是
      */
     public Integer getInLastJobSearchCompany() {
-        return (Integer) get(20);
+        return (Integer) get(19);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.create_time</code>. 创建时间
      */
     public void setCreateTime(Timestamp value) {
-        set(21, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.create_time</code>. 创建时间
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(21);
+        return (Timestamp) get(20);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.update_time</code>. 更新时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.update_time</code>. 更新时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(22);
+        return (Timestamp) get(21);
     }
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.disable</code>. 1有效，0删除，2关闭
      */
     public void setDisable(Integer value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>talentpooldb.talentpool_company_tag.disable</code>. 1有效，0删除，2关闭
      */
     public Integer getDisable() {
-        return (Integer) get(23);
+        return (Integer) get(22);
     }
 
     // -------------------------------------------------------------------------
@@ -391,7 +377,7 @@ public class TalentpoolCompanyTagRecord extends UpdatableRecordImpl<TalentpoolCo
     /**
      * Create a detached, initialised TalentpoolCompanyTagRecord
      */
-    public TalentpoolCompanyTagRecord(Integer id, Integer companyId, String name, String color, String origins, String workYears, String submitTime, String cityName, String cityCode, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, String intentionCityCode, String intentionSalaryCode, Integer sex, Integer isRecommend, String companyName, Integer inLastJobSearchCompany, Timestamp createTime, Timestamp updateTime, Integer disable) {
+    public TalentpoolCompanyTagRecord(Integer id, Integer companyId, String name, String color, String origins, String workYears, String cityName, String cityCode, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, String intentionCityCode, String intentionSalaryCode, Integer sex, Integer isRecommend, String companyName, Integer inLastJobSearchCompany, Timestamp createTime, Timestamp updateTime, Integer disable) {
         super(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG);
 
         set(0, id);
@@ -400,23 +386,22 @@ public class TalentpoolCompanyTagRecord extends UpdatableRecordImpl<TalentpoolCo
         set(3, color);
         set(4, origins);
         set(5, workYears);
-        set(6, submitTime);
-        set(7, cityName);
-        set(8, cityCode);
-        set(9, degree);
-        set(10, pastPosition);
-        set(11, inLastJobSearchPosition);
-        set(12, minAge);
-        set(13, maxAge);
-        set(14, intentionCityName);
-        set(15, intentionCityCode);
-        set(16, intentionSalaryCode);
-        set(17, sex);
-        set(18, isRecommend);
-        set(19, companyName);
-        set(20, inLastJobSearchCompany);
-        set(21, createTime);
-        set(22, updateTime);
-        set(23, disable);
+        set(6, cityName);
+        set(7, cityCode);
+        set(8, degree);
+        set(9, pastPosition);
+        set(10, inLastJobSearchPosition);
+        set(11, minAge);
+        set(12, maxAge);
+        set(13, intentionCityName);
+        set(14, intentionCityCode);
+        set(15, intentionSalaryCode);
+        set(16, sex);
+        set(17, isRecommend);
+        set(18, companyName);
+        set(19, inLastJobSearchCompany);
+        set(20, createTime);
+        set(21, updateTime);
+        set(22, disable);
     }
 }
