@@ -62,6 +62,7 @@ public class CompanyTagService {
     @CounterIface
     public void handlerCompanyTag(List<Integer> tagIdList, int type){
         try {
+            List<Integer> userIdList=new ArrayList<>();
             if (type == 2) {//删除标签只需要执行删除操作即可
                 talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
             } else {
@@ -72,7 +73,7 @@ public class CompanyTagService {
                     for (String key : map.keySet()) {
                         params.put(key, String.valueOf(map.get(key)));
                     }
-                    List<Integer> userIdList = service.queryCompanyTagUserIdList(params);
+                    userIdList = service.queryCompanyTagUserIdList(params);
                     logger.info("=========================");
                     logger.info(JSON.toJSONString(userIdList));
                     logger.info("=========================");
@@ -110,6 +111,9 @@ public class CompanyTagService {
                     Map<String, Object> result = new HashMap<>();
                     result.put("tag_id", tagId);
                     result.put("type", type);
+                    if(type!=2){
+                        result.put("user_ids",userIdList );
+                    }
                     client.lpush(Constant.APPID_ALPHADOG,
                             "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
                     logger.info(JSON.toJSONString("======================================="));
