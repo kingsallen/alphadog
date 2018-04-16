@@ -78,4 +78,13 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
                 .limit(1)
                 .fetchOne();
     }
+
+    public int addDataIgnoreDuplicate(CandidatePositionDO cp){
+        CandidatePositionRecord cpr = dataToRecord(cp);
+        return create.insertInto(cpr.getTable())
+                .columns(cpr.fields())
+                .values(cpr.valuesRow())
+                .onDuplicateKeyIgnore()
+                .execute();
+    }
 }
