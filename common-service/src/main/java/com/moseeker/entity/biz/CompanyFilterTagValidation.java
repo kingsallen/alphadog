@@ -39,6 +39,9 @@ public class CompanyFilterTagValidation {
                 ||(tag.get("isRecommend") != null && (int)tag.get("isRecommend")>0)) {
             if((int)tag.get("isRecommend")>0){
                 applist=this.getJobAppRecommendByCompanyIdAndUserId(companyId,userId);
+                if(StringUtils.isEmptyList(applist)){
+                    return false;
+                }
             }else{
                 applist=this.getJobApplicationByCompanyIdAndUserId(companyId,userId);
             }
