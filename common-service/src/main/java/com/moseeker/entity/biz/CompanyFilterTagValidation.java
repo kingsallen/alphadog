@@ -28,7 +28,6 @@ public class CompanyFilterTagValidation {
 
         List<JobApplicationRecord> applist=new ArrayList<>();
         if((tag.get("origins") != null && StringUtils.isNotNullOrEmpty((String)tag.get("origins")))
-                ||(tag.get("submitTime") != null && StringUtils.isNotNullOrEmpty((String)tag.get("submitTime")))
                 ||(tag.get("isRecommend") != null && (int)tag.get("isRecommend")>0)) {
             if((int)tag.get("isRecommend")>0){
                 applist=this.getJobApplicationByCompanyIdAndUserId(companyId,userId);
@@ -36,7 +35,7 @@ public class CompanyFilterTagValidation {
                 applist=getJobAppRecommendByCompanyIdAndUserId(companyId,userId);
             }
 
-            boolean flag=this.validateApp((String)tag.get("origins"),applist,profiles,(String)tag.get("submitTime"));
+            boolean flag=this.validateApp((String)tag.get("origins"),applist,profiles);
             if(flag==false){
                 return false;
             }
@@ -411,7 +410,7 @@ public class CompanyFilterTagValidation {
     /*
      校验该人才的来源
      */
-    private boolean validateApp(String origins, List<JobApplicationRecord> applist,Map<String,Object> profiles,String submitTime ){
+    private boolean validateApp(String origins, List<JobApplicationRecord> applist,Map<String,Object> profiles){
         if(StringUtils.isEmptyList(applist)){
             return false;
         }
@@ -421,15 +420,6 @@ public class CompanyFilterTagValidation {
             for(JobApplicationRecord record:applist){
                 int appOrigin=record.getOrigin();
                 flag=this.validateEqual(originArray,appOrigin);
-                if(flag==true){
-                    if(StringUtils.isNotNullOrEmpty(submitTime)){
-                        long apptime=record.getSubmitTime().getTime();
-                        long time=this.getLongTime(submitTime);
-                        if(time<apptime){
-                            flag=true;
-                        }
-                    }
-                }
                 if(flag==true){
                     break;
                 }
@@ -460,39 +450,11 @@ public class CompanyFilterTagValidation {
                 }
                 if(flag==false){
                     return false;
-                }else{
-                    for(JobApplicationRecord record:applist){
-                        if(StringUtils.isNotNullOrEmpty(submitTime)){
-                            long apptime=record.getSubmitTime().getTime();
-                            long time=this.getLongTime(submitTime);
-                            if(time<apptime){
-                                flag=true;
-                                break;
-                            }
-                        }
-                    }
-                    if(flag==false){
-                        return false;
-                    }
                 }
                 return true;
             }
-
-        }
-        if(StringUtils.isNotNullOrEmpty(submitTime)){
-            for(JobApplicationRecord record:applist){
-                if(StringUtils.isNotNullOrEmpty(submitTime)){
-                    long apptime=record.getSubmitTime().getTime();
-                    long time=this.getLongTime(submitTime);
-                    if(time<apptime){
-                        return true;
-                    }
-                }
-            }
         }
         return true;
-
-
     }
     private boolean validateEqual(String[] array,int origin){
         if(array==null||array.length==0){
