@@ -1767,15 +1767,6 @@ public class TalentPoolService {
         List<Map<String,Object>> list=talentpoolTalentDao.getMaps(query);
         return list;
     }
-    /*
-    获取公司下所有的人才
-   */
-    private List<Map<String,Object>> getPublicTalentByCompanyId(Set<Integer> hrIdSet,int pageNum,int pageSize){
-//        Query query=new Query.QueryBuilder().select(new Select("'user_id",SelectOp.DISTINCT)).where(new Condition("hr_id",hrIdSet.toArray(),ValueOp.IN)).and(new Condition("public",1,ValueOp.GT))
-//                .setPageNum(pageNum).setPageSize(pageSize).buildQuery();
-//        List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);
-        return talentpoolHrTalentDao.getAllPublicTalent(hrIdSet,pageNum,pageSize);
-    }
 
     /*
     获取公司下所有人才
