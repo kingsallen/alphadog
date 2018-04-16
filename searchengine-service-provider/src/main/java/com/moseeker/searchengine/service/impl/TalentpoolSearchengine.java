@@ -241,7 +241,7 @@ public class TalentpoolSearchengine {
             this.queryByAge(ages,query);
         }
         if(StringUtils.isNotNullOrEmpty(intentionCityName)){
-            this.queryByIntentionCity(intentionCityName,query);
+            this.queryByIntentionCityTag(intentionCityName,query);
         }
         if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
             this.queryBySlalryCode(intentionSalaryCode,query);
@@ -892,6 +892,12 @@ public class TalentpoolSearchengine {
      */
     private void queryByIntentionCity(String cityNames,QueryBuilder queryBuilder){
         searchUtil.handleMatch(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
+    }
+    private void queryByIntentionCityTag(String cityNames,QueryBuilder queryBuilder){
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.intentions.cities.city_name");
+        searchUtil.shouldMatchParseQuery(list,cityNames,queryBuilder);
+//        searchUtil.handleMatch(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
     }
     /*
       按照公司名称查询
