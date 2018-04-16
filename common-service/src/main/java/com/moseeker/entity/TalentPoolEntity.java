@@ -179,7 +179,7 @@ public class TalentPoolEntity {
      * @return
      */
     public String validateCompanyTalentPoolV3ByFilter(TalentpoolCompanyTagDO companyTagDO){
-
+        logger.info("companyTagDO info :{}",companyTagDO);
         if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins()) || StringUtils.isNotNullOrEmpty(companyTagDO.getWork_years())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getDegree())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position()) || companyTagDO.getMin_age() > 0 || companyTagDO.getMax_age()>0
