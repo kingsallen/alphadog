@@ -466,6 +466,8 @@ public class CompanyFilterTagValidation {
                             long time=this.getLongTime(submitTime);
                             if(time<apptime){
                                 flag=true;
+                            }else{
+                                 return false;
                             }
                         }
                     }
@@ -545,7 +547,7 @@ public class CompanyFilterTagValidation {
             return false;
         }
         for(String item:array){
-            if(StringUtils.isNotNullOrEmpty(item)){
+            if(StringUtils.isNotNullOrEmpty(item)&&item.length()<8){
                 //当查找来源是99时特殊处理
                 if(Integer.parseInt(item)==99||Integer.parseInt(item)==-99){
                     List<Integer> list=new ArrayList<>();

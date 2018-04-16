@@ -123,35 +123,40 @@ public class CompanyTagService {
         }
     }
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws Exception {
-        List<TalentpoolCompanyTagUserRecord> list=new ArrayList<>();
-        List<TalentpoolCompanyTag> tagList=talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId,0,Integer.MAX_VALUE);
-        if(!StringUtils.isEmptyList(tagList)){
-            for(Integer userId:idList){
-                Response res=profileService.getResource(userId,0,null);
-                if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())) {
-                    Map<String, Object> profiles = JSON.parseObject(res.getData());
-                    for(TalentpoolCompanyTag tag:tagList){
-                        String tagStr = JSON.toJSONString(tag);
-                        Map<String, Object> tagMap = JSON.parseObject(tagStr);
-                        boolean isflag=companyFilterTagValidation.validateProfileAndComapnyTag(profiles,userId,companyId,tagMap);
-                        if(isflag){
-                            TalentpoolCompanyTagUserRecord record=new TalentpoolCompanyTagUserRecord();
-                            record.setUserId(userId);
-                            record.setTagId(tag.getId());
-                            list.add(record);
+        try {
+            List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
+            List<TalentpoolCompanyTag> tagList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, 0, Integer.MAX_VALUE);
+            if (!StringUtils.isEmptyList(tagList)) {
+                for (Integer userId : idList) {
+                    Response res = profileService.getResource(userId, 0, null);
+                    if (res.getStatus() == 0 && StringUtils.isNotNullOrEmpty(res.getData())) {
+                        Map<String, Object> profiles = JSON.parseObject(res.getData());
+                        for (TalentpoolCompanyTag tag : tagList) {
+                            String tagStr = JSON.toJSONString(tag);
+                            Map<String, Object> tagMap = JSON.parseObject(tagStr);
+                            boolean isflag = companyFilterTagValidation.validateProfileAndComapnyTag(profiles, userId, companyId, tagMap);
+                            if (isflag) {
+                                TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
+                                record.setUserId(userId);
+                                record.setTagId(tag.getId());
+                                list.add(record);
+                            }
                         }
                     }
                 }
             }
-        }
-        if(!StringUtils.isEmptyList(list)){
-            talentpoolCompanyTagUserDao.addAllRecord(list);
-            for(Integer userId:idList){
-                Map<String,Object> result=new HashMap<>();
-                result.put("user_id",userId);
-                client.lpush(Constant.APPID_ALPHADOG,
-                        "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
+            if (!StringUtils.isEmptyList(list)) {
+                talentpoolCompanyTagUserDao.addAllRecord(list);
+                for (Integer userId : idList) {
+                    Map<String, Object> result = new HashMap<>();
+                    result.put("user_id", userId);
+                    client.lpush(Constant.APPID_ALPHADOG,
+                            "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
+                }
             }
+        }catch(Exception e){
+            e.printStackTrace();
+            logger.info(e.getMessage(),e);
         }
     }
 
