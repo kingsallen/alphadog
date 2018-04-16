@@ -101,13 +101,6 @@ public class TalentpoolCompanyTagDao extends DAOImpl<TalentpoolCompanyTagRecord,
     }
 
     /**
-     * Fetch records that have <code>submit_time IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> fetchBySubmitTime(String... values) {
-        return fetch(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.SUBMIT_TIME, values);
-    }
-
-    /**
      * Fetch records that have <code>city_name IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> fetchByCityName(String... values) {

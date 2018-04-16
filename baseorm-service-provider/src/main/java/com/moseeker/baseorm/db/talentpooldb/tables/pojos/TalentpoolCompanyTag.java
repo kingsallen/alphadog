@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolCompanyTag implements Serializable {
 
-    private static final long serialVersionUID = -92382487;
+    private static final long serialVersionUID = 1534891376;
 
     private Integer   id;
     private Integer   companyId;
@@ -31,7 +31,6 @@ public class TalentpoolCompanyTag implements Serializable {
     private String    color;
     private String    origins;
     private String    workYears;
-    private String    submitTime;
     private String    cityName;
     private String    cityCode;
     private String    degree;
@@ -59,7 +58,6 @@ public class TalentpoolCompanyTag implements Serializable {
         this.color = value.color;
         this.origins = value.origins;
         this.workYears = value.workYears;
-        this.submitTime = value.submitTime;
         this.cityName = value.cityName;
         this.cityCode = value.cityCode;
         this.degree = value.degree;
@@ -86,7 +84,6 @@ public class TalentpoolCompanyTag implements Serializable {
         String    color,
         String    origins,
         String    workYears,
-        String    submitTime,
         String    cityName,
         String    cityCode,
         String    degree,
@@ -111,7 +108,6 @@ public class TalentpoolCompanyTag implements Serializable {
         this.color = color;
         this.origins = origins;
         this.workYears = workYears;
-        this.submitTime = submitTime;
         this.cityName = cityName;
         this.cityCode = cityCode;
         this.degree = degree;
@@ -177,14 +173,6 @@ public class TalentpoolCompanyTag implements Serializable {
 
     public void setWorkYears(String workYears) {
         this.workYears = workYears;
-    }
-
-    public String getSubmitTime() {
-        return this.submitTime;
-    }
-
-    public void setSubmitTime(String submitTime) {
-        this.submitTime = submitTime;
     }
 
     public String getCityName() {
@@ -333,7 +321,6 @@ public class TalentpoolCompanyTag implements Serializable {
         sb.append(", ").append(color);
         sb.append(", ").append(origins);
         sb.append(", ").append(workYears);
-        sb.append(", ").append(submitTime);
         sb.append(", ").append(cityName);
         sb.append(", ").append(cityCode);
         sb.append(", ").append(degree);

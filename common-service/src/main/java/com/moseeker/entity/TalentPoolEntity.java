@@ -184,7 +184,7 @@ public class TalentPoolEntity {
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position()) || companyTagDO.getMin_age() > 0 || companyTagDO.getMax_age()>0
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_city_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_salary_code())
                 || companyTagDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1
-                || StringUtils.isNotNullOrEmpty(companyTagDO.getSubmit_time())){
+                ){
             return "";
         }
         return "标签规则全为默认值;";
