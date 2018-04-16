@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRecord> {
 
-    private static final long serialVersionUID = -538667605;
+    private static final long serialVersionUID = 1704690528;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_filter</code>
@@ -62,9 +62,9 @@ public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRe
     public final TableField<TalentpoolProfileFilterRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司主键");
 
     /**
-     * The column <code>talentpooldb.talentpool_profile_filter.name</code>. 过滤项的名称
+     * The column <code>talentpooldb.talentpool_profile_filter.name</code>. 标签的名称
      */
-    public final TableField<TalentpoolProfileFilterRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "过滤项的名称");
+    public final TableField<TalentpoolProfileFilterRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "标签的名称");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.origins</code>. 来源
@@ -85,6 +85,11 @@ public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRe
      * The column <code>talentpooldb.talentpool_profile_filter.city_name</code>. 现居住地
      */
     public final TableField<TalentpoolProfileFilterRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "现居住地");
+
+    /**
+     * The column <code>talentpooldb.talentpool_profile_filter.city_code</code>. 城市的code
+     */
+    public final TableField<TalentpoolProfileFilterRecord, String> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "城市的code");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.degree</code>. 学历 传code
@@ -115,6 +120,11 @@ public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRe
      * The column <code>talentpooldb.talentpool_profile_filter.intention_city_name</code>. 期待工作地
      */
     public final TableField<TalentpoolProfileFilterRecord, String> INTENTION_CITY_NAME = createField("intention_city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "期待工作地");
+
+    /**
+     * The column <code>talentpooldb.talentpool_profile_filter.intention_city_code</code>. 期望城市的code
+     */
+    public final TableField<TalentpoolProfileFilterRecord, String> INTENTION_CITY_CODE = createField("intention_city_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "期望城市的code");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.intention_salary_code</code>. 期待薪资
