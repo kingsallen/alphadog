@@ -201,7 +201,6 @@ public class CompanyTagService {
         return false;
     }
 
-
     /*
  获取这个人在这家公司下的所有投递
  */
