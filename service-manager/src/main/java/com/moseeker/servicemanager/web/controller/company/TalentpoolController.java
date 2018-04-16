@@ -783,8 +783,7 @@ public class TalentpoolController {
             if(params.get("filter_ids") ==null ){
                 return ResponseLogNotification.fail(request,"filter_ids不可以为空");
             }
-            String  filter_ids = (String)params.get("filter_ids");
-            List<Integer> filter_idList = ParamUtils.convertIntList(filter_ids);
+            List<Integer> filter_idList = (List<Integer>)params.get("filter_ids");
             if(filter_idList.size()<1){
                 return ResponseLogNotification.fail(request,"filter_ids长度不可以为0");
             }
