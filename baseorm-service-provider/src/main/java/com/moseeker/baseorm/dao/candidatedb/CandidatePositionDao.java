@@ -80,10 +80,10 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
     }
 
     public int addDataIgnoreDuplicate(CandidatePositionDO cp){
-        CandidatePositionRecord cpr = dataToRecord(cp);
-        return create.insertInto(cpr.getTable())
-                .columns(cpr.fields())
-                .values(cpr.valuesRow())
+        CandidatePosition T = CandidatePosition.CANDIDATE_POSITION;
+        return create.insertInto(T)
+                .columns(T.POSITION_ID,T.WXUSER_ID,T.IS_INTERESTED,T.CANDIDATE_COMPANY_ID,T.VIEW_NUMBER,T.SHARED_FROM_EMPLOYEE,T.USER_ID)
+                .values(cp.getPositionId(),cp.getWxuserId(),cp.getIsInterested(),cp.getCandidateCompanyId(),cp.getViewNumber(),cp.getSharedFromEmployee(),cp.getUserId())
                 .onDuplicateKeyIgnore()
                 .execute();
     }
