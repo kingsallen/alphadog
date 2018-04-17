@@ -210,6 +210,9 @@ public class TalentpoolSearchengine {
             this.queryBySubmitTime(submitTime, query);
         }
         if(StringUtils.isNotNullOrEmpty(cityName)){
+            if(!cityName.contains("全国")){
+                cityName=cityName+",全国";
+            }
             this.queryByHome(cityName,query);
         }
         if(StringUtils.isNotNullOrEmpty(degree)){
@@ -236,6 +239,9 @@ public class TalentpoolSearchengine {
             this.queryByAge(ages,query);
         }
         if(StringUtils.isNotNullOrEmpty(intentionCityName)){
+            if(!intentionCityName.contains("全国")){
+                intentionCityName=intentionCityName+",全国";
+            }
             this.queryByIntentionCityTag(intentionCityName,query);
         }
         if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
@@ -504,12 +510,18 @@ public class TalentpoolSearchengine {
                         StringUtils.isNotNullOrEmpty(companyTag)
                 ){
             if(StringUtils.isNotNullOrEmpty(intentionCity)){
+                if(!intentionCity.contains("全国")){
+                    intentionCity=intentionCity+",全国";
+                }
                 this.queryByIntentionCity(intentionCity,query);
             }
             if(StringUtils.isNotNullOrEmpty(keyword)){
                 this.queryByKeyWord(keyword,query);
             }
             if(StringUtils.isNotNullOrEmpty(cityName)){
+                if(!cityName.contains("全国")){
+                    cityName=cityName+",全国";
+                }
                 this.queryByHome(cityName,query);
             }
             if(StringUtils.isNotNullOrEmpty(companyName)){
