@@ -710,6 +710,9 @@ public class TalentpoolSearchengine {
                 }
             }
         }
+        if(StringUtils.isNotNullOrEmpty(companyId)){
+            sb.append("val.company_id=="+companyId+"&&");
+        }
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
             sb.append("val.candidate_source=="+candidateSource+"&&");
         }
