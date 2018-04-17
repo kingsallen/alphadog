@@ -271,14 +271,14 @@ public class TalentPoolServiceTest {
         Response res=talentPoolService.addCompanyTag(companyTagDO, hrId);
         System.out.println(res+"");
     }
-
-    @Test
-    public void testUpdateEs() throws TException {
-        List<Integer> tagIDList=new ArrayList<>();
-        tagIDList.add(1);
-        int type=0;
-        companyTagService.handlerCompanyTag(tagIDList,type);
-    }
+//
+//    @Test
+//    public void testUpdateEs() throws TException {
+//        List<Integer> tagIDList=new ArrayList<>();
+//        tagIDList.add(1);
+//        int type=0;
+//        companyTagService.handlerCompanyTag(tagIDList,type);
+//    }
 
 
 }
