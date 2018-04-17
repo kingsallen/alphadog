@@ -7,7 +7,6 @@ import com.moseeker.consistencysuport.manager.ProducerManagerSpringProxy;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -27,9 +26,6 @@ import java.util.Optional;
 public class ProducerEntryProxy {
 
     @Autowired
-    DefaultDSLContext context;
-
-    @Autowired
     ProducerManagerSpringProxy config;
 
     @Autowired
@@ -38,17 +34,36 @@ public class ProducerEntryProxy {
     /**
      * 切入点
      */
-    private static final String POINCUT = "@within(com.moseeker.consistencysuport.ConsumerEntry) || @annotation(com.moseeker.consistencysuport.ConsumerEntry)";
+    private static final String POINCUT = "@within(com.moseeker.consistencysuport.ProducerEntry) || @annotation(com.moseeker.consistencysuport.ProducerEntry)";
 
     /**
      *
      * @param call
-     * @param consumerEntry
+     * @param producerEntry
      * @throws ConsistencyException
      */
     @AfterReturning(value = POINCUT)
-    public void afterReturn(JoinPoint call, ConsumerEntry consumerEntry) throws ConsistencyException {
+    public void afterReturn(JoinPoint call, ProducerEntry producerEntry) throws ConsistencyException {
 
+        ProducerConsistentManager manager = config.buildManager();
 
+        Optional<ParamConvertTool> paramConvertToolOptional = manager.getParamConvertTool(producerEntry.name());
+        if (!paramConvertToolOptional.isPresent()) {
+            manager.notification(ConsistencyException.CONSISTENCY_UNBIND_CONVERTTOOL);
+            throw ConsistencyException.CONSISTENCY_UNBIND_CONVERTTOOL;
+        }
+        Object[] objects = call.getArgs();
+        if (producerEntry.index() >= objects.length) {
+            manager.notification(ConsistencyException.CONSISTENCY_PRODUCER_LOST_MESSAGEID);
+            throw ConsistencyException.CONSISTENCY_PRODUCER_LOST_MESSAGEID;
+        }
+        String className = call.getTarget().getClass().getName();
+        String method = call.getSignature().getName();
+        String name = producerEntry.name();
+        int period = producerEntry.period();
+
+        String messageId = objects[producerEntry.index()].toString();
+
+        manager.logMessage(messageId, name, className, method, objects, period);
     }
 }

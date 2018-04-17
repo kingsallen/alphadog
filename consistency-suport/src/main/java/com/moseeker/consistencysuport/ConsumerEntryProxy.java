@@ -1,6 +1,8 @@
 package com.moseeker.consistencysuport;
 
 import com.moseeker.consistencysuport.exception.ConsistencyException;
+import com.moseeker.consistencysuport.manager.ConsumerConsistentManager;
+import com.moseeker.consistencysuport.manager.ConsumerConsistentManagerSpringProxy;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -22,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class ConsumerEntryProxy {
 
     @Autowired
-    DefaultDSLContext context;
+    ConsumerConsistentManagerSpringProxy consumerConsistentManagerSpringProxy;
 
     @Autowired
     ApplicationContext applicationContext;
@@ -30,7 +32,7 @@ public class ConsumerEntryProxy {
     /**
      * 切入点
      */
-    private static final String POINCUT = "@within(com.moseeker.consistencysuport.ProducerEntry) || @annotation(com.moseeker.consistencysuport.ProducerEntry)";
+    private static final String POINCUT = "@within(com.moseeker.consistencysuport.ConsumerEntry) || @annotation(com.moseeker.consistencysuport.ConsumerEntry)";
 
     /**
      *
@@ -39,8 +41,18 @@ public class ConsumerEntryProxy {
      * @throws ConsistencyException
      */
     @AfterReturning(value = POINCUT)
-    public void afterReturn(JoinPoint call, ProducerEntry producerEntry) throws ConsistencyException {
+    public void afterReturn(JoinPoint call, ConsumerEntry producerEntry) throws ConsistencyException {
 
+        ConsumerConsistentManager manager = consumerConsistentManagerSpringProxy.buildConsumerConsistentManager();
 
+        Object[] objects = call.getArgs();
+        if (producerEntry.index() >= objects.length) {
+            manager.notification(ConsistencyException.CONSISTENCY_CONSUMER_LOST_MESSAGEID);
+            throw ConsistencyException.CONSISTENCY_CONSUMER_LOST_MESSAGEID;
+        }
+        String messageId = objects[producerEntry.index()].toString();
+        String businessName = producerEntry.businessName();
+
+        manager.finishTask(messageId, businessName);
     }
 }

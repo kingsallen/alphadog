@@ -72,7 +72,8 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }    }
+        }
+    }
 
     @Override
     public Response hrAddTag(int hr_id, int company_id, String name) throws BIZException, TException {
@@ -81,7 +82,8 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }    }
+        }
+    }
 
     @Override
     public Response hrDelTag(int hr_id, int company_id, int tag_id) throws BIZException, TException {

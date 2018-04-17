@@ -10,5 +10,14 @@ import com.moseeker.consistencysuport.Message;
  */
 public interface MessageChannel {
 
+    /**
+     * 发送消息
+     * @param message 消息体
+     */
     void sendMessage(Message message);
+
+    /**
+     * 初始化消息通道
+     */
+    void initMessageChannel();
 }

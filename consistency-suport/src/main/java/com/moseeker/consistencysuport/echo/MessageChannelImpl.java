@@ -4,7 +4,6 @@ import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -34,7 +33,6 @@ public class MessageChannelImpl implements MessageChannel {
     private EchoHandler echoHandler;
 
     private static final String QUEUE_NAME = "consistency_message_echo_queue";
-    private static final String TOPIC_EXCHANGE_NAME = "consistency_message_echo_exchange";
     private static final String CONNECTION_NAME = "consistency_message_connection_factory";
     private static final String LISTENER_ADAPTER = "consistency_message_listener_adapter";
     private static final String LISTENER_CONTAINER = "consistency_message_listener_container";
@@ -65,11 +63,6 @@ public class MessageChannelImpl implements MessageChannel {
         if (queue == null) {
             queue = new Queue(QUEUE_NAME, true);
             beanFactory.registerSingleton(QUEUE_NAME, queue);
-        }
-        TopicExchange topicExchange = applicationContext.getBean(TOPIC_EXCHANGE_NAME, TopicExchange.class);
-        if (topicExchange == null) {
-            topicExchange = new TopicExchange(TOPIC_EXCHANGE_NAME);
-            beanFactory.registerSingleton(TOPIC_EXCHANGE_NAME, topicExchange);
         }
 
         MessageListenerAdapter messageListenerAdapter = applicationContext.getBean(LISTENER_ADAPTER, MessageListenerAdapter.class);

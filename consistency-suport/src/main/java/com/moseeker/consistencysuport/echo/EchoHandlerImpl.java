@@ -74,7 +74,7 @@ public class EchoHandlerImpl implements EchoHandler {
             if (StringUtils.isNotBlank(message.getMessageName()) && StringUtils.isNotBlank(message.getBusinessName())) {
                 messageRepository.heartBeat(message.getMessageName(), message.getBusinessName());
             } else {
-                notification.noticeForError(ConsistencyException.CONSISTENCY_PRODUCER_UPDATE_BUSINESS_HEARTBEAN_PARAM_ERROR);
+                notification.noticeForError(ConsistencyException.CONSISTENCY_PRODUCER_UPDATE_BUSINESS_HEART_BEAT_PARAM_ERROR);
             }
         } catch (ConsistencyException e) {
             notification.noticeForException(e);

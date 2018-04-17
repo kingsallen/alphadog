@@ -97,14 +97,14 @@ public class ProducerConsistentManager {
     /**
      * 启动守护任务
      */
-    public void startProtectorTask() {
+    private void startProtectorTask() {
         protectorTask.startProtectorTask();
     }
 
     /**
      * 启动检查
      */
-    public void startValidateBusiness() {
+    private void startValidateBusiness() {
         validateBusiness.startValidateBusinessTask();
     }
 
@@ -129,6 +129,10 @@ public class ProducerConsistentManager {
      */
     public Optional<ParamConvertTool> getParamConvertTool(String name) {
         return Optional.ofNullable(paramConvertToolMap.get(name));
+    }
+
+    public void notification(ConsistencyException e) {
+        notification.noticeForException(e);
     }
 
     /**
