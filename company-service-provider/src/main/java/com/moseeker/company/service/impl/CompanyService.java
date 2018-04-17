@@ -756,7 +756,11 @@ public class CompanyService {
         if(companyDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
         }
-        return hrCompanyConfDao.getHrCompanyConfByCompanyId(companyId);
+        HrCompanyConfDO companyConfDO = hrCompanyConfDao.getHrCompanyConfByCompanyId(companyId);
+        if(companyConfDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_CONF_NOTEXIST);
+        }
+        return companyConfDO;
     }
 
 

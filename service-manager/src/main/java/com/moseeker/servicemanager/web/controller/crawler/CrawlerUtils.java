@@ -50,7 +50,6 @@ public class CrawlerUtils {
         int appid = form.getAppid();
         int user_id = form.getUser_id();
         int ua = form.getUa();
-        int companyId = form.getCompanyId();
 
         ChannelType channelType = ChannelType.instaceFromInteger(type);
         try {
