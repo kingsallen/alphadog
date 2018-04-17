@@ -156,6 +156,8 @@ public final class ConstantErrorCodeMessage {
     public static final String SUB_COMPANY_CANT_CONF_CHANNEL = "{'status':61012,'message':'不能给子公司配置同步渠道！'}";
     public static final String ONLY_PAY_COMPANY_CAN_CONF_CHANNEL = "{'status':61015,'message':'只能给付费公司配置同步渠道！'}";
 
+    public static final String NO_AUTH_IMPORT_VERYEAST_PROFILE = "{'status':61016,'message':'该公司没有导入最佳东方简历的权限！'}";
+
 
     //mq服务提示信息说明
     public static final String MQ_TEMPLATE_NOTICE_CLOSE = "{'status':71001,'message':'模板消息开关关闭！'}";

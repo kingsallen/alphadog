@@ -4,6 +4,7 @@
 include "../../common/struct/common_struct.thrift"
 include "../struct/company_struct.thrift"
 include "../../dao/struct/hrdb_struct.thrift"
+include "../../dao/struct/hrdb/hr_company_conf_struct.thrift"
 include "../../employee/struct/employee_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.company.service
@@ -42,6 +43,7 @@ service CompanyServices {
     common_struct.Response companyPaidOrFortune() throws (1: common_struct.BIZException e)
     common_struct.Response getTalentPoolStatus(1:i32 hrId,2:i32 companyId)throws (1: common_struct.BIZException e)
 
+    hr_company_conf_struct.HrCompanyConfDO getCompanyConfById(1:i32 companyId)throws (1: common_struct.BIZException e)
     common_struct.Response updateHrCompanyConf(1:company_struct.HrCompanyConf hrCompanyConf)throws (1: common_struct.BIZException e)
     common_struct.Response addHrAccountAndCompany(1:string companyName, 2: string mobile, 3:i32 wxuserId, 4:string remoteIp, 5:i32 source) throws (1: common_struct.BIZException e)
 

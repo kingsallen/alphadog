@@ -744,6 +744,21 @@ public class CompanyService {
         return hrCompanyConfRecord;
     }
 
+    /*
+      修改hr_company_conf
+     */
+    @CounterIface
+    public HrCompanyConfDO getHrCompanyConfById(int companyId) throws BIZException {
+        if(companyId <= 0){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+        }
+        HrCompanyDO companyDO = companyDao.getCompanyById(companyId);
+        if(companyDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
+        }
+        return hrCompanyConfDao.getHrCompanyConfByCompanyId(companyId);
+    }
+
 
     /*
       修改hr_company_conf
