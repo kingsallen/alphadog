@@ -312,7 +312,7 @@ public class CompanyFilterTagValidation {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         int age=year-time+1;
-        if(age>minAge&&age<maxAge){
+        if(age>minAge&&age<=maxAge){
             return true;
         }
         return false;
