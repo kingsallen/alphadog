@@ -114,14 +114,15 @@ public class CompanyTagService {
                     if(type!=2){
                         result.put("user_ids",userIdList );
                     }
+                    client.set(Constant.APPID_ALPHADOG, COMPANYTAG_ES_STATUS,
+                            String.valueOf(tagId), String.valueOf(0));
                     client.lpush(Constant.APPID_ALPHADOG,
                             "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
                     logger.info(JSON.toJSONString("======================================="));
                     logger.info(JSON.toJSONString(result));
                     logger.info(JSON.toJSONString("======================================="));
                     //将这个的tag置位更新状态0是更新 1是更新完成
-                    client.set(Constant.APPID_ALPHADOG, COMPANYTAG_ES_STATUS,
-                            String.valueOf(tagId), String.valueOf(0));
+
                 }
 
             }
