@@ -82,7 +82,7 @@ public class JobApplicationFilterService {
             List<HrCompanyConfDO> companyConfDOList = hrCompanyConfDao.getHrCompanyConfByCompanyIds(companyIds);
             if(companyConfDOList != null && companyConfDOList.size()>0){
                 if(companyConfDOList.get(0).getTalentpoolStatus() == 2){
-                    List<JobPositionProfileFilter> positionProfileFilterList = jobPositionProfileFilterDao.getFilterPositionRecordByPositionId(positionDO.getCompanyId());
+                    List<JobPositionProfileFilter> positionProfileFilterList = jobPositionProfileFilterDao.getFilterPositionRecordByPositionId(positionDO.getId());
                     if(positionProfileFilterList!= null && positionProfileFilterList.size()>0) {
                         List<Integer> filterIdList = positionProfileFilterList.stream().map(m -> m.getPfid()).collect(Collectors.toList());
                         List<Integer> filterExecute1 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList,1);
