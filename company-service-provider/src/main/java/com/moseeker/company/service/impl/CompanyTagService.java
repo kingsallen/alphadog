@@ -60,14 +60,14 @@ public class CompanyTagService {
       type=2 删除标签
      */
     @CounterIface
-    public void handlerCompanyTag(List<Integer> tagIdList, int type){
+    public void handlerCompanyTag(List<Integer> tagIdList, int type,Map<String,Object> map){
         try {
             List<Integer> userIdList=new ArrayList<>();
             if (type == 2) {//删除标签只需要执行删除操作即可
                 talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
             } else {
                 //新增标签，不用调用删除原有表中的标签和人才的对应关系，只需要增加就可以
-                Map<String, Object> map = talentpoolCompanyTagDao.getTagById(tagIdList.get(0));
+                //Map<String, Object> map = JSON.parseObject(JSON.toJSONString(DO));//talentpoolCompanyTagDao.getTagById(tagIdList.get(0));
                 Map<String, String> params = new HashMap<>();
                 if (map != null && !map.isEmpty()) {
                     for (String key : map.keySet()) {
