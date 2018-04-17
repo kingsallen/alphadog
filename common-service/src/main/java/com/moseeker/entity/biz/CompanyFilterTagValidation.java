@@ -39,6 +39,9 @@ public class CompanyFilterTagValidation {
                 ||(tag.get("isRecommend") != null && (int)tag.get("isRecommend")>0)) {
             if((int)tag.get("isRecommend")>0){
                 applist=this.getJobAppRecommendByCompanyIdAndUserId(companyId,userId);
+                if(StringUtils.isEmptyList(applist)){
+                    return false;
+                }
             }else{
                 applist=this.getJobApplicationByCompanyIdAndUserId(companyId,userId);
             }
@@ -412,7 +415,7 @@ public class CompanyFilterTagValidation {
             }
 
         }
-        int resultYear=(int)Math.ceil(((double)end-(double)start)/(3600*24*30*12*1000));
+        int resultYear=(int)Math.ceil(((double)end-(double)start)/((double)3600*24*30*12*1000));
 
         if(StringUtils.isNotNullOrEmpty(workyears)){
             String array[]=workyears.split(",");
@@ -436,7 +439,7 @@ public class CompanyFilterTagValidation {
                     min=10;
                     max=100;
                 }
-                if(min<resultYear&&max>resultYear){
+                if(min<=resultYear&&max>resultYear){
                     return true;
                 }
             }
