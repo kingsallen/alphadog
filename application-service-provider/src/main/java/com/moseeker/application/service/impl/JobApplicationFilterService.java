@@ -73,7 +73,7 @@ public class JobApplicationFilterService {
     TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
     ProfileBS.Iface bsService = ServiceManager.SERVICEMANAGER.getService(ProfileBS.Iface.class);
 
-    public void handerApplicationFilter(MessageEmailStruct filterInfoStruct) throws TException {
+    public void handerApplicationFilter(MessageEmailStruct filterInfoStruct) throws Exception {
         JobPositionRecord positionDO = jobPositionDao.getPositionById(filterInfoStruct.getPosition_id());
         HrCompanyDO companyDO = hrCompanyDao.getCompanyById(positionDO.getCompanyId());
         if(companyDO != null && companyDO.getType() == 0){
@@ -110,7 +110,7 @@ public class JobApplicationFilterService {
 
     //循环验证各个筛选项
     private boolean forTalentpoolProfileFilter(List<Integer> filterIdList, Map<Integer,TalentpoolProfileFilter>  talentpoolProfileFilterMap, Map<String, Object> profiles,
-                                               MessageEmailStruct filterInfoStruct, Map<Integer, Boolean> filterPassMap, JobPositionRecord position, boolean bool, int type) throws TException {
+                                               MessageEmailStruct filterInfoStruct, Map<Integer, Boolean> filterPassMap, JobPositionRecord position, boolean bool, int type) throws Exception {
         if(filterIdList!=null && filterIdList.size()>0 && !bool) {
             for (Integer filter_id : filterIdList) {
                 if (talentpoolProfileFilterMap.get(filter_id) != null) {
@@ -144,7 +144,7 @@ public class JobApplicationFilterService {
     }
 
     //验证筛选项
-    private boolean validateFile(TalentpoolProfileFilter filter, MessageEmailStruct filterInfoStruct, Map<String, Object>profiles, int company_id) throws TException {
+    private boolean validateFile(TalentpoolProfileFilter filter, MessageEmailStruct filterInfoStruct, Map<String, Object>profiles, int company_id) throws Exception {
         String tagStr = JSON.toJSONString(filter);
         Map<String, Object> filterMap = JSON.parseObject(tagStr);
         filterMap.remove("origins");
