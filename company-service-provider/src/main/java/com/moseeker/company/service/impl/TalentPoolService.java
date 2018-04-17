@@ -1114,7 +1114,7 @@ public class TalentPoolService {
         }
         String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
         if("OK".equals(result)){
-            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByTag(companyTagDO);
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
             if(StringUtils.isNullOrEmpty(filterString)){
                 int id = talentPoolEntity.addCompanyTag(companyTagDO);
                 List<Integer> idList = new ArrayList<>();
@@ -1152,7 +1152,7 @@ public class TalentPoolService {
 
         String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
         if("OK".equals(result)){
-            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByTag(companyTagDO);
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
             String statusString = talentPoolEntity.validateCompanyTalentPoolV3ByStatus(companyTagDO);
             statusString = statusString + filterString;
             if(StringUtils.isNullOrEmpty(statusString)){
@@ -1345,7 +1345,7 @@ public class TalentPoolService {
         return ResponseUtils.successWithoutStringify(JSON.toJSONString(profileFilterInfo, serializeConfig));
     }
 
-    public Response addProfileFilter(TalentpoolProfileFilterDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
+    public Response addProfileFilter(TalentpoolCompanyTagDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(filterDO.getCompany_id());
         if(companyDO == null){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
@@ -1373,7 +1373,7 @@ public class TalentPoolService {
         return ResponseUtils.fail(1, result);
     }
 
-    public Response updateProfileFilter(TalentpoolProfileFilterDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
+    public Response updateProfileFilter(TalentpoolCompanyTagDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,filterDO.getCompany_id());
         if(flag == -1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);

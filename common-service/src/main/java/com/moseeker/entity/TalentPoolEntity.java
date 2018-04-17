@@ -231,7 +231,7 @@ public class TalentPoolEntity {
      * @param companyTagDO
      * @return
      */
-    public String validateCompanyTalentPoolV3ByTag(TalentpoolCompanyTagDO companyTagDO){
+    public String validateCompanyTalentPoolV3ByFilter(TalentpoolCompanyTagDO companyTagDO){
 
         if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins()) || StringUtils.isNotNullOrEmpty(companyTagDO.getWork_years())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getDegree())
@@ -283,23 +283,7 @@ public class TalentPoolEntity {
         return "标签全为默认值;";
     }
 
-    /**
-     * 验证筛选规则不能全为默认值
-     * @param companyFilterDO
-     * @return
-     */
-    public String validateCompanyTalentPoolV3ByFilter(TalentpoolProfileFilterDO companyFilterDO){
 
-        if(StringUtils.isNotNullOrEmpty(companyFilterDO.getOrigins()) || StringUtils.isNotNullOrEmpty(companyFilterDO.getWork_years())
-                || StringUtils.isNotNullOrEmpty(companyFilterDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyFilterDO.getDegree())
-                || StringUtils.isNotNullOrEmpty(companyFilterDO.getPast_position()) || companyFilterDO.getMin_age() > 0 || companyFilterDO.getMax_age()>0
-                || StringUtils.isNotNullOrEmpty(companyFilterDO.getIntention_city_name()) || StringUtils.isNotNullOrEmpty(companyFilterDO.getIntention_salary_code())
-                || companyFilterDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyFilterDO.getCompany_name()) || companyFilterDO.getIs_recommend() == 1
-                ){
-            return "";
-        }
-        return "规则全为默认值;";
-    }
 
     /**
      * 查询标签为有效状态
@@ -476,7 +460,7 @@ public class TalentPoolEntity {
      * @return
      */
     @Transactional
-    public int addCompanyProfileFilter(TalentpoolProfileFilterDO profileFilterDO, List<ActionForm> actionFormList, List<Integer> positionIdList, int position_total){
+    public int addCompanyProfileFilter(TalentpoolCompanyTagDO profileFilterDO, List<ActionForm> actionFormList, List<Integer> positionIdList, int position_total){
         TalentpoolProfileFilterRecord filterRecord = talentpoolProfileFilterDao.dataToRecordAll(profileFilterDO);
         talentpoolProfileFilterDao.addRecord(filterRecord);
         insertTalentpoolProfileFilterExecuteRecord(actionFormList, filterRecord.getId());
@@ -523,7 +507,7 @@ public class TalentPoolEntity {
      * @return
      */
     @Transactional
-    public int updateCompanyProfileFilter(TalentpoolProfileFilterDO profileFilterDO, List<ActionForm> actionFormList, List<Integer> positionIdList, int position_total){
+    public int updateCompanyProfileFilter(TalentpoolCompanyTagDO profileFilterDO, List<ActionForm> actionFormList, List<Integer> positionIdList, int position_total){
         TalentpoolProfileFilterRecord filterRecord = talentpoolProfileFilterDao.dataToRecord(profileFilterDO);
         talentpoolProfileFilterDao.updateRecord(filterRecord);
         List<Integer> filterIds = new ArrayList<>();

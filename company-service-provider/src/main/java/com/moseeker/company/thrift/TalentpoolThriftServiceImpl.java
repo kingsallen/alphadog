@@ -358,7 +358,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response addProfileFilter(TalentpoolProfileFilterDO companyTagDO, List<ActionForm> actionForm, List<Integer> positionIdList, int hr_id, int position_total) throws BIZException, TException {
+    public Response addProfileFilter(TalentpoolCompanyTagDO companyTagDO, List<ActionForm> actionForm, List<Integer> positionIdList, int hr_id, int position_total) throws BIZException, TException {
         try{
             return talentPoolService.addProfileFilter(companyTagDO, actionForm, positionIdList, hr_id, position_total);
         }catch(Exception e){
@@ -368,7 +368,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response updateProfileFilter(TalentpoolProfileFilterDO companyTagDO, List<ActionForm> actionForm, List<Integer> positionIdList, int hr_id, int position_total) throws BIZException, TException {
+    public Response updateProfileFilter(TalentpoolCompanyTagDO companyTagDO, List<ActionForm> actionForm, List<Integer> positionIdList, int hr_id, int position_total) throws BIZException, TException {
         try{
             return talentPoolService.updateProfileFilter(companyTagDO, actionForm, positionIdList, hr_id, position_total);
         }catch(Exception e){

@@ -78,9 +78,9 @@ public class TalentpoolServices {
 
         public com.moseeker.thrift.gen.common.struct.Response getProfileFilterInfo(int hr_id, int company_id, int filter_id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-        public com.moseeker.thrift.gen.common.struct.Response addProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+        public com.moseeker.thrift.gen.common.struct.Response addProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-        public com.moseeker.thrift.gen.common.struct.Response updateProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+        public com.moseeker.thrift.gen.common.struct.Response updateProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
         public void handlerCompanyTagAndProfile(java.util.Set<java.lang.Integer> userid_list, int company_id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
@@ -154,9 +154,9 @@ public class TalentpoolServices {
 
         public void getProfileFilterInfo(int hr_id, int company_id, int filter_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-        public void addProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+        public void addProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-        public void updateProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+        public void updateProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
         public void handlerCompanyTagAndProfile(java.util.Set<java.lang.Integer> userid_list, int company_id, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
@@ -1118,13 +1118,13 @@ public class TalentpoolServices {
             throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getProfileFilterInfo failed: unknown result");
         }
 
-        public com.moseeker.thrift.gen.common.struct.Response addProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+        public com.moseeker.thrift.gen.common.struct.Response addProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
         {
             send_addProfileFilter(companyTagDO, actionForm, positionIdList, hr_id, position_total);
             return recv_addProfileFilter();
         }
 
-        public void send_addProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws org.apache.thrift.TException
+        public void send_addProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws org.apache.thrift.TException
         {
             addProfileFilter_args args = new addProfileFilter_args();
             args.setCompanyTagDO(companyTagDO);
@@ -1148,13 +1148,13 @@ public class TalentpoolServices {
             throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "addProfileFilter failed: unknown result");
         }
 
-        public com.moseeker.thrift.gen.common.struct.Response updateProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+        public com.moseeker.thrift.gen.common.struct.Response updateProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
         {
             send_updateProfileFilter(companyTagDO, actionForm, positionIdList, hr_id, position_total);
             return recv_updateProfileFilter();
         }
 
-        public void send_updateProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws org.apache.thrift.TException
+        public void send_updateProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total) throws org.apache.thrift.TException
         {
             updateProfileFilter_args args = new updateProfileFilter_args();
             args.setCompanyTagDO(companyTagDO);
@@ -2510,7 +2510,7 @@ public class TalentpoolServices {
             }
         }
 
-        public void addProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        public void addProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
             checkReady();
             addProfileFilter_call method_call = new addProfileFilter_call(companyTagDO, actionForm, positionIdList, hr_id, position_total, resultHandler, this, ___protocolFactory, ___transport);
             this.___currentMethod = method_call;
@@ -2518,12 +2518,12 @@ public class TalentpoolServices {
         }
 
         public static class addProfileFilter_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-            private com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO;
+            private com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO;
             private java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm;
             private java.util.List<java.lang.Integer> positionIdList;
             private int hr_id;
             private int position_total;
-            public addProfileFilter_call(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+            public addProfileFilter_call(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
                 super(client, protocolFactory, transport, resultHandler, false);
                 this.companyTagDO = companyTagDO;
                 this.actionForm = actionForm;
@@ -2554,7 +2554,7 @@ public class TalentpoolServices {
             }
         }
 
-        public void updateProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        public void updateProfileFilter(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
             checkReady();
             updateProfileFilter_call method_call = new updateProfileFilter_call(companyTagDO, actionForm, positionIdList, hr_id, position_total, resultHandler, this, ___protocolFactory, ___transport);
             this.___currentMethod = method_call;
@@ -2562,12 +2562,12 @@ public class TalentpoolServices {
         }
 
         public static class updateProfileFilter_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-            private com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO;
+            private com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO;
             private java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm;
             private java.util.List<java.lang.Integer> positionIdList;
             private int hr_id;
             private int position_total;
-            public updateProfileFilter_call(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+            public updateProfileFilter_call(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO, java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm, java.util.List<java.lang.Integer> positionIdList, int hr_id, int position_total, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
                 super(client, protocolFactory, transport, resultHandler, false);
                 this.companyTagDO = companyTagDO;
                 this.actionForm = actionForm;
@@ -41664,7 +41664,7 @@ public class TalentpoolServices {
         private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new addProfileFilter_argsStandardSchemeFactory();
         private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new addProfileFilter_argsTupleSchemeFactory();
 
-        public com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO; // required
+        public com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO; // required
         public java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm; // required
         public java.util.List<java.lang.Integer> positionIdList; // required
         public int hr_id; // required
@@ -41748,7 +41748,7 @@ public class TalentpoolServices {
         static {
             java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
             tmpMap.put(_Fields.COMPANY_TAG_DO, new org.apache.thrift.meta_data.FieldMetaData("companyTagDO", org.apache.thrift.TFieldRequirementType.DEFAULT,
-                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO.class)));
+                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO.class)));
             tmpMap.put(_Fields.ACTION_FORM, new org.apache.thrift.meta_data.FieldMetaData("actionForm", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
                             new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.ActionForm.class))));
@@ -41767,7 +41767,7 @@ public class TalentpoolServices {
         }
 
         public addProfileFilter_args(
-                com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO,
+                com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO,
                 java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm,
                 java.util.List<java.lang.Integer> positionIdList,
                 int hr_id,
@@ -41789,7 +41789,7 @@ public class TalentpoolServices {
         public addProfileFilter_args(addProfileFilter_args other) {
             __isset_bitfield = other.__isset_bitfield;
             if (other.isSetCompanyTagDO()) {
-                this.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO(other.companyTagDO);
+                this.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO(other.companyTagDO);
             }
             if (other.isSetActionForm()) {
                 java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> __this__actionForm = new java.util.ArrayList<com.moseeker.thrift.gen.company.struct.ActionForm>(other.actionForm.size());
@@ -41821,11 +41821,11 @@ public class TalentpoolServices {
             this.position_total = 0;
         }
 
-        public com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO getCompanyTagDO() {
+        public com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO getCompanyTagDO() {
             return this.companyTagDO;
         }
 
-        public addProfileFilter_args setCompanyTagDO(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO) {
+        public addProfileFilter_args setCompanyTagDO(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO) {
             this.companyTagDO = companyTagDO;
             return this;
         }
@@ -41975,7 +41975,7 @@ public class TalentpoolServices {
                     if (value == null) {
                         unsetCompanyTagDO();
                     } else {
-                        setCompanyTagDO((com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO)value);
+                        setCompanyTagDO((com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO)value);
                     }
                     break;
 
@@ -42301,7 +42301,7 @@ public class TalentpoolServices {
                     switch (schemeField.id) {
                         case 1: // COMPANY_TAG_DO
                             if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                                struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO();
+                                struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO();
                                 struct.companyTagDO.read(iprot);
                                 struct.setCompanyTagDOIsSet(true);
                             } else {
@@ -42479,7 +42479,7 @@ public class TalentpoolServices {
                 org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
                 java.util.BitSet incoming = iprot.readBitSet(5);
                 if (incoming.get(0)) {
-                    struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO();
+                    struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO();
                     struct.companyTagDO.read(iprot);
                     struct.setCompanyTagDOIsSet(true);
                 }
@@ -43011,7 +43011,7 @@ public class TalentpoolServices {
         private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new updateProfileFilter_argsStandardSchemeFactory();
         private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new updateProfileFilter_argsTupleSchemeFactory();
 
-        public com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO; // required
+        public com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO; // required
         public java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm; // required
         public java.util.List<java.lang.Integer> positionIdList; // required
         public int hr_id; // required
@@ -43095,7 +43095,7 @@ public class TalentpoolServices {
         static {
             java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
             tmpMap.put(_Fields.COMPANY_TAG_DO, new org.apache.thrift.meta_data.FieldMetaData("companyTagDO", org.apache.thrift.TFieldRequirementType.DEFAULT,
-                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO.class)));
+                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO.class)));
             tmpMap.put(_Fields.ACTION_FORM, new org.apache.thrift.meta_data.FieldMetaData("actionForm", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
                             new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.ActionForm.class))));
@@ -43114,7 +43114,7 @@ public class TalentpoolServices {
         }
 
         public updateProfileFilter_args(
-                com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO,
+                com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO,
                 java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> actionForm,
                 java.util.List<java.lang.Integer> positionIdList,
                 int hr_id,
@@ -43136,7 +43136,7 @@ public class TalentpoolServices {
         public updateProfileFilter_args(updateProfileFilter_args other) {
             __isset_bitfield = other.__isset_bitfield;
             if (other.isSetCompanyTagDO()) {
-                this.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO(other.companyTagDO);
+                this.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO(other.companyTagDO);
             }
             if (other.isSetActionForm()) {
                 java.util.List<com.moseeker.thrift.gen.company.struct.ActionForm> __this__actionForm = new java.util.ArrayList<com.moseeker.thrift.gen.company.struct.ActionForm>(other.actionForm.size());
@@ -43168,11 +43168,11 @@ public class TalentpoolServices {
             this.position_total = 0;
         }
 
-        public com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO getCompanyTagDO() {
+        public com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO getCompanyTagDO() {
             return this.companyTagDO;
         }
 
-        public updateProfileFilter_args setCompanyTagDO(com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO companyTagDO) {
+        public updateProfileFilter_args setCompanyTagDO(com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO companyTagDO) {
             this.companyTagDO = companyTagDO;
             return this;
         }
@@ -43322,7 +43322,7 @@ public class TalentpoolServices {
                     if (value == null) {
                         unsetCompanyTagDO();
                     } else {
-                        setCompanyTagDO((com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO)value);
+                        setCompanyTagDO((com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO)value);
                     }
                     break;
 
@@ -43648,7 +43648,7 @@ public class TalentpoolServices {
                     switch (schemeField.id) {
                         case 1: // COMPANY_TAG_DO
                             if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                                struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO();
+                                struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO();
                                 struct.companyTagDO.read(iprot);
                                 struct.setCompanyTagDOIsSet(true);
                             } else {
@@ -43826,7 +43826,7 @@ public class TalentpoolServices {
                 org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
                 java.util.BitSet incoming = iprot.readBitSet(5);
                 if (incoming.get(0)) {
-                    struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO();
+                    struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO();
                     struct.companyTagDO.read(iprot);
                     struct.setCompanyTagDOIsSet(true);
                 }
