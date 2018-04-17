@@ -25,6 +25,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.CompanyType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
@@ -745,7 +746,7 @@ public class CompanyService {
     }
 
     /*
-      修改hr_company_conf
+      根据公司ID查询公司配置，如果是子公司，查询母公司配置
      */
     @CounterIface
     public HrCompanyConfDO getHrCompanyConfById(int companyId) throws BIZException {
@@ -753,8 +754,12 @@ public class CompanyService {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
         }
         HrCompanyDO companyDO = companyDao.getCompanyById(companyId);
-        if(companyDO == null){
+        if(companyDO == null || companyDO.getDisable() == 0){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
+        }
+        //公司如果为子公司，要查询母公司的配置
+        if(companyDO.getParentId() != 0 ){
+            companyId = companyDO.getParentId();
         }
         HrCompanyConfDO companyConfDO = hrCompanyConfDao.getHrCompanyConfByCompanyId(companyId);
         if(companyConfDO == null){

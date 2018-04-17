@@ -579,7 +579,7 @@ public class CompanyController {
     }
 
     /**
-     * 根据公司ID获取公司配置
+     * 根据公司ID获取公司配置，如果是子公司，查询母公司配置
      */
     @RequestMapping(value = "/api/hrcompany/conf", method = RequestMethod.GET)
     @ResponseBody
