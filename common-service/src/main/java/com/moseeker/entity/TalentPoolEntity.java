@@ -265,7 +265,7 @@ public class TalentPoolEntity {
     @Transactional
     public int updateCompanyTag(TalentpoolCompanyTagDO companyTagDO){
         logger.info("TalentpoolCompanyTagDO info :{}", companyTagDO);
-        TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecord(companyTagDO);
+        TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecordAll(companyTagDO);
         logger.info("TalentpoolCompanyTagRecord info :{}", tagRecord);
         talentpoolCompanyTagDao.updateRecord(tagRecord);
         return tagRecord.getId();

@@ -43,6 +43,15 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         return BeanUtils.structToDB(s, table.getRecordType());
     }
 
+    /**
+     * do文件全部更新到record
+     * @param s
+     * @return
+     */
+    public R dataToRecordAll(Object s) {
+        return BeanUtils.structToDBAll(s, table.getRecordType());
+    }
+
     public S recordToData(R r) {
         return BeanUtils.DBToStruct(sClass, r);
     }
