@@ -1,5 +1,6 @@
 package com.moseeker.entity.biz;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
@@ -7,11 +8,13 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,19 +23,27 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CompanyFilterTagValidation {
-
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private JobApplicationDao jobApplicationDao;
 
-    public boolean  validateProfileAndComapnyTag(Map<String, Object> profiles, int userId, int companyId, Map<String, Object> tag) throws TException {
-
+    public boolean  validateProfileAndComapnyTag(Map<String, Object> profiles, int userId, int companyId, Map<String, Object> tag) throws Exception {
+        logger.info("简历数据是=================");
+        logger.info(JSON.toJSONString(profiles));
+        logger.info("===========================");
+        logger.info("标签数据是=================");
+        logger.info(JSON.toJSONString(tag));
+        logger.info("===========================");
         List<JobApplicationRecord> applist=new ArrayList<>();
         if((tag.get("origins") != null && StringUtils.isNotNullOrEmpty((String)tag.get("origins")))
                 ||(tag.get("isRecommend") != null && (int)tag.get("isRecommend")>0)) {
             if((int)tag.get("isRecommend")>0){
-                applist=this.getJobApplicationByCompanyIdAndUserId(companyId,userId);
+                applist=this.getJobAppRecommendByCompanyIdAndUserId(companyId,userId);
+                if(StringUtils.isEmptyList(applist)){
+                    return false;
+                }
             }else{
-                applist=getJobAppRecommendByCompanyIdAndUserId(companyId,userId);
+                applist=this.getJobApplicationByCompanyIdAndUserId(companyId,userId);
             }
 
             boolean flag=this.validateApp((String)tag.get("origins"),applist,profiles);
@@ -105,6 +116,7 @@ public class CompanyFilterTagValidation {
 
         return true;
     }
+
     /*
       校验曾经工作的公司
      */
@@ -228,7 +240,7 @@ public class CompanyFilterTagValidation {
                 List<Map<String,Object>> citys=( List<Map<String,Object>>)intention.get("cities");
                 if(!StringUtils.isEmptyList(citys)){
                     for(Map<String,Object> city:citys){
-                        int code=(int)city.get("code") ;
+                        int code=(int)city.get("city_code") ;
                         if(code==cityCode){
                             return true;
                         }
@@ -297,7 +309,9 @@ public class CompanyFilterTagValidation {
             return false;
         }
         int time=Integer.parseInt(birth.substring(0,4));
-        int age=new Date().getYear()-time+1;
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int age=year-time+1;
         if(age>minAge&&age<maxAge){
             return true;
         }
@@ -349,7 +363,7 @@ public class CompanyFilterTagValidation {
     /*
      校验工作年限
      */
-    private boolean validateWorkYear(String workyears,Map<String,Object> profiles){
+    private boolean validateWorkYear(String workyears,Map<String,Object> profiles) throws Exception {
         if(profiles==null||profiles.isEmpty()){
             return false;
         }
@@ -359,6 +373,7 @@ public class CompanyFilterTagValidation {
         }
         long end=0;
         long start=0;
+        SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd");
         if(workExpList.size()>1){
             Map<String,Object> endExp=workExpList.get(0);
             Map<String,Object> startExp=workExpList.get(workExpList.size()-1);
@@ -366,42 +381,68 @@ public class CompanyFilterTagValidation {
             if(now==1){
                 end=new Date().getTime();
             }else{
-                end=new Date((String)endExp.get("end_date")).getTime();
+                if(startExp.get("end_date")!=null&&StringUtils.isNotNullOrEmpty((String)endExp.get("end_date")))
+                {
+                    end=ff.parse((String)endExp.get("end_date")).getTime();
+                }else{
+                    end=new Date().getTime();
+                }
             }
-            start=new Date((String)startExp.get("start_date")).getTime();
+            if(startExp.get("start_date")!=null&&StringUtils.isNotNullOrEmpty((String)startExp.get("start_date"))){
+
+                start=ff.parse((String)startExp.get("start_date")).getTime();
+            }else{
+                start=new Date().getTime();
+            }
+
         }else{
             Map<String,Object> workexp=workExpList.get(0);
             int now=(int)workexp.get("end_until_now");
             if(now==1){
                 end=new Date().getTime();
             }else{
-                end=new Date((String)workexp.get("end_date")).getTime();
+                if(workexp.get("end_date")!=null&&StringUtils.isNotNullOrEmpty((String)workexp.get("end_date"))){
+                    end=ff.parse((String)workexp.get("end_date")).getTime();
+                }else{
+                    end=new Date().getTime();
+                }
+
             }
-            start=new Date((String)workexp.get("start_date")).getTime();
+            if(workexp.get("start_date")!=null&&StringUtils.isNotNullOrEmpty((String)workexp.get("start_date"))){
+                start=ff.parse((String)workexp.get("start_date")).getTime();
+            }else{
+                start=new Date().getTime();
+            }
 
         }
-        int resultYear=(int)Math.ceil(((double)end-(double)start)/(3600*24*30*12));
-        int year=Integer.parseInt(workyears);
-        int min=0;
-        int max=0;
-        if(year==2){
-            min=0;
-            max=1;
-        }else if(year==3){
-            min=1;
-            max=3;
-        }else if(year==4){
-            min=3;
-            max=5;
-        }else if(year==5){
-            min=5;
-            max=10;
-        }else{
-            min=10;
-            max=100;
-        }
-        if(min<resultYear&&max>resultYear){
-            return true;
+        int resultYear=(int)Math.ceil(((double)end-(double)start)/((double)3600*24*30*12*1000));
+
+        if(StringUtils.isNotNullOrEmpty(workyears)){
+            String array[]=workyears.split(",");
+            for(String item:array){
+                int year=Integer.parseInt(item);
+                int min=0;
+                int max=0;
+                if(year==2){
+                    min=0;
+                    max=1;
+                }else if(year==3){
+                    min=1;
+                    max=3;
+                }else if(year==4){
+                    min=3;
+                    max=5;
+                }else if(year==5){
+                    min=5;
+                    max=10;
+                }else{
+                    min=10;
+                    max=100;
+                }
+                if(min<=resultYear&&max>resultYear){
+                    return true;
+                }
+            }
         }
         return false;
 
@@ -410,20 +451,23 @@ public class CompanyFilterTagValidation {
     /*
      校验该人才的来源
      */
-    private boolean validateApp(String origins, List<JobApplicationRecord> applist,Map<String,Object> profiles){
-        if(StringUtils.isEmptyList(applist)){
-            return false;
-        }
+    private boolean validateApp(String origins, List<JobApplicationRecord> applist,Map<String,Object> profiles ){
+        logger.info("来源数据是===============================");
+        logger.info(origins +"============");
+        logger.info("========================================");
         if(StringUtils.isNotNullOrEmpty(origins)){
             String[] originArray=origins.split(",");
             boolean flag=false;
-            for(JobApplicationRecord record:applist){
-                int appOrigin=record.getOrigin();
-                flag=this.validateEqual(originArray,appOrigin);
-                if(flag==true){
-                    break;
+            if(!StringUtils.isEmptyList(applist)){
+                for(JobApplicationRecord record:applist){
+                    int appOrigin=record.getOrigin();
+                    flag=this.validateEqual(originArray,appOrigin);
+                    if(flag==true){
+                        break;
+                    }
                 }
             }
+
             if(flag==false){
                 if(profiles==null||profiles.isEmpty()){
                     return false;
@@ -453,17 +497,36 @@ public class CompanyFilterTagValidation {
                 }
                 return true;
             }
+
         }
+
         return true;
+
+
     }
     private boolean validateEqual(String[] array,int origin){
         if(array==null||array.length==0){
             return false;
         }
         for(String item:array){
-            if(StringUtils.isNotNullOrEmpty(item)){
-                if(Integer.parseInt(item)==origin){
-                    return true;
+            if(StringUtils.isNotNullOrEmpty(item)&&item.length()<8){
+                //当查找来源是99时特殊处理
+                if(Integer.parseInt(item)==99||Integer.parseInt(item)==-99){
+                    List<Integer> list=new ArrayList<>();
+                    list.add(1);
+                    list.add(2);
+                    list.add(3);
+                    list.add(128);
+                    list.add(256);
+                    list.add(512);
+                    list.add(1024);
+                    if(list.contains(origin)){
+                        return true;
+                    }
+                }else{
+                    if(Integer.parseInt(item)==origin){
+                        return true;
+                    }
                 }
             }
         }

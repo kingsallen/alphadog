@@ -108,6 +108,13 @@ public class TalentpoolProfileFilterDao extends DAOImpl<TalentpoolProfileFilterR
     }
 
     /**
+     * Fetch records that have <code>city_code IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter> fetchByCityCode(String... values) {
+        return fetch(TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.CITY_CODE, values);
+    }
+
+    /**
      * Fetch records that have <code>degree IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter> fetchByDegree(String... values) {

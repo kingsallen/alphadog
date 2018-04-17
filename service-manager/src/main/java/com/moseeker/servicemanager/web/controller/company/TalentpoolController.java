@@ -139,12 +139,12 @@ public class TalentpoolController {
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
             String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
-            if(StringUtils.isNullOrEmpty(page)){
+            if(StringUtils.isNotNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
             }
             String size=String.valueOf(data.get("page_size"));
             int pageSize=10;
-            if(StringUtils.isNullOrEmpty(size)){
+            if(StringUtils.isNotNullOrEmpty(size)){
                 pageSize=Integer.parseInt(size);
 
             }
@@ -260,13 +260,13 @@ public class TalentpoolController {
             int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
             String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
-            if(StringUtils.isNullOrEmpty(page)){
+            if(StringUtils.isNotNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
 
             }
             String size=String.valueOf(data.get("page_size"));
             int pageSize=10;
-            if(StringUtils.isNullOrEmpty(size)){
+            if(StringUtils.isNotNullOrEmpty(size)){
                 pageSize=Integer.parseInt(size);
 
             }
@@ -345,13 +345,13 @@ public class TalentpoolController {
             int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
             String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
-            if(StringUtils.isNullOrEmpty(page)){
+            if(StringUtils.isNotNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
 
             }
             String size=String.valueOf(data.get("page_size"));
             int pageSize=10;
-            if(StringUtils.isNullOrEmpty(size)){
+            if(StringUtils.isNotNullOrEmpty(size)){
                 pageSize=Integer.parseInt(size);
 
             }
@@ -688,7 +688,7 @@ public class TalentpoolController {
         try {
             Params<String, Object> data = ParamUtils.parseRequestParam(request);
             String hrId=String.valueOf(data.get("hr_id"));
-            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+            if(data.get("hr_id") == null || StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
             TalentpoolCompanyTagDO companyTagDO = ParamUtils.initModelForm(data, TalentpoolCompanyTagDO.class);
@@ -867,8 +867,7 @@ public class TalentpoolController {
             int position_total = data.getInt("position_total",0);
             if(position_total!=1) {
                 if (data.get("position") != null) {
-                    String positionIds = (String) data.get("position");
-                    positionIdList = ParamUtils.convertIntList(positionIds);
+                    positionIdList = ( List<Integer>) data.get("position");
                     if (positionIdList == null || positionIdList.size() < 1) {
                         return ResponseLogNotification.fail(request, "至少绑定一个职位选择一个");
                     }
@@ -928,8 +927,7 @@ public class TalentpoolController {
             List<Integer> positionIdList = new ArrayList<>();
             if(position_total!=1) {
                 if (data.get("position") != null) {
-                    String positionIds = (String) data.get("position");
-                    positionIdList = ParamUtils.convertIntList(positionIds);
+                    positionIdList = ( List<Integer>) data.get("position");
                     if (positionIdList == null || positionIdList.size() < 1) {
                         return ResponseLogNotification.fail(request, "至少绑定一个职位选择一个");
                     }

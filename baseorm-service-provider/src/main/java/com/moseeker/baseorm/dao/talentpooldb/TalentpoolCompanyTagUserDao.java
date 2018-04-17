@@ -6,6 +6,9 @@ import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagU
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import com.moseeker.common.util.StringUtils;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -61,7 +64,33 @@ public class TalentpoolCompanyTagUserDao extends JooqCrudImpl<com.moseeker.baseo
         }
         return 0;
     }
+    //删除人才和标签的关系
+    public int batchDeleteTagAndUser(List<TalentpoolCompanyTagUserRecord> list){
+        if(StringUtils.isEmptyList(list)){
+            return 1;
+        }
+        for(TalentpoolCompanyTagUserRecord record:list){
+            create.deleteFrom(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER).where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID.eq(record.getTagId()))
+                    .and(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.eq(record.getUserId())).execute();
+        }
+        return 1;
+    }
+    /*
+     根据userid集合获取其上标签集合
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser> getTagByUserIdSet(Set<Integer> userIdSet){
+        List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser> list=create.selectFrom(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER)
+                .where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.in(userIdSet))
+                .fetchInto(com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser.class);
 
+        return list;
 
-
+    }
+    /*
+     根据user_id删除所有相关的企业标签
+     */
+    public int deleteByUserId(Set<Integer> userIdSet){
+        int result=create.deleteFrom(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER).where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.in(userIdSet)).execute();
+        return result;
+    }
 }

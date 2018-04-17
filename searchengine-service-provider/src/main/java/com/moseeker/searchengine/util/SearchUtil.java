@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
@@ -211,10 +215,12 @@ public class SearchUtil {
     	SearchHit[] searchData=hit.getHits();
     	if(totalNum>0){
     		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+    		if(searchData!=null&&searchData.length>0){
     		for(SearchHit ss:searchData){
     			Map<String,Object> obj=ss.getSource();
     			list.add(obj);
     		}
+            }
     		data.put(dataName, list);
     	}
     	return data;
@@ -519,6 +525,34 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
     }
+    public void shouldMatchQuery(List<String> fieldList,String condition ,QueryBuilder query){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.matchQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+    public void shouldMatchParseQuery(List<String> fieldList,String condition ,QueryBuilder query){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.matchPhraseQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
     //将xx,xx,xx格式的字符串转化为list
     public List<String> stringConvertList(String keyWords) {
         if (StringUtils.isNotEmpty(keyWords)) {
@@ -656,7 +690,7 @@ public class SearchUtil {
         List<String> tagIdList=this.stringConvertList(CompanyTag);
 
         if(tagIdList != null && tagIdList.size() >0){
-            QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.company_tags.id",tagIdList);
+            QueryBuilder query2=QueryBuilders.termsQuery("user.company_tag.id",tagIdList);
             ((BoolQueryBuilder) builder).must(query2);
 //            if(tagIdList.size()==1){
 //                handleMatch(Integer.parseInt(tagIdList.get(0)),builder,"user.talent_pool.company_tags.id");

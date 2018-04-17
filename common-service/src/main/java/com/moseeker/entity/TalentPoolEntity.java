@@ -654,6 +654,14 @@ public class TalentPoolEntity {
         List<TalentpoolTalentRecord> list=talentpoolTalentDao.getRecords(query);
         return list;
     }
+    /*
+     获取公司下所有的人才
+     */
+    public List<TalentpoolTalentRecord> getTalentByCompanyIdUserSet(int companyId,Set<Integer> userIdSet){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("user_id",userIdSet.toArray(),ValueOp.IN)).buildQuery();
+        List<TalentpoolTalentRecord> list=talentpoolTalentDao.getRecords(query);
+        return list;
+    }
 
     /*
       根据TalentpoolTalentRecord获取userId
@@ -914,8 +922,8 @@ public class TalentPoolEntity {
         return result;
     }
     /*
-      验证是否是主账号
-     */
+       验证是否是主账号
+      */
     public int valiadteMainAccount(int hrId,int companyId){
         List<Integer> accountTypeList=new ArrayList<>();
         accountTypeList.add(0);
@@ -1305,7 +1313,7 @@ public class TalentPoolEntity {
     public List<Map<String,Object>> getTagByHr(int hrId,int pageNum,int pageSize){
         Query query=new Query.QueryBuilder().where("hr_id",hrId)
                 .setPageNum(pageNum).setPageSize(pageSize)
-                .orderBy("create_time", Order.DESC)
+                .orderBy("update_time", Order.DESC)
                 .buildQuery();
         List<Map<String,Object>> list= talentpoolTagDao.getMaps(query);
         return list;
@@ -1779,7 +1787,7 @@ public class TalentPoolEntity {
         userIds=this.getNoCollectionUserId(userIds,companyId);
         List<TalentpoolCompanyTagUserRecord> data=this.getHandlerCompanyTagData(userIds,companyId);
         if(!StringUtils.isEmptyList(data)){
-            int [] result=talentpoolCompanyTagUserDao.deleteRecords(data);
+            int result=talentpoolCompanyTagUserDao.batchDeleteTagAndUser(data);
         }
 
     }

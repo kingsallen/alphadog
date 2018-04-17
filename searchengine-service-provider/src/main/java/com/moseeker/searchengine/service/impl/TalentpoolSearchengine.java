@@ -28,6 +28,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -217,9 +218,9 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(pastPosition)){
             String lastPosition=params.get("in_last_job_search_position");
             if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
-                this.queryParseByLastPositions(lastPosition,query);
+                this.queryTermsByLastPositions(pastPosition,query);
             }else{
-                this.queryParseByWorkJob(pastPosition,query);
+                this.queryTermsByWorkJob(pastPosition,query);
             }
         }
         if(((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge)))){
@@ -235,12 +236,12 @@ public class TalentpoolSearchengine {
             this.queryByAge(ages,query);
         }
         if(StringUtils.isNotNullOrEmpty(intentionCityName)){
-            this.queryByIntentionCity(intentionCityName,query);
+            this.queryByIntentionCityTag(intentionCityName,query);
         }
         if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
             this.queryBySlalryCode(intentionSalaryCode,query);
         }
-        if(Integer.parseInt(sex)!=2){
+        if(StringUtils.isNotNullOrEmpty(sex)&&Integer.parseInt(sex)!=0){
             this.queryByGender(sex,query);
         }
         if(Integer.parseInt(isRecommend)>0){
@@ -249,9 +250,9 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(companyName)){
             String lastCompany=params.get("in_last_job_search_company");
             if(StringUtils.isNotNullOrEmpty(lastCompany)&&"1".equals(lastCompany)){
-                this.queryParseByLastCompany(companyName,query);
+                this.queryTermByLastCompanyTag(companyName,query);
             }else {
-                this.queryParseByCompany(companyName, query);
+                this.queryTermByCompanyTag(companyName, query);
             }
         }
         if(StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||Integer.parseInt(isRecommend)>0){
@@ -260,7 +261,7 @@ public class TalentpoolSearchengine {
             sb.append("user=_source.user;if(user){applications=user.applications;;origins=user.origin_data;if(applications){for(val in applications){if(");
             sb.append("val.company_id=="+companyId+"&&");
             if(StringUtils.isNotNullOrEmpty(submitTime)){
-                long longTime=this.getLongTime(submitTime);
+                String longTime=this.getLongTime(submitTime);
                 sb.append(" val.submit_time>'"+longTime+"'&&");
             }
             if(Integer.parseInt(isRecommend)>0){
@@ -522,7 +523,7 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(pastPosition)){
                 String lastPosition=params.get("in_last_job_search_position");
                 if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
-                    this.queryByLastPositions(lastPosition,query);
+                    this.queryByLastPositions(pastPosition,query);
                 }else{
                     this.queryByWorkJob(pastPosition,query);
                 }
@@ -556,7 +557,7 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
                 this.queryBySlalryCode(intentionSalaryCode,query);
             }
-            if(StringUtils.isNotNullOrEmpty(sex)){
+            if(StringUtils.isNotNullOrEmpty(sex)&&!"0".equals(sex)){
                 this.queryByGender(sex,query);
             }
             if(StringUtils.isNotNullOrEmpty(workYears)){
@@ -606,9 +607,6 @@ public class TalentpoolSearchengine {
                     this.queryByPublisher(publisherIds, query);
                 }
             }
-//            else{
-//                this.queryByComapnyId(companyId, query);
-//            }
 
             if (StringUtils.isNotNullOrEmpty(candidateSource)) {
                 this.queryByCandidateSource(Integer.parseInt(candidateSource), query);
@@ -640,7 +638,16 @@ public class TalentpoolSearchengine {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         String tagIds=params.get("tag_ids");
-
+        //此处尤其要记住。当企业标签不为空时，根据是否是主账号将tagids置位alltalent和talent
+        String company_tag=params.get("company_tag");
+        if(StringUtils.isNotNullOrEmpty(company_tag)){
+            String allPublisher=params.get("all_publisher");
+            if(StringUtils.isNotNullOrEmpty(allPublisher)&&"1".equals(allPublisher)){
+                tagIds="alltalent";
+            }else{
+                tagIds="talent";
+            }
+        }
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
         if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
@@ -698,6 +705,9 @@ public class TalentpoolSearchengine {
                 }
             }
         }
+        if(StringUtils.isNotNullOrEmpty(companyId)){
+            sb.append("val.company_id=="+companyId+"&&");
+        }
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
             sb.append("val.candidate_source=="+candidateSource+"&&");
         }
@@ -705,7 +715,7 @@ public class TalentpoolSearchengine {
             sb.append("val.recommender_user_id>0 &&");
         }
         if(StringUtils.isNotNullOrEmpty(submitTime)){
-            long longTime=this.getLongTime(submitTime);
+            String longTime=this.getLongTime(submitTime);
             sb.append(" val.submit_time>'"+longTime+"'&&");
         }
         if(StringUtils.isNotNullOrEmpty(progressStatus)){
@@ -808,8 +818,8 @@ public class TalentpoolSearchengine {
      */
     private void queryByProfileUpDateTime(String updateTime,QueryBuilder queryBuilder){
 
-        long time=this.getLongTime(updateTime);
-        this.searchUtil.hanleRangeFilter(String.valueOf(time),queryBuilder,"user.profiles.profile.update_time");
+        String time=this.getLongTime(updateTime);
+        this.searchUtil.hanleRangeFilter(time,queryBuilder,"user.profiles.profile.update_time");
     }
 
     /*
@@ -881,6 +891,12 @@ public class TalentpoolSearchengine {
     private void queryByIntentionCity(String cityNames,QueryBuilder queryBuilder){
         searchUtil.handleMatch(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
     }
+    private void queryByIntentionCityTag(String cityNames,QueryBuilder queryBuilder){
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.intentions.cities.city_name");
+        searchUtil.shouldMatchParseQuery(list,cityNames,queryBuilder);
+//        searchUtil.handleMatch(cityNames,queryBuilder,"user.profiles.intentions.cities.city_name");
+    }
     /*
       按照公司名称查询
      */
@@ -893,12 +909,7 @@ public class TalentpoolSearchengine {
     private void QueryByDegree(String degrees,QueryBuilder queryBuilder){
         searchUtil.handleTermsFilter(degrees,queryBuilder,"user.profiles.basic.highest_degree");
     }
-    /*
-      按照最后工作的公司查询
-     */
-    private void queryByLastCompany(String companys,QueryBuilder queryBuilder){
-        searchUtil.handleMatch(companys,queryBuilder,"user.profiles.recent_job.company_name");
-    }
+
     private void queryParseByLastCompany(String companys,QueryBuilder queryBuilder){
         searchUtil.handleMatchParse(companys,queryBuilder,"user.profiles.recent_job.company_name");
     }
@@ -909,7 +920,16 @@ public class TalentpoolSearchengine {
         searchUtil.handleMatch(positions,queryBuilder,"user.profiles.recent_job.job");
     }
     private void queryParseByLastPositions(String positions,QueryBuilder queryBuilder){
-        searchUtil.handleMatchParse(positions,queryBuilder,"user.profiles.recent_job.job");
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.job_name");
+        searchUtil.shouldMatchParseQuery(list,positions,queryBuilder);
+//        searchUtil.handleMatchParse(positions,queryBuilder,"user.profiles.recent_job.job_name");
+    }
+    private void queryTermsByLastPositions(String positions,QueryBuilder queryBuilder){
+        Map<String,Object> map=new HashMap<>();
+        map.put("user.profiles.recent_job.job_name",searchUtil.stringConvertList(positions));
+        searchUtil.shouldTermQuery(map,queryBuilder);
+//        searchUtil.handleMatchParse(positions,queryBuilder,"user.profiles.recent_job.job_name");
     }
     /*
       按照现居住地查询
@@ -935,31 +955,61 @@ public class TalentpoolSearchengine {
       按照曾任职务查询
      */
     private void queryByWorkJob(String works,QueryBuilder queryBuilder){
-        Map<String,Object> queryMap=new HashMap<>();
-        queryMap.put("user.profiles.recent_job.job",works);
-        queryMap.put("user.profiles.workexps.job",works);
-        searchUtil.shouldMatchQuery(queryMap,queryBuilder);
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.job");
+        list.add("user.profiles.other_workexps.job");
+        searchUtil.shouldMatchQuery(list,works,queryBuilder);
     }
     private void queryParseByWorkJob(String works,QueryBuilder queryBuilder){
-        Map<String,Object> queryMap=new HashMap<>();
-        queryMap.put("user.profiles.recent_job.job",works);
-        queryMap.put("user.profiles.workexps.job",works);
-        searchUtil.shouldMatchParseQuery(queryMap,queryBuilder);
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.job_name");
+        list.add("user.profiles.other_workexps.job_name");
+        searchUtil.shouldMatchParseQuery(list,works,queryBuilder);
+    }
+    private void queryTermsByWorkJob(String works,QueryBuilder queryBuilder){
+        Map<String,Object> map=new HashMap<>();
+        map.put("user.profiles.recent_job.job_name",searchUtil.stringConvertList(works));
+        map.put("user.profiles.other_workexps.job_name",searchUtil.stringConvertList(works));
+        searchUtil.shouldTermQuery(map,queryBuilder);
+    }
+    /*
+  按照最后工作的公司查询
+ */
+    private void queryByLastCompany(String companys,QueryBuilder queryBuilder){
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.company_name");
+        searchUtil.shouldMatchQuery(list,companys,queryBuilder);
+    }
+    private void queryParseByLastCompanyTag(String companys,QueryBuilder queryBuilder){
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.company_new_name");
+        searchUtil.shouldMatchParseQuery(list,companys,queryBuilder);
+    }
+    private void queryTermByLastCompanyTag(String companys,QueryBuilder queryBuilder){
+        Map<String,Object> map=new HashMap<>();
+        map.put("user.profiles.recent_job.company_new_name",searchUtil.stringConvertList(companys));
+        searchUtil.shouldTermQuery(map,queryBuilder);
     }
     /*
      构建通过曾经工作的公司查询
      */
     private void queryByCompany(String companys,QueryBuilder queryBuilder){
-        Map<String,Object> queryMap=new HashMap<>();
-        queryMap.put("user.profiles.recent_job.company_name",companys);
-        queryMap.put("user.profiles.workexps.company_name",companys);
-        searchUtil.shouldMatchQuery(queryMap,queryBuilder);
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.company_name");
+        list.add("user.profiles.other_workexps.company_name");
+        searchUtil.shouldMatchQuery(list,companys,queryBuilder);
     }
-    private void queryParseByCompany(String companys,QueryBuilder queryBuilder){
-        Map<String,Object> queryMap=new HashMap<>();
-        queryMap.put("user.profiles.recent_job.company_name",companys);
-        queryMap.put("user.profiles.workexps.company_name",companys);
-        searchUtil.shouldMatchParseQuery(queryMap,queryBuilder);
+    private void queryParseByCompanyTag(String companys,QueryBuilder queryBuilder){
+        List<String> list=new ArrayList<>();
+        list.add("user.profiles.recent_job.company_new_name");
+        list.add("user.profiles.other_workexps.company_new_name");
+        searchUtil.shouldMatchParseQuery(list,companys,queryBuilder);
+    }
+    private void queryTermByCompanyTag(String companys,QueryBuilder queryBuilder){
+        Map<String,Object> map=new HashMap<>();
+        map.put("user.profiles.recent_job.company_new_name",searchUtil.stringConvertList(companys));
+        map.put("user.profiles.other_workexps.company_new_name",searchUtil.stringConvertList(companys));
+        searchUtil.shouldTermQuery(map,queryBuilder);
     }
     /*
       按照性别查询
@@ -971,11 +1021,12 @@ public class TalentpoolSearchengine {
       按照投递时间查询
      */
     private void queryBySubmitTime(String submitTime,QueryBuilder queryBuilder){
-        long time=this.getLongTime(submitTime);
-        searchUtil.hanleRangeFilter(String.valueOf(time),queryBuilder,"user.applications.submit_time");
+        String dataTime=this.getLongTime(submitTime);
+        searchUtil.hanleRangeFilter(dataTime,queryBuilder,"user.applications.submit_time");
     }
 
-    private Long getLongTime(String submitTime){
+    private String getLongTime(String submitTime){
+        SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date date=new Date();
         long time=Long.parseLong(submitTime);
         if(time==1){
@@ -988,7 +1039,10 @@ public class TalentpoolSearchengine {
         long datetime=date.getTime();
         long preTime=time*3600*24*1000;
         long longTime=datetime-preTime;
-        return longTime;
+        Date nowTime=new Date(longTime);
+        String nowDate=ff.format(nowTime);
+        nowDate=nowDate.replace(" ","T");
+        return nowDate;
     }
     /*
       按照工作年限查新
@@ -1217,7 +1271,7 @@ public class TalentpoolSearchengine {
             sb.append("val.progress_status=="+progressStatus+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(submitTime)){
-            long time=this.getLongTime(submitTime);
+            String time=this.getLongTime(submitTime);
             sb.append("val.submit_time>'"+time+"'&&");
         }
         if(StringUtils.isNotNullOrEmpty(positionIds)){
