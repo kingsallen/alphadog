@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
@@ -211,10 +215,12 @@ public class SearchUtil {
     	SearchHit[] searchData=hit.getHits();
     	if(totalNum>0){
     		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+    		if(searchData!=null&&searchData.length>0){
     		for(SearchHit ss:searchData){
     			Map<String,Object> obj=ss.getSource();
     			list.add(obj);
     		}
+            }
     		data.put(dataName, list);
     	}
     	return data;

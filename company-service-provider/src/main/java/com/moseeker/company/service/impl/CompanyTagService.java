@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -61,19 +60,20 @@ public class CompanyTagService {
       type=2 删除标签
      */
     @CounterIface
-    public void handlerCompanyTag(List<Integer> tagIdList, int type){
+    public void handlerCompanyTag(List<Integer> tagIdList, int type,Map<String,Object> map){
         try {
+            List<Integer> userIdList=new ArrayList<>();
             if (type == 2) {//删除标签只需要执行删除操作即可
                 talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
             } else {
                 //新增标签，不用调用删除原有表中的标签和人才的对应关系，只需要增加就可以
-                Map<String, Object> map = talentpoolCompanyTagDao.getTagById(tagIdList.get(0));
+                //Map<String, Object> map = JSON.parseObject(JSON.toJSONString(DO));//talentpoolCompanyTagDao.getTagById(tagIdList.get(0));
                 Map<String, String> params = new HashMap<>();
                 if (map != null && !map.isEmpty()) {
                     for (String key : map.keySet()) {
                         params.put(key, String.valueOf(map.get(key)));
                     }
-                    List<Integer> userIdList = service.queryCompanyTagUserIdList(params);
+                    userIdList = service.queryCompanyTagUserIdList(params);
                     logger.info("=========================");
                     logger.info(JSON.toJSONString(userIdList));
                     logger.info("=========================");
@@ -111,14 +111,18 @@ public class CompanyTagService {
                     Map<String, Object> result = new HashMap<>();
                     result.put("tag_id", tagId);
                     result.put("type", type);
+                    if(type!=2){
+                        result.put("user_ids",userIdList );
+                    }
+                    client.set(Constant.APPID_ALPHADOG, COMPANYTAG_ES_STATUS,
+                            String.valueOf(tagId), String.valueOf(0));
                     client.lpush(Constant.APPID_ALPHADOG,
                             "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
                     logger.info(JSON.toJSONString("======================================="));
                     logger.info(JSON.toJSONString(result));
                     logger.info(JSON.toJSONString("======================================="));
                     //将这个的tag置位更新状态0是更新 1是更新完成
-                    client.set(Constant.APPID_ALPHADOG, COMPANYTAG_ES_STATUS,
-                            String.valueOf(tagId), String.valueOf(0));
+
                 }
 
             }
@@ -129,6 +133,7 @@ public class CompanyTagService {
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws Exception {
         try {
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
+            List<Integer> tagIdList=new ArrayList<>();
             List<TalentpoolCompanyTag> tagList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, 0, Integer.MAX_VALUE);
             if (!StringUtils.isEmptyList(tagList)) {
                 for (Integer userId : idList) {
@@ -143,6 +148,7 @@ public class CompanyTagService {
                                 TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
                                 record.setUserId(userId);
                                 record.setTagId(tag.getId());
+                                tagIdList.add(tag.getId());
                                 list.add(record);
                             }
                         }
@@ -150,10 +156,12 @@ public class CompanyTagService {
                 }
             }
             if (!StringUtils.isEmptyList(list)) {
+                talentpoolCompanyTagUserDao.deleteByUserId(idList);
                 talentpoolCompanyTagUserDao.addAllRecord(list);
                 for (Integer userId : idList) {
                     Map<String, Object> result = new HashMap<>();
                     result.put("user_id", userId);
+                    result.put("tag_ids",tagIdList);
                     client.lpush(Constant.APPID_ALPHADOG,
                             "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
                 }

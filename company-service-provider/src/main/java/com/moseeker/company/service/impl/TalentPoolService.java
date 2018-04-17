@@ -1056,10 +1056,14 @@ public class TalentPoolService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
         int result = talentPoolEntity.deleteCompanyTags(companyId, company_tag_ids);
+        try {
         tp.startTast(() -> {
-            tagService.handlerCompanyTag(company_tag_ids, 2);
+                tagService.handlerCompanyTag(company_tag_ids, 2, null);
             return 0;
         });
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
         return ResponseUtils.success("");
     }
 
@@ -1119,10 +1123,15 @@ public class TalentPoolService {
                 List<Integer> idList = new ArrayList<>();
                 idList.add(id);
                 //ES更新
+                try {
                 tp.startTast(() -> {
-                    tagService.handlerCompanyTag(idList,0);
+                        Map<String, Object> map = JSON.parseObject(JSON.toJSONString(companyTagDO));
+                        tagService.handlerCompanyTag(idList, 0, map);
                     return 0;
                 });
+                }catch(Exception e){
+                    logger.error(e.getMessage(),e);
+                }
                 return  ResponseUtils.success("");
             }else{
                 return ResponseUtils.fail(1, filterString);
@@ -1150,20 +1159,91 @@ public class TalentPoolService {
             String statusString = talentPoolEntity.validateCompanyTalentPoolV3ByStatus(companyTagDO);
             statusString = statusString + filterString;
             if(StringUtils.isNullOrEmpty(statusString)){
+
                 int id = talentPoolEntity.updateCompanyTag(companyTagDO);
                 List<Integer> idList = new ArrayList<>();
                 idList.add(id);
                 //ES更新
+                try {
                 tp.startTast(() -> {
-                    tagService.handlerCompanyTag(idList,1);
+                        Map<String, Object> tag = handlerCompanyData(id, companyTagDO);
+                        tagService.handlerCompanyTag(idList, 1, tag);
                     return 0;
                 });
+                }catch(Exception e){
+                    logger.error(e.getMessage(),e);
+                }
                 return  ResponseUtils.success("");
             }else{
                 return ResponseUtils.fail(1, statusString);
             }
         }
         return ResponseUtils.fail(1, result);
+    }
+    private Map<String,Object> handlerCompanyData(int id,TalentpoolCompanyTagDO companyTagDO){
+        Map<String,Object> map=getCompanyTagById(id);
+        if(map!=null&&!map.isEmpty()){
+            combineData(map,companyTagDO);
+        }else{
+            map=new HashMap<>();
+        }
+        return map;
+    }
+    /*
+      根据标签id获取企业标签的信息
+     */
+    private Map<String,Object> getCompanyTagById(int id){
+        Query query=new Query.QueryBuilder().where("id",id).buildQuery();
+        Map<String,Object> map=talentpoolCompanyTagDao.getMap(query);
+        return map;
+    }
+    /*
+     处理数据，将新旧数据合并
+     */
+    private void combineData(Map<String,Object> map,TalentpoolCompanyTagDO companyTagDO){
+
+        if(companyTagDO.isSetOrigins()){
+            map.put("origins",companyTagDO.getOrigins());
+        }
+        if(companyTagDO.isSetWork_years()){
+            map.put("work_years",companyTagDO.getWork_years());
+        }
+        if(companyTagDO.isSetCity_name()){
+            map.put("city_name",companyTagDO.getCity_name());
+        }
+        if(companyTagDO.isSetDegree()){
+            map.put("degree",companyTagDO.getDegree());
+        }
+        if(companyTagDO.isSetPast_position()){
+            map.put("past_position",companyTagDO.getPast_position());
+        }
+        if(companyTagDO.isSetIn_last_job_search_position()){
+            map.put("in_last_job_search_position",companyTagDO.getIn_last_job_search_position());
+        }
+        if(companyTagDO.isSetMin_age()){
+            map.put("min_age",companyTagDO.getMin_age());
+        }
+        if(companyTagDO.isSetMax_age()){
+            map.put("max_age",companyTagDO.getMax_age());
+        }
+        if(companyTagDO.isSetIntention_city_name()){
+            map.put("intention_city_name",companyTagDO.getIntention_city_name());
+        }
+        if(companyTagDO.isSetIntention_salary_code()){
+            map.put("intention_salary_code",companyTagDO.getIntention_salary_code());
+        }
+        if(companyTagDO.isSetSex()){
+            map.put("sex",companyTagDO.getSex());
+        }
+        if(companyTagDO.isSetIs_recommend()){
+            map.put("is_recommend",companyTagDO.getIs_recommend());
+        }
+        if(companyTagDO.isSetCompany_name()){
+            map.put("company_name",companyTagDO.getCompany_name());
+        }
+        if(companyTagDO.isSetIn_last_job_search_company()){
+            map.put("in_last_job_search_company",companyTagDO.getIn_last_job_search_company());
+        }
     }
     /*
      处理建简历和企业标签的关系，用于其他服务远程调用的
