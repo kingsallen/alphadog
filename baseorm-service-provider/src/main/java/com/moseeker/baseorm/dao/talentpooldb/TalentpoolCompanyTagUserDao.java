@@ -86,4 +86,11 @@ public class TalentpoolCompanyTagUserDao extends JooqCrudImpl<com.moseeker.baseo
         return list;
 
     }
+    /*
+     根据user_id删除所有相关的企业标签
+     */
+    public int deleteByUserId(Set<Integer> userIdSet){
+        int result=create.deleteFrom(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER).where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.in(userIdSet)).execute();
+        return result;
+    }
 }

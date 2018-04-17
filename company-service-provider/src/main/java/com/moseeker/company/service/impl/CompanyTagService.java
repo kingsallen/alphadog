@@ -153,6 +153,7 @@ public class CompanyTagService {
                 }
             }
             if (!StringUtils.isEmptyList(list)) {
+                talentpoolCompanyTagUserDao.deleteByUserId(idList);
                 talentpoolCompanyTagUserDao.addAllRecord(list);
                 for (Integer userId : idList) {
                     Map<String, Object> result = new HashMap<>();
