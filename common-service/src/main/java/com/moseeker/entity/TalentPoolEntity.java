@@ -423,7 +423,7 @@ public class TalentPoolEntity {
      */
     @Transactional
     public int addCompanyTag(TalentpoolCompanyTagDO companyTagDO){
-        TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecord(companyTagDO);
+        TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecordAll(companyTagDO);
         talentpoolCompanyTagDao.addRecord(tagRecord);
         return tagRecord.getId();
     }
@@ -438,7 +438,7 @@ public class TalentPoolEntity {
      */
     @Transactional
     public int addCompanyProfileFilter(TalentpoolProfileFilterDO profileFilterDO, List<ActionForm> actionFormList, List<Integer> positionIdList, int position_total){
-        TalentpoolProfileFilterRecord filterRecord = talentpoolProfileFilterDao.dataToRecord(profileFilterDO);
+        TalentpoolProfileFilterRecord filterRecord = talentpoolProfileFilterDao.dataToRecordAll(profileFilterDO);
         talentpoolProfileFilterDao.addRecord(filterRecord);
         insertTalentpoolProfileFilterExecuteRecord(actionFormList, filterRecord.getId());
         insertJobPositionProfileFilterRecord(positionIdList, filterRecord.getId(), profileFilterDO.getCompany_id(), position_total);
