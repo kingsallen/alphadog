@@ -838,8 +838,8 @@ public class TalentpoolController {
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
             TalentpoolProfileFilterDO profileFilterDO = new TalentpoolProfileFilterDO();
-            if(data.get("company_filter") != null) {
-                profileFilterDO = ParamUtils.initModelForm((Map<String, Object>) data.get("company_filter"), TalentpoolProfileFilterDO.class);
+            if(data.get("profile_filter") != null) {
+                profileFilterDO = ParamUtils.initModelForm((Map<String, Object>) data.get("profile_filter"), TalentpoolProfileFilterDO.class);
             }
             if(profileFilterDO.getCompany_id()<=0){
                 return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
@@ -896,8 +896,8 @@ public class TalentpoolController {
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
             TalentpoolProfileFilterDO profileFilterDO = new TalentpoolProfileFilterDO();
-            if(data.get("company_filter") != null) {
-                profileFilterDO = ParamUtils.initModelForm((Map<String, Object>) data.get("company_filter"), TalentpoolProfileFilterDO.class);
+            if(data.get("profile_filter") != null) {
+                profileFilterDO = ParamUtils.initModelForm((Map<String, Object>) data.get("profile_filter"), TalentpoolProfileFilterDO.class);
             }
             if(profileFilterDO.getCompany_id()<=0){
                 return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");

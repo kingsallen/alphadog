@@ -6,12 +6,12 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionProfileFilterDao;
+import com.moseeker.baseorm.dao.logdb.LogTalentpoolProfileFilterLogDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolExecuteDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolProfileFilterDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolProfileFilterExcuteDao;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.logdb.tables.daos.LogTalentpoolProfileFilterLogDao;
 import com.moseeker.baseorm.db.logdb.tables.pojos.LogTalentpoolProfileFilterLog;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolProfileFilterLogRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolExecute;
@@ -122,7 +122,7 @@ public class JobApplicationFilterService {
                     }
                     filterPassMap.put(filter_id, isflag);
                     bool = isflag;
-                    LogTalentpoolProfileFilterLog logRecord = new LogTalentpoolProfileFilterLog();
+                    LogTalentpoolProfileFilterLogRecord logRecord = new LogTalentpoolProfileFilterLogRecord();
                     logRecord.setCompanyId(position.getCompanyId());
                     logRecord.setFilterId(filter_id);
                     logRecord.setHrId(position.getPublisher());
@@ -132,7 +132,7 @@ public class JobApplicationFilterService {
                         i = 1;
                     }
                     logRecord.setResult(i);
-                    logDao.insert(logRecord);
+                    logDao.addRecord(logRecord);
                     if (isflag){
                         filterExecuteAction(filterInfoStruct.getApplier_id(), position, filterInfoStruct.getApplication_id(), type);
                         break;
