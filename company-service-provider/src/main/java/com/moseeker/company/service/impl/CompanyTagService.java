@@ -132,6 +132,7 @@ public class CompanyTagService {
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws Exception {
         try {
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
+            List<Integer> tagIdList=new ArrayList<>();
             List<TalentpoolCompanyTag> tagList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, 0, Integer.MAX_VALUE);
             if (!StringUtils.isEmptyList(tagList)) {
                 for (Integer userId : idList) {
@@ -146,6 +147,7 @@ public class CompanyTagService {
                                 TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
                                 record.setUserId(userId);
                                 record.setTagId(tag.getId());
+                                tagIdList.add(tag.getId());
                                 list.add(record);
                             }
                         }
@@ -158,6 +160,7 @@ public class CompanyTagService {
                 for (Integer userId : idList) {
                     Map<String, Object> result = new HashMap<>();
                     result.put("user_id", userId);
+                    result.put("tag_ids",tagIdList);
                     client.lpush(Constant.APPID_ALPHADOG,
                             "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
                 }
