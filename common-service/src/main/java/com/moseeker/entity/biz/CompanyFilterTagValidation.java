@@ -3,16 +3,12 @@ package com.moseeker.entity.biz;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
