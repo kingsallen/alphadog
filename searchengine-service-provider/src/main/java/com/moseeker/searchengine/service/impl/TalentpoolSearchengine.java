@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -42,6 +43,7 @@ public class TalentpoolSearchengine {
     @Autowired
     private UserHrAccountDao userHrAccountDao;
 
+
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params) {
         Map<String, Object> result=new HashMap<>();
@@ -49,7 +51,7 @@ public class TalentpoolSearchengine {
         try {
             client = searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
-            SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
+            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             this.handlerSortOrder(params, builder);
             this.handlerPage(params, builder);
             this.handlerReturn(params, builder);
@@ -75,7 +77,7 @@ public class TalentpoolSearchengine {
         try {
             client = searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
-            SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
+            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             builder.setSize(0);
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
@@ -104,7 +106,7 @@ public class TalentpoolSearchengine {
             }
             client=searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
-            SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
+            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_INDEX).setQuery(query);
             builder.addAggregation(this.handleAllApplicationCountAgg(params))
                     .addAggregation(this.handleAllcountAgg(params))
                     .addAggregation(this.handleEntryCountAgg(params))
@@ -134,7 +136,7 @@ public class TalentpoolSearchengine {
         try{
             TransportClient client=searchUtil.getEsClient();
             QueryBuilder query = this.getQueryByTag(params);
-            SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
+            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             String[] returnParams={"user.profiles.profile.user_id"};
             builder.setFetchSource(returnParams,null);
             builder.setSize(100000);
