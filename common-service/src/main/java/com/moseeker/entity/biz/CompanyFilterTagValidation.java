@@ -59,7 +59,11 @@ public class CompanyFilterTagValidation {
             }
         }
         if(tag.get("cityCode") != null && StringUtils.isNotNullOrEmpty((String) tag.get("cityCode"))){
-            boolean flag=this.validateCity((String) tag.get("cityCode"),profiles);
+            String cityCode=(String) tag.get("cityCode");
+            if(!cityCode.contains("111111")){
+                cityCode=cityCode+",111111";
+            }
+            boolean flag=this.validateCity(cityCode,profiles);
             if(flag==false){
                 return false;
             }
@@ -89,7 +93,11 @@ public class CompanyFilterTagValidation {
             }
         }
         if(tag.get("intentionCityCode") != null && StringUtils.isNotNullOrEmpty((String) tag.get("intentionCityCode"))){
-            boolean flag=this.validateIntentionCity((String) tag.get("intentionCityCode"),profiles);
+            String intentionCityCode=(String) tag.get("intentionCityCode");
+            if(!intentionCityCode.contains("111111")){
+                intentionCityCode=intentionCityCode+",111111";
+            }
+            boolean flag=this.validateIntentionCity(intentionCityCode,profiles);
             if(flag==false){
                 return false;
             }
