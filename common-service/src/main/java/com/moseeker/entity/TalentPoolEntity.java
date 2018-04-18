@@ -186,6 +186,7 @@ public class TalentPoolEntity {
                 || companyTagDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1
                 ){
             ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("名称", companyTagDO.getName());
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins())){
                 vu.addStringSplitLengthValidate("简历来源", companyTagDO.getOrigins(),null,"最多选择10个", 1, 11, ",");
                 vu.addStringLengthValidate("简历来源", companyTagDO.getOrigins(),null,null, 0, 255);
@@ -221,8 +222,9 @@ public class TalentPoolEntity {
             }
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name())){
                 vu.addStringSplitLengthValidate("曾任职公司", companyTagDO.getCompany_name(),"最多选择10个",null, 1, 11, ",");
-                vu.addStringLengthValidate("曾任职公司", companyTagDO.getCompany_name(),null,null, 0, 255);
+                vu.addStringLengthValidate("曾任职公司", companyTagDO.getCompany_name(),null,null, 0, 512);
             }
+
             String result = vu.validate();
             return result;
         }
