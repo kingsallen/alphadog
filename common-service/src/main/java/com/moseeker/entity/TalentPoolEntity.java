@@ -222,7 +222,7 @@ public class TalentPoolEntity {
             }
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name())){
                 vu.addStringSplitLengthValidate("曾任职公司", companyTagDO.getCompany_name(),"最多选择10个",null, 1, 11, ",");
-                vu.addStringLengthValidate("曾任职公司", companyTagDO.getCompany_name(),null,null, 0, 512);
+                vu.addStringLengthValidate("曾任职公司", companyTagDO.getCompany_name(),null,null, 0, 1024);
             }
 
             String result = vu.validate();
