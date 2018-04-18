@@ -34,4 +34,9 @@ struct TalentpoolCompanyTagDO {
    24: optional string origins=""
 }
 
+ struct ActionForm {
+     1: optional i32 type,
+     2: optional i32 value
+  }
+
 

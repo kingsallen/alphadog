@@ -43,7 +43,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Talentpooldb extends SchemaImpl {
 
-    private static final long serialVersionUID = -700500264;
+    private static final long serialVersionUID = -639639230;
 
     /**
      * The reference instance of <code>talentpooldb</code>
@@ -56,7 +56,7 @@ public class Talentpooldb extends SchemaImpl {
     public final TalentpoolApplication TALENTPOOL_APPLICATION = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication.TALENTPOOL_APPLICATION;
 
     /**
-     * 人才库人HR与标签的关系
+     * 人才库人HR与备注的关系
      */
     public final TalentpoolComment TALENTPOOL_COMMENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment.TALENTPOOL_COMMENT;
 

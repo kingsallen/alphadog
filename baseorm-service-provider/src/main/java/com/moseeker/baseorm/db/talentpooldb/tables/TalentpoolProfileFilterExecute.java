@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilterExecute extends TableImpl<TalentpoolProfileFilterExecuteRecord> {
 
-    private static final long serialVersionUID = 1271429685;
+    private static final long serialVersionUID = 1815123689;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_filter_execute</code>
@@ -93,16 +93,8 @@ public class TalentpoolProfileFilterExecute extends TableImpl<TalentpoolProfileF
      * {@inheritDoc}
      */
     @Override
-    public UniqueKey<TalentpoolProfileFilterExecuteRecord> getPrimaryKey() {
-        return Keys.KEY_TALENTPOOL_PROFILE_FILTER_EXECUTE_PRIMARY;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<UniqueKey<TalentpoolProfileFilterExecuteRecord>> getKeys() {
-        return Arrays.<UniqueKey<TalentpoolProfileFilterExecuteRecord>>asList(Keys.KEY_TALENTPOOL_PROFILE_FILTER_EXECUTE_PRIMARY, Keys.KEY_TALENTPOOL_PROFILE_FILTER_EXECUTE_PID_FID);
+        return Arrays.<UniqueKey<TalentpoolProfileFilterExecuteRecord>>asList(Keys.KEY_TALENTPOOL_PROFILE_FILTER_EXECUTE_PID_FID);
     }
 
     /**

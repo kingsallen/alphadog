@@ -11,6 +11,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.searchengine.util.SearchUtil;
+import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -189,6 +190,78 @@ public class TalentpoolSearchengine {
         logger.info("==========================");
         return list;
     }
+
+    /*
+     根据筛选规则获取符合该规则的人才id
+     */
+    @CounterIface
+    public FilterResp getUserListByFilterIds(List<Map<String, String>> filterList, int page_number, int page_size){
+        FilterResp resp = new FilterResp();
+        List<Integer> list=new ArrayList<>();
+        try{
+            TransportClient client=searchUtil.getEsClient();
+            QueryBuilder query = this.convertBuild(filterList);
+            SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
+            String[] returnParams={"user.profiles.profile.user_id"};
+            builder.setFetchSource(returnParams,null);
+            builder.setSize(page_size);
+            builder.setFrom((page_number-1)*page_size);
+            logger.info("============================================");
+            logger.info(builder.toString());
+            logger.info("============================================");
+            SearchResponse response = builder.execute().actionGet();
+            Map<String,Object> result = searchUtil.handleData(response,"userIdList");
+            logger.info("============================================");
+            logger.info(JSON.toJSONString(result));
+            logger.info("============================================");
+            if(result!=null&&!result.isEmpty()){
+                long totalNum=(long)result.get("totalNum");
+                if(totalNum>0){
+                    List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
+                    for(Map<String,Object> map:dataList){
+                        logger.info("============================================userIdList");
+                        if(map!=null&&!map.isEmpty()){
+                            Map<String,Object> userMap=(Map<String,Object>)map.get("user");
+                            logger.info("============================================user");
+                            if(userMap!=null&&!userMap.isEmpty()){
+                                Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
+                                logger.info("============================================profiles");
+                                logger.info(JSON.toJSONString(profiles));
+                                if(profiles!=null&&!profiles.isEmpty()){
+                                    Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
+                                    logger.info("============================================profile");
+                                    logger.info(JSON.toJSONString(profile));
+                                    if(profile!=null&&!profile.isEmpty()){
+                                        int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
+                                        logger.info("============================================user_id"+userId);
+                                        list.add(userId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                resp.setTalent_count((int)totalNum);
+                resp.setUser_ids(list);
+            }
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+        }
+        logger.info("==========================");
+        logger.info(JSON.toJSONString(list));
+        logger.info("==========================");
+        return resp;
+    }
+
+    private QueryBuilder convertBuild(List<Map<String,String>> mapList){
+        QueryBuilder query = QueryBuilders.boolQuery();
+        for(Map<String,String> map:mapList){
+            QueryBuilder queryBuilder=this.getQueryByTag(map);
+            ((BoolQueryBuilder) query).should(queryBuilder);
+        }
+        ((BoolQueryBuilder) query).minimumNumberShouldMatch(1);
+        return query;
+    }
     /*
       组装查询标签内容的部分，用于查处es中哪些标签是企业标签
      */
@@ -329,14 +402,22 @@ public class TalentpoolSearchengine {
             ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
             ((BoolQueryBuilder) query).filter(script);
         }
-        QueryBuilder nestQuery=this.queryTalentNest(companyId);
+        QueryBuilder nestQuery=this.queryTalentNest(params);
         ((BoolQueryBuilder)query).filter(nestQuery);
         return query;
     }
-    public QueryBuilder queryTalentNest(Integer companyId){
+    public QueryBuilder queryTalentNest(Map<String,String> params){
+        int companyId=Integer.parseInt(params.get("company_id"));
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         this.queryByNestCompanyId(companyId,query);
+        String hrId=params.get("hr_id");
+        if(StringUtils.isNotNullOrEmpty(hrId)){
+            String account_type=params.get("account_type");
+            if(StringUtils.isNotNullOrEmpty(account_type)&&Integer.parseInt(account_type)!=0){
+                searchUtil.childAccountTalentpool(hrId,query);
+            }
+        }
         query=QueryBuilders.nestedQuery("user.talent_pool",query);
         return query;
     }
