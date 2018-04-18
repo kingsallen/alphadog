@@ -943,4 +943,33 @@ public class TalentpoolController {
         }
     }
 
+    /*
+  获取企业标签信息
+ */
+    @RequestMapping(value = "/api/position/talent/count", method = RequestMethod.GET)
+    @ResponseBody
+    public String getTalentCountByPosition(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int hrId=params.getInt("hr_id", 0);
+            int companyId=params.getInt("company_id",0);
+            int position_id = params.getInt("position_id",0);
+            if(hrId < 1){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(companyId < 1){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(position_id < 1){
+                return ResponseLogNotification.fail(request,"position_id不可以为空或者为0");
+            }
+
+            Response result = service.getTalentCountByPositionFilter(hrId, companyId, position_id);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 }

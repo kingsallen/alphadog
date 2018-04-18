@@ -1374,6 +1374,10 @@ public class TalentPoolService {
     }
 
     public Response updateProfileFilter(TalentpoolCompanyTagDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(filterDO.getCompany_id());
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,filterDO.getCompany_id());
         if(flag == -1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);

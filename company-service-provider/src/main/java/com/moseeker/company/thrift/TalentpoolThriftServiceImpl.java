@@ -328,6 +328,11 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
+    public Response getTalentCountByPositionFilter(int hr_id, int company_id, int position_id) throws BIZException, TException {
+        return null;
+    }
+
+    @Override
     public Response getProfileFilterList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
         try{
             return talentPoolService.getProfileFilterList(hr_id,company_id,page_number, page_size);
