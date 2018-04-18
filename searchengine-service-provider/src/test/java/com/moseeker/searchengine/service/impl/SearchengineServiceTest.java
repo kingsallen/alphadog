@@ -29,6 +29,8 @@ public class SearchengineServiceTest {
 
     @Autowired
     private SearchengineService searchengineService;
+    @Autowired
+    private TalentpoolSearchengine talentpoolSearchengine;
 
     @Test
     public void updateEmployeeAwards() throws Exception {
@@ -57,5 +59,31 @@ public class SearchengineServiceTest {
         params.put("page_size","16");
         Map<String,Object> result=searchengineService.getPositionSuggest(params);
         System.out.println(result.toString());
+    }
+
+    @Test
+    public void testCompanyFilter(){
+        List<Map<String,String>> list=new ArrayList<>();
+        Map<String,String> params=new HashMap<>();
+        params.put("origins","1,2,3");
+        params.put("work_years","2,3");
+        params.put("city_name","11,22,33");
+        params.put("degree","4");
+        params.put("keyWord","产品经理");
+        params.put("past_position","xxxxxxx");
+        params.put("is_recommend","1");
+        params.put("company_id","39978");
+        list.add(params);
+        Map<String,String> params1=new HashMap<>();
+        params1.put("origins","1,2,3");
+        params1.put("work_years","2,3");
+        params1.put("city_name","11,22,33");
+        params1.put("degree","4");
+        params1.put("keyWord","产品经理");
+        params1.put("past_position","xxxxxxx");
+        params1.put("is_recommend","1");
+        params1.put("company_id","39978");
+        list.add(params1);
+        talentpoolSearchengine.getUserListByFilterIds(list,1,0);
     }
 }

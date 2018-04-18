@@ -8,9 +8,13 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
+import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
+import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -699,6 +703,272 @@ public class TalentpoolController {
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+       获取企业筛选规则列表
+      */
+    @RequestMapping(value = "/api/talentpool/profilefilter/list", method = RequestMethod.GET)
+    @ResponseBody
+    public String getProfileFilterList(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(params.get("hr_id"));
+            String companyId=String.valueOf(params.get("company_id"));
+            int page_number = params.getInt("page_number", 1);
+            int page_size = params.getInt("page_size",0);
+            if(params.get("hr_id") ==null || StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(params.get("company_id") == null || StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            Response result = service.getProfileFilterList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+    删除简历筛选列表
+   */
+    @RequestMapping(value = "/api/talentpool/profilefilter", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String deleteProfileFilterList(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int hrId = params.getInt("hr_id", 0);
+            int companyId=params.getInt("company_id",0);
+            if(hrId < 1){
+                ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(companyId < 1){
+                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(params.get("filter_ids") ==null ){
+                return ResponseLogNotification.fail(request,"filter_ids不可以为空");
+            }
+            String  filter_ids = (String)params.get("filter_ids");
+            List<Integer> filter_idList = ParamUtils.convertIntList(filter_ids);
+            if(filter_idList.size()<1){
+                return ResponseLogNotification.fail(request,"filter_ids长度不可以为0");
+            }
+            Response result = service.handerProfileFilterByIds(hrId, companyId, 0, filter_idList);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+       将筛选项置位不可用
+    */
+    @RequestMapping(value = "/api/talentpool/profilefilter", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String handerProfileFilterListClose(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int hrId = params.getInt("hr_id", 0);
+            int companyId=params.getInt("company_id",0);
+            if(hrId < 1){
+                ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(companyId < 1){
+                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+
+            if(params.get("filter_ids") ==null ){
+                return ResponseLogNotification.fail(request,"filter_ids不可以为空");
+            }
+            List<Integer> filter_idList = (List<Integer>)params.get("filter_ids");
+            if(filter_idList.size()<1){
+                return ResponseLogNotification.fail(request,"filter_ids长度不可以为0");
+            }
+            int disable = params.getInt("disable");
+            Response result = service.handerProfileFilterByIds(hrId, companyId , disable, filter_idList);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+   获取企业标签信息
+  */
+    @RequestMapping(value = "/api/talentpool/profilefilter", method = RequestMethod.GET)
+    @ResponseBody
+    public String getProfileFilterInfo(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int hrId=params.getInt("hr_id", 0);
+            int companyId=params.getInt("company_id",0);
+            int filter_id = params.getInt("filter_id",0);
+            if(hrId < 1){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(companyId < 1){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(filter_id < 1){
+                return ResponseLogNotification.fail(request,"filter_id不可以为空或者为0");
+            }
+
+            Response result = service.getProfileFilterInfo(hrId, companyId, filter_id);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+    保存企业标签信息
+    */
+    @RequestMapping(value = "/api/talentpool/profilefilter", method = RequestMethod.POST)
+    @ResponseBody
+    public String handerProfileFilterList(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> data = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(data.get("hr_id"));
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            TalentpoolCompanyTagDO profileFilterDO = new TalentpoolCompanyTagDO();
+            if(data.get("profile_filter") != null) {
+                profileFilterDO = ParamUtils.initModelForm((Map<String, Object>) data.get("profile_filter"), TalentpoolCompanyTagDO.class);
+            }
+            if(profileFilterDO.getCompany_id()<=0){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            List<ActionForm> actionFormList = new ArrayList<>();
+            if(data.get("action") != null) {
+                List<Map<String, Object>> actionMapList = (List<Map<String, Object>>) data.get("action");
+                if(actionMapList != null && actionMapList.size()>0) {
+                    actionFormList = actionMapList.stream().map(m -> {
+                        ActionForm form = new ActionForm();
+                        try {
+                            form = ParamUtils.initModelForm(m, ActionForm.class);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return form;
+                    }).collect(Collectors.toList());
+                }else{
+                    return  ResponseLogNotification.fail(request, "可执行操作不能为空");
+                }
+            }else{
+                return  ResponseLogNotification.fail(request, "可执行操作不能为空");
+            }
+            List<Integer> positionIdList = new ArrayList<>();
+            int position_total = data.getInt("position_total",0);
+            if(position_total!=1) {
+                if (data.get("position") != null) {
+                    positionIdList = ( List<Integer>) data.get("position");
+                    if (positionIdList == null || positionIdList.size() < 1) {
+                        return ResponseLogNotification.fail(request, "至少绑定一个职位选择一个");
+                    }
+                } else {
+                    return ResponseLogNotification.fail(request, "至少绑定一个职位选择一个");
+                }
+            }
+            Response result = service.addProfileFilter(profileFilterDO, actionFormList, positionIdList, Integer.parseInt(hrId), position_total);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+    修改企业标签信息
+    */
+    @RequestMapping(value = "/api/talentpool/profilefilter", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateProfileFilterList(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> data = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(data.get("hr_id"));
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            TalentpoolCompanyTagDO profileFilterDO = new TalentpoolCompanyTagDO();
+            if(data.get("profile_filter") != null) {
+                profileFilterDO = ParamUtils.initModelForm((Map<String, Object>) data.get("profile_filter"), TalentpoolCompanyTagDO.class);
+            }
+            if(profileFilterDO.getCompany_id()<=0){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(profileFilterDO.getId()<=0){
+                return ResponseLogNotification.fail(request,"id不可以为空或者为0");
+            }
+            List<ActionForm> actionFormList = new ArrayList<>();
+            if(data.get("action") != null) {
+                List<Map<String, Object>> actionMapList = (List<Map<String, Object>>) data.get("action");
+                if(actionMapList != null && actionMapList.size()>0) {
+                    actionFormList = actionMapList.stream().map(m -> {
+                        ActionForm form = new ActionForm();
+                        try {
+                            form = ParamUtils.initModelForm(m, ActionForm.class);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return form;
+                    }).collect(Collectors.toList());
+                }else{
+                    return  ResponseLogNotification.fail(request, "可执行操作不能为空");
+                }
+            }else{
+                return  ResponseLogNotification.fail(request, "可执行操作不能为空");
+            }
+            int position_total = data.getInt("position_total",0);
+            List<Integer> positionIdList = new ArrayList<>();
+            if(position_total!=1) {
+                if (data.get("position") != null) {
+                    positionIdList = ( List<Integer>) data.get("position");
+                    if (positionIdList == null || positionIdList.size() < 1) {
+                        return ResponseLogNotification.fail(request, "至少绑定一个职位选择一个");
+                    }
+                } else {
+                    return ResponseLogNotification.fail(request, "至少绑定一个职位选择一个");
+                }
+            }
+            Response result = service.updateProfileFilter(profileFilterDO, actionFormList, positionIdList, Integer.parseInt(hrId), position_total);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+  获取企业标签信息
+ */
+    @RequestMapping(value = "/api/position/talent/count", method = RequestMethod.GET)
+    @ResponseBody
+    public String getTalentCountByPosition(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int hrId=params.getInt("hr_id", 0);
+            int companyId=params.getInt("company_id",0);
+            int position_id = params.getInt("position_id",0);
+            if(hrId < 1){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(companyId < 1){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(position_id < 1){
+                return ResponseLogNotification.fail(request,"position_id不可以为空或者为0");
+            }
+
+            Response result = service.getTalentCountByPositionFilter(hrId, companyId, position_id);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

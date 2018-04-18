@@ -1,36 +1,28 @@
 package com.moseeker.company.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolCompanyTagDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolCompanyTagUserDao;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import java.util.*;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+
 
 /**
  * Created by zztaiwll on 18/4/9.
@@ -44,8 +36,6 @@ public class CompanyTagService {
     private TalentpoolCompanyTagDao talentpoolCompanyTagDao;
     @Resource(name = "cacheClient")
     private RedisClient client;
-    @Autowired
-    private JobApplicationDao jobApplicationDao;
     SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
     private static String COMPANYTAG_ES_STATUS="COMPANY_TAG_ES_STATUS";
@@ -210,18 +200,5 @@ public class CompanyTagService {
         return false;
     }
 
-    /*
- 获取这个人在这家公司下的所有投递
- */
-    private List<JobApplicationRecord> getJobApplicationByCompanyIdAndUserId(int companyId,int userId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("applier_id",userId).buildQuery();
-        List<JobApplicationRecord> list=jobApplicationDao.getRecords(query);
-        return list;
-    }
-    private List<JobApplicationRecord> getJobAppRecommendByCompanyIdAndUserId(int companyId,int userId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("applier_id",userId).and(new Condition("recommender_user_id",0, ValueOp.GT)).buildQuery();
-        List<JobApplicationRecord> list=jobApplicationDao.getRecords(query);
-        return list;
-    }
 
 }

@@ -8,8 +8,13 @@ import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
 import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
 import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
+import com.moseeker.baseorm.db.logdb.tables.LogHrloginRecord;
+import com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
+import com.moseeker.baseorm.db.logdb.tables.LogScraperRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
+import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailLog;
+import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMessageRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord;
@@ -38,7 +43,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Logdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 526113879;
+    private static final long serialVersionUID = -275512527;
 
     /**
      * The reference instance of <code>logdb</code>
@@ -61,9 +66,19 @@ public class Logdb extends SchemaImpl {
     public final LogEmailSendrecord LOG_EMAIL_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord.LOG_EMAIL_SENDRECORD;
 
     /**
+     * hr每日登陆/使用统计表
+     */
+    public final LogHrloginRecord LOG_HRLOGIN_RECORD = com.moseeker.baseorm.db.logdb.tables.LogHrloginRecord.LOG_HRLOGIN_RECORD;
+
+    /**
      * HR操作记录表
      */
     public final LogHrOperationRecord LOG_HR_OPERATION_RECORD = com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord.LOG_HR_OPERATION_RECORD;
+
+    /**
+     * 第三方简历回流email解析日志
+     */
+    public final LogJbEmailparseRecord LOG_JB_EMAILPARSE_RECORD = com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD;
 
     /**
      * The table <code>logdb.log_resume_record</code>.
@@ -71,9 +86,24 @@ public class Logdb extends SchemaImpl {
     public final LogResumeRecord LOG_RESUME_RECORD = com.moseeker.baseorm.db.logdb.tables.LogResumeRecord.LOG_RESUME_RECORD;
 
     /**
+     * c端导入日志明细表
+     */
+    public final LogScraperRecord LOG_SCRAPER_RECORD = com.moseeker.baseorm.db.logdb.tables.LogScraperRecord.LOG_SCRAPER_RECORD;
+
+    /**
      * 短信发送记录表
      */
     public final LogSmsSendrecord LOG_SMS_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord.LOG_SMS_SENDRECORD;
+
+    /**
+     * 邮件日志
+     */
+    public final LogTalentpoolEmailLog LOG_TALENTPOOL_EMAIL_LOG = com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG;
+
+    /**
+     * 人才库简历过滤日志
+     */
+    public final LogTalentpoolProfileFilterLog LOG_TALENTPOOL_PROFILE_FILTER_LOG = com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG;
 
     /**
      * 微信菜单操作日志表
@@ -118,9 +148,14 @@ public class Logdb extends SchemaImpl {
             LogCronjob.LOG_CRONJOB,
             LogDeadLetter.LOG_DEAD_LETTER,
             LogEmailSendrecord.LOG_EMAIL_SENDRECORD,
+            LogHrloginRecord.LOG_HRLOGIN_RECORD,
             LogHrOperationRecord.LOG_HR_OPERATION_RECORD,
+            LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD,
             LogResumeRecord.LOG_RESUME_RECORD,
+            LogScraperRecord.LOG_SCRAPER_RECORD,
             LogSmsSendrecord.LOG_SMS_SENDRECORD,
+            LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG,
+            LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG,
             LogWxMenuRecord.LOG_WX_MENU_RECORD,
             LogWxMessageRecord.LOG_WX_MESSAGE_RECORD,
             LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD);

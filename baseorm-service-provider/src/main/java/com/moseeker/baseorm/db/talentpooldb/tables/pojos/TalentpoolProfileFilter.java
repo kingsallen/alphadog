@@ -23,14 +23,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilter implements Serializable {
 
-    private static final long serialVersionUID = -341340862;
+    private static final long serialVersionUID = -230965461;
 
     private Integer   id;
     private Integer   companyId;
     private String    name;
     private String    origins;
     private String    workYears;
-    private String    submitTime;
     private String    cityName;
     private String    cityCode;
     private String    degree;
@@ -57,7 +56,6 @@ public class TalentpoolProfileFilter implements Serializable {
         this.name = value.name;
         this.origins = value.origins;
         this.workYears = value.workYears;
-        this.submitTime = value.submitTime;
         this.cityName = value.cityName;
         this.cityCode = value.cityCode;
         this.degree = value.degree;
@@ -83,7 +81,6 @@ public class TalentpoolProfileFilter implements Serializable {
         String    name,
         String    origins,
         String    workYears,
-        String    submitTime,
         String    cityName,
         String    cityCode,
         String    degree,
@@ -107,7 +104,6 @@ public class TalentpoolProfileFilter implements Serializable {
         this.name = name;
         this.origins = origins;
         this.workYears = workYears;
-        this.submitTime = submitTime;
         this.cityName = cityName;
         this.cityCode = cityCode;
         this.degree = degree;
@@ -165,14 +161,6 @@ public class TalentpoolProfileFilter implements Serializable {
 
     public void setWorkYears(String workYears) {
         this.workYears = workYears;
-    }
-
-    public String getSubmitTime() {
-        return this.submitTime;
-    }
-
-    public void setSubmitTime(String submitTime) {
-        this.submitTime = submitTime;
     }
 
     public String getCityName() {
@@ -320,7 +308,6 @@ public class TalentpoolProfileFilter implements Serializable {
         sb.append(", ").append(name);
         sb.append(", ").append(origins);
         sb.append(", ").append(workYears);
-        sb.append(", ").append(submitTime);
         sb.append(", ").append(cityName);
         sb.append(", ").append(cityCode);
         sb.append(", ").append(degree);

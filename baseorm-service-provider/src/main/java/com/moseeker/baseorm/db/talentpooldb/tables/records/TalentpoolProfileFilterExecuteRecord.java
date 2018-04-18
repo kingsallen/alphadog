@@ -9,9 +9,9 @@ import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecut
 import javax.annotation.Generated;
 
 import org.jooq.Field;
-import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Row2;
+import org.jooq.impl.TableRecordImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilterExecuteRecord extends UpdatableRecordImpl<TalentpoolProfileFilterExecuteRecord> implements Record2<Integer, Integer> {
 
-    private static final long serialVersionUID = 895425779;
+    private static final long serialVersionUID = -1861366136;
 
     /**
      * Setter for <code>talentpooldb.talentpool_profile_filter_execute.filter_id</code>. 筛选项id
@@ -56,18 +56,6 @@ public class TalentpoolProfileFilterExecuteRecord extends UpdatableRecordImpl<Ta
      */
     public Integer getExecuteId() {
         return (Integer) get(1);
-    }
-
-    // -------------------------------------------------------------------------
-    // Primary key information
-    // -------------------------------------------------------------------------
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Record1<Integer> key() {
-        return (Record1) super.key();
     }
 
     // -------------------------------------------------------------------------

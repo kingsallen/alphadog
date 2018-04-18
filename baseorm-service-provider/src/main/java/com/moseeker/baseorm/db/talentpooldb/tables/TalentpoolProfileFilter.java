@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRecord> {
 
-    private static final long serialVersionUID = 1704690528;
+    private static final long serialVersionUID = -952986655;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_filter</code>
@@ -75,11 +75,6 @@ public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRe
      * The column <code>talentpooldb.talentpool_profile_filter.work_years</code>. 工作年限 存储的是code
      */
     public final TableField<TalentpoolProfileFilterRecord, String> WORK_YEARS = createField("work_years", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "工作年限 存储的是code");
-
-    /**
-     * The column <code>talentpooldb.talentpool_profile_filter.submit_time</code>. 投递时间，存储的是距当前的天数，是指不用这么长
-     */
-    public final TableField<TalentpoolProfileFilterRecord, String> SUBMIT_TIME = createField("submit_time", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "投递时间，存储的是距当前的天数，是指不用这么长");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.city_name</code>. 现居住地
