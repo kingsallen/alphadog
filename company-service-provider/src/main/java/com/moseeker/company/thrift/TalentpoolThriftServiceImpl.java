@@ -10,14 +10,12 @@ import com.moseeker.common.exception.Category;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.bean.TalentTagPOJO;
 import com.moseeker.company.exception.ExceptionFactory;
-import com.moseeker.company.service.impl.CompanyTagService;
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
-import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -329,7 +327,12 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
 
     @Override
     public Response getTalentCountByPositionFilter(int hr_id, int company_id, int position_id) throws BIZException, TException {
-        return null;
+        try{
+            return talentPoolService.getProfileFilterList(hr_id,company_id,page_number, page_size);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     @Override

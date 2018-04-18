@@ -1400,6 +1400,23 @@ public class TalentPoolService {
         }
         return ResponseUtils.fail(1, result);
     }
+
+    public Response getTalentCountByPositionFilter(int company_id, int hr_id, int position_id){
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(company_id);
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id, company_id);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }
+        
+        return ResponseUtils.success("");
+    }
     //处理批量操作的结果
     private Map<String,Object> handlerBatchTalentResult( Set<Integer> unUseList,Set<Integer>unApplierIdList,Set<Integer> idList ,int companyd){
         List<Map<String,Object>> userHrList=talentPoolEntity.getCompanyHrList(companyd);
