@@ -114,8 +114,8 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 String authInfoKey = employeeEntity.getAuthInfoKey(userEmployee.getSysuserId(), userEmployee.getCompanyId());
                 String resultAINFO = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, authInfoKey, BeanUtils.convertStructToJSON(userEmployee));
                 String resultACode = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, authInfoKey);
-                log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{} result: {}", authInfoKey , resultAINFO);
-                log.info("set redisKey:EMPLOYEE_AUTH_CODE key:{} result: {}", activationCode , resultACode);
+                log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , resultAINFO);
+                log.info("set redisKey:EMPLOYEE_AUTH_CODE employeeId:{}, key:{}, result: {}", activationCode , resultACode);
                 response.setSuccess(true);
                 response.setMessage("发送激活邮件成功");
             } else {
@@ -167,7 +167,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 response.setMessage("认证成功，请勿重复点击该链接");
             }
         }
-        log.info("emailActivation response: {}", response);
+        log.info("emailActivation activationCode:{}, redisVal:{}, response: {}",activationCode , value, response);
         return response;
     }
 }
