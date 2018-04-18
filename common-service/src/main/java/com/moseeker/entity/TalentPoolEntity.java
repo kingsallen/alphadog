@@ -505,6 +505,24 @@ public class TalentPoolEntity {
         return filterRecord.getId();
     }
 
+    public List<Map<String, Object>> getProfileFilterByPosition(int position_id, int company_id){
+        List<Map<String, Object>> profileFilterList = new ArrayList<>();
+        List<JobPositionProfileFilter> positionProfileFilterList = jobPositionProfileFilterDao.getFilterPositionRecordByPositionId(position_id);
+        if(positionProfileFilterList != null && positionProfileFilterList.size()>0){
+            List<Integer> filterIdList = positionProfileFilterList.stream().map(m -> m.getPfid()).collect(Collectors.toList());
+            List<Integer> filterIdList3 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList, 3);
+            profileFilterList = getProfileFilterMapByPosition(company_id,  1, filterIdList3);
+        }
+        return profileFilterList;
+    }
+
+    public List<Map<String, Object>> getProfileFilterMapByPosition(int company_id, int disable, List<Integer> filterIdList){
+        Query query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.COMPANY_ID.getName(), company_id)
+                .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.DISABLE.getName(), disable)
+                .and(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.ID.getName(), filterIdList, ValueOp.IN))
+                .buildQuery();
+        return talentpoolProfileFilterDao.getMaps(query);
+    }
     private List<Integer> getTalentpoolExecuteRecord(List<Integer> positionIdList, int companyId){
         Query query = new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.ID.getName(), positionIdList, ValueOp.IN))
                 .and(JobPosition.JOB_POSITION.COMPANY_ID.getName(),companyId)

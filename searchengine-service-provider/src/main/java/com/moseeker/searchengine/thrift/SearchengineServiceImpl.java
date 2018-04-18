@@ -9,6 +9,7 @@ import com.moseeker.searchengine.service.impl.TalentpoolSearchengine;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
 
+import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -191,6 +192,21 @@ public class SearchengineServiceImpl implements Iface {
 		return new ArrayList<>();
 	}
 
+    @Override
+    public FilterResp queryProfileFilterUserIdList(List<Map<String, String>> filterMapList, int page_number, int page_size) throws TException {
+
+        try{
+            FilterResp res=talentpoolSearchengine.getUserListByFilterIds(filterMapList, page_number, page_size);
+            if(res==null){
+                return new FilterResp;
+            }
+            return res;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+        }
+        return new FilterResp;
+    }
+
 	@Override
 	public int talentSearchNum(Map<String, String> params) throws TException {
 		try{
@@ -201,6 +217,8 @@ public class SearchengineServiceImpl implements Iface {
 		}
 		return 0;
 	}
+
+
 
 
 }

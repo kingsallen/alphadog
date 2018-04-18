@@ -31,10 +31,13 @@ import com.moseeker.company.utils.ValidateTalentTag;
 import com.moseeker.company.utils.ValidateUtils;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.talentpool.PageInfo;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
@@ -94,10 +97,7 @@ public class TalentPoolService {
     @Autowired
     private HrCompanyDao hrCompanyDao;
 
-    @Autowired
-    private JobPositionProfileFilterDao jobPositionProfileFilterDao;
-    @Autowired
-    private TalentpoolProfileFilterExcuteDao talentpoolProfileFilterExcuteDao;
+    SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
 
     /*
@@ -1404,7 +1404,7 @@ public class TalentPoolService {
         return ResponseUtils.fail(1, result);
     }
 
-    public Response getTalentCountByPositionFilter(int hr_id, int company_id, int position_id){
+    public Response getTalentCountByPositionFilter(int hr_id, int company_id, int position_id) throws TException {
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(company_id);
         if(companyDO == null){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
@@ -1417,11 +1417,20 @@ public class TalentPoolService {
         }else if(flag == -3){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
         }
-        List<JobPositionProfileFilter> positionProfileFilterList = jobPositionProfileFilterDao.getFilterPositionRecordByPositionId(position_id);
-        if(positionProfileFilterList != null && positionProfileFilterList.size()>0){
-            List<Integer> filterIdList = positionProfileFilterList.stream().map(m -> m.getPfid()).collect(Collectors.toList());
-            List<Integer> filterIdList3 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList, 3);
-            List<TalentpoolProfileFilter> profileFilterList = talentpoolProfileFilterDao
+        List<Map<String, Object>> filterMapList = talentPoolEntity.getProfileFilterByPosition(position_id, company_id);
+
+        if(filterMapList != null && filterMapList.size()>0){
+            List<Map<String, String>> filterList = new ArrayList<>();
+            for(Map<String, Object> filterMap : filterMapList){
+                Map<String, String> params = new HashMap<>();
+                if (filterMap != null && !filterMap.isEmpty()) {
+                    for (String key : filterMap.keySet()) {
+                        params.put(key, String.valueOf(filterMap.get(key)));
+                    }
+                }
+                filterList.add(params);
+            }
+            FilterResp resp = service.queryProfileFilterUserIdList(filterList, 1, Integer.MAX_VALUE);
         }
         return ResponseUtils.success("");
     }
