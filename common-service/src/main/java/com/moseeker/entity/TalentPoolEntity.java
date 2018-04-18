@@ -224,6 +224,7 @@ public class TalentPoolEntity {
                 || companyTagDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1
                 ){
             ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("名称", companyTagDO.getName());
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins())){
                 vu.addStringSplitLengthValidate("简历来源", companyTagDO.getOrigins(),null,"最多选择10个", 1, 11, ",");
                 vu.addStringLengthValidate("简历来源", companyTagDO.getOrigins(),null,null, 0, 255);
@@ -233,34 +234,35 @@ public class TalentPoolEntity {
                 vu.addStringLengthValidate("工作年限", companyTagDO.getWork_years(),null,null, 0, 64);
             }
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getCity_name())){
-                vu.addStringSplitLengthValidate("现居住城市", companyTagDO.getCity_name(),"最多选择10个",null, 1, 11, ",");
-                vu.addStringLengthValidate("现居住城市", companyTagDO.getCity_name(),null,null, 0, 64);
+                vu.addStringSplitLengthValidate("现居住地", companyTagDO.getCity_name(),"最多选择10个",null, 1, 11, ",");
+                vu.addStringLengthValidate("现居住地", companyTagDO.getCity_name(),null,null, 0, 64);
             }
 
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getCity_code())){
-                vu.addStringSplitLengthValidate("现居住城市", companyTagDO.getCity_code(),"最多选择10个",null, 1, 11, ",");
-                vu.addStringLengthValidate("现居住城市", companyTagDO.getCity_code(),null,null, 0, 128);
+                vu.addStringSplitLengthValidate("现居住地", companyTagDO.getCity_code(),"最多选择10个",null, 1, 11, ",");
+                vu.addStringLengthValidate("现居住地", companyTagDO.getCity_code(),null,null, 0, 128);
             }
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position())){
                 vu.addStringSplitLengthValidate("曾任职位", companyTagDO.getPast_position(),"最多选择10个",null, 1, 11, ",");
                 vu.addStringLengthValidate("曾任职位", companyTagDO.getPast_position(),null,null, 0, 255);
             }
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_city_name())){
-                vu.addStringSplitLengthValidate("期望城市", companyTagDO.getIntention_city_name(),"最多选择10个",null, 1, 11, ",");
-                vu.addStringLengthValidate("期望城市", companyTagDO.getIntention_city_name(),null,null, 0, 255);
+                vu.addStringSplitLengthValidate("期望工作地", companyTagDO.getIntention_city_name(),"最多选择10个",null, 1, 11, ",");
+                vu.addStringLengthValidate("期望工作地", companyTagDO.getIntention_city_name(),null,null, 0, 255);
             }
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_city_code())){
-                vu.addStringSplitLengthValidate("期望城市", companyTagDO.getIntention_city_code(),"最多选择10个",null, 1, 11, ",");
-                vu.addStringLengthValidate("期望城市", companyTagDO.getIntention_city_code(),null,null, 0, 128);
+                vu.addStringSplitLengthValidate("期望工作地", companyTagDO.getIntention_city_code(),"最多选择10个",null, 1, 11, ",");
+                vu.addStringLengthValidate("期望工作地", companyTagDO.getIntention_city_code(),null,null, 0, 128);
             }
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_salary_code())){
                 vu.addStringSplitLengthValidate("期望薪资", companyTagDO.getIntention_salary_code(),"最多选择10个",null, 1, 11, ",");
                 vu.addStringLengthValidate("期望薪资", companyTagDO.getIntention_salary_code(),null,null, 0, 64);
             }
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name())){
-                vu.addStringSplitLengthValidate("曾任职公司", companyTagDO.getCompany_name(),"最多选择10个",null, 1, 11, ",");
-                vu.addStringLengthValidate("曾任职公司", companyTagDO.getCompany_name(),null,null, 0, 255);
+                vu.addStringSplitLengthValidate("就职公司", companyTagDO.getCompany_name(),"最多选择10个",null, 1, 11, ",");
+                vu.addStringLengthValidate("就职公司", companyTagDO.getCompany_name(),null,null, 0, 1024);
             }
+
             String result = vu.validate();
             return result;
         }
