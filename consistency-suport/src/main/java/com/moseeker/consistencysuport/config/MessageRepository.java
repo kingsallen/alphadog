@@ -1,6 +1,6 @@
 package com.moseeker.consistencysuport.config;
 
-import com.moseeker.consistencysuport.db.Message;
+import com.moseeker.consistencysuport.producer.db.Message;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 
 import java.util.List;

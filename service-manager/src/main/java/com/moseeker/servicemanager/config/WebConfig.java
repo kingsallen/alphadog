@@ -20,7 +20,8 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.moseeker.servicemanager.web", "com.moseeker.servicemanager.config", "com.moseeker.servicemanager.exception"})
+@ComponentScan(basePackages = {"com.moseeker.servicemanager.web", "com.moseeker.servicemanager.config",
+        "com.moseeker.servicemanager.exception", "com.moseeker.consistencysuport"})
 @Import(AppConfig.class)
 public class WebConfig extends WebMvcConfigurerAdapter {
 

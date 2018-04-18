@@ -59,7 +59,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             daos false
         }
         target() {
-            packageName('com.moseeker.consistencysuport.db.consistencydb')
+            packageName('com.moseeker.consistencysuport.producer.db.consistencydb')
             directory('src/main/java')
         }
     }

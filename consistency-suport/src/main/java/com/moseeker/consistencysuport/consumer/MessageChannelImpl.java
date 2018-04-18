@@ -3,10 +3,16 @@ package com.moseeker.consistencysuport.consumer;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.consistencysuport.Message;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.Environment;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -21,14 +27,18 @@ import java.util.List;
 @Component
 public class MessageChannelImpl implements MessageChannel {
 
-    @Autowired
     private AmqpTemplate amqpTemplate;
 
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private Environment env;
+
     private static final String TOPIC_EXCHANGE_NAME = "consistency_message_echo_exchange";
     private static final String QUEUE_NAME = "consistency_message_echo_queue";
+    private static final String CONNECTION_NAME = "consistency_message_connection_factory";
+    private static final String AMQP_ADMIN = "consistency_message_AMQP_ADMIN";
     private String routingKey = "consistency_message_routingkey";
     private String bingQueue = "bindingBindQueue";
 
@@ -40,6 +50,31 @@ public class MessageChannelImpl implements MessageChannel {
     @Override
     public void initMessageChannel() {
         ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
+
+        ConnectionFactory connectionFactory = applicationContext.getBean(ConnectionFactory.class);
+        if (connectionFactory == null) {
+            connectionFactory = new CachingConnectionFactory(env.getProperty("rabbitmq.host").trim(), Integer.valueOf(env.getProperty("rabbitmq.port").trim()));
+            ((CachingConnectionFactory)connectionFactory).setUsername(env.getProperty("rabbitmq.username").trim());
+            ((CachingConnectionFactory)connectionFactory).setPassword(env.getProperty("rabbitmq.password").trim());
+            ((CachingConnectionFactory)connectionFactory).setChannelCacheSize(25);
+            ((CachingConnectionFactory)connectionFactory).setCacheMode(CachingConnectionFactory.CacheMode.CHANNEL);
+            beanFactory.registerSingleton(CONNECTION_NAME, connectionFactory);
+        }
+
+        amqpTemplate = applicationContext.getBean(AmqpTemplate.class);
+        if (amqpTemplate == null) {
+            RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+            ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+            backOffPolicy.setInitialInterval(500);
+            backOffPolicy.setMultiplier(10.0);
+            backOffPolicy.setMaxInterval(10000);
+            RetryTemplate retryTemplate = new RetryTemplate();
+            retryTemplate.setBackOffPolicy(backOffPolicy);
+            rabbitTemplate.setRetryTemplate(retryTemplate);
+
+            amqpTemplate = rabbitTemplate;
+            beanFactory.registerSingleton(AMQP_ADMIN,amqpTemplate);
+        }
 
         TopicExchange topicExchange = applicationContext.getBean(TOPIC_EXCHANGE_NAME, TopicExchange.class);
         if (topicExchange == null) {

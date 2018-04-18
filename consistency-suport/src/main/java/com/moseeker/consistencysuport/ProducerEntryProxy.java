@@ -2,8 +2,8 @@ package com.moseeker.consistencysuport;
 
 import com.moseeker.consistencysuport.config.ParamConvertTool;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
-import com.moseeker.consistencysuport.manager.ProducerConsistentManager;
-import com.moseeker.consistencysuport.manager.ProducerManagerSpringProxy;
+import com.moseeker.consistencysuport.producer.ProducerConsistentManager;
+import com.moseeker.consistencysuport.producer.ProducerManagerSpringProxy;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -32,17 +32,12 @@ public class ProducerEntryProxy {
     ApplicationContext applicationContext;
 
     /**
-     * 切入点
-     */
-    private static final String POINCUT = "@within(com.moseeker.consistencysuport.ProducerEntry) || @annotation(com.moseeker.consistencysuport.ProducerEntry)";
-
-    /**
      *
      * @param call
      * @param producerEntry
      * @throws ConsistencyException
      */
-    @AfterReturning(value = POINCUT)
+    @AfterReturning(value = "@within(producerEntry) || @annotation(producerEntry)")
     public void afterReturn(JoinPoint call, ProducerEntry producerEntry) throws ConsistencyException {
 
         ProducerConsistentManager manager = config.buildManager();
