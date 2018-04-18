@@ -198,13 +198,13 @@ public class SearchengineServiceImpl implements Iface {
         try{
             FilterResp res=talentpoolSearchengine.getUserListByFilterIds(filterMapList, page_number, page_size);
             if(res==null){
-                return new FilterResp;
+                return new FilterResp();
             }
             return res;
         }catch(Exception e){
             logger.info(e.getMessage(),e);
         }
-        return new FilterResp;
+        return new FilterResp();
     }
 
 	@Override
