@@ -769,7 +769,7 @@ public class CompanyService {
      * @throws Exception
      */
     @Transactional
-    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, byte source) throws Exception {
+    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, byte source, byte hr_source) throws Exception {
         //是否和超级公司名相同
         boolean repeatName = companyDao.checkRepeatNameWithSuperCompany(companyName);
         if(!repeatName) {
@@ -794,7 +794,7 @@ public class CompanyService {
             accountDO1.setWxuserId(wxuserId);
             accountDO1.setLastLoginIp(remoteIp);
             accountDO1.setRegisterIp(remoteIp);
-            accountDO1.setSource(source);
+            accountDO1.setSource(hr_source);
             accountDO1.setLoginCount(0);
             int hrId = userHrAccountDao.addData(accountDO1).getId();
             if(hrId <= 0)
