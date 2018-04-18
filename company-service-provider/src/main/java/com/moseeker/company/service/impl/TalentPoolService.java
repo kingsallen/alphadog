@@ -1418,7 +1418,7 @@ public class TalentPoolService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
         }
         List<Map<String, Object>> filterMapList = talentPoolEntity.getProfileFilterByPosition(position_id, company_id);
-
+        Map<String, Object> map = new HashMap<>();
         if(filterMapList != null && filterMapList.size()>0){
             List<Map<String, String>> filterList = new ArrayList<>();
             for(Map<String, Object> filterMap : filterMapList){
@@ -1428,11 +1428,14 @@ public class TalentPoolService {
                         params.put(key, String.valueOf(filterMap.get(key)));
                     }
                 }
+                params.put("hr_id", String.valueOf(hr_id));
+                params.put("account_type", String.valueOf(flag));
                 filterList.add(params);
             }
             FilterResp resp = service.queryProfileFilterUserIdList(filterList, 0, 0);
+            map.put("num", resp.getTalent_count());
         }
-        return ResponseUtils.success("");
+        return ResponseUtils.success(map);
     }
     //处理批量操作的结果
     private Map<String,Object> handlerBatchTalentResult( Set<Integer> unUseList,Set<Integer>unApplierIdList,Set<Integer> idList ,int companyd){
