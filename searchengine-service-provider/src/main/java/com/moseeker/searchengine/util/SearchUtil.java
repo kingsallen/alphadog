@@ -682,10 +682,15 @@ public class SearchUtil {
             }
         }
     }
+    /*
+     对子账号查询公开的或子账号收藏的人才
+     */
     public void childAccountTalentpool(String hrId,QueryBuilder builder ){
+        //查询这个公司公开的
         QueryBuilder keyand = QueryBuilders.boolQuery();
         QueryBuilder query0=QueryBuilders.matchQuery("user.talent_pool.is_public",1);
         ((BoolQueryBuilder) keyand).should(query0);
+        //查人这个账号收藏的
         QueryBuilder keyand1 = QueryBuilders.boolQuery();
         QueryBuilder query1=QueryBuilders.matchQuery("user.talent_pool.hr_id",Integer.parseInt(hrId));
         ((BoolQueryBuilder) keyand1).must(query1);
