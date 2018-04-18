@@ -115,7 +115,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 String resultAINFO = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, authInfoKey, BeanUtils.convertStructToJSON(userEmployee));
                 String resultACode = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, authInfoKey);
                 log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , resultAINFO);
-                log.info("set redisKey:EMPLOYEE_AUTH_CODE employeeId:{}, key:{}, result: {}", activationCode , resultACode);
+                log.info("set redisKey:EMPLOYEE_AUTH_CODE employeeId:{}, activationCode:{}, result: {}", userEmployee.getId(), activationCode , resultACode);
                 response.setSuccess(true);
                 response.setMessage("发送激活邮件成功");
             } else {
@@ -157,6 +157,8 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 }
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode);
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, value);
+
+                log.info("emailActivation del key activationCode:{}",activationCode);
             }
         } else {
             query.clear();
