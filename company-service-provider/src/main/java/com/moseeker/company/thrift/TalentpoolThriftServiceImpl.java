@@ -328,7 +328,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     @Override
     public Response getTalentCountByPositionFilter(int hr_id, int company_id, int position_id) throws BIZException, TException {
         try{
-            return talentPoolService.getProfileFilterList(hr_id,company_id,page_number, page_size);
+            return talentPoolService.getTalentCountByPositionFilter(hr_id,company_id,position_id);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);

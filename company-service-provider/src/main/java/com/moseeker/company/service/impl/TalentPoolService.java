@@ -1401,7 +1401,7 @@ public class TalentPoolService {
         return ResponseUtils.fail(1, result);
     }
 
-    public Response getTalentCountByPositionFilter(int company_id, int hr_id, int position_id){
+    public Response getTalentCountByPositionFilter(int hr_id, int company_id, int position_id){
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(company_id);
         if(companyDO == null){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
