@@ -811,7 +811,7 @@ public class CompanyService {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
         }
         HrCompanyDO companyDO = companyDao.getCompanyById(companyId);
-        if(companyDO == null || companyDO.getDisable() == 0){
+        if(companyDO == null || (companyDO.getParentId() ==0 || (companyDO.getParentId()!= 0 && companyDO.getDisable() == 0))){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
         }
         //公司如果为子公司，要查询母公司的配置
