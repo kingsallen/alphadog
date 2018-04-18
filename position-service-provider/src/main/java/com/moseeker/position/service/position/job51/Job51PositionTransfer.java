@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPosition,Position51WithAccount,Position51,EmptyExtThirdPartyPosition> {
+public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPosition, Position51WithAccount, Position51, EmptyExtThirdPartyPosition> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -47,18 +47,18 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
     private Dict51OccupationDao dict51OccupationDao;
 
     @Override
-    public Position51WithAccount changeToThirdPartyPosition(ThirdPartyPosition positionForm, JobPositionDO positionDB,HrThirdPartyAccountDO account) throws Exception{
-        Position51WithAccount positionWithAccount=createAndInitAccountInfo(positionForm,positionDB,account);
+    public Position51WithAccount changeToThirdPartyPosition(ThirdPartyPosition positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
+        Position51WithAccount positionWithAccount = createAndInitAccountInfo(positionForm, positionDB, account);
 
-        Position51 position=createAndInitPositionInfo(positionForm,positionDB);
+        Position51 position = createAndInitPositionInfo(positionForm, positionDB);
         positionWithAccount.setPosition_info(position);
 
         return positionWithAccount;
     }
 
     @Override
-    protected Position51WithAccount createAndInitAccountInfo(ThirdPartyPosition positionForm, JobPositionDO positionDB,HrThirdPartyAccountDO account){
-        Position51WithAccount positionWithAccount=new Position51WithAccount();
+    protected Position51WithAccount createAndInitAccountInfo(ThirdPartyPosition positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) {
+        Position51WithAccount positionWithAccount = new Position51WithAccount();
         positionWithAccount.setUser_name(account.getUsername());
         positionWithAccount.setPassword(account.getPassword());
         positionWithAccount.setMember_name(account.getExt());
@@ -71,26 +71,26 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
 
     @Override
     protected Position51 createAndInitPositionInfo(ThirdPartyPosition positionForm, JobPositionDO positionDB) throws Exception {
-        Position51 position=new Position51();
+        Position51 position = new Position51();
         position.setTitle(positionDB.getTitle());
 
-        setOccupation(positionForm,position);
+        setOccupation(positionForm, position);
 
-        int quantity=getQuantity(positionForm.getCount(),(int)positionDB.getCount());
-        position.setQuantity(quantity+"");
+        int quantity = getQuantity(positionForm.getCount(), (int) positionDB.getCount());
+        position.setQuantity(quantity + "");
 
-        setDegree((int) positionDB.getDegree(),  position);
+        setDegree((int) positionDB.getDegree(), position);
 
         //工作经验要求
-        int experience=experienceToInt(positionDB.getExperience());
+        int experience = experienceToInt(positionDB.getExperience());
         position.setExperience(ExperienceChangeUtil.getJob51Experience(experience).getValue());
 
         //薪资要求
-        int salaryBottom=getSalaryBottom(positionForm.getSalaryBottom());
-        position.setSalary_low(salaryBottom==0?"":String.valueOf(salaryBottom));
+        int salaryBottom = getSalaryBottom(positionForm.getSalaryBottom());
+        position.setSalary_low(String.valueOf(salaryBottom));
 
-        int salaryTop=getSalaryTop(positionForm.getSalaryTop());
-        position.setSalary_high(salaryTop==0?"":String.valueOf(salaryTop));
+        int salaryTop = getSalaryTop(positionForm.getSalaryTop());
+        position.setSalary_high(String.valueOf(salaryTop));
 
 
         //职位详情
@@ -101,11 +101,11 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
 
         position.setEmail(getEmail(positionDB));
 
-        setEmployeeType((byte) positionDB.getEmploymentType(),position);
+        setEmployeeType((byte) positionDB.getEmploymentType(), position);
 
         position.setCompany(positionForm.getCompanyName());
 
-        setAddress(position,positionForm);
+        setAddress(position, positionForm);
 
         return position;
     }
@@ -134,32 +134,32 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
     /**
      * 当addressId为空时，认为addressName是个json(包含city和address)，如果不是json则只传输addressName
      * 当addressId不为空时，取数据库查询出city和address
+     *
      * @param position
      * @param form
      */
-    public void setAddress(Position51 position,ThirdPartyPosition form){
-        ThirdpartyAccountCompanyAddress address=new ThirdpartyAccountCompanyAddress();
-        if(form.getAddressId()==0){
+    public void setAddress(Position51 position, ThirdPartyPosition form) {
+        ThirdpartyAccountCompanyAddress address = new ThirdpartyAccountCompanyAddress();
+        if (form.getAddressId() == 0) {
             //这个对于json的判断很粗糙，但是我不想使用try catch来控制流程，暂时先这么写
-            if(form.getAddressName().startsWith("{") && form.getAddressName().endsWith("}")) {
+            if (form.getAddressName().startsWith("{") && form.getAddressName().endsWith("}")) {
                 JSONObject jsonAddress = JSON.parseObject(form.getAddressName());
                 address.setCity(jsonAddress.getString("city"));
                 address.setAddress(jsonAddress.getString("address"));
-            }else {
+            } else {
                 address.setAddress(form.getAddressName());
             }
-        }else{
-            Query query=new Query.QueryBuilder().where("id",form.getAddressId()).buildQuery();
-            ThirdpartyAccountCompanyAddressDO addressDO=addressDao.getData(query);
+        } else {
+            Query query = new Query.QueryBuilder().where("id", form.getAddressId()).buildQuery();
+            ThirdpartyAccountCompanyAddressDO addressDO = addressDao.getData(query);
 
-            if(addressDO==null || addressDO.getId()==0){
+            if (addressDO == null || addressDO.getId() == 0) {
                 address.setAddress(form.getAddressName());
-            }else{
+            } else {
                 address.setCity(addressDO.getCity());
                 address.setAddress(addressDO.getAddress());
             }
         }
-
 
 
         position.setAddress(address);
@@ -171,7 +171,7 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
     }
 
 
-    protected void setEmployeeType(byte employment_type,Position51 position51) {
+    protected void setEmployeeType(byte employment_type, Position51 position51) {
         WorkType workType = WorkType.instanceFromInt(employment_type);
         position51.setType_code(WorkTypeChangeUtil.getJob51EmployeeType(workType).getValue());
     }
@@ -190,7 +190,7 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
     public HrThirdPartyPositionDO toThirdPartyPosition(ThirdPartyPosition position, Position51WithAccount pwa) {
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
 
-        Position51 p=pwa.getPosition_info();
+        Position51 p = pwa.getPosition_info();
 
         String syncTime = (new DateTime()).toString("yyyy-MM-dd HH:mm:ss");
         data.setSyncTime(syncTime);
@@ -207,17 +207,17 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
         }
         data.setCompanyName(position.getCompanyName());
         data.setCompanyId(position.getCompanyId());
-        if(!StringUtils.isNullOrEmpty(p.getSalary_low())){
+        if (!StringUtils.isNullOrEmpty(p.getSalary_low())) {
             data.setSalaryBottom(Integer.parseInt(p.getSalary_low()));
         }
-        if(!StringUtils.isNullOrEmpty(p.getSalary_high())) {
+        if (!StringUtils.isNullOrEmpty(p.getSalary_high())) {
             data.setSalaryTop(Integer.parseInt(p.getSalary_high()));
         }
         data.setAddressId(position.getAddressId());
 
         data.setAddressName(position.getAddressName());
 
-        logger.info("回写到第三方职位对象:{}",data);
+        logger.info("回写到第三方职位对象:{}", data);
         return data;
     }
 
