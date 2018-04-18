@@ -15,7 +15,16 @@ public class ImportCVForm {
 	private int id;
 	private String uuid;
 	private int ua;
-	private int companyId;
+
+	public int getCompany_id() {
+		return company_id;
+	}
+
+	public void setCompany_id(int company_id) {
+		this.company_id = company_id;
+	}
+
+	private int company_id;
 	
 	public int getType() {
 		return type;
@@ -98,11 +107,4 @@ public class ImportCVForm {
 		this.ua = ua;
 	}
 
-	public int getCompanyId() {
-		return companyId;
-	}
-
-	public void setCompanyId(int companyId) {
-		this.companyId = companyId;
-	}
 }

@@ -128,7 +128,7 @@ public class CrawlerUtils {
         最佳东方C端导入要检测开关
          */
         if(channelType == ChannelType.VERYEAST) {
-            HrCompanyConfDO companyConfDO = companyServices.getCompanyConfById(form.getCompanyId());
+            HrCompanyConfDO companyConfDO = companyServices.getCompanyConfById(form.getCompany_id());
             if (companyConfDO == null || companyConfDO.getVeryeastSwitch() == 0){
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.NO_AUTH_IMPORT_VERYEAST_PROFILE);
             }
