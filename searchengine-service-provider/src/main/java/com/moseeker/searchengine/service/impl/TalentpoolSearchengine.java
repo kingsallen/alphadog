@@ -238,7 +238,7 @@ public class TalentpoolSearchengine {
                 resp.setUser_ids(list);
             }
         }catch(Exception e){
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage(),e);
         }
         logger.info("==========================");
         logger.info(JSON.toJSONString(list));
@@ -247,8 +247,7 @@ public class TalentpoolSearchengine {
     }
 
     private QueryBuilder convertBuild(List<Map<String,String>> mapList){
-        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
-        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        QueryBuilder query = QueryBuilders.boolQuery();
         for(Map<String,String> map:mapList){
             QueryBuilder queryBuilder=this.getQueryByTag(map);
             ((BoolQueryBuilder) query).should(queryBuilder);
