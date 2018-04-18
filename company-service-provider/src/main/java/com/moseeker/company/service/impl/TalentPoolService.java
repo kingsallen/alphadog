@@ -1430,7 +1430,7 @@ public class TalentPoolService {
                 }
                 filterList.add(params);
             }
-            FilterResp resp = service.queryProfileFilterUserIdList(filterList, 1, Integer.MAX_VALUE);
+            FilterResp resp = service.queryProfileFilterUserIdList(filterList, 0, 0);
         }
         return ResponseUtils.success("");
     }
