@@ -395,14 +395,22 @@ public class TalentpoolSearchengine {
             ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
             ((BoolQueryBuilder) query).filter(script);
         }
-        QueryBuilder nestQuery=this.queryTalentNest(companyId);
+        QueryBuilder nestQuery=this.queryTalentNest(params);
         ((BoolQueryBuilder)query).filter(nestQuery);
         return query;
     }
-    public QueryBuilder queryTalentNest(Integer companyId){
+    public QueryBuilder queryTalentNest(Map<String,String> params){
+        int companyId=Integer.parseInt(params.get("company_id"));
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         this.queryByNestCompanyId(companyId,query);
+        String hrId=params.get("hr_id");
+        if(StringUtils.isNotNullOrEmpty(hrId)){
+            String account_type=params.get("account_type");
+            if(StringUtils.isNotNullOrEmpty(account_type)&&Integer.parseInt(account_type)!=0){
+                searchUtil.childAccountTalentpool(hrId,query);
+            }
+        }
         query=QueryBuilders.nestedQuery("user.talent_pool",query);
         return query;
     }

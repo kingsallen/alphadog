@@ -682,6 +682,19 @@ public class SearchUtil {
             }
         }
     }
+    public void childAccountTalentpool(String hrId,QueryBuilder builder ){
+        QueryBuilder keyand = QueryBuilders.boolQuery();
+        QueryBuilder query0=QueryBuilders.matchQuery("user.talent_pool.is_public",1);
+        ((BoolQueryBuilder) keyand).should(query0);
+        QueryBuilder keyand1 = QueryBuilders.boolQuery();
+        QueryBuilder query1=QueryBuilders.matchQuery("user.talent_pool.hr_id",Integer.parseInt(hrId));
+        ((BoolQueryBuilder) keyand1).must(query1);
+        QueryBuilder query2=QueryBuilders.matchQuery("user.talent_pool.is_talent",1);
+        ((BoolQueryBuilder) keyand1).must(query2);
+        ((BoolQueryBuilder) keyand).should(keyand1);
+        ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+        ((BoolQueryBuilder) builder).must(keyand);
+    }
 
     /*
      处理按照标签查询
