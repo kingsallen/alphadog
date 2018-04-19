@@ -39,7 +39,7 @@ public class MessageChannelImpl implements MessageChannel {
     private static final String QUEUE_NAME = "consistency_message_echo_queue";
     private static final String CONNECTION_NAME = "consistency_message_connection_factory";
     private static final String AMQP_ADMIN = "consistency_message_AMQP_ADMIN";
-    private String routingKey = "consistency_message_routingkey";
+    private String routingKey = "consistency_message_routing_key";
     private String bingQueue = "bindingBindQueue";
 
     @Override

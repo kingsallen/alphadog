@@ -1,7 +1,6 @@
 package com.moseeker.servicemanager.config;
 
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4;
-import com.alibaba.fastjson.support.spring.FastJsonpHttpMessageConverter4;
 import com.moseeker.baseorm.config.AppConfig;
 import com.moseeker.servicemanager.common.UTF8StringHttpMessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +20,8 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {"com.moseeker.servicemanager.web", "com.moseeker.servicemanager.config",
-        "com.moseeker.servicemanager.exception", "com.moseeker.consistencysuport"})
+        "com.moseeker.servicemanager.exception", "com.moseeker.consistencysuport.producer",
+        "com.moseeker.servicemanager.consistency"})
 @Import(AppConfig.class)
 public class WebConfig extends WebMvcConfigurerAdapter {
 
