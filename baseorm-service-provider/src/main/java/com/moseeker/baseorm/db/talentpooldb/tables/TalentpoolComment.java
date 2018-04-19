@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolComment extends TableImpl<TalentpoolCommentRecord> {
 
-    private static final long serialVersionUID = 312841912;
+    private static final long serialVersionUID = -1121810396;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_comment</code>
@@ -59,7 +59,7 @@ public class TalentpoolComment extends TableImpl<TalentpoolCommentRecord> {
     /**
      * The column <code>talentpooldb.talentpool_comment.content</code>. 备注内容
      */
-    public final TableField<TalentpoolCommentRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "备注内容");
+    public final TableField<TalentpoolCommentRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "备注内容");
 
     /**
      * The column <code>talentpooldb.talentpool_comment.hr_id</code>. HR 编号

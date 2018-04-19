@@ -34,6 +34,7 @@ public class ValidateTalentTag {
             result.setErrorMessage("该hr不属于该company_id");
             return result;
         }
+
         ValidateCommonBean validateResult = this.validateUserIdTag(hrId, userIdList, tagIdList, companyId);
         Set<Integer> idList =validateResult.getUseId();
         if (StringUtils.isEmptySet(idList)) {
@@ -72,6 +73,7 @@ public class ValidateTalentTag {
         ValidateCommonBean  validatBean=validateUtils.handlerApplierId(hrId,userIdList,companyId);
         Set<Integer> unUseList=validatBean.getUnuseId();
         Set<Integer> useIdList=validatBean.getUseId();
+
         //获取已经收藏的简历
         List<Map<String,Object>> talentList=talentPoolEntity.getTalentpoolHrTalentByIdList(hrId,useIdList);
         //获取被收藏的user_id
@@ -109,6 +111,49 @@ public class ValidateTalentTag {
                 applierIdList=uploadTalentIdList;
             }else{
                 applierIdList.addAll(uploadTalentIdList);
+            }
+        }
+        if(!StringUtils.isEmptySet(unUseList)||StringUtils.isEmptySet(applierIdList)){
+            int count=talentPoolEntity.valiadteMainAccount(hrId,companyId);
+            if(count>0){
+                if(!StringUtils.isEmptySet(unUseList)){
+                    List<TalentpoolTalentRecord> talentCompanyList=talentPoolEntity.getTalentByCompanyIdUserSet(companyId,unUseList);
+                    Set<Integer> talentUserIdList=talentPoolEntity.getUserIdListByTalentpoolTalent(talentCompanyList);
+                    if(!StringUtils.isEmptySet(talentUserIdList)){
+                        Set<Integer> finalUnSerIdList=new HashSet<>();
+                        for(Integer itemId:unUseList){
+                            if(!talentUserIdList.contains(itemId)){
+                                finalUnSerIdList.add(itemId);
+                            }
+                        }
+                        unUseList=finalUnSerIdList;
+                        if(StringUtils.isEmptySet(applierIdList)){
+                            applierIdList=talentUserIdList;
+                        }else{
+                            applierIdList.addAll(talentUserIdList);
+                        }
+
+                    }
+                }
+                //查询不符合的人是不是公司的收藏的
+                if(StringUtils.isEmptySet(applierIdList)){
+                    List<TalentpoolTalentRecord> talentCompanyList=talentPoolEntity.getTalentByCompanyIdUserSet(companyId,useIdList);
+                    Set<Integer> talentUserIdList=talentPoolEntity.getUserIdListByTalentpoolTalent(talentCompanyList);
+                    if(!StringUtils.isEmptySet(talentUserIdList)){
+                        Set<Integer> finalUnSerIdList=new HashSet<>();
+                        for(Integer itemId:unUseList){
+                            if(!talentUserIdList.contains(itemId)){
+                                finalUnSerIdList.add(itemId);
+                            }
+                        }
+                        if(StringUtils.isEmptySet(unUseList)){
+                            unUseList=finalUnSerIdList;
+                        }else{
+                            unUseList.addAll(finalUnSerIdList);
+                        }
+                        applierIdList=talentUserIdList;
+                    }
+                }
             }
         }
         result.setUnuseId(unUseList);
@@ -251,6 +296,8 @@ public class ValidateTalentTag {
         }
         return result;
     }
+
+
     /*
    获取任意一个人才在这家公司下的所有的标签的id
    */

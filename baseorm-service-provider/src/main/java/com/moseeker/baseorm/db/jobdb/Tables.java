@@ -17,10 +17,14 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_0413;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1030;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1108;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1113;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
-import com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply;
 
 import javax.annotation.Generated;
 
@@ -84,6 +88,26 @@ public class Tables {
     public static final JobPosition JOB_POSITION = com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
 
     /**
+     * The table <code>jobdb.job_position_0413</code>.
+     */
+    public static final JobPosition_0413 JOB_POSITION_0413 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_0413.JOB_POSITION_0413;
+
+    /**
+     * The table <code>jobdb.job_position_1030</code>.
+     */
+    public static final JobPosition_1030 JOB_POSITION_1030 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1030.JOB_POSITION_1030;
+
+    /**
+     * The table <code>jobdb.job_position_1108</code>.
+     */
+    public static final JobPosition_1108 JOB_POSITION_1108 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1108.JOB_POSITION_1108;
+
+    /**
+     * The table <code>jobdb.job_position_1113</code>.
+     */
+    public static final JobPosition_1113 JOB_POSITION_1113 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1113.JOB_POSITION_1113;
+
+    /**
      * The table <code>jobdb.job_position_ccmail</code>.
      */
     public static final JobPositionCcmail JOB_POSITION_CCMAIL = com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail.JOB_POSITION_CCMAIL;
@@ -104,6 +128,11 @@ public class Tables {
     public static final JobPositionHrCompanyFeature JOB_POSITION_HR_COMPANY_FEATURE = com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE;
 
     /**
+     * 简历筛选关联职位中间表
+     */
+    public static final JobPositionProfileFilter JOB_POSITION_PROFILE_FILTER = com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER;
+
+    /**
      * 职位分享描述配置模板
      */
     public static final JobPositionShareTplConf JOB_POSITION_SHARE_TPL_CONF = com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF;
@@ -117,9 +146,4 @@ public class Tables {
      * 自定义简历副本记录表
      */
     public static final JobResumeOther JOB_RESUME_OTHER = com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
-
-    /**
-     * VIEW
-     */
-    public static final UserProfileJobapply USER_PROFILE_JOBAPPLY = com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply.USER_PROFILE_JOBAPPLY;
 }
