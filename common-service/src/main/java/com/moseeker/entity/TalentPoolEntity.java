@@ -850,6 +850,7 @@ public class TalentPoolEntity {
                                 Map<String, Object> params = new HashMap<>();
                                 params.put("title", positionDO.getTitle());
                                 params.put("status", positionDO.getStatus());
+                                params.put("city", positionDO.getCity());
                                 position.add(params);
                             }
                         }
