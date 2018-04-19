@@ -23,6 +23,7 @@ import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
+import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
@@ -57,6 +58,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.PositionEntity;
+import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
 import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
@@ -94,6 +96,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
+import org.elasticsearch.common.recycler.Recycler;
 import org.jooq.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1632,12 +1635,12 @@ public class PositionService {
         logger.info("jdIdList: " + jdIdList);
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(con).and("status",0).buildQuery();
-        List<JobPositionRecord> jobRecords = positionEntity.getPositions(q);
+        List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
         //List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
         //Map<Integer, Set<String>> cityMap = commonPositionUtils.handlePositionCity(jdIdList);
         for (int i = 0; i < jdIdList.size(); i++) {
             int positionId = jdIdList.get(i);
-            for (JobPositionRecord jr : jobRecords) {
+            for (JobPositionRecordWithCityName jr : jobRecords) {
                 if (positionId == jr.getId()) {
                     logger.info("pid: " + String.valueOf(jr.getId()));
                     WechatPositionListData e = new WechatPositionListData();
@@ -1661,6 +1664,7 @@ public class PositionService {
                     e.setIn_hb(jr.getHbStatus() > 0);
                     e.setCount(jr.getCount());
                     e.setCity(jr.getCity());
+                    e.setCity_ename(jr.getCityEname());
                     e.setPriority(jr.getPriority());
                     e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
                     e.setCandidate_source(jr.getCandidateSource());
@@ -1869,13 +1873,14 @@ public class PositionService {
         String pidFilter = "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]";
         Condition condition = new Condition("id", pids.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(condition).orderBy("priority").buildQuery();
-        List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
+
+        List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
 
         // filter 出已经发完红包的职位
         jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
         int totalNum=this.getRpPositionCount(hbConfigId);
         // 拼装职位信息
-        for (JobPositionRecord jr : jobRecords) {
+        for (JobPositionRecordWithCityName jr : jobRecords) {
             WechatRpPositionListData e = new WechatRpPositionListData();
             e.setTitle(jr.getTitle());
             e.setId(jr.getId());
@@ -1887,6 +1892,7 @@ public class PositionService {
             e.setIn_hb(true);
             e.setCount(jr.getCount());
             e.setCity(jr.getCity());
+            e.setCity_ename(jr.getCityEname());
             e.setCandidate_source(jr.getCandidateSource());
             e.setRequirement(jr.getRequirement());
             e.setTotalNum(totalNum);
@@ -2217,7 +2223,7 @@ public class PositionService {
      * @param query
      * @return
      */
-    public List<JobPositionRecord> getPositionRecords(Query query) {
+    public List<JobPositionRecordWithCityName> getPositionRecords(Query query) {
         return positionEntity.getPositions(query);
     }
 
