@@ -76,34 +76,26 @@ public class JobApplicationFilterService {
         HrCompanyDO companyDO = hrCompanyDao.getCompanyById(positionDO.getCompanyId());
         logger.info("handerApplicationFilter companyDO:{}", companyDO);
         if(companyDO != null && companyDO.getType() == 0){
-            List<Integer> companyIds = new ArrayList<>();
-            companyIds.add(companyDO.getId());
-            List<HrCompanyConfDO> companyConfDOList = hrCompanyConfDao.getHrCompanyConfByCompanyIds(companyIds);
-            logger.info("handerApplicationFilter companyConfDOList:{}", companyConfDOList.get(0));
-            if(companyConfDOList != null && companyConfDOList.size()>0){
-                if(companyConfDOList.get(0).getTalentpoolStatus() == 2){
-                    List<JobPositionProfileFilter> positionProfileFilterList = jobPositionProfileFilterDao.getFilterPositionRecordByPositionId(positionDO.getId());
-                    logger.info("handerApplicationFilter positionProfileFilterList:{}", positionProfileFilterList);
-                    if(positionProfileFilterList!= null && positionProfileFilterList.size()>0) {
-                        List<Integer> filterIdList = positionProfileFilterList.stream().map(m -> m.getPfid()).collect(Collectors.toList());
-                        List<Integer> filterExecute1 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList,1);
-                        List<Integer> filterExecute2 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList,2);
-                        List<Integer> filterExecute3 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList,3);
-                        List<Integer> filterExecute4 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList,4);
-                        Map<Integer,TalentpoolProfileFilter>  talentpoolProfileFilterMap = talentpoolProfileFilterDao.getTalentpoolProfileFilterMapByIdListAndCompanyId(companyDO.getId(), 1, filterIdList);
-                        Response res=profileService.getResource(filterInfoStruct.getApplier_id(),0,null);
-
-                        Map<Integer, Boolean> filterPassMap = new HashMap<>();
-                        boolean passTalentpoolExecute = false;
-                        boolean passApplicationExecute = false;
-                        Map<String, Object> profiles = JSON.parseObject(res.getData());
-                        logger.info("handerApplicationFilter profiles:{}", profiles);
-                        if(talentpoolProfileFilterMap != null && talentpoolProfileFilterMap.size()>0){
-                            passTalentpoolExecute = forTalentpoolProfileFilter(filterExecute2, talentpoolProfileFilterMap, profiles, filterInfoStruct, filterPassMap, positionDO, passTalentpoolExecute,2);
-                            passTalentpoolExecute = forTalentpoolProfileFilter(filterExecute1, talentpoolProfileFilterMap, profiles, filterInfoStruct, filterPassMap, positionDO, passTalentpoolExecute,1);
-                            passApplicationExecute = forTalentpoolProfileFilter(filterExecute4, talentpoolProfileFilterMap, profiles, filterInfoStruct, filterPassMap, positionDO, passApplicationExecute,4);
-                            passApplicationExecute = forTalentpoolProfileFilter(filterExecute3, talentpoolProfileFilterMap, profiles, filterInfoStruct, filterPassMap, positionDO, passApplicationExecute,3);
-                        }
+            HrCompanyConfDO companyConfDO = hrCompanyConfDao.getHrCompanyConfByCompanyId(companyDO.getId());
+            if(companyConfDO.getTalentpoolStatus() == 2){
+                List<JobPositionProfileFilter> positionProfileFilterList = jobPositionProfileFilterDao.getFilterPositionRecordByPositionId(positionDO.getId());
+                if(positionProfileFilterList!= null && positionProfileFilterList.size()>0) {
+                    List<Integer> filterIdList = positionProfileFilterList.stream().map(m -> m.getPfid()).collect(Collectors.toList());
+                    List<Integer> filterExecute1 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList,1);
+                    List<Integer> filterExecute2 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList,2);
+                    List<Integer> filterExecute3 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList,3);
+                    List<Integer> filterExecute4 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList,4);
+                    Map<Integer,TalentpoolProfileFilter>  talentpoolProfileFilterMap = talentpoolProfileFilterDao.getTalentpoolProfileFilterMapByIdListAndCompanyId(companyDO.getId(), 1, filterIdList);
+                    Response res=profileService.getResource(filterInfoStruct.getApplier_id(),0,null);
+                    Map<Integer, Boolean> filterPassMap = new HashMap<>();
+                    boolean passTalentpoolExecute = false;
+                    boolean passApplicationExecute = false;
+                    Map<String, Object> profiles = JSON.parseObject(res.getData());
+                    if(talentpoolProfileFilterMap != null && talentpoolProfileFilterMap.size()>0){
+                        passTalentpoolExecute = forTalentpoolProfileFilter(filterExecute2, talentpoolProfileFilterMap, profiles, filterInfoStruct, filterPassMap, positionDO, passTalentpoolExecute,2);
+                        passTalentpoolExecute = forTalentpoolProfileFilter(filterExecute1, talentpoolProfileFilterMap, profiles, filterInfoStruct, filterPassMap, positionDO, passTalentpoolExecute,1);
+                        passApplicationExecute = forTalentpoolProfileFilter(filterExecute4, talentpoolProfileFilterMap, profiles, filterInfoStruct, filterPassMap, positionDO, passApplicationExecute,4);
+                        passApplicationExecute = forTalentpoolProfileFilter(filterExecute3, talentpoolProfileFilterMap, profiles, filterInfoStruct, filterPassMap, positionDO, passApplicationExecute,3);
                     }
                 }
             }

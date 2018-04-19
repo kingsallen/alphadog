@@ -73,6 +73,8 @@ public class SearchengineServiceTest {
         params.put("past_position","xxxxxxx");
         params.put("is_recommend","1");
         params.put("company_id","39978");
+        params.put("hr_id","82752");
+        params.put("account_type","1");
         list.add(params);
         Map<String,String> params1=new HashMap<>();
         params1.put("origins","1,2,3");
