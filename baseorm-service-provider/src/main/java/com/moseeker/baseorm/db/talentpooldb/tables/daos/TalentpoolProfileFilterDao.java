@@ -94,13 +94,6 @@ public class TalentpoolProfileFilterDao extends DAOImpl<TalentpoolProfileFilterR
     }
 
     /**
-     * Fetch records that have <code>submit_time IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter> fetchBySubmitTime(String... values) {
-        return fetch(TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.SUBMIT_TIME, values);
-    }
-
-    /**
      * Fetch records that have <code>city_name IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter> fetchByCityName(String... values) {
