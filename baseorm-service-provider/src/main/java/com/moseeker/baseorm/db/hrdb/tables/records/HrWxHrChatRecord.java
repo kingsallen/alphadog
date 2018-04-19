@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> implements Record11<Integer, Integer, String, Integer, Byte, Byte, Timestamp, Byte, String, String, String> {
 
-    private static final long serialVersionUID = -582346806;
+    private static final long serialVersionUID = -519185926;
 
     /**
      * Setter for <code>hrdb.hr_wx_hr_chat.id</code>. ID
@@ -89,14 +89,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者（websocket），1：HR （hr后台回复，或者sysplat 仟寻回复聚合号的求职者），2：chatbot （ 如果公司开启了 chatbot-compnany_conf.hr_chat， 请求chatbot后再回复就是2）
+     * Setter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)
      */
     public void setSpeaker(Byte value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者（websocket），1：HR （hr后台回复，或者sysplat 仟寻回复聚合号的求职者），2：chatbot （ 如果公司开启了 chatbot-compnany_conf.hr_chat， 请求chatbot后再回复就是2）
+     * Getter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)
      */
     public Byte getSpeaker() {
         return (Byte) get(4);
@@ -145,14 +145,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio
+     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
      */
     public void setMsgType(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio
+     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
      */
     public String getMsgType() {
         return (String) get(8);

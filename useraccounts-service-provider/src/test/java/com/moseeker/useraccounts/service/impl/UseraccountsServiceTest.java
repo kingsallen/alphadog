@@ -27,12 +27,17 @@ import java.util.concurrent.Executors;
 /**
  * Created by lucky8987 on 17/5/17.
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class UseraccountsServiceTest {
-//
-//    @Autowired
-//    private UseraccountsService service;
+
+    @Autowired
+    private UseraccountsService service;
+
+    @Test
+    public void userChangeBind(){
+        service.userChangeBind("oHhnJt_2P7DvK9BS6iKrmco6Sokg","18817628386","086");
+    }
 
 //    @Mock
 //    SmsSender smsSender;

@@ -279,7 +279,7 @@ public class ChatDao {
                                 List<UserWxUserDO> wxUserDOList = (List<UserWxUserDO>) wxUserFuture.get();
                                 if(wxUserDOList != null && wxUserDOList.size() > 0) {
                                     wxUserDOList.forEach(wxUserDO -> {
-                                        if(userHrAccountDO.getWxuserId() == wxUserDO.getWechatId()) {
+                                        if(userHrAccountDO.getWxuserId() == wxUserDO.getId()) {
                                             userHrAccountDO.setHeadimgurl(wxUserDO.getHeadimgurl());
                                         }
                                     });

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolComment extends TableImpl<TalentpoolCommentRecord> {
 
-    private static final long serialVersionUID = -2126193110;
+    private static final long serialVersionUID = -1121810396;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_comment</code>
@@ -59,7 +59,7 @@ public class TalentpoolComment extends TableImpl<TalentpoolCommentRecord> {
     /**
      * The column <code>talentpooldb.talentpool_comment.content</code>. 备注内容
      */
-    public final TableField<TalentpoolCommentRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "备注内容");
+    public final TableField<TalentpoolCommentRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "备注内容");
 
     /**
      * The column <code>talentpooldb.talentpool_comment.hr_id</code>. HR 编号
@@ -72,9 +72,9 @@ public class TalentpoolComment extends TableImpl<TalentpoolCommentRecord> {
     public final TableField<TalentpoolCommentRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "人才 编号");
 
     /**
-     * The column <code>talentpooldb.talentpool_comment.company_id</code>.
+     * The column <code>talentpooldb.talentpool_comment.company_id</code>. 公司id
      */
-    public final TableField<TalentpoolCommentRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<TalentpoolCommentRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "公司id");
 
     /**
      * The column <code>talentpooldb.talentpool_comment.create_time</code>. 创建时间

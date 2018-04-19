@@ -162,7 +162,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             return;
         }
 
-        JsonVerifyParam verifyParam=JsonVerifyParam.newInstance(info);
+        JsonVerifyParam verifyParam = JsonVerifyParam.newInstance(info);
 
         if(!verifyParam.isValid()){
             return;
@@ -172,7 +172,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
 
         HrThirdPartyPositionDO thirdPartyPosition = thirdPartyPositionDao.getBindingData(verifyParam.getPositionId(),verifyParam.getAccountId());
 
-        if(thirdPartyPosition==null){
+        if(thirdPartyPosition == null){
             return;
         }
 
@@ -226,25 +226,25 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_WRONG_CHANNEL);
         }
 
-        // 手机验证(environ)可能会没有职位ID，所以只有传递positionId才校验
-        if(verifyParam.getPositionId()>0) {
+        // 手机验证(environ)可能会没有职位ID，所以只有非environ才校验
+        if(verifyParam.containPositionId()) {
             JobPositionRecord jobPosition = positionDao.getPositionById(verifyParam.getPositionId());
             if (jobPosition == null) {
                 logger.error("验证处理--职位不存在：{}", param);
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_NO_POSITION);
             }
-        }
 
-        Query query=new Query.QueryBuilder()
-                .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),verifyParam.getPositionId())
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(),verifyParam.getAccountId())
-                .and(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),(short)0, ValueOp.NEQ))
-                .buildQuery();
-        HrThirdPartyPositionDO thirdPartyPosition = thirdPartyPositionDao.getSimpleData(query);
+            Query query = new Query.QueryBuilder()
+                    .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(), verifyParam.getPositionId())
+                    .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(), verifyParam.getAccountId())
+                    .and(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), (short) 0, ValueOp.NEQ))
+                    .buildQuery();
+            HrThirdPartyPositionDO thirdPartyPosition = thirdPartyPositionDao.getSimpleData(query);
 
-        if(thirdPartyPosition==null){
-            logger.error("验证处理--第三方职位不存在：{}",param);
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_NO_THIRD_POSITION);
+            if (thirdPartyPosition == null) {
+                logger.error("验证处理--第三方职位不存在：{}", param);
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SYNC_NO_THIRD_POSITION);
+            }
         }
 
         logger.info("checkVerifyParam success param:{}",param);
@@ -258,7 +258,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
      * @return
      * @throws BIZException
      */
-    private boolean alreadyInRedis(JsonVerifyParam verifyParam) throws BIZException {
+    boolean alreadyInRedis(JsonVerifyParam verifyParam) throws BIZException {
         String timeoutKey=redisTimeoutKey(verifyParam);
         long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.POSITION_SYNC_VERIFY_TIMEOUT.toString(), timeoutKey);
         if (check>1) {
@@ -293,7 +293,9 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
         return keyBuilder.toString();
     }
 
-    private static class JsonVerifyParam extends JSONObject{
+    static class JsonVerifyParam extends JSONObject{
+
+        public static final String ENVIRON = "environ";
 
         public static JsonVerifyParam newInstance(String param){
             JsonVerifyParam verifyParam=new JsonVerifyParam();
@@ -303,7 +305,7 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
         }
 
         public boolean isValid(){
-            return containAccountId() && containChannel() && containPositionId();
+            return containAccountId() && containChannel();
         }
 
         public boolean containAccountId(){
@@ -315,6 +317,9 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
         public boolean containPositionId(){
             return containsKey("positionId");
         }
+        public boolean containOperation(){
+            return containsKey("operation");
+        }
 
         public int getAccountId(){
             return getIntValue("accountId");
@@ -325,7 +330,11 @@ public abstract class AbstractPositionSyncVerifyHandler implements PositionSyncV
         }
 
         public int getPositionId(){
-            return getIntValue("positionId");
+            return containsKey("positionId") ? getIntValue("positionId"):0;
+        }
+
+        public String getOperation(){
+            return getString("operation");
         }
     }
 }
