@@ -827,7 +827,8 @@ public class TalentPoolEntity {
             List<Integer> positionIds = jobPositionProfileFilters.stream().map(m -> m.getPid()).collect(Collectors.toList());
             //获取与筛选规则有关系的职位数据
             Query query = new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.ID.getName(), positionIds, ValueOp.IN))
-                    .and(JobPosition.JOB_POSITION.COMPANY_ID.getName(), company_id).buildQuery();
+                    .and(JobPosition.JOB_POSITION.COMPANY_ID.getName(), company_id)
+                    .and(new Condition(JobPosition.JOB_POSITION.STATUS.getName(), 1, ValueOp.NEQ)).buildQuery();
             positionDOS = jobPositionDao.getDatas(query);
         }
 
