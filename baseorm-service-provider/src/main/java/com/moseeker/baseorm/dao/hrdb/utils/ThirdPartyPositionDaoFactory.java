@@ -40,7 +40,7 @@ public class ThirdPartyPositionDaoFactory {
                 return dao;
             }
         }
-        logger.error("no matched thirdPartyPositionDao! channel : {}",channel);
+        logger.info("no matched thirdPartyPositionDao! channel : {}",channel);
         return defaultThirdPartyPositionDao;
     }
 

@@ -38,9 +38,6 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
     @Autowired
     DictLiepinOccupationDao occupationDao;
 
-    @Autowired
-    PositionQxService positionQxService;
-
     @Override
     public PositionLiepinWithAccount changeToThirdPartyPosition(ThirdPartyPosition positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
         PositionLiepinWithAccount positionLiepinWithAccount = createAndInitAccountInfo(positionForm,positionDB,account);
@@ -96,7 +93,7 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
         positionLiepin.setPractice_salary_unit(String.valueOf(positionForm.getPracticeSalaryUnit()));
         positionLiepin.setPractice_per_week(String.valueOf(positionForm.getPracticePerWeek()));
 
-        setWelfare(positionLiepin,positionDB);
+        positionLiepin.setWelfare(getFeature(positionDB));
 
         return positionLiepin;
     }
@@ -134,16 +131,6 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
         position.setWorkyears((experience == null || experience == 0) ? "不限" : String.valueOf(experience));
     }
 
-
-    public void setWelfare(PositionLiepin position, JobPositionDO positionDB){
-        List<HrCompanyFeature> features = positionQxService.getPositionFeature(positionDB.getId());
-        if(StringUtils.isEmptyList(features)){
-            //爬虫需要即使数据库这个字段为空，也需要要一个空列表
-            position.setWelfare(new ArrayList<>());
-        }else {
-            position.setWelfare(features.stream().map(f->f.getFeature()).collect(Collectors.toList()));
-        }
-    }
 
     @Override
     public ChannelType getChannel() {

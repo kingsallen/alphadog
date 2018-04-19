@@ -679,9 +679,13 @@ public class CandidateEntity implements Candidate {
                 candidateDBDao.getCandidatePosition(candidateRecomRecordDO.getPositionId(),
                         candidateRecomRecordDO.getPresenteeUserId());
         if (candidatePositionDOOptional.isPresent()) {
+            DateTime now = new DateTime();
+            String nowStr = now.toString("yyyy-MM-dd HH:mm:ss");
+
             CandidateCompanyDO candidateCompanyDO = new CandidateCompanyDO();
             candidateCompanyDO.setIsRecommend((byte) 1);
             candidateCompanyDO.setId(candidatePositionDOOptional.get().getCandidateCompanyId());
+            candidateCompanyDO.setUpdateTime(nowStr);
             candidateDBDao.updateCandidateCompany(candidateCompanyDO);
         }
     }
@@ -704,6 +708,7 @@ public class CandidateEntity implements Candidate {
         candidateRecomRecordDO.setMobile(param.getMobile());
         candidateRecomRecordDO.setRecomTime(nowStr);
         candidateRecomRecordDO.setIsRecom((byte) 0);
+        candidateRecomRecordDO.setUpdateTime(nowStr);
         candidateDBDao.updateCandidateRecomRecord(candidateRecomRecordDO);
 
         List<CandidateRecomRecordDO> candidateRecomRecordList = candidateDBDao.listFiltredCandidateRecomRecord(candidateRecomRecordDO);
@@ -716,6 +721,7 @@ public class CandidateEntity implements Candidate {
                 candidate.setMobile(param.getMobile());
                 candidate.setRecomTime(nowStr);
                 candidate.setIsRecom((byte) 0);
+                candidate.setUpdateTime(nowStr);
             });
             candidateDBDao.updateCandidateRecomRecords(candidateRecomRecordList);
         }
