@@ -39,6 +39,7 @@ import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -495,6 +496,7 @@ public class TalentPoolEntity {
     @Transactional
     public int updateCompanyProfileFilter(TalentpoolCompanyTagDO profileFilterDO, List<ActionForm> actionFormList, List<Integer> positionIdList, int position_total){
         TalentpoolProfileFilterRecord filterRecord = talentpoolProfileFilterDao.dataToRecord(profileFilterDO);
+        filterRecord.setUpdateTime(new Timestamp(new Date().getTime()));
         talentpoolProfileFilterDao.updateRecord(filterRecord);
         List<Integer> filterIds = new ArrayList<>();
         filterIds.add(profileFilterDO.getId());
