@@ -250,6 +250,7 @@ public class SearchUtil {
     public void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
     	if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords.trim())){
     		hasKey=true;
+            keywords=keywords.trim();
     		String words[]=keywords.split(",");
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		StringBuffer sb=new StringBuffer();
@@ -305,6 +306,7 @@ public class SearchUtil {
     //组装query_string关键字带权重查询语句
     public void keyWordforQueryStringPropery(String keywords,QueryBuilder query,List<String> fieldList,List<Integer> properyList){
         if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords)){
+            keywords=keywords.trim();
             String words[]=keywords.split(",");
             StringBuffer sb=new StringBuffer();
             for(int i=0;i<words.length;i++){
