@@ -72,7 +72,9 @@ public class JobApplicationFilterService {
     public void handerApplicationFilter(MessageEmailStruct filterInfoStruct) throws Exception {
         logger.info("handerApplicationFilter filterInfoStruct:{}", filterInfoStruct);
         JobPositionRecord positionDO = jobPositionDao.getPositionById(filterInfoStruct.getPosition_id());
+        logger.info("handerApplicationFilter positionDO:{}", positionDO);
         HrCompanyDO companyDO = hrCompanyDao.getCompanyById(positionDO.getCompanyId());
+        logger.info("handerApplicationFilter companyDO:{}", companyDO);
         if(companyDO != null && companyDO.getType() == 0){
             List<Integer> companyIds = new ArrayList<>();
             companyIds.add(companyDO.getId());
