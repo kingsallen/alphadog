@@ -1561,7 +1561,6 @@ public class TalentPoolService {
                             }
                         }
                     }
-                    resultList.addAll(handlerTag);
                 }
 
             }else{
