@@ -1,4 +1,4 @@
-package com.moseeker.consistencysuport;
+package com.moseeker.consistencysuport.producer;
 
 import java.lang.annotation.*;
 

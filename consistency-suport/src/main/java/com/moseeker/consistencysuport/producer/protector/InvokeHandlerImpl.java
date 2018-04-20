@@ -1,7 +1,7 @@
 package com.moseeker.consistencysuport.producer.protector;
 
-import com.moseeker.consistencysuport.config.Notification;
-import com.moseeker.consistencysuport.config.ParamConvertTool;
+import com.moseeker.consistencysuport.common.Notification;
+import com.moseeker.consistencysuport.common.ParamConvertTool;
 import com.moseeker.consistencysuport.producer.db.Message;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.slf4j.Logger;

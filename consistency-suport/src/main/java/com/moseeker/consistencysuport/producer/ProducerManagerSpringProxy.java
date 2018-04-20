@@ -1,8 +1,8 @@
 package com.moseeker.consistencysuport.producer;
 
-import com.moseeker.consistencysuport.config.MessageRepository;
-import com.moseeker.consistencysuport.config.Notification;
-import com.moseeker.consistencysuport.config.ParamConvertTool;
+import com.moseeker.consistencysuport.common.MessageRepository;
+import com.moseeker.consistencysuport.common.Notification;
+import com.moseeker.consistencysuport.common.ParamConvertTool;
 import com.moseeker.consistencysuport.producer.db.impl.MessageRepositoryImpl;
 import com.moseeker.consistencysuport.producer.echo.EchoHandler;
 import com.moseeker.consistencysuport.producer.echo.EchoHandlerImpl;
@@ -59,6 +59,9 @@ public class ProducerManagerSpringProxy {
     @Autowired
     private Environment env;
 
+    @Autowired
+    MessageTypeDetector messageTypeDetector;
+
     public ProducerManagerSpringProxy(){}
 
     /**
@@ -103,6 +106,16 @@ public class ProducerManagerSpringProxy {
 
     public ProducerManagerSpringProxy buildEchoHandler(EchoHandler echoHandler) {
         this.echoHandler = echoHandler;
+        return this;
+    }
+
+    /**
+     * 构建消息类型探针
+     * @param messageTypeDetector 消息类型探针
+     * @return
+     */
+    public ProducerManagerSpringProxy buildMessageTypeDetector(MessageTypeDetector messageTypeDetector) {
+        this.messageTypeDetector = messageTypeDetector;
         return this;
     }
 
@@ -160,7 +173,7 @@ public class ProducerManagerSpringProxy {
         this.messageChannel = new MessageChannelImpl(applicationContext, env, echoHandler);
         manager = new ProducerConsistentManager(messageRepository,
                 paramConvertToolMap, notification, invokeHandler, initialDelay, period, heartBeatTimeout, retriedUpper,
-                messageChannel);
+                messageChannel, messageTypeDetector);
         return manager;
     }
 }

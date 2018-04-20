@@ -3,7 +3,7 @@ package com.moseeker.consistencysuport.notification;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.FormCheck;
-import com.moseeker.consistencysuport.config.Notification;
+import com.moseeker.consistencysuport.common.Notification;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

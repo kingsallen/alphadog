@@ -1,9 +1,9 @@
 package com.moseeker.consistencysuport.producer.protector;
 
 import com.moseeker.common.thread.ThreadPool;
-import com.moseeker.consistencysuport.config.MessageRepository;
-import com.moseeker.consistencysuport.config.Notification;
-import com.moseeker.consistencysuport.config.ParamConvertTool;
+import com.moseeker.consistencysuport.common.MessageRepository;
+import com.moseeker.consistencysuport.common.Notification;
+import com.moseeker.consistencysuport.common.ParamConvertTool;
 import com.moseeker.consistencysuport.producer.db.Message;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.joda.time.DateTime;
@@ -86,7 +86,7 @@ public class ProtectorTaskConfigImpl implements ProtectorTask, Runnable {
 
     @Override
     public void run() {
-        logger.debug("ProtectorTaskConfigImpl scheduleAtFixedRate time:{}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
+        logger.info("ProtectorTaskConfigImpl scheduleAtFixedRate time:{}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
         List<Message> messageList = fetchNotFinishedMessage();
         if (messageList != null && messageList.size() > 0) {
             messageList.forEach(message -> {

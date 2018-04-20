@@ -42,4 +42,6 @@ public class ConsistencyException extends CommonException {
     public static final ConsistencyException CONSISTENCY_PRODUCER_UPDATE_BUSINESS_HEART_BEAT_PARAM_ERROR = new ConsistencyException(81018, "业务消息参数错误，更新心跳时间失败！");
 
     public static final ConsistencyException CONSISTENCY_CONSUMER_LOST_MESSAGEID = new ConsistencyException(81019, "消息编号配置错误！");
+
+    public static final ConsistencyException CONSISTENCY_PRODUCER_MQ_CONFIG_LOST= new ConsistencyException(81020, "消息通道配置信息错误！");
 }

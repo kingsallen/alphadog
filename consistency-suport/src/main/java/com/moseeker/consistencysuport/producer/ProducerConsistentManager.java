@@ -1,8 +1,9 @@
 package com.moseeker.consistencysuport.producer;
 
-import com.moseeker.consistencysuport.config.MessageRepository;
-import com.moseeker.consistencysuport.config.Notification;
-import com.moseeker.consistencysuport.config.ParamConvertTool;
+import com.moseeker.consistencysuport.common.MessageRepository;
+import com.moseeker.consistencysuport.common.Notification;
+import com.moseeker.consistencysuport.common.ParamConvertTool;
+import com.moseeker.consistencysuport.consumer.Business;
 import com.moseeker.consistencysuport.producer.db.Message;
 import com.moseeker.consistencysuport.producer.echo.MessageChannel;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
@@ -16,8 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -40,6 +43,8 @@ public class ProducerConsistentManager {
     private ProtectorTask protectorTask;                        //启动保护任务
     private InvokeHandler invokeHandler;
 
+    private MessageTypeDetector messageTypeDetector;            //业务探针
+
     private long initialDelay = 5*1000;                         //任务延迟启动时间
     private long period = 5*60*1000;                            //守护任务时间间隔
 
@@ -47,7 +52,7 @@ public class ProducerConsistentManager {
 
     private byte retriedUpper = 3;                              //重试次数上线
 
-    private static final int MIN_PERIOD = 3*1000;                   //时间间隔下限
+    private static final int MIN_PERIOD = 3*1000;               //时间间隔下限
 
     private ValidateBusiness validateBusiness;
 
@@ -55,7 +60,7 @@ public class ProducerConsistentManager {
                                      Map<String, ParamConvertTool> paramConvertToolMap, Notification notification,
                                      InvokeHandler invokeHandler,
                                      long initialDelay, long period, long heartBeatTimeout, byte retriedUpper,
-                                     MessageChannel messageChannel) throws ConsistencyException {
+                                     MessageChannel messageChannel, MessageTypeDetector messageTypeDetector) throws ConsistencyException {
 
         logger.debug("ProducerConsistentManager init...");
 
@@ -80,32 +85,61 @@ public class ProducerConsistentManager {
         this.protectorTask = new ProtectorTaskConfigImpl(this.initialDelay, this.period, this.retriedUpper,
                 notification, messageRepository, paramConvertToolMap, this.invokeHandler);
 
-        this.protectorTask.startProtectorTask();
-
-
         this.notification = notification;
         this.messageChannel = messageChannel;
-        logger.debug("ProducerConsistentManager init channel");
-        this.messageChannel.initChannel();
 
         this.validateBusiness = new ValidateBusiness(initialDelay, period, heartBeatTimeout, notification, messageRepository);
         logger.debug("ProducerConsistentManager start ValidateBusiness");
         this.validateBusiness.startValidateBusinessTask();
         logger.debug("ProducerConsistentManager init finish");
+
+        this.messageTypeDetector = messageTypeDetector;
+    }
+
+    /**
+     * 初始化通道
+     */
+    public void initChannel() {
+        if (messageChannel != null) {
+            messageChannel.initChannel();
+        }
     }
 
     /**
      * 启动守护任务
      */
-    private void startProtectorTask() {
-        protectorTask.startProtectorTask();
+    public void startProtectorTask() {
+        if (protectorTask != null) {
+            protectorTask.startProtectorTask();
+        }
     }
 
     /**
      * 启动检查
      */
-    private void startValidateBusiness() {
-        validateBusiness.startValidateBusinessTask();
+    public void startValidateBusiness() {
+        if (validateBusiness != null) {
+            validateBusiness.startValidateBusinessTask();
+        }
+    }
+
+    /**
+     * 初始化数据库
+     */
+    public void initDB() {
+        if (messagePersistence != null) {
+            messagePersistence.initDB();
+        }
+    }
+
+    /**
+     * 开启业务注册
+     */
+    public synchronized void registerMessageType() {
+        List<MessageTypePojo> messageTypePojoList = messageTypeDetector.findMessageTypes();
+        if (messageTypePojoList != null) {
+            messagePersistence.registerMessageType(messageTypePojoList);
+        }
     }
 
     /**

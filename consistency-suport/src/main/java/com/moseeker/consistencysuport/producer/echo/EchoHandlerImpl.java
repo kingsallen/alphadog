@@ -2,8 +2,8 @@ package com.moseeker.consistencysuport.producer.echo;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.consistencysuport.Message;
-import com.moseeker.consistencysuport.config.MessageRepository;
-import com.moseeker.consistencysuport.config.Notification;
+import com.moseeker.consistencysuport.common.MessageRepository;
+import com.moseeker.consistencysuport.common.Notification;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

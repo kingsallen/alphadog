@@ -1,7 +1,8 @@
 package com.moseeker.consistencysuport.consumer;
 
-import com.moseeker.consistencysuport.config.Notification;
+import com.moseeker.consistencysuport.common.Notification;
 import com.moseeker.consistencysuport.notification.NotificationImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,7 +17,9 @@ public class ConsumerConsistentManagerSpringProxy {
     private ConsumerConsistentManager consumerConsistentManager;
 
     private Notification notification;
+    @Autowired
     private MessageChannel messageChannel;
+    @Autowired
     private BusinessDetector businessDetector;      // 业务探针，查找注册的业务
 
     private long period = 60*1000;                  // 时间间隔

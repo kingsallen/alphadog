@@ -1,9 +1,7 @@
-package com.moseeker.consistencysuport;
+package com.moseeker.consistencysuport.producer;
 
-import com.moseeker.consistencysuport.config.ParamConvertTool;
+import com.moseeker.consistencysuport.common.ParamConvertTool;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
-import com.moseeker.consistencysuport.producer.ProducerConsistentManager;
-import com.moseeker.consistencysuport.producer.ProducerManagerSpringProxy;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;

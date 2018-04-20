@@ -2,8 +2,9 @@ package com.moseeker.consistencysuport.producer.db.impl;
 
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.consistencysuport.config.MessageRepository;
+import com.moseeker.consistencysuport.common.MessageRepository;
 import com.moseeker.consistencysuport.constant.MessageState;
+import com.moseeker.consistencysuport.producer.MessageTypePojo;
 import com.moseeker.consistencysuport.producer.db.Business;
 import com.moseeker.consistencysuport.producer.db.Message;
 import com.moseeker.consistencysuport.producer.db.consistencydb.tables.ConsistencyBusiness;
@@ -59,8 +60,9 @@ public class MessageRepositoryImpl implements MessageRepository {
             "  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
             "  `class_name` varchar(60) COMMENT '记录消息的类对象名称',\n" +
             "  `method` varchar(60) COMMENT '记录消息的类方法名称',\n" +
+            "  `period` int(11) COMMENT '任务调度时间间隔  单位是秒',\n" +
             "  PRIMARY KEY (`name`)\n" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息类型表';";
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息类型表'";
 
     private static final String CONSISTENCY_MESSAGE = "CREATE TABLE `consistency_message` (\n" +
             "  `message_id` varchar(64) NOT NULL COMMENT '消息编号',\n" +
@@ -72,53 +74,51 @@ public class MessageRepositoryImpl implements MessageRepository {
             "  `last_retry_time` timestamp COMMENT '最后重试的时间',\n" +
             "  `param` varchar(3000) COMMENT '参数',\n" +
             "  `finish` tinyint(1) DEFAULT 0 COMMENT '是否完成, 0 未完成， 1 完成',\n" +
-            "  `period` int(11) COMMENT '任务调度时间间隔  单位是秒',\n" +
             "  PRIMARY KEY (`message_id`)\n" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息表';";
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息表'";
 
     private static final String CONSISTENCY_BUSINESS = "CREATE TABLE `consistency_business` (\n" +
             "  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
-            "  `register_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '业务注册时间',\n" +
+            "  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',\n" +
             "  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
             "  `name` varchar(20) NOT NULL COMMENT '业务名称',\n" +
             "  `finish` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否完成 0 未完成 1 完成',\n" +
-            "  `last_shake_hand_time` timestamp COMMENT '最后握手的时间',\n" +
-            "  `receive_email` varchar(120) NOT NULL COMMENT '接收告警邮件通知的邮箱',\n" +
+            "  `message_id` varchar(64) NOT NULL COMMENT '消息编号',\n" +
             "  PRIMARY KEY (`id`),\n" +
-            "  UNIQUE KEY `consistency_business_name` (`name`)\n" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息业务表';";
+            "  UNIQUE KEY `consistency_business_name` (`message_id`, `name`)\n" +
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息业务表'";
 
-    private static final String CONSISTENCY_BUSINESS_TYPE = "CREATE TABLE `cnosistency_business_type` (\n" +
+    private static final String CONSISTENCY_BUSINESS_TYPE = "CREATE TABLE `consistency_business_type` (\n" +
             "\t`name` varchar(20) NOT NULL COMMENT '业务名称，不允许重复',\n" +
             "\t`message_name` varchar(20) NOT NULL COMMENT 'consistency_message.name',\n" +
             "\t`register_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '业务注册时间',\n" +
             "\t`update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
             "\t`last_shake_hand_time` timestamp COMMENT '最后握手的时间',\n" +
             "\t`receive_email` varchar(120) NOT NULL COMMENT '接收告警邮件通知的邮箱',\n" +
-            "\t`enable` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否是正常的数据 0：表示逻辑删除，1表示正常数据',\n" +
-            "\tPRIMARY KEY (`name`)\n" +
-            ")ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息业务类型表';";
+            "\t`enable` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否是正常的数据 0：表示逻辑删除，1表示正常数据',\n" +
+            "\tPRIMARY KEY (`name`, `message_name`)\n" +
+            ")ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息业务类型表'";
 
     @Transactional
     @Override
     public void initDatabase() {
         create.execute(String.format("create database if not exists `%s`", DATABASE));
-
-        int messageTypeCount = create.execute(String.format("select count(*) from `INFORMATION_SCHEMA`.`TABLES` where `TABLE_SCHEMA`= '%s' and `TABLE_NAME` = '%s'", DATABASE, "consistency_message_type"));
+        create.execute(String.format("use `%s`", DATABASE));
+        int messageTypeCount = create.selectCount().from("INFORMATION_SCHEMA.TABLES").where("TABLE_SCHEMA = '"+DATABASE+"'").and("TABLE_NAME = 'consistency_message_type'").fetchOne().value1();
         if (messageTypeCount == 0) {
             create.execute(CONSISTENCY_MESSAGE_TYPE);
         }
 
-        int messageCount = create.execute(String.format("select count(*) from `INFORMATION_SCHEMA`.`TABLES` where `TABLE_SCHEMA`= '%s' and `TABLE_NAME` = '%s'", DATABASE, "consistency_message"));
+        int messageCount = create.selectCount().from("INFORMATION_SCHEMA.TABLES").where("TABLE_SCHEMA = '"+DATABASE+"'").and("TABLE_NAME = 'consistency_message'").fetchOne().value1();
         if (messageCount == 0) {
             create.execute(CONSISTENCY_MESSAGE);
         }
-        int businessCount = create.execute(String.format("select count(*) from `INFORMATION_SCHEMA`.`TABLES` where `TABLE_SCHEMA`= '%s' and `TABLE_NAME` = '%s'", DATABASE, "consistency_business"));
+        int businessCount = create.selectCount().from("INFORMATION_SCHEMA.TABLES").where("TABLE_SCHEMA = '"+DATABASE+"'").and("TABLE_NAME = 'consistency_business'").fetchOne().value1();
         if (businessCount == 0) {
             create.execute(CONSISTENCY_BUSINESS);
         }
 
-        int businessTypeCount = create.execute(String.format("select count(*) from `INFORMATION_SCHEMA`.`TABLES` where `TABLE_SCHEMA`= '%s' and `TABLE_NAME` = '%s'", DATABASE, "cnosistency_business_type"));
+        int businessTypeCount = create.selectCount().from("INFORMATION_SCHEMA.TABLES").where("TABLE_SCHEMA = '"+DATABASE+"'").and("TABLE_NAME = 'consistency_business_type'").fetchOne().value1();
         if (businessTypeCount == 0) {
             create.execute(CONSISTENCY_BUSINESS_TYPE);
         }
@@ -390,6 +390,7 @@ public class MessageRepositoryImpl implements MessageRepository {
         }
     }
 
+    @Transactional
     @Override
     public void disableBusinessTypeBySpecifiedShakeHandTime(long lostTime) throws ConsistencyException {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis() - lostTime);
@@ -408,6 +409,22 @@ public class MessageRepositoryImpl implements MessageRepository {
                 consistencyBusinessTypeRecord.setEnable((byte) AbleFlag.DISABLE.getValue());
                 create.attach(consistencyBusinessTypeRecord);
                 consistencyBusinessTypeRecord.update();
+            });
+        }
+    }
+
+    @Transactional
+    @Override
+    public void registerMessageType(List<MessageTypePojo> messageTypePojoList) {
+        if (messageTypePojoList != null) {
+            messageTypePojoList.forEach(messageTypePojo -> {
+                create.insertInto(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE)
+                        .columns(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.NAME,
+                                ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.CLASS_NAME,
+                                ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.METHOD)
+                        .values(messageTypePojo.getName(), messageTypePojo.getClassName(), messageTypePojo.getMethod())
+                        .onDuplicateKeyIgnore()
+                        .execute();
             });
         }
     }

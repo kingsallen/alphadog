@@ -1,7 +1,7 @@
 package com.moseeker.servicemanager.consistency;
 
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.consistencysuport.config.ParamConvertTool;
+import com.moseeker.consistencysuport.common.ParamConvertTool;
 import org.springframework.stereotype.Component;
 
 /**

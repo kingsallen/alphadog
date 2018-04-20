@@ -2,7 +2,7 @@ package com.moseeker.consistencysuport.consumer;
 
 import com.moseeker.consistencysuport.Message;
 import com.moseeker.consistencysuport.MessageType;
-import com.moseeker.consistencysuport.config.Notification;
+import com.moseeker.consistencysuport.common.Notification;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class ConsumerConsistentManager  {
 
     private long period = 60*1000;                  //时间间隔
     private long initialDelay = 3*1000;             //延迟启动
-    private byte retriedUpper = 3;                  // 重试上限
+    private byte retriedUpper = 3;                  //重试上限
 
     private HeartBeatTask heartBeatTask;
 
@@ -40,9 +40,6 @@ public class ConsumerConsistentManager  {
         this.businessDetector = businessDetector;
         this.notification = notification;
         this.heartBeatTask = new HeartBeatTask(this);
-
-        startHeartBeat();
-        startRegister();
     }
 
     // 定时任务
@@ -75,7 +72,7 @@ public class ConsumerConsistentManager  {
     /**
      * 开启心跳定时任务
      */
-    protected void startHeartBeat() {
+    public void startHeartBeat() {
         schedule.scheduleAtFixedRate(heartBeatTask, initialDelay, period, TimeUnit.MILLISECONDS);
     }
 
@@ -95,10 +92,14 @@ public class ConsumerConsistentManager  {
         }
     }
 
+    private void initMessageChannel() {
+        messageChannel.initMessageChannel();
+    }
+
     /**
      * 开启业务注册
      */
-    protected synchronized void startRegister() {
+    public synchronized void startRegister() {
         if (!register) {
             register = true;
             List<Business> businessList = businessDetector.findBusiness();

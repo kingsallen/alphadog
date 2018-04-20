@@ -1,5 +1,7 @@
 package com.moseeker.consistencysuport.consumer;
 
+import com.moseeker.consistencysuport.consumer.Business;
+
 import java.util.List;
 
 /**

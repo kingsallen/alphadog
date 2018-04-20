@@ -1,12 +1,15 @@
 package com.moseeker.consistencysuport.producer.persistence;
 
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.consistencysuport.producer.MessageTypePojo;
 import com.moseeker.consistencysuport.producer.db.Message;
-import com.moseeker.consistencysuport.config.MessageRepository;
+import com.moseeker.consistencysuport.common.MessageRepository;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  *
@@ -22,7 +25,6 @@ public class MessagePersistenceImpl implements MessagePersistence {
 
     public MessagePersistenceImpl(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
-        messageRepository.initDatabase();
     }
 
     /**
@@ -87,5 +89,15 @@ public class MessagePersistenceImpl implements MessagePersistence {
         messageRepository.saveMessage(message);
 
         logger.info("MessagePersistenceImpl logMessage  messageId:{}, name:{}, param:{}", message.getMessageId(), message.getName(), message.getParam());
+    }
+
+    @Override
+    public void initDB() throws ConsistencyException {
+        messageRepository.initDatabase();
+    }
+
+    @Override
+    public void registerMessageType(List<MessageTypePojo> messageTypePojoList) {
+        messageRepository.registerMessageType(messageTypePojoList);
     }
 }

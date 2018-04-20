@@ -1,4 +1,4 @@
-package com.moseeker.consistencysuport.config;
+package com.moseeker.consistencysuport.common;
 
 /**
  *

@@ -1,7 +1,7 @@
 package com.moseeker.consistencysuport.producer;
 
-import com.moseeker.consistencysuport.config.MessageRepository;
-import com.moseeker.consistencysuport.config.Notification;
+import com.moseeker.consistencysuport.common.MessageRepository;
+import com.moseeker.consistencysuport.common.Notification;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Demo1Service {
 
-    @ConsumerEntry
+    @ConsumerEntry(messageName = "test", businessName = "demo1", index = 0)
     public String comsumerTest(String messageId, int id) {
         System.out.println("messageId:"+messageId +" id:"+id);
         return messageId+" "+id;

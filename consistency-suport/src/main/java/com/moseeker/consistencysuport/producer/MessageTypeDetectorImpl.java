@@ -1,5 +1,6 @@
-package com.moseeker.consistencysuport.consumer;
+package com.moseeker.consistencysuport.producer;
 
+import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -19,28 +20,27 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Created by jack on 2018/4/17.
  */
 @Component
-public class BusinessDetectorImpl implements BusinessDetector {
+public class MessageTypeDetectorImpl implements MessageTypeDetector{
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    private List<Business> businessNameList = new ArrayList<>();
+    private List<MessageTypePojo> messageTypePojoList = new ArrayList<>();
 
     private static final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock(true);
     private static  ReentrantReadWriteLock.WriteLock writeLock=rwl.writeLock();
 
-
     @Override
-    public List<Business> findBusiness() {
+    public List<MessageTypePojo> findMessageTypes() {
         writeLock.lock();
         try {
-            if (businessNameList.size() == 0) {
+            if (messageTypePojoList.size() == 0) {
                 updateBusinessList();
             }
         } finally {
             writeLock.unlock();
         }
-        return businessNameList;
+        return messageTypePojoList;
     }
 
     private void updateBusinessList() {
@@ -53,15 +53,20 @@ public class BusinessDetectorImpl implements BusinessDetector {
                 Class<?> clazz = AopProxyUtils.ultimateTargetClass(object);
                 Method[] methods = clazz.getMethods();
                 for (Method method : methods) {
-                    ConsumerEntry consumerEntry = method.getAnnotation(ConsumerEntry.class);
-                    if (consumerEntry != null) {
-                        Business business = new Business();
-                        business.setBusinessName(consumerEntry.businessName());
-                        business.setMessageName(consumerEntry.messageName());
-                        businessNameList.add(business);
+                    ProducerEntry producerEntry = method.getAnnotation(ProducerEntry.class);
+                    if (producerEntry != null) {
+                        MessageTypePojo messageTypePojo = new MessageTypePojo();
+                        messageTypePojo.setClassName(clazz.getName());
+                        messageTypePojo.setMethod(method.getName());
+                        messageTypePojo.setName(producerEntry.name());
+                        messageTypePojoList.add(messageTypePojo);
                     }
                 }
             }
+        }
+
+        if (messageTypePojoList.size() == 0) {
+            throw ConsistencyException.CONSISTENCY_UNBIND_CONVERTTOOL;
         }
     }
 }

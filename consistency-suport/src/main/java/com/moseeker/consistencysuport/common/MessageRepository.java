@@ -1,5 +1,6 @@
-package com.moseeker.consistencysuport.config;
+package com.moseeker.consistencysuport.common;
 
+import com.moseeker.consistencysuport.producer.MessageTypePojo;
 import com.moseeker.consistencysuport.producer.db.Message;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 
@@ -86,4 +87,10 @@ public interface MessageRepository {
      * @throws
      */
     void disableBusinessTypeBySpecifiedShakeHandTime(long lostTime) throws ConsistencyException;
+
+    /**
+     * 注册消息类型
+     * @param messageTypePojoList 消息类型集合
+     */
+    void registerMessageType(List<MessageTypePojo> messageTypePojoList);
 }
