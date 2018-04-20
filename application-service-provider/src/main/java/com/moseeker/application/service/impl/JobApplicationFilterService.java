@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class JobApplicationFilterService {
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private JobPositionDao jobPositionDao;
     @Autowired
@@ -67,8 +70,11 @@ public class JobApplicationFilterService {
     ProfileBS.Iface bsService = ServiceManager.SERVICEMANAGER.getService(ProfileBS.Iface.class);
 
     public void handerApplicationFilter(MessageEmailStruct filterInfoStruct) throws Exception {
+        logger.info("handerApplicationFilter filterInfoStruct:{}", filterInfoStruct);
         JobPositionRecord positionDO = jobPositionDao.getPositionById(filterInfoStruct.getPosition_id());
+        logger.info("handerApplicationFilter positionDO:{}", positionDO);
         HrCompanyDO companyDO = hrCompanyDao.getCompanyById(positionDO.getCompanyId());
+        logger.info("handerApplicationFilter companyDO:{}", companyDO);
         if(companyDO != null && companyDO.getType() == 0){
             HrCompanyConfDO companyConfDO = hrCompanyConfDao.getHrCompanyConfByCompanyId(companyDO.getId());
             if(companyConfDO.getTalentpoolStatus() == 2){
@@ -100,6 +106,7 @@ public class JobApplicationFilterService {
     //循环验证各个筛选项
     private boolean forTalentpoolProfileFilter(List<Integer> filterIdList, Map<Integer,TalentpoolProfileFilter>  talentpoolProfileFilterMap, Map<String, Object> profiles,
                                                MessageEmailStruct filterInfoStruct, Map<Integer, Boolean> filterPassMap, JobPositionRecord position, boolean bool, int type) throws Exception {
+        logger.info("handerApplicationFilter bool:{}", bool);
         if(filterIdList!=null && filterIdList.size()>0 && !bool) {
             for (Integer filter_id : filterIdList) {
                 if (talentpoolProfileFilterMap.get(filter_id) != null) {
@@ -122,6 +129,7 @@ public class JobApplicationFilterService {
                     }
                     logRecord.setResult(i);
                     logDao.addRecord(logRecord);
+                    logger.info("handerApplicationFilter isflag:{}", isflag);
                     if (isflag){
                         filterExecuteAction(filterInfoStruct.getApplier_id(), position, filterInfoStruct.getApplication_id(), type);
                         break;
@@ -162,7 +170,7 @@ public class JobApplicationFilterService {
 
     private boolean validateProfileAndFilterOrigins(String origins, int origin){
         String[] array = origins.split(",");
-        if(array==null||array.length==0){
+        if(array==null || array.length==0){
             return false;
 
         }
@@ -188,10 +196,11 @@ public class JobApplicationFilterService {
                 }
             }
         }
-        return  false;
+        return false;
     }
 
     private void filterExecuteAction(int user_id, JobPositionRecord position, int application_id, int type) throws TException {
+        logger.info("handerApplicationFilter filterExecuteAction:{}", type);
         List<Integer> userIds = new ArrayList<>();
         userIds.add(user_id);
         List<Integer> applicaitionIds = new ArrayList<>();
