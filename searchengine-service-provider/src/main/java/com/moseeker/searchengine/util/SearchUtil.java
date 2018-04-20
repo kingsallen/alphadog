@@ -216,10 +216,10 @@ public class SearchUtil {
     	if(totalNum>0){
     		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
     		if(searchData!=null&&searchData.length>0){
-                for(SearchHit ss:searchData){
-                    Map<String,Object> obj=ss.getSource();
-                    list.add(obj);
-                }
+    		for(SearchHit ss:searchData){
+    			Map<String,Object> obj=ss.getSource();
+    			list.add(obj);
+    		}
             }
     		data.put(dataName, list);
     	}
