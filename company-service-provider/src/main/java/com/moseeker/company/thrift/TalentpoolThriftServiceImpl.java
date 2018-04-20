@@ -11,6 +11,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.bean.TalentTagPOJO;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.TalentPoolService;
+import com.moseeker.company.service.impl.TalentpoolEmailService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
@@ -40,6 +41,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
 
     @Autowired
     private TalentPoolService talentPoolService;
+
+    @Autowired
+    private TalentpoolEmailService talentpoolEmailService;
 
     @Override
     public Response upsertTalentPoolApp(int hrId, int companyId,int type) throws BIZException, TException {
@@ -329,6 +333,46 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     public Response getTalentCountByPositionFilter(int hr_id, int company_id, int position_id) throws BIZException, TException {
         try{
             return talentPoolService.getTalentCountByPositionFilter(hr_id,company_id,position_id);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getEmailBalance(int hr_id, int company_id) throws BIZException, TException {
+        try{
+            return talentpoolEmailService.getCompanyEmailBalance(hr_id, company_id);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getEmailTemplateList(int hr_id, int company_id) throws BIZException, TException {
+        try{
+            return talentpoolEmailService.getCompanyEmailTemlateList(hr_id, company_id);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getEmailInfo(int hr_id, int company_id, int type) throws BIZException, TException {
+        try{
+            return talentpoolEmailService.getCompanyEmailTemlateInfo(hr_id, company_id, type);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response updateCompanyEmailInfo(int hr_id, int company_id, int type, int disable, String context, String inscribe) throws BIZException, TException {
+        try{
+            return talentpoolEmailService.updateEmailInfo(hr_id, company_id, type, disable, context, inscribe);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);

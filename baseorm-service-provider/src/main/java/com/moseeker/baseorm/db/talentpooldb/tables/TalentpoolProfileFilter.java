@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRecord> {
 
-    private static final long serialVersionUID = -444461073;
+    private static final long serialVersionUID = -965232143;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_filter</code>
@@ -127,9 +127,9 @@ public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRe
     public final TableField<TalentpoolProfileFilterRecord, String> INTENTION_SALARY_CODE = createField("intention_salary_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "期待薪资");
 
     /**
-     * The column <code>talentpooldb.talentpool_profile_filter.sex</code>. 性别 0男，1女 2不限
+     * The column <code>talentpooldb.talentpool_profile_filter.sex</code>. 性别 1男，2女 0不限
      */
-    public final TableField<TalentpoolProfileFilterRecord, Integer> SEX = createField("sex", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("2", org.jooq.impl.SQLDataType.INTEGER)), this, "性别 0男，1女 2不限");
+    public final TableField<TalentpoolProfileFilterRecord, Integer> SEX = createField("sex", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "性别 1男，2女 0不限");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.is_recommend</code>. 是否只看内推 0否，1是

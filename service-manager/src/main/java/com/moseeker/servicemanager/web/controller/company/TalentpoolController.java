@@ -972,4 +972,113 @@ public class TalentpoolController {
         }
     }
 
+    /*
+ 获取企业邮箱剩余额度
+*/
+    @RequestMapping(value = "/api/talentpool/email/availaability", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEmailBalance(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int hrId=params.getInt("hr_id", 0);
+            int companyId=params.getInt("company_id",0);
+            if(hrId < 1){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(companyId < 1){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+
+            Response result = service.getEmailBalance(hrId, companyId);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+ 获取企业邮箱剩余额度
+*/
+    @RequestMapping(value = "/api/talentpool/email/template", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEmailTemplateList(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int hrId=params.getInt("hr_id", 0);
+            int companyId=params.getInt("company_id",0);
+            if(hrId < 1){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(companyId < 1){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+
+            Response result = service.getEmailTemplateList(hrId, companyId);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+获取邮件详情
+*/
+    @RequestMapping(value = "/api/talentpool/email/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEmailInfo(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int hrId=params.getInt("hr_id", 0);
+            int companyId=params.getInt("company_id",0);
+            int type = params.getInt("type",0);
+            if(hrId < 1){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(companyId < 1){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(type < 1){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            Response result = service.getEmailInfo(hrId, companyId, type);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+获取邮件详情
+*/
+    @RequestMapping(value = "/api/talentpool/email/info", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String updateEmailInfo(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int hrId=params.getInt("hr_id", 0);
+            int companyId=params.getInt("company_id",0);
+            int type = params.getInt("type",0);
+            int status = params.getInt("status", -1);
+            String text = params.getString("text","");
+            String sign = params.getString("sign", "");
+            if(hrId < 1){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(companyId < 1){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(type < 1){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            Response result = service.updateCompanyEmailInfo(hrId, companyId, type, status, text, sign);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 }

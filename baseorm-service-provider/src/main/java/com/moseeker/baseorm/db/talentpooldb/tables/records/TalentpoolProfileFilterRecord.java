@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilterRecord extends UpdatableRecordImpl<TalentpoolProfileFilterRecord> implements Record22<Integer, Integer, String, String, String, String, String, String, String, Integer, Integer, Integer, String, String, String, Integer, Integer, String, Integer, Timestamp, Timestamp, Integer> {
 
-    private static final long serialVersionUID = -396838105;
+    private static final long serialVersionUID = 164971367;
 
     /**
      * Setter for <code>talentpooldb.talentpool_profile_filter.id</code>.
@@ -243,14 +243,14 @@ public class TalentpoolProfileFilterRecord extends UpdatableRecordImpl<Talentpoo
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_profile_filter.sex</code>. 性别 0男，1女 2不限
+     * Setter for <code>talentpooldb.talentpool_profile_filter.sex</code>. 性别 1男，2女 0不限
      */
     public void setSex(Integer value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_profile_filter.sex</code>. 性别 0男，1女 2不限
+     * Getter for <code>talentpooldb.talentpool_profile_filter.sex</code>. 性别 1男，2女 0不限
      */
     public Integer getSex() {
         return (Integer) get(15);
