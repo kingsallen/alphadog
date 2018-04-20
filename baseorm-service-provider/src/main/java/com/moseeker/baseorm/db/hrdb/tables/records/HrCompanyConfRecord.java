@@ -352,22 +352,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-<<<<<<< HEAD
-     * Setter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启
-=======
      * Setter for <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启普通人才库，2开启高端人才库';
->>>>>>> master
      */
     public void setTalentpoolStatus(Byte value) {
         set(23, value);
     }
 
     /**
-<<<<<<< HEAD
-     * Getter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启
-=======
      * Getter for <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启普通人才库，2开启高端人才库';
->>>>>>> master
      */
     public Byte getTalentpoolStatus() {
         return (Byte) get(23);
