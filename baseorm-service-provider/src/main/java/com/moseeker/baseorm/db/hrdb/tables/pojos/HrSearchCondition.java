@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
 
-    private static final long serialVersionUID = -462704985;
+    private static final long serialVersionUID = -1970755905;
 
     private Integer   id;
     private String    name;
@@ -53,6 +53,8 @@ public class HrSearchCondition implements Serializable {
     private Byte      isRecommend;
     private String    tagIds;
     private String    favoriteHrs;
+    private String    cityCode;
+    private String    intentionCityCode;
 
     public HrSearchCondition() {}
 
@@ -85,6 +87,8 @@ public class HrSearchCondition implements Serializable {
         this.isRecommend = value.isRecommend;
         this.tagIds = value.tagIds;
         this.favoriteHrs = value.favoriteHrs;
+        this.cityCode = value.cityCode;
+        this.intentionCityCode = value.intentionCityCode;
     }
 
     public HrSearchCondition(
@@ -115,7 +119,9 @@ public class HrSearchCondition implements Serializable {
         String    origins,
         Byte      isRecommend,
         String    tagIds,
-        String    favoriteHrs
+        String    favoriteHrs,
+        String    cityCode,
+        String    intentionCityCode
     ) {
         this.id = id;
         this.name = name;
@@ -145,6 +151,8 @@ public class HrSearchCondition implements Serializable {
         this.isRecommend = isRecommend;
         this.tagIds = tagIds;
         this.favoriteHrs = favoriteHrs;
+        this.cityCode = cityCode;
+        this.intentionCityCode = intentionCityCode;
     }
 
     public Integer getId() {
@@ -371,6 +379,22 @@ public class HrSearchCondition implements Serializable {
         this.favoriteHrs = favoriteHrs;
     }
 
+    public String getCityCode() {
+        return this.cityCode;
+    }
+
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode;
+    }
+
+    public String getIntentionCityCode() {
+        return this.intentionCityCode;
+    }
+
+    public void setIntentionCityCode(String intentionCityCode) {
+        this.intentionCityCode = intentionCityCode;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrSearchCondition (");
@@ -403,6 +427,8 @@ public class HrSearchCondition implements Serializable {
         sb.append(", ").append(isRecommend);
         sb.append(", ").append(tagIds);
         sb.append(", ").append(favoriteHrs);
+        sb.append(", ").append(cityCode);
+        sb.append(", ").append(intentionCityCode);
 
         sb.append(")");
         return sb.toString();
