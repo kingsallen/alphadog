@@ -161,15 +161,33 @@ public class JobApplicationFilterService {
     }
 
     private boolean validateProfileAndFilterOrigins(String origins, int origin){
-        String[] originArray = origins.split(",");
-        for(String item:originArray){
-            if(StringUtils.isNotNullOrEmpty(item)){
-                if(Integer.parseInt(item)==origin){
-                    return true;
+        String[] array = origins.split(",");
+        if(array==null || array.length==0){
+            return false;
+        }
+        for(String item : array){
+            if(StringUtils.isNotNullOrEmpty(item)&&item.length()<8){
+                //当查找来源是99时特殊处理
+                if(Integer.parseInt(item)==99||Integer.parseInt(item)==-99){
+                    List<Integer> list=new ArrayList<>();
+                    list.add(1);
+                    list.add(2);
+                    list.add(3);
+                    list.add(128);
+                    list.add(256);
+                    list.add(512);
+                    list.add(1024);
+                    if(list.contains(origin)){
+                        return true;
+                    }
+                }else{
+                    if(Integer.parseInt(item)==origin){
+                        return true;
+                    }
                 }
             }
         }
-        return  false;
+        return false;
     }
 
     private void filterExecuteAction(int user_id, JobPositionRecord position, int application_id, int type) throws TException {
