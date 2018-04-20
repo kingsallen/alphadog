@@ -26,17 +26,39 @@ public class CityController {
 	CityServices.Iface cityServices = ServiceManager.SERVICEMANAGER.getService(CityServices.Iface.class);
 
 	@RequestMapping(value = "/dict/cities", method = RequestMethod.GET)
-	@ResponseBody
-	public String get(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			String parameterLevel = request.getParameter("level");
-			int level = parameterLevel == null ? 0 : Integer.parseInt(parameterLevel);
-			Response result = cityServices.getAllCities(level);
-			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
-		}
-	}
+    @ResponseBody
+    public String get(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String parameterLevel = request.getParameter("level");
+            int level = parameterLevel == null ? 0 : Integer.parseInt(parameterLevel);
+            Response result = cityServices.getAllCities(level);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/v2.0/dict/cities", method = RequestMethod.GET)
+    @ResponseBody
+    public String getDictCity(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String level = request.getParameter("level");
+            String parameterUsing = request.getParameter("is_using");
+            String parameterHotCity = request.getParameter("hot_city");
+            int using = -1;
+            if(parameterUsing != null){
+                using = Integer.parseInt(parameterUsing);
+            }
+            int hotcity = -1;
+            if(parameterHotCity != null){
+                hotcity = Integer.parseInt(parameterHotCity);
+            }
+            Response result = cityServices.getAllCitiesByLevelOrUsing(level, using, hotcity);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
 	@RequestMapping(value = "/dict/cities/{id}", method = RequestMethod.GET)
 	@ResponseBody

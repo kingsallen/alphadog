@@ -23,12 +23,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolApplication implements Serializable {
 
-    private static final long serialVersionUID = -437710969;
+    private static final long serialVersionUID = -1525458991;
 
     private Integer   hrId;
     private Integer   companyId;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   type;
 
     public TalentpoolApplication() {}
 
@@ -37,18 +38,21 @@ public class TalentpoolApplication implements Serializable {
         this.companyId = value.companyId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.type = value.type;
     }
 
     public TalentpoolApplication(
         Integer   hrId,
         Integer   companyId,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   type
     ) {
         this.hrId = hrId;
         this.companyId = companyId;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.type = type;
     }
 
     public Integer getHrId() {
@@ -83,6 +87,14 @@ public class TalentpoolApplication implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getType() {
+        return this.type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("TalentpoolApplication (");
@@ -91,6 +103,7 @@ public class TalentpoolApplication implements Serializable {
         sb.append(", ").append(companyId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(type);
 
         sb.append(")");
         return sb.toString();

@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -86,6 +87,8 @@ public class SearchengineService {
 
     @Autowired
     private UserEmployeePointsDao userEmployeePointsDao;
+
+
     @CounterIface
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
                           String employment_type, String candidate_source, String experience, String degree, String salary,
@@ -964,7 +967,7 @@ public class SearchengineService {
         if(queryAppScript!=null){
             ((BoolQueryBuilder) query).filter(queryAppScript);
         }
-        SearchRequestBuilder responseBuilder=client.prepareSearch("users_index").setTypes("users")
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE)
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
                 .setSize(pageSize)
@@ -986,7 +989,7 @@ public class SearchengineService {
         if(queryAppScript!=null){
             ((BoolQueryBuilder) query).filter(queryAppScript);
         }
-        SearchRequestBuilder responseBuilder=client.prepareSearch("users_index").setTypes("users")
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE)
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
                 .setSize(pageSize)
