@@ -1740,7 +1740,8 @@ public class TalentPoolService {
                 }else {
                     for (Integer tagId : userTagIdList) {
                         for (Map<String,Object> record : hrTagList) {
-                            if (tagId == record.get("id")) {
+                            int id=(int)record.get("id");
+                            if (tagId ==id ) {
                                 resultList.add(record);
                                 break;
                             }
@@ -1754,7 +1755,8 @@ public class TalentPoolService {
                     if(!StringUtils.isEmptySet(userTagIdList)){
                         for (Integer tagId : userTagIdList) {
                             for (Map<String,Object> record : hrTagList) {
-                                if (tagId == record.get("id")) {
+                                int id=(int)record.get("id");
+                                if (tagId ==id ) {
                                     resultList.add(record);
                                     break;
                                 }
