@@ -164,6 +164,7 @@ public class JobApplicationFilterService {
         String[] array = origins.split(",");
         if(array==null||array.length==0){
             return false;
+
         }
         for(String item : array){
             if(StringUtils.isNotNullOrEmpty(item)&&item.length()<8){
