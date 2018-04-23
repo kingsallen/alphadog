@@ -36,6 +36,8 @@ import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import java.util.ArrayList;
@@ -105,6 +107,7 @@ public class JobApplicationFilterService {
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
     TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
     ProfileBS.Iface bsService = ServiceManager.SERVICEMANAGER.getService(ProfileBS.Iface.class);
+    MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
     public void handerApplicationFilter(MessageEmailStruct filterInfoStruct) throws Exception {
         logger.info("handerApplicationFilter filterInfoStruct:{}", filterInfoStruct);
@@ -249,11 +252,13 @@ public class JobApplicationFilterService {
             bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
         }else if(type == 4){
             bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
+            sendProfileFilterExecuteEmail(user_id, position);
         }
     }
 
     //发送不匹配邮件
-    private void sendProfileFilterExecuteEmail(int user_id, JobPositionRecord position, int type){
+    private void sendProfileFilterExecuteEmail(int user_id, JobPositionRecord position) throws TException {
+        MandrillEmailStruct emailStruct = new MandrillEmailStruct();
         List<TalentpoolEmail> emailList = talentpoolEmailDao.getTalentpoolEmailByCompanyIdAndConfigId(position.getCompanyId(), Constant.TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS);
         if(emailList != null && emailList.size()>0){
             UserHrAccount accountDO = userHrAccountDao.getHrAccount(position.getPublisher());
@@ -267,7 +272,7 @@ public class JobApplicationFilterService {
                     profileIdList.add(profileRecord.getId());
                     List<ProfileBasicRecord> basicRecordList = basicDao.fetchBasicByProfileIdList(profileIdList);
                     if(basicRecordList != null && basicRecordList.size()>0){
-                        Map<String, Object> params = new HashMap<>();
+                        Map<String, String> params = new HashMap<>();
                         String company_logo = appendUrl(companyDO.getLogo(), env.getProperty("http.cdn.url"));
                         params.put("company_logo", company_logo);
                         String context = emailList.get(0).getContext();
@@ -280,6 +285,17 @@ public class JobApplicationFilterService {
                         params.put("sign", inscribe);
                         params.put("employee_name", basicRecordList.get(0).getName());
                         params.put("company_abbr", companyDO.getAbbreviation());
+                        String qrcodeUrl = appendUrl(wechatDO.getQrcode(),env.getProperty("http.cdn.url"));
+                        params.put("weixin_qrcode", qrcodeUrl);
+                        params.put("official_account_name", wechatDO.getName());
+                        emailStruct.setMergeVars(params);
+                        emailStruct.setTemplateName(Constant.MISMATCH_NOTIFICATION);
+                        String subject = "【"+companyDO.getAbbreviation()+"】不合适通知";
+                        emailStruct.setSubject(subject);
+                        emailStruct.setTo_name(basicRecordList.get(0).getName());
+                        emailStruct.setTo_email(userUserRecord.getEmail());
+                        emailStruct.setFrom_name(companyDO.getAbbreviation()+"人才招聘团队");
+                        mqService.sendMandrilEmail(emailStruct);
                     }
                 }
             }
