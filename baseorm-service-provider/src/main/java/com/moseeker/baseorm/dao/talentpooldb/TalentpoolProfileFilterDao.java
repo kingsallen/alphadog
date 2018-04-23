@@ -1,13 +1,10 @@
 package com.moseeker.baseorm.dao.talentpooldb;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileFilterRecord;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.ValueOp;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -87,5 +84,25 @@ public class TalentpoolProfileFilterDao extends JooqCrudImpl<com.moseeker.baseor
     }
 
 
+    public int inserOrUpdateTalentPoolProfileFilter(TalentpoolProfileFilterRecord record){
+        int result=create.insertInto(TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER,TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.NAME, TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.COMPANY_ID,
+                TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.ORIGINS,TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.WORK_YEARS,
+                TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.CITY_NAME,TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.DEGREE,
+                TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.PAST_POSITION,TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.IN_LAST_JOB_SEARCH_POSITION,
+                TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.MIN_AGE,TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.MAX_AGE,
+                TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.INTENTION_CITY_NAME,TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.INTENTION_SALARY_CODE,
+                TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.SEX, TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.IS_RECOMMEND,
+                TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.COMPANY_NAME,TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.IN_LAST_JOB_SEARCH_COMPANY,
+                TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.CREATE_TIME, TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.UPDATE_TIME,
+                TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.CITY_CODE,TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.INTENTION_CITY_CODE)
+                .values(record.getName(), record.getCompanyId(), record.getOrigins(), record.getWorkYears(), record.getCityName(), record.getDegree(), record.getPastPosition(),
+                        record.getInLastJobSearchPosition(), record.getMinAge(), record.getMaxAge(), record.getIntentionCityName(), record.getIntentionSalaryCode(),
+                        record.getSex(), record.getIsRecommend(), record.getCompanyName(), record.getInLastJobSearchCompany(), new Timestamp(new Date().getTime()), new Timestamp(new Date().getTime()),
+                        record.getCityCode(),record.getIntentionCityCode())
+                .onDuplicateKeyIgnore()
+                .execute();
+        return result;
+
+    }
 
 }

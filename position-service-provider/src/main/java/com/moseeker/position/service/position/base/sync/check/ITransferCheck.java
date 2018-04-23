@@ -1,6 +1,7 @@
 package com.moseeker.position.service.position.base.sync.check;
 
 import com.moseeker.common.iface.IChannelType;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 
 import java.util.List;

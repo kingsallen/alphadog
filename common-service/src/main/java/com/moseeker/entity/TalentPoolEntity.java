@@ -173,8 +173,8 @@ public class TalentPoolEntity {
                         .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.DISABLE.getName(), 1)
                         .and(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.getName(), id, ValueOp.NEQ))
                         .buildQuery();
-            List<TalentpoolCompanyTag> companyTagList = talentpoolCompanyTagDao.getDatas(query);
-            if(companyTagList != null && companyTagList.size()>0){
+            int count = talentpoolCompanyTagDao.getCount(query);
+            if(count > 0){
                 result = "标签名称重复";
             }else{
                 return "OK";
@@ -195,14 +195,17 @@ public class TalentPoolEntity {
         vu.addRequiredStringValidate("筛选规则名称", name, null,null);
         vu.addStringLengthValidate("筛选规则名称", name, null, null, 1, 41);
         String result = vu.validate();
+        List<Integer> disable = new ArrayList<>();
+        disable.add(1);
+        disable.add(2);
         if(!StringUtils.isNotNullOrEmpty(result)) {
             Query query  = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.COMPANY_ID.getName(), companyId)
                         .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.NAME.getName(), name)
-                        .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.DISABLE.getName(), 1)
+                        .and(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.DISABLE.getName(), disable, ValueOp.IN))
                         .and(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.ID.getName(), id, ValueOp.NEQ))
                         .buildQuery();
-            List<TalentpoolProfileFilter> profileFilterList = talentpoolProfileFilterDao.getDatas(query);
-            if(profileFilterList != null && profileFilterList.size()>0){
+            int count = talentpoolProfileFilterDao.getCount(query);
+            if(count>0){
                 result = "筛选规则名称重复";
             }else{
                 return "OK";

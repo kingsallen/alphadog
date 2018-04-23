@@ -196,7 +196,7 @@ public class TalentpoolSearchengine {
         try{
             TransportClient client=searchUtil.getEsClient();
             QueryBuilder query = this.convertBuild(filterList);
-            SearchRequestBuilder builder = client.prepareSearch("users_index").setTypes("users").setQuery(query);
+            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             String[] returnParams={"user.profiles.profile.user_id"};
             builder.setFetchSource(returnParams,null);
             builder.setSize(page_size);

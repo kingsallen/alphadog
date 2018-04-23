@@ -38,6 +38,7 @@ public final class ConstantErrorCodeMessage {
     public static final String WEXIN_IS_SAME = "{'status':10025,'message':'该手机号码绑定的微信和之前微信一样，不需要重新绑定！'}";
     public static final String WEXIN_IS_INVALID = "{'status':10026,'message':'unionid 有误'}";
     public static final String MOBILE_WECHAT_IS_INVALID = "{'status':10027,'message':'该手机号码或微信账号已经注册'}";
+    public static final String HRCOMPANY_CONF_NOTEXIST = "{'status':10028,'message':'公司配置不存在!'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 
@@ -159,6 +160,8 @@ public final class ConstantErrorCodeMessage {
     public static final String WRONG_SYNC_CHANNEL = "{'status':61011,'message':'第三方渠道不存在！'}";
     public static final String SUB_COMPANY_CANT_CONF_CHANNEL = "{'status':61012,'message':'不能给子公司配置同步渠道！'}";
     public static final String ONLY_PAY_COMPANY_CAN_CONF_CHANNEL = "{'status':61015,'message':'只能给付费公司配置同步渠道！'}";
+
+    public static final String NO_AUTH_IMPORT_VERYEAST_PROFILE = "{'status':61016,'message':'该公司没有导入最佳东方简历的权限！'}";
 
 
     //mq服务提示信息说明
