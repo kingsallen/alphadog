@@ -2,11 +2,9 @@ package com.moseeker.servicemanager.config;
 
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4;
 import com.moseeker.baseorm.config.AppConfig;
+import com.moseeker.consistencysuport.producer.MessageChannelConfig;
 import com.moseeker.servicemanager.common.UTF8StringHttpMessageConverter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -22,9 +20,9 @@ import java.util.List;
 @ComponentScan(basePackages = {"com.moseeker.servicemanager.web", "com.moseeker.servicemanager.config",
         "com.moseeker.servicemanager.exception", "com.moseeker.consistencysuport.producer",
         "com.moseeker.servicemanager.consistency"})
-@Import(AppConfig.class)
+@PropertySource("classpath:common.properties")
+@Import({AppConfig.class,MessageChannelConfig.class})
 public class WebConfig extends WebMvcConfigurerAdapter {
-
 
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver getResolver() throws IOException {

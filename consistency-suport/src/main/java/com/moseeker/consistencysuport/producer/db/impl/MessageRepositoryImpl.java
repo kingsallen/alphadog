@@ -19,6 +19,7 @@ import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.joda.time.DateTime;
 import org.jooq.Record1;
 import org.jooq.Result;
+import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DefaultDSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -257,75 +258,82 @@ public class MessageRepositoryImpl implements MessageRepository {
     @Transactional
     @Override
     public void finishBusiness(String messageId, String name) throws ConsistencyException {
-        ConsistencyMessageRecord consistencyMessageRecord = create
-                .selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE)
-                .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
-                .fetchOne();
-        if (consistencyMessageRecord == null) {
-            throw ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS;
-        }
-        ConsistencyBusinessTypeRecord consistencyBusinessTypeRecord = create
-                .selectFrom(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
-                .where(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME.eq(name))
-                .and(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME.eq(consistencyMessageRecord.getName()))
-                .fetchOne();
-        Timestamp now = new Timestamp(System.currentTimeMillis());
-        if (consistencyBusinessTypeRecord == null) {
-            create.insertInto(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
-                    .columns(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME,
-                            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME,
-                            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.REGISTER_TIME)
-                    .values(name, consistencyMessageRecord.getName(), now)
-                    .onDuplicateKeyIgnore();
-        } else {
-            if (consistencyBusinessTypeRecord.getEnable() == AbleFlag.DISABLE.getValue()) {
-                consistencyBusinessTypeRecord.setEnable((byte) AbleFlag.ENABLE.getValue());
-                create.attach(consistencyBusinessTypeRecord);
-                consistencyBusinessTypeRecord.update();
-            }
-        }
-
-        ConsistencyBusinessRecord consistencyBusinessRecord = create
-                .selectFrom(ConsistencyBusiness.CONSISTENCY_BUSINESS)
-                .where(ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID.eq(messageId))
-                .and(ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME.eq(name))
-                .fetchOne();
-
-        //查找正常业务未完成消息的数量。如果未查到任何信息，则表明该业务已经完全处理完毕
-        Record1<Integer> countResult = create
-                .selectCount()
-                .from(ConsistencyBusiness.CONSISTENCY_BUSINESS)
-                .innerJoin(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
-                .on(ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME.eq(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME))
-                .where(ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID.eq(messageId))
-                .and(ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME.ne(name))
-                .and(ConsistencyBusiness.CONSISTENCY_BUSINESS.FINISH.eq(MessageState.UnFinish.getValue()))
-                .and(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.ENABLE.eq((byte) AbleFlag.ENABLE.getValue()))
-                .fetchOne();
-
-        if (consistencyBusinessRecord == null) {
-            create.insertInto(ConsistencyBusiness.CONSISTENCY_BUSINESS)
-                    .columns(ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID,
-                            ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME,
-                            ConsistencyBusiness.CONSISTENCY_BUSINESS.FINISH)
-                    .values(messageId, name, MessageState.Finish.getValue())
-                    .onDuplicateKeyIgnore();
-        } else {
-            consistencyBusinessRecord.setFinish(MessageState.Finish.getValue());
-            create.attach(consistencyBusinessRecord);
-            consistencyBusinessRecord.update();
-        }
-
-        if (countResult.value1() == 0 && consistencyMessageRecord.getFinish() == MessageState.UnFinish.getValue()) {
-            int execute = create.update(ConsistencyMessage.CONSISTENCY_MESSAGE)
-                    .set(ConsistencyMessage.CONSISTENCY_MESSAGE.FINISH, MessageState.Finish.getValue())
-                    .set(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION, ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.add(1))
+        try {
+            ConsistencyMessageRecord consistencyMessageRecord = create
+                    .selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE)
                     .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
-                    .and(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.eq(consistencyMessageRecord.getVersion()))
-                    .execute();
-            if (execute == 0) {
-                retryFinishMessage(messageId, 0);
+                    .fetchOne();
+            if (consistencyMessageRecord == null) {
+                throw ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS;
             }
+            ConsistencyBusinessTypeRecord consistencyBusinessTypeRecord = create
+                    .selectFrom(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                    .where(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME.eq(name))
+                    .and(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME.eq(consistencyMessageRecord.getName()))
+                    .fetchOne();
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            if (consistencyBusinessTypeRecord == null) {
+                create.insertInto(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                        .columns(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME,
+                                ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME,
+                                ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.REGISTER_TIME)
+                        .values(name, consistencyMessageRecord.getName(), now)
+                        .onDuplicateKeyIgnore();
+            } else {
+                if (consistencyBusinessTypeRecord.getEnable() == AbleFlag.DISABLE.getValue()) {
+                    consistencyBusinessTypeRecord.setEnable((byte) AbleFlag.ENABLE.getValue());
+                    create.attach(consistencyBusinessTypeRecord);
+                    consistencyBusinessTypeRecord.update();
+                }
+            }
+
+            ConsistencyBusinessRecord consistencyBusinessRecord = create
+                    .selectFrom(ConsistencyBusiness.CONSISTENCY_BUSINESS)
+                    .where(ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID.eq(messageId))
+                    .and(ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME.eq(name))
+                    .fetchOne();
+
+            //查找正常业务未完成消息的数量。如果未查到任何信息，则表明该业务已经完全处理完毕
+            Record1<Integer> countResult = create
+                    .selectCount()
+                    .from(ConsistencyBusiness.CONSISTENCY_BUSINESS)
+                    .innerJoin(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE)
+                    .on(ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME.eq(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME))
+                    .where(ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID.eq(messageId))
+                    .and(ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME.ne(name))
+                    .and(ConsistencyBusiness.CONSISTENCY_BUSINESS.FINISH.eq(MessageState.UnFinish.getValue()))
+                    .and(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.ENABLE.eq((byte) AbleFlag.ENABLE.getValue()))
+                    .fetchOne();
+
+            if (consistencyBusinessRecord == null) {
+                create.insertInto(ConsistencyBusiness.CONSISTENCY_BUSINESS)
+                        .columns(ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID,
+                                ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME,
+                                ConsistencyBusiness.CONSISTENCY_BUSINESS.FINISH)
+                        .values(messageId, name, MessageState.Finish.getValue())
+                        .onDuplicateKeyIgnore();
+            } else {
+                consistencyBusinessRecord.setFinish(MessageState.Finish.getValue());
+                create.attach(consistencyBusinessRecord);
+                consistencyBusinessRecord.update();
+            }
+
+            if (countResult.value1() == 0 && consistencyMessageRecord.getFinish() == MessageState.UnFinish.getValue()) {
+                int execute = create.update(ConsistencyMessage.CONSISTENCY_MESSAGE)
+                        .set(ConsistencyMessage.CONSISTENCY_MESSAGE.FINISH, MessageState.Finish.getValue())
+                        .set(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION, ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.add(1))
+                        .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
+                        .and(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.eq(consistencyMessageRecord.getVersion()))
+                        .execute();
+                if (execute == 0) {
+                    retryFinishMessage(messageId, 0);
+                }
+            }
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        } catch (ConsistencyException e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 

@@ -5,6 +5,8 @@ import com.moseeker.consistencysuport.common.Notification;
 import com.moseeker.consistencysuport.common.ParamConvertTool;
 import com.moseeker.consistencysuport.consumer.Business;
 import com.moseeker.consistencysuport.producer.db.Message;
+import com.moseeker.consistencysuport.producer.echo.EchoHandler;
+import com.moseeker.consistencysuport.producer.echo.EchoHandlerImpl;
 import com.moseeker.consistencysuport.producer.echo.MessageChannel;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import com.moseeker.consistencysuport.notification.NotificationImpl;
@@ -42,6 +44,7 @@ public class ProducerConsistentManager {
     private Notification notification;                          //通知功能
     private ProtectorTask protectorTask;                        //启动保护任务
     private InvokeHandler invokeHandler;
+    private EchoHandler echoHandler;                            //消息处理工具
 
     private MessageTypeDetector messageTypeDetector;            //业务探针
 
@@ -92,7 +95,7 @@ public class ProducerConsistentManager {
         logger.debug("ProducerConsistentManager start ValidateBusiness");
         this.validateBusiness.startValidateBusinessTask();
         logger.debug("ProducerConsistentManager init finish");
-
+        this.echoHandler = new EchoHandlerImpl(messageRepository, notification);
         this.messageTypeDetector = messageTypeDetector;
     }
 
@@ -209,7 +212,11 @@ public class ProducerConsistentManager {
         messagePersistence.logMessage(message);
     }
 
-    private void validateBusiness() {
-
+    /**
+     * 处理消息
+     * @param message 消息
+     */
+    public void handlerMessage(String message) {
+        echoHandler.handlerMessage(message);
     }
 }

@@ -5,6 +5,7 @@ import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -35,8 +36,8 @@ public class ProducerEntryProxy {
      * @param producerEntry
      * @throws ConsistencyException
      */
-    @AfterReturning(value = "@within(producerEntry) || @annotation(producerEntry)")
-    public void afterReturn(JoinPoint call, ProducerEntry producerEntry) throws ConsistencyException {
+    @Before(value = "@within(producerEntry) || @annotation(producerEntry)")
+    public void before(JoinPoint call, ProducerEntry producerEntry) throws ConsistencyException {
 
         ProducerConsistentManager manager = config.buildManager();
 

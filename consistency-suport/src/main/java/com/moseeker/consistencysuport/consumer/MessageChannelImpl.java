@@ -6,7 +6,8 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.consistencysuport.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,13 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -40,17 +37,16 @@ public class MessageChannelImpl implements MessageChannel {
     private ApplicationContext applicationContext;
 
     private static final String TOPIC_EXCHANGE_NAME = "consistency_message_echo_exchange";
-    private static final String QUEUE_NAME = "consistency_message_echo_queue";
     private static final String CONNECTION_NAME = "consistency_message_connection_factory";
     private static final String AMQP_ADMIN = "consistency_message_AMQP_ADMIN";
-    private String routingKey = "consistency_message_routing_key";
-    private String bingQueue = "bindingBindQueue";
+    private String routingKey = "consistency_message_routing_key.#";
 
     @Override
     public void sendMessage(Message message) {
         if (amqpTemplate == null) {
             initMessageChannel();
         }
+        logger.info("sendMessage message:{}", message);
         amqpTemplate.send(TOPIC_EXCHANGE_NAME, routingKey, MessageBuilder.withBody(JSONObject.toJSONString(message).getBytes()).build());
     }
 
@@ -103,52 +99,6 @@ public class MessageChannelImpl implements MessageChannel {
 
             amqpTemplate = rabbitTemplate;
             beanFactory.registerSingleton(AMQP_ADMIN,amqpTemplate);
-        }
-
-        TopicExchange topicExchange = null;
-        try {
-            topicExchange = applicationContext.getBean(TOPIC_EXCHANGE_NAME, TopicExchange.class);
-        } catch (BeansException e) {
-            logger.warn("initMessageChannel topicExchange is not exist!");
-        }
-        if (topicExchange == null) {
-            topicExchange = new TopicExchange(TOPIC_EXCHANGE_NAME);
-            beanFactory.registerSingleton(TOPIC_EXCHANGE_NAME, topicExchange);
-        }
-
-        Queue queue = null;
-        try {
-            queue = applicationContext.getBean(QUEUE_NAME, Queue.class);
-        } catch (BeansException e) {
-            logger.warn("initMessageChannel queue is not exist!");
-        }
-        if (queue == null) {
-            queue = new Queue(QUEUE_NAME, true);
-            beanFactory.registerSingleton(QUEUE_NAME, queue);
-        }
-
-        List<Binding> bindingList = null;
-        try {
-            bindingList = applicationContext.getBean(bingQueue, List.class);
-        } catch (BeansException e) {
-            logger.warn("initMessageChannel bindingList is not exist!");
-        }
-        if (bindingList != null) {
-            Binding binding = null;
-            for (Binding bindingTemp : bindingList) {
-                if (bindingTemp.getExchange().equals(TOPIC_EXCHANGE_NAME)) {
-                    binding = bindingTemp;
-                    break;
-                }
-            }
-            if (binding == null) {
-                binding = BindingBuilder.bind(queue).to(topicExchange).with(routingKey);
-            }
-            bindingList.add(binding);
-        } else {
-            bindingList = new ArrayList<>();
-            bindingList.add(BindingBuilder.bind(queue).to(topicExchange).with(routingKey));
-            beanFactory.registerSingleton(bingQueue, bindingList);
         }
     }
 }
