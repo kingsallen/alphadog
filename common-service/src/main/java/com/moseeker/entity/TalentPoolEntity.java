@@ -196,10 +196,13 @@ public class TalentPoolEntity {
         vu.addRequiredStringValidate("筛选规则名称", name, null,null);
         vu.addStringLengthValidate("筛选规则名称", name, null, null, 1, 41);
         String result = vu.validate();
+        List<Integer> disable = new ArrayList<>();
+        disable.add(1);
+        disable.add(2);
         if(!StringUtils.isNotNullOrEmpty(result)) {
             Query query  = new Query.QueryBuilder().where(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.COMPANY_ID.getName(), companyId)
                         .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.NAME.getName(), name)
-                        .and(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.DISABLE.getName(), 1)
+                        .and(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.DISABLE.getName(), disable, ValueOp.IN))
                         .and(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.ID.getName(), id, ValueOp.NEQ))
                         .buildQuery();
             int count = talentpoolProfileFilterDao.getCount(query);
@@ -435,7 +438,7 @@ public class TalentPoolEntity {
     @Transactional
     public int addCompanyTag(TalentpoolCompanyTagDO companyTagDO){
         TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecordAll(companyTagDO);
-        talentpoolCompanyTagDao.inserOrUpdateTalentPoolCompanyTag(tagRecord);
+        talentpoolCompanyTagDao.addRecord(tagRecord);
         return tagRecord.getId();
     }
 
@@ -450,7 +453,7 @@ public class TalentPoolEntity {
     @Transactional
     public int addCompanyProfileFilter(TalentpoolCompanyTagDO profileFilterDO, List<ActionForm> actionFormList, List<Integer> positionIdList, int position_total){
         TalentpoolProfileFilterRecord filterRecord = talentpoolProfileFilterDao.dataToRecordAll(profileFilterDO);
-        talentpoolProfileFilterDao.inserOrUpdateTalentPoolProfileFilter(filterRecord);
+        talentpoolProfileFilterDao.addRecord(filterRecord);
         insertTalentpoolProfileFilterExecuteRecord(actionFormList, filterRecord.getId());
         insertJobPositionProfileFilterRecord(positionIdList, filterRecord.getId(), profileFilterDO.getCompany_id(), position_total);
         return filterRecord.getId();

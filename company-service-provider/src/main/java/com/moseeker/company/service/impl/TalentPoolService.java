@@ -15,9 +15,12 @@ import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
@@ -40,6 +43,7 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +100,8 @@ public class TalentPoolService {
     private TalentpoolCompanyTagDao talentpoolCompanyTagDao;
     @Autowired
     private HrCompanyDao hrCompanyDao;
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
@@ -1115,29 +1121,40 @@ public class TalentPoolService {
         }else if(flag == 1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
-        String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
-        if("OK".equals(result)){
-            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
-            if(StringUtils.isNullOrEmpty(filterString)){
-                int id = talentPoolEntity.addCompanyTag(companyTagDO);
-                List<Integer> idList = new ArrayList<>();
-                idList.add(id);
-                //ES更新
-                try {
-                    tp.startTast(() -> {
-                        Map<String, Object> map = JSON.parseObject(JSON.toJSONString(companyTagDO));
-                        tagService.handlerCompanyTag(idList, 0, map);
-                        return 0;
-                    });
-                }catch(Exception e){
-                    logger.error(e.getMessage(),e);
+        try {
+            String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(), companyTagDO.getCompany_id() + "", companyTagDO.getName());
+            if (StringUtils.isNullOrEmpty(info)) {
+                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(), companyTagDO.getCompany_id() + "", companyTagDO.getName(), "true");
+                String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
+                if ("OK".equals(result)) {
+                    String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+                    if (StringUtils.isNullOrEmpty(filterString)) {
+                        int id = talentPoolEntity.addCompanyTag(companyTagDO);
+                        List<Integer> idList = new ArrayList<>();
+                        idList.add(id);
+                        //ES更新
+                        try {
+                            tp.startTast(() -> {
+                                Map<String, Object> map = JSON.parseObject(JSON.toJSONString(companyTagDO));
+                                tagService.handlerCompanyTag(idList, 0, map);
+                                return 0;
+                            });
+                        } catch (Exception e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                        return ResponseUtils.success("");
+                    } else {
+                        return ResponseUtils.fail(1, filterString);
+                    }
                 }
-                return  ResponseUtils.success("");
-            }else{
-                return ResponseUtils.fail(1, filterString);
+                return ResponseUtils.fail(1, result);
             }
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }finally {
+            redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(), companyTagDO.getCompany_id() + "", companyTagDO.getName());
         }
-        return ResponseUtils.fail(1, result);
+        return ResponseUtils.fail(1, "请稍后重试");
     }
 
 
@@ -1363,17 +1380,28 @@ public class TalentPoolService {
         }else if(flag == 1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
-        String result = talentPoolEntity.validateCompanyTalentPoolV3ByFilterName(filterDO.getName(), filterDO.getCompany_id(), filterDO.getId());
-        if("OK".equals(result)){
-            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
-            if(StringUtils.isNullOrEmpty(filterString)){
-                int id = talentPoolEntity.addCompanyProfileFilter(filterDO, ActionFormList, positionIdList, position_total);
-                return  ResponseUtils.success("");
-            }else{
-                return ResponseUtils.fail(1, filterString);
+        try {
+            String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName());
+            if (!StringUtils.isNotNullOrEmpty(info)) {
+                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName(), "true");
+                String result = talentPoolEntity.validateCompanyTalentPoolV3ByFilterName(filterDO.getName(), filterDO.getCompany_id(), filterDO.getId());
+                if ("OK".equals(result)) {
+                    String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
+                    if (StringUtils.isNullOrEmpty(filterString)) {
+                        int id = talentPoolEntity.addCompanyProfileFilter(filterDO, ActionFormList, positionIdList, position_total);
+                        return ResponseUtils.success("");
+                    } else {
+                        return ResponseUtils.fail(1, filterString);
+                    }
+                }
+                return ResponseUtils.fail(1, result);
             }
+        }catch(Exception e){
+            logger.error(e.getMessage());
+        }finally {
+            redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName());
         }
-        return ResponseUtils.fail(1, result);
+        return ResponseUtils.fail(1, "请稍后重试");
     }
 
     public Response updateProfileFilter(TalentpoolCompanyTagDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
