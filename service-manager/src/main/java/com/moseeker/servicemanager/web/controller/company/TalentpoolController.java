@@ -79,12 +79,27 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=Integer.parseInt(String.valueOf( data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
-            List<Integer> userIdList=ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
-            if(StringUtils.isEmptyList(userIdList)){
-                return  ResponseLogNotification.fail(request,"userId不能为空");
+            String flag=(String) data.get("flag");
+            if(StringUtils.isNullOrEmpty(flag)||Integer.parseInt(flag)==0) {
+                List<Integer> userIdList = ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
+                if (StringUtils.isEmptyList(userIdList)) {
+                    return ResponseLogNotification.fail(request, "userId不能为空");
+                }
+                Response result = service.batchCancelTalent(hrId, userIdList, companyId);
+                return ResponseLogNotification.success(request, result);
+            }else{
+                Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+                Map<String,String> params=new HashMap<>();
+                if(reqParams==null||reqParams.isEmpty()){
+                    return ResponseLogNotification.fail(request, "参数不能为空");
+                }
+                for(String key:reqParams.keySet()){
+                    params.put(key,String.valueOf(reqParams.get(key)));
+                }
+                service.cancleAllTalent(hrId,params,companyId);
+                Response res= ResponseUtils.success("");
+                return ResponseLogNotification.success(request, res);
             }
-            Response result = service.batchCancelTalent(hrId,userIdList,companyId);
-            return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -263,12 +278,27 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
-            List<Integer> userIdList=(List<Integer>)data.get("user_ids");
-            if(StringUtils.isEmptyList(userIdList)){
-                return  ResponseLogNotification.fail(request,"userId不能为空");
+            String flag=(String) data.get("flag");
+            if(StringUtils.isNullOrEmpty(flag)||Integer.parseInt(flag)==0) {
+                List<Integer> userIdList = (List<Integer>) data.get("user_ids");
+                if (StringUtils.isEmptyList(userIdList)) {
+                    return ResponseLogNotification.fail(request, "userId不能为空");
+                }
+                Response result = service.batchAddPublicTalent(hrId, companyId, userIdList);
+                return ResponseLogNotification.success(request, result);
+            }else{
+                Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+                Map<String,String> params=new HashMap<>();
+                if(reqParams==null||reqParams.isEmpty()){
+                    return ResponseLogNotification.fail(request, "参数不能为空");
+                }
+                for(String key:reqParams.keySet()){
+                    params.put(key,String.valueOf(reqParams.get(key)));
+                }
+                service.addAllTalentPublic(hrId,params,companyId);
+                Response res= ResponseUtils.success("");
+                return ResponseLogNotification.success(request, res);
             }
-            Response result = service.batchAddPublicTalent(hrId,companyId,userIdList);
-            return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -312,12 +342,27 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
-            List<Integer> userIdList=ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
-            if(StringUtils.isEmptyList(userIdList)){
-                return  ResponseLogNotification.fail(request,"userId不能为空");
+            String flag=(String) data.get("flag");
+            if(StringUtils.isNullOrEmpty(flag)||Integer.parseInt(flag)==0) {
+                List<Integer> userIdList = ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
+                if (StringUtils.isEmptyList(userIdList)) {
+                    return ResponseLogNotification.fail(request, "userId不能为空");
+                }
+                Response result = service.batchCancelPublicTalent(hrId, companyId, userIdList);
+                return ResponseLogNotification.success(request, result);
+            }else{
+                Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+                Map<String,String> params=new HashMap<>();
+                if(reqParams==null||reqParams.isEmpty()){
+                    return ResponseLogNotification.fail(request, "参数不能为空");
+                }
+                for(String key:reqParams.keySet()){
+                    params.put(key,String.valueOf(reqParams.get(key)));
+                }
+                service.addAllTalentPrivate(hrId,params,companyId);
+                Response res= ResponseUtils.success("");
+                return ResponseLogNotification.success(request, res);
             }
-            Response result = service.batchCancelPublicTalent(hrId,companyId,userIdList);
-            return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());

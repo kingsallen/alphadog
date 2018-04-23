@@ -105,4 +105,7 @@ service TalentpoolServices {
     common_struct.Response getTalentCountByPositionFilter(1:i32 hr_id, 2:i32 company_id, 3:i32 position_id) throws (1: common_struct.BIZException e)
     void  addAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
     void  addAllTalentTag(1:map<string,string> params,2:list<i32> tagList,3:i32 companyId,4:i32 hrId) throws (1: common_struct.BIZException e)
+    void  addAllTalentPublic(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  addAllTalentPrivate(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  cancleAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
 }
