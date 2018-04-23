@@ -79,4 +79,11 @@ public class TalentpoolApplicationDao extends DAOImpl<TalentpoolApplicationRecor
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolApplication> fetchByUpdateTime(Timestamp... values) {
         return fetch(TalentpoolApplication.TALENTPOOL_APPLICATION.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>type IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolApplication> fetchByType(Integer... values) {
+        return fetch(TalentpoolApplication.TALENTPOOL_APPLICATION.TYPE, values);
+    }
 }

@@ -238,5 +238,8 @@ public final class Constant {
 
     //小程序简历详情路径
     public static  final String WX_APP_PROFILE_INFO_URL = "pages/profile?user_id={}";
+    //简历列表的索引名称
+    public static final String ES_INDEX="users";
+    public static final String ES_TYPE="users";
 
 }

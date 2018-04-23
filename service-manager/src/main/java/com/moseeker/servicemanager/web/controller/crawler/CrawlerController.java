@@ -15,9 +15,11 @@ import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializeFilter;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ScraperHtmlParam;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +71,7 @@ public class CrawlerController {
 			ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
 			// GET方法 通用参数解析并赋值
 			ValidateUtil vu = new ValidateUtil();
-			vu.addIntTypeValidate("导入方式", form.getType(), null, null, 1, 5);
+			vu.addIntTypeValidate("导入方式", form.getType(), null, null, 1, 7);
 			vu.addIntTypeValidate("用户编号", form.getUser_id(), null, null, 1, Integer.MAX_VALUE);
 			vu.addIntTypeValidate("项目编号", form.getAppid(), null, null, 0, 100);
 			if (form.getType() == 4) {
@@ -81,9 +83,7 @@ public class CrawlerController {
 			String result = vu.validate();
 			if (StringUtils.isNullOrEmpty(result)) {
 				logger.info("/crawler");
-				Response res = crawlerUtils.fetchFirstResume(form.getUsername(), form.getPassword(), form.getToken(),
-						form.getType(), form.getLang(), form.getSource(), form.getCompleteness(), form.getAppid(),
-						form.getUser_id(), form.getUa());
+				Response res = crawlerUtils.fetchFirstResume(form);
 				logger.info("crawler crawlerUtils.fetchFirstResume:{}",res);
 				if (res != null && res.getStatus() == 0) {
 					logger.info("/crawler profile:"+res.getData());

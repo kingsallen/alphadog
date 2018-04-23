@@ -2,6 +2,7 @@ package com.moseeker.company.service.impl;
 
 import com.moseeker.company.config.AppConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import org.apache.thrift.TException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,10 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by zztaiwll on 17/12/6.
@@ -22,6 +22,8 @@ import java.util.Set;
 public class TalentPoolServiceTest {
     @Autowired
     private TalentPoolService talentPoolService;
+    @Autowired
+    private CompanyTagService companyTagService;
 
     @Test
     public void testBatchAddTalent() throws TException {
@@ -82,7 +84,7 @@ public class TalentPoolServiceTest {
     public void testGetAllHrTag() throws TException {
         int hrId=82690;
         int companyId=4;
-        Response res=talentPoolService.getAllHrTag(hrId,companyId,1,100);
+        Map<String,Object> res=talentPoolService.getAllHrTag(hrId,companyId,1,100);
         System.out.println(res);
 
     }
@@ -240,8 +242,43 @@ public class TalentPoolServiceTest {
         Response res=talentPoolService.getPublicAndHrTalentByUserIdList(hrId,companyId,userIdSet);
         System.out.println(res);
     }
+    @Test
+    public void testCompanyTagIdList() throws TException {
+        int hrId=82752;
+        int companyId=39978;
+        Response res=talentPoolService.getCompanyTagList(hrId,companyId,0, 0);
+        System.out.println(res);
+    }
 
+    @Test
+    public void testDeleteCompanyTagIdList() throws TException {
+        int hrId=82752;
+        int companyId=39978;
+        List<Integer> companyTagIds = new ArrayList<>();
+        companyTagIds.add(2);
+        Response res=talentPoolService.deleteCompanyTags(hrId,companyId,companyTagIds);
+        System.out.println(res);
+    }
 
+    @Test
+    public void testaddCompanyTagIdList() throws TException {
+        int hrId=82752;
+        TalentpoolCompanyTagDO companyTagDO = new TalentpoolCompanyTagDO();
+        companyTagDO.setCompany_id(39978);
+        companyTagDO.setName("assdkahsdagdjkhajksdajkhdjkadjkah");
+        companyTagDO.setSex(2);
+        companyTagDO.setCity_name("上海");
+        Response res=talentPoolService.addCompanyTag(companyTagDO, hrId);
+        System.out.println(res+"");
+    }
+//
+//    @Test
+//    public void testUpdateEs() throws TException {
+//        List<Integer> tagIDList=new ArrayList<>();
+//        tagIDList.add(1);
+//        int type=0;
+//        companyTagService.handlerCompanyTag(tagIDList,type);
+//    }
 
 
 }

@@ -2,14 +2,18 @@ package com.moseeker.position.service.position.base.sync.check;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractTransferCheck<T> implements ITransferCheck<T> {
     private Map<T,List<String>> errorMsgMap=new ConcurrentHashMap<>();
+
+    protected static final String CHECK_ERROR = "检查职位同步错误！";
 
     //获取前台表单对应类型class
     public abstract Class<T> getFormClass();
@@ -24,7 +28,10 @@ public abstract class AbstractTransferCheck<T> implements ITransferCheck<T> {
     }
 
     public List<String> getError(JSONObject jsonForm, JobPositionDO moseekerPosition){
-        return getError(jsonForm.toJavaObject(getFormClass()),moseekerPosition);
+        List<String> errorMsg;
+        errorMsg = getError(jsonForm.toJavaObject(getFormClass()),moseekerPosition);
+
+        return errorMsg;
     }
 
     @Override

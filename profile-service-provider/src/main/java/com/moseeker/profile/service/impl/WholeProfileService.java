@@ -47,6 +47,7 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -179,6 +180,8 @@ public class WholeProfileService {
     RetriveProfile retriveProfile;
 
     UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
+
+    TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
 
     private Query getProfileQuery(int profileId){
         return new Query.QueryBuilder().where("profile_id",profileId).setPageSize(Integer.MAX_VALUE).buildQuery();
@@ -1231,11 +1234,16 @@ public class WholeProfileService {
                 return res;
             }
         }
+
         //此处应该考虑账号合并导致的问题
         talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName);
         Set<Integer> userIdList=new HashSet<>();
         userIdList.add(newUerId);
         talentPoolEntity.realTimeUpload(userIdList,1);
+        pool.startTast(() -> {
+            talentpoolService.handlerCompanyTagAndProfile(userIdList,companyId);
+            return 0;
+        });
         return ResponseUtils.success("success");
     }
     /*
@@ -1264,6 +1272,8 @@ public class WholeProfileService {
                 map.put("company",company);
                 if(map.get("position_name")!=null){
                     map.put("job",map.get("position_name"));
+                } else {
+                    map.put("job",map.get("job"));
                 }
             }
         }
@@ -1340,7 +1350,7 @@ public class WholeProfileService {
             }else{
                 Map<String,Object> profileMap=new HashMap<>();
                 profileMap.put("user_id",newUserId);
-                profileMap.put("origin",0);
+                profileMap.put("origin","0");
                 resume.put("profile",profileMap);
             }
         }
