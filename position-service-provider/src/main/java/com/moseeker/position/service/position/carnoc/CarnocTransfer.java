@@ -70,7 +70,7 @@ public class CarnocTransfer extends AbstractPositionTransfer<ThirdPartyPosition,
         positionInfo.setJob_number((int) positionDB.getCount());
         positionInfo.setRecruit_school(positionDB.getCandidateSource() == 1);
         positionInfo.setCity(getCities(positionDB));
-        positionInfo.setDegree(CarnocTransferStrategy.CarnocDegree.moseekerToCarnoc(String.valueOf(positionDB.getDegree())));
+        positionInfo.setDegree(CarnocTransferStrategy.CarnocDegree.moseekerToCarnoc(String.valueOf(Double.valueOf(positionDB.getDegree()).intValue())));
         positionInfo.setWork_exp(CarnocTransferStrategy.WorkExp.moseekerToCarnoc(positionDB.getExperience()));
 
         return positionInfo;
