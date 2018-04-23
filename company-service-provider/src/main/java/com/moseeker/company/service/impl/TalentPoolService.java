@@ -1385,7 +1385,6 @@ public class TalentPoolService {
             String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName());
             logger.info("addProfileFilter info:{}", info);
             if (StringUtils.isNullOrEmpty(info)) {
-
                 redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName(), "true");
                 String result = talentPoolEntity.validateCompanyTalentPoolV3ByFilterName(filterDO.getName(), filterDO.getCompany_id(), filterDO.getId());
                 logger.info("addProfileFilter result:{}", result);
