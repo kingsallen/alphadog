@@ -217,6 +217,24 @@ public class JobApplicationController {
 		}
 	}
 
+	/**
+	 * HR查看申请
+	 */
+	@RequestMapping(value = "/v1/applications/view", method = RequestMethod.POST)
+	@ResponseBody
+	public String viewApplications(HttpServletRequest request) {
+		try {
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+			List<Integer> applicationIds = (List<Integer>)params.get("application_ids");
+			int hrId = params.getInt("hr_id");
+			applicationService.viewApplications(hrId, applicationIds);
+			return ResponseLogNotification.successJson(request, "success");
+		} catch (Exception e) {
+			logger.warn(e.getMessage());
+			return ResponseLogNotification.fail(request,e.getMessage());
+		}
+	}
+
     /**
      * 获取HR有多少未读简历
      */
@@ -234,22 +252,4 @@ public class JobApplicationController {
             return ResponseLogNotification.fail(request,e.getMessage());
         }
     }
-
-	/**
-	 * HR查看申请
-	 */
-	@RequestMapping(value = "/v1/applications/view", method = RequestMethod.POST)
-	@ResponseBody
-	public String viewApplications(HttpServletRequest request) {
-		try {
-			Params<String, Object> params = ParamUtils.parseRequestParam(request);
-			List<Integer> applicationIds = (List<Integer>)params.get("application_ids");
-			int hrId = params.getInt("hr_id");
-			applicationService.viewApplications(hrId, applicationIds);
-			return ResponseLogNotification.successJson(request, "success");
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return ResponseLogNotification.fail(request,e.getMessage());
-		}
-	}
 }

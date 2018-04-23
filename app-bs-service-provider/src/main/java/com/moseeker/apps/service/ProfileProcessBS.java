@@ -228,7 +228,10 @@ public class ProfileProcessBS {
                         List<Integer> recommenderIds = new ArrayList<Integer>();
                         List<RewardsToBeAddBean> rewardsToBeAdd = new ArrayList<RewardsToBeAddBean>();
                         // 简历还未被浏览就被拒绝，则视为已被浏览，需要在添加角色操作的历史记录之前插入建立被查看的历史记录
-                        List<HrOperationRecordDO> turnToCVCheckeds = new ArrayList<HrOperationRecordDO>();
+                        List<HrOperationRecordDO> turnToCVCheckeds = new ArrayList<
+
+
+                                >();
                         RewardsToBeAddBean reward = null;
                         HrOperationRecordDO turnToCVChecked = null;
                         for (ProcessValidationStruct record : list) {
