@@ -1,5 +1,6 @@
 package com.moseeker.common.validation;
 
+import com.moseeker.common.validation.rules.*;
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -9,16 +10,6 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.ValidateNotAppointParamException;
 import com.moseeker.common.exception.ValidateNotAppointValidateException;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.validation.rules.DateType;
-import com.moseeker.common.validation.rules.DateTypeValidateRule;
-import com.moseeker.common.validation.rules.DoubleTypeValidateRule;
-import com.moseeker.common.validation.rules.IntTypeValidateRule;
-import com.moseeker.common.validation.rules.RegExpressValidateRule;
-import com.moseeker.common.validation.rules.RequiredOneValidateRule;
-import com.moseeker.common.validation.rules.RequiredStringValidateRule;
-import com.moseeker.common.validation.rules.RequiredValidateRule;
-import com.moseeker.common.validation.rules.SensitiveWordsValidateRule;
-import com.moseeker.common.validation.rules.StringLengthValidateRule;
 
 /**
  * 
@@ -185,6 +176,40 @@ public class ValidateUtil {
 		}
 		return slvr;
 	}
+
+    /**
+     * 往验证器中添加一个StringLengthValidateRule
+     *
+     * @param param
+     * @param beanToBeValidated
+     * @param errorMessage
+     * @param message
+     * @param minRange
+     * @param maxRange
+     * @return DasValidateRule
+     */
+    public ValidateRule addStringSplitLengthValidate(String param,
+                                                Object beanToBeValidated, String errorMessage, String message,
+                                                Integer minRange, Integer maxRange, String splitString)
+            throws ValidateNotAppointParamException {
+        StringSplitLengthValidateRule slvr = null;
+        try {
+            slvr = new StringSplitLengthValidateRule(param, beanToBeValidated,
+                    minRange, maxRange, splitString, errorMessage);
+            if (!StringUtils.isNullOrEmpty(message)) {
+                slvr.setMessage(message);
+            }
+
+            addToRules(slvr);
+
+        } catch (ValidateNotAppointParamException e) {
+            logger.error("faild!", e);
+            throw e;
+        } finally {
+            // do nothing
+        }
+        return slvr;
+    }
 
 	/**
 	 * 往验证器中添加一个IntTypeValidateRule

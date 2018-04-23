@@ -1224,7 +1224,7 @@ public class ProfileService {
                 result.put(fieldName, new HashMap<String, Object>(){{put("result",true);put("msg","success");}});
             } else {
                 result.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg", org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getErrorMsg(),"自定义字段"+fieldName+"为空"));}});
-                logger.error("自定义字段校验失败! field_name:{}, value:{}, error_msg:{}", fieldName, customResult, configSysCvTplDO.getErrorMsg());
+                logger.warn("自定义字段校验失败! field_name:{}, value:{}, error_msg:{}", fieldName, customResult, configSysCvTplDO.getErrorMsg());
             }
         });
         return ResponseUtils.success(result);

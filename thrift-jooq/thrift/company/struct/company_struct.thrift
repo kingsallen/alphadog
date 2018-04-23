@@ -96,7 +96,10 @@ struct HrCompanyConf {
 	20: optional double show_in_qx,	//公司信息、团队信息、职位信息在仟寻展示，0: 否， 1: 是
 	21: optional string employee_slug,	//员工自定义称谓
 	22: optional string display_locale,	//员工自定义称谓
-	23: optional i8 talentpool_status
+	23: optional i8 talentpool_status,
+	24: optional i16 school_application_count_limit, //一个人在一个公司下每月校招职位申请次数限制
+	25: optional i16 job51_salary_discuss,    //51薪资面议开关 0：未开启，1：开启
+    26: optional i16 veryeast_switch         //最佳东方c端简历导入开关 0：未开启，1：开启
 
 }
 
@@ -108,3 +111,4 @@ struct HrCompanyFeatureDO {
     5: optional  string update_time,
     6: optional  i32    disable
 }
+
