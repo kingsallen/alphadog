@@ -16,6 +16,7 @@ import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.company.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import org.apache.thrift.TException;
@@ -354,6 +355,11 @@ public class CompanyServicesImpl implements Iface {
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
+    }
+
+    @Override
+    public HrCompanyConfDO getCompanyConfById(int companyId) throws BIZException {
+        return service.getHrCompanyConfById(companyId);
     }
 
 

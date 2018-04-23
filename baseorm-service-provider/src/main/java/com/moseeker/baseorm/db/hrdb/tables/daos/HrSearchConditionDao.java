@@ -253,4 +253,18 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByFavoriteHrs(String... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.FAVORITE_HRS, values);
     }
+
+    /**
+     * Fetch records that have <code>city_code IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByCityCode(String... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.CITY_CODE, values);
+    }
+
+    /**
+     * Fetch records that have <code>intention_city_code IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByIntentionCityCode(String... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.INTENTION_CITY_CODE, values);
+    }
 }
