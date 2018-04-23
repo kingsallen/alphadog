@@ -14,6 +14,7 @@ import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionMiniBean;
 import com.moseeker.position.pojo.PositionSyncResultPojo;
@@ -103,7 +104,7 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response getResources(CommonQuery query) throws TException {
         try {
-            List<JobPositionRecord> list = service.getPositionRecords(QueryConvert.commonQueryConvertToQuery(query));
+            List<JobPositionRecordWithCityName> list = service.getPositionRecords(QueryConvert.commonQueryConvertToQuery(query));
             List<Position> structs = BeanUtils.DBToStruct(Position.class, list);
 
             if (!structs.isEmpty()) {
