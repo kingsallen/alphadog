@@ -17,4 +17,8 @@ public class HrWxWechatDao extends JooqCrudImpl<HrWxWechatDO, HrWxWechatRecord> 
 	public HrWxWechatDao(TableImpl<HrWxWechatRecord> table, Class<HrWxWechatDO> hrWxWechatDOClass) {
 		super(table, hrWxWechatDOClass);
 	}
+
+	public HrWxWechatDO getHrWxWechatById(int id ){
+
+    }
 }

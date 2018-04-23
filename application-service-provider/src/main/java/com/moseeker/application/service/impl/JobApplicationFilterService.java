@@ -1,18 +1,26 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionProfileFilterDao;
 import com.moseeker.baseorm.dao.logdb.LogTalentpoolProfileFilterLogDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolExecuteDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolProfileFilterDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolProfileFilterExcuteDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolProfileFilterLogRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -21,6 +29,9 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import java.util.ArrayList;
@@ -63,6 +74,17 @@ public class JobApplicationFilterService {
 
     @Autowired
     private TalentpoolExecuteDao talentpoolExecuteDao;
+    @Autowired
+    private TalentpoolEmailDao talentpoolEmailDao;
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
+
+    @Autowired
+    private HrCompanyAccountDao companyAccountDao;
+
+    @Autowired
+    private HrWxWechatDao hrWxWechatDao;
 
 
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
@@ -212,6 +234,17 @@ public class JobApplicationFilterService {
             bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
         }else if(type == 4){
             bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
+        }
+    }
+
+    private void sendProfileFilterExecuteEmail(int user_id, JobPositionRecord position, int type){
+        List<TalentpoolEmail> emailList = talentpoolEmailDao.getTalentpoolEmailByCompanyIdAndConfigId(position.getCompanyId(), Constant.TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS);
+        if(emailList != null && emailList.size()>0){
+            UserHrAccount accountDO = userHrAccountDao.getHrAccount(position.getPublisher());
+            if(accountDO != null){
+                HrCompanyDO companyDO = companyAccountDao.getHrCompany(accountDO.getId());
+                HrWxWechatDO wechatDO = hrWxWechatDao
+            }
         }
     }
 }
