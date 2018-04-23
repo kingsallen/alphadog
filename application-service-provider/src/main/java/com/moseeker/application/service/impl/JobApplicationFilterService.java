@@ -8,21 +8,27 @@ import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionProfileFilterDao;
 import com.moseeker.baseorm.dao.logdb.LogTalentpoolProfileFilterLogDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolExecuteDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolProfileFilterDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolProfileFilterExcuteDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyAccount;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolProfileFilterLogRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
+import com.moseeker.entity.biz.EmailContextReplaceUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -30,8 +36,6 @@ import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import java.util.ArrayList;
@@ -43,6 +47,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 /**
@@ -68,6 +73,8 @@ public class JobApplicationFilterService {
     @Autowired
     private LogTalentpoolProfileFilterLogDao logDao;
 
+    @Autowired
+    private Environment env;
 
     @Autowired
     private TalentpoolProfileFilterExcuteDao talentpoolProfileFilterExcuteDao;
@@ -85,6 +92,14 @@ public class JobApplicationFilterService {
 
     @Autowired
     private HrWxWechatDao hrWxWechatDao;
+    @Autowired
+    private UserUserDao userUserDao;
+
+    @Autowired
+    private ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileBasicDao basicDao;
 
 
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
@@ -237,14 +252,51 @@ public class JobApplicationFilterService {
         }
     }
 
+    //发送不匹配邮件
     private void sendProfileFilterExecuteEmail(int user_id, JobPositionRecord position, int type){
         List<TalentpoolEmail> emailList = talentpoolEmailDao.getTalentpoolEmailByCompanyIdAndConfigId(position.getCompanyId(), Constant.TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS);
         if(emailList != null && emailList.size()>0){
             UserHrAccount accountDO = userHrAccountDao.getHrAccount(position.getPublisher());
-            if(accountDO != null){
+            UserUserRecord userUserRecord = userUserDao.getUserById(user_id);
+            HrWxWechatDO wechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(position.getCompanyId());
+            if(accountDO != null && userUserRecord!=null && wechatDO != null){
                 HrCompanyDO companyDO = companyAccountDao.getHrCompany(accountDO.getId());
-                HrWxWechatDO wechatDO = hrWxWechatDao
+                ProfileProfileRecord profileRecord = profileDao.getProfileByUserId(user_id);
+                if(profileRecord != null){
+                    List<Integer> profileIdList = new ArrayList<>();
+                    profileIdList.add(profileRecord.getId());
+                    List<ProfileBasicRecord> basicRecordList = basicDao.fetchBasicByProfileIdList(profileIdList);
+                    if(basicRecordList != null && basicRecordList.size()>0){
+                        Map<String, Object> params = new HashMap<>();
+                        String company_logo = appendUrl(companyDO.getLogo(), env.getProperty("http.cdn.url"));
+                        params.put("company_logo", company_logo);
+                        String context = emailList.get(0).getContext();
+                        context = EmailContextReplaceUtils.replaceUtil(context, companyDO.getAbbreviation(), position.getTitle(),
+                                basicRecordList.get(0).getName(),accountDO.getUsername(), wechatDO.getName());
+                        String inscribe = emailList.get(0).getInscribe();
+                        inscribe = EmailContextReplaceUtils.replaceUtil(inscribe, companyDO.getAbbreviation(), position.getTitle(),
+                                basicRecordList.get(0).getName(),accountDO.getUsername(), wechatDO.getName());
+                        params.put("text", context);
+                        params.put("sign", inscribe);
+                    }
+                }
             }
         }
+    }
+
+    private  String appendUrl(String url, String CDN) {
+
+        String logo = "";
+        if (StringUtils.isNotNullOrEmpty(url)) {
+            if (url.startsWith("http")) {
+                logo = url;
+            } else {
+                logo = CDN + url;
+            }
+            if (!logo.startsWith("https") && logo.startsWith("http")) {
+                logo = logo.replace("http", "https");
+            }
+        }
+        return logo;
     }
 }
