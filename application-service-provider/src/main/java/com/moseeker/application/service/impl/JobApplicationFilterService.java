@@ -278,6 +278,8 @@ public class JobApplicationFilterService {
                                 basicRecordList.get(0).getName(),accountDO.getUsername(), wechatDO.getName());
                         params.put("text", context);
                         params.put("sign", inscribe);
+                        params.put("employee_name", basicRecordList.get(0).getName());
+                        params.put("company_abbr", companyDO.getAbbreviation());
                     }
                 }
             }
