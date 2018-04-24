@@ -106,4 +106,11 @@ service TalentpoolServices {
     common_struct.Response getEmailInfo(1:i32 hr_id,2:i32 company_id,3:i32 type) throws (1: common_struct.BIZException e)
     common_struct.Response updateCompanyEmailInfo(1:i32 hr_id,2:i32 company_id,3:i32 type, 4:i32 disable, 5:string context,6:string inscribe) throws (1: common_struct.BIZException e)
 
+    talentpool_struct.EmailAccountForm fetchEmailAccounts(1: i32 companyId, 2: string companyName, 3: i32 pageNumber, 4: i32 pageSize) throws (1: common_struct.BIZException e)
+
+    talentpool_struct.EmailAccountConsumptionForm fetchEmailAccountConsumption(1: i32 companyId, 2: i8 type, 3: i32 pageNumber, 4: i32 pageSize) throws (1: common_struct.BIZException e)
+
+    i32 rechargeEmailAccount(1: i32 companyId, 2: i32 lost) throws (1: common_struct.BIZException e)
+
+    void updateEmailAccountRechargeValue(1:i32 id, 2: i32 lost) throws (1: common_struct.BIZException e)
 }

@@ -4,7 +4,11 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import static com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyEmailInfoRecord;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
@@ -29,4 +33,45 @@ public class HrCompanyEmailInfoDao extends JooqCrudImpl<HrCompanyEmailInfo, HrCo
         return list;
     }
 
+    public int countEmailAccounts(List<Integer> companyIdList) {
+        if (companyIdList != null && companyIdList.size() > 0) {
+            return create.selectCount()
+                    .from(HR_COMPANY_EMAIL_INFO)
+                    .where(HR_COMPANY_EMAIL_INFO.COMPANY_ID.in(companyIdList))
+                    .fetchOne()
+                    .value1();
+
+        } else {
+            return create.selectCount()
+                    .from(HR_COMPANY_EMAIL_INFO)
+                    .fetchOne()
+                    .value1();
+        }
+    }
+
+    public List<HrCompanyEmailInfo> fetchOrderByCreateTime(List<Integer> companyIdList, int index, int pageSize) {
+        if (companyIdList != null && companyIdList.size() > 0) {
+            Result<HrCompanyEmailInfoRecord> result = create.selectFrom(HR_COMPANY_EMAIL_INFO)
+                    .where(HR_COMPANY_EMAIL_INFO.COMPANY_ID.in(companyIdList))
+                    .orderBy(HR_COMPANY_EMAIL_INFO.CREATE_TIME.desc())
+                    .limit(index, pageSize)
+                    .fetch();
+            if (result != null) {
+                return result.into(HrCompanyEmailInfo.class);
+            } else {
+                return new ArrayList<>();
+            }
+
+        } else {
+            Result<HrCompanyEmailInfoRecord> result = create.selectFrom(HR_COMPANY_EMAIL_INFO)
+                    .orderBy(HR_COMPANY_EMAIL_INFO.CREATE_TIME.desc())
+                    .limit(index, pageSize)
+                    .fetch();
+            if (result != null) {
+                return result.into(HrCompanyEmailInfo.class);
+            } else {
+                return new ArrayList<>();
+            }
+        }
+    }
 }

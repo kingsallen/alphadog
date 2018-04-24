@@ -5,10 +5,14 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.entity.Constant.EmailAccountConsumptionType;
 import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm;
+import com.moseeker.thrift.gen.company.struct.EmailAccountForm;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import java.util.ArrayList;
@@ -26,7 +30,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TalentpoolEmailService {
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
     public TalentpoolEmailService(){
@@ -187,4 +193,16 @@ public class TalentpoolEmailService {
         }
     }
 
+
+    public EmailAccountForm fetchEmailAccounts(int companyId, String companyName, int pageNumber, int pageSize) throws CommonException {
+        return talentPoolEntity.fetchEmailAccounts(companyId, companyName, pageNumber, pageSize);
+    }
+
+    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, EmailAccountConsumptionType emailAccountConsumptionType, int pageNumber, int pageSize) {
+        return talentPoolEntity.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize);
+    }
+
+    public int rechargeEmailAccount(int companyId, int lost) {
+        talentPoolEntity.rechargeEmailAccount(companyId, lost);
+    }
 }

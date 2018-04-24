@@ -5,17 +5,23 @@ import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.bean.TalentTagPOJO;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.company.service.impl.TalentpoolEmailService;
+import com.moseeker.entity.Constant.EmailAccountConsumptionType;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.company.struct.ActionForm;
+import com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm;
+import com.moseeker.thrift.gen.company.struct.EmailAccountForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import java.util.HashSet;
 import java.util.List;
@@ -377,6 +383,69 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             logger.error(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
+    }
+
+    @Override
+    public EmailAccountForm fetchEmailAccounts(int companyId, String companyName, int pageNumber, int pageSize) throws BIZException, TException {
+        try {
+            if (pageNumber <= 0 || pageSize <= 0) {
+                throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("参数无效！"));
+            }
+            if (pageSize > Constant.DATABASE_PAGE_SIZE) {
+                throw ExceptionConvertUtil.convertCommonException(CommonException.PROGRAM_FETCH_TOO_MUCH);
+            }
+            return talentpoolEmailService.fetchEmailAccounts(companyId, companyName, pageNumber, pageSize);
+        } catch (CommonException e) {
+            logger.error(e.getMessage(),e);
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, byte type, int pageNumber, int pageSize) throws BIZException, TException {
+        try {
+            if (pageNumber <= 0 || pageSize <= 0) {
+                throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("参数无效！"));
+            }
+            if (pageSize > Constant.DATABASE_PAGE_SIZE) {
+                throw ExceptionConvertUtil.convertCommonException(CommonException.PROGRAM_FETCH_TOO_MUCH);
+            }
+            EmailAccountConsumptionType emailAccountConsumptionType = EmailAccountConsumptionType.instanceFromValue(type);
+            if (emailAccountConsumptionType == null) {
+                throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("错误的消费类型！"));
+            }
+            return talentpoolEmailService.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize);
+        } catch (CommonException e) {
+            logger.error(e.getMessage(),e);
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public int rechargeEmailAccount(int companyId, int lost) throws BIZException, TException {
+        try {
+            if (companyId <= 0 || lost <= 0) {
+                throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("参数无效！"));
+            }
+            return talentpoolEmailService.rechargeEmailAccount(companyId, lost);
+        } catch (CommonException e) {
+            logger.error(e.getMessage(),e);
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public void updateEmailAccountRechargeValue(int id, int lost) throws BIZException, TException {
+
     }
 
     @Override

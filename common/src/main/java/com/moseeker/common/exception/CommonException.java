@@ -20,6 +20,7 @@ public class CommonException extends RuntimeException {
     public static final CommonException PROGRAM_PARAM_NOTEXIST = new CommonException(90015, "参数不正确!");
     public static final CommonException NODATA_EXCEPTION = new CommonException(99998,"数据不存在！");
     public static final CommonException NO_PERMISSION_EXCEPTION = new CommonException(99997,"没有权限！");
+    public static final CommonException PROGRAM_FETCH_TOO_MUCH = new CommonException(99999,"获取的数据太多，超过允许的限制！");
 
     private static final long serialVersionUID = 1982007458282752099L;
 
