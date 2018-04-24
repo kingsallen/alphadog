@@ -167,13 +167,13 @@ public class TalentPoolService {
     @CounterIface
     public void addAllTalent(int hrId,Map<String,String> params,int companyId){
         try{
-            int total=service.talentSearchNum(params);
-            if(total>0) {
-                int totalPageNum = (int) Math.ceil((double) total / 100);
-                for(int i=1;i<=totalPageNum;i++){
-                    params.put("page_number", i + "");
-                    params.put("page_number", 100 + "");
-                    tp.startTast(() -> {
+            tp.startTast(() -> {
+                int total=service.talentSearchNum(params);
+                if(total>0) {
+                    int totalPageNum = (int) Math.ceil((double) total / 100);
+                    for(int i=1;i<=totalPageNum;i++){
+                        params.put("page_number", i + "");
+                        params.put("page_size", 100 + "");
                         try {
                             List<Integer> userIdList = service.getTalentUserIdList(params);
                             if (!StringUtils.isEmptyList(userIdList)) {
@@ -183,11 +183,10 @@ public class TalentPoolService {
                         } catch (Exception e) {
                             logger.error(e.getMessage(), e);
                         }
-                        return 0;
-                    });
+                    }
                 }
-
-            }
+                return 0;
+            });
         }catch(Exception e){
 
         }
@@ -240,27 +239,27 @@ public class TalentPoolService {
      */
     public void cancleAllTalent(int hrId, Map<String,String> params, int companyId){
         try{
-            int total=service.talentSearchNum(params);
-            if(total>0) {
-                int totalPageNum = (int) Math.ceil((double) total / 100);
-                for(int i=1;i<=totalPageNum;i++){
-                    params.put("page_number", i + "");
-                    params.put("page_number", 100 + "");
-                    tp.startTast(() -> {
-                        try {
-                            List<Integer> userIdList = service.getTalentUserIdList(params);
-                            if (!StringUtils.isEmptyList(userIdList)) {
-                                Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
-                                this.batchCancelTalent(hrId, userIdSet, companyId);
+            tp.startTast(() -> {
+                int total=service.talentSearchNum(params);
+                if(total>0) {
+                    int totalPageNum = (int) Math.ceil((double) total / 100);
+                    for(int i=1;i<=totalPageNum;i++){
+                        params.put("page_number", i + "");
+                        params.put("page_size", 100 + "");
+                            try {
+                                List<Integer> userIdList = service.getTalentUserIdList(params);
+                                if (!StringUtils.isEmptyList(userIdList)) {
+                                    Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                    this.batchCancelTalent(hrId, userIdSet, companyId);
+                                }
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
                             }
-                        } catch (Exception e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                        return 0;
-                    });
-                }
 
-            }
+                    }
+                }
+                return 0;
+             });
         }catch(Exception e){
 
         }
@@ -314,28 +313,29 @@ public class TalentPoolService {
     @CounterIface
     public void addAllTalentTag(Map<String,String> params,List<Integer> tagIdList,int companyId,int hrId){
         try{
-            int total=service.talentSearchNum(params);
-            if(total>0){
-                int totalPageNum=(int)Math.ceil((double)total/100);
-                Set<Integer> tagIdSet=this.talentPoolEntity.converListToSet(tagIdList);
-                for(int i=1;i<=totalPageNum;i++){
-                    params.put("page_number", i + "");
-                    params.put("page_number", 100 + "");
-                    tp.startTast(() -> {
-                        try {
-                            List<Integer> userIdList = service.getTalentUserIdList(params);
-                            if (!StringUtils.isEmptyList(userIdList)) {
-                                Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
-                                this.addNewBatchTalentTag(hrId, userIdSet, tagIdSet, companyId);
+            tp.startTast(() -> {
+                int total=service.talentSearchNum(params);
+                if(total>0){
+                    int totalPageNum=(int)Math.ceil((double)total/100);
+                    Set<Integer> tagIdSet=this.talentPoolEntity.converListToSet(tagIdList);
+                    for(int i=1;i<=totalPageNum;i++){
+                        params.put("page_number", i + "");
+                        params.put("page_size", 100 + "");
+                            try {
+                                List<Integer> userIdList = service.getTalentUserIdList(params);
+                                if (!StringUtils.isEmptyList(userIdList)) {
+                                    Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                    this.addNewBatchTalentTag(hrId, userIdSet, tagIdSet, companyId);
+                                }
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
                             }
-                        } catch (Exception e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                        return 0;
-                    });
-                }
 
-            }
+                    }
+
+                }
+                return 0;
+             });
         }catch(Exception e){
             logger.error(e.getMessage(),e);
         }
@@ -775,30 +775,30 @@ public class TalentPoolService {
     @CounterIface
     public void addAllTalentPublic(Map<String,String> params,int companyId,int hrId){
         try{
-            int validateFlag=validateCompany(companyId);
-            if(validateFlag==0){
-                int total=service.talentSearchNum(params);
-                if(total>0){
-                    int totalPageNum=(int)Math.ceil((double)total/100);
-                    for(int i=1;i<=totalPageNum;i++){
-                        params.put("page_number", i + "");
-                        params.put("page_number", 100 + "");
-                        tp.startTast(() -> {
-                            try {
-                                List<Integer> userIdList = service.getTalentUserIdList(params);
-                                if (!StringUtils.isEmptyList(userIdList)) {
-                                    Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
-                                    this.AddbatchPublicTalent(hrId,companyId,userIdSet);
+            tp.startTast(() -> {
+                int validateFlag=validateCompany(companyId);
+                if(validateFlag==0){
+                    int total=service.talentSearchNum(params);
+                    if(total>0){
+                        int totalPageNum=(int)Math.ceil((double)total/100);
+                        for(int i=1;i<=totalPageNum;i++){
+                            params.put("page_number", i + "");
+                            params.put("page_size", 100 + "");
+                                try {
+                                    List<Integer> userIdList = service.getTalentUserIdList(params);
+                                    if (!StringUtils.isEmptyList(userIdList)) {
+                                        Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                        this.AddbatchPublicTalent(hrId,companyId,userIdSet);
+                                    }
+                                } catch (Exception e) {
+                                    logger.error(e.getMessage(), e);
                                 }
-                            } catch (Exception e) {
-                                logger.error(e.getMessage(), e);
-                            }
-                            return 0;
-                        });
-                    }
+                        }
 
+                    }
                 }
-            }
+                return 0;
+            });
         }catch(Exception e){
             logger.error(e.getMessage(),e);
         }
@@ -925,15 +925,15 @@ public class TalentPoolService {
     @CounterIface
     public void addAllTalentPrivate(Map<String,String> params,int companyId,int hrId){
         try{
-            int validateFlag=validateCompany(companyId);
-            if(validateFlag==0){
-                int total=service.talentSearchNum(params);
-                if(total>0){
-                    int totalPageNum=(int)Math.ceil((double)total/100);
-                    for(int i=1;i<=totalPageNum;i++){
-                        params.put("page_number", i + "");
-                        params.put("page_number", 100 + "");
-                        tp.startTast(() -> {
+            tp.startTast(() -> {
+                int validateFlag=validateCompany(companyId);
+                if(validateFlag==0){
+                    int total=service.talentSearchNum(params);
+                    if(total>0){
+                        int totalPageNum=(int)Math.ceil((double)total/100);
+                        for(int i=1;i<=totalPageNum;i++){
+                            params.put("page_number", i + "");
+                            params.put("page_size", 100 + "");
                             try {
                                 List<Integer> userIdList = service.getTalentUserIdList(params);
                                 if (!StringUtils.isEmptyList(userIdList)) {
@@ -943,12 +943,11 @@ public class TalentPoolService {
                             } catch (Exception e) {
                                 logger.error(e.getMessage(), e);
                             }
-                            return 0;
-                        });
+                        }
                     }
-
                 }
-            }
+                return 0;
+            });
         }catch(Exception e){
             logger.error(e.getMessage(),e);
         }
