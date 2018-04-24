@@ -104,7 +104,8 @@ struct WechatPositionListData {
     18: optional string accountabilities,
     19: optional i32 totalNum,
     20: optional i32 candidate_source,
-    21: optional string requirement
+    21: optional string requirement,
+    22: optional string city_ename
 }
 
 // 微信端职位列表的附加红包信息
@@ -135,7 +136,8 @@ struct WechatRpPositionListData {
     17: optional string city,
     18: optional i32 candidate_source,
     19: optional string requirement,
-    20: optional i32 totalNum
+    20: optional i32 totalNum,
+    21: optional string city_ename
 }
 
 // 微信端获取红包分享信息

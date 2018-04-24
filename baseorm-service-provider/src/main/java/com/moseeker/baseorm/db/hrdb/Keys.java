@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
@@ -69,6 +70,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsModuleRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsPagesRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyEmailInfoRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyFeatureRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCertConfRecord;
@@ -149,6 +151,7 @@ public class Keys {
     public static final Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = Identities0.IDENTITY_HR_CMS_MODULE;
     public static final Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = Identities0.IDENTITY_HR_CMS_PAGES;
     public static final Identity<HrCompanyRecord, Integer> IDENTITY_HR_COMPANY = Identities0.IDENTITY_HR_COMPANY;
+    public static final Identity<HrCompanyEmailInfoRecord, Integer> IDENTITY_HR_COMPANY_EMAIL_INFO = Identities0.IDENTITY_HR_COMPANY_EMAIL_INFO;
     public static final Identity<HrCompanyFeatureRecord, Integer> IDENTITY_HR_COMPANY_FEATURE = Identities0.IDENTITY_HR_COMPANY_FEATURE;
     public static final Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = Identities0.IDENTITY_HR_EMPLOYEE_CERT_CONF;
     public static final Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = Identities0.IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS;
@@ -210,6 +213,7 @@ public class Keys {
     public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_PRIMARY;
     public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_ACCOUNT_PRIMARY;
     public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CONF_PRIMARY;
+    public static final UniqueKey<HrCompanyEmailInfoRecord> KEY_HR_COMPANY_EMAIL_INFO_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_EMAIL_INFO_PRIMARY;
     public static final UniqueKey<HrCompanyFeatureRecord> KEY_HR_COMPANY_FEATURE_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_FEATURE_PRIMARY;
     public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY;
     public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY;
@@ -278,6 +282,7 @@ public class Keys {
         public static Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = createIdentity(HrCmsModule.HR_CMS_MODULE, HrCmsModule.HR_CMS_MODULE.ID);
         public static Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = createIdentity(HrCmsPages.HR_CMS_PAGES, HrCmsPages.HR_CMS_PAGES.ID);
         public static Identity<HrCompanyRecord, Integer> IDENTITY_HR_COMPANY = createIdentity(HrCompany.HR_COMPANY, HrCompany.HR_COMPANY.ID);
+        public static Identity<HrCompanyEmailInfoRecord, Integer> IDENTITY_HR_COMPANY_EMAIL_INFO = createIdentity(HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO, HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO.ID);
         public static Identity<HrCompanyFeatureRecord, Integer> IDENTITY_HR_COMPANY_FEATURE = createIdentity(HrCompanyFeature.HR_COMPANY_FEATURE, HrCompanyFeature.HR_COMPANY_FEATURE.ID);
         public static Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = createIdentity(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
         public static Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = createIdentity(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);
@@ -337,6 +342,7 @@ public class Keys {
         public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = createUniqueKey(HrCompany.HR_COMPANY, "KEY_hr_company_PRIMARY", HrCompany.HR_COMPANY.ID);
         public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = createUniqueKey(HrCompanyAccount.HR_COMPANY_ACCOUNT, "KEY_hr_company_account_PRIMARY", HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID);
         public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = createUniqueKey(HrCompanyConf.HR_COMPANY_CONF, "KEY_hr_company_conf_PRIMARY", HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID);
+        public static final UniqueKey<HrCompanyEmailInfoRecord> KEY_HR_COMPANY_EMAIL_INFO_PRIMARY = createUniqueKey(HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO, "KEY_hr_company_email_info_PRIMARY", HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO.ID);
         public static final UniqueKey<HrCompanyFeatureRecord> KEY_HR_COMPANY_FEATURE_PRIMARY = createUniqueKey(HrCompanyFeature.HR_COMPANY_FEATURE, "KEY_hr_company_feature_PRIMARY", HrCompanyFeature.HR_COMPANY_FEATURE.ID);
         public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = createUniqueKey(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, "KEY_hr_employee_cert_conf_PRIMARY", HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
         public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = createUniqueKey(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, "KEY_hr_employee_custom_fields_PRIMARY", HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);

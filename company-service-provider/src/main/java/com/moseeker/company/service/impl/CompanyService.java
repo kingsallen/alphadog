@@ -25,6 +25,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.CompanyType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
@@ -712,19 +713,20 @@ public class CompanyService {
      */
     @CounterIface
     public int getTalentPoolSwitch(int hrId,int companyId){
+        HrCompanyRecord companyRecord=this.getCompanyById(companyId);
+        if(companyRecord.getType()!=0){
+            return -3;
+        }
         int count=this.validateHrAndCompany(hrId,companyId);
         if(count==0){
-            return 2;
+            return -1;
         }
         HrCompanyConfRecord record=this.getHrCompanyConfRecordByCompanyId(companyId);
         if(record==null){
-            return 3;
+            return -2;
         }
         int talentPoolStatus=record.getTalentpoolStatus();
-        if(talentPoolStatus>0){
-            return 1;
-        }
-        return 0;
+        return talentPoolStatus;
     }
     /*
      获取此账号是不是此公司的账号
@@ -734,6 +736,14 @@ public class CompanyService {
         int count =userHrAccountDao.getCount(query);
         return count;
     }
+    /*
+    根据id获取公司的信息
+     */
+    private HrCompanyRecord getCompanyById(int companyId){
+        Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
+        HrCompanyRecord record=companyDao.getRecord(query);
+        return record;
+    }
 
     /*
       根据公司id获取公司配置
@@ -742,6 +752,29 @@ public class CompanyService {
         Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
         HrCompanyConfRecord hrCompanyConfRecord=hrCompanyConfDao.getRecord(query);
         return hrCompanyConfRecord;
+    }
+
+    /*
+      根据公司ID查询公司配置，如果是子公司，查询母公司配置
+     */
+    @CounterIface
+    public HrCompanyConfDO getHrCompanyConfById(int companyId) throws BIZException {
+        if(companyId <= 0){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+        }
+        HrCompanyDO companyDO = companyDao.getCompanyById(companyId);
+        if(companyDO == null || (companyDO.getParentId()!= 0 && companyDO.getDisable() == 0)) {
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
+        }
+        //公司如果为子公司，要查询母公司的配置
+        if(companyDO.getParentId() != 0 ){
+            companyId = companyDO.getParentId();
+        }
+        HrCompanyConfDO companyConfDO = hrCompanyConfDao.getHrCompanyConfByCompanyId(companyId);
+        if(companyConfDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_CONF_NOTEXIST);
+        }
+        return companyConfDO;
     }
 
 

@@ -8,6 +8,8 @@ import com.moseeker.searchengine.service.impl.SearchengineService;
 import com.moseeker.searchengine.service.impl.TalentpoolSearchengine;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.thrift.TException;
@@ -132,6 +134,7 @@ public class SearchengineServiceImpl implements Iface {
 //			logger.info("+++++++++++++++++++");
 			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
 			if(res==null||res.isEmpty()){
+
 				return ResponseUtils.success("");
 			}
 			return ResponseUtils.success(res);
@@ -172,6 +175,31 @@ public class SearchengineServiceImpl implements Iface {
 			logger.info(e.getMessage(),e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
 		}
+	}
+
+	@Override
+	public List<Integer> queryCompanyTagUserIdList(Map<String, String> params) throws TException {
+		try{
+			List<Integer> res=talentpoolSearchengine.getUserListByCompanyTag(params);
+			if(res==null){
+				return new ArrayList<>();
+			}
+			return res;
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+		}
+		return new ArrayList<>();
+	}
+
+	@Override
+	public int talentSearchNum(Map<String, String> params) throws TException {
+		try{
+			int res=talentpoolSearchengine.talentSearchNum(params);
+			return res;
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+		}
+		return 0;
 	}
 
 

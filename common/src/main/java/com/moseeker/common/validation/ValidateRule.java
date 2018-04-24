@@ -17,6 +17,7 @@ public abstract class ValidateRule {
 	protected String message = ""; // 验证消息
 	protected Object beanToValidated; // 被校验的对象
 	protected Boolean legal; // 校验是否通过
+    protected String splitString ;//分割符
 	protected String errorMessage; // 错误提示消息
 
 	public ValidateRule() {
@@ -37,6 +38,24 @@ public abstract class ValidateRule {
 		this.paramName = paramName;
 		this.beanToValidated = beanToValidated;
 	}
+
+    /**
+     *
+     * @param paramName
+     *            被校验的参数的名称
+     * @param beanToValidated
+     *            被校验的参数
+     */
+    public ValidateRule(String paramName, Object beanToValidated, String splitString, String errorMessage)
+            throws ValidateNotAppointParamException {
+        if (paramName == null) {
+            throw new ValidateNotAppointParamException();
+        }
+        this.paramName = paramName;
+        this.beanToValidated = beanToValidated;
+        this.splitString = splitString;
+        this.errorMessage = errorMessage;
+    }
 
 	/**
 	 * 
@@ -126,4 +145,12 @@ public abstract class ValidateRule {
 	public void setParamName(String paramName) {
 		this.paramName = paramName;
 	}
+
+    public String getSplitString() {
+        return splitString;
+    }
+
+    public void setSplitString(String splitString) {
+        this.splitString = splitString;
+    }
 }

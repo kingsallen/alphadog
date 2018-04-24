@@ -157,7 +157,10 @@ struct SearchCondition {
    24: string origins,//简历来源，
    25: i32 is_recommend,//是否内推  1是内推
    26: string tag_id,//标签id
-   27: string favorite_hrs//收藏人id
+   27: string favorite_hrs,//收藏人id
+   28: string city_code,//现居住地城市code
+   29: string intention_city_code//期望城市
+
 }
 
 struct UserEmployeeStruct {

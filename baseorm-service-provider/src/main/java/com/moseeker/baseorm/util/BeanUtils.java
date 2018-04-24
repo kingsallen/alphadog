@@ -82,6 +82,18 @@ public class BeanUtils {
     }
 
     @SuppressWarnings("rawtypes")
+    public static <T, R extends Record> R structToDBAll(T t, Class<R> origClazz) {
+        R orig = null;
+        try {
+            orig = origClazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            logger.error("error", e);
+        }
+        structToDBAll(t, orig, null);
+        return orig;
+    }
+
+    @SuppressWarnings("rawtypes")
     public static <T, R extends Record> List<R> structToDB(List<T> ts, Class<R> origClazz) {
         List<R> records = new ArrayList<R>();
         ts.forEach(t -> {
@@ -90,7 +102,68 @@ public class BeanUtils {
         });
         return records;
     }
+    /**
+     * struct 类和JOOQ类的属性和方法固定，可以预先加载成静态的属性和方法(全部更新到record对象)
+     *
+     * @param dest struct 对象
+     * @param orig record 对象
+     */
+    @SuppressWarnings("rawtypes")
+    public static <T, R extends Record> void structToDBAll(T dest, R orig, Map<String, String> equalRules) {
+        if (dest == null || orig == null) {
+            return;
+        }
+        /*
+		 * 兼容老代码，将equalRules与{@link colNameMapping}合并 <br/>
+		 */
+        Map<String, String> eqr = new HashMap<String, String>();
+        eqr.putAll(colNameMapping);
+        if (equalRules != null) {
+            eqr.putAll(equalRules);
+        }
 
+        // 将strut对象的属性名和get方法提取成map
+        Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> (f.getName().startsWith("get") || f.getName().startsWith("is")) && f.getParameterTypes().length == 0).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
+        Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> StringUtils.humpName(k.getName()), v -> {
+            String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
+            Method isSetMethod;
+            try {
+                if (destGetMeths.containsKey("get".concat(fileName))) {
+                    return destGetMeths.get("get".concat(fileName));
+                } else if (v.getType().isAssignableFrom(boolean.class)
+                        && destGetMeths.containsKey("is".concat(fileName))) {
+                    return destGetMeths.get("is".concat(fileName));
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            return null;
+        }));
+
+        // 将DO对象的属性名和set方法提取成map
+        Map<String, Method> origMap = Arrays.asList(orig.getClass().getMethods()).stream().filter(f -> f.getName().length() > 3 && f.getName().startsWith("set")).collect(Collectors.toMap(k -> {
+            String fileName = k.getName().substring(3, 4).toLowerCase() + k.getName().substring(4);
+            return eqr.containsKey(fileName) ? StringUtils.humpName(eqr.get(fileName)) : StringUtils.humpName(fileName);
+        }, v -> v, (oldKey, newKey) -> newKey));
+
+        // 赋值
+        Set<String> origKey = origMap.keySet();
+        for (String field : origKey) {
+            if (destMap.containsKey(field) && origMap.get(field) != null && destMap.get(field) != null) {
+                Object object;
+                try {
+                    object = convertTo(destMap.get(field).invoke(dest, new Object[]{}),
+                            origMap.get(field).getParameterTypes()[0]);
+                    origMap.get(field).invoke(orig, object);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        }
+
+    }
     /**
      * struct 类和JOOQ类的属性和方法固定，可以预先加载成静态的属性和方法
      *

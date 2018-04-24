@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChatUnreadCount implements Serializable {
 
-    private static final long serialVersionUID = -1265170972;
+    private static final long serialVersionUID = 999931224;
 
     private Integer   roomId;
     private Integer   hrId;
@@ -32,8 +32,8 @@ public class HrChatUnreadCount implements Serializable {
     private Timestamp hrChatTime;
     private Byte      hrHaveUnreadMsg;
     private Byte      userHaveUnreadMsg;
-    private Byte      apply;
     private Timestamp updateTime;
+    private Byte      apply;
 
     public HrChatUnreadCount() {}
 
@@ -45,8 +45,8 @@ public class HrChatUnreadCount implements Serializable {
         this.hrChatTime = value.hrChatTime;
         this.hrHaveUnreadMsg = value.hrHaveUnreadMsg;
         this.userHaveUnreadMsg = value.userHaveUnreadMsg;
-        this.apply = value.apply;
         this.updateTime = value.updateTime;
+        this.apply = value.apply;
     }
 
     public HrChatUnreadCount(
@@ -57,8 +57,8 @@ public class HrChatUnreadCount implements Serializable {
         Timestamp hrChatTime,
         Byte      hrHaveUnreadMsg,
         Byte      userHaveUnreadMsg,
-        Byte      apply,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Byte      apply
     ) {
         this.roomId = roomId;
         this.hrId = hrId;
@@ -67,8 +67,8 @@ public class HrChatUnreadCount implements Serializable {
         this.hrChatTime = hrChatTime;
         this.hrHaveUnreadMsg = hrHaveUnreadMsg;
         this.userHaveUnreadMsg = userHaveUnreadMsg;
-        this.apply = apply;
         this.updateTime = updateTime;
+        this.apply = apply;
     }
 
     public Integer getRoomId() {
@@ -127,20 +127,20 @@ public class HrChatUnreadCount implements Serializable {
         this.userHaveUnreadMsg = userHaveUnreadMsg;
     }
 
-    public Byte getApply() {
-        return this.apply;
-    }
-
-    public void setApply(Byte apply) {
-        this.apply = apply;
-    }
-
     public Timestamp getUpdateTime() {
         return this.updateTime;
     }
 
     public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Byte getApply() {
+        return this.apply;
+    }
+
+    public void setApply(Byte apply) {
+        this.apply = apply;
     }
 
     @Override
@@ -154,8 +154,8 @@ public class HrChatUnreadCount implements Serializable {
         sb.append(", ").append(hrChatTime);
         sb.append(", ").append(hrHaveUnreadMsg);
         sb.append(", ").append(userHaveUnreadMsg);
-        sb.append(", ").append(apply);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(apply);
 
         sb.append(")");
         return sb.toString();

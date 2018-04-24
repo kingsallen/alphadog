@@ -38,6 +38,7 @@ public final class ConstantErrorCodeMessage {
     public static final String WEXIN_IS_SAME = "{'status':10025,'message':'该手机号码绑定的微信和之前微信一样，不需要重新绑定！'}";
     public static final String WEXIN_IS_INVALID = "{'status':10026,'message':'unionid 有误'}";
     public static final String MOBILE_WECHAT_IS_INVALID = "{'status':10027,'message':'该手机号码或微信账号已经注册'}";
+    public static final String HRCOMPANY_CONF_NOTEXIST = "{'status':10028,'message':'公司配置不存在!'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 
@@ -74,7 +75,11 @@ public final class ConstantErrorCodeMessage {
     public static final String CRAWLER_SERVICE_IMPORT_UPPER_LIMIT = "{'status':32008,'message':'导入次数过多!'}";
     public static final String CRAWLER_RESUME_EMPTY = "{'status':32009,'message':'简历导入失败，请重新尝试!'}";
     public static final String CRAWLER_SERVICE_PROFILE_EMPTY = "{'status':32010,'message':'简历为空'}";
-
+    //talentpool
+    public static final String COMPANY_STATUS_NOT_AUTHORITY = "{'status':34001,'message':'免费公司没有权限'}";
+    public static final String COMPANY_CONF_TALENTPOOL_NOT = "{'status':34002,'message':'该公司还没有开启智能人才库'}";
+    public static final String HR_NOT_IN_COMPANY = "{'status':34003,'message':'该hr不属于该company_id'}";
+    public static final String TALENT_POOL_ACCOUNT_STATUS = "{'status':34002,'message':'子账号没有操作权限'}";
 
     public static final String COMPANY_SUPER_REPEART_NAME = "{'status':33001, 'message':'和超级账号重名'}";
 
@@ -155,6 +160,8 @@ public final class ConstantErrorCodeMessage {
     public static final String WRONG_SYNC_CHANNEL = "{'status':61011,'message':'第三方渠道不存在！'}";
     public static final String SUB_COMPANY_CANT_CONF_CHANNEL = "{'status':61012,'message':'不能给子公司配置同步渠道！'}";
     public static final String ONLY_PAY_COMPANY_CAN_CONF_CHANNEL = "{'status':61015,'message':'只能给付费公司配置同步渠道！'}";
+
+    public static final String NO_AUTH_IMPORT_VERYEAST_PROFILE = "{'status':61016,'message':'该公司没有导入最佳东方简历的权限！'}";
 
 
     //mq服务提示信息说明

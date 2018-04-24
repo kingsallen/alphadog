@@ -16,6 +16,7 @@ import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.company.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import org.apache.thrift.TException;
@@ -339,23 +340,26 @@ public class CompanyServicesImpl implements Iface {
         try{
             int result=service.getTalentPoolSwitch(hrId,companyId);
             Map<String,Object> map=new HashMap<>();
-            if(result==0){
-                map.put("open",false);
-                return ResponseUtils.success(map);
-            }
-            if(result==2){
+            if(result==-1){
                 return ResponseUtils.fail(1,"此账号不是此公司的账号");
             }
-            if(result==3){
+            if(result==-2){
                 return ResponseUtils.fail(1,"此公司无配置,联系客服人员");
             }
-            map.put("open",true);
+            if(result==-3){
+                return ResponseUtils.fail(1,"该公司不是付费公司，无法使用该功能");
+            }
+            map.put("open",result);
             return ResponseUtils.success(map);
-
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
+    }
+
+    @Override
+    public HrCompanyConfDO getCompanyConfById(int companyId) throws BIZException {
+        return service.getHrCompanyConfById(companyId);
     }
 
 
