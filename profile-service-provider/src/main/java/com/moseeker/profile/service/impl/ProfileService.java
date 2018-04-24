@@ -153,6 +153,9 @@ public class ProfileService {
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
             .getService(JobApplicationServices.Iface.class);
 
@@ -191,6 +194,8 @@ public class ProfileService {
 
         ProfileProfileRecord record = BeanUtils.structToDB(struct, ProfileProfileRecord.class);
         record = dao.addRecord(record);
+
+        profileCompanyTagService.handlerCompanyTag(record.getId(),struct.getUser_id());
 
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
@@ -238,7 +243,9 @@ public class ProfileService {
     @Transactional
     public Response postResources(List<Profile> structs) throws TException {
         List<ProfileProfileRecord> records = dao.addAllRecord(BeanUtils.structToDB(structs, ProfileProfileRecord.class));
-
+        for(Profile profile:structs){
+            profileCompanyTagService.handlerCompanyTag(profile.getId(),profile.getUser_id());
+        }
         return ResponseUtils.success("1");
     }
 
@@ -246,6 +253,9 @@ public class ProfileService {
     public Response putResources(List<Profile> structs) throws TException {
         int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileProfileRecord.class));
         if (ArrayUtils.contains(result, 1)) {
+            for(Profile profile:structs){
+                profileCompanyTagService.handlerCompanyTag(profile.getId(),profile.getUser_id());
+            }
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -255,6 +265,9 @@ public class ProfileService {
     public Response delResources(List<Profile> structs) throws TException {
         int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileProfileRecord.class));
         if (ArrayUtils.contains(result, 1)) {
+            for(Profile profile:structs){
+                profileCompanyTagService.handlerCompanyTag(profile.getId(),profile.getUser_id());
+            }
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
@@ -264,6 +277,7 @@ public class ProfileService {
     public Response putResource(Profile struct) throws TException {
         int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileProfileRecord.class));
         if (result > 0) {
+            profileCompanyTagService.handlerCompanyTag(struct.getId(),struct.getUser_id());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -273,6 +287,7 @@ public class ProfileService {
     public Response delResource(Profile struct) throws TException {
         int result = dao.deleteRecord(BeanUtils.structToDB(struct, ProfileProfileRecord.class));
         if (result > 0) {
+            profileCompanyTagService.handlerCompanyTag(struct.getId(),struct.getUser_id());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);

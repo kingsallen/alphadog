@@ -224,5 +224,11 @@ public class ReceiverHandler {
         logVo.setUser_id(jsonObject.getIntValue("user_id"));
         logVo.setRecom_params(params);
     }
+    /*
+     处理简历的企业标签
+     */
+    public void handlerProfileCompanyTag(){
+
+    }
 
 }

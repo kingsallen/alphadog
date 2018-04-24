@@ -54,6 +54,9 @@ public class ProfileEducationService {
     @Autowired
     private ProfileEntity profileEntity;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
     public List<Education> getResources(Query query) throws TException {
         // 按照结束时间倒序
         query.getOrders().add(new OrderBy("end_until_now", Order.DESC));
@@ -170,7 +173,7 @@ public class ProfileEducationService {
                 Set<Integer> profileIds = new HashSet<>();
                 profileIds.add(education.getProfile_id());
                 profileDao.updateUpdateTime(profileIds);
-                
+                profileCompanyTagService.handlerCompanyTag(education.getProfile_id());
 				/* 计算profile完整度 */
                 profileEntity.reCalculateProfileEducation(education.getProfile_id(), 0);
             }
@@ -218,6 +221,7 @@ public class ProfileEducationService {
                         updateUpdateTime(education);
                         /* 计算profile完整度 */
                         profileEntity.reCalculateProfileEducation(education.getProfile_id(), education.getId());
+                        profileCompanyTagService.handlerCompanyTag(education.getProfile_id());
                     }
                 } else {
                     throw ProfileException.validateFailed(validationMessage.getResult());
@@ -257,6 +261,7 @@ public class ProfileEducationService {
                 profileIds.forEach(profileId -> {
                     /* 计算profile完整度 */
                     profileEntity.reCalculateProfileEducation(profileId, 0);
+                    profileCompanyTagService.handlerCompanyTag(profileId);
                 });
             }
         }
@@ -297,6 +302,7 @@ public class ProfileEducationService {
                 updateProfileUpdateTime(descEducationRecordList);
                 descEducationRecordList.forEach(profileEducationRecord -> {
                     profileEntity.reCalculateProfileEducation(profileEducationRecord.getProfileId(), profileEducationRecord.getId());
+                    profileCompanyTagService.handlerCompanyTag(profileEducationRecord.getProfileId());
                 });
             }
         }
@@ -324,6 +330,7 @@ public class ProfileEducationService {
                 profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
                 for (ProfileEducationDO data : deleteDatas) {
                     profileEntity.reCalculateProfileEducation(data.getProfileId(), 0);
+                    profileCompanyTagService.handlerCompanyTag(data.getProfileId());
                 }
             }
             return result;
@@ -348,6 +355,7 @@ public class ProfileEducationService {
                     updateUpdateTime(struct);
                     /* 计算profile完整度 */
                     profileEntity.reCalculateProfileEducation(deleteData.getProfileId(), 0);
+                    profileCompanyTagService.handlerCompanyTag(deleteData.getProfileId());
                 }
             }
         }

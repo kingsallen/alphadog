@@ -145,8 +145,8 @@ public class CompanyTagService {
                     }
                 }
             }
+            talentpoolCompanyTagUserDao.deleteByUserId(idList);
             if (!StringUtils.isEmptyList(list)) {
-                talentpoolCompanyTagUserDao.deleteByUserId(idList);
                 talentpoolCompanyTagUserDao.addAllRecord(list);
                 for (Integer userId : idList) {
                     Map<String, Object> result = new HashMap<>();
@@ -199,6 +199,17 @@ public class CompanyTagService {
         }
         return false;
     }
-
+    /*
+     处理简历和企业标签的处理
+     */
+    public void handlerProfileCompanyIds(Set<Integer> userIdset,Set<Integer> companyIdSet){
+        try {
+            for (Integer companyId : companyIdSet) {
+                this.handlerCompanyTagTalent(userIdset, companyId);
+            }
+        }catch(Exception e){
+            logger.warn(e.getMessage(),e);
+        }
+    }
 
 }
