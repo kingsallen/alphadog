@@ -1,9 +1,6 @@
 package com.moseeker.mq.service.impl;
 
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCcmailDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -11,6 +8,7 @@ import com.moseeker.baseorm.dao.logdb.LogEmailSendrecordDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileEducationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileWorkexpDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
@@ -20,6 +18,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCcmailRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
@@ -35,10 +34,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.mq.service.sms.SmsService;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogEmailSendrecordDO;
@@ -104,6 +100,10 @@ public class ResumeDeliveryService {
     private TemlateMsgHttp msgHttp;
     @Autowired
     private SmsService smsService;
+    @Autowired
+    private TalentpoolEmailDao talentpoolEmailDao;
+    @Autowired
+    private HrCompanyConfDao hrCompanyConfDao;
 
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
     private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
@@ -350,6 +350,70 @@ public class ResumeDeliveryService {
         return response;
     }
 
+    public void sendEmailToApplier(UserHrAccountDO accountDO,HrCompanyDO companyDO, JobPositionDO positionDO, UserUserDO userUserDO, HrWxWechatDO hrWxWechatDO){
+        int company_id =  companyDO.getId();
+        if(companyDO.getParentId()>0){
+            company_id = companyDO.getParentId();
+        }
+        HrCompanyConfDO confDO = hrCompanyConfDao.getHrCompanyConfByCompanyId(company_id);
+        if(confDO.getTalentpoolStatus() == 2) {
+            //获取邮件信息
+            List<TalentpoolEmail> emailList = talentpoolEmailDao.getTalentpoolEmailByCompanyIdAndConfigId(company_id, Constant.TALENTPOOL_EMAIL_PROFILE_SEND);
+            if(emailList != null && emailList.size()>0 && emailList.get(0).getDisable()==1){
+                Map<String, Object> emailStruct = new HashMap<>();
+                emailStruct.put("templateName", Constant.DELIVERY_SUCCESS);
+                Map<String, Object> params = deliveryEmailToHr.annexEmailBody(companyDO, positionDO, userUserDO);
+
+                //邮件发送的名称，邮箱
+                String subject = positionDO.getTitle() + "-" + userUserDO.getName() + "-职位申请通知";
+                emailStruct.put("subject", subject);
+                emailStruct.put("to_name", accountDO.getUsername());
+                emailStruct.put("to_email", accountDO.getEmail());
+
+                logger.info("sendEmailToHr emailStruct:{}", emailStruct);
+
+                //发送邮件给HR
+                Response sendEmail = new Response();
+                if (positionDO.getEmailNotice() == 0) {
+                    sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+                    logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
+
+                    //记录发送邮件的结果
+                    LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
+                    emailrecord.setEmail(accountDO.getEmail());
+                    emailrecord.setContent(sendEmail.getMessage());
+                    emailSendrecordDao.addData(emailrecord);
+                }
+
+                logger.info("是否启用抄送邮箱：" + positionDO.getProfile_cc_mail_enabled());
+                //判断是否启用抄送邮箱
+                if (positionDO.getProfile_cc_mail_enabled() == 1) {
+                    List<JobPositionCcmailRecord> ccmailList = ccmailDao.getRecords(new Query.QueryBuilder().where("position_id",
+                            positionDO.getId()).buildQuery());
+                    logger.info("抄送邮箱长度：" + ccmailList.size());
+                    if (ccmailList != null && ccmailList.size() > 0) {
+                        //遍历抄送邮箱发送邮件
+                        for (JobPositionCcmailRecord ccmail : ccmailList) {
+                            emailStruct.put("to_email", ccmail.getToEmail());
+                            sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+                            try {
+                                LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
+                                emailrecord1.setEmail(ccmail.getToEmail());
+                                emailrecord1.setContent(sendEmail.getMessage());
+                                emailSendrecordDao.addData(emailrecord1);
+                            } catch (Exception e) {
+                                logger.error("简历抄送邮箱日记记录失败：{}", e.getMessage());
+                            }
+                            logger.info("抄送邮箱：" + ccmail.getToEmail());
+                        }
+                    }
+                }
+            }
+        }else{
+            logger.info("没有开启智能人才库");
+        }
+    }
+
     /**
      * 向推荐人发送模板消息
      * @param templateMessageDO 推荐人的模板对象
@@ -440,6 +504,8 @@ public class ResumeDeliveryService {
         logger.info("sendMessageAndEmail sendTemplateMessageToRecomByQX response:{}", response);
         return response;
     }
+
+
 
 
     /**

@@ -218,6 +218,7 @@ public final class Constant {
     public static final String RESUME_INFORM_HR = "resume-delivery-to-hr-email"; //简历投递给HR发邮件没有附件模板
     public static final String ANNEX_RESUME_INFORM_HR = "annex-resume-delivery-to-hr-email";
     public static final String MISMATCH_NOTIFICATION = "mismatch-notification";//简历投递不匹配发送邮件
+    public static final String DELIVERY_SUCCESS = "delivery-success";//简历投递
 
     public static final int DICT_CONSTANT_DEGREE_USER = 3104; 		//求职者学历常量表parent_code值
     public static final int DICT_CONSTANT_GENDER_USER = 3109;       //性别常量表parent_code值
