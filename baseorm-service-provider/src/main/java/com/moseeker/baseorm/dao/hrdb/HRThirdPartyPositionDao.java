@@ -6,14 +6,9 @@ import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.base.IThirdPartyPositionDao;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.dao.hrdb.utils.ThirdPartyPositionDaoFactory;
-import com.moseeker.baseorm.dao.thirdpartydb.DefaultThirdPartyPositionDao;
-import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyJob1001PositionDao;
-import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyVeryeastPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
-import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -36,12 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * HR帐号数据库持久类
  * 这是一个代理类，真正的HRThirdPartyPositionDao是这个类的私有类
- * 这个类代理了几个基础的类功能：getData、getDatas、addData、addAllData、updateData、updateDatas
+ * 这个类代理了几个基础的类功能：getData、getDatas、addData、addAllData、updateExtPosition、updateExtPositions
  * 不同于原生方法，代理方法传入的参数都是TwoParam<HRThirdPartyPositionDO,第三方渠道职位类>，查询方法返回也是如此。
  * <p>
  * Company: MoSeeker
@@ -127,7 +121,7 @@ public class HRThirdPartyPositionDao  {
     }
 
     /**
-     *
+     *  查询完整的第三方职位数据
      * @param query
      * @param <P>
      * @return 返回<第三方职位表,渠道职位表数据>
@@ -141,15 +135,31 @@ public class HRThirdPartyPositionDao  {
         return daoFactory.thirdPartyPositionDao(thirdPartyPositionDO.getChannel()).getData(thirdPartyPositionDO);
     }
 
+    /**
+     * 只获取第三方职位主表，有些操作只需要主表数据
+     * @param query
+     * @return 第三方职位-主表数据
+     */
     public HrThirdPartyPositionDO getSimpleData(Query query){
         return thirdPartyPositionDao.getData(query);
     }
 
+    /**
+     * 批量只获取第三方职位主表，有些操作只需要主表数据
+     * @param query
+     * @return 第三方职位-主表数据
+     */
     public List<HrThirdPartyPositionDO> getSimpleDatas(Query query){
         return thirdPartyPositionDao.getDatas(query);
     }
 
 
+    /**
+     * 获取正在绑定的第三方职位数据
+     * @param positionId 职位ID
+     * @param accountId 第三方账号ID
+     * @return 第三方职位
+     */
     public HrThirdPartyPositionDO getBindingData(int positionId,int accountId){
         Query query=new Query.QueryBuilder()
                 .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId)
@@ -159,6 +169,16 @@ public class HRThirdPartyPositionDao  {
         return getSimpleData(query);
     }
 
+    /**
+     * 获取完整的第三方职位数据，
+     * 先查询出第三方职位-主表数据
+     * 再调用策略模式查询出附表数据 {@link IThirdPartyPositionDao}
+     *
+     * @param query
+     * @param <P>
+     * @return
+     * @throws BIZException
+     */
     public <P> List<TwoParam<HrThirdPartyPositionDO,P>> getDatas(Query query) throws BIZException {
         List<HrThirdPartyPositionDO> list=thirdPartyPositionDao.getDatas(query);
         if(list==null || list.isEmpty()){
@@ -179,6 +199,17 @@ public class HRThirdPartyPositionDao  {
         return results;
     }
 
+    /**
+     * 添加完整第三方职位数据
+     * 先添加第三方职位主表hr_third_party_position
+     * 再调用策略模式添加第三方职位附表 {@link IThirdPartyPositionDao}
+     *
+     * @param s
+     * @param p
+     * @param <P>
+     * @return
+     * @throws BIZException
+     */
     @Transactional
     public <P> TwoParam<HrThirdPartyPositionDO,P> addData(HrThirdPartyPositionDO s,P p) throws BIZException {
         HrThirdPartyPositionDO result=thirdPartyPositionDao.addData(s);
@@ -199,6 +230,15 @@ public class HRThirdPartyPositionDao  {
         return thirdPartyPositionDao.getCount(query);
     }
 
+    /**
+     * 更新完整的第三方职位数据
+     * 先更新第三方职位-主表 hr_third_party_position
+     * 再调用策略模式更新第三方职位-附表 {@link IThirdPartyPositionDao}
+     * @param s 第三方职位-主表
+     * @param p 第三方职位-附表
+     * @param <P>
+     * @return
+     */
     @Transactional
     public <P> int updateData(HrThirdPartyPositionDO s,P p) {
         int result=thirdPartyPositionDao.updateData(s);
@@ -209,7 +249,7 @@ public class HRThirdPartyPositionDao  {
         //设置下ExtThirdpartyPosition的id
         extDao.setId(s,p);
 
-        int extResult=extDao.updateData(p);
+        int extResult=extDao.updateExtPosition(p);
         if(result!=extResult){
             logger.error("update Position and ExtPosition not EQ HrThirdPartyPositionDO:{}，P:{}",s,p);
             throw new RuntimeException("update Position and ExtPosition not EQ ");
@@ -240,7 +280,7 @@ public class HRThirdPartyPositionDao  {
                 List<P> tempExtPositions = twoTable.stream().filter(p -> p.getR1().getChannel() == channel).map(p -> p.getR2()).collect(Collectors.toList());
 
                 int[] result = thirdPartyPositionDao.updateDatas(tempPositions);
-                int[] extResult = daoFactory.thirdPartyPositionDao(channel).updateDatas(tempExtPositions);
+                int[] extResult = daoFactory.thirdPartyPositionDao(channel).updateExtPositions(tempExtPositions);
 
                 if (!Arrays.equals(result, extResult)) {
                     logger.error("batch update update Position and ExtPosition not EQ channel:{} tempPositions:{}，tempExtPositions:{}", channel, tempPositions, tempExtPositions);
@@ -252,6 +292,11 @@ public class HRThirdPartyPositionDao  {
         return Ints.toArray(results);
     }
 
+    /**
+     * 作废第三方职位
+     * @param conditions 作废条件
+     * @return
+     */
     public int disable(List<Condition> conditions){
         Update.UpdateBuilder update=new Update.UpdateBuilder()
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0)
@@ -265,6 +310,11 @@ public class HRThirdPartyPositionDao  {
         return thirdPartyPositionDao.update(update.buildUpdate());
     }
 
+    /**
+     * 隐藏的内部第三方职位dao，
+     * 因为第三方职位分成主表和附表(坑爹的附表还有可能是多个)
+     * 插入和更新涉及多个dao，所以封装一下
+     */
     @Repository
     private static class InnerHRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO, HrThirdPartyPositionRecord>{
 

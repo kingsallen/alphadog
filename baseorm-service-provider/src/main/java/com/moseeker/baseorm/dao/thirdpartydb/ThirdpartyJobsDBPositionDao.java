@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.dao.thirdpartydb;
 
+import com.moseeker.baseorm.base.AbstractThirdPartyPositionDao;
 import com.moseeker.baseorm.base.IThirdPartyPositionDao;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition;
@@ -19,10 +20,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class ThirdpartyJobsDBPositionDao extends JooqCrudImpl<ThirdpartyJobsDBPositionDO,ThirdpartyJobsdbPositionRecord> implements IThirdPartyPositionDao<ThirdpartyJobsDBPositionDO> {
+public class ThirdpartyJobsDBPositionDao extends AbstractThirdPartyPositionDao<ThirdpartyJobsDBPositionDO, ThirdpartyJobsdbPositionRecord> {
 
     public ThirdpartyJobsDBPositionDao() {
-        super(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION,ThirdpartyJobsDBPositionDO.class);
+        super(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION, ThirdpartyJobsDBPositionDO.class);
     }
 
     public ThirdpartyJobsDBPositionDao(TableImpl<ThirdpartyJobsdbPositionRecord> table, Class<ThirdpartyJobsDBPositionDO> thirdpartyVeryEastPositionDOClass) {
@@ -31,29 +32,29 @@ public class ThirdpartyJobsDBPositionDao extends JooqCrudImpl<ThirdpartyJobsDBPo
 
     @Override
     public TwoParam<HrThirdPartyPositionDO, ThirdpartyJobsDBPositionDO> getData(HrThirdPartyPositionDO thirdPartyPositionDO) {
-        Query query=new Query.QueryBuilder()
+        Query query = new Query.QueryBuilder()
                 .where(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.PID.getName(), thirdPartyPositionDO.getId())
-                .and(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.STATUS.getName(),0).buildQuery();
-        ThirdpartyJobsDBPositionDO job1001=getData(query);
-        TwoParam<HrThirdPartyPositionDO, ThirdpartyJobsDBPositionDO> result=new TwoParam<>(thirdPartyPositionDO,job1001);
+                .and(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.STATUS.getName(), 0).buildQuery();
+        ThirdpartyJobsDBPositionDO job1001 = getData(query);
+        TwoParam<HrThirdPartyPositionDO, ThirdpartyJobsDBPositionDO> result = new TwoParam<>(thirdPartyPositionDO, job1001);
         return result;
     }
 
     @Override
     public List<TwoParam<HrThirdPartyPositionDO, ThirdpartyJobsDBPositionDO>> getDatas(List<HrThirdPartyPositionDO> list) {
-        List<Integer> ids=list.stream()
-                .map(p->p.getId())
+        List<Integer> ids = list.stream()
+                .map(p -> p.getId())
                 .collect(Collectors.toList());
-        Query query=new Query.QueryBuilder().where(new Condition("pid", ids, ValueOp.IN)).buildQuery();
+        Query query = new Query.QueryBuilder().where(new Condition(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.PID.getName(), ids, ValueOp.IN)).buildQuery();
 
-        List<ThirdpartyJobsDBPositionDO> job1001s=getDatas(query);
+        List<ThirdpartyJobsDBPositionDO> job1001s = getDatas(query);
 
-        List<TwoParam<HrThirdPartyPositionDO, ThirdpartyJobsDBPositionDO>> results=new ArrayList<>();
+        List<TwoParam<HrThirdPartyPositionDO, ThirdpartyJobsDBPositionDO>> results = new ArrayList<>();
 
-        for(HrThirdPartyPositionDO thirdPartyPositionDO:list){
-            for(ThirdpartyJobsDBPositionDO job1001:job1001s){
-                if(thirdPartyPositionDO.getId()==job1001.getPid()){
-                    results.add(new TwoParam<>(thirdPartyPositionDO,job1001));
+        for (HrThirdPartyPositionDO thirdPartyPositionDO : list) {
+            for (ThirdpartyJobsDBPositionDO job1001 : job1001s) {
+                if (thirdPartyPositionDO.getId() == job1001.getPid()) {
+                    results.add(new TwoParam<>(thirdPartyPositionDO, job1001));
                 }
             }
         }
@@ -63,17 +64,17 @@ public class ThirdpartyJobsDBPositionDao extends JooqCrudImpl<ThirdpartyJobsDBPo
 
     @Override
     public TwoParam<HrThirdPartyPositionDO, ThirdpartyJobsDBPositionDO> addData(HrThirdPartyPositionDO thirdPartyPositionDO, ThirdpartyJobsDBPositionDO thirdpartyJobsDBPositionDO) {
-        if(thirdPartyPositionDO==null || thirdPartyPositionDO.getId()==0){
+        if (thirdPartyPositionDO == null || thirdPartyPositionDO.getId() == 0) {
             return null;
         }
         thirdpartyJobsDBPositionDO.setPid(thirdPartyPositionDO.getId());
-        thirdpartyJobsDBPositionDO=addData(thirdpartyJobsDBPositionDO);
-        return new TwoParam<>(thirdPartyPositionDO,thirdpartyJobsDBPositionDO);
+        thirdpartyJobsDBPositionDO = addData(thirdpartyJobsDBPositionDO);
+        return new TwoParam<>(thirdPartyPositionDO, thirdpartyJobsDBPositionDO);
     }
 
     @Override
     public ThirdpartyJobsDBPositionDO setId(HrThirdPartyPositionDO thirdPartyPositionDO, ThirdpartyJobsDBPositionDO thirdpartyJobsDBPositionDO) {
-        TwoParam<HrThirdPartyPositionDO, ThirdpartyJobsDBPositionDO> result=getData(thirdPartyPositionDO);
+        TwoParam<HrThirdPartyPositionDO, ThirdpartyJobsDBPositionDO> result = getData(thirdPartyPositionDO);
         thirdpartyJobsDBPositionDO.setId(result.getR2().getId());
         return thirdpartyJobsDBPositionDO;
     }

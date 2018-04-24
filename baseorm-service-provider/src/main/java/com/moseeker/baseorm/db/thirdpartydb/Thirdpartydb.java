@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyCompanyChannelConf;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyZhilianPositionAddress;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +39,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Thirdpartydb extends SchemaImpl {
 
-    private static final long serialVersionUID = 459790865;
+    private static final long serialVersionUID = 1699455743;
 
     /**
      * The reference instance of <code>thirdpartydb</code>
@@ -91,6 +92,11 @@ public class Thirdpartydb extends SchemaImpl {
     public final ThirdpartyVeryeastPosition THIRDPARTY_VERYEAST_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION;
 
     /**
+     * 第三方职位地址表
+     */
+    public final ThirdpartyZhilianPositionAddress THIRDPARTY_ZHILIAN_POSITION_ADDRESS = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyZhilianPositionAddress.THIRDPARTY_ZHILIAN_POSITION_ADDRESS;
+
+    /**
      * No further instances allowed
      */
     private Thirdpartydb() {
@@ -123,6 +129,7 @@ public class Thirdpartydb extends SchemaImpl {
             ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF,
             ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION,
             ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION,
-            ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION);
+            ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION,
+            ThirdpartyZhilianPositionAddress.THIRDPARTY_ZHILIAN_POSITION_ADDRESS);
     }
 }
