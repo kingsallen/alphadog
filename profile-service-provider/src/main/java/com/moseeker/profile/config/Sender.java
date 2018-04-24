@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Sender {
-    @Autowired
-    private RabbitTemplate amqpTemplate;
+//    @Autowired
+//    private RabbitTemplate amqpTemplate;
 
     public void  send(String message) {
 //        MessageProperties msp = new MessageProperties();
