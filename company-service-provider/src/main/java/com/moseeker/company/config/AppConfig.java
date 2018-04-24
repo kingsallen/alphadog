@@ -10,10 +10,7 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
@@ -26,6 +23,7 @@ import java.util.List;
  */
 @Configuration
 @ComponentScan({"com.moseeker.company", "com.moseeker.common.aop.iface", "com.moseeker.entity"})
+@PropertySource("classpath:common.properties")
 @Import(com.moseeker.baseorm.config.AppConfig.class)
 public class AppConfig {
     private static final Logger log = LoggerFactory.getLogger(AppConfig.class);
