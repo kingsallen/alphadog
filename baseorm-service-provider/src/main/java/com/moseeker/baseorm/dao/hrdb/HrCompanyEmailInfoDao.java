@@ -27,10 +27,19 @@ public class HrCompanyEmailInfoDao extends JooqCrudImpl<HrCompanyEmailInfo, HrCo
      根据公司id获取公司邮箱剩余额度
 
      */
-    public List<HrCompanyEmailInfo> getHrCompanyEmailInfoListByCompanyId(int companyId){
+    public HrCompanyEmailInfo getHrCompanyEmailInfoListByCompanyId(int companyId){
         List<HrCompanyEmailInfo> list=create.selectFrom(HR_COMPANY_EMAIL_INFO).where(HR_COMPANY_EMAIL_INFO.COMPANY_ID.eq(companyId))
                .fetchInto(HrCompanyEmailInfo.class);
-        return list;
+        if(list != null && list.size()>0){
+            return  list.get(0);
+        }
+        return null;
+    }
+
+    public int  updateHrCompanyEmailInfoListByCompanyIdAndBalance(int companyId, int banlance){
+       int result = create.update(HR_COMPANY_EMAIL_INFO).set(HR_COMPANY_EMAIL_INFO.BALANCE,banlance)
+                .where(HR_COMPANY_EMAIL_INFO.COMPANY_ID.eq(companyId)).execute();
+        return result;
     }
 
     public int countEmailAccounts(List<Integer> companyIdList) {

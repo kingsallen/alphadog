@@ -19,16 +19,16 @@ import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolProfileFilterLogRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
-import com.moseeker.entity.biz.EmailContextReplaceUtils;
+import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -36,12 +36,11 @@ import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -100,11 +99,14 @@ public class JobApplicationFilterService {
 
     @Autowired
     private ProfileBasicDao basicDao;
+    @Autowired
+    private TalentPoolEmailEntity emailEntity;
 
 
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
     TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
     ProfileBS.Iface bsService = ServiceManager.SERVICEMANAGER.getService(ProfileBS.Iface.class);
+    MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
     public void handerApplicationFilter(MessageEmailStruct filterInfoStruct) throws Exception {
         logger.info("handerApplicationFilter filterInfoStruct:{}", filterInfoStruct);
@@ -249,54 +251,69 @@ public class JobApplicationFilterService {
             bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
         }else if(type == 4){
             bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
+            sendProfileFilterExecuteEmail(user_id, position);
         }
     }
 
     //发送不匹配邮件
-    private void sendProfileFilterExecuteEmail(int user_id, JobPositionRecord position, int type){
+    private void sendProfileFilterExecuteEmail(int user_id, JobPositionRecord position) throws TException {
+        MandrillEmailStruct emailStruct = new MandrillEmailStruct();
         List<TalentpoolEmail> emailList = talentpoolEmailDao.getTalentpoolEmailByCompanyIdAndConfigId(position.getCompanyId(), Constant.TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS);
-        if(emailList != null && emailList.size()>0){
+        if(emailList != null && emailList.size()>0 && emailList.get(0).getDisable() == 1){
             UserHrAccount accountDO = userHrAccountDao.getHrAccount(position.getPublisher());
             UserUserRecord userUserRecord = userUserDao.getUserById(user_id);
             HrWxWechatDO wechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(position.getCompanyId());
             if(accountDO != null && userUserRecord!=null && wechatDO != null){
                 HrCompanyDO companyDO = companyAccountDao.getHrCompany(accountDO.getId());
-                ProfileProfileRecord profileRecord = profileDao.getProfileByUserId(user_id);
-                if(profileRecord != null){
-                    List<Integer> profileIdList = new ArrayList<>();
-                    profileIdList.add(profileRecord.getId());
-                    List<ProfileBasicRecord> basicRecordList = basicDao.fetchBasicByProfileIdList(profileIdList);
-                    if(basicRecordList != null && basicRecordList.size()>0){
-                        Map<String, Object> params = new HashMap<>();
-                        String company_logo = appendUrl(companyDO.getLogo(), env.getProperty("http.cdn.url"));
-                        params.put("company_logo", company_logo);
-                        String context = emailList.get(0).getContext();
-                        context = EmailContextReplaceUtils.replaceUtil(context, companyDO.getAbbreviation(), position.getTitle(),
-                                basicRecordList.get(0).getName(),accountDO.getUsername(), wechatDO.getName());
-                        String inscribe = emailList.get(0).getInscribe();
-                        inscribe = EmailContextReplaceUtils.replaceUtil(inscribe, companyDO.getAbbreviation(), position.getTitle(),
-                                basicRecordList.get(0).getName(),accountDO.getUsername(), wechatDO.getName());
-                        params.put("text", context);
-                        params.put("sign", inscribe);
+                if(companyDO != null) {
+//                ProfileProfileRecord profileRecord = profileDao.getProfileByUserId(user_id);
+//                if(profileRecord != null){
+//                    List<Integer> profileIdList = new ArrayList<>();
+//                    profileIdList.add(profileRecord.getId());
+//                    List<ProfileBasicRecord> basicRecordList = basicDao.fetchBasicByProfileIdList(profileIdList);
+//                    if(basicRecordList != null && basicRecordList.size()>0){
+                    Map<String, String> params = new HashMap<>();
+                    String username = "";
+                    if (userUserRecord.getName() != null && !userUserRecord.getName().isEmpty()) {
+                        username = userUserRecord.getName();
+                    } else {
+                        username = userUserRecord.getNickname();
                     }
+                    String company_logo = CommonUtils.appendUrl(companyDO.getLogo(), env.getProperty("http.cdn.url"));
+                    params.put("company_logo", company_logo);
+                    String context = emailList.get(0).getContext();
+                    context = CommonUtils.replaceUtil(context, companyDO.getAbbreviation(), position.getTitle(),
+                            username, accountDO.getUsername(), wechatDO.getName());
+                    String inscribe = emailList.get(0).getInscribe();
+                    inscribe = CommonUtils.replaceUtil(inscribe, companyDO.getAbbreviation(), position.getTitle(),
+                            username, accountDO.getUsername(), wechatDO.getName());
+                    params.put("text", context);
+                    params.put("sign", inscribe);
+                    params.put("employee_name", username);
+                    params.put("company_abbr", companyDO.getAbbreviation());
+                    String qrcodeUrl = CommonUtils.appendUrl(wechatDO.getQrcode(), env.getProperty("http.cdn.url"));
+                    params.put("weixin_qrcode", qrcodeUrl);
+                    params.put("official_account_name", wechatDO.getName());
+                    params.put("send_time", DateUtils.dateToNormalDate(new Date()));
+                    emailStruct.setMergeVars(params);
+                    emailStruct.setTemplateName(Constant.MISMATCH_NOTIFICATION);
+                    String subject = "【" + companyDO.getAbbreviation() + "】不合适通知";
+                    emailStruct.setSubject(subject);
+                    emailStruct.setTo_name(username);
+                    emailStruct.setTo_email(userUserRecord.getEmail());
+                    emailStruct.setFrom_name(companyDO.getAbbreviation() + "人才招聘团队");
+                    boolean bool = emailEntity.handerTalentpoolEmailLogAndBalance(1, 2, position.getCompanyId(), position.getPublisher());
+                    if (bool) {
+                        mqService.sendMandrilEmail(emailStruct);
+                    }
+
+//                    }
+//                }
                 }
             }
+        }else{
+            logger.info("没有查到");
         }
     }
 
-    private  String appendUrl(String url, String CDN) {
-
-        String logo = "";
-        if (StringUtils.isNotNullOrEmpty(url)) {
-            if (url.startsWith("http")) {
-                logo = url;
-            } else {
-                logo = CDN + url;
-            }
-            if (!logo.startsWith("https") && logo.startsWith("http")) {
-                logo = logo.replace("http", "https");
-            }
-        }
-        return logo;
-    }
 }

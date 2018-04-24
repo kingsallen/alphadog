@@ -39,15 +39,17 @@ public class HrCompanyConfDao extends JooqCrudImpl<HrCompanyConfDO, HrCompanyCon
 		
 	}
 
-    /*
-    获取hrcompanyConf的列表
-     */
-    public HrCompanyConfDO getHrCompanyConfByCompanyId(Integer id){
+	/*
+	获取hrcompanyConf的列表
+	 */
+	public HrCompanyConfDO getHrCompanyConfByCompanyId(int id){
+		if(id == 0){
+			return null;
+		}
+		Query query=new Query.QueryBuilder().where("company_id",id)
+				.buildQuery();
+		HrCompanyConfDO companyConfDO=this.getData(query);
+		return companyConfDO;
 
-        Query query=new Query.QueryBuilder().where("company_id", id)
-                .buildQuery();
-        HrCompanyConfDO list=this.getData(query);
-        return list;
-
-    }
+	}
 }
