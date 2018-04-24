@@ -32,6 +32,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.MessageTemplateEntity;
+import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.mq.service.sms.SmsService;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -105,6 +106,8 @@ public class ResumeDeliveryService {
     private TalentpoolEmailDao talentpoolEmailDao;
     @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
+    @Autowired
+    private TalentPoolEmailEntity emailEntity;
 
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
     private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
@@ -150,7 +153,7 @@ public class ResumeDeliveryService {
                     companyId).buildQuery());
 
 
-            //关注的微信公众号
+            //仟寻招聘助手
             HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),
                     env.getProperty("wechat.helper.signature")).buildQuery());
 
@@ -186,6 +189,7 @@ public class ResumeDeliveryService {
                     if(sendResponse.getStatus()!=0) {
                         sendResponse = sendTemplateMessageToApplierByQX(templateMessageDO, hrChatDO, aggregationChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
                     }
+                    sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
                     if(sendResponse.getStatus()!=0) {
                         sendSMSToApplier(companyDO, positionDo, userUserDO, "4");
                     }
@@ -204,6 +208,7 @@ public class ResumeDeliveryService {
                     if(sendResponse.getStatus()!=0) {
                         sendSMSToApplier(companyDO, positionDo, userUserDO, "1");
                     }
+                    sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
                     sendResponse = sendTemplateMessageToRecom(templateMessageDOForRecom, hrChatDO, userUserDO, positionDo, messageEmailStruct.getRecommender_user_id(),  workExp, lastWorkName);
                     if(sendResponse.getStatus() !=0) {
                     sendTemplateMessageToRecomByQX(hrChatDO, aggregationChatDO, positionDo, messageEmailStruct.getRecommender_user_id(),  workExp, lastWorkName);
@@ -215,6 +220,7 @@ public class ResumeDeliveryService {
                 break;
                 //聚合号
                 case 4:{
+                    sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
                     Response sendResponse = sendTemplateMessageToApplierByQX(templateMessageDO, hrChatDO, aggregationChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
                     if(sendResponse.getStatus()!=0) {
                         sendSMSToApplier(companyDO, positionDo, userUserDO, "2");
@@ -228,6 +234,7 @@ public class ResumeDeliveryService {
                 break;
                 //简历回流
                 default:{
+                    sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
                     Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
@@ -361,23 +368,39 @@ public class ResumeDeliveryService {
             //获取邮件信息
             List<TalentpoolEmail> emailList = talentpoolEmailDao.getTalentpoolEmailByCompanyIdAndConfigId(company_id, Constant.TALENTPOOL_EMAIL_PROFILE_SEND);
             if(emailList != null && emailList.size()>0 && emailList.get(0).getDisable()==1){
+                TalentpoolEmail email = emailList.get(0);
                 Map<String, Object> emailStruct = new HashMap<>();
                 emailStruct.put("templateName", Constant.DELIVERY_SUCCESS);
                 Map<String, Object> params = new HashMap<>();
                 params.put("send_time", DateUtils.dateToNormalDate(new Date()));
-//                String comapny_logo  = CommonUtils.appendUrl()；
-                params.put("company_logo", DateUtils.dateToNormalDate(new Date()));
+                String comapny_logo  = CommonUtils.appendUrl(companyDO.getLogo(),env.getProperty("http.cdn.url"));
+                params.put("company_logo", comapny_logo);
+                String username = "";
+                if (userUserDO.getName() != null && !userUserDO.getName().isEmpty()) {
+                    username = userUserDO.getName();
+                } else {
+                    username = userUserDO.getNickname();
+                }
+                params.put("employee_name", username);
+                String context = CommonUtils.replaceUtil(email.getContext(), companyDO.getAbbreviation(),positionDO.getTitle(),username, accountDO.getUsername(), hrWxWechatDO.getName());
+                params.put("sustom_text", context);
+                params.put("comapny_abbr", companyDO.getAbbreviation());
+                String qrcodeUrl = CommonUtils.appendUrl(hrWxWechatDO.getQrcode(), env.getProperty("http.cdn.url"));
+                params.put("weixin_qrcode", qrcodeUrl);
+                params.put("official_account_name", hrWxWechatDO.getName());
+                emailStruct.put("mergeVars", params);
                 //邮件发送的名称，邮箱
-                String subject = positionDO.getTitle() + "-" + userUserDO.getName() + "-职位申请通知";
+                String subject = "【" + companyDO.getAbbreviation() + "】投递成功通知";
                 emailStruct.put("subject", subject);
-                emailStruct.put("to_name", accountDO.getUsername());
-                emailStruct.put("to_email", accountDO.getEmail());
+                emailStruct.put("to_name", username);
+                emailStruct.put("to_email", userUserDO.getEmail());
+                emailStruct.put("from_name", companyDO.getAbbreviation() + "人才招聘团队");
 
                 logger.info("sendEmailToHr emailStruct:{}", emailStruct);
-
-                //发送邮件给HR
-                Response sendEmail = new Response();
-                if (positionDO.getEmailNotice() == 0) {
+                boolean bool = emailEntity.handerTalentpoolEmailLogAndBalance(1,1,company_id,accountDO.getId());
+                if(bool) {
+                    //发送邮件给候选人
+                    Response sendEmail = new Response();
                     sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
                     logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
 
@@ -386,30 +409,8 @@ public class ResumeDeliveryService {
                     emailrecord.setEmail(accountDO.getEmail());
                     emailrecord.setContent(sendEmail.getMessage());
                     emailSendrecordDao.addData(emailrecord);
-                }
-
-                logger.info("是否启用抄送邮箱：" + positionDO.getProfile_cc_mail_enabled());
-                //判断是否启用抄送邮箱
-                if (positionDO.getProfile_cc_mail_enabled() == 1) {
-                    List<JobPositionCcmailRecord> ccmailList = ccmailDao.getRecords(new Query.QueryBuilder().where("position_id",
-                            positionDO.getId()).buildQuery());
-                    logger.info("抄送邮箱长度：" + ccmailList.size());
-                    if (ccmailList != null && ccmailList.size() > 0) {
-                        //遍历抄送邮箱发送邮件
-                        for (JobPositionCcmailRecord ccmail : ccmailList) {
-                            emailStruct.put("to_email", ccmail.getToEmail());
-                            sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
-                            try {
-                                LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
-                                emailrecord1.setEmail(ccmail.getToEmail());
-                                emailrecord1.setContent(sendEmail.getMessage());
-                                emailSendrecordDao.addData(emailrecord1);
-                            } catch (Exception e) {
-                                logger.error("简历抄送邮箱日记记录失败：{}", e.getMessage());
-                            }
-                            logger.info("抄送邮箱：" + ccmail.getToEmail());
-                        }
-                    }
+                }else{
+                    logger.info("邮件额度不足！");
                 }
             }
         }else{
