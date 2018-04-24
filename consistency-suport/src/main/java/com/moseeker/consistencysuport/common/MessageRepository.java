@@ -66,10 +66,11 @@ public interface MessageRepository {
      * 更新消息业务完成
      *
      * @param messageId 消息编号
-     * @param name 消息名称
-     * @throws ConsistencyException ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_NOT_EXISTS
+     * @param messageName 消息名称
+     * @param businessName 业务名称
+     * @throws ConsistencyException ConsistencyException.CONSISTENCY_PRODUCER_MESSAGE_TYPE_NOT_EXISTS
      */
-    void finishBusiness(String messageId, String name) throws ConsistencyException;
+    void finishBusiness(String messageId, String messageName, String businessName) throws ConsistencyException;
 
     /**
      *

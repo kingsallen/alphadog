@@ -55,12 +55,14 @@ public class ConsumerConsistentManager  {
     /**
      * 消息执行完成
      * @param messageId 消息编号
-     * @param name 业务名称
+     * @param messageName 消息名称
+     * @param businessName 业务名称
      */
-    public void finishTask(String messageId, String name) {
+    public void finishTask(String messageId, String messageName, String businessName) {
         Message message = new Message();
         message.setMessageId(messageId);
-        message.setBusinessName(name);
+        message.setBusinessName(businessName);
+        message.setMessageName(messageName);
         message.setMessageType(MessageType.Finish);
         messageChannel.sendMessage(message);
     }

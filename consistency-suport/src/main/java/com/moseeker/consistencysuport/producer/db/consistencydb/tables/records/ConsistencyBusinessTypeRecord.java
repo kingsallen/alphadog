@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
-import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.Record7;
 import org.jooq.Row7;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConsistencyBusinessTypeRecord extends UpdatableRecordImpl<ConsistencyBusinessTypeRecord> implements Record7<String, String, Timestamp, Timestamp, Timestamp, String, Byte> {
 
-    private static final long serialVersionUID = 2083638664;
+    private static final long serialVersionUID = 845055994;
 
     /**
      * Setter for <code>consistencydb.consistency_business_type.name</code>. 业务名称，不允许重复
@@ -138,8 +138,8 @@ public class ConsistencyBusinessTypeRecord extends UpdatableRecordImpl<Consisten
      * {@inheritDoc}
      */
     @Override
-    public Record1<String> key() {
-        return (Record1) super.key();
+    public Record2<String, String> key() {
+        return (Record2) super.key();
     }
 
     // -------------------------------------------------------------------------

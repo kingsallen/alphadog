@@ -65,8 +65,8 @@ public class Keys {
 
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<ConsistencyBusinessRecord> KEY_CONSISTENCY_BUSINESS_PRIMARY = createUniqueKey(ConsistencyBusiness.CONSISTENCY_BUSINESS, "KEY_consistency_business_PRIMARY", ConsistencyBusiness.CONSISTENCY_BUSINESS.ID);
-        public static final UniqueKey<ConsistencyBusinessRecord> KEY_CONSISTENCY_BUSINESS_CONSISTENCY_BUSINESS_NAME = createUniqueKey(ConsistencyBusiness.CONSISTENCY_BUSINESS, "KEY_consistency_business_consistency_business_name", ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME, ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID);
-        public static final UniqueKey<ConsistencyBusinessTypeRecord> KEY_CONSISTENCY_BUSINESS_TYPE_PRIMARY = createUniqueKey(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE, "KEY_consistency_business_type_PRIMARY", ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME);
+        public static final UniqueKey<ConsistencyBusinessRecord> KEY_CONSISTENCY_BUSINESS_CONSISTENCY_BUSINESS_NAME = createUniqueKey(ConsistencyBusiness.CONSISTENCY_BUSINESS, "KEY_consistency_business_consistency_business_name", ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID, ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME);
+        public static final UniqueKey<ConsistencyBusinessTypeRecord> KEY_CONSISTENCY_BUSINESS_TYPE_PRIMARY = createUniqueKey(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE, "KEY_consistency_business_type_PRIMARY", ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME, ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME);
         public static final UniqueKey<ConsistencyMessageRecord> KEY_CONSISTENCY_MESSAGE_PRIMARY = createUniqueKey(ConsistencyMessage.CONSISTENCY_MESSAGE, "KEY_consistency_message_PRIMARY", ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID);
         public static final UniqueKey<ConsistencyMessageTypeRecord> KEY_CONSISTENCY_MESSAGE_TYPE_PRIMARY = createUniqueKey(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE, "KEY_consistency_message_type_PRIMARY", ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.NAME);
     }

@@ -66,16 +66,6 @@ public class ProducerManagerSpringProxy {
 
     /**
      * 构建消息持久化工具
-     * @param create
-     * @return
-     */
-    public ProducerManagerSpringProxy buildMessageRepository(DefaultDSLContext create) {
-        messageRepository = new MessageRepositoryImpl(create);
-        return this;
-    }
-
-    /**
-     * 构建消息持久化工具
      * @param messageRepository
      * @return
      */

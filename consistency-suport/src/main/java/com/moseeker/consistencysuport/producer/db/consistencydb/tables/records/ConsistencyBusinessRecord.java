@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConsistencyBusinessRecord extends UpdatableRecordImpl<ConsistencyBusinessRecord> implements Record6<Integer, Timestamp, Timestamp, String, Byte, String> {
 
-    private static final long serialVersionUID = 1466775387;
+    private static final long serialVersionUID = 966003599;
 
     /**
      * Setter for <code>consistencydb.consistency_business.id</code>. 主键

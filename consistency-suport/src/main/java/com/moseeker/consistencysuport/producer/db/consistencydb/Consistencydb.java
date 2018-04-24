@@ -33,7 +33,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Consistencydb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1250921339;
+    private static final long serialVersionUID = -780466899;
 
     /**
      * The reference instance of <code>consistencydb</code>

@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -59,7 +60,7 @@ public class EchoHandlerImpl implements EchoHandler {
     private void finishBusiness(Message message) {
         try {
             if (StringUtils.isNotBlank(message.getMessageId()) && StringUtils.isNotBlank(message.getBusinessName())) {
-                messageRepository.finishBusiness(message.getMessageId(), message.getBusinessName());
+                messageRepository.finishBusiness(message.getMessageId(), message.getMessageName(), message.getBusinessName());
             } else {
                 notification.noticeForError(ConsistencyException.CONSISTENCY_PRODUCER_UPDATE_MESSAGE_FINISH_PARAM_ERROR);
             }

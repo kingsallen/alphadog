@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConsistencyMessageTypeRecord extends UpdatableRecordImpl<ConsistencyMessageTypeRecord> implements Record6<String, Timestamp, Timestamp, String, String, Integer> {
 
-    private static final long serialVersionUID = 195842203;
+    private static final long serialVersionUID = -52127001;
 
     /**
      * Setter for <code>consistencydb.consistency_message_type.name</code>. 业务名称，不允许重复

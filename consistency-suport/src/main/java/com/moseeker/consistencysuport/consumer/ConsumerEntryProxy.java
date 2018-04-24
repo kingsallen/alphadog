@@ -1,5 +1,6 @@
 package com.moseeker.consistencysuport.consumer;
 
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.consistencysuport.exception.ConsistencyException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -47,7 +48,19 @@ public class ConsumerEntryProxy {
         }
         String messageId = objects[consumerEntry.index()].toString();
         String businessName = consumerEntry.businessName();
+        String messageName = consumerEntry.messageName();
 
-        manager.finishTask(messageId, businessName);
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredStringValidate("消息编号", messageId);
+        validateUtil.addRequiredStringValidate("业务名称", messageName);
+        validateUtil.addRequiredStringValidate("业务名称", businessName);
+
+        String result = validateUtil.validate();
+
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            throw ConsistencyException.CONSISTENCY_CONSUMER_ANNOTATION_LOGT_CONFIG;
+        }
+
+        manager.finishTask(messageId, messageName, businessName);
     }
 }

@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConsistencyMessage extends TableImpl<ConsistencyMessageRecord> {
 
-    private static final long serialVersionUID = -504428334;
+    private static final long serialVersionUID = 479973584;
 
     /**
      * The reference instance of <code>consistencydb.consistency_message</code>

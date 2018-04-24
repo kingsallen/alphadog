@@ -58,6 +58,6 @@ public class ProducerEntryProxy {
 
         String messageId = objects[producerEntry.index()].toString();
 
-        manager.logMessage(messageId, name, className, method, objects, period);
+        //manager.logMessage(messageId, name, className, method, objects, period);
     }
 }

@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConsistencyBusinessType extends TableImpl<ConsistencyBusinessTypeRecord> {
 
-    private static final long serialVersionUID = 2140579164;
+    private static final long serialVersionUID = -1783733669;
 
     /**
      * The reference instance of <code>consistencydb.consistency_business_type</code>
@@ -83,7 +83,7 @@ public class ConsistencyBusinessType extends TableImpl<ConsistencyBusinessTypeRe
     /**
      * The column <code>consistencydb.consistency_business_type.enable</code>. 是否是正常的数据 0：表示逻辑删除，1表示正常数据
      */
-    public final TableField<ConsistencyBusinessTypeRecord, Byte> ENABLE = createField("enable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是正常的数据 0：表示逻辑删除，1表示正常数据");
+    public final TableField<ConsistencyBusinessTypeRecord, Byte> ENABLE = createField("enable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是正常的数据 0：表示逻辑删除，1表示正常数据");
 
     /**
      * Create a <code>consistencydb.consistency_business_type</code> table reference
