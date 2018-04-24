@@ -5,6 +5,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.service.impl.CompanyTagService;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.impl.AMQImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -27,7 +28,7 @@ public class ReceiveHandler {
     private CompanyTagService companyTagService;
     @RabbitListener(queues = "#{profileCompanyTagRecomQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
-    public void profileCompanyTagRecomQueHandler(Message message, Channel channel) {
+    public void profileCompanyTagRecomQueHandler(Message message, AMQImpl.Channel channel) {
         String msgBody = "{}";
         try {
             msgBody = new String(message.getBody(), "UTF-8");
