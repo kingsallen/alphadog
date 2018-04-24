@@ -844,9 +844,9 @@ public class TalentPoolEntity {
             List<Map<String, Object>> position = new ArrayList<>();
             if (positionDOS != null && positionDOS.size() > 0 && jobPositionProfileFilters != null && jobPositionProfileFilters.size()>0) {
                 for (JobPositionProfileFilter positionFilter : jobPositionProfileFilters) {
-                    if (positionFilter.getPfid() == filter.getId()) {
+                    if (positionFilter.getPfid().intValue() == filter.getId().intValue()) {
                         for (JobPositionDO positionDO : positionDOS) {
-                            if (positionDO.getId() == positionFilter.getPid()) {
+                            if (positionDO.getId() == positionFilter.getPid().intValue()) {
                                 Map<String, Object> params = new HashMap<>();
                                 params.put("title", positionDO.getTitle());
                                 params.put("status", positionDO.getStatus());
