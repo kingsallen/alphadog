@@ -32,6 +32,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.MessageTemplateEntity;
+import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.mq.service.sms.SmsService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
@@ -362,8 +363,10 @@ public class ResumeDeliveryService {
             if(emailList != null && emailList.size()>0 && emailList.get(0).getDisable()==1){
                 Map<String, Object> emailStruct = new HashMap<>();
                 emailStruct.put("templateName", Constant.DELIVERY_SUCCESS);
-                Map<String, Object> params = deliveryEmailToHr.annexEmailBody(companyDO, positionDO, userUserDO);
-
+                Map<String, Object> params = new HashMap<>();
+                params.put("send_time", DateUtils.dateToNormalDate(new Date()));
+//                String comapny_logo  = CommonUtils.appendUrl()；
+                params.put("company_logo", DateUtils.dateToNormalDate(new Date()));
                 //邮件发送的名称，邮箱
                 String subject = positionDO.getTitle() + "-" + userUserDO.getName() + "-职位申请通知";
                 emailStruct.put("subject", subject);

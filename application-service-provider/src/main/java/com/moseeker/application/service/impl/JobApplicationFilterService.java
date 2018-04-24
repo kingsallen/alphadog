@@ -18,17 +18,17 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.logdb.tables.pojos.LogTalentpoolEmailLog;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolProfileFilterLogRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
-import com.moseeker.entity.biz.EmailContextReplaceUtils;
+import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -40,10 +40,7 @@ import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -282,21 +279,22 @@ public class JobApplicationFilterService {
                     } else {
                         username = userUserRecord.getNickname();
                     }
-                    String company_logo = appendUrl(companyDO.getLogo(), env.getProperty("http.cdn.url"));
+                    String company_logo = CommonUtils.appendUrl(companyDO.getLogo(), env.getProperty("http.cdn.url"));
                     params.put("company_logo", company_logo);
                     String context = emailList.get(0).getContext();
-                    context = EmailContextReplaceUtils.replaceUtil(context, companyDO.getAbbreviation(), position.getTitle(),
+                    context = CommonUtils.replaceUtil(context, companyDO.getAbbreviation(), position.getTitle(),
                             username, accountDO.getUsername(), wechatDO.getName());
                     String inscribe = emailList.get(0).getInscribe();
-                    inscribe = EmailContextReplaceUtils.replaceUtil(inscribe, companyDO.getAbbreviation(), position.getTitle(),
+                    inscribe = CommonUtils.replaceUtil(inscribe, companyDO.getAbbreviation(), position.getTitle(),
                             username, accountDO.getUsername(), wechatDO.getName());
                     params.put("text", context);
                     params.put("sign", inscribe);
                     params.put("employee_name", username);
                     params.put("company_abbr", companyDO.getAbbreviation());
-                    String qrcodeUrl = appendUrl(wechatDO.getQrcode(), env.getProperty("http.cdn.url"));
+                    String qrcodeUrl = CommonUtils.appendUrl(wechatDO.getQrcode(), env.getProperty("http.cdn.url"));
                     params.put("weixin_qrcode", qrcodeUrl);
                     params.put("official_account_name", wechatDO.getName());
+                    params.put("send_time", DateUtils.dateToNormalDate(new Date()));
                     emailStruct.setMergeVars(params);
                     emailStruct.setTemplateName(Constant.MISMATCH_NOTIFICATION);
                     String subject = "【" + companyDO.getAbbreviation() + "】不合适通知";
@@ -318,19 +316,4 @@ public class JobApplicationFilterService {
         }
     }
 
-    private  String appendUrl(String url, String CDN) {
-
-        String logo = "";
-        if (StringUtils.isNotNullOrEmpty(url)) {
-            if (url.startsWith("http")) {
-                logo = url;
-            } else {
-                logo = CDN + url;
-            }
-            if (!logo.startsWith("https") && logo.startsWith("http")) {
-                logo = logo.replace("http", "https");
-            }
-        }
-        return logo;
-    }
 }
