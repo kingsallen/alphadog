@@ -1291,8 +1291,6 @@ public class TalentPoolService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
         }else if(flag == -3){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
-        }else if(flag == 1){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
         PageInfo info = this.getLimitStart( page_number, page_size);
         Map<String, Object> filterListInfo = new HashMap<>();
@@ -1389,7 +1387,10 @@ public class TalentPoolService {
                     String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
                     if (StringUtils.isNullOrEmpty(filterString)) {
                         int id = talentPoolEntity.addCompanyProfileFilter(filterDO, ActionFormList, positionIdList, position_total);
-                        return ResponseUtils.success("");
+                        Map<String, Object> params = new HashMap<>();
+                        params.put("id", id);
+                        params.put("name",filterDO.getName());
+                        return ResponseUtils.success(params);
                     } else {
                         return ResponseUtils.fail(1, filterString);
                     }
