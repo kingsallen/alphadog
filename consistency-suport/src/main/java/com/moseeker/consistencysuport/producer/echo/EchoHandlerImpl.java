@@ -33,6 +33,7 @@ public class EchoHandlerImpl implements EchoHandler {
     public void handlerMessage(String content) throws ConsistencyException {
 
         Message message = JSONObject.parseObject(content, Message.class);
+        logger.info("handlerMessage message:{}", message);
         switch (message.getMessageType()) {
             case Finish: finishBusiness(message);break;
             case HeartBeat:heartBeat(message);break;

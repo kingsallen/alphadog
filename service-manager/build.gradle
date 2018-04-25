@@ -13,7 +13,7 @@ sourceCompatibility = 1.8
 
 // 设置依赖
 dependencies {
-    compile project(":thrift-jooq")
+    //compile project(":thrift-jooq")
     compile project(":common")
     compile project(":rpc-center")
     compile project(":baseorm-service-provider")
@@ -33,6 +33,7 @@ dependencies {
     compile deps["httpclient"]
     compile deps["commons-io"]
     compile deps["commons-fileupload"]
+    compile files('lib/*.jar')
 
     runtime deps['jstl']
 

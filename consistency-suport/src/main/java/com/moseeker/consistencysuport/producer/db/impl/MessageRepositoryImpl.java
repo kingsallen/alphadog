@@ -278,8 +278,6 @@ public class MessageRepositoryImpl implements MessageRepository {
     @Override
     public void finishBusiness(String messageId, String messageName, String businessName) throws ConsistencyException {
         try {
-
-            Result<ConsistencyMessageRecord> result4 = create.selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE).fetch();
             ConsistencyMessageTypeRecord consistencyMessageTypeRecord = create
                     .selectFrom(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE)
                     .where(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.NAME.eq(messageName))
@@ -295,9 +293,6 @@ public class MessageRepositoryImpl implements MessageRepository {
                     .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
                     .getSQL();
             logger.info("find message sql : " +sql);
-            Result<ConsistencyBusinessRecord> result1 = create.selectFrom(ConsistencyBusiness.CONSISTENCY_BUSINESS).fetch();
-            Result<ConsistencyBusinessTypeRecord> result2 = create.selectFrom(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE).fetch();
-            Result<ConsistencyMessageRecord> result = create.selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE).fetch();
             ConsistencyMessageRecord consistencyMessageRecord = create
                     .selectFrom(ConsistencyMessage.CONSISTENCY_MESSAGE)
                     .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(messageId))
@@ -380,6 +375,9 @@ public class MessageRepositoryImpl implements MessageRepository {
             }
         } catch (ConsistencyException | DataAccessException e) {
             logger.error(e.getMessage(), e);
+            e.printStackTrace();
+            throw e;
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
