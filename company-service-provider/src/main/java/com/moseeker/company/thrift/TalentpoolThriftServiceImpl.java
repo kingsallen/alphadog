@@ -460,6 +460,56 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
+    public void addAllTalent(int hrId, Map<String, String> params, int companyId) throws BIZException, TException {
+        try{
+             talentPoolService.addAllTalent(hrId,params,companyId);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public void addAllTalentTag(Map<String, String> params, List<Integer> tagList, int companyId, int hrId) throws BIZException, TException {
+        try{
+            talentPoolService.addAllTalentTag(params,tagList,companyId,hrId);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public void addAllTalentPublic(int hrId, Map<String, String> params, int companyId) throws BIZException, TException {
+        try{
+            talentPoolService.addAllTalentPublic(params,companyId,hrId);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public void addAllTalentPrivate(int hrId, Map<String, String> params, int companyId) throws BIZException, TException {
+        try{
+            talentPoolService.addAllTalentPrivate(params,companyId,hrId);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public void cancleAllTalent(int hrId, Map<String, String> params, int companyId) throws BIZException, TException {
+        try{
+            talentPoolService.cancleAllTalent(hrId,params,companyId);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
     public Response getProfileFilterList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
         try{
             return talentPoolService.getProfileFilterList(hr_id,company_id,page_number, page_size);
