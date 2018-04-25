@@ -158,6 +158,7 @@ public class JobApplicationFilterService {
     private  boolean validateProfileAndFilterOther(TalentpoolProfileFilter filter, MessageEmailStruct filterInfoStruct){
         if(StringUtils.isNotNullOrEmpty(filter.getOrigins())){
             boolean flag = validateProfileAndFilterOrigins(filter.getOrigins(), filterInfoStruct.getOrigin());
+            logger.info("handerApplicationFilter origins isflag:{}", flag);
             if(!flag){
                 return  flag;
             }
@@ -214,6 +215,6 @@ public class JobApplicationFilterService {
         }else if(type == 4){
             res = bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
         }
-        logger.info("response info :{}", res);
+        logger.info("handerApplicationFilter response info :{}", res);
     }
 }
