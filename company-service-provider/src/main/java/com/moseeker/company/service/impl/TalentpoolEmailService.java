@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,8 +204,8 @@ public class TalentpoolEmailService {
         return talentPoolEmailEntity.fetchEmailAccounts(companyId, companyName, pageNumber, pageSize);
     }
 
-    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, EmailAccountConsumptionType emailAccountConsumptionType, int pageNumber, int pageSize) {
-        return talentPoolEmailEntity.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize);
+    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, EmailAccountConsumptionType emailAccountConsumptionType, int pageNumber, int pageSize, DateTime startDate, DateTime endDate) {
+        return talentPoolEmailEntity.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize, startDate, endDate);
     }
 
     public int rechargeEmailAccount(int companyId, int lost) throws TalentPoolException {
