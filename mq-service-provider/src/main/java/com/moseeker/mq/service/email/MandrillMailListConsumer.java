@@ -83,12 +83,23 @@ public class MandrillMailListConsumer {
                 MandrillMessage message = new MandrillMessage();
 
                 List<Recipient> recipients = new ArrayList<Recipient>();
-                Recipient recipient = new Recipient();
-                recipient.setEmail(mandrillEmailListStruct.getTo_email());
-                if (StringUtils.isNotNullOrEmpty(mandrillEmailListStruct.getTo_name())){
-                    recipient.setName(mandrillEmailListStruct.getTo_name());
+
+                List<Map<String,String>> toInfoList = mandrillEmailListStruct.getTo();
+                for(Map<String,String> toinfo : toInfoList){
+                    Recipient recipient = new Recipient();
+                    for (Entry<String, String> entry : toinfo.entrySet()){
+                        if("to_email".equals(entry.getKey())){
+                            recipient.setEmail(entry.getValue());
+                        }
+                        if("to_name".equals(entry.getKey())){
+                            if (StringUtils.isNotNullOrEmpty(entry.getValue())){
+                                recipient.setName(entry.getValue());
+                            }
+                        }
+                    }
+                    recipients.add(recipient);
                 }
-                recipients.add(recipient);
+
                 message.setTo(recipients);
 
                 List<MergeVarBucket> mergeVars = new ArrayList<MergeVarBucket>();
@@ -140,20 +151,7 @@ public class MandrillMailListConsumer {
                 message.setViewContentLink(true);
                 MandrillMessageStatus[] messageStatus = mandrillApi.messages().sendTemplate(mandrillEmailListStruct.getTemplateName(),
                         null,message, false);
-                LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
-
-                if (messageStatus.length == 0){
-                    logger.error("mandrill send failed: " + mandrillEmailListStruct.getTo_email());
-                    emailrecord.setEmail(recipient.getEmail());
-                    emailrecord.setContent("failed," + mandrillEmailListStruct.getTemplateName() + "," + message.getSubject());
-                    logEmailSendrecordDao.addData(emailrecord);
-                }else{
-                    emailrecord.setEmail(recipient.getEmail());
-                    emailrecord.setContent(messageStatus[0].getStatus()+","+ mandrillEmailListStruct.getTemplateName() + "," + message.getSubject());
-                    logEmailSendrecordDao.addData(emailrecord);
-
-                    logger.debug(messageStatus[0].getEmail() +" "+ messageStatus[0].getStatus());
-                }
+                logger.info("messageStatus :{}",messageStatus);
 
             } catch (Exception e) {
                 e.printStackTrace();

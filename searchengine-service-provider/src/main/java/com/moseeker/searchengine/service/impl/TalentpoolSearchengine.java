@@ -99,6 +99,30 @@ public class TalentpoolSearchengine {
 
 
     /*
+     根据user_id获取es中的数据
+
+     */
+    @CounterIface
+    public Map<String, Object> getEsDataByUserIds(List<Integer> userIds){
+        Map<String, Object> result=new HashMap<>();
+        TransportClient client=null;
+        try {
+            client = searchUtil.getEsClient();
+            QueryBuilder query = this.queryByUserId(userIds);
+            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+            logger.info(builder.toString());
+            SearchResponse response = builder.execute().actionGet();
+            result = searchUtil.handleData(response, "users");
+            return result;
+        } catch (Exception e) {
+            logger.info(e.getMessage()+"=================");
+            if (e.getMessage().contains("all shards")) {
+                return result;
+            }
+        }
+        return result;
+    }
+    /*
      查询企业标签的人才数量
      */
     public int talentSearchNum(Map<String, String> params) {
@@ -126,7 +150,6 @@ public class TalentpoolSearchengine {
         }
         return 0;
     }
-
     @CounterIface
     public Map<String,Object> getAggInfo(Map<String, String> params){
         Map<String, Object> result=new HashMap<>();
@@ -601,6 +624,7 @@ public class TalentpoolSearchengine {
         String pastPosition=params.get("past_position");
         String intentionCity=params.get("intention_city_name");
         String companyTag=params.get("company_tag");
+
         if(
                 StringUtils.isNotNullOrEmpty(keyword)||
                         StringUtils.isNotNullOrEmpty(cityName)||
@@ -657,6 +681,7 @@ public class TalentpoolSearchengine {
         String minAge=params.get("min_age");
         String maxAge=params.get("max_age");
         String updateTime=params.get("update_time");
+        String extsis=params.get("extsis");
         if(
                 StringUtils.isNotNullOrEmpty(degree)||StringUtils.isNotNullOrEmpty(intentionSalaryCode)||StringUtils.isNotNullOrEmpty(sex)||
                         StringUtils.isNotNullOrEmpty(workYears)||StringUtils.isNotNullOrEmpty(updateTime)||
@@ -691,6 +716,9 @@ public class TalentpoolSearchengine {
                 this.queryByAge(ages,query);
             }
 
+        }
+        if(StringUtils.isNotNullOrEmpty(extsis)){
+            this.exitsisQuery(extsis,query);
         }
 
         return query;
@@ -926,6 +954,18 @@ public class TalentpoolSearchengine {
         return list;
     }
     /*
+     根据user_id查询es数据
+     */
+    private QueryBuilder queryByUserId(List<Integer> userIdList){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        List<String> fieldList=new ArrayList<>();
+        fieldList.add("user.profiles.profile.user_id");
+        fieldList.add("user.applications.applier_id");
+        searchUtil.shouldTermsQuery(fieldList,userIdList,query);
+        return query;
+    }
+    /*
      根据简历的更新时间查询
      */
     private void queryByProfileUpDateTime(String updateTime,QueryBuilder queryBuilder){
@@ -1101,6 +1141,11 @@ public class TalentpoolSearchengine {
         Map<String,Object> map=new HashMap<>();
         map.put("user.profiles.recent_job.company_new_name",searchUtil.stringConvertList(companys));
         searchUtil.shouldTermQuery(map,queryBuilder);
+    }
+
+    private void exitsisQuery(String exitsis,QueryBuilder queryBuilder){
+        List<String> list=searchUtil.stringConvertList(exitsis);
+        searchUtil.exitsisQuery(list,queryBuilder);
     }
     /*
      构建通过曾经工作的公司查询

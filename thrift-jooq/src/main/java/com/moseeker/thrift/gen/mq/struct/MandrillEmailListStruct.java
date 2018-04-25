@@ -12,19 +12,17 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("MandrillEmailListStruct");
 
     private static final org.apache.thrift.protocol.TField TEMPLATE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("templateName", org.apache.thrift.protocol.TType.STRING, (short)1);
-    private static final org.apache.thrift.protocol.TField TO_EMAIL_FIELD_DESC = new org.apache.thrift.protocol.TField("to_email", org.apache.thrift.protocol.TType.STRING, (short)2);
-    private static final org.apache.thrift.protocol.TField TO_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("to_name", org.apache.thrift.protocol.TType.STRING, (short)3);
-    private static final org.apache.thrift.protocol.TField MERGE_VARS_FIELD_DESC = new org.apache.thrift.protocol.TField("mergeVars", org.apache.thrift.protocol.TType.LIST, (short)4);
-    private static final org.apache.thrift.protocol.TField FROM_EMAIL_FIELD_DESC = new org.apache.thrift.protocol.TField("from_email", org.apache.thrift.protocol.TType.STRING, (short)5);
-    private static final org.apache.thrift.protocol.TField FROM_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("from_name", org.apache.thrift.protocol.TType.STRING, (short)6);
-    private static final org.apache.thrift.protocol.TField SUBJECT_FIELD_DESC = new org.apache.thrift.protocol.TField("subject", org.apache.thrift.protocol.TType.STRING, (short)7);
+    private static final org.apache.thrift.protocol.TField TO_FIELD_DESC = new org.apache.thrift.protocol.TField("to", org.apache.thrift.protocol.TType.LIST, (short)2);
+    private static final org.apache.thrift.protocol.TField MERGE_VARS_FIELD_DESC = new org.apache.thrift.protocol.TField("mergeVars", org.apache.thrift.protocol.TType.LIST, (short)3);
+    private static final org.apache.thrift.protocol.TField FROM_EMAIL_FIELD_DESC = new org.apache.thrift.protocol.TField("from_email", org.apache.thrift.protocol.TType.STRING, (short)4);
+    private static final org.apache.thrift.protocol.TField FROM_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("from_name", org.apache.thrift.protocol.TType.STRING, (short)5);
+    private static final org.apache.thrift.protocol.TField SUBJECT_FIELD_DESC = new org.apache.thrift.protocol.TField("subject", org.apache.thrift.protocol.TType.STRING, (short)6);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new MandrillEmailListStructStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new MandrillEmailListStructTupleSchemeFactory();
 
     public java.lang.String templateName; // required
-    public java.lang.String to_email; // required
-    public java.lang.String to_name; // optional
+    public java.util.List<java.util.Map<java.lang.String,java.lang.String>> to; // required
     public java.util.List<java.util.Map<java.lang.String,java.lang.String>> mergeVars; // optional
     public java.lang.String from_email; // optional
     public java.lang.String from_name; // optional
@@ -33,12 +31,11 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
         TEMPLATE_NAME((short)1, "templateName"),
-        TO_EMAIL((short)2, "to_email"),
-        TO_NAME((short)3, "to_name"),
-        MERGE_VARS((short)4, "mergeVars"),
-        FROM_EMAIL((short)5, "from_email"),
-        FROM_NAME((short)6, "from_name"),
-        SUBJECT((short)7, "subject");
+        TO((short)2, "to"),
+        MERGE_VARS((short)3, "mergeVars"),
+        FROM_EMAIL((short)4, "from_email"),
+        FROM_NAME((short)5, "from_name"),
+        SUBJECT((short)6, "subject");
 
         private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -55,17 +52,15 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
             switch(fieldId) {
                 case 1: // TEMPLATE_NAME
                     return TEMPLATE_NAME;
-                case 2: // TO_EMAIL
-                    return TO_EMAIL;
-                case 3: // TO_NAME
-                    return TO_NAME;
-                case 4: // MERGE_VARS
+                case 2: // TO
+                    return TO;
+                case 3: // MERGE_VARS
                     return MERGE_VARS;
-                case 5: // FROM_EMAIL
+                case 4: // FROM_EMAIL
                     return FROM_EMAIL;
-                case 6: // FROM_NAME
+                case 5: // FROM_NAME
                     return FROM_NAME;
-                case 7: // SUBJECT
+                case 6: // SUBJECT
                     return SUBJECT;
                 default:
                     return null;
@@ -107,16 +102,17 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
     }
 
     // isset id assignments
-    private static final _Fields optionals[] = {_Fields.TO_NAME,_Fields.MERGE_VARS,_Fields.FROM_EMAIL,_Fields.FROM_NAME,_Fields.SUBJECT};
+    private static final _Fields optionals[] = {_Fields.MERGE_VARS,_Fields.FROM_EMAIL,_Fields.FROM_NAME,_Fields.SUBJECT};
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
         java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
         tmpMap.put(_Fields.TEMPLATE_NAME, new org.apache.thrift.meta_data.FieldMetaData("templateName", org.apache.thrift.TFieldRequirementType.DEFAULT,
                 new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-        tmpMap.put(_Fields.TO_EMAIL, new org.apache.thrift.meta_data.FieldMetaData("to_email", org.apache.thrift.TFieldRequirementType.DEFAULT,
-                new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-        tmpMap.put(_Fields.TO_NAME, new org.apache.thrift.meta_data.FieldMetaData("to_name", org.apache.thrift.TFieldRequirementType.OPTIONAL,
-                new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+        tmpMap.put(_Fields.TO, new org.apache.thrift.meta_data.FieldMetaData("to", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
+                        new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP,
+                                new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING),
+                                new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)))));
         tmpMap.put(_Fields.MERGE_VARS, new org.apache.thrift.meta_data.FieldMetaData("mergeVars", org.apache.thrift.TFieldRequirementType.OPTIONAL,
                 new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
                         new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP,
@@ -137,11 +133,11 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
 
     public MandrillEmailListStruct(
             java.lang.String templateName,
-            java.lang.String to_email)
+            java.util.List<java.util.Map<java.lang.String,java.lang.String>> to)
     {
         this();
         this.templateName = templateName;
-        this.to_email = to_email;
+        this.to = to;
     }
 
     /**
@@ -151,11 +147,13 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         if (other.isSetTemplateName()) {
             this.templateName = other.templateName;
         }
-        if (other.isSetTo_email()) {
-            this.to_email = other.to_email;
-        }
-        if (other.isSetTo_name()) {
-            this.to_name = other.to_name;
+        if (other.isSetTo()) {
+            java.util.List<java.util.Map<java.lang.String,java.lang.String>> __this__to = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(other.to.size());
+            for (java.util.Map<java.lang.String,java.lang.String> other_element : other.to) {
+                java.util.Map<java.lang.String,java.lang.String> __this__to_copy = new java.util.HashMap<java.lang.String,java.lang.String>(other_element);
+                __this__to.add(__this__to_copy);
+            }
+            this.to = __this__to;
         }
         if (other.isSetMergeVars()) {
             java.util.List<java.util.Map<java.lang.String,java.lang.String>> __this__mergeVars = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(other.mergeVars.size());
@@ -183,8 +181,7 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
     @Override
     public void clear() {
         this.templateName = null;
-        this.to_email = null;
-        this.to_name = null;
+        this.to = null;
         this.mergeVars = null;
         this.from_email = null;
         this.from_name = null;
@@ -215,51 +212,42 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         }
     }
 
-    public java.lang.String getTo_email() {
-        return this.to_email;
+    public int getToSize() {
+        return (this.to == null) ? 0 : this.to.size();
     }
 
-    public MandrillEmailListStruct setTo_email(java.lang.String to_email) {
-        this.to_email = to_email;
-        return this;
+    public java.util.Iterator<java.util.Map<java.lang.String,java.lang.String>> getToIterator() {
+        return (this.to == null) ? null : this.to.iterator();
     }
 
-    public void unsetTo_email() {
-        this.to_email = null;
-    }
-
-    /** Returns true if field to_email is set (has been assigned a value) and false otherwise */
-    public boolean isSetTo_email() {
-        return this.to_email != null;
-    }
-
-    public void setTo_emailIsSet(boolean value) {
-        if (!value) {
-            this.to_email = null;
+    public void addToTo(java.util.Map<java.lang.String,java.lang.String> elem) {
+        if (this.to == null) {
+            this.to = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>();
         }
+        this.to.add(elem);
     }
 
-    public java.lang.String getTo_name() {
-        return this.to_name;
+    public java.util.List<java.util.Map<java.lang.String,java.lang.String>> getTo() {
+        return this.to;
     }
 
-    public MandrillEmailListStruct setTo_name(java.lang.String to_name) {
-        this.to_name = to_name;
+    public MandrillEmailListStruct setTo(java.util.List<java.util.Map<java.lang.String,java.lang.String>> to) {
+        this.to = to;
         return this;
     }
 
-    public void unsetTo_name() {
-        this.to_name = null;
+    public void unsetTo() {
+        this.to = null;
     }
 
-    /** Returns true if field to_name is set (has been assigned a value) and false otherwise */
-    public boolean isSetTo_name() {
-        return this.to_name != null;
+    /** Returns true if field to is set (has been assigned a value) and false otherwise */
+    public boolean isSetTo() {
+        return this.to != null;
     }
 
-    public void setTo_nameIsSet(boolean value) {
+    public void setToIsSet(boolean value) {
         if (!value) {
-            this.to_name = null;
+            this.to = null;
         }
     }
 
@@ -384,19 +372,11 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                 }
                 break;
 
-            case TO_EMAIL:
+            case TO:
                 if (value == null) {
-                    unsetTo_email();
+                    unsetTo();
                 } else {
-                    setTo_email((java.lang.String)value);
-                }
-                break;
-
-            case TO_NAME:
-                if (value == null) {
-                    unsetTo_name();
-                } else {
-                    setTo_name((java.lang.String)value);
+                    setTo((java.util.List<java.util.Map<java.lang.String,java.lang.String>>)value);
                 }
                 break;
 
@@ -440,11 +420,8 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
             case TEMPLATE_NAME:
                 return getTemplateName();
 
-            case TO_EMAIL:
-                return getTo_email();
-
-            case TO_NAME:
-                return getTo_name();
+            case TO:
+                return getTo();
 
             case MERGE_VARS:
                 return getMergeVars();
@@ -471,10 +448,8 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         switch (field) {
             case TEMPLATE_NAME:
                 return isSetTemplateName();
-            case TO_EMAIL:
-                return isSetTo_email();
-            case TO_NAME:
-                return isSetTo_name();
+            case TO:
+                return isSetTo();
             case MERGE_VARS:
                 return isSetMergeVars();
             case FROM_EMAIL:
@@ -511,21 +486,12 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                 return false;
         }
 
-        boolean this_present_to_email = true && this.isSetTo_email();
-        boolean that_present_to_email = true && that.isSetTo_email();
-        if (this_present_to_email || that_present_to_email) {
-            if (!(this_present_to_email && that_present_to_email))
+        boolean this_present_to = true && this.isSetTo();
+        boolean that_present_to = true && that.isSetTo();
+        if (this_present_to || that_present_to) {
+            if (!(this_present_to && that_present_to))
                 return false;
-            if (!this.to_email.equals(that.to_email))
-                return false;
-        }
-
-        boolean this_present_to_name = true && this.isSetTo_name();
-        boolean that_present_to_name = true && that.isSetTo_name();
-        if (this_present_to_name || that_present_to_name) {
-            if (!(this_present_to_name && that_present_to_name))
-                return false;
-            if (!this.to_name.equals(that.to_name))
+            if (!this.to.equals(that.to))
                 return false;
         }
 
@@ -576,13 +542,9 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         if (isSetTemplateName())
             hashCode = hashCode * 8191 + templateName.hashCode();
 
-        hashCode = hashCode * 8191 + ((isSetTo_email()) ? 131071 : 524287);
-        if (isSetTo_email())
-            hashCode = hashCode * 8191 + to_email.hashCode();
-
-        hashCode = hashCode * 8191 + ((isSetTo_name()) ? 131071 : 524287);
-        if (isSetTo_name())
-            hashCode = hashCode * 8191 + to_name.hashCode();
+        hashCode = hashCode * 8191 + ((isSetTo()) ? 131071 : 524287);
+        if (isSetTo())
+            hashCode = hashCode * 8191 + to.hashCode();
 
         hashCode = hashCode * 8191 + ((isSetMergeVars()) ? 131071 : 524287);
         if (isSetMergeVars())
@@ -621,22 +583,12 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetTo_email()).compareTo(other.isSetTo_email());
+        lastComparison = java.lang.Boolean.valueOf(isSetTo()).compareTo(other.isSetTo());
         if (lastComparison != 0) {
             return lastComparison;
         }
-        if (isSetTo_email()) {
-            lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.to_email, other.to_email);
-            if (lastComparison != 0) {
-                return lastComparison;
-            }
-        }
-        lastComparison = java.lang.Boolean.valueOf(isSetTo_name()).compareTo(other.isSetTo_name());
-        if (lastComparison != 0) {
-            return lastComparison;
-        }
-        if (isSetTo_name()) {
-            lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.to_name, other.to_name);
+        if (isSetTo()) {
+            lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.to, other.to);
             if (lastComparison != 0) {
                 return lastComparison;
             }
@@ -709,23 +661,13 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         }
         first = false;
         if (!first) sb.append(", ");
-        sb.append("to_email:");
-        if (this.to_email == null) {
+        sb.append("to:");
+        if (this.to == null) {
             sb.append("null");
         } else {
-            sb.append(this.to_email);
+            sb.append(this.to);
         }
         first = false;
-        if (isSetTo_name()) {
-            if (!first) sb.append(", ");
-            sb.append("to_name:");
-            if (this.to_name == null) {
-                sb.append("null");
-            } else {
-                sb.append(this.to_name);
-            }
-            first = false;
-        }
         if (isSetMergeVars()) {
             if (!first) sb.append(", ");
             sb.append("mergeVars:");
@@ -817,27 +759,11 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                         }
                         break;
-                    case 2: // TO_EMAIL
-                        if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                            struct.to_email = iprot.readString();
-                            struct.setTo_emailIsSet(true);
-                        } else {
-                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-                        }
-                        break;
-                    case 3: // TO_NAME
-                        if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                            struct.to_name = iprot.readString();
-                            struct.setTo_nameIsSet(true);
-                        } else {
-                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-                        }
-                        break;
-                    case 4: // MERGE_VARS
+                    case 2: // TO
                         if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                             {
                                 org.apache.thrift.protocol.TList _list20 = iprot.readListBegin();
-                                struct.mergeVars = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(_list20.size);
+                                struct.to = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(_list20.size);
                                 java.util.Map<java.lang.String,java.lang.String> _elem21;
                                 for (int _i22 = 0; _i22 < _list20.size; ++_i22)
                                 {
@@ -854,7 +780,37 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                                         }
                                         iprot.readMapEnd();
                                     }
-                                    struct.mergeVars.add(_elem21);
+                                    struct.to.add(_elem21);
+                                }
+                                iprot.readListEnd();
+                            }
+                            struct.setToIsSet(true);
+                        } else {
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                        }
+                        break;
+                    case 3: // MERGE_VARS
+                        if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                            {
+                                org.apache.thrift.protocol.TList _list27 = iprot.readListBegin();
+                                struct.mergeVars = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(_list27.size);
+                                java.util.Map<java.lang.String,java.lang.String> _elem28;
+                                for (int _i29 = 0; _i29 < _list27.size; ++_i29)
+                                {
+                                    {
+                                        org.apache.thrift.protocol.TMap _map30 = iprot.readMapBegin();
+                                        _elem28 = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map30.size);
+                                        java.lang.String _key31;
+                                        java.lang.String _val32;
+                                        for (int _i33 = 0; _i33 < _map30.size; ++_i33)
+                                        {
+                                            _key31 = iprot.readString();
+                                            _val32 = iprot.readString();
+                                            _elem28.put(_key31, _val32);
+                                        }
+                                        iprot.readMapEnd();
+                                    }
+                                    struct.mergeVars.add(_elem28);
                                 }
                                 iprot.readListEnd();
                             }
@@ -863,7 +819,7 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                         }
                         break;
-                    case 5: // FROM_EMAIL
+                    case 4: // FROM_EMAIL
                         if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                             struct.from_email = iprot.readString();
                             struct.setFrom_emailIsSet(true);
@@ -871,7 +827,7 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                         }
                         break;
-                    case 6: // FROM_NAME
+                    case 5: // FROM_NAME
                         if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                             struct.from_name = iprot.readString();
                             struct.setFrom_nameIsSet(true);
@@ -879,7 +835,7 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                         }
                         break;
-                    case 7: // SUBJECT
+                    case 6: // SUBJECT
                         if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                             struct.subject = iprot.readString();
                             struct.setSubjectIsSet(true);
@@ -907,31 +863,39 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                 oprot.writeString(struct.templateName);
                 oprot.writeFieldEnd();
             }
-            if (struct.to_email != null) {
-                oprot.writeFieldBegin(TO_EMAIL_FIELD_DESC);
-                oprot.writeString(struct.to_email);
-                oprot.writeFieldEnd();
-            }
-            if (struct.to_name != null) {
-                if (struct.isSetTo_name()) {
-                    oprot.writeFieldBegin(TO_NAME_FIELD_DESC);
-                    oprot.writeString(struct.to_name);
-                    oprot.writeFieldEnd();
+            if (struct.to != null) {
+                oprot.writeFieldBegin(TO_FIELD_DESC);
+                {
+                    oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.MAP, struct.to.size()));
+                    for (java.util.Map<java.lang.String,java.lang.String> _iter34 : struct.to)
+                    {
+                        {
+                            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, _iter34.size()));
+                            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter35 : _iter34.entrySet())
+                            {
+                                oprot.writeString(_iter35.getKey());
+                                oprot.writeString(_iter35.getValue());
+                            }
+                            oprot.writeMapEnd();
+                        }
+                    }
+                    oprot.writeListEnd();
                 }
+                oprot.writeFieldEnd();
             }
             if (struct.mergeVars != null) {
                 if (struct.isSetMergeVars()) {
                     oprot.writeFieldBegin(MERGE_VARS_FIELD_DESC);
                     {
                         oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.MAP, struct.mergeVars.size()));
-                        for (java.util.Map<java.lang.String,java.lang.String> _iter27 : struct.mergeVars)
+                        for (java.util.Map<java.lang.String,java.lang.String> _iter36 : struct.mergeVars)
                         {
                             {
-                                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, _iter27.size()));
-                                for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter28 : _iter27.entrySet())
+                                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, _iter36.size()));
+                                for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter37 : _iter36.entrySet())
                                 {
-                                    oprot.writeString(_iter28.getKey());
-                                    oprot.writeString(_iter28.getValue());
+                                    oprot.writeString(_iter37.getKey());
+                                    oprot.writeString(_iter37.getValue());
                                 }
                                 oprot.writeMapEnd();
                             }
@@ -983,45 +947,52 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
             if (struct.isSetTemplateName()) {
                 optionals.set(0);
             }
-            if (struct.isSetTo_email()) {
+            if (struct.isSetTo()) {
                 optionals.set(1);
             }
-            if (struct.isSetTo_name()) {
+            if (struct.isSetMergeVars()) {
                 optionals.set(2);
             }
-            if (struct.isSetMergeVars()) {
+            if (struct.isSetFrom_email()) {
                 optionals.set(3);
             }
-            if (struct.isSetFrom_email()) {
+            if (struct.isSetFrom_name()) {
                 optionals.set(4);
             }
-            if (struct.isSetFrom_name()) {
+            if (struct.isSetSubject()) {
                 optionals.set(5);
             }
-            if (struct.isSetSubject()) {
-                optionals.set(6);
-            }
-            oprot.writeBitSet(optionals, 7);
+            oprot.writeBitSet(optionals, 6);
             if (struct.isSetTemplateName()) {
                 oprot.writeString(struct.templateName);
             }
-            if (struct.isSetTo_email()) {
-                oprot.writeString(struct.to_email);
-            }
-            if (struct.isSetTo_name()) {
-                oprot.writeString(struct.to_name);
+            if (struct.isSetTo()) {
+                {
+                    oprot.writeI32(struct.to.size());
+                    for (java.util.Map<java.lang.String,java.lang.String> _iter38 : struct.to)
+                    {
+                        {
+                            oprot.writeI32(_iter38.size());
+                            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter39 : _iter38.entrySet())
+                            {
+                                oprot.writeString(_iter39.getKey());
+                                oprot.writeString(_iter39.getValue());
+                            }
+                        }
+                    }
+                }
             }
             if (struct.isSetMergeVars()) {
                 {
                     oprot.writeI32(struct.mergeVars.size());
-                    for (java.util.Map<java.lang.String,java.lang.String> _iter29 : struct.mergeVars)
+                    for (java.util.Map<java.lang.String,java.lang.String> _iter40 : struct.mergeVars)
                     {
                         {
-                            oprot.writeI32(_iter29.size());
-                            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter30 : _iter29.entrySet())
+                            oprot.writeI32(_iter40.size());
+                            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter41 : _iter40.entrySet())
                             {
-                                oprot.writeString(_iter30.getKey());
-                                oprot.writeString(_iter30.getValue());
+                                oprot.writeString(_iter41.getKey());
+                                oprot.writeString(_iter41.getValue());
                             }
                         }
                     }
@@ -1041,52 +1012,68 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         @Override
         public void read(org.apache.thrift.protocol.TProtocol prot, MandrillEmailListStruct struct) throws org.apache.thrift.TException {
             org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-            java.util.BitSet incoming = iprot.readBitSet(7);
+            java.util.BitSet incoming = iprot.readBitSet(6);
             if (incoming.get(0)) {
                 struct.templateName = iprot.readString();
                 struct.setTemplateNameIsSet(true);
             }
             if (incoming.get(1)) {
-                struct.to_email = iprot.readString();
-                struct.setTo_emailIsSet(true);
-            }
-            if (incoming.get(2)) {
-                struct.to_name = iprot.readString();
-                struct.setTo_nameIsSet(true);
-            }
-            if (incoming.get(3)) {
                 {
-                    org.apache.thrift.protocol.TList _list31 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.MAP, iprot.readI32());
-                    struct.mergeVars = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(_list31.size);
-                    java.util.Map<java.lang.String,java.lang.String> _elem32;
-                    for (int _i33 = 0; _i33 < _list31.size; ++_i33)
+                    org.apache.thrift.protocol.TList _list42 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.MAP, iprot.readI32());
+                    struct.to = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(_list42.size);
+                    java.util.Map<java.lang.String,java.lang.String> _elem43;
+                    for (int _i44 = 0; _i44 < _list42.size; ++_i44)
                     {
                         {
-                            org.apache.thrift.protocol.TMap _map34 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-                            _elem32 = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map34.size);
-                            java.lang.String _key35;
-                            java.lang.String _val36;
-                            for (int _i37 = 0; _i37 < _map34.size; ++_i37)
+                            org.apache.thrift.protocol.TMap _map45 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+                            _elem43 = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map45.size);
+                            java.lang.String _key46;
+                            java.lang.String _val47;
+                            for (int _i48 = 0; _i48 < _map45.size; ++_i48)
                             {
-                                _key35 = iprot.readString();
-                                _val36 = iprot.readString();
-                                _elem32.put(_key35, _val36);
+                                _key46 = iprot.readString();
+                                _val47 = iprot.readString();
+                                _elem43.put(_key46, _val47);
                             }
                         }
-                        struct.mergeVars.add(_elem32);
+                        struct.to.add(_elem43);
+                    }
+                }
+                struct.setToIsSet(true);
+            }
+            if (incoming.get(2)) {
+                {
+                    org.apache.thrift.protocol.TList _list49 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.MAP, iprot.readI32());
+                    struct.mergeVars = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(_list49.size);
+                    java.util.Map<java.lang.String,java.lang.String> _elem50;
+                    for (int _i51 = 0; _i51 < _list49.size; ++_i51)
+                    {
+                        {
+                            org.apache.thrift.protocol.TMap _map52 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+                            _elem50 = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map52.size);
+                            java.lang.String _key53;
+                            java.lang.String _val54;
+                            for (int _i55 = 0; _i55 < _map52.size; ++_i55)
+                            {
+                                _key53 = iprot.readString();
+                                _val54 = iprot.readString();
+                                _elem50.put(_key53, _val54);
+                            }
+                        }
+                        struct.mergeVars.add(_elem50);
                     }
                 }
                 struct.setMergeVarsIsSet(true);
             }
-            if (incoming.get(4)) {
+            if (incoming.get(3)) {
                 struct.from_email = iprot.readString();
                 struct.setFrom_emailIsSet(true);
             }
-            if (incoming.get(5)) {
+            if (incoming.get(4)) {
                 struct.from_name = iprot.readString();
                 struct.setFrom_nameIsSet(true);
             }
-            if (incoming.get(6)) {
+            if (incoming.get(5)) {
                 struct.subject = iprot.readString();
                 struct.setSubjectIsSet(true);
             }

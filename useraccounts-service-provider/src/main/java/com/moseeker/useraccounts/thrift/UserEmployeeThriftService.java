@@ -1,16 +1,20 @@
 package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
+import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
@@ -123,5 +127,33 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             throw ExceptionConvertUtil.convertCommonException(UserAccountException.validateFailed(result));
         }
         employeeService.addEmployeeAward(applicationIdList, awardEvent);
+    }
+
+    @Override
+    public Response getValidateUserEmployee(int company_id, String email) throws BIZException, TException {
+        try{
+            List<UserEmployeeDO> list=employeeService.getUserEmployeeEmailValidate(company_id,email);
+            if(list!=null&&list.size()>0){
+                return ResponseUtils.success(list);
+            }
+            return ResponseUtils.success("");
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getPastUserEmployee(int company_id) throws BIZException, TException {
+        try{
+            List<UserEmployeeDO> list=employeeService.getPastUserEmployeeEmail(company_id);
+            if(list!=null&&list.size()>0){
+                return ResponseUtils.success(list);
+            }
+            return ResponseUtils.success("");
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 }

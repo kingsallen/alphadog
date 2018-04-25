@@ -1122,8 +1122,8 @@ public class TalentpoolController {
     }
 
     /*
-获取邮件详情
-*/
+    获取邮件详情
+    */
     @RequestMapping(value = "/api/talentpool/email/info", method = RequestMethod.PATCH)
     @ResponseBody
     public String updateEmailInfo(HttpServletRequest request) throws Exception {
@@ -1151,4 +1151,22 @@ public class TalentpoolController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+    /*
+       扣除邮件点数
+     */
+    @RequestMapping(value = "/api/talentpool/email/balance", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateEmailInfoBalance(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId=Integer.parseInt((String)params.get("company_id"));
+            int balance=Integer.parseInt((String)params.get("balance"));
+            Response result=service.updateCompanyEmailBalance(companyId,balance);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 }

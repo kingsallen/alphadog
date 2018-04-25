@@ -535,6 +535,16 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
+    public Response updateCompanyEmailBalance(int company_id, int balance) throws BIZException, TException {
+        try{
+            return talentpoolEmailService.updateEmailInfoBalance(company_id,balance);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
     public Response getProfileFilterList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
         try{
             return talentPoolService.getProfileFilterList(hr_id,company_id,page_number, page_size);

@@ -485,6 +485,26 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
     }
+    public void shouldTermsQuery(List<String> fieldsList,List<Integer>dataIdList, QueryBuilder query) {
+        if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String fields : fieldsList) {
+                QueryBuilder fullf = QueryBuilders.termsQuery(fields, dataIdList);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+
+    public void exitsisQuery(List<String> list, QueryBuilder query) {
+       if(list!=null&&list.size()>0){
+          for(String filed:list){
+              QueryBuilder keyand = QueryBuilders.existsQuery(filed);
+              ((BoolQueryBuilder) query).must(keyand);
+          }
+       }
+    }
 
     //terms查询，查询的值包含多个值
     public void shouldTermsQuery(Map<String, Object> map, QueryBuilder query) {
