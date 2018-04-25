@@ -292,7 +292,7 @@ public class TalentPoolEmailEntity {
     }
 
     public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, EmailAccountConsumptionType emailAccountConsumptionType,
-                                                                    int pageNumber, int pageSize, String startDate, String endDate) {
+                                                                    int pageNumber, int pageSize, DateTime startDate, DateTime endDate) {
         EmailAccountConsumptionForm emailAccountConsumptionForm = new EmailAccountConsumptionForm();
         emailAccountConsumptionForm.setCompany_id(companyId);
         if (pageNumber <= 0) {
@@ -311,14 +311,12 @@ public class TalentPoolEmailEntity {
         int index = (pageNumber - 1) * pageSize;
 
         Timestamp startTime = null;
-        if (org.apache.commons.lang.StringUtils.isNotBlank(startDate)) {
-            DateTime startDateTime = DateTime.parse(startDate);
-            startTime = new Timestamp(startDateTime.getMillis());
+        if (startDate != null) {
+            startTime = new Timestamp(startDate.getMillis());
         }
         Timestamp endTime = null;
-        if (org.apache.commons.lang.StringUtils.isNotBlank(endDate)) {
-            DateTime endDateTime = DateTime.parse(endDate);
-            endTime = new Timestamp(endDateTime.getMillis());
+        if (endDate != null) {
+            endTime = new Timestamp(endDate.getMillis());
         }
 
         int total = 0;
