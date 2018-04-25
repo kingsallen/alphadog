@@ -1,10 +1,12 @@
 package com.moseeker.baseorm.dao.logdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailLog;
 import com.moseeker.baseorm.db.logdb.tables.pojos.LogTalentpoolEmailDailyLog;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolEmailDailyLogRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
+import org.jooq.Condition;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -28,20 +30,36 @@ public class LogTalentpoolEmailDailyLogDao extends JooqCrudImpl<LogTalentpoolEma
         super(table, logTalentpoolEmailDailyLogClass);
     }
 
-    public List<LogTalentpoolEmailDailyLogRecord> fetchEmailAccountConsumption(int companyId, byte value, int index, int pageSize) {
+    public List<LogTalentpoolEmailDailyLogRecord> fetchEmailAccountConsumption(int companyId, byte value, int index, int pageSize, Timestamp startDate, Timestamp endDate) {
+
+        Condition condition = LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId)
+                .and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.TYPE.eq(value));
+        if (startDate != null) {
+            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.ge(startDate));
+        }
+        if (endDate != null) {
+            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.le(endDate));
+        }
+
         return create.selectFrom(LOG_TALENTPOOL_EMAIL_DAILY_LOG)
-                .where(LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId))
-                .and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.TYPE.eq(value))
+                .where(condition)
                 .orderBy(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.desc())
                 .limit(index, pageSize)
                 .fetch();
     }
 
-    public int countEmailAccountConsumption(int companyId, byte value) {
+    public int countEmailAccountConsumption(int companyId, byte value, Timestamp startDate, Timestamp endDate) {
+        Condition condition = LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId)
+                .and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.TYPE.eq(value));
+        if (startDate != null) {
+            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.ge(startDate));
+        }
+        if (endDate != null) {
+            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.le(endDate));
+        }
         return create.selectCount()
                 .from(LOG_TALENTPOOL_EMAIL_DAILY_LOG)
-                .where(LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId))
-                .and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.TYPE.eq(value))
+                .where(condition)
                 .fetchOne()
                 .value1();
     }

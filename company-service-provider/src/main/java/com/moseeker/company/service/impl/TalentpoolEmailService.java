@@ -202,8 +202,8 @@ public class TalentpoolEmailService {
         return talentPoolEmailEntity.fetchEmailAccounts(companyId, companyName, pageNumber, pageSize);
     }
 
-    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, EmailAccountConsumptionType emailAccountConsumptionType, int pageNumber, int pageSize) {
-        return talentPoolEmailEntity.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize);
+    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, EmailAccountConsumptionType emailAccountConsumptionType, int pageNumber, int pageSize, String startDate, String endDate) {
+        return talentPoolEmailEntity.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize, startDate, endDate);
     }
 
     public int rechargeEmailAccount(int companyId, int lost) throws TalentPoolException {

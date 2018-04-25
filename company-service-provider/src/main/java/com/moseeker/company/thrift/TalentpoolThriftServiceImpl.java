@@ -405,7 +405,8 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, byte type, int pageNumber, int pageSize) throws BIZException, TException {
+    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, byte type, int pageNumber,
+                                                                    int pageSize, String startDate, String endDate) throws BIZException, TException {
         try {
             if (pageNumber <= 0 || pageSize <= 0) {
                 throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("参数无效！"));
@@ -417,7 +418,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             if (emailAccountConsumptionType == null) {
                 throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("错误的消费类型！"));
             }
-            return talentpoolEmailService.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize);
+            return talentpoolEmailService.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize, startDate, endDate);
         } catch (CommonException e) {
             logger.error(e.getMessage(),e);
             throw ExceptionConvertUtil.convertCommonException(e);
