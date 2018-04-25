@@ -439,6 +439,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
                     throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("结束时间格式不正确！"));
                 }
             }
+            if (startDateTime != null && endDateTime != null && startDateTime.getMillis() >= endDateTime.getMillis()) {
+                throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("开始时间必须要小于结束时间！"));
+            }
             return talentpoolEmailService.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize, startDateTime, endDateTime);
         } catch (CommonException e) {
             logger.error(e.getMessage(),e);
