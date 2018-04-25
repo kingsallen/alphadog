@@ -6,7 +6,6 @@ package com.moseeker.baseorm.db.dictdb;
 
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
-import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategoryBak;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityPostcode;
@@ -49,7 +48,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -807868608;
+    private static final long serialVersionUID = 877714558;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -70,11 +69,6 @@ public class Dictdb extends SchemaImpl {
      * dict_alipaycampus_jobcategory[alipay校园招聘-职位类别]
      */
     public final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
-
-    /**
-     * job_category[校园工作-基础数据-职位类别]
-     */
-    public final DictAlipaycampusJobcategoryBak DICT_ALIPAYCAMPUS_JOBCATEGORY_BAK = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategoryBak.DICT_ALIPAYCAMPUS_JOBCATEGORY_BAK;
 
     /**
      * 城市字典表
@@ -184,7 +178,6 @@ public class Dictdb extends SchemaImpl {
             Dict_51jobOccupation.DICT_51JOB_OCCUPATION,
             DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
             DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY,
-            DictAlipaycampusJobcategoryBak.DICT_ALIPAYCAMPUS_JOBCATEGORY_BAK,
             DictCity.DICT_CITY,
             DictCityMap.DICT_CITY_MAP,
             DictCityPostcode.DICT_CITY_POSTCODE,

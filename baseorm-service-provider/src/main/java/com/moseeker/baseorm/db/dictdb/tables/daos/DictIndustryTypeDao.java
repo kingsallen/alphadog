@@ -70,4 +70,32 @@ public class DictIndustryTypeDao extends DAOImpl<DictIndustryTypeRecord, com.mos
     public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictIndustryType> fetchByName(String... values) {
         return fetch(DictIndustryType.DICT_INDUSTRY_TYPE.NAME, values);
     }
+
+    /**
+     * Fetch records that have <code>company_img IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictIndustryType> fetchByCompanyImg(String... values) {
+        return fetch(DictIndustryType.DICT_INDUSTRY_TYPE.COMPANY_IMG, values);
+    }
+
+    /**
+     * Fetch records that have <code>job_img IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictIndustryType> fetchByJobImg(String... values) {
+        return fetch(DictIndustryType.DICT_INDUSTRY_TYPE.JOB_IMG, values);
+    }
+
+    /**
+     * Fetch records that have <code>team_img IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictIndustryType> fetchByTeamImg(String... values) {
+        return fetch(DictIndustryType.DICT_INDUSTRY_TYPE.TEAM_IMG, values);
+    }
+
+    /**
+     * Fetch records that have <code>pc_img IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictIndustryType> fetchByPcImg(String... values) {
+        return fetch(DictIndustryType.DICT_INDUSTRY_TYPE.PC_IMG, values);
+    }
 }

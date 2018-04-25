@@ -24,4 +24,5 @@ service SearchengineServices {
     list<i32> queryCompanyTagUserIdList(1: map<string,string> params);
     i32 talentSearchNum(1: map<string,string> params);
     useraccounts_struct.FilterResp queryProfileFilterUserIdList(1:list<map<string,string>> filterMapList, 2:i32 page_number, 3:i32 page_size);
+    common_struct.Response userQueryById(1: list<i32> userIdlist);
 }

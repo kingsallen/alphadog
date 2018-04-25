@@ -65,6 +65,13 @@ public class StringUtils {
             return true;
         }
     }
+    public static boolean isEmptyMap(Map map) {
+        if (map != null && !map.isEmpty()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     /*
      判断set是否为空
      */

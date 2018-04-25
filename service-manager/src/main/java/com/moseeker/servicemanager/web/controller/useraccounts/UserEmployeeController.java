@@ -148,4 +148,31 @@ public class UserEmployeeController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    @RequestMapping(value="/api/talentpool/forward/employee", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEmailValidate(HttpServletRequest request, @RequestBody ApplyTypeAwardFrom form) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId=Integer.parseInt((String)params.get("company_id"));
+            String email=(String)params.get("email");
+            Response res=service.getValidateUserEmployee(companyId,email);
+            return ResponseLogNotification.successJson(request,res);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value="/api/talentpool/forward/employee/history", method = RequestMethod.GET)
+    @ResponseBody
+    public String getUserEmployeePast(HttpServletRequest request, @RequestBody ApplyTypeAwardFrom form) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId=Integer.parseInt((String)params.get("company_id"));
+            Response res=service.getPastUserEmployee(companyId);
+            return ResponseLogNotification.successJson(request,res);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

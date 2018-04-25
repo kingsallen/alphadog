@@ -3,11 +3,18 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -25,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +54,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     AwardRepository awardRepository;
+
+    @Resource(name = "cacheClient")
+    private RedisClient client;
 
     public Response getUserEmployee(CommonQuery query) throws TException {
         return getResource(query);
@@ -217,4 +228,25 @@ public class UserEmployeeServiceImpl {
         AwardEntity awardEntity = awardRepository.loadAwardEntity(applicationsAggregateId);
         awardEntity.addAward();
     }
+    /*
+     获取经过认证的员工信息
+     */
+    public List<UserEmployeeDO> getUserEmployeeEmailValidate(int companyId,String email){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("email","%"+email+"%", ValueOp.LIKE))
+                .and("disable",1).and("email_isvalid",1).orderBy("update_time", Order.DESC).buildQuery();
+        List<UserEmployeeDO>  list=userEmployeeDao.getDatas(query);
+        return list;
+    }
+    /*
+     获取最近转发过的员工
+     */
+    public List<UserEmployeeDO> getPastUserEmployeeEmail(int companyId){
+        String result=client.get(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),String.valueOf(companyId));
+        if(StringUtils.isNotNullOrEmpty(result)){
+            List<UserEmployeeDO> list=JSON.parseArray(result,UserEmployeeDO.class);
+            return list;
+        }
+        return new ArrayList<>();
+    }
+
 }
