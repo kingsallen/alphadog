@@ -218,6 +218,20 @@ public class SearchengineServiceImpl implements Iface {
 	}
 
 	@Override
+	public Response userQueryById(List<Integer> userIdlist) throws TException {
+		try{
+			Map<String,Object> res=talentpoolSearchengine.getEsDataByUserIds(userIdlist);
+			if(res==null||res.isEmpty()){
+				return ResponseUtils.success("");
+			}
+			return ResponseUtils.success(res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
+	@Override
 	public int talentSearchNum(Map<String, String> params) throws TException {
 		try{
 			int res=talentpoolSearchengine.talentSearchNum(params);
