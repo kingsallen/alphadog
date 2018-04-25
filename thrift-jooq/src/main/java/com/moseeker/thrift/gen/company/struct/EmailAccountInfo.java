@@ -16,7 +16,7 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
   private static final org.apache.thrift.protocol.TField ABBERSIVE_FIELD_DESC = new org.apache.thrift.protocol.TField("abbersive", org.apache.thrift.protocol.TType.STRING, (short)3);
   private static final org.apache.thrift.protocol.TField BALANCE_FIELD_DESC = new org.apache.thrift.protocol.TField("balance", org.apache.thrift.protocol.TType.I32, (short)4);
   private static final org.apache.thrift.protocol.TField TOTAL_FIELD_DESC = new org.apache.thrift.protocol.TField("total", org.apache.thrift.protocol.TType.I32, (short)5);
-  private static final org.apache.thrift.protocol.TField USER_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("user_num", org.apache.thrift.protocol.TType.I32, (short)6);
+  private static final org.apache.thrift.protocol.TField USE_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("use_num", org.apache.thrift.protocol.TType.I32, (short)6);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new EmailAccountInfoStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new EmailAccountInfoTupleSchemeFactory();
@@ -26,7 +26,7 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
   public java.lang.String abbersive; // optional
   public int balance; // optional
   public int total; // optional
-  public int user_num; // optional
+  public int use_num; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -35,7 +35,7 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
     ABBERSIVE((short)3, "abbersive"),
     BALANCE((short)4, "balance"),
     TOTAL((short)5, "total"),
-    USER_NUM((short)6, "user_num");
+    USE_NUM((short)6, "use_num");
 
     private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -60,8 +60,8 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
           return BALANCE;
         case 5: // TOTAL
           return TOTAL;
-        case 6: // USER_NUM
-          return USER_NUM;
+        case 6: // USE_NUM
+          return USE_NUM;
         default:
           return null;
       }
@@ -106,9 +106,9 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
   private static final int __COMPANY_ID_ISSET_ID = 1;
   private static final int __BALANCE_ISSET_ID = 2;
   private static final int __TOTAL_ISSET_ID = 3;
-  private static final int __USER_NUM_ISSET_ID = 4;
+  private static final int __USE_NUM_ISSET_ID = 4;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID,_Fields.COMPANY_ID,_Fields.ABBERSIVE,_Fields.BALANCE,_Fields.TOTAL,_Fields.USER_NUM};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.COMPANY_ID,_Fields.ABBERSIVE,_Fields.BALANCE,_Fields.TOTAL,_Fields.USE_NUM};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -122,7 +122,7 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.TOTAL, new org.apache.thrift.meta_data.FieldMetaData("total", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.USER_NUM, new org.apache.thrift.meta_data.FieldMetaData("user_num", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.USE_NUM, new org.apache.thrift.meta_data.FieldMetaData("use_num", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(EmailAccountInfo.class, metaDataMap);
@@ -143,7 +143,7 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
     }
     this.balance = other.balance;
     this.total = other.total;
-    this.user_num = other.user_num;
+    this.use_num = other.use_num;
   }
 
   public EmailAccountInfo deepCopy() {
@@ -161,8 +161,8 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
     this.balance = 0;
     setTotalIsSet(false);
     this.total = 0;
-    setUser_numIsSet(false);
-    this.user_num = 0;
+    setUse_numIsSet(false);
+    this.use_num = 0;
   }
 
   public int getId() {
@@ -281,27 +281,27 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TOTAL_ISSET_ID, value);
   }
 
-  public int getUser_num() {
-    return this.user_num;
+  public int getUse_num() {
+    return this.use_num;
   }
 
-  public EmailAccountInfo setUser_num(int user_num) {
-    this.user_num = user_num;
-    setUser_numIsSet(true);
+  public EmailAccountInfo setUse_num(int use_num) {
+    this.use_num = use_num;
+    setUse_numIsSet(true);
     return this;
   }
 
-  public void unsetUser_num() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __USER_NUM_ISSET_ID);
+  public void unsetUse_num() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __USE_NUM_ISSET_ID);
   }
 
-  /** Returns true if field user_num is set (has been assigned a value) and false otherwise */
-  public boolean isSetUser_num() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __USER_NUM_ISSET_ID);
+  /** Returns true if field use_num is set (has been assigned a value) and false otherwise */
+  public boolean isSetUse_num() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __USE_NUM_ISSET_ID);
   }
 
-  public void setUser_numIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USER_NUM_ISSET_ID, value);
+  public void setUse_numIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USE_NUM_ISSET_ID, value);
   }
 
   public void setFieldValue(_Fields field, java.lang.Object value) {
@@ -346,11 +346,11 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
       }
       break;
 
-    case USER_NUM:
+    case USE_NUM:
       if (value == null) {
-        unsetUser_num();
+        unsetUse_num();
       } else {
-        setUser_num((java.lang.Integer)value);
+        setUse_num((java.lang.Integer)value);
       }
       break;
 
@@ -374,8 +374,8 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
     case TOTAL:
       return getTotal();
 
-    case USER_NUM:
-      return getUser_num();
+    case USE_NUM:
+      return getUse_num();
 
     }
     throw new java.lang.IllegalStateException();
@@ -398,8 +398,8 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
       return isSetBalance();
     case TOTAL:
       return isSetTotal();
-    case USER_NUM:
-      return isSetUser_num();
+    case USE_NUM:
+      return isSetUse_num();
     }
     throw new java.lang.IllegalStateException();
   }
@@ -464,12 +464,12 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
         return false;
     }
 
-    boolean this_present_user_num = true && this.isSetUser_num();
-    boolean that_present_user_num = true && that.isSetUser_num();
-    if (this_present_user_num || that_present_user_num) {
-      if (!(this_present_user_num && that_present_user_num))
+    boolean this_present_use_num = true && this.isSetUse_num();
+    boolean that_present_use_num = true && that.isSetUse_num();
+    if (this_present_use_num || that_present_use_num) {
+      if (!(this_present_use_num && that_present_use_num))
         return false;
-      if (this.user_num != that.user_num)
+      if (this.use_num != that.use_num)
         return false;
     }
 
@@ -500,9 +500,9 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
     if (isSetTotal())
       hashCode = hashCode * 8191 + total;
 
-    hashCode = hashCode * 8191 + ((isSetUser_num()) ? 131071 : 524287);
-    if (isSetUser_num())
-      hashCode = hashCode * 8191 + user_num;
+    hashCode = hashCode * 8191 + ((isSetUse_num()) ? 131071 : 524287);
+    if (isSetUse_num())
+      hashCode = hashCode * 8191 + use_num;
 
     return hashCode;
   }
@@ -565,12 +565,12 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetUser_num()).compareTo(other.isSetUser_num());
+    lastComparison = java.lang.Boolean.valueOf(isSetUse_num()).compareTo(other.isSetUse_num());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetUser_num()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.user_num, other.user_num);
+    if (isSetUse_num()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.use_num, other.use_num);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -628,10 +628,10 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
       sb.append(this.total);
       first = false;
     }
-    if (isSetUser_num()) {
+    if (isSetUse_num()) {
       if (!first) sb.append(", ");
-      sb.append("user_num:");
-      sb.append(this.user_num);
+      sb.append("use_num:");
+      sb.append(this.use_num);
       first = false;
     }
     sb.append(")");
@@ -719,10 +719,10 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 6: // USER_NUM
+          case 6: // USE_NUM
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.user_num = iprot.readI32();
-              struct.setUser_numIsSet(true);
+              struct.use_num = iprot.readI32();
+              struct.setUse_numIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -769,9 +769,9 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
         oprot.writeI32(struct.total);
         oprot.writeFieldEnd();
       }
-      if (struct.isSetUser_num()) {
-        oprot.writeFieldBegin(USER_NUM_FIELD_DESC);
-        oprot.writeI32(struct.user_num);
+      if (struct.isSetUse_num()) {
+        oprot.writeFieldBegin(USE_NUM_FIELD_DESC);
+        oprot.writeI32(struct.use_num);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -807,7 +807,7 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
       if (struct.isSetTotal()) {
         optionals.set(4);
       }
-      if (struct.isSetUser_num()) {
+      if (struct.isSetUse_num()) {
         optionals.set(5);
       }
       oprot.writeBitSet(optionals, 6);
@@ -826,8 +826,8 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
       if (struct.isSetTotal()) {
         oprot.writeI32(struct.total);
       }
-      if (struct.isSetUser_num()) {
-        oprot.writeI32(struct.user_num);
+      if (struct.isSetUse_num()) {
+        oprot.writeI32(struct.use_num);
       }
     }
 
@@ -856,8 +856,8 @@ public class EmailAccountInfo implements org.apache.thrift.TBase<EmailAccountInf
         struct.setTotalIsSet(true);
       }
       if (incoming.get(5)) {
-        struct.user_num = iprot.readI32();
-        struct.setUser_numIsSet(true);
+        struct.use_num = iprot.readI32();
+        struct.setUse_numIsSet(true);
       }
     }
   }

@@ -45,7 +45,7 @@ struct EmailAccountInfo {
     3: optional string abbersive,       //公司简称
     4: optional i32 balance,            //账号余额
     5: optional i32 total,              //总采购额度
-    6: optional i32 user_num            //已经使用额度
+    6: optional i32 use_num             //已经使用额度
 }
 
 struct EmailAccountForm {
