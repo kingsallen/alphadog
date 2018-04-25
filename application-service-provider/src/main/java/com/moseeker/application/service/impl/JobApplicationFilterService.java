@@ -254,6 +254,7 @@ public class JobApplicationFilterService {
             res = bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
         }else if(type == 4){
             res = bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
+            sendProfileFilterExecuteEmail(user_id, position);
         }
         logger.info("handerApplicationFilter response info :{}", res);
     }
@@ -301,6 +302,7 @@ public class JobApplicationFilterService {
                     emailStruct.setFrom_name(companyDO.getAbbreviation() + "人才招聘团队");
                     int id = emailEntity.handerTalentpoolEmailLogAndBalance(1, 2, position.getCompanyId(), position.getPublisher());
                     if (id > 0) {
+                        logger.info("handerApplicationFilter emailStruct:{}", emailStruct);
                         mqService.sendMandrilEmail(emailStruct);
                     }
                 }
