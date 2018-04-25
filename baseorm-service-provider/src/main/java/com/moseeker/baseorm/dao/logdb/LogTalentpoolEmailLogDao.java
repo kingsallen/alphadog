@@ -49,6 +49,7 @@ public class LogTalentpoolEmailLogDao extends JooqCrudImpl<com.moseeker.baseorm.
         return create.selectFrom(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG)
                 .where(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.COMPANY_ID.eq(companyId))
                 .and(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.TYPE.eq(0))
+                .orderBy(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.CREATE_TIME.desc())
                 .limit(index, pageSize)
                 .fetch();
     }
