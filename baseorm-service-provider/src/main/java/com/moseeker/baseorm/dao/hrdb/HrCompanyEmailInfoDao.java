@@ -37,11 +37,22 @@ public class HrCompanyEmailInfoDao extends JooqCrudImpl<HrCompanyEmailInfo, HrCo
     }
 
     public int  updateHrCompanyEmailInfoListByCompanyIdAndBalance(int companyId, int banlance, int oldBalance){
-       int result = create.update(HR_COMPANY_EMAIL_INFO).set(HR_COMPANY_EMAIL_INFO.BALANCE,banlance)
-               .where(HR_COMPANY_EMAIL_INFO.COMPANY_ID.eq(companyId))
-               .and(HR_COMPANY_EMAIL_INFO.BALANCE.eq(oldBalance))
-               .execute();
-        return result;
+        if (banlance > oldBalance) {
+            int result = create.update(HR_COMPANY_EMAIL_INFO)
+                    .set(HR_COMPANY_EMAIL_INFO.BALANCE,banlance)
+                    .set(HR_COMPANY_EMAIL_INFO.TOTAL, HR_COMPANY_EMAIL_INFO.TOTAL.add(banlance-oldBalance))
+                    .where(HR_COMPANY_EMAIL_INFO.COMPANY_ID.eq(companyId))
+                    .and(HR_COMPANY_EMAIL_INFO.BALANCE.eq(oldBalance))
+                    .execute();
+            return result;
+        } else {
+            int result = create.update(HR_COMPANY_EMAIL_INFO)
+                    .set(HR_COMPANY_EMAIL_INFO.BALANCE,banlance)
+                    .where(HR_COMPANY_EMAIL_INFO.COMPANY_ID.eq(companyId))
+                    .and(HR_COMPANY_EMAIL_INFO.BALANCE.eq(oldBalance))
+                    .execute();
+            return result;
+        }
     }
 
     public int countEmailAccounts(List<Integer> companyIdList) {
