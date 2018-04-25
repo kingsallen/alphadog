@@ -80,7 +80,7 @@ public class ThirdpartyZhilianPositionDao implements IThirdPartyPositionDao<List
         zhilianPositionAddressDao.deleteByPid(pid);
 
         thirdpartyZhilianPositionAddressDOS.forEach(a->a.setPid(pid));
-        zhilianPositionAddressDao.addAllData(thirdpartyZhilianPositionAddressDOS);
+        List<ThirdpartyZhilianPositionAddressDO> result = zhilianPositionAddressDao.addAllData(thirdpartyZhilianPositionAddressDOS);
         return 1;
     }
 

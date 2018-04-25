@@ -204,8 +204,8 @@ public class HRThirdPartyPositionDao  {
      * 先添加第三方职位主表hr_third_party_position
      * 再调用策略模式添加第三方职位附表 {@link IThirdPartyPositionDao}
      *
-     * @param s
-     * @param p
+     * @param s 第三方职位主表数据
+     * @param p 第三方职位附表数据
      * @param <P>
      * @return
      * @throws BIZException
