@@ -32,6 +32,7 @@ public class LogTalentpoolEmailDailyLogDao extends JooqCrudImpl<LogTalentpoolEma
         return create.selectFrom(LOG_TALENTPOOL_EMAIL_DAILY_LOG)
                 .where(LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId))
                 .and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.TYPE.eq(value))
+                .orderBy(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.desc())
                 .limit(index, pageSize)
                 .fetch();
     }
