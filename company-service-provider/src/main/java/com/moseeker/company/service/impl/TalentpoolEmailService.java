@@ -67,7 +67,10 @@ public class TalentpoolEmailService {
        }
        HrCompanyEmailInfo info = talentPoolEmailEntity.getHrCompanyEmailInfoByCompanyId(company_id);
        Map<String, Object> infoMap = new HashMap<>();
-       infoMap.put("number", info.getBalance());
+       infoMap.put("number", 0);
+       if(info != null){
+           infoMap.put("number", info.getBalance());
+       }
        return ResponseUtils.success(infoMap);
    }
 
