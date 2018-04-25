@@ -5,6 +5,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.mq.service.email.MandrillMailListConsumer;
 import com.moseeker.mq.service.impl.EmailProducer;
 import com.moseeker.mq.service.impl.MandrillEmailProducer;
 import com.moseeker.mq.service.impl.ResumeDeliveryService;
@@ -54,6 +55,9 @@ public class ThriftService implements Iface {
     @Autowired
     private ResumeDeliveryService deliveryService;
 
+    @Autowired
+    private MandrillMailListConsumer mandrillMailListConsumer;
+
 	@Override
 	public Response messageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct) throws TException {
 		return mqService.messageTemplateNotice(messageTemplateNoticeStruct);
@@ -94,6 +98,15 @@ public class ThriftService implements Iface {
 		// TODO Auto-generated method stub
 		return mandrillEmailProducer.queueEmail(mandrillEmailStruct);
 	}
+
+    @Override
+    public void sendMandrilEmailList(MandrillEmailListStruct mandrillEmailStruct) throws TException {
+        try {
+             mandrillMailListConsumer.sendMailList(mandrillEmailStruct);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public Response sendAuthEMail(Map<String, String> params, int eventType, String email, String subject, String senderName, String senderDisplay) throws TException {
