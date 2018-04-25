@@ -9,7 +9,6 @@ import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysTemplateMessageLibrary;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyEmailInfoRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolEmailDailyLogRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolEmailLogRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
@@ -131,6 +130,10 @@ public class TalentPoolEmailEntity {
             HrCompanyEmailInfo companyEmailInfo = companyEmailInfoDao.getHrCompanyEmailInfoListByCompanyId(company_id);
             consumption(useCount, type, company_id, hr_id, companyEmailInfo.getBalance(), index);
         }
+
+        long timeAtStartOfDay = new DateTime().withTimeAtStartOfDay().getMillis();
+        logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, company_id, useCount, EmailAccountConsumptionType.COMSUMPTION.getValue(), 0);
+
         LogTalentpoolEmailLogRecord record = new LogTalentpoolEmailLogRecord();
         record.setCompanyId(company_id);
         record.setType(type);
@@ -140,25 +143,66 @@ public class TalentPoolEmailEntity {
         return emailLogDao.addRecord(record).getId();
     }
 
-    private int recharge(int useCount, int company_id, int balance, int index) throws TalentPoolException {
+    private int recharge(int useCount, int companyId, int balance, int index) throws TalentPoolException {
         if (index >= Constant.RETRY_UPPER_LIMIT) {
             throw TalentPoolException.TALENT_POOL_EMAIL_ACCOUNT_BALANCE_UPDATE_FIALED;
         }
         index ++;
 
-        int count = companyEmailInfoDao.updateHrCompanyEmailInfoListByCompanyIdAndBalance(company_id, balance+useCount, balance);
+        int count = companyEmailInfoDao.updateHrCompanyEmailInfoListByCompanyIdAndBalance(companyId, balance+useCount, balance);
         if (count == 0) {
-            HrCompanyEmailInfo companyEmailInfo = companyEmailInfoDao.getHrCompanyEmailInfoListByCompanyId(company_id);
-            recharge(useCount, company_id, companyEmailInfo.getBalance(), index);
+            HrCompanyEmailInfo companyEmailInfo = companyEmailInfoDao.getHrCompanyEmailInfoListByCompanyId(companyId);
+            recharge(useCount, companyId, companyEmailInfo.getBalance(), index);
         }
 
+        long timeAtStartOfDay = new DateTime().withTimeAtStartOfDay().getMillis();
+        logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, companyId, useCount, EmailAccountConsumptionType.RECHARRGE.getValue(), 0);
+
         LogTalentpoolEmailLogRecord record = new LogTalentpoolEmailLogRecord();
-        record.setCompanyId(company_id);
+        record.setCompanyId(companyId);
         record.setType(0);
         record.setLost(useCount);
         record.setBalance(balance + useCount);
         record.setHrId(0);
         return emailLogDao.addRecord(record).getId();
+    }
+
+    public void updateEmailAccountRecharge(int id, int lost) throws CommonException {
+        LogTalentpoolEmailLogRecord record = emailLogDao.getById(id);
+        if (record == null || record.getType().byteValue() != EmailAccountConsumptionType.RECHARRGE.getValue()) {
+            throw TalentPoolException.TALENT_POOL_EMAIL_ACCOUNT_RECHARGE_NOT_EXIST;
+        }
+
+        int balance = lost - record.getLost();
+        if (balance == 0) {
+            return;
+        }
+
+        DateTime dateTime = new DateTime(record.getCreateTime());
+        long timeAtStartOfDay = dateTime.withTimeAtStartOfDay().getMillis();
+        logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, record.getCompanyId(), balance, EmailAccountConsumptionType.RECHARRGE.getValue(), 0);
+
+        HrCompanyEmailInfo companyEmailInfo = companyEmailInfoDao.getHrCompanyEmailInfoListByCompanyId(record.getCompanyId());
+        int count = companyEmailInfoDao.updateHrCompanyEmailInfoListByCompanyIdAndBalance(record.getCompanyId(), balance+companyEmailInfo.getBalance(), companyEmailInfo.getBalance());
+        if (count == 0) {
+            retryUpdateCompanyEmailInfo(record.getCompanyId(), balance, 0);
+        }
+
+        if (emailLogDao.updateLostById(id, lost)) {
+            throw TalentPoolException.TALENT_POOL_EMAIL_ACCOUNT_RECHARGE_UPDATE_FAILD;
+        }
+    }
+
+    private void retryUpdateCompanyEmailInfo(Integer companyId, int balance, int index) throws CommonException {
+        if (index >= Constant.RETRY_UPPER_LIMIT) {
+            throw TalentPoolException.TALENT_POOL_EMAIL_ACCOUNT_BALANCE_UPDATE_FIALED;
+        }
+        index++;
+        HrCompanyEmailInfo companyEmailInfo = companyEmailInfoDao.getHrCompanyEmailInfoListByCompanyId(companyId);
+        int count = companyEmailInfoDao.updateHrCompanyEmailInfoListByCompanyIdAndBalance(companyId, balance+companyEmailInfo.getBalance(), companyEmailInfo.getBalance());
+        if (count == 0) {
+            retryUpdateCompanyEmailInfo(companyId, balance, index);
+        }
     }
 
     public EmailAccountForm fetchEmailAccounts(int companyId, String companyName, int pageNumber,

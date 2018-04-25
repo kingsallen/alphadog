@@ -206,4 +206,8 @@ public class TalentpoolEmailService {
     public int rechargeEmailAccount(int companyId, int lost) throws TalentPoolException {
         return talentPoolEmailEntity.handerTalentpoolEmailLogAndBalance(lost, 0, companyId, 0);
     }
+
+    public void updateEmailAccountRecharge(int id, int lost) {
+        talentPoolEmailEntity.updateEmailAccountRecharge(id, lost);
+    }
 }

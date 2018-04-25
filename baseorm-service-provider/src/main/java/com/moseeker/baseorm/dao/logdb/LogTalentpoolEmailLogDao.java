@@ -20,4 +20,17 @@ public class LogTalentpoolEmailLogDao extends JooqCrudImpl<com.moseeker.baseorm.
     }
 
 
+    public LogTalentpoolEmailLogRecord getById(int id) {
+        return create.selectFrom(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG)
+                .where(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.ID.eq(id))
+                .fetchOne();
+    }
+
+    public boolean updateLostById(int id, int lost) {
+        int execute = create.update(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG)
+                .set(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.LOST, lost)
+                .where(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.ID.eq(id))
+                .execute();
+        return execute == 1 ? true:false;
+    }
 }

@@ -13,6 +13,10 @@ public class TalentPoolException extends CommonException {
 
     public static final TalentPoolException TALENT_POOL_EMAIL_ACCOUNT_OVER_BALANCE = new TalentPoolException(34103,"公司邮箱额度不足！");
 
+    public static final TalentPoolException TALENT_POOL_EMAIL_ACCOUNT_RECHARGE_NOT_EXIST = new TalentPoolException(34104,"公司邮箱充值记录不存在！");
+
+    public static final TalentPoolException TALENT_POOL_EMAIL_ACCOUNT_RECHARGE_UPDATE_FAILD = new TalentPoolException(34105,"公司邮箱充值额度更新失败！");
+
     public TalentPoolException(int i, String s) {
         super(i, s);
     }

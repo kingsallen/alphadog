@@ -445,7 +445,18 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
 
     @Override
     public void updateEmailAccountRechargeValue(int id, int lost) throws BIZException, TException {
-
+        try {
+            if (id <= 0 || lost <= 0) {
+                throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("参数无效！"));
+            }
+            talentpoolEmailService.updateEmailAccountRecharge(id, lost);
+        } catch (CommonException e) {
+            logger.error(e.getMessage(),e);
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     @Override

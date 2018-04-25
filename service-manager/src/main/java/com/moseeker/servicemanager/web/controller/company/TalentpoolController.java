@@ -1080,5 +1080,4 @@ public class TalentpoolController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
 }
