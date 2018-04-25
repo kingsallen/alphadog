@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogScraperRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
+import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
@@ -43,7 +44,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Logdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -275512527;
+    private static final long serialVersionUID = 1929449227;
 
     /**
      * The reference instance of <code>logdb</code>
@@ -94,6 +95,11 @@ public class Logdb extends SchemaImpl {
      * 短信发送记录表
      */
     public final LogSmsSendrecord LOG_SMS_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord.LOG_SMS_SENDRECORD;
+
+    /**
+     * 邮件额度每天使用日志
+     */
+    public final LogTalentpoolEmailDailyLog LOG_TALENTPOOL_EMAIL_DAILY_LOG = com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG;
 
     /**
      * 邮件日志
@@ -154,6 +160,7 @@ public class Logdb extends SchemaImpl {
             LogResumeRecord.LOG_RESUME_RECORD,
             LogScraperRecord.LOG_SCRAPER_RECORD,
             LogSmsSendrecord.LOG_SMS_SENDRECORD,
+            LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG,
             LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG,
             LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG,
             LogWxMenuRecord.LOG_WX_MENU_RECORD,

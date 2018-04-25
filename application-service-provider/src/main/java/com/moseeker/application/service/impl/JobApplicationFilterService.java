@@ -1,37 +1,52 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionProfileFilterDao;
 import com.moseeker.baseorm.dao.logdb.LogTalentpoolProfileFilterLogDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolExecuteDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolProfileFilterDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolProfileFilterExcuteDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolProfileFilterLogRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
+import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 /**
@@ -57,17 +72,41 @@ public class JobApplicationFilterService {
     @Autowired
     private LogTalentpoolProfileFilterLogDao logDao;
 
+    @Autowired
+    private Environment env;
 
     @Autowired
     private TalentpoolProfileFilterExcuteDao talentpoolProfileFilterExcuteDao;
 
     @Autowired
     private TalentpoolExecuteDao talentpoolExecuteDao;
+    @Autowired
+    private TalentpoolEmailDao talentpoolEmailDao;
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
+
+    @Autowired
+    private HrCompanyAccountDao companyAccountDao;
+
+    @Autowired
+    private HrWxWechatDao hrWxWechatDao;
+    @Autowired
+    private UserUserDao userUserDao;
+
+    @Autowired
+    private ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileBasicDao basicDao;
+    @Autowired
+    private TalentPoolEmailEntity emailEntity;
 
 
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
     TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
     ProfileBS.Iface bsService = ServiceManager.SERVICEMANAGER.getService(ProfileBS.Iface.class);
+    MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
     public void handerApplicationFilter(MessageEmailStruct filterInfoStruct) throws Exception {
         logger.info("handerApplicationFilter filterInfoStruct:{}", filterInfoStruct);
@@ -129,7 +168,7 @@ public class JobApplicationFilterService {
                     }
                     logRecord.setResult(i);
                     logDao.addRecord(logRecord);
-                    logger.info("handerApplicationFilter isflag:{}, filter_id", isflag, filter_id);
+                    logger.info("handerApplicationFilter isflag:{}", isflag);
                     if (isflag){
                         filterExecuteAction(filterInfoStruct.getApplier_id(), position, filterInfoStruct.getApplication_id(), type);
                         break;
@@ -218,4 +257,57 @@ public class JobApplicationFilterService {
         }
         logger.info("handerApplicationFilter response info :{}", res);
     }
+
+    //发送不匹配邮件
+    private void sendProfileFilterExecuteEmail(int user_id, JobPositionRecord position) throws TException {
+        MandrillEmailStruct emailStruct = new MandrillEmailStruct();
+        List<TalentpoolEmail> emailList = talentpoolEmailDao.getTalentpoolEmailByCompanyIdAndConfigId(position.getCompanyId(), Constant.TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS);
+        if(emailList != null && emailList.size()>0 && emailList.get(0).getDisable() == 1){
+            UserHrAccount accountDO = userHrAccountDao.getHrAccount(position.getPublisher());
+            UserUserRecord userUserRecord = userUserDao.getUserById(user_id);
+            HrWxWechatDO wechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(position.getCompanyId());
+            if(accountDO != null && userUserRecord!=null && wechatDO != null){
+                HrCompanyDO companyDO = companyAccountDao.getHrCompany(accountDO.getId());
+                if(companyDO != null) {
+                    Map<String, String> params = new HashMap<>();
+                    String username = "";
+                    if (userUserRecord.getName() != null && !userUserRecord.getName().isEmpty()) {
+                        username = userUserRecord.getName();
+                    } else {
+                        username = userUserRecord.getNickname();
+                    }
+                    String company_logo = CommonUtils.appendUrl(companyDO.getLogo(), env.getProperty("http.cdn.url"));
+                    params.put("company_logo", company_logo);
+                    String context = emailList.get(0).getContext();
+                    context = CommonUtils.replaceUtil(context, companyDO.getAbbreviation(), position.getTitle(),
+                            username, accountDO.getUsername(), wechatDO.getName());
+                    String inscribe = emailList.get(0).getInscribe();
+                    inscribe = CommonUtils.replaceUtil(inscribe, companyDO.getAbbreviation(), position.getTitle(),
+                            username, accountDO.getUsername(), wechatDO.getName());
+                    params.put("text", context);
+                    params.put("sign", inscribe);
+                    params.put("employee_name", username);
+                    params.put("company_abbr", companyDO.getAbbreviation());
+                    String qrcodeUrl = CommonUtils.appendUrl(wechatDO.getQrcode(), env.getProperty("http.cdn.url"));
+                    params.put("weixin_qrcode", qrcodeUrl);
+                    params.put("official_account_name", wechatDO.getName());
+                    params.put("send_time", DateUtils.dateToNormalDate(new Date()));
+                    emailStruct.setMergeVars(params);
+                    emailStruct.setTemplateName(Constant.MISMATCH_NOTIFICATION);
+                    String subject = "【" + companyDO.getAbbreviation() + "】不合适通知";
+                    emailStruct.setSubject(subject);
+                    emailStruct.setTo_name(username);
+                    emailStruct.setTo_email(userUserRecord.getEmail());
+                    emailStruct.setFrom_name(companyDO.getAbbreviation() + "人才招聘团队");
+                    int id = emailEntity.handerTalentpoolEmailLogAndBalance(1, 2, position.getCompanyId(), position.getPublisher());
+                    if (id > 0) {
+                        mqService.sendMandrilEmail(emailStruct);
+                    }
+                }
+            }
+        }else{
+            logger.info("没有查到");
+        }
+    }
+
 }

@@ -23,6 +23,7 @@ import java.util.List;
  */
 @Configuration
 @ComponentScan({"com.moseeker.company", "com.moseeker.common.aop.iface", "com.moseeker.entity"})
+@PropertySource("classpath:common.properties")
 @Import(com.moseeker.baseorm.config.AppConfig.class)
 @PropertySource("classpath:common.properties")
 public class AppConfig {

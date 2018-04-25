@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolCompanyTagRecord extends UpdatableRecordImpl<TalentpoolCompanyTagRecord> {
 
-    private static final long serialVersionUID = 1241730731;
+    private static final long serialVersionUID = 1982214119;
 
     /**
      * Setter for <code>talentpooldb.talentpool_company_tag.id</code>.
@@ -254,14 +254,14 @@ public class TalentpoolCompanyTagRecord extends UpdatableRecordImpl<TalentpoolCo
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 0男，1女 2不限
+     * Setter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 1男，2女 0不限
      */
     public void setSex(Integer value) {
         set(16, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 0男，1女 2不限
+     * Getter for <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 1男，2女 0不限
      */
     public Integer getSex() {
         return (Integer) get(16);

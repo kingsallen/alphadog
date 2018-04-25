@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogScraperRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
+import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
@@ -27,6 +28,7 @@ import com.moseeker.baseorm.db.logdb.tables.records.LogJbEmailparseRecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogScraperRecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogSmsSendrecordRecord;
+import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolEmailDailyLogRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolEmailLogRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolProfileFilterLogRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogWxMenuRecordRecord;
@@ -67,6 +69,7 @@ public class Keys {
     public static final Identity<LogResumeRecordRecord, Integer> IDENTITY_LOG_RESUME_RECORD = Identities0.IDENTITY_LOG_RESUME_RECORD;
     public static final Identity<LogScraperRecordRecord, Integer> IDENTITY_LOG_SCRAPER_RECORD = Identities0.IDENTITY_LOG_SCRAPER_RECORD;
     public static final Identity<LogSmsSendrecordRecord, Integer> IDENTITY_LOG_SMS_SENDRECORD = Identities0.IDENTITY_LOG_SMS_SENDRECORD;
+    public static final Identity<LogTalentpoolEmailDailyLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_EMAIL_DAILY_LOG = Identities0.IDENTITY_LOG_TALENTPOOL_EMAIL_DAILY_LOG;
     public static final Identity<LogTalentpoolEmailLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_EMAIL_LOG = Identities0.IDENTITY_LOG_TALENTPOOL_EMAIL_LOG;
     public static final Identity<LogTalentpoolProfileFilterLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_PROFILE_FILTER_LOG = Identities0.IDENTITY_LOG_TALENTPOOL_PROFILE_FILTER_LOG;
     public static final Identity<LogWxMenuRecordRecord, Integer> IDENTITY_LOG_WX_MENU_RECORD = Identities0.IDENTITY_LOG_WX_MENU_RECORD;
@@ -87,6 +90,7 @@ public class Keys {
     public static final UniqueKey<LogResumeRecordRecord> KEY_LOG_RESUME_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_RESUME_RECORD_PRIMARY;
     public static final UniqueKey<LogScraperRecordRecord> KEY_LOG_SCRAPER_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_SCRAPER_RECORD_PRIMARY;
     public static final UniqueKey<LogSmsSendrecordRecord> KEY_LOG_SMS_SENDRECORD_PRIMARY = UniqueKeys0.KEY_LOG_SMS_SENDRECORD_PRIMARY;
+    public static final UniqueKey<LogTalentpoolEmailDailyLogRecord> KEY_LOG_TALENTPOOL_EMAIL_DAILY_LOG_PRIMARY = UniqueKeys0.KEY_LOG_TALENTPOOL_EMAIL_DAILY_LOG_PRIMARY;
     public static final UniqueKey<LogTalentpoolEmailLogRecord> KEY_LOG_TALENTPOOL_EMAIL_LOG_PRIMARY = UniqueKeys0.KEY_LOG_TALENTPOOL_EMAIL_LOG_PRIMARY;
     public static final UniqueKey<LogTalentpoolProfileFilterLogRecord> KEY_LOG_TALENTPOOL_PROFILE_FILTER_LOG_PRIMARY = UniqueKeys0.KEY_LOG_TALENTPOOL_PROFILE_FILTER_LOG_PRIMARY;
     public static final UniqueKey<LogWxMenuRecordRecord> KEY_LOG_WX_MENU_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_WX_MENU_RECORD_PRIMARY;
@@ -112,6 +116,7 @@ public class Keys {
         public static Identity<LogResumeRecordRecord, Integer> IDENTITY_LOG_RESUME_RECORD = createIdentity(LogResumeRecord.LOG_RESUME_RECORD, LogResumeRecord.LOG_RESUME_RECORD.ID);
         public static Identity<LogScraperRecordRecord, Integer> IDENTITY_LOG_SCRAPER_RECORD = createIdentity(LogScraperRecord.LOG_SCRAPER_RECORD, LogScraperRecord.LOG_SCRAPER_RECORD.ID);
         public static Identity<LogSmsSendrecordRecord, Integer> IDENTITY_LOG_SMS_SENDRECORD = createIdentity(LogSmsSendrecord.LOG_SMS_SENDRECORD, LogSmsSendrecord.LOG_SMS_SENDRECORD.ID);
+        public static Identity<LogTalentpoolEmailDailyLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_EMAIL_DAILY_LOG = createIdentity(LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG, LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG.ID);
         public static Identity<LogTalentpoolEmailLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_EMAIL_LOG = createIdentity(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG, LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.ID);
         public static Identity<LogTalentpoolProfileFilterLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_PROFILE_FILTER_LOG = createIdentity(LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG, LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG.ID);
         public static Identity<LogWxMenuRecordRecord, Integer> IDENTITY_LOG_WX_MENU_RECORD = createIdentity(LogWxMenuRecord.LOG_WX_MENU_RECORD, LogWxMenuRecord.LOG_WX_MENU_RECORD.ID);
@@ -130,6 +135,7 @@ public class Keys {
         public static final UniqueKey<LogResumeRecordRecord> KEY_LOG_RESUME_RECORD_PRIMARY = createUniqueKey(LogResumeRecord.LOG_RESUME_RECORD, "KEY_log_resume_record_PRIMARY", LogResumeRecord.LOG_RESUME_RECORD.ID);
         public static final UniqueKey<LogScraperRecordRecord> KEY_LOG_SCRAPER_RECORD_PRIMARY = createUniqueKey(LogScraperRecord.LOG_SCRAPER_RECORD, "KEY_log_scraper_record_PRIMARY", LogScraperRecord.LOG_SCRAPER_RECORD.ID);
         public static final UniqueKey<LogSmsSendrecordRecord> KEY_LOG_SMS_SENDRECORD_PRIMARY = createUniqueKey(LogSmsSendrecord.LOG_SMS_SENDRECORD, "KEY_log_sms_sendrecord_PRIMARY", LogSmsSendrecord.LOG_SMS_SENDRECORD.ID);
+        public static final UniqueKey<LogTalentpoolEmailDailyLogRecord> KEY_LOG_TALENTPOOL_EMAIL_DAILY_LOG_PRIMARY = createUniqueKey(LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG, "KEY_log_talentpool_email_daily_log_PRIMARY", LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG.ID);
         public static final UniqueKey<LogTalentpoolEmailLogRecord> KEY_LOG_TALENTPOOL_EMAIL_LOG_PRIMARY = createUniqueKey(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG, "KEY_log_talentpool_email_log_PRIMARY", LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.ID);
         public static final UniqueKey<LogTalentpoolProfileFilterLogRecord> KEY_LOG_TALENTPOOL_PROFILE_FILTER_LOG_PRIMARY = createUniqueKey(LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG, "KEY_log_talentpool_profile_filter_log_PRIMARY", LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG.ID);
         public static final UniqueKey<LogWxMenuRecordRecord> KEY_LOG_WX_MENU_RECORD_PRIMARY = createUniqueKey(LogWxMenuRecord.LOG_WX_MENU_RECORD, "KEY_log_wx_menu_record_PRIMARY", LogWxMenuRecord.LOG_WX_MENU_RECORD.ID);
