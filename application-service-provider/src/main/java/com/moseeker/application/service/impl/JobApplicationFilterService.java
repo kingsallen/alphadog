@@ -266,12 +266,6 @@ public class JobApplicationFilterService {
             if(accountDO != null && userUserRecord!=null && wechatDO != null){
                 HrCompanyDO companyDO = companyAccountDao.getHrCompany(accountDO.getId());
                 if(companyDO != null) {
-//                ProfileProfileRecord profileRecord = profileDao.getProfileByUserId(user_id);
-//                if(profileRecord != null){
-//                    List<Integer> profileIdList = new ArrayList<>();
-//                    profileIdList.add(profileRecord.getId());
-//                    List<ProfileBasicRecord> basicRecordList = basicDao.fetchBasicByProfileIdList(profileIdList);
-//                    if(basicRecordList != null && basicRecordList.size()>0){
                     Map<String, String> params = new HashMap<>();
                     String username = "";
                     if (userUserRecord.getName() != null && !userUserRecord.getName().isEmpty()) {
@@ -306,9 +300,6 @@ public class JobApplicationFilterService {
                     if (id > 0) {
                         mqService.sendMandrilEmail(emailStruct);
                     }
-
-//                    }
-//                }
                 }
             }
         }else{
