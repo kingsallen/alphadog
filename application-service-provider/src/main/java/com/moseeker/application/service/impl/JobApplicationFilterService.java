@@ -285,10 +285,9 @@ public class JobApplicationFilterService {
                     String inscribe = emailList.get(0).getInscribe();
                     inscribe = CommonUtils.replaceUtil(inscribe, companyDO.getAbbreviation(), position.getTitle(),
                             username, accountDO.getUsername(), wechatDO.getName());
-                    params.put("text", context);
-                    params.put("sign", inscribe);
+                    params.put("custom_text", context);
+                    params.put("company_sign", inscribe);
                     params.put("employee_name", username);
-                    params.put("company_abbr", companyDO.getAbbreviation());
                     String qrcodeUrl = CommonUtils.appendUrl(wechatDO.getQrcode(), env.getProperty("http.cdn.url"));
                     params.put("weixin_qrcode", qrcodeUrl);
                     params.put("official_account_name", wechatDO.getName());
