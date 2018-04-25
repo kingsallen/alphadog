@@ -248,8 +248,25 @@ public class MessageRepositoryImpl implements MessageRepository {
 
         if (consistencyMessageRecords != null && consistencyMessageRecords.size() > 0) {
 
+            List<String> messageNameList = consistencyMessageRecords
+                    .stream()
+                    .map(ConsistencyMessageRecord::getName)
+                    .collect(Collectors.toList());
+
+            Result<ConsistencyMessageTypeRecord> messageTypeRecordResult =
+                    create.selectFrom(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE)
+                    .where(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.NAME.in(messageNameList))
+                    .fetch();
+
             consistencyMessageRecords.forEach(consistencyMessageRecord -> {
-                Message message = recordToMessage(consistencyMessageRecord);
+
+                Optional<ConsistencyMessageTypeRecord> optional = messageTypeRecordResult
+                        .stream()
+                        .filter(consistencyMessageTypeRecord ->
+                                consistencyMessageTypeRecord.getName().equals(consistencyMessageRecord.getName()))
+                        .findAny();
+
+                Message message = recordToMessage(consistencyMessageRecord, optional);
                 messageList.add(message);
             });
         }
@@ -260,14 +277,17 @@ public class MessageRepositoryImpl implements MessageRepository {
     @Override
     public void updateRetried(List<Message> messageList) throws ConsistencyException {
         List<Message> needRetry = new ArrayList<>();
+        Timestamp now = new Timestamp(System.currentTimeMillis());
         messageList.forEach(message -> {
             int execute = create.update(ConsistencyMessage.CONSISTENCY_MESSAGE)
                     .set(ConsistencyMessage.CONSISTENCY_MESSAGE.RETRIED, (byte)message.getRetried())
+                    .set(ConsistencyMessage.CONSISTENCY_MESSAGE.LAST_RETRY_TIME, now)
                     .set(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION, ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.add(1))
                     .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(message.getMessageId()))
                     .and(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.eq(message.getVersion()))
                     .execute();
             if (execute == 0) {
+                logger.info("updateRetried failed! turn to retryUpdateRetried.");
                 needRetry.add(message);
             }
         });
@@ -354,7 +374,8 @@ public class MessageRepositoryImpl implements MessageRepository {
                                 ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME,
                                 ConsistencyBusiness.CONSISTENCY_BUSINESS.FINISH)
                         .values(messageId, businessName, MessageState.Finish.getValue())
-                        .onDuplicateKeyIgnore();
+                        .onDuplicateKeyIgnore()
+                        .execute();
             } else {
                 consistencyBusinessRecord.setFinish(MessageState.Finish.getValue());
                 create.attach(consistencyBusinessRecord);
@@ -505,6 +526,8 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     private void retryLockedRecord(List<Message> needRetry, int retried) throws ConsistencyException {
         if (retried < Constant.RETRY_UPPER) {
+            logger.info("retryLockedRecord needRetry:{}, retried:{}", needRetry, retried);
+            Timestamp now = new Timestamp(System.currentTimeMillis());
             List<String> messageIdList = needRetry.stream().map(Message::getMessageId).collect(Collectors.toList());
             if (messageIdList != null && messageIdList.size() > 0) {
                 List<ConsistencyMessageRecord> consistencyMessageRecordList = create
@@ -516,6 +539,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                     consistencyMessageRecordList.forEach(consistencyMessageRecord -> {
                         int execute = create.update(ConsistencyMessage.CONSISTENCY_MESSAGE)
                                 .set(ConsistencyMessage.CONSISTENCY_MESSAGE.RETRIED, consistencyMessageRecord.getRetried())
+                                .set(ConsistencyMessage.CONSISTENCY_MESSAGE.LAST_RETRY_TIME, now)
                                 .set(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION, ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.add(1))
                                 .where(ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID.eq(consistencyMessageRecord.getMessageId()))
                                 .and(ConsistencyMessage.CONSISTENCY_MESSAGE.VERSION.eq(consistencyMessageRecord.getVersion()))
@@ -575,9 +599,10 @@ public class MessageRepositoryImpl implements MessageRepository {
     /**
      * jooq onsistencyMessageRecord 转 Message
      * @param consistencyMessageRecord 消息体
+     * @param optional
      * @return 消息
      */
-    private Message recordToMessage(ConsistencyMessageRecord consistencyMessageRecord) {
+    private Message recordToMessage(ConsistencyMessageRecord consistencyMessageRecord, Optional<ConsistencyMessageTypeRecord> optional) {
         Message message = new Message();
         message.setName(consistencyMessageRecord.getName());
         message.setMessageId(consistencyMessageRecord.getMessageId());
@@ -592,6 +617,9 @@ public class MessageRepositoryImpl implements MessageRepository {
         }
         message.setParam(consistencyMessageRecord.getParam());
         message.setFinish(consistencyMessageRecord.getFinish() == 1);
+        if (optional.isPresent()) {
+            //message.setClassName();
+        }
         return message;
     }
 }

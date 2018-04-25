@@ -1,6 +1,7 @@
 package com.moseeker.demo1.service;
 
-import com.moseeker.consistencysuport.consumer.ConsumerEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,9 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class Demo1Service {
 
-    @ConsumerEntry(messageName = "test", businessName = "demo1", index = 0)
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    //@ConsumerEntry(messageName = "test", businessName = "demo1", index = 0)
     public String comsumerTest(String messageId, int id) {
-        System.out.println("messageId:"+messageId +" id:"+id);
+        logger.info("messageId: {},  id:{} ", messageId, id);
+        System.out.println("comsumerTest messageId:"+messageId+"  id:"+id);
         return messageId+" "+id;
     }
 }

@@ -36,7 +36,8 @@ public class ProducerManagerSpringProxy {
     private Notification notification;                              //消息通知
 
     private long initialDelay = 5*1000;                             //延迟启动
-    private long period = 5*60*1000;                                //任务时间间隔
+    //private long period = 5*60*1000;                                //任务时间间隔
+    private long period = 30*1000;                                //任务时间间隔
     private byte retriedUpper = 3;                                  //重试次数上限
 
     private static final int MIN_PERIOD = 3*1000;                   //时间间隔下限
