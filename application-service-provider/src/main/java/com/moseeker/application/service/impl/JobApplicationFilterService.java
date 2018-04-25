@@ -129,7 +129,7 @@ public class JobApplicationFilterService {
                     }
                     logRecord.setResult(i);
                     logDao.addRecord(logRecord);
-                    logger.info("handerApplicationFilter isflag:{}", isflag);
+                    logger.info("handerApplicationFilter isflag:{}, filter_id", isflag, filter_id);
                     if (isflag){
                         filterExecuteAction(filterInfoStruct.getApplier_id(), position, filterInfoStruct.getApplication_id(), type);
                         break;
