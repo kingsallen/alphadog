@@ -92,12 +92,13 @@ public class MandrillMailListConsumer {
                 message.setTo(recipients);
 
                 List<MergeVarBucket> mergeVars = new ArrayList<MergeVarBucket>();
-                MergeVarBucket mergeVar = new MergeVarBucket();
-                MergeVar[] vars = new MergeVar[mandrillEmailListStruct.getMergeVarsSize()];
-                int vars_i = 0;
+
                 List<Map<String,String>> varList = mandrillEmailListStruct.getMergeVars();
                 for (Map<String, String> var : varList) {
                     String rcpt = "";
+                    MergeVarBucket mergeVar = new MergeVarBucket();
+                    MergeVar[] vars = new MergeVar[var.size()];
+                    int vars_i = 0;
                     for (Entry<String, String> entry : var.entrySet()){
                         vars[vars_i] = new MergeVar();
                         vars[vars_i].setName(entry.getKey());
