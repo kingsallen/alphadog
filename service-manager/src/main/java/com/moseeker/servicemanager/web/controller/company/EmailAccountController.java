@@ -83,10 +83,10 @@ public class EmailAccountController {
     public String updateEmailAccountRechargeValue(HttpServletRequest request) throws Exception {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId = params.getInt("company_id", 0);
+            int id = params.getInt("id", 0);
             int lost = params.getInt("lost",0);
 
-            service.updateEmailAccountRechargeValue(companyId, lost);
+            service.updateEmailAccountRechargeValue(id, lost);
             return ResponseLogNotification.successJson(request, null);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
