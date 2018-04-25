@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyEmailInfoDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionProfileFilterDao;
+import com.moseeker.baseorm.dao.logdb.LogTalentpoolEmailDailyLogDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -35,19 +37,19 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
-import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by zztaiwll on 17/12/1.
@@ -844,9 +846,9 @@ public class TalentPoolEntity {
             List<Map<String, Object>> position = new ArrayList<>();
             if (positionDOS != null && positionDOS.size() > 0 && jobPositionProfileFilters != null && jobPositionProfileFilters.size()>0) {
                 for (JobPositionProfileFilter positionFilter : jobPositionProfileFilters) {
-                    if (positionFilter.getPfid() == filter.getId()) {
+                    if (positionFilter.getPfid().intValue() == filter.getId().intValue()) {
                         for (JobPositionDO positionDO : positionDOS) {
-                            if (positionDO.getId() == positionFilter.getPid()) {
+                            if (positionDO.getId() == positionFilter.getPid().intValue()) {
                                 Map<String, Object> params = new HashMap<>();
                                 params.put("title", positionDO.getTitle());
                                 params.put("status", positionDO.getStatus());

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogResumeRecord implements Serializable {
 
-    private static final long serialVersionUID = 1329875734;
+    private static final long serialVersionUID = 866030683;
 
     private Integer   id;
     private Integer   userId;
@@ -32,6 +32,7 @@ public class LogResumeRecord implements Serializable {
     private String    fieldValue;
     private String    resultData;
     private Timestamp createTime;
+    private String    uuid;
 
     public LogResumeRecord() {}
 
@@ -43,6 +44,7 @@ public class LogResumeRecord implements Serializable {
         this.fieldValue = value.fieldValue;
         this.resultData = value.resultData;
         this.createTime = value.createTime;
+        this.uuid = value.uuid;
     }
 
     public LogResumeRecord(
@@ -52,7 +54,8 @@ public class LogResumeRecord implements Serializable {
         String    errorLog,
         String    fieldValue,
         String    resultData,
-        Timestamp createTime
+        Timestamp createTime,
+        String    uuid
     ) {
         this.id = id;
         this.userId = userId;
@@ -61,6 +64,7 @@ public class LogResumeRecord implements Serializable {
         this.fieldValue = fieldValue;
         this.resultData = resultData;
         this.createTime = createTime;
+        this.uuid = uuid;
     }
 
     public Integer getId() {
@@ -119,6 +123,14 @@ public class LogResumeRecord implements Serializable {
         this.createTime = createTime;
     }
 
+    public String getUuid() {
+        return this.uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("LogResumeRecord (");
@@ -130,6 +142,7 @@ public class LogResumeRecord implements Serializable {
         sb.append(", ").append(fieldValue);
         sb.append(", ").append(resultData);
         sb.append(", ").append(createTime);
+        sb.append(", ").append(uuid);
 
         sb.append(")");
         return sb.toString();

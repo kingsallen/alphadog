@@ -1,6 +1,10 @@
 package com.moseeker.servicemanager.web.controller.mq;
 
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.thrift.gen.mq.struct.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,10 +27,6 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService;
-import com.moseeker.thrift.gen.mq.struct.EmailStruct;
-import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
-import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
-import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 
 /**
  * 消息队列服务
@@ -117,6 +117,53 @@ public class MqController {
         }
     }
 
+    @RequestMapping(value = "/email/sendMandrillEmail/list", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendMandrillEmailList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 发送消息模板
+            MandrillEmailListStruct mandrillEmailStruct = new MandrillEmailListStruct();
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+
+            String templateName = (String)params.get("templateName");
+            if (StringUtils.isNotNullOrEmpty(templateName)){
+                mandrillEmailStruct.setTemplateName(templateName);
+            }
+
+            String to_email = (String)params.get("to_email");
+            if (StringUtils.isNotNullOrEmpty(to_email)){
+                mandrillEmailStruct.setTo_email(to_email);
+            }
+
+            String to_name = (String)params.get("to_name");
+            if (StringUtils.isNotNullOrEmpty(to_name)){
+                mandrillEmailStruct.setTo_name(to_name);
+            }
+
+            List strMergeVars = (List)params.get("mergeVars");
+                mandrillEmailStruct.setMergeVars(strMergeVars);
+
+            String subject = (String)params.get("subject");
+            if (StringUtils.isNotNullOrEmpty(subject)){
+                mandrillEmailStruct.setSubject(subject);
+            }
+            String from_email = (String)params.get("from_email");
+            if (StringUtils.isNotNullOrEmpty(from_email)){
+                mandrillEmailStruct.setFrom_email(from_email);
+            }
+
+            String from_name = (String)params.get("from_name");
+            if (StringUtils.isNotNullOrEmpty(from_name)){
+                mandrillEmailStruct.setFrom_name(from_name);
+            }
+
+            mqService.sendMandrilEmailList(mandrillEmailStruct);
+            Response res = ResponseUtils.success("");
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
     /**
      * 转换消息模板通知的thrift MessageTemplateNoticeStruct 对象
      *

@@ -39,4 +39,35 @@ struct TalentpoolCompanyTagDO {
      2: optional i32 value
   }
 
+struct EmailAccountInfo {
+    1: optional i32 id,                 
+    2: optional i32 company_id,         //公司编号
+    3: optional string abbersive,       //公司简称
+    4: optional i32 balance,            //账号余额
+    5: optional i32 total,              //总采购额度
+    6: optional i32 use_num             //已经使用额度
+}
 
+struct EmailAccountForm {
+    1: optional i32 total,
+    2: optional i32 page_number,
+    3: optional i32 page_size,
+    4: optional i32 company_id,
+    5: optional list<EmailAccountInfo> email_accounts
+}
+
+struct EmailAccountConsumption {
+    1: optional i32 id,
+    2: optional i32 company_id,
+    3: optional i8 type,
+    4: optional i32 lost,
+    5: optional string create_time
+}
+
+struct EmailAccountConsumptionForm {
+    1: optional i32 total,
+    2: optional i32 page_number,
+    3: optional i32 page_size,
+    4: optional i32 company_id,
+    5: optional list<EmailAccountConsumption> purchases
+}

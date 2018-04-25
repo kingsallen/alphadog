@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
@@ -33,6 +34,7 @@ import com.moseeker.company.bean.*;
 import com.moseeker.company.utils.ValidateTalent;
 import com.moseeker.company.utils.ValidateTalentTag;
 import com.moseeker.company.utils.ValidateUtils;
+import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.talentpool.PageInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -103,6 +105,8 @@ public class TalentPoolService {
     private HrCompanyDao hrCompanyDao;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+    @Autowired
+    private TalentPoolEmailEntity talentPoolEmailEntity;
 
     SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
@@ -162,8 +166,38 @@ public class TalentPoolService {
         });
         return ResponseUtils.success(result);
     }
+    /*
+     处理所有的加入人才库
+     */
+    @CounterIface
+    public void addAllTalent(int hrId,Map<String,String> params,int companyId){
+        try{
+            tp.startTast(() -> {
+                int total=service.talentSearchNum(params);
+                if(total>0) {
+                    int totalPageNum = (int) Math.ceil((double) total / 100);
+                    for(int i=1;i<=totalPageNum;i++){
+                        params.put("page_number", i + "");
+                        params.put("page_size", 100 + "");
+                        try {
+                            List<Integer> userIdList = service.getTalentUserIdList(params);
+                            if (!StringUtils.isEmptyList(userIdList)) {
+                                Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                this.batchAddTalent(hrId, userIdSet, companyId);
+                            }
+                        } catch (Exception e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+                return 0;
+            });
+        }catch(Exception e){
+
+        }
 
 
+    }
 
 
     /*
@@ -205,7 +239,36 @@ public class TalentPoolService {
         }
         return ResponseUtils.success(result);
     }
+    /*
+     全部取消收藏
+     */
+    public void cancleAllTalent(int hrId, Map<String,String> params, int companyId){
+        try{
+            tp.startTast(() -> {
+                int total=service.talentSearchNum(params);
+                if(total>0) {
+                    int totalPageNum = (int) Math.ceil((double) total / 100);
+                    for(int i=1;i<=totalPageNum;i++){
+                        params.put("page_number", i + "");
+                        params.put("page_size", 100 + "");
+                            try {
+                                List<Integer> userIdList = service.getTalentUserIdList(params);
+                                if (!StringUtils.isEmptyList(userIdList)) {
+                                    Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                    this.batchCancelTalent(hrId, userIdSet, companyId);
+                                }
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
+                            }
 
+                    }
+                }
+                return 0;
+             });
+        }catch(Exception e){
+
+        }
+    }
 
     /*
      批量添加标签
@@ -249,7 +312,45 @@ public class TalentPoolService {
         result.put("use",usertagMap);
         return ResponseUtils.success(result);
     }
+    /*
+     将标签打到人才上
+     */
+    @CounterIface
+    public void addAllTalentTag(Map<String,String> params,List<Integer> tagIdList,int companyId,int hrId){
+        try{
+            tp.startTast(() -> {
+                int total=service.talentSearchNum(params);
+                if(total>0){
+                    int totalPageNum=(int)Math.ceil((double)total/100);
+                    Set<Integer> tagIdSet=this.talentPoolEntity.converListToSet(tagIdList);
+                    for(int i=1;i<=totalPageNum;i++){
+                        params.put("page_number", i + "");
+                        params.put("page_size", 100 + "");
+                            try {
+                                List<Integer> userIdList = service.getTalentUserIdList(params);
+                                if (!StringUtils.isEmptyList(userIdList)) {
+                                    Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                    this.addNewBatchTalentTag(hrId, userIdSet, tagIdSet, companyId);
+                                }
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
+                            }
 
+                    }
+
+                }
+                return 0;
+             });
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
+
+    }
+
+
+    /*
+
+     */
 
     /*
      批量添加标签先删除所有先前的标签，然后打上新的标签
@@ -673,7 +774,40 @@ public class TalentPoolService {
         }
         return ResponseUtils.success(result);
     }
+    /*
+     所有选中的人才公开处理
+     */
+    @CounterIface
+    public void addAllTalentPublic(Map<String,String> params,int companyId,int hrId){
+        try{
+            tp.startTast(() -> {
+                int validateFlag=validateCompany(companyId);
+                if(validateFlag==0){
+                    int total=service.talentSearchNum(params);
+                    if(total>0){
+                        int totalPageNum=(int)Math.ceil((double)total/100);
+                        for(int i=1;i<=totalPageNum;i++){
+                            params.put("page_number", i + "");
+                            params.put("page_size", 100 + "");
+                                try {
+                                    List<Integer> userIdList = service.getTalentUserIdList(params);
+                                    if (!StringUtils.isEmptyList(userIdList)) {
+                                        Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                        this.AddbatchPublicTalent(hrId,companyId,userIdSet);
+                                    }
+                                } catch (Exception e) {
+                                    logger.error(e.getMessage(), e);
+                                }
+                        }
 
+                    }
+                }
+                return 0;
+            });
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
+    }
     /*
      批量公开
      @auth:zzt
@@ -790,6 +924,39 @@ public class TalentPoolService {
         return ResponseUtils.success(result);
     }
 
+    /*
+     删除所有选中的人才公开处理
+     */
+    @CounterIface
+    public void addAllTalentPrivate(Map<String,String> params,int companyId,int hrId){
+        try{
+            tp.startTast(() -> {
+                int validateFlag=validateCompany(companyId);
+                if(validateFlag==0){
+                    int total=service.talentSearchNum(params);
+                    if(total>0){
+                        int totalPageNum=(int)Math.ceil((double)total/100);
+                        for(int i=1;i<=totalPageNum;i++){
+                            params.put("page_number", i + "");
+                            params.put("page_size", 100 + "");
+                            try {
+                                List<Integer> userIdList = service.getTalentUserIdList(params);
+                                if (!StringUtils.isEmptyList(userIdList)) {
+                                    Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                    this.cancelBatchPublicTalent(hrId,companyId,userIdSet);
+                                }
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
+                            }
+                        }
+                    }
+                }
+                return 0;
+            });
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
+    }
 
 
     /*
@@ -1292,8 +1459,6 @@ public class TalentPoolService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
         }else if(flag == -3){
             return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
-        }else if(flag == 1){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
         PageInfo info = this.getLimitStart( page_number, page_size);
         Map<String, Object> filterListInfo = new HashMap<>();
@@ -1390,7 +1555,10 @@ public class TalentPoolService {
                     String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
                     if (StringUtils.isNullOrEmpty(filterString)) {
                         int id = talentPoolEntity.addCompanyProfileFilter(filterDO, ActionFormList, positionIdList, position_total);
-                        return ResponseUtils.success("");
+                        Map<String, Object> params = new HashMap<>();
+                        params.put("id", id);
+                        params.put("name",filterDO.getName());
+                        return ResponseUtils.success(params);
                     } else {
                         return ResponseUtils.fail(1, filterString);
                     }
@@ -1463,6 +1631,11 @@ public class TalentPoolService {
             }
             FilterResp resp = service.queryProfileFilterUserIdList(filterList, 0, 0);
             map.put("num", resp.getTalent_count());
+            HrCompanyEmailInfo info = talentPoolEmailEntity.getHrCompanyEmailInfoByCompanyId(company_id);
+            map.put("enable",false);
+            if(resp.getTalent_count() < info.getBalance()){
+                map.put("enable", true);
+            }
         }
         return ResponseUtils.success(map);
     }

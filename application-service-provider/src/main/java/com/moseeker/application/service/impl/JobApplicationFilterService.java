@@ -246,6 +246,7 @@ public class JobApplicationFilterService {
         if(type == 1){
             talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId());
         }else if(type == 2){
+            talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId());
             talentpoolService.batchAddPublicTalent(position.getPublisher(), position.getCompanyId(), userIds);
         }else if(type == 3){
             bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
@@ -266,12 +267,6 @@ public class JobApplicationFilterService {
             if(accountDO != null && userUserRecord!=null && wechatDO != null){
                 HrCompanyDO companyDO = companyAccountDao.getHrCompany(accountDO.getId());
                 if(companyDO != null) {
-//                ProfileProfileRecord profileRecord = profileDao.getProfileByUserId(user_id);
-//                if(profileRecord != null){
-//                    List<Integer> profileIdList = new ArrayList<>();
-//                    profileIdList.add(profileRecord.getId());
-//                    List<ProfileBasicRecord> basicRecordList = basicDao.fetchBasicByProfileIdList(profileIdList);
-//                    if(basicRecordList != null && basicRecordList.size()>0){
                     Map<String, String> params = new HashMap<>();
                     String username = "";
                     if (userUserRecord.getName() != null && !userUserRecord.getName().isEmpty()) {
@@ -287,10 +282,9 @@ public class JobApplicationFilterService {
                     String inscribe = emailList.get(0).getInscribe();
                     inscribe = CommonUtils.replaceUtil(inscribe, companyDO.getAbbreviation(), position.getTitle(),
                             username, accountDO.getUsername(), wechatDO.getName());
-                    params.put("text", context);
-                    params.put("sign", inscribe);
+                    params.put("custom_text", context);
+                    params.put("company_sign", inscribe);
                     params.put("employee_name", username);
-                    params.put("company_abbr", companyDO.getAbbreviation());
                     String qrcodeUrl = CommonUtils.appendUrl(wechatDO.getQrcode(), env.getProperty("http.cdn.url"));
                     params.put("weixin_qrcode", qrcodeUrl);
                     params.put("official_account_name", wechatDO.getName());
@@ -302,13 +296,10 @@ public class JobApplicationFilterService {
                     emailStruct.setTo_name(username);
                     emailStruct.setTo_email(userUserRecord.getEmail());
                     emailStruct.setFrom_name(companyDO.getAbbreviation() + "人才招聘团队");
-                    boolean bool = emailEntity.handerTalentpoolEmailLogAndBalance(1, 2, position.getCompanyId(), position.getPublisher());
-                    if (bool) {
+                    int id = emailEntity.handerTalentpoolEmailLogAndBalance(1, 2, position.getCompanyId(), position.getPublisher());
+                    if (id > 0) {
                         mqService.sendMandrilEmail(emailStruct);
                     }
-
-//                    }
-//                }
                 }
             }
         }else{

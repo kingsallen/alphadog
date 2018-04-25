@@ -25,8 +25,10 @@ import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolEmailRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.constants.DegreeConvertUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.entity.Constant.EmailAccountConsumptionType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -35,8 +37,11 @@ import com.moseeker.company.bean.*;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.entity.exception.TalentPoolException;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm;
+import com.moseeker.thrift.gen.company.struct.EmailAccountForm;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import java.text.SimpleDateFormat;
@@ -47,6 +52,8 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.apache.thrift.TException;
+
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +66,9 @@ import javax.annotation.Resource;
  */
 @Service
 public class TalentpoolEmailService {
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
     public TalentpoolEmailService(){
@@ -255,8 +264,24 @@ public class TalentpoolEmailService {
         }
     }
 
+
+    public EmailAccountForm fetchEmailAccounts(int companyId, String companyName, int pageNumber, int pageSize) throws CommonException {
+        return talentPoolEmailEntity.fetchEmailAccounts(companyId, companyName, pageNumber, pageSize);
+    }
+
+    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, EmailAccountConsumptionType emailAccountConsumptionType, int pageNumber, int pageSize, DateTime startDate, DateTime endDate) {
+        return talentPoolEmailEntity.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize, startDate, endDate);
+    }
+
+    public int rechargeEmailAccount(int companyId, int lost) throws TalentPoolException {
+        return talentPoolEmailEntity.handerTalentpoolEmailLogAndBalance(lost, 0, companyId, 0);
+    }
+
+    public void updateEmailAccountRecharge(int id, int lost) {
+        talentPoolEmailEntity.updateEmailAccountRecharge(id, lost);
+    }
     public Response updateEmailInfoBalance(int company_id, int useBalance){
-        boolean flag=talentPoolEmailEntity.handerTalentpoolEmailLogAndBalance(useBalance,3,company_id,0);
+        talentPoolEmailEntity.handerTalentpoolEmailLogAndBalance(useBalance,3,company_id,0);
         return ResponseUtils.success("success");
     }
 
@@ -321,7 +346,7 @@ public class TalentpoolEmailService {
 
                 }
                 positionInfo.setWorkYear(jobPositionRecord.getExperience());
-                positionInfo.setPositionBg(jobPositionRecord.get);
+                positionInfo.setPositionBg("");
 
             }
 

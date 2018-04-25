@@ -9,7 +9,7 @@ public class CommonUtils {
 
     public static String replaceUtil(String context, String companyName, String positionName, String profileName,
             String hrName, String wechatName){
-
+        context = context.replace("\n","&lt;br&gt;");
         context = context.replace("#公司简称#",companyName);
         context = context.replace("#职位名称#",positionName);
         context = context.replace("#HR姓名#",hrName);

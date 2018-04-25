@@ -46,15 +46,26 @@ struct MessageEmailStruct {
 
 
 struct MandrillEmailStruct {
-    1: 		string templateName,
-    2: 		string to_email,
-    3: optional string to_name,          
-    4: optional	map<string,string> mergeVars,
-    5: optional string from_email,
-    6: optional string from_name,
-    7: optional string subject
+       1: 		string templateName,
+       2: 		string to_email,
+       3: optional string to_name,
+       4: optional	map<string,string> mergeVars,
+       5: optional string from_email,
+       6: optional string from_name,
+       7: optional string subject
 
-}
+   }
+
+   struct MandrillEmailListStruct {
+       1: 		string templateName,
+       2: 		string to_email,
+       3: optional string to_name,
+       4: optional	list<map<string,string>> mergeVars,
+       5: optional string from_email,
+       6: optional string from_name,
+       7: optional string subject
+
+   }
 
 enum SmsType {
 	EMPLOYEE_MERGE_ACCOUNT_SMS,

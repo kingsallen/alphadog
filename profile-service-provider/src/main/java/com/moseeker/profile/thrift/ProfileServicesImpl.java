@@ -4,6 +4,7 @@ import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -35,6 +36,9 @@ public class ProfileServicesImpl implements Iface {
 
     @Autowired
     com.moseeker.profile.service.ProfileService profileService;
+
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
 
     @Override
     public Response getResource(CommonQuery query) throws TException {
@@ -114,7 +118,9 @@ public class ProfileServicesImpl implements Iface {
     @Override
     public int upsertProfile(int userId, String profile) throws BIZException, TException {
         try {
-            return profileService.upsertProfile(userId, profile);
+            int result= profileService.upsertProfile(userId, profile);
+            profileCompanyTagService.handlerProfileCompanyTag(0,userId);
+            return result;
         } catch (CommonException e) {
             logger.error(e.getMessage(), e);
             throw ExceptionConvertUtil.convertCommonException(e);

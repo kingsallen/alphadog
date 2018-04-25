@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogScraperRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
+import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
@@ -79,6 +80,11 @@ public class Tables {
      * 短信发送记录表
      */
     public static final LogSmsSendrecord LOG_SMS_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord.LOG_SMS_SENDRECORD;
+
+    /**
+     * 邮件额度每天使用日志
+     */
+    public static final LogTalentpoolEmailDailyLog LOG_TALENTPOOL_EMAIL_DAILY_LOG = com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG;
 
     /**
      * 邮件日志

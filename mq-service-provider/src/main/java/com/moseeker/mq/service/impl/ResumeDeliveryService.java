@@ -383,8 +383,9 @@ public class ResumeDeliveryService {
                 }
                 params.put("employee_name", username);
                 String context = CommonUtils.replaceUtil(email.getContext(), companyDO.getAbbreviation(),positionDO.getTitle(),username, accountDO.getUsername(), hrWxWechatDO.getName());
-                params.put("sustom_text", context);
-                params.put("comapny_abbr", companyDO.getAbbreviation());
+                params.put("custom_text", context);
+                String inscribe  = CommonUtils.replaceUtil(email.getContext(), companyDO.getAbbreviation(),positionDO.getTitle(),username, accountDO.getUsername(), hrWxWechatDO.getName());
+                params.put("company_sign", inscribe);
                 String qrcodeUrl = CommonUtils.appendUrl(hrWxWechatDO.getQrcode(), env.getProperty("http.cdn.url"));
                 params.put("weixin_qrcode", qrcodeUrl);
                 params.put("official_account_name", hrWxWechatDO.getName());
@@ -397,8 +398,8 @@ public class ResumeDeliveryService {
                 emailStruct.put("from_name", companyDO.getAbbreviation() + "人才招聘团队");
 
                 logger.info("sendEmailToHr emailStruct:{}", emailStruct);
-                boolean bool = emailEntity.handerTalentpoolEmailLogAndBalance(1,1,company_id,accountDO.getId());
-                if(bool) {
+                int id = emailEntity.handerTalentpoolEmailLogAndBalance(1,1,company_id,accountDO.getId());
+                if(id > 0) {
                     //发送邮件给候选人
                     Response sendEmail = new Response();
                     sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
