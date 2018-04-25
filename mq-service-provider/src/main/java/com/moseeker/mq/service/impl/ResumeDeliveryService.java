@@ -397,8 +397,8 @@ public class ResumeDeliveryService {
                 emailStruct.put("from_name", companyDO.getAbbreviation() + "人才招聘团队");
 
                 logger.info("sendEmailToHr emailStruct:{}", emailStruct);
-                boolean bool = emailEntity.handerTalentpoolEmailLogAndBalance(1,1,company_id,accountDO.getId());
-                if(bool) {
+                int id = emailEntity.handerTalentpoolEmailLogAndBalance(1,1,company_id,accountDO.getId());
+                if(id > 0) {
                     //发送邮件给候选人
                     Response sendEmail = new Response();
                     sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);

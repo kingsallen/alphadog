@@ -14,13 +14,11 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionProfileFilterRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolEmailDailyLogRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolExecute;
@@ -31,28 +29,27 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.UserSource;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.*;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.entity.Constant.EmailAccountConsumptionType;
-import com.moseeker.entity.exception.TalentPoolException;
-import com.moseeker.thrift.gen.company.struct.*;
+import com.moseeker.thrift.gen.company.struct.ActionForm;
+import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
-
-import com.sun.scenario.effect.impl.prism.PrImage;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by zztaiwll on 17/12/1.
@@ -100,12 +97,6 @@ public class TalentPoolEntity {
     private JobPositionProfileFilterDao jobPositionProfileFilterDao;
     @Autowired
     private TalentpoolExecuteDao talentpoolExcuteDao;
-
-    @Autowired
-    private HrCompanyEmailInfoDao hrCompanyEmailInfoDao;
-
-    @Autowired
-    private LogTalentpoolEmailDailyLogDao logTalentpoolEmailDailyLogDao;
 
     /*
         验证hr操作user_id是否合法
@@ -2270,133 +2261,5 @@ public class TalentPoolEntity {
             return result;
         }
         return "";
-    }
-
-    public EmailAccountForm fetchEmailAccounts(int companyId, String companyName, int pageNumber,
-                                               int pageSize) throws CommonException {
-
-        EmailAccountForm emailAccountForm = new EmailAccountForm();
-        emailAccountForm.setCompany_id(companyId);
-
-        Query.QueryBuilder queryBuilder1 = new Query.QueryBuilder();
-        if (org.apache.commons.lang.StringUtils.isNotBlank(companyName)) {
-            queryBuilder1.where(HrCompany.HR_COMPANY.NAME.getName(), companyName).or(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName);
-        }
-
-        List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(queryBuilder1.buildQuery());
-        List<Integer> companyIdList = new ArrayList<>();
-        if (companyDOList != null && companyDOList.size() > 0) {
-            companyIdList.addAll(companyDOList.stream().filter(hrCompanyDO -> hrCompanyDO.getId() > 0).map(HrCompanyDO::getId).collect(Collectors.toList()));
-        }
-        if (companyId > 0) {
-            companyIdList.add(companyId);
-        }
-        if (pageNumber <= 0) {
-            pageNumber = 1;
-        }
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-        if (pageSize >= Constant.DATABASE_PAGE_SIZE) {
-            pageSize =  Constant.DATABASE_PAGE_SIZE;
-        }
-        int index = (pageNumber - 1) * pageSize;
-
-
-        int total = hrCompanyEmailInfoDao.countEmailAccounts(companyIdList);
-        emailAccountForm.setPage_number(pageNumber);
-        emailAccountForm.setPage_size(pageSize);
-        emailAccountForm.setTotal(total);
-        List<HrCompanyEmailInfo> emailInfoList = hrCompanyEmailInfoDao.fetchOrderByCreateTime(companyIdList, index, pageSize);
-        if (emailInfoList != null && emailInfoList.size() > 0) {
-
-            List<Integer> companyIds = emailInfoList
-                    .stream()
-                    .map(hrCompanyEmailInfo -> hrCompanyEmailInfo.getCompanyId())
-                    .collect(Collectors.toList());
-
-            Condition condition = new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN);
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            queryBuilder.select(HrCompany.HR_COMPANY.NAME.getName())
-                    .select(HrCompany.HR_COMPANY.ABBREVIATION.getName())
-                    .where(condition);
-            List<HrCompanyDO> hrCompanyDOList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
-
-            List<EmailAccountInfo> accounts = emailInfoList.stream().map(hrCompanyEmailInfo -> {
-                EmailAccountInfo emailAccountInfo = new EmailAccountInfo();
-                emailAccountInfo.setTotal(hrCompanyEmailInfo.getTotal());
-                emailAccountInfo.setCompany_id(hrCompanyEmailInfo.getCompanyId());
-                emailAccountInfo.setBalance(hrCompanyEmailInfo.getBalance());
-                emailAccountInfo.setUser_num(hrCompanyEmailInfo.getTotal() - hrCompanyEmailInfo.getBalance());
-
-                Optional<HrCompanyDO> hrCompanyDOOptional = hrCompanyDOList
-                        .stream()
-                        .filter(hrCompanyDO1 -> hrCompanyDO1.getId() ==
-                                hrCompanyEmailInfo.getCompanyId().intValue())
-                        .findAny();
-                if (hrCompanyDOOptional.isPresent()) {
-                    String abbreviation = hrCompanyDOOptional.get().getAbbreviation();
-                    if (org.apache.commons.lang.StringUtils.isBlank(abbreviation)) {
-                        abbreviation = hrCompanyDOOptional.get().getName();
-                    }
-                    emailAccountInfo.setAbbersive(abbreviation);
-                }
-
-                return emailAccountInfo;
-            }).collect(Collectors.toList());
-            emailAccountForm.setEmail_accounts(accounts);
-        } else {
-            emailAccountForm.setEmail_accounts(new ArrayList<>());
-        }
-        return emailAccountForm;
-    }
-
-    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, EmailAccountConsumptionType emailAccountConsumptionType, int pageNumber, int pageSize) {
-        EmailAccountConsumptionForm emailAccountConsumptionForm = new EmailAccountConsumptionForm();
-        emailAccountConsumptionForm.setCompany_id(companyId);
-        if (pageNumber <= 0) {
-            pageNumber = 1;
-        }
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-        if (pageSize >= Constant.DATABASE_PAGE_SIZE) {
-            pageSize =  Constant.DATABASE_PAGE_SIZE;
-        }
-
-        emailAccountConsumptionForm.setPage_number(pageNumber);
-        emailAccountConsumptionForm.setPage_size(pageSize);
-
-        int index = (pageNumber - 1) * pageSize;
-        List<LogTalentpoolEmailDailyLogRecord> logTalentpoolEmailDailyLogRecordList =
-                logTalentpoolEmailDailyLogDao.fetchEmailAccountConsumption(companyId,
-                        emailAccountConsumptionType.getValue(), index, pageSize);
-        if (logTalentpoolEmailDailyLogRecordList != null && logTalentpoolEmailDailyLogRecordList.size() > 0) {
-            List<EmailAccountConsumption> emailAccountConsumptionList = logTalentpoolEmailDailyLogRecordList.stream()
-                    .map(logTalentpoolEmailDailyLogRecord -> {
-                        EmailAccountConsumption emailAccountConsumption = new EmailAccountConsumption();
-                        emailAccountConsumption.setCompany_id(logTalentpoolEmailDailyLogRecord.getCompanyId());
-                        emailAccountConsumption.setCreate_time(new DateTime(logTalentpoolEmailDailyLogRecord.getCreateTime().getTime()).toString("YYYY-MM-dd"));
-                        emailAccountConsumption.setId(logTalentpoolEmailDailyLogRecord.getId());
-                        emailAccountConsumption.setLost(logTalentpoolEmailDailyLogRecord.getLost());
-                        return emailAccountConsumption;
-                    })
-                    .collect(Collectors.toList());
-            emailAccountConsumptionForm.setPurchases(emailAccountConsumptionList);
-        } else {
-            emailAccountConsumptionForm.setPurchases(new ArrayList<>());
-        }
-
-        int total = logTalentpoolEmailDailyLogDao.countEmailAccountConsumption(companyId,  emailAccountConsumptionType.getValue());
-        emailAccountConsumptionForm.setTotal(total);
-        return emailAccountConsumptionForm;
-    }
-
-    public void rechargeEmailAccount(int companyId, int lost) throws CommonException {
-        HrCompanyDO companyDO = hrCompanyDao.getCompanyById(companyId);
-        if (companyDO == null) {
-            throw TalentPoolException.NODATA_EXCEPTION;
-        }
-
     }
 }

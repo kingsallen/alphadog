@@ -302,8 +302,8 @@ public class JobApplicationFilterService {
                     emailStruct.setTo_name(username);
                     emailStruct.setTo_email(userUserRecord.getEmail());
                     emailStruct.setFrom_name(companyDO.getAbbreviation() + "人才招聘团队");
-                    boolean bool = emailEntity.handerTalentpoolEmailLogAndBalance(1, 2, position.getCompanyId(), position.getPublisher());
-                    if (bool) {
+                    int id = emailEntity.handerTalentpoolEmailLogAndBalance(1, 2, position.getCompanyId(), position.getPublisher());
+                    if (id > 0) {
                         mqService.sendMandrilEmail(emailStruct);
                     }
 

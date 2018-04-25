@@ -10,6 +10,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.entity.Constant.EmailAccountConsumptionType;
 import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.entity.exception.TalentPoolException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm;
 import com.moseeker.thrift.gen.company.struct.EmailAccountForm;
@@ -195,14 +196,14 @@ public class TalentpoolEmailService {
 
 
     public EmailAccountForm fetchEmailAccounts(int companyId, String companyName, int pageNumber, int pageSize) throws CommonException {
-        return talentPoolEntity.fetchEmailAccounts(companyId, companyName, pageNumber, pageSize);
+        return talentPoolEmailEntity.fetchEmailAccounts(companyId, companyName, pageNumber, pageSize);
     }
 
     public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, EmailAccountConsumptionType emailAccountConsumptionType, int pageNumber, int pageSize) {
-        return talentPoolEntity.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize);
+        return talentPoolEmailEntity.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize);
     }
 
-    public int rechargeEmailAccount(int companyId, int lost) {
-        talentPoolEntity.rechargeEmailAccount(companyId, lost);
+    public int rechargeEmailAccount(int companyId, int lost) throws TalentPoolException {
+        return talentPoolEmailEntity.handerTalentpoolEmailLogAndBalance(lost, 0, companyId, 0);
     }
 }

@@ -248,4 +248,5 @@ public final class Constant {
     public static final int TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS = 70;
     public static final int TALENTPOOL_EMAIL_PROFILE_SEND = 69;
 
+    public static final int RETRY_UPPER_LIMIT = 3;
 }
