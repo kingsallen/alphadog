@@ -250,37 +250,43 @@ public class TalentPoolEmailEntity {
 
             Condition condition = new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN);
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            queryBuilder.select(HrCompany.HR_COMPANY.NAME.getName())
+            queryBuilder
+                    .select(HrCompany.HR_COMPANY.ID.getName())
+                    .select(HrCompany.HR_COMPANY.NAME.getName())
                     .select(HrCompany.HR_COMPANY.ABBREVIATION.getName())
                     .where(condition);
             List<HrCompanyDO> hrCompanyDOList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
+
+            logger.info("fetchEmailAccounts hrCompanyDOList:{}", hrCompanyDOList);
 
             List<EmailAccountInfo> accounts = emailInfoList.stream().map(hrCompanyEmailInfo -> {
                 EmailAccountInfo emailAccountInfo = new EmailAccountInfo();
                 emailAccountInfo.setTotal(hrCompanyEmailInfo.getTotal());
                 emailAccountInfo.setCompany_id(hrCompanyEmailInfo.getCompanyId());
                 emailAccountInfo.setBalance(hrCompanyEmailInfo.getBalance());
-                emailAccountInfo.setUser_num(hrCompanyEmailInfo.getTotal() - hrCompanyEmailInfo.getBalance());
+                emailAccountInfo.setUse_num(hrCompanyEmailInfo.getTotal() - hrCompanyEmailInfo.getBalance());
 
+                String abbreviation = "";
                 Optional<HrCompanyDO> hrCompanyDOOptional = hrCompanyDOList
                         .stream()
                         .filter(hrCompanyDO1 -> hrCompanyDO1.getId() ==
                                 hrCompanyEmailInfo.getCompanyId().intValue())
                         .findAny();
                 if (hrCompanyDOOptional.isPresent()) {
-                    String abbreviation = hrCompanyDOOptional.get().getAbbreviation();
+                    abbreviation = hrCompanyDOOptional.get().getAbbreviation();
                     if (org.apache.commons.lang.StringUtils.isBlank(abbreviation)) {
                         abbreviation = hrCompanyDOOptional.get().getName();
                     }
-                    emailAccountInfo.setAbbersive(abbreviation);
                 }
-
+                logger.info("fetchEmailAccounts abbreviation:{}", abbreviation);
+                emailAccountInfo.setAbbersive(abbreviation);
                 return emailAccountInfo;
             }).collect(Collectors.toList());
             emailAccountForm.setEmail_accounts(accounts);
         } else {
             emailAccountForm.setEmail_accounts(new ArrayList<>());
         }
+        logger.info("fetchEmailAccounts emailAccountForm:{}", emailAccountForm);
         return emailAccountForm;
     }
 
