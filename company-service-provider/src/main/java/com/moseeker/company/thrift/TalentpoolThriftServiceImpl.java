@@ -27,7 +27,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -405,7 +408,8 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, byte type, int pageNumber, int pageSize) throws BIZException, TException {
+    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, byte type, int pageNumber,
+                                                                    int pageSize, String startDate, String endDate) throws BIZException, TException {
         try {
             if (pageNumber <= 0 || pageSize <= 0) {
                 throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("参数无效！"));
@@ -417,7 +421,28 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             if (emailAccountConsumptionType == null) {
                 throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("错误的消费类型！"));
             }
-            return talentpoolEmailService.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize);
+            DateTime startDateTime = null;
+            if (StringUtils.isNotBlank(startDate)) {
+                try {
+                    startDateTime = DateTime.parse(startDate);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                    throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("开始时间格式不正确！"));
+                }
+            }
+            DateTime endDateTime = null;
+            if (StringUtils.isNotBlank(startDate)) {
+                try {
+                    endDateTime = DateTime.parse(endDate);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                    throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("结束时间格式不正确！"));
+                }
+            }
+            if (startDateTime != null && endDateTime != null && startDateTime.getMillis() >= endDateTime.getMillis()) {
+                throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("开始时间必须要小于结束时间！"));
+            }
+            return talentpoolEmailService.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize, startDateTime, endDateTime);
         } catch (CommonException e) {
             logger.error(e.getMessage(),e);
             throw ExceptionConvertUtil.convertCommonException(e);

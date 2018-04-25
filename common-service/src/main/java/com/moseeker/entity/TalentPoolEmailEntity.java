@@ -27,6 +27,7 @@ import com.moseeker.thrift.gen.company.struct.EmailAccountForm;
 import com.moseeker.thrift.gen.company.struct.EmailAccountInfo;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -290,7 +291,8 @@ public class TalentPoolEmailEntity {
         return emailAccountForm;
     }
 
-    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, EmailAccountConsumptionType emailAccountConsumptionType, int pageNumber, int pageSize) {
+    public EmailAccountConsumptionForm fetchEmailAccountConsumption(int companyId, EmailAccountConsumptionType emailAccountConsumptionType,
+                                                                    int pageNumber, int pageSize, DateTime startDate, DateTime endDate) {
         EmailAccountConsumptionForm emailAccountConsumptionForm = new EmailAccountConsumptionForm();
         emailAccountConsumptionForm.setCompany_id(companyId);
         if (pageNumber <= 0) {
@@ -308,12 +310,21 @@ public class TalentPoolEmailEntity {
 
         int index = (pageNumber - 1) * pageSize;
 
+        Timestamp startTime = null;
+        if (startDate != null) {
+            startTime = new Timestamp(startDate.getMillis());
+        }
+        Timestamp endTime = null;
+        if (endDate != null) {
+            endTime = new Timestamp(endDate.getMillis());
+        }
+
         int total = 0;
         List<EmailAccountConsumption> emailAccountConsumptionList = new ArrayList<>();
         switch (emailAccountConsumptionType) {
             case RECHARRGE:
-                total = emailLogDao.countRecharge(companyId);
-                List<LogTalentpoolEmailLogRecord> logRecordList = emailLogDao.fetchEmailAccountRechargeRecords(companyId, index, pageSize);
+                total = emailLogDao.countRecharge(companyId, startTime, endTime);
+                List<LogTalentpoolEmailLogRecord> logRecordList = emailLogDao.fetchEmailAccountRechargeRecords(companyId, index, pageSize, startTime, endTime);
                 if (logRecordList != null && logRecordList.size() > 0) {
                     emailAccountConsumptionList = logRecordList.stream()
                             .map(logTalentpoolEmailLogRecord -> {
@@ -329,10 +340,10 @@ public class TalentPoolEmailEntity {
                 }
                 break;
             case COMSUMPTION:
-                total = logTalentpoolEmailDailyLogDao.countEmailAccountConsumption(companyId,  emailAccountConsumptionType.getValue());
+                total = logTalentpoolEmailDailyLogDao.countEmailAccountConsumption(companyId, emailAccountConsumptionType.getValue(), startTime, endTime);
                 List<LogTalentpoolEmailDailyLogRecord> logTalentpoolEmailDailyLogRecordList =
                         logTalentpoolEmailDailyLogDao.fetchEmailAccountConsumption(companyId,
-                                emailAccountConsumptionType.getValue(), index, pageSize);
+                                emailAccountConsumptionType.getValue(), index, pageSize, startTime, endTime);
                 if (logTalentpoolEmailDailyLogRecordList != null && logTalentpoolEmailDailyLogRecordList.size() > 0) {
                     emailAccountConsumptionList = logTalentpoolEmailDailyLogRecordList.stream()
                             .map(logTalentpoolEmailDailyLogRecord -> {

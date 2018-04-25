@@ -52,9 +52,11 @@ public class EmailAccountController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("company_id", 0);
             byte type = params.getByte("type", (byte)0);
+            String startDate = params.getString("start_date", "");
+            String endDate = params.getString("end_date", "");
             int pageSize = params.getInt("page_size",10);
             int pageNumber = params.getInt("page_number", 1);
-            EmailAccountConsumptionForm emailAccountConsumptionForm = service.fetchEmailAccountConsumption(companyId, type, pageNumber, pageSize);
+            EmailAccountConsumptionForm emailAccountConsumptionForm = service.fetchEmailAccountConsumption(companyId, type, pageNumber, pageSize, startDate, endDate);
             return ResponseLogNotification.successJson(request, emailAccountConsumptionForm);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
