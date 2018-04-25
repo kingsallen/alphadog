@@ -356,9 +356,9 @@ public class TalentpoolEmailService {
 
                 list.add(info);
             }
-
+            return list;
         }
-        return list;
+        return null;
     }
     /*
      获取团队id的列表
