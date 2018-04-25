@@ -115,4 +115,9 @@ service TalentpoolServices {
     i32 rechargeEmailAccount(1: i32 companyId, 2: i32 lost) throws (1: common_struct.BIZException e)
 
     void updateEmailAccountRechargeValue(1:i32 id, 2: i32 lost) throws (1: common_struct.BIZException e)
+    void  addAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  addAllTalentTag(1:map<string,string> params,2:list<i32> tagList,3:i32 companyId,4:i32 hrId) throws (1: common_struct.BIZException e)
+    void  addAllTalentPublic(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  addAllTalentPrivate(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  cancleAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
 }

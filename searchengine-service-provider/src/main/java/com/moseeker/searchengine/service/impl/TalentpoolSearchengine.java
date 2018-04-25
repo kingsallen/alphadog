@@ -69,6 +69,34 @@ public class TalentpoolSearchengine {
         }
         return result;
     }
+    @CounterIface
+    public List<Integer> getTalentUserList(Map<String, String> params){
+        List<Integer> userIdList=new ArrayList<>();
+        TransportClient client=null;
+        try {
+            client = searchUtil.getEsClient();
+            QueryBuilder query = this.query(params);
+            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+            this.handlerPage(params, builder);
+            String[] returnParams={"user.profiles.profile.user_id"};
+            builder.setFetchSource(returnParams,null);
+            logger.info(builder.toString());
+            SearchResponse response = builder.execute().actionGet();
+            Map<String,Object> result = searchUtil.handleData(response, "users");
+            if(result!=null&&!result.isEmpty()){
+                long totalNum=(long)result.get("totalNum");
+                if(totalNum>0){
+                    this.handlerResult(result,userIdList);
+                }
+            }
+        } catch (Exception e) {
+            logger.info(e.getMessage()+"=================");
+
+        }
+        return userIdList;
+    }
+
+
     /*
      查询企业标签的人才数量
      */
@@ -152,29 +180,7 @@ public class TalentpoolSearchengine {
             if(result!=null&&!result.isEmpty()){
                 long totalNum=(long)result.get("totalNum");
                 if(totalNum>0){
-                    List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
-                    for(Map<String,Object> map:dataList){
-                        logger.info("============================================userIdList");
-                        if(map!=null&&!map.isEmpty()){
-                            Map<String,Object> userMap=(Map<String,Object>)map.get("user");
-                            logger.info("============================================user");
-                            if(userMap!=null&&!userMap.isEmpty()){
-                                Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
-                                logger.info("============================================profiles");
-                                logger.info(JSON.toJSONString(profiles));
-                                if(profiles!=null&&!profiles.isEmpty()){
-                                    Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
-                                    logger.info("============================================profile");
-                                    logger.info(JSON.toJSONString(profile));
-                                    if(profile!=null&&!profile.isEmpty()){
-                                        int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
-                                        logger.info("============================================user_id"+userId);
-                                        list.add(userId);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    this.handlerResult(result,list);
                 }
             }
         }catch(Exception e){
@@ -212,29 +218,7 @@ public class TalentpoolSearchengine {
             if(result!=null&&!result.isEmpty()){
                 long totalNum=(long)result.get("totalNum");
                 if(totalNum>0){
-                    List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
-                    for(Map<String,Object> map:dataList){
-                        logger.info("============================================userIdList");
-                        if(map!=null&&!map.isEmpty()){
-                            Map<String,Object> userMap=(Map<String,Object>)map.get("user");
-                            logger.info("============================================user");
-                            if(userMap!=null&&!userMap.isEmpty()){
-                                Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
-                                logger.info("============================================profiles");
-                                logger.info(JSON.toJSONString(profiles));
-                                if(profiles!=null&&!profiles.isEmpty()){
-                                    Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
-                                    logger.info("============================================profile");
-                                    logger.info(JSON.toJSONString(profile));
-                                    if(profile!=null&&!profile.isEmpty()){
-                                        int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
-                                        logger.info("============================================user_id"+userId);
-                                        list.add(userId);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    this.handlerResult(result,list);
                 }
                 resp.setTalent_count((int)totalNum);
                 resp.setUser_ids(list);
@@ -246,6 +230,34 @@ public class TalentpoolSearchengine {
         logger.info(JSON.toJSONString(list));
         logger.info("==========================");
         return resp;
+    }
+    /*
+     处理es返回的结果值获取人才列表id
+     */
+    private void handlerResult(Map<String,Object> result,List<Integer> userIdList){
+        List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
+        for(Map<String,Object> map:dataList){
+            logger.info("============================================userIdList");
+            if(map!=null&&!map.isEmpty()){
+                Map<String,Object> userMap=(Map<String,Object>)map.get("user");
+                logger.info("============================================user");
+                if(userMap!=null&&!userMap.isEmpty()){
+                    Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
+                    logger.info("============================================profiles");
+                    logger.info(JSON.toJSONString(profiles));
+                    if(profiles!=null&&!profiles.isEmpty()){
+                        Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
+                        logger.info("============================================profile");
+                        logger.info(JSON.toJSONString(profile));
+                        if(profile!=null&&!profile.isEmpty()){
+                            int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
+                            logger.info("============================================user_id"+userId);
+                            userIdList.add(userId);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private QueryBuilder convertBuild(List<Map<String,String>> mapList){

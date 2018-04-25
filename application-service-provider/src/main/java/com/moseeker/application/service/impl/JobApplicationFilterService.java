@@ -246,6 +246,7 @@ public class JobApplicationFilterService {
         if(type == 1){
             talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId());
         }else if(type == 2){
+            talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId());
             talentpoolService.batchAddPublicTalent(position.getPublisher(), position.getCompanyId(), userIds);
         }else if(type == 3){
             bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
