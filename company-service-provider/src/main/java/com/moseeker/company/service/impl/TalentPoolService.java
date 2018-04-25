@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
@@ -33,6 +34,7 @@ import com.moseeker.company.bean.*;
 import com.moseeker.company.utils.ValidateTalent;
 import com.moseeker.company.utils.ValidateTalentTag;
 import com.moseeker.company.utils.ValidateUtils;
+import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.talentpool.PageInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -103,6 +105,8 @@ public class TalentPoolService {
     private HrCompanyDao hrCompanyDao;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+    @Autowired
+    private TalentPoolEmailEntity talentPoolEmailEntity;
 
     SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
@@ -1627,6 +1631,11 @@ public class TalentPoolService {
             }
             FilterResp resp = service.queryProfileFilterUserIdList(filterList, 0, 0);
             map.put("num", resp.getTalent_count());
+            HrCompanyEmailInfo info = talentPoolEmailEntity.getHrCompanyEmailInfoByCompanyId(company_id);
+            map.put("enable",false);
+            if(resp.getTalent_count() < info.getBalance()){
+                map.put("enable", true);
+            }
         }
         return ResponseUtils.success(map);
     }
