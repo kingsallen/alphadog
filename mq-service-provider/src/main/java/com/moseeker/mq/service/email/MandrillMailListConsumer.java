@@ -91,31 +91,22 @@ public class MandrillMailListConsumer {
                 recipients.add(recipient);
                 message.setTo(recipients);
 
-                List<MergeVarBucket> mergeVars = new ArrayList<MergeVarBucket>();
+                List<MandrillMessage.RecipientMetadata> mergeVars = new ArrayList<MandrillMessage.RecipientMetadata>();
 
                 List<Map<String,String>> varList = mandrillEmailListStruct.getMergeVars();
                 for (Map<String, String> var : varList) {
-                    String rcpt = "";
-                    MergeVarBucket mergeVar = new MergeVarBucket();
-                    MergeVar[] vars = new MergeVar[var.size()];
-                    int vars_i = 0;
+                    MandrillMessage.RecipientMetadata mergeVar = new MandrillMessage.RecipientMetadata();
+                    mergeVar.setValues(var);
+
                     for (Entry<String, String> entry : var.entrySet()){
-                        vars[vars_i] = new MergeVar();
-                        vars[vars_i].setName(entry.getKey());
-                        vars[vars_i].setContent(entry.getValue());
-                        vars_i++;
                         if("rcpt".equals(entry.getKey())){
-                            rcpt = entry.getValue();
+                            mergeVar.setRcpt(entry.getValue());
+                            break;
                         }
                     }
-
-                    if (vars_i > 0) {
-                        mergeVar.setVars(vars);
-                        mergeVar.setRcpt(rcpt);
-                        mergeVars.add(mergeVar);
-                        message.setMergeVars(mergeVars);
-                    }
+                    mergeVars.add(mergeVar);
                 }
+                message.setRecipientMetadata(mergeVars);
 
                 if (StringUtils.isNotNullOrEmpty(mandrillEmailListStruct.getSubject())){
                     message.setSubject(mandrillEmailListStruct.getSubject());
@@ -138,7 +129,7 @@ public class MandrillMailListConsumer {
                 message.setTrackClicks(true);
                 message.setTrackOpens(true);
                 message.setViewContentLink(true);
-                logger.info("sendMailList:{}",message);
+                logger.info("sendMailList:{}",message.toString());
                 MandrillMessageStatus[] messageStatus = mandrillApi.messages().sendTemplate(mandrillEmailListStruct.getTemplateName(),
                         null,message, false);
                 LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
