@@ -277,7 +277,8 @@ public class JobApplicationFilterService {
                     } else {
                         username = userUserRecord.getNickname();
                     }
-                    String company_logo = CommonUtils.appendUrl(companyDO.getLogo(), env.getProperty("http.cdn.url"));
+                    logger.info("handerApplicationFilter cdn :{}",env.getProperty("http.cdn.url"));
+                    String company_logo = CommonUtils.appendUrl(companyDO.getLogo(), Constant.CDN_URL);
                     params.put("company_logo", company_logo);
                     String context = emailList.get(0).getContext();
                     context = CommonUtils.replaceUtil(context, companyDO.getAbbreviation(), position.getTitle(),
@@ -288,7 +289,7 @@ public class JobApplicationFilterService {
                     params.put("custom_text", context);
                     params.put("company_sign", inscribe);
                     params.put("employee_name", username);
-                    String qrcodeUrl = CommonUtils.appendUrl(wechatDO.getQrcode(), env.getProperty("http.cdn.url"));
+                    String qrcodeUrl = CommonUtils.appendUrl(wechatDO.getQrcode(), Constant.CDN_URL);
                     params.put("weixin_qrcode", qrcodeUrl);
                     params.put("official_account_name", wechatDO.getName());
                     params.put("send_time", DateUtils.dateToNormalDate(new Date()));
