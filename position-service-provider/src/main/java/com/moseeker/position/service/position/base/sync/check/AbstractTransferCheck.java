@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position.base.sync.check;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -24,12 +25,12 @@ public abstract class AbstractTransferCheck<T> implements ITransferCheck<T> {
      * @return
      */
     public boolean containsError(JSONObject jsonForm, JobPositionDO moseekerPosition){
-        return containsError(jsonForm.toJavaObject(getFormClass()),moseekerPosition);
+        return containsError(JSON.parseObject(jsonForm.toJSONString(),getFormClass()),moseekerPosition);
     }
 
     public List<String> getError(JSONObject jsonForm, JobPositionDO moseekerPosition){
         List<String> errorMsg;
-        errorMsg = getError(jsonForm.toJavaObject(getFormClass()),moseekerPosition);
+        errorMsg = getError(JSON.parseObject(jsonForm.toJSONString(),getFormClass()),moseekerPosition);
 
         return errorMsg;
     }
