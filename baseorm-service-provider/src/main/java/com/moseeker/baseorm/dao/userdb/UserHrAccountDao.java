@@ -547,4 +547,19 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
         }
         return 0;
     }
+
+    /**
+     * CAS设置是否托管给智能招聘助手
+     * @param accountId
+     * @param expect
+     * @param leaveToMobot
+     * @return
+     */
+    public int switchChatLeaveToMobot(int accountId, byte expect, byte leaveToMobot){
+        return create.update(UserHrAccount.USER_HR_ACCOUNT)
+                .set(UserHrAccount.USER_HR_ACCOUNT.LEAVE_TO_MOBOT,leaveToMobot)
+                .where(UserHrAccount.USER_HR_ACCOUNT.ID.eq(accountId))
+                .and(UserHrAccount.USER_HR_ACCOUNT.LEAVE_TO_MOBOT.eq(expect))
+                .execute();
+    }
 }

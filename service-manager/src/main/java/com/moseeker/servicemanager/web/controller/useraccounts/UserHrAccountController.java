@@ -2,6 +2,8 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -54,6 +56,13 @@ public class UserHrAccountController {
             .getService(UserHrAccountService.Iface.class);
 
     ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
+
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public UserHrAccountController(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
 
     /**
      * 更新手机号
@@ -1083,6 +1092,36 @@ public class UserHrAccountController {
             String unionId = params.getString("unionId");
             Response res = userHrAccountService.getHrCompanyInfo(wechat_id,unionId,account_id);
             return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
+     * 设置HR聊天是否托管给智能招聘助手
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/leveltomobot", method = RequestMethod.PUT)
+    @ResponseBody
+    public String switchChatLeaveToMobot(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int account_id = params.getInt("account_id");
+            byte leave_to_mobot = params.getByte("leave_to_mobot");
+            UserHrAccountDO res = userHrAccountService.switchChatLeaveToMobot(account_id,leave_to_mobot);
+
+            //驼峰转下划线
+            UserHrAccount underLineResult = JSON.parseObject(JSON.toJSONString(res, serializeConfig),UserHrAccount.class);
+            //转换json的时候去掉thrift结构体中的set方法
+            JSONObject jsonResult = JSON.parseObject(BeanUtils.convertStructToJSON(underLineResult));
+
+            return ResponseLogNotification.successJson(request, jsonResult);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {

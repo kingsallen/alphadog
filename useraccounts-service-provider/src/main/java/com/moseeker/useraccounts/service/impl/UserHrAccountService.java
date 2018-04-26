@@ -27,10 +27,12 @@ import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.CompanyConf;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.MD5Util;
@@ -44,6 +46,7 @@ import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.entity.exception.HRException;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -91,6 +94,8 @@ public class UserHrAccountService {
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
             .getService(SearchengineServices.Iface.class);
+
+    CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
 
     private static final String REDIS_KEY_HR_SMS_SIGNUP = "HR_SMS_SIGNUP";
 
@@ -1787,6 +1792,42 @@ public class UserHrAccountService {
 
     }
 
+    /**
+     * 设置HR聊天是否托管给智能招聘助手
+     * @param accountId HR账号ID
+     * @param leaveToMobot 是否托管给智能招聘助手，0 不托管，1 托管
+     * @return 设置完成后的hr账号信息
+     * @throws TException
+     */
+    public UserHrAccountDO switchChatLeaveToMobot(int accountId,byte leaveToMobot) throws TException {
+        if(accountId <= 0 ||
+                (leaveToMobot != CompanyConf.LeaveToMobot.OFF && leaveToMobot != CompanyConf.LeaveToMobot.ON)){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+        }
+
+        UserHrAccountDO hrAccount = requiresNotNullAccount(accountId);
+
+        if(hrAccount.getAccountType() == HRAccountType.SubAccount.getType()){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.NO_AUTH_SET_LEAVE_TO_MOBOT);
+        }
+
+        HrCompanyConfDO hrCompanyConf = companyServices.getCompanyConfById(hrAccount.getCompanyId());
+
+        // 未开启ChatBot功能的企业，点击开关提示尚未采购该功能，详情请联系您的客户成功顾问。
+        if(hrCompanyConf.getHrChat() != CompanyConf.HRCHAT.ON_AND_MOBOT){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CANT_SET_LEAVE_TO_MOBOT);
+        }
+
+        // 已经是要设置的值就不做修改
+        if(hrAccount.getLeaveToMobot() == leaveToMobot){
+            return hrAccount;
+        }
+
+        // CAS修改要设置的值
+        userHrAccountDao.switchChatLeaveToMobot(hrAccount.getId(),hrAccount.getLeaveToMobot(),leaveToMobot);
+
+        return requiresNotNullAccount(accountId);
+    }
 
 
     public UserHrAccountDO requiresNotNullAccount(int hrId){
