@@ -46,4 +46,6 @@ public class ConsistencyException extends CommonException {
     public static final ConsistencyException CONSISTENCY_PRODUCER_MQ_CONFIG_LOST= new ConsistencyException(81020, "消息通道配置信息错误！");
 
     public static final ConsistencyException CONSISTENCY_CONSUMER_ANNOTATION_LOGT_CONFIG= new ConsistencyException(81021, "注解缺少必要信息！");
+
+    public static final ConsistencyException CONSISTENCY_PRODUCER_PROTECTOR_PARAMETER_NOT_LEGAL = new ConsistencyException(81022, "消息参数错误！");
 }

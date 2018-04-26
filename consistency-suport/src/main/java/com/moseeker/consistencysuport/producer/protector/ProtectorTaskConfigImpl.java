@@ -10,11 +10,10 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -36,6 +35,8 @@ public class ProtectorTaskConfigImpl implements ProtectorTask, Runnable {
     private long period = 5*60*1000;                //时间间隔
     private long initialDelay = 3*1000;             //延迟启动
     private byte retriedUpper = 3;                  // 重试上限
+
+    private long threadTimeOut = 10*1000;           //线程超时时间
 
     private InvokeHandler invokeHandler;  //Spring容器
 
@@ -89,10 +90,11 @@ public class ProtectorTaskConfigImpl implements ProtectorTask, Runnable {
         logger.info("ProtectorTaskConfigImpl scheduleAtFixedRate time:{}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
         List<Message> messageList = fetchNotFinishedMessage();
         if (messageList != null && messageList.size() > 0) {
-            messageList.forEach(message -> {
+            Iterator<Message> iterator = messageList.iterator();
+            while (iterator.hasNext()) {
+                Message message = iterator.next();
                 if (message.getRetried() < retriedUpper) {
-                    message.setRetried(message.getRetried()+1);
-                    threadPool.startTast(() -> {
+                    Future<Boolean> booleanFuture = threadPool.startTast(() -> {
                         try {
                             invokeHandler.invoke(message);
                             return true;
@@ -101,14 +103,22 @@ public class ProtectorTaskConfigImpl implements ProtectorTask, Runnable {
                             return false;
                         }
                     });
+                    try {
+                        if (booleanFuture.get(threadTimeOut, TimeUnit.MILLISECONDS)) {
+                            message.setRetried(message.getRetried()+1);
+                        }
+                    } catch (InterruptedException | ExecutionException |TimeoutException e) {
+                        logger.error(e.getMessage(), e);
+                    }
 
                 } else {
                     threadPool.startTast(() -> {
                         notification.noticeForException(ConsistencyException.CONSISTENCY_PRODUCER_RETRY_OVER_LIMIT);
-                        return true;
+                        return false;
                     });
+                    iterator.remove();
                 }
-            });
+            }
             try {
                 messageRepository.updateRetried(messageList);
             } catch (ConsistencyException e) {

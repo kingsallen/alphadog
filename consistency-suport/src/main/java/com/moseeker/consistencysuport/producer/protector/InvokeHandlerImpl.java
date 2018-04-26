@@ -38,7 +38,8 @@ public class InvokeHandlerImpl implements InvokeHandler {
             String className = message.getClassName();
             String methodName = message.getMethod();
             String params = message.getParam();
-            Object object = applicationContext.getBean(className);
+            Class aClass = Class.forName(className);
+            Object object = applicationContext.getBean(aClass);
             if (object == null) {
                 throw ConsistencyException.CONSISTENCY_INVOKE_ERROR;
             }
@@ -66,6 +67,9 @@ public class InvokeHandlerImpl implements InvokeHandler {
                 method.invoke(object, paramArray);
             }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            logger.error(e.getMessage(), e);
+            notification.noticeForException(e);
+        } catch (ClassNotFoundException e) {
             logger.error(e.getMessage(), e);
             notification.noticeForException(e);
         }

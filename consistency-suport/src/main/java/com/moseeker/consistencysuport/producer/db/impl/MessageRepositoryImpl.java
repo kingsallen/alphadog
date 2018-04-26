@@ -237,6 +237,7 @@ public class MessageRepositoryImpl implements MessageRepository {
     @Override
     public List<Message> fetchUnFinishMessageBySpecifiedSecond(long second) {
 
+        logger.info("fetchUnFinishMessageBySpecifiedSecond second:{}", second);
         List<Message> messageList = new ArrayList<>();
         Timestamp timestamp = new Timestamp(second);
         Result<ConsistencyMessageRecord> consistencyMessageRecords =
@@ -246,6 +247,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                 .and(ConsistencyMessage.CONSISTENCY_MESSAGE.FINISH.eq((byte) 0))
                 .fetch();
 
+        logger.info("fetchUnFinishMessageBySpecifiedSecond consistencyMessageRecords:{}", consistencyMessageRecords);
         if (consistencyMessageRecords != null && consistencyMessageRecords.size() > 0) {
 
             List<String> messageNameList = consistencyMessageRecords
@@ -258,6 +260,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                     .where(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.NAME.in(messageNameList))
                     .fetch();
 
+            logger.info("fetchUnFinishMessageBySpecifiedSecond messageTypeRecordResult:{}", messageTypeRecordResult);
             consistencyMessageRecords.forEach(consistencyMessageRecord -> {
 
                 Optional<ConsistencyMessageTypeRecord> optional = messageTypeRecordResult
@@ -270,6 +273,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                 messageList.add(message);
             });
         }
+        logger.info("fetchUnFinishMessageBySpecifiedSecond messageList:{}", messageList);
         return messageList;
     }
 
@@ -618,7 +622,8 @@ public class MessageRepositoryImpl implements MessageRepository {
         message.setParam(consistencyMessageRecord.getParam());
         message.setFinish(consistencyMessageRecord.getFinish() == 1);
         if (optional.isPresent()) {
-            //message.setClassName();
+            message.setClassName(optional.get().getClassName());
+            message.setMethod(optional.get().getMethod());
         }
         return message;
     }

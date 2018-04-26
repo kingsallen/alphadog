@@ -1,5 +1,7 @@
 package com.moseeker.consistencysuport.common;
 
+import com.moseeker.consistencysuport.exception.ConsistencyException;
+
 /**
  *
  * 参数转换
@@ -16,12 +18,12 @@ public interface ParamConvertTool {
      * @param params 消息发送的接口
      * @return
      */
-    String convertParamToStorage(Object[] params);
+    String convertParamToStorage(Object[] params) throws ConsistencyException;
 
     /**
      * 将数据库的字符串参数解析成发送消息所需的参数
      *
      * @return
      */
-    Object[] convertStorageToParam(String param);
+    Object[] convertStorageToParam(String param) throws ConsistencyException;
 }
