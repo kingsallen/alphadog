@@ -129,6 +129,9 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<PositionZh
         logger.info("setCities:otherCityCodes:{}", otherCityCodes);
 
         List<PositionZhilian.City> cities = new ArrayList<>();
+
+        TypeReference<List<String>> typeRef
+                = new TypeReference<List<String>>() {};
         for(ThirdpartyZhilianPositionAddressDO address:positionForm.getAddress()){
 
             // 设置映射城市code
@@ -137,7 +140,8 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<PositionZh
                 continue;
             }
             PositionZhilian.City city = new PositionZhilian.City();
-            city.setCode(optional.get().getCodeOther());
+
+            city.setCode(JSON.parseObject(optional.get().getCodeOther(),typeRef));
 
             city.setAddress(address.getAddress());
             cities.add(city);

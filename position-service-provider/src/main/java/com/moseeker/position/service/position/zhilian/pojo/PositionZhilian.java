@@ -146,14 +146,14 @@ public class PositionZhilian implements Serializable {
     }
 
     public static class City{
-        private String code;
+        private List<String> code;
         private String address;
 
-        public String getCode() {
+        public List<String> getCode() {
             return code;
         }
 
-        public void setCode(String code) {
+        public void setCode(List<String> code) {
             this.code = code;
         }
 
