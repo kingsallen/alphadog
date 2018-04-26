@@ -96,4 +96,17 @@ public class HrCompanyEmailInfoDao extends JooqCrudImpl<HrCompanyEmailInfo, HrCo
             }
         }
     }
+    /*
+    根据公司id获取公司邮箱剩余额度
+
+    */
+    public HrCompanyEmailInfoRecord getHrCompanyEmailInfoRecordByCompanyId(int companyId){
+        List<HrCompanyEmailInfoRecord> list=create.selectFrom(HR_COMPANY_EMAIL_INFO).where(HR_COMPANY_EMAIL_INFO.COMPANY_ID.eq(companyId))
+                .fetch();
+        if(list != null && list.size()>0){
+            return  list.get(0);
+        }
+        return null;
+    }
+
 }

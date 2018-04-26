@@ -99,4 +99,11 @@ public class HrCompanyEmailInfoDao extends DAOImpl<HrCompanyEmailInfoRecord, com
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo> fetchByUpdateTime(Timestamp... values) {
         return fetch(HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>disable IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo> fetchByDisable(Byte... values) {
+        return fetch(HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO.DISABLE, values);
+    }
 }

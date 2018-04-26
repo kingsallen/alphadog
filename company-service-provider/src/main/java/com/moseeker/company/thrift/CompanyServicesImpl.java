@@ -504,8 +504,15 @@ public class CompanyServicesImpl implements Iface {
 
     @Override
     public Response updateHrCompanyConfStatus(int status, int companyId) throws BIZException, TException {
-
-        return null;
+        try {
+            Response result= companyPcService.updateComapnyConfStatus(status, companyId);
+            return result;
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
 
