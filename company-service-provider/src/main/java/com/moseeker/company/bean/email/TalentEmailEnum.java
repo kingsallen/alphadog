@@ -1,6 +1,4 @@
-package com.moseeker.company.bean;
-
-import com.moseeker.common.constants.DegreeConvertUtil;
+package com.moseeker.company.bean.email;
 
 import java.util.HashMap;
 import java.util.Map;

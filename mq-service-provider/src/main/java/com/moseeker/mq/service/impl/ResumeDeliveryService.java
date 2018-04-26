@@ -390,13 +390,11 @@ public class ResumeDeliveryService {
                 String qrcodeUrl = CommonUtils.appendUrl(hrWxWechatDO.getQrcode(), env.getProperty("http.cdn.url"));
                 params.put("weixin_qrcode", qrcodeUrl);
                 params.put("official_account_name", hrWxWechatDO.getName());
+                params.put("comapny_abbr", companyDO.getAbbreviation());
                 emailStruct.put("mergeVars", params);
                 //邮件发送的名称，邮箱
-                String subject = "【" + companyDO.getAbbreviation() + "】投递成功通知";
-                emailStruct.put("subject", subject);
                 emailStruct.put("to_name", username);
                 emailStruct.put("to_email", userUserDO.getEmail());
-                emailStruct.put("from_name", companyDO.getAbbreviation() + "人才招聘团队");
 
                 logger.info("sendEmailToHr emailStruct:{}", emailStruct);
                 int id = emailEntity.handerTalentpoolEmailLogAndBalance(1,1,company_id,accountDO.getId());

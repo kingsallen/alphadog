@@ -500,6 +500,11 @@ public class CompanyServicesImpl implements Iface {
         return ResponseUtils.success(wechatDO);
     }
 
+    @Override
+    public Response updateHrCompanyConfStatus(int status, int companyId) throws BIZException, TException {
+        return null;
+    }
+
 
     /**
      * 获取公司员工认证后补填字段配置信息列表
