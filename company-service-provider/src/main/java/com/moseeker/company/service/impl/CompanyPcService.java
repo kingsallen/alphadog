@@ -1,15 +1,24 @@
 package com.moseeker.company.service.impl;
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolEmailRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.entity.PcRevisionEntity;
+import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
@@ -19,6 +28,7 @@ import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by zztaiwll on 17/8/14.
@@ -46,6 +56,18 @@ public class CompanyPcService {
     private HrWxWechatDao hrWxWechatDao;
     @Autowired
     private DictIndustryDao dictIndustryDao;
+    @Autowired
+    private TalentPoolEntity poolEntity;
+
+    @Autowired
+    private TalentpoolEmailDao talentpoolEmailDao;
+
+    @Autowired
+    private HrCompanyEmailInfoDao emailInfoDao;
+
+    @Autowired
+    private ConfigSysTemplateMessageLibraryDao libraryDao;
+
     /*
       获取企业详情
      */
@@ -205,6 +227,31 @@ public class CompanyPcService {
         Query query=new Query.QueryBuilder().where("parent_id",0).and("type",0).or("fortune",1).buildQuery();
         List<HrCompanyDO> list=hrCompanyDao.getDatas(query);
         return list;
+    }
+
+    @Transactional
+    public Response updateComapnyConfStatus(int status, int company_id){
+        HrCompanyDO companyDO = poolEntity.getCompanyDOByCompanyIdAndParentId(company_id);
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
+        byte oldStatus = -1;
+        HrCompanyConfDO confDO = this.getHrCompanyConf(company_id);
+        oldStatus = confDO.getTalentpoolStatus();
+        confDO.setTalentpoolStatus((byte)status);
+        int result = hrCompanyConfDao.updateData(confDO);
+        if(result > 0 && status == 2 && oldStatus!=2){
+            Integer[] configIds = Constant.TALENTPOOL_EMAIL_SWITCH_ID;
+            List<Integer> configIdList = Arrays.asList(configIds);
+            List<ConfigSysTemplateMessageLibraryDO> libraryDOList = libraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(configIdList, 0);
+            List<TalentpoolEmailRecord> recordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
+            if(libraryDOList != null && libraryDOList.size()>0){
+                if(recordList != null && recordList.size()>0){
+
+                }
+            }
+        }
+        return  null;
     }
 
     /*

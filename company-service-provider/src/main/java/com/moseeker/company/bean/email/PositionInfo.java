@@ -1,4 +1,4 @@
-package com.moseeker.company.bean;
+package com.moseeker.company.bean.email;
 
 /**
  * Created by zztaiwll on 18/4/25.

@@ -289,13 +289,11 @@ public class JobApplicationFilterService {
                     params.put("weixin_qrcode", qrcodeUrl);
                     params.put("official_account_name", wechatDO.getName());
                     params.put("send_time", DateUtils.dateToNormalDate(new Date()));
+                    params.put("comapny_abbr", companyDO.getAbbreviation());
                     emailStruct.setMergeVars(params);
                     emailStruct.setTemplateName(Constant.MISMATCH_NOTIFICATION);
-                    String subject = "【" + companyDO.getAbbreviation() + "】不合适通知";
-                    emailStruct.setSubject(subject);
                     emailStruct.setTo_name(username);
                     emailStruct.setTo_email(userUserRecord.getEmail());
-                    emailStruct.setFrom_name(companyDO.getAbbreviation() + "人才招聘团队");
                     int id = emailEntity.handerTalentpoolEmailLogAndBalance(1, 2, position.getCompanyId(), position.getPublisher());
                     if (id > 0) {
                         mqService.sendMandrilEmail(emailStruct);

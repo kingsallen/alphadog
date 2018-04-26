@@ -42,8 +42,8 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
-            String flag=(String) data.get("flag");
-            if(StringUtils.isNullOrEmpty(flag)||Integer.parseInt(flag)==0){
+            Integer flag=(Integer) data.get("flag");
+            if(flag==null||flag==0){
                 List<Integer> userIdList=(List<Integer>)data.get("user_ids");
                 if(StringUtils.isEmptyList(userIdList)){
                     return  ResponseLogNotification.fail(request,"userId不能为空");
@@ -79,8 +79,8 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=Integer.parseInt(String.valueOf( data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
-            String flag=(String) data.get("flag");
-            if(StringUtils.isNullOrEmpty(flag)||Integer.parseInt(flag)==0) {
+            Integer flag=(Integer) data.get("flag");
+            if(flag==null||flag==0){
                 List<Integer> userIdList = ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
                 if (StringUtils.isEmptyList(userIdList)) {
                     return ResponseLogNotification.fail(request, "userId不能为空");
@@ -220,8 +220,8 @@ public class TalentpoolController {
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
             List<Integer> tagIdList=(List<Integer>)data.get("tag_ids");
-            String flag=(String) data.get("flag");
-            if(StringUtils.isNullOrEmpty(flag)||Integer.parseInt(flag)==0){
+            Integer flag=(Integer) data.get("flag");
+            if(flag==null||flag==0){
                 List<Integer> userIdList=(List<Integer>)data.get("user_ids");
                 if(StringUtils.isEmptyList(userIdList)){
                     return  ResponseLogNotification.fail(request,"userId不能为空");
@@ -278,8 +278,8 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
-            String flag=(String) data.get("flag");
-            if(StringUtils.isNullOrEmpty(flag)||Integer.parseInt(flag)==0) {
+            Integer flag=(Integer) data.get("flag");
+            if(flag==null||flag==0){
                 List<Integer> userIdList = (List<Integer>) data.get("user_ids");
                 if (StringUtils.isEmptyList(userIdList)) {
                     return ResponseLogNotification.fail(request, "userId不能为空");
@@ -342,8 +342,8 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
-            String flag=(String) data.get("flag");
-            if(StringUtils.isNullOrEmpty(flag)||Integer.parseInt(flag)==0) {
+            Integer flag=(Integer) data.get("flag");
+            if(flag==null||flag==0){
                 List<Integer> userIdList = ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
                 if (StringUtils.isEmptyList(userIdList)) {
                     return ResponseLogNotification.fail(request, "userId不能为空");

@@ -1,4 +1,6 @@
-package com.moseeker.company.bean;
+package com.moseeker.company.bean.email;
+
+import com.moseeker.company.bean.email.PositionInfo;
 
 /**
  * Created by zztaiwll on 18/4/25.
@@ -13,6 +15,7 @@ public class TalentEmailInviteToDelivyInfo {
     private String seeMorePosition;
     private String weixinQrcode;
     private String officialAccountName;
+    private String rcpt;
 
     public String getCompanyAbbr() {
         return companyAbbr;
@@ -84,6 +87,14 @@ public class TalentEmailInviteToDelivyInfo {
 
     public void setOfficialAccountName(String officialAccountName) {
         this.officialAccountName = officialAccountName;
+    }
+
+    public String getRcpt() {
+        return rcpt;
+    }
+
+    public void setRcpt(String rcpt) {
+        this.rcpt = rcpt;
     }
 }
 
