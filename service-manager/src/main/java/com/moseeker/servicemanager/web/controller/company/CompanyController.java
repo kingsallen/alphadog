@@ -618,6 +618,30 @@ public class CompanyController {
         }
     }
 
+    /*
+       修改hr_company_conf
+   */
+    @RequestMapping(value = "/api/hrcompany/conf/status", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String updateCompanyConfStatus(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            String company_id=String.valueOf(data.get("company_id"));
+            String status=String.valueOf(data.get("status"));
+            if(StringUtils.isNullOrEmpty(status)){
+                ResponseLogNotification.fail(request,"人才库状态不可以为空");
+            }
+            if(StringUtils.isNullOrEmpty(company_id)){
+                ResponseLogNotification.fail(request,"公司编号不可以为空");
+            }
+            Response result = companyServices.updateHrCompanyConfStatus(Integer.parseInt(status), Integer.parseInt(company_id));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     /**
      *
      * @param request
