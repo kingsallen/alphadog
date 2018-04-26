@@ -314,7 +314,7 @@ public class TalentpoolEmailService {
         return 0;
     }
 
-    private List<TalentEmailInviteToDelivyInfo> getInviteToDelivyInfoList(List<Integer> positionIdList,int companyId,String context){
+    private List<TalentEmailInviteToDelivyInfo> getInviteToDelivyInfoList(List<Integer> positionIdList,int companyId,String context) throws TException {
         List<JobPositionRecord> positionList=this.getPositionList(positionIdList);
         HrCompanyRecord record=this.getCompanyInfo(companyId);
         HrWxWechatRecord wechatRecord=getWxInfo(companyId);
@@ -325,7 +325,10 @@ public class TalentpoolEmailService {
             if(StringUtils.isEmptyMap(publisherCompany)){
                 return null;
             }
+            List<Integer> teamIdList=this.getTeamIdList(positionList);
+            Map<Integer,String> positionPic=this.getPositionPicture(teamIdList,positionList,record);
             for(JobPositionRecord jobPositionRecord:positionList){
+                int i=1;
                 TalentEmailInviteToDelivyInfo info=new TalentEmailInviteToDelivyInfo();
                 int publisher=jobPositionRecord.getPublisher();
                 info.setCompanyAbbr(record.getAbbreviation());
@@ -334,7 +337,7 @@ public class TalentpoolEmailService {
                 info.setPositionNum(positionIdList.size()+"");
                 info.setOfficialAccountName(wechatRecord.getName());
                 info.setWeixinQrcode(wechatRecord.getQrcode());
-                info.setSeeMorePosition("");
+                info.setSeeMorePosition(null);
                 PositionInfo positionInfo=new  PositionInfo();
                 for(Integer key:publisherCompany.keySet()){
                     if(key==publisher){
@@ -345,11 +348,15 @@ public class TalentpoolEmailService {
                     }
 
                 }
+                positionInfo.setRow(i+"");
                 positionInfo.setWorkYear(jobPositionRecord.getExperience());
-                positionInfo.setPositionBg("");
+                positionInfo.setPositionBg(positionPic.get(jobPositionRecord.getId()));
+                info.setPositions(positionInfo);
+                i++;
 
+                list.add(info);
             }
-
+            return list;
         }
         return null;
     }
@@ -368,7 +375,7 @@ public class TalentpoolEmailService {
          }
          return teamIdList;
     }
-    private Map<Integer,String> getPositionPicture(List<Integer> teamIdList,List<Integer> positionIdList,HrCompanyRecord record) throws TException {
+    private Map<Integer,String> getPositionPicture(List<Integer> teamIdList,List<JobPositionRecord> positionList,HrCompanyRecord record) throws TException {
         if(StringUtils.isEmptyList(teamIdList)){
             return null;
         }
@@ -377,22 +384,32 @@ public class TalentpoolEmailService {
         DictIndustryRecord dictIndustryRecord=this.getIndustryInfo(record.getIndustry());
         DictIndustryTypeRecord dictIndustryTypeRecord=this.getIndustryTypeInfo(dictIndustryRecord.getType());
         if(StringUtils.isEmptyList(list)){
-            for(Integer positionId:positionIdList){
-                result.put(positionId,dictIndustryTypeRecord.getJobImg());
+            for(JobPositionRecord jobPositionRecord:positionList){
+                result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
             }
         }else{
-            for(Integer positionId:positionIdList){
+            for(JobPositionRecord jobPositionRecord:positionList){
+                int teamId=jobPositionRecord.getTeamId();
                 int flag=0;
-                for(Map<String,Object> map:list){
-
+                if(teamId!=0){
+                    for(Map<String,Object> map:list){
+                        Integer configId=(Integer) map.get("configId");
+                        if(teamId==configId){
+                            if(map.get("imgUrl")!=null){
+                                result.put(jobPositionRecord.getId(), (String)map.get("imgUrl"));
+                            }
+                            break;
+                        }
+                    }
                 }
+
                 if(flag==0){
-                    result.put(positionId,dictIndustryTypeRecord.getJobImg());
+                    result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
                 }
 
             }
         }
-        return null;
+        return result;
     }
 
     private DictIndustryRecord getIndustryInfo(String name){
