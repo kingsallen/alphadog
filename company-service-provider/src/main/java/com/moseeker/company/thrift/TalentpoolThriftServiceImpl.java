@@ -10,6 +10,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.bean.TalentTagPOJO;
 import com.moseeker.company.exception.ExceptionFactory;
@@ -61,7 +62,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return result;
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -71,7 +72,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getAllTalentComment(hr_id,company_id,user_id,page_number,page_size);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -87,7 +88,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             }
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -97,8 +98,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.batchAddTalent(hr_id,ConvertListToSet(user_ids),company_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }    }
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 
     @Override
     public Response batchCancelTalent(int hr_id, List<Integer> user_ids, int company_id) throws BIZException, TException {
@@ -106,8 +108,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.batchCancelTalent(hr_id,ConvertListToSet(user_ids),company_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }    }
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 
     @Override
     public Response hrAddTag(int hr_id, int company_id, String name) throws BIZException, TException {
@@ -115,8 +118,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.addHrTag(hr_id,company_id,name);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }    }
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 
     @Override
     public Response hrDelTag(int hr_id, int company_id, int tag_id) throws BIZException, TException {
@@ -124,7 +128,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.deleteHrTag(hr_id,company_id,tag_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -134,7 +138,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.updateHrTag(hr_id,company_id,tag_id,name);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -144,7 +148,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.batchCancelTalentTag(hr_id,ConvertListToSet(user_ids),ConvertListToSet(tag_ids),company_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -154,7 +158,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.addBatchTalentTag(hr_id,ConvertListToSet(user_ids),ConvertListToSet(tag_ids),company_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -164,8 +168,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.addTalentComment(hr_id,company_id,user_id,content);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }    }
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 
 
     @Override
@@ -174,7 +179,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.delTalentComment(hr_id,company_id,comment_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -184,8 +189,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.AddbatchPublicTalent(hr_id,company_id,ConvertListToSet(user_ids));
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }    }
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 
     @Override
     public Response batchCancelPublicTalent(int hr_id, int company_id, List<Integer> user_ids) throws BIZException, TException {
@@ -193,8 +199,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.cancelBatchPublicTalent(hr_id,company_id,ConvertListToSet(user_ids));
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }    }
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 
     @Override
     public Response getCompanyPulicTalent(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
@@ -202,7 +209,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getCompanyPublic(hr_id,company_id,page_number,page_size);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -212,7 +219,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.addNewBatchTalentTag(hr_id,ConvertListToSet(user_ids),ConvertListToSet(tag_ids),company_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -222,7 +229,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getTalentState(hr_id,company_id,type);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -232,7 +239,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getCompanyUserPublic(hr_id,company_id,user_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -242,7 +249,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getCompanyTalent(hr_id,company_id,user_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -252,7 +259,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getHrUserTag(hr_id,company_id,user_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -262,7 +269,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getUserOrigin(hr_id,company_id,user_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -272,7 +279,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getPublicAndHrTalentByUserIdList(hr_id,company_id,this.ConvertListToSet(user_ids));
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -284,7 +291,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return ResponseUtils.successWithoutStringify(res);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
 
     }
@@ -299,7 +306,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return ResponseUtils.success(result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -309,7 +316,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getCompanyTagList(hr_id,company_id,page_number, page_size);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -324,7 +331,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return ResponseUtils.successWithoutStringify(res);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -334,7 +341,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             talentPoolService.handlerProfileCompanyTag(userid_list,company_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -344,7 +351,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getTalentCountByPositionFilter(hr_id,company_id,position_id);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -354,7 +361,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentpoolEmailService.getCompanyEmailBalance(hr_id, company_id);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -364,7 +371,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentpoolEmailService.getCompanyEmailTemlateList(hr_id, company_id);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -374,7 +381,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentpoolEmailService.getCompanyEmailTemlateInfo(hr_id, company_id, type);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -384,7 +391,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentpoolEmailService.updateEmailInfo(hr_id, company_id, type, disable, context, inscribe);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -398,12 +405,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
                 throw ExceptionConvertUtil.convertCommonException(CommonException.PROGRAM_FETCH_TOO_MUCH);
             }
             return talentpoolEmailService.fetchEmailAccounts(companyId, companyName, pageNumber, pageSize);
-        } catch (CommonException e) {
-            logger.error(e.getMessage(),e);
-            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -433,7 +437,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             DateTime endDateTime = null;
             if (StringUtils.isNotBlank(endDate)) {
                 try {
-                    endDateTime = DateTime.parse(endDate);
+                    endDateTime = DateTime.parse(endDate).plusDays(1);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                     throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("结束时间格式不正确！"));
@@ -443,12 +447,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
                 throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("开始时间必须要小于结束时间！"));
             }
             return talentpoolEmailService.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize, startDateTime, endDateTime);
-        } catch (CommonException e) {
-            logger.error(e.getMessage(),e);
-            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -459,12 +460,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
                 throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("参数无效！"));
             }
             return talentpoolEmailService.rechargeEmailAccount(companyId, lost);
-        } catch (CommonException e) {
-            logger.error(e.getMessage(),e);
-            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -475,12 +473,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
                 throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("参数无效！"));
             }
             talentpoolEmailService.updateEmailAccountRecharge(id, lost);
-        } catch (CommonException e) {
-            logger.error(e.getMessage(),e);
-            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -490,7 +485,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
              talentPoolService.addAllTalent(hrId,params,companyId);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -500,7 +495,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             talentPoolService.addAllTalentTag(params,tagList,companyId,hrId);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -510,7 +505,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             talentPoolService.addAllTalentPublic(params,companyId,hrId);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -520,7 +515,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             talentPoolService.addAllTalentPrivate(params,companyId,hrId);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -530,7 +525,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             talentPoolService.cancleAllTalent(hrId,params,companyId);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -540,7 +535,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentpoolEmailService.updateEmailInfoBalance(company_id,balance);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -550,7 +545,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getProfileFilterList(hr_id,company_id,page_number, page_size);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -560,7 +555,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.handerProfileFilters(hr_id, company_id, disable, filter_ids);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -570,7 +565,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.getProfileFilterInfo(hr_id, company_id, filter_id);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -580,7 +575,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.addProfileFilter(companyTagDO, actionForm, positionIdList, hr_id, position_total);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -590,7 +585,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.updateProfileFilter(companyTagDO, actionForm, positionIdList, hr_id, position_total);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -601,7 +596,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.deleteCompanyTags(hr_id,company_id,company_tag_ids);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -633,7 +628,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             }
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -643,7 +638,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.addCompanyTag(companyTagDO, hr_id);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -653,7 +648,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.updateCompanyTag(companyTagDO, hr_id);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
