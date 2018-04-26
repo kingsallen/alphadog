@@ -208,7 +208,7 @@ public class PositionBS {
 
             //验证是否有正在绑定的第三方职位
             if(positionSyncHandler.containsAlreadySyncThirdPosition(avaliableAccount.getId(),moseekerJobPosition.getId(),alreadySyncPosition)){
-                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_BINDING_IN_DATABASE.getMessage()));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_SYNCING_IN_DATABASE.getMessage()));
                 continue;
             }
 
