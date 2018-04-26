@@ -398,8 +398,10 @@ public class TalentpoolEmailService {
                 if (balanceFlag) {
                     List<InviteToDelivyUserInfo> userInfo = this.talentEmailInviteInfoSearch(userIdList);
                     EmailInviteBean emailDate = this.handlerData(positionIdList, companyId, talentpoolEmailRecord.getContext(), userInfo, record, hrId,positionFlag);
-                    MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
-                    mqService.sendMandrilEmailList(struct);
+                    if(emailDate!=null) {
+                        MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
+                        mqService.sendMandrilEmailList(struct);
+                    }
                 }else{
                     return TalentEmailEnum.NOBALANCE.getValue();
                 }
@@ -488,8 +490,11 @@ public class TalentpoolEmailService {
             try {
                 List<InviteToDelivyUserInfo> userInfo = this.talentEmailInviteInfoSearch(params);
                 EmailInviteBean emailDate = this.handlerData(positionIdList, companyId,context , userInfo, record, hrId, flag);
-                MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
-                mqService.sendMandrilEmailList(struct);
+                if(emailDate!=null){
+                    MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
+                    mqService.sendMandrilEmailList(struct);
+                }
+
             }catch(Exception e){
                 logger.error(e.getMessage(),e);
             }
@@ -504,8 +509,10 @@ public class TalentpoolEmailService {
             try {
                 List<InviteToDelivyUserInfo> userInfo = this.talentEmailInviteInfoSearch(params,i,300);
                 EmailInviteBean emailDate = this.handlerData(positionIdList, companyId,context , userInfo, record, hrId,0);
-                MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
-                mqService.sendMandrilEmailList(struct);
+                if(emailDate!=null) {
+                    MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
+                    mqService.sendMandrilEmailList(struct);
+                }
             }catch(Exception e){
                 logger.error(e.getMessage(),e);
             }
