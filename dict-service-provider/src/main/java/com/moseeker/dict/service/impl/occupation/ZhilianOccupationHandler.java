@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ZhilianOccupationHandler extends AbstractOccupationHandler<DictZhilianOccupationDO> {
+public class ZhilianOccupationHandler extends DefaultOccupationHandler<DictZhilianOccupationDO> {
 
     @Override
     public ChannelType getChannelType() {
