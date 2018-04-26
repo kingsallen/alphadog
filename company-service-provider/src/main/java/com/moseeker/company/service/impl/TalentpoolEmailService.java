@@ -28,6 +28,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.constants.DegreeConvertUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.company.bean.email.*;
 import com.moseeker.entity.Constant.EmailAccountConsumptionType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -37,6 +38,7 @@ import com.moseeker.company.bean.*;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.entity.exception.TalentPoolException;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -293,7 +295,7 @@ public class TalentpoolEmailService {
         TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId);
         boolean flag=this.validateSendEmail(hrCompanyEmailInfoRecord,talentpoolEmailRecord);
         if(flag){
-
+            HrCompanyRecord record=this.getCompanyInfo(companyId);
         }else{
             return TalentEmailEnum.NOCONFIGEMAIL.getValue();
         }
@@ -314,9 +316,49 @@ public class TalentpoolEmailService {
         return 0;
     }
 
-    private List<TalentEmailInviteToDelivyInfo> getInviteToDelivyInfoList(List<Integer> positionIdList,int companyId,String context) throws TException {
+    private EmailInviteBean handlerData(List<Integer> positionIdList,int companyId,String context,List<InviteToDelivyUserInfo> userInfoList,HrCompanyRecord record){
+        try{
+            EmailInviteBean result=new EmailInviteBean();
+            List<TalentEmailInviteToDelivyInfo> infoList=this.getInviteToDelivyInfoList(positionIdList,companyId,context,record);
+            if(StringUtils.isEmptyList(infoList)||StringUtils.isEmptyList(userInfoList)){
+                return null;
+            }
+            List<TalentEmailInviteToDelivyInfo> mergeVars=new ArrayList<>();
+            List<ReceiveInfo> receiveInfos=new ArrayList<>();
+            for(InviteToDelivyUserInfo userInfo:userInfoList){
+                String name=userInfo.getName();
+                String email=userInfo.getEmail();
+                int userId=userInfo.getUserId();
+                if(StringUtils.isNotNullOrEmpty(email)){
+                    ReceiveInfo receiveInfo=new ReceiveInfo();
+                    receiveInfo.setToName(name);
+                    receiveInfo.setToEmail(email);
+                    for(TalentEmailInviteToDelivyInfo info:infoList){
+                        info.setEmployeeName(name);
+                        info.setRcpt(email);
+                        mergeVars.add(info);
+                    }
+                }
+            }
+            if(StringUtils.isEmptyList(mergeVars)||StringUtils.isEmptyList(receiveInfos)){
+                return null;
+            }
+            result.setMergeVars(mergeVars);
+            result.setTemplateName("invite-to-delivy");
+            result.setTo(receiveInfos);
+            result.setFromName(record.getAbbreviation()+"人才招聘团队");
+            result.setFromEmail("info@moseeker.net");
+            result.setSubject(record.getAbbreviation()+"邀请您投递职位");
+            return result;
+
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
+        return null;
+    }
+
+    private List<TalentEmailInviteToDelivyInfo> getInviteToDelivyInfoList(List<Integer> positionIdList,int companyId,String context, HrCompanyRecord record) throws TException {
         List<JobPositionRecord> positionList=this.getPositionList(positionIdList);
-        HrCompanyRecord record=this.getCompanyInfo(companyId);
         HrWxWechatRecord wechatRecord=getWxInfo(companyId);
         if(!StringUtils.isEmptyList(positionList)){
             List<TalentEmailInviteToDelivyInfo> list=new ArrayList<>();
@@ -346,7 +388,6 @@ public class TalentpoolEmailService {
                         positionInfo.setCompanyAddr(hrCompanyRecord.getAddress());
                         break;
                     }
-
                 }
                 positionInfo.setRow(i+"");
                 positionInfo.setWorkYear(jobPositionRecord.getExperience());
@@ -375,6 +416,7 @@ public class TalentpoolEmailService {
          }
          return teamIdList;
     }
+    //注意验证公司是否开启，一会补上
     private Map<Integer,String> getPositionPicture(List<Integer> teamIdList,List<JobPositionRecord> positionList,HrCompanyRecord record) throws TException {
         if(StringUtils.isEmptyList(teamIdList)){
             return null;
@@ -486,6 +528,7 @@ public class TalentpoolEmailService {
         }
         return publisherList;
     }
+
     /*
      发送部分转发邮件
      */
@@ -503,7 +546,7 @@ public class TalentpoolEmailService {
                 if(!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(),lost)){
                    return TalentEmailEnum.NOBALANCE.getValue();
                 }
-                List<MandrillEmailStruct> emailList=this.convertResumeEmailData(employeeList,userIdList,companyId,talentpoolEmailRecord.getContext(),hrId);
+                EmailResumeBean emailList=this.convertResumeEmailData(employeeList,userIdList,companyId,talentpoolEmailRecord.getContext(),hrId);
                 updateEmailInfoBalance(companyId,lost);
             }else{
                 return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
@@ -538,7 +581,7 @@ public class TalentpoolEmailService {
                         for(int i=1;i<=totalPage;i++){
                             params.put("page_size",300+"");
                             params.put("page_number",(i-1)+"");
-                            List<MandrillEmailStruct> emailList=this.convertResumeEmailData(employeeList,params,companyId,talentpoolEmailRecord.getContext(),hrId);
+                            EmailResumeBean emailList=this.convertResumeEmailData(employeeList,params,companyId,talentpoolEmailRecord.getContext(),hrId);
                             updateEmailInfoBalance(companyId,lost);
                             //
                         }
@@ -558,48 +601,44 @@ public class TalentpoolEmailService {
     /*
      全选批量查询简历
      */
-    private List<MandrillEmailStruct> convertResumeEmailData(List<UserEmployeeDO> employeeList,Map<String,String> params,int companyId,String context,int hrId){
+    private EmailResumeBean convertResumeEmailData(List<UserEmployeeDO> employeeList,Map<String,String> params,int companyId,String context,int hrId){
         List<TalentEmailForwardsResumeInfo> dataInfo=this.handlerData(params,companyId,context,hrId);
-        List<MandrillEmailStruct> list=this.convertResumeEmailData(dataInfo,employeeList,context);
-        return list;
+        EmailResumeBean result=this.convertResumeEmailData(dataInfo,employeeList,context);
+        return result;
     }
     /*
     根据user-id查询简历组装发送数据
      */
-    private List<MandrillEmailStruct> convertResumeEmailData(List<UserEmployeeDO> employeeList,List<Integer>userIdList,int companyId,String context,int hrId){
+    private EmailResumeBean convertResumeEmailData(List<UserEmployeeDO> employeeList,List<Integer>userIdList,int companyId,String context,int hrId){
         List<TalentEmailForwardsResumeInfo> dataInfo=this.handlerData(userIdList,companyId,context,hrId);
-        List<MandrillEmailStruct> list=this.convertResumeEmailData(dataInfo,employeeList,context);
-        return list;
+        EmailResumeBean result=this.convertResumeEmailData(dataInfo,employeeList,context);
+        return result;
     }
     /*
      组装数据为邮件所需数据
      */
-    private List<MandrillEmailStruct> convertResumeEmailData(List<TalentEmailForwardsResumeInfo> dataInfo,List<UserEmployeeDO> employeeList,String context){
-        List<MandrillEmailStruct> result=new ArrayList<>();
+    private EmailResumeBean convertResumeEmailData(List<TalentEmailForwardsResumeInfo> dataInfo,List<UserEmployeeDO> employeeList,String context){
+        EmailResumeBean result=new EmailResumeBean();
         if(StringUtils.isEmptyList(employeeList)){
             return null;
         }
         if(StringUtils.isEmptyList(dataInfo)){
             return null;
         }
+        List<TalentEmailForwardsResumeInfo> resumeInfoList=new ArrayList<>();
+        List<ReceiveInfo> receiveInfos=new ArrayList<>();
         for(UserEmployeeDO DO:employeeList){
             String email=DO.getEmail();
             String name=DO.getCfname()+DO.getCname();
             for(TalentEmailForwardsResumeInfo info:dataInfo){
-                MandrillEmailStruct struct=new MandrillEmailStruct();
                 info.setCoworkerName(name);
-                struct.setTo_name(name);
-                struct.setFrom_email("info@moseeker.net");
-                struct.setFrom_name(info.getCompanyAbbr()+"人才招聘团队");
-                struct.setTo_email(email);
                 String subject=info.getCompanyAbbr()+"请您评审简历"+info.getPositionName()+"-"+info.getUserName();
                 if(info.getWorkexps()!=null){
                     subject=subject+"-"+info.getWorkexps().getWorkCompany();
                 }
-                struct.setSubject(subject);
-                struct.setTemplateName("forwards-resume");
-                struct.setMergeVars(convertToEmailMergeVars(info));
-                result.add(struct);
+
+                context= CommonUtils.replaceUtil(context,info.getCompanyAbbr(),info.getPositionName(),info.getUserName(),null,info.getOfficialAccountName());
+                info.setCustomText(context);
             }
 
         }
@@ -713,6 +752,72 @@ public class TalentpoolEmailService {
 
         }
         return null;
+    }
+    /*
+     获取邀请投递邮件的信息
+     */
+    private List<InviteToDelivyUserInfo> talentEmailInviteInfoSearch(List<Integer>UserIdList){
+        try{
+            Response res=searchService.userQueryById(UserIdList);
+            if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
+                Map<String,Object> data= JSON.parseObject(res.getData());
+                List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
+                return result;
+            }
+        }catch(Exception e){
+
+        }
+        return null;
+    }
+    private List<InviteToDelivyUserInfo> talentEmailInviteInfoSearch(Map<String,String> params){
+        try{
+            Response res=searchService.userQuery(params);
+            if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
+                Map<String,Object> data= JSON.parseObject(res.getData());
+                List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
+                return result;
+            }
+        }catch(Exception e){
+
+        }
+        return null;
+    }
+
+    private List<InviteToDelivyUserInfo> convertInviteData(Map<String,Object> result){
+        List<InviteToDelivyUserInfo> list=new ArrayList<>();
+        if(!StringUtils.isEmptyMap(result)){
+            long totalNum=(long)result.get("totalNum");
+            if(totalNum>0){
+                List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
+                for(Map<String,Object> map:dataList){
+                    InviteToDelivyUserInfo info=new InviteToDelivyUserInfo();
+                    if(map!=null&&!map.isEmpty()){
+                        Map<String,Object> userMap=(Map<String,Object>)map.get("user");
+                        if(userMap!=null&&!userMap.isEmpty()){
+                            Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
+                            logger.info(JSON.toJSONString(profiles));
+                            if(profiles!=null&&!profiles.isEmpty()){
+                                Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
+                                if(profile!=null&&!profile.isEmpty()){
+                                    int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
+                                    info.setUserId(userId);
+                                }
+                                Map<String,Object> basic=(Map<String,Object>)profiles.get("basic");
+                                if(!StringUtils.isEmptyMap(basic)){
+                                    String name=(String)profile.get("name");
+                                    String email=(String)profile.get("email");
+                                    info.setEmail(email);
+                                }
+
+                                list.add(info);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     /*
