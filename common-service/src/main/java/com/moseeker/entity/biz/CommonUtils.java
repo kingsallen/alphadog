@@ -39,21 +39,19 @@ public class CommonUtils {
         return logo;
     }
 
-    public static String data="user_id=2195888&company_id=39978&hr_id=82690&timestamp=1524900628000";
-
     public static String publicKeyString="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOVnJuXqof6f0PYGO2pDvyfEURBgt22ZYeXeDRnYko6DIWP3AYsaGevIfcfoZan8DBisvZih1hLto2ct7ylMh+sgg2cpZrp3tCIlS3uV9WHGsx7uUbw6XEycUlHV4aSzBM4xzQd5wx7OMibkpIgJZ2KzN+r/XeKZ3cr9qifSqcIQIDAQAB";
     public static String privateKeyString="MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAM5Wcm5eqh/p/Q9gY7akO/J8RREGC3bZlh5d4NGdiSjoMhY/cBixoZ68h9x+hlqfwMGKy9mKHWEu2jZy3vKUyH6yCDZylmune0IiVLe5X1YcazHu5RvDpcTJxSUdXhpLMEzjHNB3nDHs4yJuSkiAlnYrM36v9d4pndyv2qJ9KpwhAgMBAAECgYBrcI4DNF2nYoJ3mDwzpQ7l85lPBPPBPgkx5LYkz7/UwhsahIvM/+llK0wfHu68j4SiArCkpIspyGitg2DdtWUzyz5k3RH5zOa6EYIbhx8vTlDn4pYTOhrrhwNgaCFAypSfwx+hdE+mnUYZrRMBEZHBOcmYNPJ134JY8kBKpLMNhQJBAPl6PJyJ0MZ2pHieOqpvAZnqaLbBSytuhpF/WoA5bzSXlgWXWUiNdmVWOXxnuDNlTJ/wwNsOWCdvIXkWvs9C77MCQQDTu3lGFTIQdpGkq5h35D3QH3iCynoW8XD2c8gzszYRha36QBtW3nV0mG7hmdcAgnf6pEmzAZBNH8qvivs0gzrbAkEAuO96Wvh2wYhVp+xzxMABSd3QvhlP5eRK8TSdHAx3eV8doQtu7i+fosNmXehtTfw77xyDel+JzcG96IuJ6w7NrQJASM+ad8BINCMiGJet2eTSYOTBo3CPpZ4ns4jDWwwQ1tu6pWkwPaJIj+zvjINDzXgQXE/szDMIdY0uPUm08y0BqwJADikGOxIE3LFn50EG2Da4FHBTtSpgRApmq/2H6yFFHpoak2szyaLZw2BxJXTq7fci+8OwYbPq9YwOWfxS3RmrGQ==";
 
-    public static String encrypt(String info) throws Exception {
+    public static String encryptString(String info) throws Exception {
         //获取公钥
         PublicKey publicKey = getPublicKey(publicKeyString);
         //公钥加密
-        byte[] encryptedBytes = encrypt(data.getBytes(), publicKey);
+        byte[] encryptedBytes = encrypt(info.getBytes(), publicKey);
         String s= new String(Base64.getEncoder().encode(encryptedBytes));
         return s;
     }
 
-    public static String decrypt(String token) throws Exception {
+    public static String stringDecrypt(String token) throws Exception {
         //获取私钥
         PrivateKey privateKey = getPrivateKey(privateKeyString);
 

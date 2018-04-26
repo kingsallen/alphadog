@@ -612,4 +612,21 @@ public class ProfileController {
             // do nothing
         }
     }
+
+    /*
+      扣除邮件点数
+    */
+    @RequestMapping(value = "/api/profile/token/ecrypt", method = RequestMethod.POST)
+    @ResponseBody
+    public String getProfileTokenEcrypt(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            String token=(String)params.get("token");
+            Response result=service.getProfileTokenEcrypt(token);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }
