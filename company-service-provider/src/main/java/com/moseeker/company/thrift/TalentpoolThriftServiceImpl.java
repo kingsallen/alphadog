@@ -431,7 +431,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
                 }
             }
             DateTime endDateTime = null;
-            if (StringUtils.isNotBlank(startDate)) {
+            if (StringUtils.isNotBlank(endDate)) {
                 try {
                     endDateTime = DateTime.parse(endDate);
                 } catch (Exception e) {
