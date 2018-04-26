@@ -29,5 +29,5 @@ public class DictCarnocOccupationDao extends DefaultDictOccupationDao<DictCarnoc
     public ChannelType getChannelType() {
         return ChannelType.CARNOC;
     }
-    
+
 }
