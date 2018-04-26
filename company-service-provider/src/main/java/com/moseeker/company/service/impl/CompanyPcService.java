@@ -245,48 +245,58 @@ public class CompanyPcService {
         oldStatus = confDO.getTalentpoolStatus();
         confDO.setTalentpoolStatus((byte)status);
         int result = hrCompanyConfDao.updateData(confDO);
-        HrCompanyEmailInfoRecord infoRecord = emailInfoDao.getHrCompanyEmailInfoRecordByCompanyId(company_id);
-        if(result > 0 && status == 2 && oldStatus!=2){
-            Integer[] configIds = Constant.TALENTPOOL_EMAIL_SWITCH_ID;
-            List<Integer> configIdList = Arrays.asList(configIds);
-            List<ConfigSysTemplateMessageLibraryDO> libraryDOList = libraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(configIdList, 0);
-            List<TalentpoolEmailRecord> recordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
-            if(libraryDOList != null && libraryDOList.size()>0){
-                for (ConfigSysTemplateMessageLibraryDO libraryDO : libraryDOList){
-                    boolean bool = false;
-                    if(recordList != null && recordList.size()>0){
-                        for(TalentpoolEmailRecord record : recordList){
-                            if(record.getConfigId() == libraryDO.getId()){
-                                record.setDisable(libraryDO.getDisplay());
-                                talentpoolEmailDao.updateRecord(record);
-                                bool = true;
+        if(result >0) {
+            HrCompanyEmailInfoRecord infoRecord = emailInfoDao.getHrCompanyEmailInfoRecordByCompanyId(company_id);
+            if (infoRecord == null){
+                infoRecord = new HrCompanyEmailInfoRecord();
+                infoRecord.setCompanyId(company_id);
+            }
+            //开启智能人才库
+            if (status == 2 && oldStatus != 2) {
+                Integer[] configIds = Constant.TALENTPOOL_EMAIL_SWITCH_ID;
+                List<Integer> configIdList = Arrays.asList(configIds);
+                List<ConfigSysTemplateMessageLibraryDO> libraryDOList = libraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(configIdList, 0);
+                List<TalentpoolEmailRecord> recordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
+                if (libraryDOList != null && libraryDOList.size() > 0) {
+                    for (ConfigSysTemplateMessageLibraryDO libraryDO : libraryDOList) {
+                        boolean bool = false;
+                        if (recordList != null && recordList.size() > 0) {
+                            for (TalentpoolEmailRecord record : recordList) {
+                                if (record.getConfigId() == libraryDO.getId()) {
+                                    record.setDisable(libraryDO.getDisplay());
+                                    talentpoolEmailDao.updateRecord(record);
+                                    bool = true;
+                                }
                             }
                         }
-                    }
-                    if(!bool){
-                        TalentpoolEmailRecord emailRecord = new TalentpoolEmailRecord();
-                        emailRecord.setDisable(libraryDO.getDisplay());
-                        emailRecord.setConfigId(libraryDO.getId());
-                        emailRecord.setContext(libraryDO.getFirst());
-                        emailRecord.setInscribe(libraryDO.getRemark());
-                        emailRecord.setCompanyId(company_id);
-                        talentpoolEmailDao.addRecord(emailRecord);
+                        if (!bool) {
+                            TalentpoolEmailRecord emailRecord = new TalentpoolEmailRecord();
+                            emailRecord.setDisable(libraryDO.getDisplay());
+                            emailRecord.setConfigId(libraryDO.getId());
+                            emailRecord.setContext(libraryDO.getFirst());
+                            emailRecord.setInscribe(libraryDO.getRemark());
+                            emailRecord.setCompanyId(company_id);
+                            talentpoolEmailDao.addRecord(emailRecord);
+                        }
                     }
                 }
-            }
-            infoRecord.setDisable((byte)0);
-            emailInfoDao.updateRecord(infoRecord);
-
-        }else if(result > 0 && status != 2 && oldStatus==2){
-            List<TalentpoolEmailRecord> recordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
-            if(recordList != null && recordList.size()>0){
-                for(TalentpoolEmailRecord record : recordList){
-                    record.setDisable(2);
-                    talentpoolEmailDao.updateRecord(record);
+                infoRecord.setDisable((byte) 0);
+            //关闭智能人才库
+            } else if (result > 0 && status != 2 && oldStatus == 2) {
+                List<TalentpoolEmailRecord> recordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
+                if (recordList != null && recordList.size() > 0) {
+                    for (TalentpoolEmailRecord record : recordList) {
+                        record.setDisable(2);
+                        talentpoolEmailDao.updateRecord(record);
+                    }
                 }
+                infoRecord.setDisable((byte) 1);
             }
-            infoRecord.setDisable((byte)0);
-            emailInfoDao.updateRecord(infoRecord);
+            if(infoRecord.getId()>0){
+                emailInfoDao.updateRecord(infoRecord);
+            }else{
+                emailInfoDao.addRecord(infoRecord);
+            }
         }
         return  ResponseUtils.success("");
     }
