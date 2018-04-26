@@ -239,7 +239,14 @@ public class ProfileService {
         try {
             String info = CommonUtils.stringDecrypt(token);
             Map<String, String> params = new HashMap<>();
-            params.put("info", info);
+            String[] tokenInfo = info.split("&");
+            for (int i =0; i<tokenInfo.length ; i++){
+                String str = tokenInfo[i];
+                String[] strSplit = str.split("=");
+                if(strSplit!=null && strSplit.length==2){
+                    params.put(strSplit[0],strSplit[1]);
+                }
+            }
             return  ResponseUtils.success(params);
         } catch (Exception e) {
             logger.error("简历详情token解析失败：token：{}；e.getMessage:{}", token, e.getMessage());
