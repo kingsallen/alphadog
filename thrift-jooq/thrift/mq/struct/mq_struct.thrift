@@ -58,12 +58,11 @@ struct MandrillEmailStruct {
 
    struct MandrillEmailListStruct {
        1: 		string templateName,
-       2: 		string to_email,
-       3: optional string to_name,
-       4: optional	list<map<string,string>> mergeVars,
-       5: optional string from_email,
-       6: optional string from_name,
-       7: optional string subject
+       2: 		list<map<string,string>> to,
+       3: optional	list<map<string,string>> mergeVars,
+       4: optional string from_email,
+       5: optional string from_name,
+       6: optional string subject
 
    }
 

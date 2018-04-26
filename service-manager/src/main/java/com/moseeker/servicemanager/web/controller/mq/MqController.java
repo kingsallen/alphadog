@@ -130,21 +130,11 @@ public class MqController {
                 mandrillEmailStruct.setTemplateName(templateName);
             }
 
-            String to_email = (String)params.get("to_email");
-            if (StringUtils.isNotNullOrEmpty(to_email)){
-                mandrillEmailStruct.setTo_email(to_email);
-            }
+            List to = (List)params.get("to");
+            mandrillEmailStruct.setTo(to);
+            List strMergeVars = (List)params.get("mergeVars");
+                mandrillEmailStruct.setMergeVars(strMergeVars);
 
-            String to_name = (String)params.get("to_name");
-            if (StringUtils.isNotNullOrEmpty(to_name)){
-                mandrillEmailStruct.setTo_name(to_name);
-            }
-
-            String strMergeVars = (String)params.get("mergeVars");
-            if (StringUtils.isNotNullOrEmpty(strMergeVars)){
-                List mergeVars = JSON.parseObject(strMergeVars, ArrayList.class);
-                mandrillEmailStruct.setMergeVars(mergeVars);
-            }
             String subject = (String)params.get("subject");
             if (StringUtils.isNotNullOrEmpty(subject)){
                 mandrillEmailStruct.setSubject(subject);
