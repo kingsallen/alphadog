@@ -754,6 +754,12 @@ public class TalentpoolEmailService {
                         delivyInfo.setPositionNum(this.getPositionIdNum(companyId,hrId,count)+"");
                         String url=env.getProperty("talentpool.allposition")+this.getCompanyIds(count,companyId,hrId);
                         delivyInfo.setSeeMorePosition(url);
+                    }else{
+                        if(positionIdList.size()>10){
+                            delivyInfo.setPositionNum(this.getPositionIdNum(companyId,hrId,count)+"");
+                            String url=env.getProperty("talentpool.allposition")+this.getCompanyIds(count,companyId,hrId);
+                            delivyInfo.setSeeMorePosition(url);
+                        }
                     }
                     mergeVars.add(delivyInfo);
                 }
