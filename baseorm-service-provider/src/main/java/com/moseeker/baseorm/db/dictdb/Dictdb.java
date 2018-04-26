@@ -6,6 +6,7 @@ package com.moseeker.baseorm.db.dictdb;
 
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
+import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityPostcode;
@@ -48,7 +49,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 877714558;
+    private static final long serialVersionUID = -1443893512;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -69,6 +70,11 @@ public class Dictdb extends SchemaImpl {
      * dict_alipaycampus_jobcategory[alipay校园招聘-职位类别]
      */
     public final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
+
+    /**
+     * 民航招聘的职位职能表
+     */
+    public final DictCarnocOccupation DICT_CARNOC_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation.DICT_CARNOC_OCCUPATION;
 
     /**
      * 城市字典表
@@ -101,7 +107,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * 行业二级分类字典表
+     * The table <code>dictdb.dict_industry</code>.
      */
     public final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -178,6 +184,7 @@ public class Dictdb extends SchemaImpl {
             Dict_51jobOccupation.DICT_51JOB_OCCUPATION,
             DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
             DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY,
+            DictCarnocOccupation.DICT_CARNOC_OCCUPATION,
             DictCity.DICT_CITY,
             DictCityMap.DICT_CITY_MAP,
             DictCityPostcode.DICT_CITY_POSTCODE,
