@@ -162,7 +162,7 @@ public class PositionBS {
         positionSyncHandler.requireAvailablePostiion(moseekerJobPosition);
 
         if(positionSyncHandler.alreadyInRedis(moseekerJobPosition.getId())){
-            throw new BIZException(ResultMessage.AREADY_BINDING_IN_REDIS.getStatus(),ResultMessage.AREADY_BINDING_IN_REDIS.getMessage());
+            throw new BIZException(ResultMessage.AREADY_SYNCING_IN_REDIS.getStatus(),ResultMessage.AREADY_SYNCING_IN_REDIS.getMessage());
         }
 
         // 返回结果
