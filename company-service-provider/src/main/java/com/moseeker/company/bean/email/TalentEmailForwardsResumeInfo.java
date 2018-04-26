@@ -1,4 +1,7 @@
-package com.moseeker.company.bean;
+package com.moseeker.company.bean.email;
+
+import com.moseeker.company.bean.TalentWorkExpInfo;
+import com.moseeker.company.bean.email.TalentEducationInfo;
 
 /**
  * Created by zztaiwll on 18/4/24.
