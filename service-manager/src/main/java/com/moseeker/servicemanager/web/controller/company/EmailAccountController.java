@@ -41,7 +41,7 @@ public class EmailAccountController {
             return ResponseLogNotification.successJson(request, emailAccountForm);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
         }
     }
 
@@ -60,7 +60,7 @@ public class EmailAccountController {
             return ResponseLogNotification.successJson(request, emailAccountConsumptionForm);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
         }
     }
 
@@ -76,7 +76,7 @@ public class EmailAccountController {
             return ResponseLogNotification.successJson(request, id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
         }
     }
 
@@ -92,7 +92,7 @@ public class EmailAccountController {
             return ResponseLogNotification.successJson(request, null);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
         }
     }
 }
