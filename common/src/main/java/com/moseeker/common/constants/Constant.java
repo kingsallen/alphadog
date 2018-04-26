@@ -249,4 +249,6 @@ public final class Constant {
     public static final int TALENTPOOL_EMAIL_PROFILE_SEND = 69;
 
     public static final int RETRY_UPPER_LIMIT = 3;
+    //
+    public static final Integer[] TALENTPOOL_EMAIL_SWITCH_ID = {69,70,71,72,73};
 }

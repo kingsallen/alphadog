@@ -28,6 +28,13 @@ public class TalentpoolEmailDao extends JooqCrudImpl<com.moseeker.baseorm.db.tal
         return result;
     }
 
+    public List<TalentpoolEmailRecord> getTalentpoolEmailRecordByCompanyId(int company_id){
+        List<TalentpoolEmailRecord> result= create.selectFrom(TalentpoolEmail.TALENTPOOL_EMAIL)
+                .where(TalentpoolEmail.TALENTPOOL_EMAIL.COMPANY_ID.eq(company_id))
+                .fetch();
+        return result;
+    }
+
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail> getTalentpoolEmailByCompanyIdAndConfigId(int company_id, int config_id){
         List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail> result= create.selectFrom(TalentpoolEmail.TALENTPOOL_EMAIL)
                 .where(TalentpoolEmail.TALENTPOOL_EMAIL.COMPANY_ID.eq(company_id))

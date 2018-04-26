@@ -47,6 +47,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.entity.pojo.profile.*;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
@@ -55,6 +56,7 @@ import com.moseeker.profile.utils.DictCode;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
@@ -230,6 +232,25 @@ public class ProfileService {
             return ResponseUtils.success(datas);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+    }
+
+    public Response getProfileTokenEcrypt(String token) throws TException {
+        try {
+            String info = CommonUtils.stringDecrypt(token);
+            Map<String, String> params = new HashMap<>();
+            String[] tokenInfo = info.split("&");
+            for (int i =0; i<tokenInfo.length ; i++){
+                String str = tokenInfo[i];
+                String[] strSplit = str.split("=");
+                if(strSplit!=null && strSplit.length==2){
+                    params.put(strSplit[0],strSplit[1]);
+                }
+            }
+            return  ResponseUtils.success(params);
+        } catch (Exception e) {
+            logger.error("简历详情token解析失败：token：{}；e.getMessage:{}", token, e.getMessage());
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
     }
 

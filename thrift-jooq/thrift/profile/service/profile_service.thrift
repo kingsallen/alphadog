@@ -62,11 +62,13 @@ service ProfileServices {
     common_struct.Response getCompleteness(1:i32 user_id, 2: string uuid, 3: i32 profile_id);
     common_struct.Response reCalculateUserCompleteness(1:i32 userId, 2:string mobile);
     common_struct.Response reCalculateUserCompletenessBySettingId(1:i32 id);
+    common_struct.Response parseProfileAttachment(1:string fileName, 2:string file)throws (1: common_struct.BIZException e);
     common_struct.Response getProfileByApplication(1:profile_struct.ProfileApplicationForm profileForm);
     common_struct.Response resumeProfile(1:i32 uid,2:string fileName,3:string file)throws (1: common_struct.BIZException e);
     i32 upsertProfile(1:i32 userId, 2:string profile)throws (1: common_struct.BIZException e);
     common_struct.Response resumeTalentProfile(1:string fileName,2:string file,3: i32 companyId)throws (1: common_struct.BIZException e);
     list<profile_struct.UserProfile> fetchUserProfile(1: list<i32> userIdList) throws (1: common_struct.BIZException e);
+    common_struct.Response getProfileTokenEcrypt(1:string token);
 }
 
 service AttachmentServices {
