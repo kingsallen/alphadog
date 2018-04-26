@@ -1236,8 +1236,8 @@ public class TalentpoolController {
         }
     }
     /*
-           邀请投递简历
-         */
+      职位邀请投递
+     */
     @RequestMapping(value = "/api/position/application/invitation", method = RequestMethod.POST)
     @ResponseBody
     public String sendPositionInviteEmail(HttpServletRequest request) throws Exception {

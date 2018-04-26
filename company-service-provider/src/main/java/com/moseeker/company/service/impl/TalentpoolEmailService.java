@@ -43,6 +43,7 @@ import com.moseeker.company.bean.*;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.entity.UserWxEntity;
 import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.entity.exception.TalentPoolException;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -137,6 +138,9 @@ public class TalentpoolEmailService {
     MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
     private ThreadPool tp = ThreadPool.Instance;
+
+    @Autowired
+    private UserWxEntity userWxEntity;
 
     /**
      * 获取公司邮件剩余额度
@@ -531,7 +535,6 @@ public class TalentpoolEmailService {
         if(flag){
             try {
                 List<UserEmployeeDO> employeeList = this.getUserEmployeeList(idList);
-
                 if (!StringUtils.isEmptyList(employeeList)) {
                     int lost = userIdList.size() * employeeList.size();
                     if (!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(), lost)) {
@@ -1355,6 +1358,7 @@ public class TalentpoolEmailService {
         Query query=new Query.QueryBuilder().where(new Condition("id",idList.toArray(), ValueOp.IN))
                 .buildQuery();
         List<UserEmployeeDO> list=userEmployeeDao.getDatas(query);
+        list=userWxEntity.handlerData(list);
         return list;
 
     }
