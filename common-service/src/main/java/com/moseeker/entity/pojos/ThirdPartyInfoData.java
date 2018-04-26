@@ -15,6 +15,24 @@ public class ThirdPartyInfoData {
     private List<City> cities;
     private List<Address> addresses;
     private List<String> subsites;
+    private boolean has_company = false;
+    private boolean has_departments = false;
+
+    public boolean isHas_company() {
+        return has_company;
+    }
+
+    public void setHas_company(boolean has_company) {
+        this.has_company = has_company;
+    }
+
+    public boolean isHas_departments() {
+        return has_departments;
+    }
+
+    public void setHas_departments(boolean has_departments) {
+        this.has_departments = has_departments;
+    }
 
     public List<String> getSubsites() {
         return subsites;

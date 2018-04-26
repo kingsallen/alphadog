@@ -39,24 +39,4 @@ public abstract class AbstractTransferCheck<T> implements ITransferCheck<T> {
     public boolean containsError(T t, JobPositionDO moseekerPosition) {
         return !StringUtils.isEmptyList(getError(t,moseekerPosition));
     }
-
-    /*public List<String> popErrorMsg(JSONObject jsonForm){
-        T t = jsonForm.toJavaObject(getFormClass());
-
-        if(errorMsgMap.containsKey(t)){
-            List<String> result=errorMsgMap.get(t);
-            errorMsgMap.remove(t);
-            return result;
-        }
-        return Collections.emptyList();
-    }
-
-    protected List<String> putErrorMsg(T t,List<String> errorMsg){
-        if(errorMsgMap.containsKey(t)){
-            List<String> result=errorMsgMap.get(t);
-            errorMsgMap.put(t,errorMsg);
-            return result;
-        }
-        return Collections.emptyList();
-    }*/
 }

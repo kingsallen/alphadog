@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyCompanyChannelConf;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyZhilianPositionAddress;
 
 import javax.annotation.Generated;
 
@@ -74,4 +75,9 @@ public class Tables {
      * 最佳东方的第三方职位子表
      */
     public static final ThirdpartyVeryeastPosition THIRDPARTY_VERYEAST_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION;
+
+    /**
+     * 第三方职位地址表
+     */
+    public static final ThirdpartyZhilianPositionAddress THIRDPARTY_ZHILIAN_POSITION_ADDRESS = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyZhilianPositionAddress.THIRDPARTY_ZHILIAN_POSITION_ADDRESS;
 }

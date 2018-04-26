@@ -2,6 +2,7 @@ package com.moseeker.position.service.position.zhilian;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -11,13 +12,16 @@ import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.ExperienceChangeUtil;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.zhilian.pojo.PositionZhilian;
+import com.moseeker.position.service.position.zhilian.pojo.PositionZhilianForm;
 import com.moseeker.position.service.position.zhilian.pojo.PositionZhilianWithAccount;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyZhilianPositionAddressDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -27,15 +31,16 @@ import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdPartyPosition, PositionZhilianWithAccount, PositionZhilian, EmptyExtThirdPartyPosition> {
+public class ZhilianPositionTransfer extends AbstractPositionTransfer<PositionZhilianForm,PositionZhilianWithAccount,PositionZhilian,List<ThirdpartyZhilianPositionAddressDO>> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Override
-    public PositionZhilianWithAccount changeToThirdPartyPosition(ThirdPartyPosition positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
-        PositionZhilianWithAccount positionZhilianWithAccount = createAndInitAccountInfo(positionForm, positionDB, account);
+    public PositionZhilianWithAccount changeToThirdPartyPosition(PositionZhilianForm positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
+        PositionZhilianWithAccount positionZhilianWithAccount=createAndInitAccountInfo(positionForm,positionDB,account);
 
         PositionZhilian positionZhilian = createAndInitPositionInfo(positionForm, positionDB);
 
@@ -45,7 +50,7 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
     }
 
     @Override
-    protected PositionZhilianWithAccount createAndInitAccountInfo(ThirdPartyPosition positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) {
+    protected PositionZhilianWithAccount createAndInitAccountInfo(PositionZhilianForm positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) {
         PositionZhilianWithAccount position51WithAccount = new PositionZhilianWithAccount();
         position51WithAccount.setUser_name(account.getUsername());
         position51WithAccount.setPassword(account.getPassword());
@@ -63,14 +68,12 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
     }
 
     @Override
-    protected PositionZhilian createAndInitPositionInfo(ThirdPartyPosition positionForm, JobPositionDO positionDB) throws Exception {
+    protected PositionZhilian createAndInitPositionInfo(PositionZhilianForm positionForm, JobPositionDO positionDB) throws Exception {
         PositionZhilian positionZhilian = new PositionZhilian();
 
         positionZhilian.setTitle(positionDB.getTitle());
 
-        positionZhilian.setCities(getCities(positionDB));
-
-        positionZhilian.setAddress(positionForm.getAddressName());
+        setCities(positionForm,positionZhilian);
 
         positionZhilian.setOccupation(positionForm.getOccupation());
 
@@ -85,11 +88,13 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
         positionZhilian.setDescription(description);
 
         positionZhilian.setEmail(getEmail(positionDB));
-//        positionZhilian.setJob_id(positionInfo.getJob_id());
-        int quantity = getQuantity(positionForm.getCount(), (int) positionDB.getCount());
-        positionZhilian.setCount(quantity + "");
+
+        int quantity=getQuantity(positionForm.getCount(),(int)positionDB.getCount());
+        positionZhilian.setCount(quantity+"");
 
         positionZhilian.setCompany(positionForm.getCompanyName());
+
+        positionZhilian.setDepartment(positionForm.getDepartmentName());
 
         return positionZhilian;
     }
@@ -113,6 +118,33 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
         position.setWorkyears(ExperienceChangeUtil.getZhilianExperience(experience).getValue());
     }
 
+    protected void setCities(PositionZhilianForm positionForm, PositionZhilian position) {
+        if(StringUtils.isEmptyList(positionForm.getAddress())){
+            return;
+        }
+
+        // 查询出address里所有的cityCode对应的智联映射code
+        List<Integer> cityCodes = positionForm.getAddress().stream().map(a->a.getCityCode()).collect(Collectors.toList());
+        List<DictCityMapDO> otherCityCodes = cityMapDao.getOtherCityByCodes(getChannel(), cityCodes);
+        logger.info("setCities:otherCityCodes:{}", otherCityCodes);
+
+        List<PositionZhilian.City> cities = new ArrayList<>();
+        for(ThirdpartyZhilianPositionAddressDO address:positionForm.getAddress()){
+
+            // 设置映射城市code
+            Optional<DictCityMapDO> optional = otherCityCodes.stream().filter(m->m.getCode()==address.getCityCode()).findFirst();
+            if(!optional.isPresent()){
+                continue;
+            }
+            PositionZhilian.City city = new PositionZhilian.City();
+            city.setCode(optional.get().getCodeOther());
+
+            city.setAddress(address.getAddress());
+            cities.add(city);
+        }
+        position.setCities(cities);
+    }
+
 
     @Override
     public ChannelType getChannel() {
@@ -120,12 +152,12 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
     }
 
     @Override
-    public Class<ThirdPartyPosition> getFormClass() {
-        return ThirdPartyPosition.class;
+    public Class<PositionZhilianForm> getFormClass() {
+        return PositionZhilianForm.class;
     }
 
     @Override
-    public HrThirdPartyPositionDO toThirdPartyPosition(ThirdPartyPosition form, PositionZhilianWithAccount pwa) {
+    public HrThirdPartyPositionDO toThirdPartyPosition(PositionZhilianForm form,PositionZhilianWithAccount pwa) {
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
 
         PositionZhilian p = pwa.position_info;
@@ -134,7 +166,6 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
         data.setSyncTime(syncTime);
         data.setUpdateTime(syncTime);
 
-        data.setAddress(p.getAddress());
         data.setChannel(getChannel().getValue());
         data.setIsSynchronization((byte) PositionSync.binding.getValue());
         //将最后一个职能的Code存到数据库
@@ -149,28 +180,38 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<ThirdParty
 
         data.setCompanyId(form.getCompanyId());
         data.setCompanyName(form.getCompanyName());
-        data.setAddressId(form.getAddressId());
-        data.setAddressName(form.getAddressName());
         data.setCount(form.getCount());
 
-        logger.info("回写到第三方职位对象:{}", data);
+        data.setDepartmentId(form.getDepartmentId());
+        data.setDepartmentName(form.getDepartmentName());
+
+        logger.info("回写到第三方职位对象:{}",data);
         return data;
     }
 
-
     @Override
-    public EmptyExtThirdPartyPosition toExtThirdPartyPosition(ThirdPartyPosition form, PositionZhilianWithAccount positionZhilianWithAccount) {
-        return EmptyExtThirdPartyPosition.EMPTY;
+    public List<ThirdpartyZhilianPositionAddressDO> toExtThirdPartyPosition(PositionZhilianForm thirdPartyPosition, PositionZhilianWithAccount positionZhilianWithAccount) {
+        if(StringUtils.isEmptyList(thirdPartyPosition.getAddress())){
+            return Collections.emptyList();
+        }
+
+        return thirdPartyPosition.getAddress();
     }
 
     @Override
-    public EmptyExtThirdPartyPosition toExtThirdPartyPosition(Map<String, String> data) {
-        return EmptyExtThirdPartyPosition.EMPTY;
+    public List<ThirdpartyZhilianPositionAddressDO> toExtThirdPartyPosition(Map<String, String> data) {
+        TypeReference<List<ThirdpartyZhilianPositionAddressDO>> typeRef = new TypeReference<List<ThirdpartyZhilianPositionAddressDO>>(){};
+
+        String address = data.get("address");
+        if(StringUtils.isNullOrEmpty(address)){
+            return Collections.emptyList();
+        }
+
+        return JSON.parseObject(address,typeRef);
     }
 
     @Override
-    public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
+    public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, List<ThirdpartyZhilianPositionAddressDO> extPosition) {
         return JSONObject.parseObject(JSON.toJSONString(thirdPartyPosition));
     }
-
 }

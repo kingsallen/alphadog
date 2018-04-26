@@ -307,6 +307,21 @@ public class ThirdPartyAccountService {
                 accountDO.setBinding((short) BindingStatus.BOUND.getValue());
                 logger.info(accountDO.getBinding()+"更新成功，状态为"+accountDO.getBinding());
             }
+
+            // 职位同步时是否需要填写公司，暂时只有智联要
+            if(accountExt.getData().isHas_company()){
+                accountDO.setSyncRequireCompany(ThirdPartyAccountConf.REQUIRE_COMPANY.ON);
+            } else{
+                accountDO.setSyncRequireCompany(ThirdPartyAccountConf.REQUIRE_COMPANY.OFF);
+            }
+
+            // 职位同步时是否需要填写部门，暂时只有智联要
+            if(accountExt.getData().isHas_departments()){
+                accountDO.setSyncRequireDepartment(ThirdPartyAccountConf.REQUIRE_DEPARTMENT.ON);
+            } else{
+                accountDO.setSyncRequireDepartment(ThirdPartyAccountConf.REQUIRE_DEPARTMENT.OFF);
+            }
+
             thirdPartyAccountDao.updateData(accountDO);
         }
     }
