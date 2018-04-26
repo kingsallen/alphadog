@@ -10,7 +10,6 @@ import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.UrlUtil;
@@ -37,7 +36,6 @@ import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,7 +162,7 @@ public class PositionBS {
         positionSyncHandler.requireAvailablePostiion(moseekerJobPosition);
 
         if(positionSyncHandler.alreadyInRedis(moseekerJobPosition.getId())){
-            throw new BIZException(ResultMessage.AREADY_BINDING_IN_REDIS.getStatus(),ResultMessage.AREADY_BINDING_IN_REDIS.getMessage());
+            throw new BIZException(ResultMessage.AREADY_SYNCING_IN_REDIS.getStatus(),ResultMessage.AREADY_SYNCING_IN_REDIS.getMessage());
         }
 
         // 返回结果
