@@ -114,6 +114,12 @@ public class TalentpoolServices {
 
     public com.moseeker.thrift.gen.common.struct.Response updateCompanyEmailBalance(int company_id, int balance) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
+    public com.moseeker.thrift.gen.common.struct.Response sendInviteEmail(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> positionIdList, int companyId, int hrId, int flag, int positionFlag) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
+    public com.moseeker.thrift.gen.common.struct.Response sendResumeEmail(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> idList, int companyId, int hrId, int flag) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
+    public com.moseeker.thrift.gen.common.struct.Response sendPositionInviteEmail(int hrId, int positionId, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
   }
 
   public interface AsyncIface {
@@ -219,6 +225,12 @@ public class TalentpoolServices {
     public void cancleAllTalent(int hrId, java.util.Map<java.lang.String,java.lang.String> params, int companyId, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
     public void updateCompanyEmailBalance(int company_id, int balance, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void sendInviteEmail(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> positionIdList, int companyId, int hrId, int flag, int positionFlag, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void sendResumeEmail(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> idList, int companyId, int hrId, int flag, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void sendPositionInviteEmail(int hrId, int positionId, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -1665,6 +1677,97 @@ public class TalentpoolServices {
         throw result.e;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "updateCompanyEmailBalance failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response sendInviteEmail(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> positionIdList, int companyId, int hrId, int flag, int positionFlag) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_sendInviteEmail(params, userIdList, positionIdList, companyId, hrId, flag, positionFlag);
+      return recv_sendInviteEmail();
+    }
+
+    public void send_sendInviteEmail(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> positionIdList, int companyId, int hrId, int flag, int positionFlag) throws org.apache.thrift.TException
+    {
+      sendInviteEmail_args args = new sendInviteEmail_args();
+      args.setParams(params);
+      args.setUserIdList(userIdList);
+      args.setPositionIdList(positionIdList);
+      args.setCompanyId(companyId);
+      args.setHrId(hrId);
+      args.setFlag(flag);
+      args.setPositionFlag(positionFlag);
+      sendBase("sendInviteEmail", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_sendInviteEmail() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      sendInviteEmail_result result = new sendInviteEmail_result();
+      receiveBase(result, "sendInviteEmail");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "sendInviteEmail failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response sendResumeEmail(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> idList, int companyId, int hrId, int flag) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_sendResumeEmail(params, userIdList, idList, companyId, hrId, flag);
+      return recv_sendResumeEmail();
+    }
+
+    public void send_sendResumeEmail(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> idList, int companyId, int hrId, int flag) throws org.apache.thrift.TException
+    {
+      sendResumeEmail_args args = new sendResumeEmail_args();
+      args.setParams(params);
+      args.setUserIdList(userIdList);
+      args.setIdList(idList);
+      args.setCompanyId(companyId);
+      args.setHrId(hrId);
+      args.setFlag(flag);
+      sendBase("sendResumeEmail", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_sendResumeEmail() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      sendResumeEmail_result result = new sendResumeEmail_result();
+      receiveBase(result, "sendResumeEmail");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "sendResumeEmail failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response sendPositionInviteEmail(int hrId, int positionId, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_sendPositionInviteEmail(hrId, positionId, companyId);
+      return recv_sendPositionInviteEmail();
+    }
+
+    public void send_sendPositionInviteEmail(int hrId, int positionId, int companyId) throws org.apache.thrift.TException
+    {
+      sendPositionInviteEmail_args args = new sendPositionInviteEmail_args();
+      args.setHrId(hrId);
+      args.setPositionId(positionId);
+      args.setCompanyId(companyId);
+      sendBase("sendPositionInviteEmail", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_sendPositionInviteEmail() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      sendPositionInviteEmail_result result = new sendPositionInviteEmail_result();
+      receiveBase(result, "sendPositionInviteEmail");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "sendPositionInviteEmail failed: unknown result");
     }
 
   }
@@ -3677,6 +3780,141 @@ public class TalentpoolServices {
       }
     }
 
+    public void sendInviteEmail(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> positionIdList, int companyId, int hrId, int flag, int positionFlag, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      sendInviteEmail_call method_call = new sendInviteEmail_call(params, userIdList, positionIdList, companyId, hrId, flag, positionFlag, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class sendInviteEmail_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private java.util.Map<java.lang.String,java.lang.String> params;
+      private java.util.List<java.lang.Integer> userIdList;
+      private java.util.List<java.lang.Integer> positionIdList;
+      private int companyId;
+      private int hrId;
+      private int flag;
+      private int positionFlag;
+      public sendInviteEmail_call(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> positionIdList, int companyId, int hrId, int flag, int positionFlag, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.params = params;
+        this.userIdList = userIdList;
+        this.positionIdList = positionIdList;
+        this.companyId = companyId;
+        this.hrId = hrId;
+        this.flag = flag;
+        this.positionFlag = positionFlag;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("sendInviteEmail", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        sendInviteEmail_args args = new sendInviteEmail_args();
+        args.setParams(params);
+        args.setUserIdList(userIdList);
+        args.setPositionIdList(positionIdList);
+        args.setCompanyId(companyId);
+        args.setHrId(hrId);
+        args.setFlag(flag);
+        args.setPositionFlag(positionFlag);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_sendInviteEmail();
+      }
+    }
+
+    public void sendResumeEmail(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> idList, int companyId, int hrId, int flag, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      sendResumeEmail_call method_call = new sendResumeEmail_call(params, userIdList, idList, companyId, hrId, flag, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class sendResumeEmail_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private java.util.Map<java.lang.String,java.lang.String> params;
+      private java.util.List<java.lang.Integer> userIdList;
+      private java.util.List<java.lang.Integer> idList;
+      private int companyId;
+      private int hrId;
+      private int flag;
+      public sendResumeEmail_call(java.util.Map<java.lang.String,java.lang.String> params, java.util.List<java.lang.Integer> userIdList, java.util.List<java.lang.Integer> idList, int companyId, int hrId, int flag, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.params = params;
+        this.userIdList = userIdList;
+        this.idList = idList;
+        this.companyId = companyId;
+        this.hrId = hrId;
+        this.flag = flag;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("sendResumeEmail", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        sendResumeEmail_args args = new sendResumeEmail_args();
+        args.setParams(params);
+        args.setUserIdList(userIdList);
+        args.setIdList(idList);
+        args.setCompanyId(companyId);
+        args.setHrId(hrId);
+        args.setFlag(flag);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_sendResumeEmail();
+      }
+    }
+
+    public void sendPositionInviteEmail(int hrId, int positionId, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      sendPositionInviteEmail_call method_call = new sendPositionInviteEmail_call(hrId, positionId, companyId, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class sendPositionInviteEmail_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private int hrId;
+      private int positionId;
+      private int companyId;
+      public sendPositionInviteEmail_call(int hrId, int positionId, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.hrId = hrId;
+        this.positionId = positionId;
+        this.companyId = companyId;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("sendPositionInviteEmail", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        sendPositionInviteEmail_args args = new sendPositionInviteEmail_args();
+        args.setHrId(hrId);
+        args.setPositionId(positionId);
+        args.setCompanyId(companyId);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_sendPositionInviteEmail();
+      }
+    }
+
   }
 
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -3741,6 +3979,9 @@ public class TalentpoolServices {
       processMap.put("addAllTalentPrivate", new addAllTalentPrivate());
       processMap.put("cancleAllTalent", new cancleAllTalent());
       processMap.put("updateCompanyEmailBalance", new updateCompanyEmailBalance());
+      processMap.put("sendInviteEmail", new sendInviteEmail());
+      processMap.put("sendResumeEmail", new sendResumeEmail());
+      processMap.put("sendPositionInviteEmail", new sendPositionInviteEmail());
       return processMap;
     }
 
@@ -4969,6 +5210,78 @@ public class TalentpoolServices {
       }
     }
 
+    public static class sendInviteEmail<I extends Iface> extends org.apache.thrift.ProcessFunction<I, sendInviteEmail_args> {
+      public sendInviteEmail() {
+        super("sendInviteEmail");
+      }
+
+      public sendInviteEmail_args getEmptyArgsInstance() {
+        return new sendInviteEmail_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public sendInviteEmail_result getResult(I iface, sendInviteEmail_args args) throws org.apache.thrift.TException {
+        sendInviteEmail_result result = new sendInviteEmail_result();
+        try {
+          result.success = iface.sendInviteEmail(args.params, args.userIdList, args.positionIdList, args.companyId, args.hrId, args.flag, args.positionFlag);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
+    public static class sendResumeEmail<I extends Iface> extends org.apache.thrift.ProcessFunction<I, sendResumeEmail_args> {
+      public sendResumeEmail() {
+        super("sendResumeEmail");
+      }
+
+      public sendResumeEmail_args getEmptyArgsInstance() {
+        return new sendResumeEmail_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public sendResumeEmail_result getResult(I iface, sendResumeEmail_args args) throws org.apache.thrift.TException {
+        sendResumeEmail_result result = new sendResumeEmail_result();
+        try {
+          result.success = iface.sendResumeEmail(args.params, args.userIdList, args.idList, args.companyId, args.hrId, args.flag);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
+    public static class sendPositionInviteEmail<I extends Iface> extends org.apache.thrift.ProcessFunction<I, sendPositionInviteEmail_args> {
+      public sendPositionInviteEmail() {
+        super("sendPositionInviteEmail");
+      }
+
+      public sendPositionInviteEmail_args getEmptyArgsInstance() {
+        return new sendPositionInviteEmail_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public sendPositionInviteEmail_result getResult(I iface, sendPositionInviteEmail_args args) throws org.apache.thrift.TException {
+        sendPositionInviteEmail_result result = new sendPositionInviteEmail_result();
+        try {
+          result.success = iface.sendPositionInviteEmail(args.hrId, args.positionId, args.companyId);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
@@ -5033,6 +5346,9 @@ public class TalentpoolServices {
       processMap.put("addAllTalentPrivate", new addAllTalentPrivate());
       processMap.put("cancleAllTalent", new cancleAllTalent());
       processMap.put("updateCompanyEmailBalance", new updateCompanyEmailBalance());
+      processMap.put("sendInviteEmail", new sendInviteEmail());
+      processMap.put("sendResumeEmail", new sendResumeEmail());
+      processMap.put("sendPositionInviteEmail", new sendPositionInviteEmail());
       return processMap;
     }
 
@@ -5047,7 +5363,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             upsertTalentPoolApp_result result = new upsertTalentPoolApp_result();
             result.success = o;
@@ -5112,7 +5428,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getTalentAllComment_result result = new getTalentAllComment_result();
             result.success = o;
@@ -5177,7 +5493,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getHrTag_result result = new getHrTag_result();
             result.success = o;
@@ -5242,7 +5558,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             batchAddTalent_result result = new batchAddTalent_result();
             result.success = o;
@@ -5307,7 +5623,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             batchCancelTalent_result result = new batchCancelTalent_result();
             result.success = o;
@@ -5372,7 +5688,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             hrAddTag_result result = new hrAddTag_result();
             result.success = o;
@@ -5437,7 +5753,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             hrDelTag_result result = new hrDelTag_result();
             result.success = o;
@@ -5502,7 +5818,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             hrUpdateTag_result result = new hrUpdateTag_result();
             result.success = o;
@@ -5567,7 +5883,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             batchCancleTalentTag_result result = new batchCancleTalentTag_result();
             result.success = o;
@@ -5632,7 +5948,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             batchAddTalentTag_result result = new batchAddTalentTag_result();
             result.success = o;
@@ -5697,7 +6013,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             hrAddComment_result result = new hrAddComment_result();
             result.success = o;
@@ -5762,7 +6078,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             hrDelComment_result result = new hrDelComment_result();
             result.success = o;
@@ -5827,7 +6143,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             batchAddPublicTalent_result result = new batchAddPublicTalent_result();
             result.success = o;
@@ -5892,7 +6208,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             batchCancelPublicTalent_result result = new batchCancelPublicTalent_result();
             result.success = o;
@@ -5957,7 +6273,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getCompanyPulicTalent_result result = new getCompanyPulicTalent_result();
             result.success = o;
@@ -6022,7 +6338,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             batchNewAddTalentTag_result result = new batchNewAddTalentTag_result();
             result.success = o;
@@ -6087,7 +6403,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getTalentStat_result result = new getTalentStat_result();
             result.success = o;
@@ -6152,7 +6468,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getCompanyUserPublic_result result = new getCompanyUserPublic_result();
             result.success = o;
@@ -6217,7 +6533,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getCompanyTalent_result result = new getCompanyTalent_result();
             result.success = o;
@@ -6282,7 +6598,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getHrUserTag_result result = new getHrUserTag_result();
             result.success = o;
@@ -6347,7 +6663,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getUserOrigin_result result = new getUserOrigin_result();
             result.success = o;
@@ -6412,7 +6728,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getTalentAndPublicHr_result result = new getTalentAndPublicHr_result();
             result.success = o;
@@ -6477,7 +6793,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getPositionOrCompanyPast_result result = new getPositionOrCompanyPast_result();
             result.success = o;
@@ -6542,7 +6858,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             addPositionOrCompanyPast_result result = new addPositionOrCompanyPast_result();
             result.success = o;
@@ -6607,7 +6923,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getCompanyTagList_result result = new getCompanyTagList_result();
             result.success = o;
@@ -6672,7 +6988,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             deleteCompanyTagByIds_result result = new deleteCompanyTagByIds_result();
             result.success = o;
@@ -6737,7 +7053,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getCompanyIdInfo_result result = new getCompanyIdInfo_result();
             result.success = o;
@@ -6802,7 +7118,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             addCompanyTag_result result = new addCompanyTag_result();
             result.success = o;
@@ -6867,7 +7183,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             updateCompanyTag_result result = new updateCompanyTag_result();
             result.success = o;
@@ -6932,7 +7248,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getTalentTagList_result result = new getTalentTagList_result();
             result.success = o;
@@ -6997,7 +7313,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getProfileFilterList_result result = new getProfileFilterList_result();
             result.success = o;
@@ -7062,7 +7378,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             handerProfileFilterByIds_result result = new handerProfileFilterByIds_result();
             result.success = o;
@@ -7127,7 +7443,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getProfileFilterInfo_result result = new getProfileFilterInfo_result();
             result.success = o;
@@ -7192,7 +7508,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             addProfileFilter_result result = new addProfileFilter_result();
             result.success = o;
@@ -7257,7 +7573,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             updateProfileFilter_result result = new updateProfileFilter_result();
             result.success = o;
@@ -7322,7 +7638,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<Void> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<Void>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<Void>() {
           public void onComplete(Void o) {
             handlerCompanyTagAndProfile_result result = new handlerCompanyTagAndProfile_result();
             try {
@@ -7386,7 +7702,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getTalentCountByPositionFilter_result result = new getTalentCountByPositionFilter_result();
             result.success = o;
@@ -7451,7 +7767,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getEmailBalance_result result = new getEmailBalance_result();
             result.success = o;
@@ -7516,7 +7832,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getEmailTemplateList_result result = new getEmailTemplateList_result();
             result.success = o;
@@ -7581,7 +7897,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getEmailInfo_result result = new getEmailInfo_result();
             result.success = o;
@@ -7646,7 +7962,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             updateCompanyEmailInfo_result result = new updateCompanyEmailInfo_result();
             result.success = o;
@@ -7711,7 +8027,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.EmailAccountForm> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.EmailAccountForm>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.EmailAccountForm>() {
           public void onComplete(com.moseeker.thrift.gen.company.struct.EmailAccountForm o) {
             fetchEmailAccounts_result result = new fetchEmailAccounts_result();
             result.success = o;
@@ -7776,7 +8092,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm>() {
           public void onComplete(com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm o) {
             fetchEmailAccountConsumption_result result = new fetchEmailAccountConsumption_result();
             result.success = o;
@@ -7841,7 +8157,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer>() {
           public void onComplete(java.lang.Integer o) {
             rechargeEmailAccount_result result = new rechargeEmailAccount_result();
             result.success = o;
@@ -7907,7 +8223,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<Void> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<Void>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<Void>() {
           public void onComplete(Void o) {
             updateEmailAccountRechargeValue_result result = new updateEmailAccountRechargeValue_result();
             try {
@@ -7971,7 +8287,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<Void> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<Void>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<Void>() {
           public void onComplete(Void o) {
             addAllTalent_result result = new addAllTalent_result();
             try {
@@ -8035,7 +8351,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<Void> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<Void>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<Void>() {
           public void onComplete(Void o) {
             addAllTalentTag_result result = new addAllTalentTag_result();
             try {
@@ -8099,7 +8415,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<Void> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<Void>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<Void>() {
           public void onComplete(Void o) {
             addAllTalentPublic_result result = new addAllTalentPublic_result();
             try {
@@ -8163,7 +8479,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<Void> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<Void>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<Void>() {
           public void onComplete(Void o) {
             addAllTalentPrivate_result result = new addAllTalentPrivate_result();
             try {
@@ -8227,7 +8543,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<Void> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<Void>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<Void>() {
           public void onComplete(Void o) {
             cancleAllTalent_result result = new cancleAllTalent_result();
             try {
@@ -8291,7 +8607,7 @@ public class TalentpoolServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             updateCompanyEmailBalance_result result = new updateCompanyEmailBalance_result();
             result.success = o;
@@ -8342,6 +8658,201 @@ public class TalentpoolServices {
 
       public void start(I iface, updateCompanyEmailBalance_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
         iface.updateCompanyEmailBalance(args.company_id, args.balance,resultHandler);
+      }
+    }
+
+    public static class sendInviteEmail<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, sendInviteEmail_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public sendInviteEmail() {
+        super("sendInviteEmail");
+      }
+
+      public sendInviteEmail_args getEmptyArgsInstance() {
+        return new sendInviteEmail_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            sendInviteEmail_result result = new sendInviteEmail_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            sendInviteEmail_result result = new sendInviteEmail_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, sendInviteEmail_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.sendInviteEmail(args.params, args.userIdList, args.positionIdList, args.companyId, args.hrId, args.flag, args.positionFlag,resultHandler);
+      }
+    }
+
+    public static class sendResumeEmail<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, sendResumeEmail_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public sendResumeEmail() {
+        super("sendResumeEmail");
+      }
+
+      public sendResumeEmail_args getEmptyArgsInstance() {
+        return new sendResumeEmail_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            sendResumeEmail_result result = new sendResumeEmail_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            sendResumeEmail_result result = new sendResumeEmail_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, sendResumeEmail_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.sendResumeEmail(args.params, args.userIdList, args.idList, args.companyId, args.hrId, args.flag,resultHandler);
+      }
+    }
+
+    public static class sendPositionInviteEmail<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, sendPositionInviteEmail_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public sendPositionInviteEmail() {
+        super("sendPositionInviteEmail");
+      }
+
+      public sendPositionInviteEmail_args getEmptyArgsInstance() {
+        return new sendPositionInviteEmail_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            sendPositionInviteEmail_result result = new sendPositionInviteEmail_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            sendPositionInviteEmail_result result = new sendPositionInviteEmail_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, sendPositionInviteEmail_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.sendPositionInviteEmail(args.hrId, args.positionId, args.companyId,resultHandler);
       }
     }
 
@@ -8433,11 +8944,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(upsertTalentPoolApp_args.class, metaDataMap);
@@ -8782,7 +9293,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -8790,7 +9301,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hrId = iprot.readI32();
                 struct.setHrIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -8798,7 +9309,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -8806,7 +9317,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.type = iprot.readI32();
                 struct.setTypeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -8974,9 +9485,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(upsertTalentPoolApp_result.class, metaDataMap);
@@ -9268,7 +9779,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -9277,7 +9788,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -9286,7 +9797,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -9468,15 +9979,15 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTalentAllComment_args.class, metaDataMap);
@@ -9955,7 +10466,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -9963,7 +10474,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -9971,7 +10482,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -9979,7 +10490,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.user_id = iprot.readI32();
                 struct.setUser_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -9987,7 +10498,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_number = iprot.readI32();
                 struct.setPage_numberIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -9995,7 +10506,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_size = iprot.readI32();
                 struct.setPage_sizeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -10189,9 +10700,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTalentAllComment_result.class, metaDataMap);
@@ -10483,7 +10994,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -10492,7 +11003,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -10501,7 +11012,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -10677,13 +11188,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getHrTag_args.class, metaDataMap);
@@ -11095,7 +11606,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -11103,7 +11614,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -11111,7 +11622,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -11119,7 +11630,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_number = iprot.readI32();
                 struct.setPage_numberIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -11127,7 +11638,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_size = iprot.readI32();
                 struct.setPage_sizeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -11308,9 +11819,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getHrTag_result.class, metaDataMap);
@@ -11602,7 +12113,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -11611,7 +12122,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -11620,7 +12131,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -11789,12 +12300,12 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchAddTalent_args.class, metaDataMap);
@@ -12162,7 +12673,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -12170,7 +12681,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -12188,7 +12699,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setUser_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -12196,7 +12707,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -12388,9 +12899,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchAddTalent_result.class, metaDataMap);
@@ -12682,7 +13193,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -12691,7 +13202,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -12700,7 +13211,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -12869,12 +13380,12 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchCancelTalent_args.class, metaDataMap);
@@ -13242,7 +13753,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -13250,7 +13761,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -13268,7 +13779,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setUser_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -13276,7 +13787,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -13468,9 +13979,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchCancelTalent_result.class, metaDataMap);
@@ -13762,7 +14273,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -13771,7 +14282,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -13780,7 +14291,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -13949,11 +14460,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.NAME, new org.apache.thrift.meta_data.FieldMetaData("name", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.NAME, new org.apache.thrift.meta_data.FieldMetaData("name", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(hrAddTag_args.class, metaDataMap);
@@ -14305,7 +14816,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -14313,7 +14824,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -14321,7 +14832,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -14329,7 +14840,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.name = iprot.readString();
                 struct.setNameIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -14499,9 +15010,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(hrAddTag_result.class, metaDataMap);
@@ -14793,7 +15304,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -14802,7 +15313,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -14811,7 +15322,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -14981,11 +15492,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.TAG_ID, new org.apache.thrift.meta_data.FieldMetaData("tag_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.TAG_ID, new org.apache.thrift.meta_data.FieldMetaData("tag_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(hrDelTag_args.class, metaDataMap);
@@ -15330,7 +15841,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -15338,7 +15849,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -15346,7 +15857,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -15354,7 +15865,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.tag_id = iprot.readI32();
                 struct.setTag_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -15522,9 +16033,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(hrDelTag_result.class, metaDataMap);
@@ -15816,7 +16327,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -15825,7 +16336,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -15834,7 +16345,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -16009,13 +16520,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.TAG_ID, new org.apache.thrift.meta_data.FieldMetaData("tag_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.TAG_ID, new org.apache.thrift.meta_data.FieldMetaData("tag_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.NAME, new org.apache.thrift.meta_data.FieldMetaData("name", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.NAME, new org.apache.thrift.meta_data.FieldMetaData("name", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(hrUpdateTag_args.class, metaDataMap);
@@ -16434,7 +16945,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -16442,7 +16953,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -16450,7 +16961,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -16458,7 +16969,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.tag_id = iprot.readI32();
                 struct.setTag_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -16466,7 +16977,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.name = iprot.readString();
                 struct.setNameIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -16649,9 +17160,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(hrUpdateTag_result.class, metaDataMap);
@@ -16943,7 +17454,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -16952,7 +17463,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -16961,7 +17472,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -17135,15 +17646,15 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.TAG_IDS, new org.apache.thrift.meta_data.FieldMetaData("tag_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.TAG_IDS, new org.apache.thrift.meta_data.FieldMetaData("tag_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchCancleTalentTag_args.class, metaDataMap);
@@ -17601,7 +18112,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -17609,7 +18120,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -17627,7 +18138,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setUser_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -17645,7 +18156,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setTag_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -17653,7 +18164,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -17882,9 +18393,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchCancleTalentTag_result.class, metaDataMap);
@@ -18176,7 +18687,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -18185,7 +18696,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -18194,7 +18705,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -18368,15 +18879,15 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.TAG_IDS, new org.apache.thrift.meta_data.FieldMetaData("tag_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.TAG_IDS, new org.apache.thrift.meta_data.FieldMetaData("tag_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchAddTalentTag_args.class, metaDataMap);
@@ -18834,7 +19345,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -18842,7 +19353,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -18860,7 +19371,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setUser_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -18878,7 +19389,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setTag_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -18886,7 +19397,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -19115,9 +19626,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchAddTalentTag_result.class, metaDataMap);
@@ -19409,7 +19920,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -19418,7 +19929,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -19427,7 +19938,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -19602,13 +20113,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.CONTENT, new org.apache.thrift.meta_data.FieldMetaData("content", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.CONTENT, new org.apache.thrift.meta_data.FieldMetaData("content", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(hrAddComment_args.class, metaDataMap);
@@ -20027,7 +20538,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -20035,7 +20546,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -20043,7 +20554,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -20051,7 +20562,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.user_id = iprot.readI32();
                 struct.setUser_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -20059,7 +20570,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.content = iprot.readString();
                 struct.setContentIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -20242,9 +20753,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(hrAddComment_result.class, metaDataMap);
@@ -20536,7 +21047,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -20545,7 +21056,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -20554,7 +21065,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -20724,11 +21235,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMMENT_ID, new org.apache.thrift.meta_data.FieldMetaData("comment_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMMENT_ID, new org.apache.thrift.meta_data.FieldMetaData("comment_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(hrDelComment_args.class, metaDataMap);
@@ -21073,7 +21584,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -21081,7 +21592,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -21089,7 +21600,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -21097,7 +21608,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.comment_id = iprot.readI32();
                 struct.setComment_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -21265,9 +21776,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(hrDelComment_result.class, metaDataMap);
@@ -21559,7 +22070,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -21568,7 +22079,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -21577,7 +22088,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -21746,12 +22257,12 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchAddPublicTalent_args.class, metaDataMap);
@@ -22119,7 +22630,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -22127,7 +22638,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -22135,7 +22646,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -22153,7 +22664,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setUser_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -22345,9 +22856,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchAddPublicTalent_result.class, metaDataMap);
@@ -22639,7 +23150,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -22648,7 +23159,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -22657,7 +23168,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -22826,12 +23337,12 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchCancelPublicTalent_args.class, metaDataMap);
@@ -23199,7 +23710,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -23207,7 +23718,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -23215,7 +23726,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -23233,7 +23744,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setUser_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -23425,9 +23936,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchCancelPublicTalent_result.class, metaDataMap);
@@ -23719,7 +24230,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -23728,7 +24239,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -23737,7 +24248,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -23913,13 +24424,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyPulicTalent_args.class, metaDataMap);
@@ -24331,7 +24842,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -24339,7 +24850,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -24347,7 +24858,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -24355,7 +24866,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_number = iprot.readI32();
                 struct.setPage_numberIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -24363,7 +24874,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_size = iprot.readI32();
                 struct.setPage_sizeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -24544,9 +25055,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyPulicTalent_result.class, metaDataMap);
@@ -24838,7 +25349,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -24847,7 +25358,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -24856,7 +25367,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -25030,15 +25541,15 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.TAG_IDS, new org.apache.thrift.meta_data.FieldMetaData("tag_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.TAG_IDS, new org.apache.thrift.meta_data.FieldMetaData("tag_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchNewAddTalentTag_args.class, metaDataMap);
@@ -25496,7 +26007,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -25504,7 +26015,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -25522,7 +26033,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setUser_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -25540,7 +26051,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setTag_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -25548,7 +26059,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -25777,9 +26288,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchNewAddTalentTag_result.class, metaDataMap);
@@ -26071,7 +26582,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -26080,7 +26591,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -26089,7 +26600,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -26259,11 +26770,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTalentStat_args.class, metaDataMap);
@@ -26608,7 +27119,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -26616,7 +27127,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -26624,7 +27135,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -26632,7 +27143,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.type = iprot.readI32();
                 struct.setTypeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -26800,9 +27311,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTalentStat_result.class, metaDataMap);
@@ -27094,7 +27605,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -27103,7 +27614,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -27112,7 +27623,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -27282,11 +27793,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyUserPublic_args.class, metaDataMap);
@@ -27631,7 +28142,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -27639,7 +28150,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -27647,7 +28158,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -27655,7 +28166,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.user_id = iprot.readI32();
                 struct.setUser_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -27823,9 +28334,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyUserPublic_result.class, metaDataMap);
@@ -28117,7 +28628,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -28126,7 +28637,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -28135,7 +28646,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -28305,11 +28816,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyTalent_args.class, metaDataMap);
@@ -28654,7 +29165,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -28662,7 +29173,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -28670,7 +29181,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -28678,7 +29189,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.user_id = iprot.readI32();
                 struct.setUser_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -28846,9 +29357,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyTalent_result.class, metaDataMap);
@@ -29140,7 +29651,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -29149,7 +29660,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -29158,7 +29669,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -29328,11 +29839,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getHrUserTag_args.class, metaDataMap);
@@ -29677,7 +30188,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -29685,7 +30196,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -29693,7 +30204,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -29701,7 +30212,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.user_id = iprot.readI32();
                 struct.setUser_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -29869,9 +30380,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getHrUserTag_result.class, metaDataMap);
@@ -30163,7 +30674,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -30172,7 +30683,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -30181,7 +30692,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -30351,11 +30862,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUserOrigin_args.class, metaDataMap);
@@ -30700,7 +31211,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -30708,7 +31219,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -30716,7 +31227,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -30724,7 +31235,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.user_id = iprot.readI32();
                 struct.setUser_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -30892,9 +31403,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUserOrigin_result.class, metaDataMap);
@@ -31186,7 +31697,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -31195,7 +31706,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -31204,7 +31715,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -31373,12 +31884,12 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.USER_IDS, new org.apache.thrift.meta_data.FieldMetaData("user_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTalentAndPublicHr_args.class, metaDataMap);
@@ -31746,7 +32257,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -31754,7 +32265,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -31762,7 +32273,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -31780,7 +32291,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setUser_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -31972,9 +32483,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTalentAndPublicHr_result.class, metaDataMap);
@@ -32266,7 +32777,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -32275,7 +32786,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -32284,7 +32795,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -32454,11 +32965,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.FLAG, new org.apache.thrift.meta_data.FieldMetaData("flag", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.FLAG, new org.apache.thrift.meta_data.FieldMetaData("flag", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionOrCompanyPast_args.class, metaDataMap);
@@ -32803,7 +33314,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -32811,7 +33322,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -32819,7 +33330,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.type = iprot.readI32();
                 struct.setTypeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -32827,7 +33338,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.flag = iprot.readI32();
                 struct.setFlagIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -32995,9 +33506,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionOrCompanyPast_result.class, metaDataMap);
@@ -33289,7 +33800,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -33298,7 +33809,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -33307,7 +33818,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -33482,13 +33993,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.FLAG, new org.apache.thrift.meta_data.FieldMetaData("flag", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.FLAG, new org.apache.thrift.meta_data.FieldMetaData("flag", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.NAME, new org.apache.thrift.meta_data.FieldMetaData("name", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.NAME, new org.apache.thrift.meta_data.FieldMetaData("name", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addPositionOrCompanyPast_args.class, metaDataMap);
@@ -33907,7 +34418,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -33915,7 +34426,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -33923,7 +34434,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.type = iprot.readI32();
                 struct.setTypeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -33931,7 +34442,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.flag = iprot.readI32();
                 struct.setFlagIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -33939,7 +34450,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.name = iprot.readString();
                 struct.setNameIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -34122,9 +34633,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addPositionOrCompanyPast_result.class, metaDataMap);
@@ -34416,7 +34927,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -34425,7 +34936,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -34434,7 +34945,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -34610,13 +35121,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyTagList_args.class, metaDataMap);
@@ -35028,7 +35539,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -35036,7 +35547,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -35044,7 +35555,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -35052,7 +35563,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_number = iprot.readI32();
                 struct.setPage_numberIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -35060,7 +35571,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_size = iprot.readI32();
                 struct.setPage_sizeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -35241,9 +35752,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyTagList_result.class, metaDataMap);
@@ -35535,7 +36046,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -35544,7 +36055,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -35553,7 +36064,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -35722,12 +36233,12 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_TAG_IDS, new org.apache.thrift.meta_data.FieldMetaData("company_tag_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.COMPANY_TAG_IDS, new org.apache.thrift.meta_data.FieldMetaData("company_tag_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(deleteCompanyTagByIds_args.class, metaDataMap);
@@ -36095,7 +36606,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -36103,7 +36614,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -36111,7 +36622,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -36129,7 +36640,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setCompany_tag_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -36321,9 +36832,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(deleteCompanyTagByIds_result.class, metaDataMap);
@@ -36615,7 +37126,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -36624,7 +37135,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -36633,7 +37144,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -36803,11 +37314,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_TAG_ID, new org.apache.thrift.meta_data.FieldMetaData("company_tag_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_TAG_ID, new org.apache.thrift.meta_data.FieldMetaData("company_tag_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyIdInfo_args.class, metaDataMap);
@@ -37152,7 +37663,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -37160,7 +37671,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -37168,7 +37679,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -37176,7 +37687,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_tag_id = iprot.readI32();
                 struct.setCompany_tag_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -37344,9 +37855,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyIdInfo_result.class, metaDataMap);
@@ -37638,7 +38149,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -37647,7 +38158,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -37656,7 +38167,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -37819,9 +38330,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_TAG_DO, new org.apache.thrift.meta_data.FieldMetaData("companyTagDO", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_TAG_DO, new org.apache.thrift.meta_data.FieldMetaData("companyTagDO", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO.class)));
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addCompanyTag_args.class, metaDataMap);
@@ -38109,7 +38620,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -38118,7 +38629,7 @@ public class TalentpoolServices {
                 struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO();
                 struct.companyTagDO.read(iprot);
                 struct.setCompanyTagDOIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -38126,7 +38637,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -38284,9 +38795,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addCompanyTag_result.class, metaDataMap);
@@ -38578,7 +39089,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -38587,7 +39098,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -38596,7 +39107,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -38759,9 +39270,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_TAG_DO, new org.apache.thrift.meta_data.FieldMetaData("companyTagDO", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_TAG_DO, new org.apache.thrift.meta_data.FieldMetaData("companyTagDO", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO.class)));
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateCompanyTag_args.class, metaDataMap);
@@ -39049,7 +39560,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -39058,7 +39569,7 @@ public class TalentpoolServices {
                 struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO();
                 struct.companyTagDO.read(iprot);
                 struct.setCompanyTagDOIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -39066,7 +39577,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -39224,9 +39735,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateCompanyTag_result.class, metaDataMap);
@@ -39518,7 +40029,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -39527,7 +40038,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -39536,7 +40047,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -39712,13 +40223,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTalentTagList_args.class, metaDataMap);
@@ -40130,7 +40641,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -40138,7 +40649,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -40146,7 +40657,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -40154,7 +40665,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_number = iprot.readI32();
                 struct.setPage_numberIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -40162,7 +40673,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_size = iprot.readI32();
                 struct.setPage_sizeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -40343,9 +40854,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTalentTagList_result.class, metaDataMap);
@@ -40637,7 +41148,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -40646,7 +41157,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -40655,7 +41166,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -40831,13 +41342,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("page_number", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("page_size", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getProfileFilterList_args.class, metaDataMap);
@@ -41249,7 +41760,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -41257,7 +41768,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -41265,7 +41776,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -41273,7 +41784,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_number = iprot.readI32();
                 struct.setPage_numberIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -41281,7 +41792,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page_size = iprot.readI32();
                 struct.setPage_sizeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -41462,9 +41973,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getProfileFilterList_result.class, metaDataMap);
@@ -41756,7 +42267,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -41765,7 +42276,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -41774,7 +42285,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -41949,14 +42460,14 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.DISABLE, new org.apache.thrift.meta_data.FieldMetaData("disable", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.DISABLE, new org.apache.thrift.meta_data.FieldMetaData("disable", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.FILTER_IDS, new org.apache.thrift.meta_data.FieldMetaData("filter_ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.FILTER_IDS, new org.apache.thrift.meta_data.FieldMetaData("filter_ids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(handerProfileFilterByIds_args.class, metaDataMap);
@@ -42391,7 +42902,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -42399,7 +42910,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -42407,7 +42918,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -42415,7 +42926,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.disable = iprot.readI32();
                 struct.setDisableIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -42433,7 +42944,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setFilter_idsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -42638,9 +43149,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(handerProfileFilterByIds_result.class, metaDataMap);
@@ -42932,7 +43443,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -42941,7 +43452,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -42950,7 +43461,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -43120,11 +43631,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.FILTER_ID, new org.apache.thrift.meta_data.FieldMetaData("filter_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.FILTER_ID, new org.apache.thrift.meta_data.FieldMetaData("filter_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getProfileFilterInfo_args.class, metaDataMap);
@@ -43469,7 +43980,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -43477,7 +43988,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -43485,7 +43996,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -43493,7 +44004,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.filter_id = iprot.readI32();
                 struct.setFilter_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -43661,9 +44172,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getProfileFilterInfo_result.class, metaDataMap);
@@ -43955,7 +44466,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -43964,7 +44475,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -43973,7 +44484,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -44152,17 +44663,17 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_TAG_DO, new org.apache.thrift.meta_data.FieldMetaData("companyTagDO", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_TAG_DO, new org.apache.thrift.meta_data.FieldMetaData("companyTagDO", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO.class)));
-      tmpMap.put(_Fields.ACTION_FORM, new org.apache.thrift.meta_data.FieldMetaData("actionForm", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.ACTION_FORM, new org.apache.thrift.meta_data.FieldMetaData("actionForm", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.ActionForm.class))));
-      tmpMap.put(_Fields.POSITION_ID_LIST, new org.apache.thrift.meta_data.FieldMetaData("positionIdList", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.POSITION_ID_LIST, new org.apache.thrift.meta_data.FieldMetaData("positionIdList", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.POSITION_TOTAL, new org.apache.thrift.meta_data.FieldMetaData("position_total", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.POSITION_TOTAL, new org.apache.thrift.meta_data.FieldMetaData("position_total", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addProfileFilter_args.class, metaDataMap);
@@ -44700,7 +45211,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -44709,7 +45220,7 @@ public class TalentpoolServices {
                 struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO();
                 struct.companyTagDO.read(iprot);
                 struct.setCompanyTagDOIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -44728,7 +45239,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setActionFormIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -44746,7 +45257,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setPositionIdListIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -44754,7 +45265,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -44762,7 +45273,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.position_total = iprot.readI32();
                 struct.setPosition_totalIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -45008,9 +45519,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addProfileFilter_result.class, metaDataMap);
@@ -45302,7 +45813,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -45311,7 +45822,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -45320,7 +45831,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -45499,17 +46010,17 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_TAG_DO, new org.apache.thrift.meta_data.FieldMetaData("companyTagDO", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_TAG_DO, new org.apache.thrift.meta_data.FieldMetaData("companyTagDO", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO.class)));
-      tmpMap.put(_Fields.ACTION_FORM, new org.apache.thrift.meta_data.FieldMetaData("actionForm", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.ACTION_FORM, new org.apache.thrift.meta_data.FieldMetaData("actionForm", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.ActionForm.class))));
-      tmpMap.put(_Fields.POSITION_ID_LIST, new org.apache.thrift.meta_data.FieldMetaData("positionIdList", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.POSITION_ID_LIST, new org.apache.thrift.meta_data.FieldMetaData("positionIdList", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.POSITION_TOTAL, new org.apache.thrift.meta_data.FieldMetaData("position_total", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.POSITION_TOTAL, new org.apache.thrift.meta_data.FieldMetaData("position_total", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateProfileFilter_args.class, metaDataMap);
@@ -46047,7 +46558,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -46056,7 +46567,7 @@ public class TalentpoolServices {
                 struct.companyTagDO = new com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO();
                 struct.companyTagDO.read(iprot);
                 struct.setCompanyTagDOIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -46075,7 +46586,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setActionFormIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -46093,7 +46604,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setPositionIdListIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -46101,7 +46612,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -46109,7 +46620,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.position_total = iprot.readI32();
                 struct.setPosition_totalIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -46355,9 +46866,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateProfileFilter_result.class, metaDataMap);
@@ -46649,7 +47160,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -46658,7 +47169,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -46667,7 +47178,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -46830,10 +47341,10 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.USERID_LIST, new org.apache.thrift.meta_data.FieldMetaData("userid_list", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.SetMetaData(org.apache.thrift.protocol.TType.SET, 
+      tmpMap.put(_Fields.USERID_LIST, new org.apache.thrift.meta_data.FieldMetaData("userid_list", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.SetMetaData(org.apache.thrift.protocol.TType.SET,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(handlerCompanyTagAndProfile_args.class, metaDataMap);
@@ -47134,7 +47645,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -47152,7 +47663,7 @@ public class TalentpoolServices {
                   iprot.readSetEnd();
                 }
                 struct.setUserid_listIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -47160,7 +47671,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -47334,7 +47845,7 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(handlerCompanyTagAndProfile_result.class, metaDataMap);
@@ -47549,7 +48060,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -47558,7 +48069,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -47712,11 +48223,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("position_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("position_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTalentCountByPositionFilter_args.class, metaDataMap);
@@ -48061,7 +48572,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -48069,7 +48580,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -48077,7 +48588,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -48085,7 +48596,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.position_id = iprot.readI32();
                 struct.setPosition_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -48253,9 +48764,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTalentCountByPositionFilter_result.class, metaDataMap);
@@ -48547,7 +49058,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -48556,7 +49067,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -48565,7 +49076,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -48729,9 +49240,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getEmailBalance_args.class, metaDataMap);
@@ -49009,7 +49520,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -49017,7 +49528,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -49025,7 +49536,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -49180,9 +49691,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getEmailBalance_result.class, metaDataMap);
@@ -49474,7 +49985,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -49483,7 +49994,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -49492,7 +50003,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -49656,9 +50167,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getEmailTemplateList_args.class, metaDataMap);
@@ -49936,7 +50447,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -49944,7 +50455,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -49952,7 +50463,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -50107,9 +50618,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getEmailTemplateList_result.class, metaDataMap);
@@ -50401,7 +50912,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -50410,7 +50921,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -50419,7 +50930,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -50589,11 +51100,11 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getEmailInfo_args.class, metaDataMap);
@@ -50938,7 +51449,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -50946,7 +51457,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -50954,7 +51465,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -50962,7 +51473,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.type = iprot.readI32();
                 struct.setTypeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -51130,9 +51641,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getEmailInfo_result.class, metaDataMap);
@@ -51424,7 +51935,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -51433,7 +51944,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -51442,7 +51953,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -51628,17 +52139,17 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.DISABLE, new org.apache.thrift.meta_data.FieldMetaData("disable", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.DISABLE, new org.apache.thrift.meta_data.FieldMetaData("disable", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.CONTEXT, new org.apache.thrift.meta_data.FieldMetaData("context", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.CONTEXT, new org.apache.thrift.meta_data.FieldMetaData("context", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.INSCRIBE, new org.apache.thrift.meta_data.FieldMetaData("inscribe", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.INSCRIBE, new org.apache.thrift.meta_data.FieldMetaData("inscribe", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateCompanyEmailInfo_args.class, metaDataMap);
@@ -52198,7 +52709,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -52206,7 +52717,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hr_id = iprot.readI32();
                 struct.setHr_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -52214,7 +52725,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -52222,7 +52733,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.type = iprot.readI32();
                 struct.setTypeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -52230,7 +52741,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.disable = iprot.readI32();
                 struct.setDisableIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -52238,7 +52749,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.context = iprot.readString();
                 struct.setContextIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -52246,7 +52757,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.inscribe = iprot.readString();
                 struct.setInscribeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -52457,9 +52968,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateCompanyEmailInfo_result.class, metaDataMap);
@@ -52751,7 +53262,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -52760,7 +53271,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -52769,7 +53280,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -52944,13 +53455,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_NAME, new org.apache.thrift.meta_data.FieldMetaData("companyName", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_NAME, new org.apache.thrift.meta_data.FieldMetaData("companyName", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("pageNumber", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("pageNumber", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(fetchEmailAccounts_args.class, metaDataMap);
@@ -53369,7 +53880,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -53377,7 +53888,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -53385,7 +53896,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.companyName = iprot.readString();
                 struct.setCompanyNameIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -53393,7 +53904,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.pageNumber = iprot.readI32();
                 struct.setPageNumberIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -53401,7 +53912,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.pageSize = iprot.readI32();
                 struct.setPageSizeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -53584,9 +54095,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.EmailAccountForm.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(fetchEmailAccounts_result.class, metaDataMap);
@@ -53878,7 +54389,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -53887,7 +54398,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.company.struct.EmailAccountForm();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -53896,7 +54407,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -54082,17 +54593,17 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
-      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("pageNumber", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("pageNumber", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.START_DATE, new org.apache.thrift.meta_data.FieldMetaData("startDate", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.START_DATE, new org.apache.thrift.meta_data.FieldMetaData("startDate", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.END_DATE, new org.apache.thrift.meta_data.FieldMetaData("endDate", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.END_DATE, new org.apache.thrift.meta_data.FieldMetaData("endDate", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(fetchEmailAccountConsumption_args.class, metaDataMap);
@@ -54652,7 +55163,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -54660,7 +55171,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -54668,7 +55179,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
                 struct.type = iprot.readByte();
                 struct.setTypeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -54676,7 +55187,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.pageNumber = iprot.readI32();
                 struct.setPageNumberIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -54684,7 +55195,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.pageSize = iprot.readI32();
                 struct.setPageSizeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -54692,7 +55203,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.startDate = iprot.readString();
                 struct.setStartDateIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -54700,7 +55211,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.endDate = iprot.readString();
                 struct.setEndDateIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -54911,9 +55422,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(fetchEmailAccountConsumption_result.class, metaDataMap);
@@ -55205,7 +55716,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -55214,7 +55725,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -55223,7 +55734,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -55387,9 +55898,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.LOST, new org.apache.thrift.meta_data.FieldMetaData("lost", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.LOST, new org.apache.thrift.meta_data.FieldMetaData("lost", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(rechargeEmailAccount_args.class, metaDataMap);
@@ -55667,7 +56178,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -55675,7 +56186,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -55683,7 +56194,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.lost = iprot.readI32();
                 struct.setLostIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -55840,9 +56351,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(rechargeEmailAccount_result.class, metaDataMap);
@@ -56127,7 +56638,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -56135,7 +56646,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.success = iprot.readI32();
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -56144,7 +56655,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -56307,9 +56818,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.LOST, new org.apache.thrift.meta_data.FieldMetaData("lost", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.LOST, new org.apache.thrift.meta_data.FieldMetaData("lost", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateEmailAccountRechargeValue_args.class, metaDataMap);
@@ -56587,7 +57098,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -56595,7 +57106,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.id = iprot.readI32();
                 struct.setIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -56603,7 +57114,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.lost = iprot.readI32();
                 struct.setLostIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -56753,7 +57264,7 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateEmailAccountRechargeValue_result.class, metaDataMap);
@@ -56968,7 +57479,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -56977,7 +57488,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -57130,13 +57641,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
-              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
+      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING),
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addAllTalent_args.class, metaDataMap);
@@ -57500,7 +58011,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -57508,7 +58019,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hrId = iprot.readI32();
                 struct.setHrIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -57528,7 +58039,7 @@ public class TalentpoolServices {
                   iprot.readMapEnd();
                 }
                 struct.setParamsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -57536,7 +58047,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -57727,7 +58238,7 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addAllTalent_result.class, metaDataMap);
@@ -57942,7 +58453,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -57951,7 +58462,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -58109,16 +58620,16 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
-              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
+      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING),
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
-      tmpMap.put(_Fields.TAG_LIST, new org.apache.thrift.meta_data.FieldMetaData("tagList", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.TAG_LIST, new org.apache.thrift.meta_data.FieldMetaData("tagList", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addAllTalentTag_args.class, metaDataMap);
@@ -58572,7 +59083,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -58592,7 +59103,7 @@ public class TalentpoolServices {
                   iprot.readMapEnd();
                 }
                 struct.setParamsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -58610,7 +59121,7 @@ public class TalentpoolServices {
                   iprot.readListEnd();
                 }
                 struct.setTagListIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -58618,7 +59129,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -58626,7 +59137,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hrId = iprot.readI32();
                 struct.setHrIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -58854,7 +59365,7 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addAllTalentTag_result.class, metaDataMap);
@@ -59069,7 +59580,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -59078,7 +59589,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -59231,13 +59742,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
-              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
+      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING),
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addAllTalentPublic_args.class, metaDataMap);
@@ -59601,7 +60112,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -59609,7 +60120,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hrId = iprot.readI32();
                 struct.setHrIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -59629,7 +60140,7 @@ public class TalentpoolServices {
                   iprot.readMapEnd();
                 }
                 struct.setParamsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -59637,7 +60148,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -59828,7 +60339,7 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addAllTalentPublic_result.class, metaDataMap);
@@ -60043,7 +60554,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -60052,7 +60563,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -60205,13 +60716,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
-              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
+      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING),
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addAllTalentPrivate_args.class, metaDataMap);
@@ -60575,7 +61086,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -60583,7 +61094,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hrId = iprot.readI32();
                 struct.setHrIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -60603,7 +61114,7 @@ public class TalentpoolServices {
                   iprot.readMapEnd();
                 }
                 struct.setParamsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -60611,7 +61122,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -60802,7 +61313,7 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addAllTalentPrivate_result.class, metaDataMap);
@@ -61017,7 +61528,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -61026,7 +61537,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -61179,13 +61690,13 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
-              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
+      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING),
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(cancleAllTalent_args.class, metaDataMap);
@@ -61549,7 +62060,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -61557,7 +62068,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hrId = iprot.readI32();
                 struct.setHrIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -61577,7 +62088,7 @@ public class TalentpoolServices {
                   iprot.readMapEnd();
                 }
                 struct.setParamsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -61585,7 +62096,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -61776,7 +62287,7 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(cancleAllTalent_result.class, metaDataMap);
@@ -61991,7 +62502,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -62000,7 +62511,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -62148,9 +62659,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.BALANCE, new org.apache.thrift.meta_data.FieldMetaData("balance", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.BALANCE, new org.apache.thrift.meta_data.FieldMetaData("balance", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateCompanyEmailBalance_args.class, metaDataMap);
@@ -62428,7 +62939,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -62436,7 +62947,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.company_id = iprot.readI32();
                 struct.setCompany_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -62444,7 +62955,7 @@ public class TalentpoolServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.balance = iprot.readI32();
                 struct.setBalanceIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -62599,9 +63110,9 @@ public class TalentpoolServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateCompanyEmailBalance_result.class, metaDataMap);
@@ -62893,7 +63404,7 @@ public class TalentpoolServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -62902,7 +63413,7 @@ public class TalentpoolServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -62911,7 +63422,7 @@ public class TalentpoolServices {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -62975,6 +63486,4095 @@ public class TalentpoolServices {
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, updateCompanyEmailBalance_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class sendInviteEmail_args implements org.apache.thrift.TBase<sendInviteEmail_args, sendInviteEmail_args._Fields>, java.io.Serializable, Cloneable, Comparable<sendInviteEmail_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("sendInviteEmail_args");
+
+    private static final org.apache.thrift.protocol.TField PARAMS_FIELD_DESC = new org.apache.thrift.protocol.TField("params", org.apache.thrift.protocol.TType.MAP, (short)1);
+    private static final org.apache.thrift.protocol.TField USER_ID_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("userIdList", org.apache.thrift.protocol.TType.LIST, (short)2);
+    private static final org.apache.thrift.protocol.TField POSITION_ID_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("positionIdList", org.apache.thrift.protocol.TType.LIST, (short)3);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)4);
+    private static final org.apache.thrift.protocol.TField HR_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("hrId", org.apache.thrift.protocol.TType.I32, (short)5);
+    private static final org.apache.thrift.protocol.TField FLAG_FIELD_DESC = new org.apache.thrift.protocol.TField("flag", org.apache.thrift.protocol.TType.I32, (short)6);
+    private static final org.apache.thrift.protocol.TField POSITION_FLAG_FIELD_DESC = new org.apache.thrift.protocol.TField("positionFlag", org.apache.thrift.protocol.TType.I32, (short)7);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new sendInviteEmail_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new sendInviteEmail_argsTupleSchemeFactory();
+
+    public java.util.Map<java.lang.String,java.lang.String> params; // required
+    public java.util.List<java.lang.Integer> userIdList; // required
+    public java.util.List<java.lang.Integer> positionIdList; // required
+    public int companyId; // required
+    public int hrId; // required
+    public int flag; // required
+    public int positionFlag; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      PARAMS((short)1, "params"),
+      USER_ID_LIST((short)2, "userIdList"),
+      POSITION_ID_LIST((short)3, "positionIdList"),
+      COMPANY_ID((short)4, "companyId"),
+      HR_ID((short)5, "hrId"),
+      FLAG((short)6, "flag"),
+      POSITION_FLAG((short)7, "positionFlag");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // PARAMS
+            return PARAMS;
+          case 2: // USER_ID_LIST
+            return USER_ID_LIST;
+          case 3: // POSITION_ID_LIST
+            return POSITION_ID_LIST;
+          case 4: // COMPANY_ID
+            return COMPANY_ID;
+          case 5: // HR_ID
+            return HR_ID;
+          case 6: // FLAG
+            return FLAG;
+          case 7: // POSITION_FLAG
+            return POSITION_FLAG;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __COMPANYID_ISSET_ID = 0;
+    private static final int __HRID_ISSET_ID = 1;
+    private static final int __FLAG_ISSET_ID = 2;
+    private static final int __POSITIONFLAG_ISSET_ID = 3;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING),
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
+      tmpMap.put(_Fields.USER_ID_LIST, new org.apache.thrift.meta_data.FieldMetaData("userIdList", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.POSITION_ID_LIST, new org.apache.thrift.meta_data.FieldMetaData("positionIdList", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.FLAG, new org.apache.thrift.meta_data.FieldMetaData("flag", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.POSITION_FLAG, new org.apache.thrift.meta_data.FieldMetaData("positionFlag", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(sendInviteEmail_args.class, metaDataMap);
+    }
+
+    public sendInviteEmail_args() {
+    }
+
+    public sendInviteEmail_args(
+      java.util.Map<java.lang.String,java.lang.String> params,
+      java.util.List<java.lang.Integer> userIdList,
+      java.util.List<java.lang.Integer> positionIdList,
+      int companyId,
+      int hrId,
+      int flag,
+      int positionFlag)
+    {
+      this();
+      this.params = params;
+      this.userIdList = userIdList;
+      this.positionIdList = positionIdList;
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      this.hrId = hrId;
+      setHrIdIsSet(true);
+      this.flag = flag;
+      setFlagIsSet(true);
+      this.positionFlag = positionFlag;
+      setPositionFlagIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public sendInviteEmail_args(sendInviteEmail_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      if (other.isSetParams()) {
+        java.util.Map<java.lang.String,java.lang.String> __this__params = new java.util.HashMap<java.lang.String,java.lang.String>(other.params);
+        this.params = __this__params;
+      }
+      if (other.isSetUserIdList()) {
+        java.util.List<java.lang.Integer> __this__userIdList = new java.util.ArrayList<java.lang.Integer>(other.userIdList);
+        this.userIdList = __this__userIdList;
+      }
+      if (other.isSetPositionIdList()) {
+        java.util.List<java.lang.Integer> __this__positionIdList = new java.util.ArrayList<java.lang.Integer>(other.positionIdList);
+        this.positionIdList = __this__positionIdList;
+      }
+      this.companyId = other.companyId;
+      this.hrId = other.hrId;
+      this.flag = other.flag;
+      this.positionFlag = other.positionFlag;
+    }
+
+    public sendInviteEmail_args deepCopy() {
+      return new sendInviteEmail_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.params = null;
+      this.userIdList = null;
+      this.positionIdList = null;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
+      setHrIdIsSet(false);
+      this.hrId = 0;
+      setFlagIsSet(false);
+      this.flag = 0;
+      setPositionFlagIsSet(false);
+      this.positionFlag = 0;
+    }
+
+    public int getParamsSize() {
+      return (this.params == null) ? 0 : this.params.size();
+    }
+
+    public void putToParams(java.lang.String key, java.lang.String val) {
+      if (this.params == null) {
+        this.params = new java.util.HashMap<java.lang.String,java.lang.String>();
+      }
+      this.params.put(key, val);
+    }
+
+    public java.util.Map<java.lang.String,java.lang.String> getParams() {
+      return this.params;
+    }
+
+    public sendInviteEmail_args setParams(java.util.Map<java.lang.String,java.lang.String> params) {
+      this.params = params;
+      return this;
+    }
+
+    public void unsetParams() {
+      this.params = null;
+    }
+
+    /** Returns true if field params is set (has been assigned a value) and false otherwise */
+    public boolean isSetParams() {
+      return this.params != null;
+    }
+
+    public void setParamsIsSet(boolean value) {
+      if (!value) {
+        this.params = null;
+      }
+    }
+
+    public int getUserIdListSize() {
+      return (this.userIdList == null) ? 0 : this.userIdList.size();
+    }
+
+    public java.util.Iterator<java.lang.Integer> getUserIdListIterator() {
+      return (this.userIdList == null) ? null : this.userIdList.iterator();
+    }
+
+    public void addToUserIdList(int elem) {
+      if (this.userIdList == null) {
+        this.userIdList = new java.util.ArrayList<java.lang.Integer>();
+      }
+      this.userIdList.add(elem);
+    }
+
+    public java.util.List<java.lang.Integer> getUserIdList() {
+      return this.userIdList;
+    }
+
+    public sendInviteEmail_args setUserIdList(java.util.List<java.lang.Integer> userIdList) {
+      this.userIdList = userIdList;
+      return this;
+    }
+
+    public void unsetUserIdList() {
+      this.userIdList = null;
+    }
+
+    /** Returns true if field userIdList is set (has been assigned a value) and false otherwise */
+    public boolean isSetUserIdList() {
+      return this.userIdList != null;
+    }
+
+    public void setUserIdListIsSet(boolean value) {
+      if (!value) {
+        this.userIdList = null;
+      }
+    }
+
+    public int getPositionIdListSize() {
+      return (this.positionIdList == null) ? 0 : this.positionIdList.size();
+    }
+
+    public java.util.Iterator<java.lang.Integer> getPositionIdListIterator() {
+      return (this.positionIdList == null) ? null : this.positionIdList.iterator();
+    }
+
+    public void addToPositionIdList(int elem) {
+      if (this.positionIdList == null) {
+        this.positionIdList = new java.util.ArrayList<java.lang.Integer>();
+      }
+      this.positionIdList.add(elem);
+    }
+
+    public java.util.List<java.lang.Integer> getPositionIdList() {
+      return this.positionIdList;
+    }
+
+    public sendInviteEmail_args setPositionIdList(java.util.List<java.lang.Integer> positionIdList) {
+      this.positionIdList = positionIdList;
+      return this;
+    }
+
+    public void unsetPositionIdList() {
+      this.positionIdList = null;
+    }
+
+    /** Returns true if field positionIdList is set (has been assigned a value) and false otherwise */
+    public boolean isSetPositionIdList() {
+      return this.positionIdList != null;
+    }
+
+    public void setPositionIdListIsSet(boolean value) {
+      if (!value) {
+        this.positionIdList = null;
+      }
+    }
+
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public sendInviteEmail_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
+    public int getHrId() {
+      return this.hrId;
+    }
+
+    public sendInviteEmail_args setHrId(int hrId) {
+      this.hrId = hrId;
+      setHrIdIsSet(true);
+      return this;
+    }
+
+    public void unsetHrId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __HRID_ISSET_ID);
+    }
+
+    /** Returns true if field hrId is set (has been assigned a value) and false otherwise */
+    public boolean isSetHrId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __HRID_ISSET_ID);
+    }
+
+    public void setHrIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __HRID_ISSET_ID, value);
+    }
+
+    public int getFlag() {
+      return this.flag;
+    }
+
+    public sendInviteEmail_args setFlag(int flag) {
+      this.flag = flag;
+      setFlagIsSet(true);
+      return this;
+    }
+
+    public void unsetFlag() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __FLAG_ISSET_ID);
+    }
+
+    /** Returns true if field flag is set (has been assigned a value) and false otherwise */
+    public boolean isSetFlag() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __FLAG_ISSET_ID);
+    }
+
+    public void setFlagIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __FLAG_ISSET_ID, value);
+    }
+
+    public int getPositionFlag() {
+      return this.positionFlag;
+    }
+
+    public sendInviteEmail_args setPositionFlag(int positionFlag) {
+      this.positionFlag = positionFlag;
+      setPositionFlagIsSet(true);
+      return this;
+    }
+
+    public void unsetPositionFlag() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __POSITIONFLAG_ISSET_ID);
+    }
+
+    /** Returns true if field positionFlag is set (has been assigned a value) and false otherwise */
+    public boolean isSetPositionFlag() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __POSITIONFLAG_ISSET_ID);
+    }
+
+    public void setPositionFlagIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __POSITIONFLAG_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case PARAMS:
+        if (value == null) {
+          unsetParams();
+        } else {
+          setParams((java.util.Map<java.lang.String,java.lang.String>)value);
+        }
+        break;
+
+      case USER_ID_LIST:
+        if (value == null) {
+          unsetUserIdList();
+        } else {
+          setUserIdList((java.util.List<java.lang.Integer>)value);
+        }
+        break;
+
+      case POSITION_ID_LIST:
+        if (value == null) {
+          unsetPositionIdList();
+        } else {
+          setPositionIdList((java.util.List<java.lang.Integer>)value);
+        }
+        break;
+
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompanyId();
+        } else {
+          setCompanyId((java.lang.Integer)value);
+        }
+        break;
+
+      case HR_ID:
+        if (value == null) {
+          unsetHrId();
+        } else {
+          setHrId((java.lang.Integer)value);
+        }
+        break;
+
+      case FLAG:
+        if (value == null) {
+          unsetFlag();
+        } else {
+          setFlag((java.lang.Integer)value);
+        }
+        break;
+
+      case POSITION_FLAG:
+        if (value == null) {
+          unsetPositionFlag();
+        } else {
+          setPositionFlag((java.lang.Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case PARAMS:
+        return getParams();
+
+      case USER_ID_LIST:
+        return getUserIdList();
+
+      case POSITION_ID_LIST:
+        return getPositionIdList();
+
+      case COMPANY_ID:
+        return getCompanyId();
+
+      case HR_ID:
+        return getHrId();
+
+      case FLAG:
+        return getFlag();
+
+      case POSITION_FLAG:
+        return getPositionFlag();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case PARAMS:
+        return isSetParams();
+      case USER_ID_LIST:
+        return isSetUserIdList();
+      case POSITION_ID_LIST:
+        return isSetPositionIdList();
+      case COMPANY_ID:
+        return isSetCompanyId();
+      case HR_ID:
+        return isSetHrId();
+      case FLAG:
+        return isSetFlag();
+      case POSITION_FLAG:
+        return isSetPositionFlag();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof sendInviteEmail_args)
+        return this.equals((sendInviteEmail_args)that);
+      return false;
+    }
+
+    public boolean equals(sendInviteEmail_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_params = true && this.isSetParams();
+      boolean that_present_params = true && that.isSetParams();
+      if (this_present_params || that_present_params) {
+        if (!(this_present_params && that_present_params))
+          return false;
+        if (!this.params.equals(that.params))
+          return false;
+      }
+
+      boolean this_present_userIdList = true && this.isSetUserIdList();
+      boolean that_present_userIdList = true && that.isSetUserIdList();
+      if (this_present_userIdList || that_present_userIdList) {
+        if (!(this_present_userIdList && that_present_userIdList))
+          return false;
+        if (!this.userIdList.equals(that.userIdList))
+          return false;
+      }
+
+      boolean this_present_positionIdList = true && this.isSetPositionIdList();
+      boolean that_present_positionIdList = true && that.isSetPositionIdList();
+      if (this_present_positionIdList || that_present_positionIdList) {
+        if (!(this_present_positionIdList && that_present_positionIdList))
+          return false;
+        if (!this.positionIdList.equals(that.positionIdList))
+          return false;
+      }
+
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
+      boolean this_present_hrId = true;
+      boolean that_present_hrId = true;
+      if (this_present_hrId || that_present_hrId) {
+        if (!(this_present_hrId && that_present_hrId))
+          return false;
+        if (this.hrId != that.hrId)
+          return false;
+      }
+
+      boolean this_present_flag = true;
+      boolean that_present_flag = true;
+      if (this_present_flag || that_present_flag) {
+        if (!(this_present_flag && that_present_flag))
+          return false;
+        if (this.flag != that.flag)
+          return false;
+      }
+
+      boolean this_present_positionFlag = true;
+      boolean that_present_positionFlag = true;
+      if (this_present_positionFlag || that_present_positionFlag) {
+        if (!(this_present_positionFlag && that_present_positionFlag))
+          return false;
+        if (this.positionFlag != that.positionFlag)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetParams()) ? 131071 : 524287);
+      if (isSetParams())
+        hashCode = hashCode * 8191 + params.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetUserIdList()) ? 131071 : 524287);
+      if (isSetUserIdList())
+        hashCode = hashCode * 8191 + userIdList.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetPositionIdList()) ? 131071 : 524287);
+      if (isSetPositionIdList())
+        hashCode = hashCode * 8191 + positionIdList.hashCode();
+
+      hashCode = hashCode * 8191 + companyId;
+
+      hashCode = hashCode * 8191 + hrId;
+
+      hashCode = hashCode * 8191 + flag;
+
+      hashCode = hashCode * 8191 + positionFlag;
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(sendInviteEmail_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetParams()).compareTo(other.isSetParams());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetParams()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.params, other.params);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetUserIdList()).compareTo(other.isSetUserIdList());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetUserIdList()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.userIdList, other.userIdList);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetPositionIdList()).compareTo(other.isSetPositionIdList());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPositionIdList()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.positionIdList, other.positionIdList);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetHrId()).compareTo(other.isSetHrId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetHrId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hrId, other.hrId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetFlag()).compareTo(other.isSetFlag());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetFlag()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.flag, other.flag);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetPositionFlag()).compareTo(other.isSetPositionFlag());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPositionFlag()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.positionFlag, other.positionFlag);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("sendInviteEmail_args(");
+      boolean first = true;
+
+      sb.append("params:");
+      if (this.params == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.params);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("userIdList:");
+      if (this.userIdList == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.userIdList);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("positionIdList:");
+      if (this.positionIdList == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.positionIdList);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("hrId:");
+      sb.append(this.hrId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("flag:");
+      sb.append(this.flag);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("positionFlag:");
+      sb.append(this.positionFlag);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class sendInviteEmail_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendInviteEmail_argsStandardScheme getScheme() {
+        return new sendInviteEmail_argsStandardScheme();
+      }
+    }
+
+    private static class sendInviteEmail_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<sendInviteEmail_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, sendInviteEmail_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // PARAMS
+              if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
+                {
+                  org.apache.thrift.protocol.TMap _map266 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map266.size);
+                  java.lang.String _key267;
+                  java.lang.String _val268;
+                  for (int _i269 = 0; _i269 < _map266.size; ++_i269)
+                  {
+                    _key267 = iprot.readString();
+                    _val268 = iprot.readString();
+                    struct.params.put(_key267, _val268);
+                  }
+                  iprot.readMapEnd();
+                }
+                struct.setParamsIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // USER_ID_LIST
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list270 = iprot.readListBegin();
+                  struct.userIdList = new java.util.ArrayList<java.lang.Integer>(_list270.size);
+                  int _elem271;
+                  for (int _i272 = 0; _i272 < _list270.size; ++_i272)
+                  {
+                    _elem271 = iprot.readI32();
+                    struct.userIdList.add(_elem271);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setUserIdListIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // POSITION_ID_LIST
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list273 = iprot.readListBegin();
+                  struct.positionIdList = new java.util.ArrayList<java.lang.Integer>(_list273.size);
+                  int _elem274;
+                  for (int _i275 = 0; _i275 < _list273.size; ++_i275)
+                  {
+                    _elem274 = iprot.readI32();
+                    struct.positionIdList.add(_elem274);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setPositionIdListIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 4: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 5: // HR_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.hrId = iprot.readI32();
+                struct.setHrIdIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 6: // FLAG
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.flag = iprot.readI32();
+                struct.setFlagIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 7: // POSITION_FLAG
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.positionFlag = iprot.readI32();
+                struct.setPositionFlagIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, sendInviteEmail_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.params != null) {
+          oprot.writeFieldBegin(PARAMS_FIELD_DESC);
+          {
+            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter276 : struct.params.entrySet())
+            {
+              oprot.writeString(_iter276.getKey());
+              oprot.writeString(_iter276.getValue());
+            }
+            oprot.writeMapEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        if (struct.userIdList != null) {
+          oprot.writeFieldBegin(USER_ID_LIST_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.userIdList.size()));
+            for (int _iter277 : struct.userIdList)
+            {
+              oprot.writeI32(_iter277);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        if (struct.positionIdList != null) {
+          oprot.writeFieldBegin(POSITION_ID_LIST_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.positionIdList.size()));
+            for (int _iter278 : struct.positionIdList)
+            {
+              oprot.writeI32(_iter278);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(HR_ID_FIELD_DESC);
+        oprot.writeI32(struct.hrId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(FLAG_FIELD_DESC);
+        oprot.writeI32(struct.flag);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(POSITION_FLAG_FIELD_DESC);
+        oprot.writeI32(struct.positionFlag);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class sendInviteEmail_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendInviteEmail_argsTupleScheme getScheme() {
+        return new sendInviteEmail_argsTupleScheme();
+      }
+    }
+
+    private static class sendInviteEmail_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<sendInviteEmail_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, sendInviteEmail_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetParams()) {
+          optionals.set(0);
+        }
+        if (struct.isSetUserIdList()) {
+          optionals.set(1);
+        }
+        if (struct.isSetPositionIdList()) {
+          optionals.set(2);
+        }
+        if (struct.isSetCompanyId()) {
+          optionals.set(3);
+        }
+        if (struct.isSetHrId()) {
+          optionals.set(4);
+        }
+        if (struct.isSetFlag()) {
+          optionals.set(5);
+        }
+        if (struct.isSetPositionFlag()) {
+          optionals.set(6);
+        }
+        oprot.writeBitSet(optionals, 7);
+        if (struct.isSetParams()) {
+          {
+            oprot.writeI32(struct.params.size());
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter279 : struct.params.entrySet())
+            {
+              oprot.writeString(_iter279.getKey());
+              oprot.writeString(_iter279.getValue());
+            }
+          }
+        }
+        if (struct.isSetUserIdList()) {
+          {
+            oprot.writeI32(struct.userIdList.size());
+            for (int _iter280 : struct.userIdList)
+            {
+              oprot.writeI32(_iter280);
+            }
+          }
+        }
+        if (struct.isSetPositionIdList()) {
+          {
+            oprot.writeI32(struct.positionIdList.size());
+            for (int _iter281 : struct.positionIdList)
+            {
+              oprot.writeI32(_iter281);
+            }
+          }
+        }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
+        }
+        if (struct.isSetHrId()) {
+          oprot.writeI32(struct.hrId);
+        }
+        if (struct.isSetFlag()) {
+          oprot.writeI32(struct.flag);
+        }
+        if (struct.isSetPositionFlag()) {
+          oprot.writeI32(struct.positionFlag);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, sendInviteEmail_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(7);
+        if (incoming.get(0)) {
+          {
+            org.apache.thrift.protocol.TMap _map282 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map282.size);
+            java.lang.String _key283;
+            java.lang.String _val284;
+            for (int _i285 = 0; _i285 < _map282.size; ++_i285)
+            {
+              _key283 = iprot.readString();
+              _val284 = iprot.readString();
+              struct.params.put(_key283, _val284);
+            }
+          }
+          struct.setParamsIsSet(true);
+        }
+        if (incoming.get(1)) {
+          {
+            org.apache.thrift.protocol.TList _list286 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.userIdList = new java.util.ArrayList<java.lang.Integer>(_list286.size);
+            int _elem287;
+            for (int _i288 = 0; _i288 < _list286.size; ++_i288)
+            {
+              _elem287 = iprot.readI32();
+              struct.userIdList.add(_elem287);
+            }
+          }
+          struct.setUserIdListIsSet(true);
+        }
+        if (incoming.get(2)) {
+          {
+            org.apache.thrift.protocol.TList _list289 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.positionIdList = new java.util.ArrayList<java.lang.Integer>(_list289.size);
+            int _elem290;
+            for (int _i291 = 0; _i291 < _list289.size; ++_i291)
+            {
+              _elem290 = iprot.readI32();
+              struct.positionIdList.add(_elem290);
+            }
+          }
+          struct.setPositionIdListIsSet(true);
+        }
+        if (incoming.get(3)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
+        }
+        if (incoming.get(4)) {
+          struct.hrId = iprot.readI32();
+          struct.setHrIdIsSet(true);
+        }
+        if (incoming.get(5)) {
+          struct.flag = iprot.readI32();
+          struct.setFlagIsSet(true);
+        }
+        if (incoming.get(6)) {
+          struct.positionFlag = iprot.readI32();
+          struct.setPositionFlagIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class sendInviteEmail_result implements org.apache.thrift.TBase<sendInviteEmail_result, sendInviteEmail_result._Fields>, java.io.Serializable, Cloneable, Comparable<sendInviteEmail_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("sendInviteEmail_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new sendInviteEmail_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new sendInviteEmail_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(sendInviteEmail_result.class, metaDataMap);
+    }
+
+    public sendInviteEmail_result() {
+    }
+
+    public sendInviteEmail_result(
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public sendInviteEmail_result(sendInviteEmail_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public sendInviteEmail_result deepCopy() {
+      return new sendInviteEmail_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public sendInviteEmail_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public sendInviteEmail_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof sendInviteEmail_result)
+        return this.equals((sendInviteEmail_result)that);
+      return false;
+    }
+
+    public boolean equals(sendInviteEmail_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(sendInviteEmail_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("sendInviteEmail_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class sendInviteEmail_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendInviteEmail_resultStandardScheme getScheme() {
+        return new sendInviteEmail_resultStandardScheme();
+      }
+    }
+
+    private static class sendInviteEmail_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<sendInviteEmail_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, sendInviteEmail_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, sendInviteEmail_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class sendInviteEmail_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendInviteEmail_resultTupleScheme getScheme() {
+        return new sendInviteEmail_resultTupleScheme();
+      }
+    }
+
+    private static class sendInviteEmail_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<sendInviteEmail_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, sendInviteEmail_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, sendInviteEmail_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class sendResumeEmail_args implements org.apache.thrift.TBase<sendResumeEmail_args, sendResumeEmail_args._Fields>, java.io.Serializable, Cloneable, Comparable<sendResumeEmail_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("sendResumeEmail_args");
+
+    private static final org.apache.thrift.protocol.TField PARAMS_FIELD_DESC = new org.apache.thrift.protocol.TField("params", org.apache.thrift.protocol.TType.MAP, (short)1);
+    private static final org.apache.thrift.protocol.TField USER_ID_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("userIdList", org.apache.thrift.protocol.TType.LIST, (short)2);
+    private static final org.apache.thrift.protocol.TField ID_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("idList", org.apache.thrift.protocol.TType.LIST, (short)3);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)4);
+    private static final org.apache.thrift.protocol.TField HR_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("hrId", org.apache.thrift.protocol.TType.I32, (short)5);
+    private static final org.apache.thrift.protocol.TField FLAG_FIELD_DESC = new org.apache.thrift.protocol.TField("flag", org.apache.thrift.protocol.TType.I32, (short)6);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new sendResumeEmail_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new sendResumeEmail_argsTupleSchemeFactory();
+
+    public java.util.Map<java.lang.String,java.lang.String> params; // required
+    public java.util.List<java.lang.Integer> userIdList; // required
+    public java.util.List<java.lang.Integer> idList; // required
+    public int companyId; // required
+    public int hrId; // required
+    public int flag; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      PARAMS((short)1, "params"),
+      USER_ID_LIST((short)2, "userIdList"),
+      ID_LIST((short)3, "idList"),
+      COMPANY_ID((short)4, "companyId"),
+      HR_ID((short)5, "hrId"),
+      FLAG((short)6, "flag");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // PARAMS
+            return PARAMS;
+          case 2: // USER_ID_LIST
+            return USER_ID_LIST;
+          case 3: // ID_LIST
+            return ID_LIST;
+          case 4: // COMPANY_ID
+            return COMPANY_ID;
+          case 5: // HR_ID
+            return HR_ID;
+          case 6: // FLAG
+            return FLAG;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __COMPANYID_ISSET_ID = 0;
+    private static final int __HRID_ISSET_ID = 1;
+    private static final int __FLAG_ISSET_ID = 2;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.PARAMS, new org.apache.thrift.meta_data.FieldMetaData("params", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING),
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
+      tmpMap.put(_Fields.USER_ID_LIST, new org.apache.thrift.meta_data.FieldMetaData("userIdList", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.ID_LIST, new org.apache.thrift.meta_data.FieldMetaData("idList", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.FLAG, new org.apache.thrift.meta_data.FieldMetaData("flag", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(sendResumeEmail_args.class, metaDataMap);
+    }
+
+    public sendResumeEmail_args() {
+    }
+
+    public sendResumeEmail_args(
+      java.util.Map<java.lang.String,java.lang.String> params,
+      java.util.List<java.lang.Integer> userIdList,
+      java.util.List<java.lang.Integer> idList,
+      int companyId,
+      int hrId,
+      int flag)
+    {
+      this();
+      this.params = params;
+      this.userIdList = userIdList;
+      this.idList = idList;
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      this.hrId = hrId;
+      setHrIdIsSet(true);
+      this.flag = flag;
+      setFlagIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public sendResumeEmail_args(sendResumeEmail_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      if (other.isSetParams()) {
+        java.util.Map<java.lang.String,java.lang.String> __this__params = new java.util.HashMap<java.lang.String,java.lang.String>(other.params);
+        this.params = __this__params;
+      }
+      if (other.isSetUserIdList()) {
+        java.util.List<java.lang.Integer> __this__userIdList = new java.util.ArrayList<java.lang.Integer>(other.userIdList);
+        this.userIdList = __this__userIdList;
+      }
+      if (other.isSetIdList()) {
+        java.util.List<java.lang.Integer> __this__idList = new java.util.ArrayList<java.lang.Integer>(other.idList);
+        this.idList = __this__idList;
+      }
+      this.companyId = other.companyId;
+      this.hrId = other.hrId;
+      this.flag = other.flag;
+    }
+
+    public sendResumeEmail_args deepCopy() {
+      return new sendResumeEmail_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.params = null;
+      this.userIdList = null;
+      this.idList = null;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
+      setHrIdIsSet(false);
+      this.hrId = 0;
+      setFlagIsSet(false);
+      this.flag = 0;
+    }
+
+    public int getParamsSize() {
+      return (this.params == null) ? 0 : this.params.size();
+    }
+
+    public void putToParams(java.lang.String key, java.lang.String val) {
+      if (this.params == null) {
+        this.params = new java.util.HashMap<java.lang.String,java.lang.String>();
+      }
+      this.params.put(key, val);
+    }
+
+    public java.util.Map<java.lang.String,java.lang.String> getParams() {
+      return this.params;
+    }
+
+    public sendResumeEmail_args setParams(java.util.Map<java.lang.String,java.lang.String> params) {
+      this.params = params;
+      return this;
+    }
+
+    public void unsetParams() {
+      this.params = null;
+    }
+
+    /** Returns true if field params is set (has been assigned a value) and false otherwise */
+    public boolean isSetParams() {
+      return this.params != null;
+    }
+
+    public void setParamsIsSet(boolean value) {
+      if (!value) {
+        this.params = null;
+      }
+    }
+
+    public int getUserIdListSize() {
+      return (this.userIdList == null) ? 0 : this.userIdList.size();
+    }
+
+    public java.util.Iterator<java.lang.Integer> getUserIdListIterator() {
+      return (this.userIdList == null) ? null : this.userIdList.iterator();
+    }
+
+    public void addToUserIdList(int elem) {
+      if (this.userIdList == null) {
+        this.userIdList = new java.util.ArrayList<java.lang.Integer>();
+      }
+      this.userIdList.add(elem);
+    }
+
+    public java.util.List<java.lang.Integer> getUserIdList() {
+      return this.userIdList;
+    }
+
+    public sendResumeEmail_args setUserIdList(java.util.List<java.lang.Integer> userIdList) {
+      this.userIdList = userIdList;
+      return this;
+    }
+
+    public void unsetUserIdList() {
+      this.userIdList = null;
+    }
+
+    /** Returns true if field userIdList is set (has been assigned a value) and false otherwise */
+    public boolean isSetUserIdList() {
+      return this.userIdList != null;
+    }
+
+    public void setUserIdListIsSet(boolean value) {
+      if (!value) {
+        this.userIdList = null;
+      }
+    }
+
+    public int getIdListSize() {
+      return (this.idList == null) ? 0 : this.idList.size();
+    }
+
+    public java.util.Iterator<java.lang.Integer> getIdListIterator() {
+      return (this.idList == null) ? null : this.idList.iterator();
+    }
+
+    public void addToIdList(int elem) {
+      if (this.idList == null) {
+        this.idList = new java.util.ArrayList<java.lang.Integer>();
+      }
+      this.idList.add(elem);
+    }
+
+    public java.util.List<java.lang.Integer> getIdList() {
+      return this.idList;
+    }
+
+    public sendResumeEmail_args setIdList(java.util.List<java.lang.Integer> idList) {
+      this.idList = idList;
+      return this;
+    }
+
+    public void unsetIdList() {
+      this.idList = null;
+    }
+
+    /** Returns true if field idList is set (has been assigned a value) and false otherwise */
+    public boolean isSetIdList() {
+      return this.idList != null;
+    }
+
+    public void setIdListIsSet(boolean value) {
+      if (!value) {
+        this.idList = null;
+      }
+    }
+
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public sendResumeEmail_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
+    public int getHrId() {
+      return this.hrId;
+    }
+
+    public sendResumeEmail_args setHrId(int hrId) {
+      this.hrId = hrId;
+      setHrIdIsSet(true);
+      return this;
+    }
+
+    public void unsetHrId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __HRID_ISSET_ID);
+    }
+
+    /** Returns true if field hrId is set (has been assigned a value) and false otherwise */
+    public boolean isSetHrId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __HRID_ISSET_ID);
+    }
+
+    public void setHrIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __HRID_ISSET_ID, value);
+    }
+
+    public int getFlag() {
+      return this.flag;
+    }
+
+    public sendResumeEmail_args setFlag(int flag) {
+      this.flag = flag;
+      setFlagIsSet(true);
+      return this;
+    }
+
+    public void unsetFlag() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __FLAG_ISSET_ID);
+    }
+
+    /** Returns true if field flag is set (has been assigned a value) and false otherwise */
+    public boolean isSetFlag() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __FLAG_ISSET_ID);
+    }
+
+    public void setFlagIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __FLAG_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case PARAMS:
+        if (value == null) {
+          unsetParams();
+        } else {
+          setParams((java.util.Map<java.lang.String,java.lang.String>)value);
+        }
+        break;
+
+      case USER_ID_LIST:
+        if (value == null) {
+          unsetUserIdList();
+        } else {
+          setUserIdList((java.util.List<java.lang.Integer>)value);
+        }
+        break;
+
+      case ID_LIST:
+        if (value == null) {
+          unsetIdList();
+        } else {
+          setIdList((java.util.List<java.lang.Integer>)value);
+        }
+        break;
+
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompanyId();
+        } else {
+          setCompanyId((java.lang.Integer)value);
+        }
+        break;
+
+      case HR_ID:
+        if (value == null) {
+          unsetHrId();
+        } else {
+          setHrId((java.lang.Integer)value);
+        }
+        break;
+
+      case FLAG:
+        if (value == null) {
+          unsetFlag();
+        } else {
+          setFlag((java.lang.Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case PARAMS:
+        return getParams();
+
+      case USER_ID_LIST:
+        return getUserIdList();
+
+      case ID_LIST:
+        return getIdList();
+
+      case COMPANY_ID:
+        return getCompanyId();
+
+      case HR_ID:
+        return getHrId();
+
+      case FLAG:
+        return getFlag();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case PARAMS:
+        return isSetParams();
+      case USER_ID_LIST:
+        return isSetUserIdList();
+      case ID_LIST:
+        return isSetIdList();
+      case COMPANY_ID:
+        return isSetCompanyId();
+      case HR_ID:
+        return isSetHrId();
+      case FLAG:
+        return isSetFlag();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof sendResumeEmail_args)
+        return this.equals((sendResumeEmail_args)that);
+      return false;
+    }
+
+    public boolean equals(sendResumeEmail_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_params = true && this.isSetParams();
+      boolean that_present_params = true && that.isSetParams();
+      if (this_present_params || that_present_params) {
+        if (!(this_present_params && that_present_params))
+          return false;
+        if (!this.params.equals(that.params))
+          return false;
+      }
+
+      boolean this_present_userIdList = true && this.isSetUserIdList();
+      boolean that_present_userIdList = true && that.isSetUserIdList();
+      if (this_present_userIdList || that_present_userIdList) {
+        if (!(this_present_userIdList && that_present_userIdList))
+          return false;
+        if (!this.userIdList.equals(that.userIdList))
+          return false;
+      }
+
+      boolean this_present_idList = true && this.isSetIdList();
+      boolean that_present_idList = true && that.isSetIdList();
+      if (this_present_idList || that_present_idList) {
+        if (!(this_present_idList && that_present_idList))
+          return false;
+        if (!this.idList.equals(that.idList))
+          return false;
+      }
+
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
+      boolean this_present_hrId = true;
+      boolean that_present_hrId = true;
+      if (this_present_hrId || that_present_hrId) {
+        if (!(this_present_hrId && that_present_hrId))
+          return false;
+        if (this.hrId != that.hrId)
+          return false;
+      }
+
+      boolean this_present_flag = true;
+      boolean that_present_flag = true;
+      if (this_present_flag || that_present_flag) {
+        if (!(this_present_flag && that_present_flag))
+          return false;
+        if (this.flag != that.flag)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetParams()) ? 131071 : 524287);
+      if (isSetParams())
+        hashCode = hashCode * 8191 + params.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetUserIdList()) ? 131071 : 524287);
+      if (isSetUserIdList())
+        hashCode = hashCode * 8191 + userIdList.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetIdList()) ? 131071 : 524287);
+      if (isSetIdList())
+        hashCode = hashCode * 8191 + idList.hashCode();
+
+      hashCode = hashCode * 8191 + companyId;
+
+      hashCode = hashCode * 8191 + hrId;
+
+      hashCode = hashCode * 8191 + flag;
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(sendResumeEmail_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetParams()).compareTo(other.isSetParams());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetParams()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.params, other.params);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetUserIdList()).compareTo(other.isSetUserIdList());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetUserIdList()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.userIdList, other.userIdList);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetIdList()).compareTo(other.isSetIdList());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetIdList()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.idList, other.idList);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetHrId()).compareTo(other.isSetHrId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetHrId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hrId, other.hrId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetFlag()).compareTo(other.isSetFlag());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetFlag()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.flag, other.flag);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("sendResumeEmail_args(");
+      boolean first = true;
+
+      sb.append("params:");
+      if (this.params == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.params);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("userIdList:");
+      if (this.userIdList == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.userIdList);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("idList:");
+      if (this.idList == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.idList);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("hrId:");
+      sb.append(this.hrId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("flag:");
+      sb.append(this.flag);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class sendResumeEmail_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendResumeEmail_argsStandardScheme getScheme() {
+        return new sendResumeEmail_argsStandardScheme();
+      }
+    }
+
+    private static class sendResumeEmail_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<sendResumeEmail_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, sendResumeEmail_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // PARAMS
+              if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
+                {
+                  org.apache.thrift.protocol.TMap _map292 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map292.size);
+                  java.lang.String _key293;
+                  java.lang.String _val294;
+                  for (int _i295 = 0; _i295 < _map292.size; ++_i295)
+                  {
+                    _key293 = iprot.readString();
+                    _val294 = iprot.readString();
+                    struct.params.put(_key293, _val294);
+                  }
+                  iprot.readMapEnd();
+                }
+                struct.setParamsIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // USER_ID_LIST
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list296 = iprot.readListBegin();
+                  struct.userIdList = new java.util.ArrayList<java.lang.Integer>(_list296.size);
+                  int _elem297;
+                  for (int _i298 = 0; _i298 < _list296.size; ++_i298)
+                  {
+                    _elem297 = iprot.readI32();
+                    struct.userIdList.add(_elem297);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setUserIdListIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // ID_LIST
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list299 = iprot.readListBegin();
+                  struct.idList = new java.util.ArrayList<java.lang.Integer>(_list299.size);
+                  int _elem300;
+                  for (int _i301 = 0; _i301 < _list299.size; ++_i301)
+                  {
+                    _elem300 = iprot.readI32();
+                    struct.idList.add(_elem300);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setIdListIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 4: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 5: // HR_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.hrId = iprot.readI32();
+                struct.setHrIdIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 6: // FLAG
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.flag = iprot.readI32();
+                struct.setFlagIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, sendResumeEmail_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.params != null) {
+          oprot.writeFieldBegin(PARAMS_FIELD_DESC);
+          {
+            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter302 : struct.params.entrySet())
+            {
+              oprot.writeString(_iter302.getKey());
+              oprot.writeString(_iter302.getValue());
+            }
+            oprot.writeMapEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        if (struct.userIdList != null) {
+          oprot.writeFieldBegin(USER_ID_LIST_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.userIdList.size()));
+            for (int _iter303 : struct.userIdList)
+            {
+              oprot.writeI32(_iter303);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        if (struct.idList != null) {
+          oprot.writeFieldBegin(ID_LIST_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.idList.size()));
+            for (int _iter304 : struct.idList)
+            {
+              oprot.writeI32(_iter304);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(HR_ID_FIELD_DESC);
+        oprot.writeI32(struct.hrId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(FLAG_FIELD_DESC);
+        oprot.writeI32(struct.flag);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class sendResumeEmail_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendResumeEmail_argsTupleScheme getScheme() {
+        return new sendResumeEmail_argsTupleScheme();
+      }
+    }
+
+    private static class sendResumeEmail_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<sendResumeEmail_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, sendResumeEmail_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetParams()) {
+          optionals.set(0);
+        }
+        if (struct.isSetUserIdList()) {
+          optionals.set(1);
+        }
+        if (struct.isSetIdList()) {
+          optionals.set(2);
+        }
+        if (struct.isSetCompanyId()) {
+          optionals.set(3);
+        }
+        if (struct.isSetHrId()) {
+          optionals.set(4);
+        }
+        if (struct.isSetFlag()) {
+          optionals.set(5);
+        }
+        oprot.writeBitSet(optionals, 6);
+        if (struct.isSetParams()) {
+          {
+            oprot.writeI32(struct.params.size());
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter305 : struct.params.entrySet())
+            {
+              oprot.writeString(_iter305.getKey());
+              oprot.writeString(_iter305.getValue());
+            }
+          }
+        }
+        if (struct.isSetUserIdList()) {
+          {
+            oprot.writeI32(struct.userIdList.size());
+            for (int _iter306 : struct.userIdList)
+            {
+              oprot.writeI32(_iter306);
+            }
+          }
+        }
+        if (struct.isSetIdList()) {
+          {
+            oprot.writeI32(struct.idList.size());
+            for (int _iter307 : struct.idList)
+            {
+              oprot.writeI32(_iter307);
+            }
+          }
+        }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
+        }
+        if (struct.isSetHrId()) {
+          oprot.writeI32(struct.hrId);
+        }
+        if (struct.isSetFlag()) {
+          oprot.writeI32(struct.flag);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, sendResumeEmail_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(6);
+        if (incoming.get(0)) {
+          {
+            org.apache.thrift.protocol.TMap _map308 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map308.size);
+            java.lang.String _key309;
+            java.lang.String _val310;
+            for (int _i311 = 0; _i311 < _map308.size; ++_i311)
+            {
+              _key309 = iprot.readString();
+              _val310 = iprot.readString();
+              struct.params.put(_key309, _val310);
+            }
+          }
+          struct.setParamsIsSet(true);
+        }
+        if (incoming.get(1)) {
+          {
+            org.apache.thrift.protocol.TList _list312 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.userIdList = new java.util.ArrayList<java.lang.Integer>(_list312.size);
+            int _elem313;
+            for (int _i314 = 0; _i314 < _list312.size; ++_i314)
+            {
+              _elem313 = iprot.readI32();
+              struct.userIdList.add(_elem313);
+            }
+          }
+          struct.setUserIdListIsSet(true);
+        }
+        if (incoming.get(2)) {
+          {
+            org.apache.thrift.protocol.TList _list315 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.idList = new java.util.ArrayList<java.lang.Integer>(_list315.size);
+            int _elem316;
+            for (int _i317 = 0; _i317 < _list315.size; ++_i317)
+            {
+              _elem316 = iprot.readI32();
+              struct.idList.add(_elem316);
+            }
+          }
+          struct.setIdListIsSet(true);
+        }
+        if (incoming.get(3)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
+        }
+        if (incoming.get(4)) {
+          struct.hrId = iprot.readI32();
+          struct.setHrIdIsSet(true);
+        }
+        if (incoming.get(5)) {
+          struct.flag = iprot.readI32();
+          struct.setFlagIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class sendResumeEmail_result implements org.apache.thrift.TBase<sendResumeEmail_result, sendResumeEmail_result._Fields>, java.io.Serializable, Cloneable, Comparable<sendResumeEmail_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("sendResumeEmail_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new sendResumeEmail_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new sendResumeEmail_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(sendResumeEmail_result.class, metaDataMap);
+    }
+
+    public sendResumeEmail_result() {
+    }
+
+    public sendResumeEmail_result(
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public sendResumeEmail_result(sendResumeEmail_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public sendResumeEmail_result deepCopy() {
+      return new sendResumeEmail_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public sendResumeEmail_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public sendResumeEmail_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof sendResumeEmail_result)
+        return this.equals((sendResumeEmail_result)that);
+      return false;
+    }
+
+    public boolean equals(sendResumeEmail_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(sendResumeEmail_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("sendResumeEmail_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class sendResumeEmail_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendResumeEmail_resultStandardScheme getScheme() {
+        return new sendResumeEmail_resultStandardScheme();
+      }
+    }
+
+    private static class sendResumeEmail_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<sendResumeEmail_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, sendResumeEmail_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, sendResumeEmail_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class sendResumeEmail_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendResumeEmail_resultTupleScheme getScheme() {
+        return new sendResumeEmail_resultTupleScheme();
+      }
+    }
+
+    private static class sendResumeEmail_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<sendResumeEmail_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, sendResumeEmail_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, sendResumeEmail_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class sendPositionInviteEmail_args implements org.apache.thrift.TBase<sendPositionInviteEmail_args, sendPositionInviteEmail_args._Fields>, java.io.Serializable, Cloneable, Comparable<sendPositionInviteEmail_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("sendPositionInviteEmail_args");
+
+    private static final org.apache.thrift.protocol.TField HR_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("hrId", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField POSITION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("positionId", org.apache.thrift.protocol.TType.I32, (short)2);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)3);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new sendPositionInviteEmail_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new sendPositionInviteEmail_argsTupleSchemeFactory();
+
+    public int hrId; // required
+    public int positionId; // required
+    public int companyId; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      HR_ID((short)1, "hrId"),
+      POSITION_ID((short)2, "positionId"),
+      COMPANY_ID((short)3, "companyId");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // HR_ID
+            return HR_ID;
+          case 2: // POSITION_ID
+            return POSITION_ID;
+          case 3: // COMPANY_ID
+            return COMPANY_ID;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __HRID_ISSET_ID = 0;
+    private static final int __POSITIONID_ISSET_ID = 1;
+    private static final int __COMPANYID_ISSET_ID = 2;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hrId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(sendPositionInviteEmail_args.class, metaDataMap);
+    }
+
+    public sendPositionInviteEmail_args() {
+    }
+
+    public sendPositionInviteEmail_args(
+      int hrId,
+      int positionId,
+      int companyId)
+    {
+      this();
+      this.hrId = hrId;
+      setHrIdIsSet(true);
+      this.positionId = positionId;
+      setPositionIdIsSet(true);
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public sendPositionInviteEmail_args(sendPositionInviteEmail_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.hrId = other.hrId;
+      this.positionId = other.positionId;
+      this.companyId = other.companyId;
+    }
+
+    public sendPositionInviteEmail_args deepCopy() {
+      return new sendPositionInviteEmail_args(this);
+    }
+
+    @Override
+    public void clear() {
+      setHrIdIsSet(false);
+      this.hrId = 0;
+      setPositionIdIsSet(false);
+      this.positionId = 0;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
+    }
+
+    public int getHrId() {
+      return this.hrId;
+    }
+
+    public sendPositionInviteEmail_args setHrId(int hrId) {
+      this.hrId = hrId;
+      setHrIdIsSet(true);
+      return this;
+    }
+
+    public void unsetHrId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __HRID_ISSET_ID);
+    }
+
+    /** Returns true if field hrId is set (has been assigned a value) and false otherwise */
+    public boolean isSetHrId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __HRID_ISSET_ID);
+    }
+
+    public void setHrIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __HRID_ISSET_ID, value);
+    }
+
+    public int getPositionId() {
+      return this.positionId;
+    }
+
+    public sendPositionInviteEmail_args setPositionId(int positionId) {
+      this.positionId = positionId;
+      setPositionIdIsSet(true);
+      return this;
+    }
+
+    public void unsetPositionId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __POSITIONID_ISSET_ID);
+    }
+
+    /** Returns true if field positionId is set (has been assigned a value) and false otherwise */
+    public boolean isSetPositionId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __POSITIONID_ISSET_ID);
+    }
+
+    public void setPositionIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __POSITIONID_ISSET_ID, value);
+    }
+
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public sendPositionInviteEmail_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case HR_ID:
+        if (value == null) {
+          unsetHrId();
+        } else {
+          setHrId((java.lang.Integer)value);
+        }
+        break;
+
+      case POSITION_ID:
+        if (value == null) {
+          unsetPositionId();
+        } else {
+          setPositionId((java.lang.Integer)value);
+        }
+        break;
+
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompanyId();
+        } else {
+          setCompanyId((java.lang.Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case HR_ID:
+        return getHrId();
+
+      case POSITION_ID:
+        return getPositionId();
+
+      case COMPANY_ID:
+        return getCompanyId();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case HR_ID:
+        return isSetHrId();
+      case POSITION_ID:
+        return isSetPositionId();
+      case COMPANY_ID:
+        return isSetCompanyId();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof sendPositionInviteEmail_args)
+        return this.equals((sendPositionInviteEmail_args)that);
+      return false;
+    }
+
+    public boolean equals(sendPositionInviteEmail_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_hrId = true;
+      boolean that_present_hrId = true;
+      if (this_present_hrId || that_present_hrId) {
+        if (!(this_present_hrId && that_present_hrId))
+          return false;
+        if (this.hrId != that.hrId)
+          return false;
+      }
+
+      boolean this_present_positionId = true;
+      boolean that_present_positionId = true;
+      if (this_present_positionId || that_present_positionId) {
+        if (!(this_present_positionId && that_present_positionId))
+          return false;
+        if (this.positionId != that.positionId)
+          return false;
+      }
+
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + hrId;
+
+      hashCode = hashCode * 8191 + positionId;
+
+      hashCode = hashCode * 8191 + companyId;
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(sendPositionInviteEmail_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetHrId()).compareTo(other.isSetHrId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetHrId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hrId, other.hrId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPositionId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.positionId, other.positionId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("sendPositionInviteEmail_args(");
+      boolean first = true;
+
+      sb.append("hrId:");
+      sb.append(this.hrId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("positionId:");
+      sb.append(this.positionId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class sendPositionInviteEmail_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendPositionInviteEmail_argsStandardScheme getScheme() {
+        return new sendPositionInviteEmail_argsStandardScheme();
+      }
+    }
+
+    private static class sendPositionInviteEmail_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<sendPositionInviteEmail_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, sendPositionInviteEmail_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // HR_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.hrId = iprot.readI32();
+                struct.setHrIdIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // POSITION_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.positionId = iprot.readI32();
+                struct.setPositionIdIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, sendPositionInviteEmail_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(HR_ID_FIELD_DESC);
+        oprot.writeI32(struct.hrId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(POSITION_ID_FIELD_DESC);
+        oprot.writeI32(struct.positionId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class sendPositionInviteEmail_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendPositionInviteEmail_argsTupleScheme getScheme() {
+        return new sendPositionInviteEmail_argsTupleScheme();
+      }
+    }
+
+    private static class sendPositionInviteEmail_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<sendPositionInviteEmail_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, sendPositionInviteEmail_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetHrId()) {
+          optionals.set(0);
+        }
+        if (struct.isSetPositionId()) {
+          optionals.set(1);
+        }
+        if (struct.isSetCompanyId()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
+        if (struct.isSetHrId()) {
+          oprot.writeI32(struct.hrId);
+        }
+        if (struct.isSetPositionId()) {
+          oprot.writeI32(struct.positionId);
+        }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, sendPositionInviteEmail_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(3);
+        if (incoming.get(0)) {
+          struct.hrId = iprot.readI32();
+          struct.setHrIdIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.positionId = iprot.readI32();
+          struct.setPositionIdIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class sendPositionInviteEmail_result implements org.apache.thrift.TBase<sendPositionInviteEmail_result, sendPositionInviteEmail_result._Fields>, java.io.Serializable, Cloneable, Comparable<sendPositionInviteEmail_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("sendPositionInviteEmail_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new sendPositionInviteEmail_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new sendPositionInviteEmail_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(sendPositionInviteEmail_result.class, metaDataMap);
+    }
+
+    public sendPositionInviteEmail_result() {
+    }
+
+    public sendPositionInviteEmail_result(
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public sendPositionInviteEmail_result(sendPositionInviteEmail_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public sendPositionInviteEmail_result deepCopy() {
+      return new sendPositionInviteEmail_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public sendPositionInviteEmail_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public sendPositionInviteEmail_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof sendPositionInviteEmail_result)
+        return this.equals((sendPositionInviteEmail_result)that);
+      return false;
+    }
+
+    public boolean equals(sendPositionInviteEmail_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(sendPositionInviteEmail_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("sendPositionInviteEmail_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class sendPositionInviteEmail_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendPositionInviteEmail_resultStandardScheme getScheme() {
+        return new sendPositionInviteEmail_resultStandardScheme();
+      }
+    }
+
+    private static class sendPositionInviteEmail_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<sendPositionInviteEmail_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, sendPositionInviteEmail_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, sendPositionInviteEmail_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class sendPositionInviteEmail_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public sendPositionInviteEmail_resultTupleScheme getScheme() {
+        return new sendPositionInviteEmail_resultTupleScheme();
+      }
+    }
+
+    private static class sendPositionInviteEmail_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<sendPositionInviteEmail_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, sendPositionInviteEmail_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, sendPositionInviteEmail_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {

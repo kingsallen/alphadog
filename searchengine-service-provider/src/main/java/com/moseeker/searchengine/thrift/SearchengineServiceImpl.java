@@ -193,18 +193,18 @@ public class SearchengineServiceImpl implements Iface {
 	}
 
     @Override
-    public FilterResp queryProfileFilterUserIdList(List<Map<String, String>> filterMapList, int page_number, int page_size) throws TException {
+    public Response queryProfileFilterUserIdList(List<Map<String, String>> filterMapList, int page_number, int page_size) throws TException {
 
         try{
-            FilterResp res=talentpoolSearchengine.getUserListByFilterIds(filterMapList, page_number, page_size);
-            if(res==null){
-                return new FilterResp();
+            Map<String,Object> res=talentpoolSearchengine.getUserListByFilterIds(filterMapList, page_number, page_size);
+            if(res==null||res.isEmpty()){
+                return ResponseUtils.success("");
             }
-            return res;
+            return ResponseUtils.success(res);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
         }
-        return new FilterResp();
+        return ResponseUtils.fail(1,"查询失败");
     }
 
 	@Override

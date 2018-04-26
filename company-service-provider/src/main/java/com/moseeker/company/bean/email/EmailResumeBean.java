@@ -11,6 +11,7 @@ public class EmailResumeBean {
     private String fromName;
     private String subject;
     private String templateName;
+    private String fromEmail;
 
     public List<ReceiveInfo> getTo() {
         return to;
@@ -50,5 +51,13 @@ public class EmailResumeBean {
 
     public void setTemplateName(String templateName) {
         this.templateName = templateName;
+    }
+
+    public String getFromEmail() {
+        return fromEmail;
+    }
+
+    public void setFromEmail(String fromEmail) {
+        this.fromEmail = fromEmail;
     }
 }
