@@ -177,6 +177,9 @@ service UserHrAccountService {
     list<hr_app_export_fields_struct.HrAppExportFieldsDO> getExportFields(1: i32 companyId, 2: i32 userHrAccountId) throws (1: common_struct.BIZException e)
     // 员工信息导入
     common_struct.Response getHrCompanyInfo(1:i32 wechat_id, 2:string unionId, 3:i32 account_id) throws (1: common_struct.BIZException e)
+
+    //设置HR聊天是否托管给智能招聘助手
+    user_hr_account_struct.UserHrAccountDO switchChatLeaveToMobot(1:i32 accountId,2:i8 leaveToMobot) throws (1: common_struct.BIZException e);
 }
 
 

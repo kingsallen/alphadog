@@ -131,9 +131,9 @@ struct UserHrAccountDO {
      5: optional i32 wxuserId,                      // 绑定的微信账号
      6: optional string password,                   // 登录密码
      7: optional string username,                   // 企业联系人
-     8: optional i8 accountType,                    // 0 超级账号；1：子账号; 2：普通账号
+     8: optional i32 accountType,                   // 0 超级账号；1：子账号; 2：普通账号
      9: optional i8 activation,                     // 账号是否激活，1：激活；0：未激活
-    10: optional i8 disable,                        // 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
+    10: optional i32 disable,                       // 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
     11: optional Timestamp registerTime,            // 注册时间
     12: optional string registerIp,                 // 注册时的IP地址
     13: optional Timestamp lastLoginTime,           // 最后的登录时间
@@ -143,7 +143,8 @@ struct UserHrAccountDO {
     17: optional string downloadToken,              // 下载行业报告校验码
     18: optional Timestamp createTime,              // 创建时间
     19: optional Timestamp updateTime,              // 修改时间
-    20: optional string headimgurl                  // 修改时间
+    20: optional string headimgurl,                 // 头像url
+    21: optional i8 leaveToMobot                    // IM聊天开关，0：不开启，1：开启，2：开启+chatbot
 }
 
 struct UserWxUserDO {

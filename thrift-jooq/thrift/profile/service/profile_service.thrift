@@ -68,7 +68,7 @@ service ProfileServices {
     i32 upsertProfile(1:i32 userId, 2:string profile)throws (1: common_struct.BIZException e);
     common_struct.Response resumeTalentProfile(1:string fileName,2:string file,3: i32 companyId)throws (1: common_struct.BIZException e);
     list<profile_struct.UserProfile> fetchUserProfile(1: list<i32> userIdList) throws (1: common_struct.BIZException e);
-    common_struct.Response getProfileTokenEcrypt(1:string token);
+    common_struct.Response getProfileTokenDecrypt(1:string token);
 }
 
 service AttachmentServices {

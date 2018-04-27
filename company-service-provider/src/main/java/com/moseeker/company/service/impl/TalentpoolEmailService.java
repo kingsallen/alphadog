@@ -638,11 +638,10 @@ public class TalentpoolEmailService {
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
-
                 return result;
             }
         }catch(Exception e){
-
+            logger.error(e.getMessage(),e);
         }
         return null;
     }
@@ -651,6 +650,7 @@ public class TalentpoolEmailService {
      */
     private List<InviteToDelivyUserInfo> talentEmailInviteInfoSearch(Map<String,String> params){
         try{
+            params.put("return_params","user.profiles.profile.user_id")
             Response res=searchService.userQuery(params);
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
@@ -672,7 +672,7 @@ public class TalentpoolEmailService {
                 return result;
             }
         }catch(Exception e){
-
+            logger.error(e.getMessage(),e);
         }
         return null;
     }
@@ -684,7 +684,7 @@ public class TalentpoolEmailService {
         if(!StringUtils.isEmptyMap(result)){
             long totalNum=(long)result.get("totalNum");
             if(totalNum>0){
-                List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
+                List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("users");
                 for(Map<String,Object> map:dataList){
                     InviteToDelivyUserInfo info=new InviteToDelivyUserInfo();
                     if(map!=null&&!map.isEmpty()){
@@ -700,9 +700,10 @@ public class TalentpoolEmailService {
                                 }
                                 Map<String,Object> basic=(Map<String,Object>)profiles.get("basic");
                                 if(!StringUtils.isEmptyMap(basic)){
-                                    String name=(String)profile.get("name");
-                                    String email=(String)profile.get("email");
+                                    String name=(String)basic.get("name");
+                                    String email=(String)basic.get("email");
                                     info.setEmail(email);
+                                    info.setName(name);
                                 }
 
                                 list.add(info);
@@ -756,6 +757,7 @@ public class TalentpoolEmailService {
                     ReceiveInfo receiveInfo=new ReceiveInfo();
                     receiveInfo.setToName(name);
                     receiveInfo.setToEmail(email);
+                    receiveInfos.add(receiveInfo);
                     delivyInfo.setRcpt(email);
                     context= CommonUtils.replaceUtil(context,delivyInfo.getCompanyAbbr(),delivyInfo.getPositionName(),name,hrAccountRecord.getUsername(),delivyInfo.getOfficialAccountName());
                     delivyInfo.setCustomText(context);
@@ -1336,7 +1338,7 @@ public class TalentpoolEmailService {
      获取公司配置的邮件模板
      */
     private TalentpoolEmailRecord getTalentpoolEmail(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1).buildQuery();
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",0).buildQuery();
         TalentpoolEmailRecord record=talentpoolEmailDao.getRecord(query);
         return record;
     }

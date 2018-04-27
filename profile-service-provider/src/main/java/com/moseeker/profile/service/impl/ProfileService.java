@@ -235,7 +235,7 @@ public class ProfileService {
         }
     }
 
-    public Response getProfileTokenEcrypt(String token) throws TException {
+    public Response getProfileTokenDecrypt(String token) throws TException {
         try {
             String info = CommonUtils.stringDecrypt(token);
             Map<String, String> params = new HashMap<>();
