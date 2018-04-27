@@ -17,6 +17,8 @@ public class TalentPoolException extends CommonException {
 
     public static final TalentPoolException TALENT_POOL_EMAIL_ACCOUNT_RECHARGE_UPDATE_FAILD = new TalentPoolException(34105,"公司邮箱充值额度更新失败！");
 
+    public static final TalentPoolException TALENT_POOL_EMAIL_ACCOUNT_NO_PERMISSION = new TalentPoolException(341056,"没有权限！");
+
     public TalentPoolException(int i, String s) {
         super(i, s);
     }

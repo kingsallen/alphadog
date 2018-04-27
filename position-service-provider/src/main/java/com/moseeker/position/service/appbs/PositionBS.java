@@ -212,6 +212,9 @@ public class PositionBS {
                 continue;
             }
 
+            //对同步职位参数进行预处理
+            transferPreHandleUtil.handleBeforeTransfer(requestType,channelType,p,moseekerJobPosition);
+
             //验证同步数据中的参数
             List<String> checkMsg= transferPreHandleUtil.checkBeforeTransfer(requestType,channelType,p,moseekerJobPosition);
             if(!StringUtils.isEmptyList(checkMsg)){
@@ -325,7 +328,7 @@ public class PositionBS {
         int channel = param.getChannel();
 
         if(!ChannelType.containsChannelType(channel)){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_CHANNEL_NOT_EXIST);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.WRONG_SYNC_CHANNEL);
         }
 
         int positionId = param.getPositionId();
