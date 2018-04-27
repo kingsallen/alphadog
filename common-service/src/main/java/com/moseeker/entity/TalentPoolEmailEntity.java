@@ -336,7 +336,7 @@ public class TalentPoolEmailEntity {
         List<EmailAccountConsumption> emailAccountConsumptionList = new ArrayList<>();
 
         HrCompanyConfDO companyConfDO = companyConfDao.getHrCompanyConfByCompanyId(companyId);
-        if (companyConfDO == null && companyConfDO.getTalentpoolStatus() == TalentPoolStatus.HighLevel.getValue()) {
+        if (companyConfDO != null && companyConfDO.getTalentpoolStatus() == TalentPoolStatus.HighLevel.getValue()) {
             switch (emailAccountConsumptionType) {
                 case RECHARRGE:
                     total = emailLogDao.countRecharge(companyId, startTime, endTime);
