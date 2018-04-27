@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyEmailInfo implements Serializable {
 
-    private static final long serialVersionUID = 503241473;
+    private static final long serialVersionUID = 118520995;
 
     private Integer   id;
     private Integer   companyId;
@@ -31,7 +31,6 @@ public class HrCompanyEmailInfo implements Serializable {
     private Integer   balance;
     private Timestamp createTime;
     private Timestamp updateTime;
-    private Byte      disable;
 
     public HrCompanyEmailInfo() {}
 
@@ -42,7 +41,6 @@ public class HrCompanyEmailInfo implements Serializable {
         this.balance = value.balance;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
-        this.disable = value.disable;
     }
 
     public HrCompanyEmailInfo(
@@ -51,8 +49,7 @@ public class HrCompanyEmailInfo implements Serializable {
         Integer   total,
         Integer   balance,
         Timestamp createTime,
-        Timestamp updateTime,
-        Byte      disable
+        Timestamp updateTime
     ) {
         this.id = id;
         this.companyId = companyId;
@@ -60,7 +57,6 @@ public class HrCompanyEmailInfo implements Serializable {
         this.balance = balance;
         this.createTime = createTime;
         this.updateTime = updateTime;
-        this.disable = disable;
     }
 
     public Integer getId() {
@@ -111,14 +107,6 @@ public class HrCompanyEmailInfo implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Byte getDisable() {
-        return this.disable;
-    }
-
-    public void setDisable(Byte disable) {
-        this.disable = disable;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrCompanyEmailInfo (");
@@ -129,7 +117,6 @@ public class HrCompanyEmailInfo implements Serializable {
         sb.append(", ").append(balance);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
-        sb.append(", ").append(disable);
 
         sb.append(")");
         return sb.toString();

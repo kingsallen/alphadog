@@ -250,6 +250,7 @@ public class CompanyPcService {
             if (infoRecord == null){
                 infoRecord = new HrCompanyEmailInfoRecord();
                 infoRecord.setCompanyId(company_id);
+                emailInfoDao.addRecord(infoRecord);
             }
             //开启智能人才库
             if (status == 2 && oldStatus != 2) {
@@ -280,7 +281,6 @@ public class CompanyPcService {
                         }
                     }
                 }
-                infoRecord.setDisable((byte) 0);
             //关闭智能人才库
             } else if (result > 0 && status != 2 && oldStatus == 2) {
                 List<TalentpoolEmailRecord> recordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
@@ -290,12 +290,6 @@ public class CompanyPcService {
                         talentpoolEmailDao.updateRecord(record);
                     }
                 }
-                infoRecord.setDisable((byte) 1);
-            }
-            if(infoRecord.getId()>0){
-                emailInfoDao.updateRecord(infoRecord);
-            }else{
-                emailInfoDao.addRecord(infoRecord);
             }
         }
         return  ResponseUtils.success("");
