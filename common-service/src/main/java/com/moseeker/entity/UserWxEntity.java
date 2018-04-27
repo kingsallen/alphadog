@@ -33,6 +33,7 @@ public class UserWxEntity {
 
     @Autowired
     private UserWxUserDao userWxUserDao;
+
     /**
      *  获取用户wxUserId
      */
