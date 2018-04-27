@@ -384,7 +384,7 @@ public class ResumeDeliveryService {
                 params.put("employee_name", username);
                 String context = CommonUtils.replaceUtil(email.getContext(), companyDO.getAbbreviation(),positionDO.getTitle(),username, accountDO.getUsername(), hrWxWechatDO.getName());
                 params.put("custom_text", context);
-                String inscribe  = CommonUtils.replaceUtil(email.getContext(), companyDO.getAbbreviation(),positionDO.getTitle(),username, accountDO.getUsername(), hrWxWechatDO.getName());
+                String inscribe  = CommonUtils.replaceUtil(email.getInscribe(), companyDO.getAbbreviation(),positionDO.getTitle(),username, accountDO.getUsername(), hrWxWechatDO.getName());
                 params.put("company_sign", inscribe);
                 String qrcodeUrl = CommonUtils.appendUrl(hrWxWechatDO.getQrcode(), env.getProperty("http.cdn.url"));
                 params.put("weixin_qrcode", qrcodeUrl);
