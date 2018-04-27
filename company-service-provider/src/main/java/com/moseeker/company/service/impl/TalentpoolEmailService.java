@@ -650,7 +650,7 @@ public class TalentpoolEmailService {
      */
     private List<InviteToDelivyUserInfo> talentEmailInviteInfoSearch(Map<String,String> params){
         try{
-            params.put("return_params","user.profiles.profile.user_id")
+            params.put("return_params","user.profiles.profile.user_id");
             Response res=searchService.userQuery(params);
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
