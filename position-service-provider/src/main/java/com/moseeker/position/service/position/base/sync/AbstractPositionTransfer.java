@@ -43,7 +43,7 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
     private JobPositionCityDao jobPositionCityDao;
 
     @Autowired
-    private DictCityMapDao cityMapDao;
+    protected DictCityMapDao cityMapDao;
 
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;

@@ -71,4 +71,20 @@ public class JobPositionCityDao extends JooqCrudImpl<JobPositionCityDO, JobPosit
 
         return dictCityDOS;
     }
+
+    /**
+     * 根据职位id查询job_position_city数据
+     * @param id 职位ID
+     * @return
+     */
+    public List<JobPositionCityDO> getPositionCitysByPid(int id) {
+        Query query = new Query.QueryBuilder().where("pid", id).buildQuery();
+        List<JobPositionCityDO> jobPositionCityDOS = getDatas(query);
+
+        if (jobPositionCityDOS == null) {
+            return new ArrayList<>();
+        }
+
+        return jobPositionCityDOS;
+    }
 }
