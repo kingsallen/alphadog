@@ -1,13 +1,18 @@
 package com.moseeker.baseorm.dao.hrdb;
 
+import com.moseeker.baseorm.constant.TalentPoolStatus;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import static com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO;
+
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyEmailInfoRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.common.constants.AbleFlag;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
@@ -29,7 +34,6 @@ public class HrCompanyEmailInfoDao extends JooqCrudImpl<HrCompanyEmailInfo, HrCo
      */
     public HrCompanyEmailInfo getHrCompanyEmailInfoListByCompanyId(int companyId){
         List<HrCompanyEmailInfo> list=create.selectFrom(HR_COMPANY_EMAIL_INFO).where(HR_COMPANY_EMAIL_INFO.COMPANY_ID.eq(companyId))
-                .and(HR_COMPANY_EMAIL_INFO.DISABLE.eq((byte)0))
                 .fetchInto(HrCompanyEmailInfo.class);
         if(list != null && list.size()>0){
             return  list.get(0);
@@ -74,8 +78,12 @@ public class HrCompanyEmailInfoDao extends JooqCrudImpl<HrCompanyEmailInfo, HrCo
 
     public List<HrCompanyEmailInfo> fetchOrderByCreateTime(List<Integer> companyIdList, int index, int pageSize) {
         if (companyIdList != null && companyIdList.size() > 0) {
-            Result<HrCompanyEmailInfoRecord> result = create.selectFrom(HR_COMPANY_EMAIL_INFO)
+            Result<Record> result = create.select(HR_COMPANY_EMAIL_INFO.fields())
+                    .from(HR_COMPANY_EMAIL_INFO)
+                    .innerJoin(HrCompanyConf.HR_COMPANY_CONF)
+                    .on(HR_COMPANY_EMAIL_INFO.COMPANY_ID.eq(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID))
                     .where(HR_COMPANY_EMAIL_INFO.COMPANY_ID.in(companyIdList))
+                    .and(HrCompanyConf.HR_COMPANY_CONF.TALENTPOOL_STATUS.eq(TalentPoolStatus.HighLevel.getValue()))
                     .orderBy(HR_COMPANY_EMAIL_INFO.CREATE_TIME.desc())
                     .limit(index, pageSize)
                     .fetch();
@@ -86,7 +94,11 @@ public class HrCompanyEmailInfoDao extends JooqCrudImpl<HrCompanyEmailInfo, HrCo
             }
 
         } else {
-            Result<HrCompanyEmailInfoRecord> result = create.selectFrom(HR_COMPANY_EMAIL_INFO)
+            Result<Record> result = create.select(HR_COMPANY_EMAIL_INFO.fields())
+                    .from(HR_COMPANY_EMAIL_INFO)
+                    .innerJoin(HrCompanyConf.HR_COMPANY_CONF)
+                    .on(HR_COMPANY_EMAIL_INFO.COMPANY_ID.eq(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID))
+                    .where(HrCompanyConf.HR_COMPANY_CONF.TALENTPOOL_STATUS.eq(TalentPoolStatus.HighLevel.getValue()))
                     .orderBy(HR_COMPANY_EMAIL_INFO.CREATE_TIME.desc())
                     .limit(index, pageSize)
                     .fetch();
