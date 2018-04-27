@@ -700,11 +700,10 @@ public class TalentpoolEmailService {
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
-
                 return result;
             }
         }catch(Exception e){
-
+            logger.error(e.getMessage(),e);
         }
         return null;
     }
@@ -721,7 +720,7 @@ public class TalentpoolEmailService {
                 return result;
             }
         }catch(Exception e){
-
+            logger.error(e.getMessage(),e);
         }
         return null;
     }
@@ -735,7 +734,7 @@ public class TalentpoolEmailService {
                 return result;
             }
         }catch(Exception e){
-
+            logger.error(e.getMessage(),e);
         }
         return null;
     }
@@ -747,7 +746,7 @@ public class TalentpoolEmailService {
         if(!StringUtils.isEmptyMap(result)){
             long totalNum=(long)result.get("totalNum");
             if(totalNum>0){
-                List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
+                List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("users");
                 for(Map<String,Object> map:dataList){
                     InviteToDelivyUserInfo info=new InviteToDelivyUserInfo();
                     if(map!=null&&!map.isEmpty()){
@@ -766,6 +765,7 @@ public class TalentpoolEmailService {
                                     String name=(String)basic.get("name");
                                     String email=(String)basic.get("email");
                                     info.setEmail(email);
+                                    info.setName(name);
                                 }
 
                                 list.add(info);
@@ -819,6 +819,7 @@ public class TalentpoolEmailService {
                     ReceiveInfo receiveInfo=new ReceiveInfo();
                     receiveInfo.setToName(name);
                     receiveInfo.setToEmail(email);
+                    receiveInfos.add(receiveInfo);
                     delivyInfo.setRcpt(email);
                     context= CommonUtils.replaceUtil(context,delivyInfo.getCompanyAbbr(),delivyInfo.getPositionName(),name,hrAccountRecord.getUsername(),delivyInfo.getOfficialAccountName());
                     delivyInfo.setCustomText(context);
