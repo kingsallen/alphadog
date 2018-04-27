@@ -19,7 +19,7 @@ public abstract class AbstractYLParamRefresher extends AbstractRabbitMQParamRefr
 
     @Override
     public void addSendParam(JSONObject jsonSend) {
-
+        jsonSend.put("moseeker_region",moseekerRegin());
     }
 
     @Override

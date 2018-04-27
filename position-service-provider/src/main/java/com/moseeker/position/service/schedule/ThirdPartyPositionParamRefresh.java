@@ -48,6 +48,10 @@ public class ThirdPartyPositionParamRefresh {
 
     @Scheduled(cron = "0 0 1 * * SAT")
     public void refresh() throws BIZException {
+        refresh(0);
+    }
+
+    public void refresh(int channel) throws BIZException{
         long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(), "");
         if (check>1) {
             //绑定中
@@ -56,9 +60,18 @@ public class ThirdPartyPositionParamRefresh {
         }
         redisClient.expire(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(), "", RefreshConstant.REFRESH_THIRD_PARTY_PARAM_TIMEOUT);
 
+        boolean refreshAll;
+        if(channel==0){
+            refreshAll = true;
+        }else{
+            refreshAll = false;
+        }
+
         refreshList.forEach(r->{
             try {
-                r.refresh();
+                if(refreshAll || r.getChannelType().getValue()==channel) {
+                    r.refresh();
+                }
             }catch (Exception e){
                 logger.error("refresh error {}",e.getMessage());
                 emailNotification.sendRefreshFailureMail("refresh push error",r,e);

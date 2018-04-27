@@ -21,9 +21,8 @@ import java.util.UUID;
  * 简历工具类
  */
 public class ProfilePojo {
-
-	Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    
+    private static final Logger logger = LoggerFactory.getLogger(ProfilePojo.class);
 	private UserUserRecord userRecord;
 	private ProfileProfileRecord profileRecord;
 	private ProfileBasicRecord basicRecord;
@@ -47,7 +46,7 @@ public class ProfilePojo {
 	 */
 	@SuppressWarnings("unchecked")
 	public static ProfilePojo parseProfile(Map<String, Object> resume) {
-		LoggerFactory.getLogger(ProfilePojo.class).info("------parseProfile-------");
+		logger.info("------parseProfile-------");
 
 		ProfilePojo pojo = new ProfilePojo();
 		ProfileUtils profileUtils = new ProfileUtils();
@@ -81,7 +80,7 @@ public class ProfilePojo {
                 pojo.setUserRecord(crawlerUser);
             }
         } catch (Exception e1) {
-            LoggerFactory.getLogger(ProfilePojo.class).error(e1.getMessage(), e1);
+            logger.error(e1.getMessage(), e1);
         }
 
 		//解析基本信息
@@ -90,7 +89,7 @@ public class ProfilePojo {
 			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
 			pojo.setBasicRecord(basicRecord);
 		} catch (Exception e1) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e1.getMessage(), e1);
+			logger.error(e1.getMessage(), e1);
 		}
 
 		//解析附件信息
@@ -100,7 +99,7 @@ public class ProfilePojo {
 					.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
 			pojo.setAttachmentRecords(attachmentRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析奖励信息
 		List<ProfileAwardsRecord> awardsRecords = null;
@@ -109,7 +108,7 @@ public class ProfilePojo {
 					.mapToAwardsRecords((List<Map<String, Object>>) resume.get("awards"));
 			pojo.setAwardsRecords(awardsRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析证书信息
 		List<ProfileCredentialsRecord> credentialsRecords = null;
@@ -118,17 +117,17 @@ public class ProfilePojo {
 					.mapToCredentialsRecords((List<Map<String, Object>>) resume.get("credentials"));
 			pojo.setCredentialsRecords(credentialsRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析教育经历
 		List<ProfileEducationRecord> educationRecords = null;
 		try {
 			educationRecords = profileUtils
 					.mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
-			LoggerFactory.getLogger(ProfilePojo.class).info("majorName:{}"+educationRecords.get(0).getDescription());
+			logger.info("majorName:{}"+educationRecords.get(0).getDescription());
 			pojo.setEducationRecords(educationRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析导入信息
 		ProfileImportRecord importRecords = null;
@@ -136,7 +135,7 @@ public class ProfilePojo {
 			importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"));
 			pojo.setImportRecords(importRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析期望
 		List<IntentionRecord> intentionRecords = null;
@@ -145,7 +144,7 @@ public class ProfilePojo {
 					.mapToIntentionRecord((List<Map<String, Object>>) resume.get("intentions"));
 			pojo.setIntentionRecords(intentionRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析语言
 		List<ProfileLanguageRecord> languageRecords = null;
@@ -154,7 +153,7 @@ public class ProfilePojo {
 					.mapToLanguageRecord((List<Map<String, Object>>) resume.get("languages"));
 			pojo.setLanguageRecords(languageRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析其他
 		ProfileOtherRecord otherRecord = null;
@@ -162,7 +161,7 @@ public class ProfilePojo {
 			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
 			pojo.setOtherRecord(otherRecord);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析项目经验
 		List<ProfileProjectexpRecord> projectExps = null;
@@ -171,7 +170,7 @@ public class ProfilePojo {
 					.mapToProjectExpsRecords((List<Map<String, Object>>) resume.get("projectexps"));
 			pojo.setProjectExps(projectExps);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析技能
 		List<ProfileSkillRecord> skillRecords = null;
@@ -180,7 +179,7 @@ public class ProfilePojo {
 					.mapToSkillRecords((List<Map<String, Object>>) resume.get("skills"));
 			pojo.setSkillRecords(skillRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析工作经验
 		List<ProfileWorkexpEntity> workexpRecords = null;
@@ -189,19 +188,19 @@ public class ProfilePojo {
 			if(profileRecord.getSource() != null) {
 				source = profileRecord.getSource().intValue();
 			}
-			LoggerFactory.getLogger(ProfilePojo.class).info("workexp:{}", JSON.toJSONString(resume.get("workexps")));
+			logger.info("workexp:{}", JSON.toJSONString(resume.get("workexps")));
 			workexpRecords = profileUtils
 					.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"), source);
 			if(workexpRecords != null && workexpRecords.size() > 0) {
 				workexpRecords.forEach(workexp -> {
 					if(workexp.getCompany() != null) {
-						LoggerFactory.getLogger(ProfilePojo.class).info("company:{}, company.name:{}", workexp.getCompany(), workexp.getCompany().getName());
+						logger.info("company:{}, company.name:{}", workexp.getCompany(), workexp.getCompany().getName());
 					}
 				});
 			}
 			pojo.setWorkexpRecords(workexpRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析作品
 		List<ProfileWorksRecord> worksRecords = null;
@@ -210,7 +209,7 @@ public class ProfilePojo {
 					.mapToWorksRecords((List<Map<String, Object>>) resume.get("works"));
 			pojo.setWorksRecords(worksRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 
 		return pojo;
@@ -224,7 +223,7 @@ public class ProfilePojo {
 	 */
 	@SuppressWarnings("unchecked")
 	public static ProfilePojo parseProfile(Map<String, Object> resume, UserUserRecord userRecord) {
-		LoggerFactory.getLogger(ProfilePojo.class).info("------parseProfile-------");
+		logger.info("------parseProfile-------");
 		ProfilePojo pojo = new ProfilePojo();
 		ProfileUtils profileUtils = new ProfileUtils();
 
@@ -265,7 +264,7 @@ public class ProfilePojo {
 				pojo.setUserRecord(crawlerUser);
 			}
 		} catch (Exception e1) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e1.getMessage(), e1);
+			logger.error(e1.getMessage(), e1);
 		}
 
 		//解析基本信息
@@ -274,7 +273,7 @@ public class ProfilePojo {
 			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
 			pojo.setBasicRecord(basicRecord);
 		} catch (Exception e1) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e1.getMessage(), e1);
+			logger.error(e1.getMessage(), e1);
 		}
 		//更新用户信息
 		profileUtils.updateUser(userRecord, basicRecord, crawlerUser);
@@ -286,7 +285,7 @@ public class ProfilePojo {
 					.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
 			pojo.setAttachmentRecords(attachmentRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析奖励信息
 		List<ProfileAwardsRecord> awardsRecords = null;
@@ -295,7 +294,7 @@ public class ProfilePojo {
 					.mapToAwardsRecords((List<Map<String, Object>>) resume.get("awards"));
 			pojo.setAwardsRecords(awardsRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析证书信息
 		List<ProfileCredentialsRecord> credentialsRecords = null;
@@ -304,7 +303,7 @@ public class ProfilePojo {
 					.mapToCredentialsRecords((List<Map<String, Object>>) resume.get("credentials"));
 			pojo.setCredentialsRecords(credentialsRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析教育经历
 		List<ProfileEducationRecord> educationRecords = null;
@@ -313,7 +312,7 @@ public class ProfilePojo {
 					.mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
 			pojo.setEducationRecords(educationRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析导入信息
 		ProfileImportRecord importRecords = null;
@@ -321,7 +320,7 @@ public class ProfilePojo {
 			importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"));
 			pojo.setImportRecords(importRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析期望
 		List<IntentionRecord> intentionRecords = null;
@@ -330,7 +329,7 @@ public class ProfilePojo {
 					.mapToIntentionRecord((List<Map<String, Object>>) resume.get("intentions"));
 			pojo.setIntentionRecords(intentionRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析语言
 		List<ProfileLanguageRecord> languageRecords = null;
@@ -339,7 +338,7 @@ public class ProfilePojo {
 					.mapToLanguageRecord((List<Map<String, Object>>) resume.get("languages"));
 			pojo.setLanguageRecords(languageRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析其他
 		ProfileOtherRecord otherRecord = null;
@@ -347,7 +346,7 @@ public class ProfilePojo {
 			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
 			pojo.setOtherRecord(otherRecord);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析项目经验
 		List<ProfileProjectexpRecord> projectExps = null;
@@ -356,7 +355,7 @@ public class ProfilePojo {
 					.mapToProjectExpsRecords((List<Map<String, Object>>) resume.get("projectexps"));
 			pojo.setProjectExps(projectExps);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析技能
 		List<ProfileSkillRecord> skillRecords = null;
@@ -365,7 +364,7 @@ public class ProfilePojo {
 					.mapToSkillRecords((List<Map<String, Object>>) resume.get("skills"));
 			pojo.setSkillRecords(skillRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析工作经验
 		List<ProfileWorkexpEntity> workexpRecords = null;
@@ -374,19 +373,19 @@ public class ProfilePojo {
 			if(profileRecord.getSource() != null) {
 				source = profileRecord.getSource().intValue();
 			}
-			LoggerFactory.getLogger(ProfilePojo.class).info("workexp:{}", JSON.toJSONString(resume.get("workexps")));
+			logger.info("workexp:{}", JSON.toJSONString(resume.get("workexps")));
 			workexpRecords = profileUtils
 					.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"), source);
 			if(workexpRecords != null && workexpRecords.size() > 0) {
 				workexpRecords.forEach(workexp -> {
 					if(workexp.getCompany() != null) {
-						LoggerFactory.getLogger(ProfilePojo.class).info("company:{}, company.name:{}", workexp.getCompany(), workexp.getCompany().getName());
+						logger.info("company:{}, company.name:{}", workexp.getCompany(), workexp.getCompany().getName());
 					}
 				});
 			}
 			pojo.setWorkexpRecords(workexpRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		//解析作品
 		List<ProfileWorksRecord> worksRecords = null;
@@ -395,7 +394,7 @@ public class ProfilePojo {
 					.mapToWorksRecords((List<Map<String, Object>>) resume.get("works"));
 			pojo.setWorksRecords(worksRecords);
 		} catch (Exception e) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 
 		return pojo;

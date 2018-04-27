@@ -104,7 +104,8 @@ struct WechatPositionListData {
     18: optional string accountabilities,
     19: optional i32 totalNum,
     20: optional i32 candidate_source,
-    21: optional string requirement
+    21: optional string requirement,
+    22: optional string city_ename
 }
 
 // 微信端职位列表的附加红包信息
@@ -135,7 +136,8 @@ struct WechatRpPositionListData {
     17: optional string city,
     18: optional i32 candidate_source,
     19: optional string requirement,
-    20: optional i32 totalNum
+    20: optional i32 totalNum,
+    21: optional string city_ename
 }
 
 // 微信端获取红包分享信息
@@ -235,7 +237,7 @@ struct JobPostrionObj{
     14:i32 employment_type, // 应聘职位类型，0：全职，1：兼职 2：共同工 3：实习 9：其他
     15:string hr_email, // HR联系邮箱，申请通知
     16:i32 degree,// 学历 0：无 1：大专 2：本科 3：硕士 4：MBA 5:博士
-    17:string  feature, // 职位特色
+    17:string feature, // 职位特色
     18:i32  email_notice,  // 申请后是否给HR发送邮件，0：发送，1：不发送
     19:i32  candidate_source,// 0：社招 1：校招 2：定向招聘
     20:string occupation, // 职位职能
@@ -269,7 +271,9 @@ struct JobPostrionObj{
     48:string requirement,
     49:string custom,
     50:string thirdParty_position,
-    51:i8 priority  //是否置顶
+    51:i8 priority,  //是否置顶
+    52:list<string> ccmail, //抄送邮箱
+    53: optional bool profile_cc_mail_enabled  //简历申请是否抄送邮箱,不传默认false
 }
 
 struct City{
@@ -407,4 +411,9 @@ struct PositionDetailsForAlipayCampus{
       32: optional i8 tra_job_promot,       // 是否可以转正
       33: optional Timestamp gmt_expired,  // 过期时间（毫秒数）  1494926993617
       34: optional Timestamp gmt_refresh,    // 刷新时间 （毫秒数）  1494926993617
+}
+
+struct JobPositionHrCompanyFeatureDO{
+  1: optional i32 pid,
+  2: optional i32 fid
 }

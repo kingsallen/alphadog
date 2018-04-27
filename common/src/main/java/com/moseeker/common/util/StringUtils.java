@@ -1,6 +1,7 @@
 package com.moseeker.common.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -506,11 +507,6 @@ public class StringUtils {
             return true;
         }
         return false;
-    }
-
-    public static void main(String[] args) {
-        String aa="Helpdesk - Analyst – Urgent!!! (Permanent Position)";
-        System.out.println(StringUtils.filterStringForSearch(aa));
     }
 
 }

@@ -14,6 +14,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
@@ -86,7 +88,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1133595435;
+    private static final long serialVersionUID = -1752204778;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -142,6 +144,16 @@ public class Hrdb extends SchemaImpl {
      * 公司级别的配置信息表
      */
     public final HrCompanyConf HR_COMPANY_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf.HR_COMPANY_CONF;
+
+    /**
+     * 企业邮件总量信息表
+     */
+    public final HrCompanyEmailInfo HR_COMPANY_EMAIL_INFO = com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO;
+
+    /**
+     * 公司福利特色
+     */
+    public final HrCompanyFeature HR_COMPANY_FEATURE = com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature.HR_COMPANY_FEATURE;
 
     /**
      * 部门员工配置表
@@ -413,6 +425,8 @@ public class Hrdb extends SchemaImpl {
             HrCompany.HR_COMPANY,
             HrCompanyAccount.HR_COMPANY_ACCOUNT,
             HrCompanyConf.HR_COMPANY_CONF,
+            HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO,
+            HrCompanyFeature.HR_COMPANY_FEATURE,
             HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
             HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS,
             HrEmployeePosition.HR_EMPLOYEE_POSITION,

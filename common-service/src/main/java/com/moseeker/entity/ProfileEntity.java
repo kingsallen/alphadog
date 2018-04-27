@@ -10,6 +10,7 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
@@ -21,6 +22,8 @@ import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.sql.Timestamp;
+
+import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -30,6 +33,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.thrift.TException;
+import org.jooq.Record2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +44,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.moseeker.baseorm.db.profiledb.tables.ProfileProfile.PROFILE_PROFILE;
 
@@ -561,5 +566,34 @@ public class ProfileEntity {
                 profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                 userUserRecord, null);
         return id;
+    }
+
+    /**
+     * 查找用户是否有简历
+     * @param userIdList 用户编号集合
+     * @return
+     */
+    public List<UserProfile> fetchUserProfile(List<Integer> userIdList) {
+        List<UserProfile> userProfileList = new ArrayList<>();
+
+        List<Record2<Integer, Integer>> result = profileDao.fetchUserProfile(userIdList);
+
+        for (Integer integer : userIdList) {
+
+            UserProfile userProfile = new UserProfile();
+
+            Optional<Record2<Integer, Integer>> record2Optional = result
+                    .stream()
+                    .filter(integerIntegerRecord2 -> integerIntegerRecord2.value1().intValue() == integer.intValue())
+                    .findAny();
+            if (record2Optional.isPresent()) {
+                userProfile.setHaveProfile(true);
+            } else {
+                userProfile.setHaveProfile(false);
+            }
+            userProfile.setUserId(integer);
+            userProfileList.add(userProfile);
+        }
+        return userProfileList;
     }
 }

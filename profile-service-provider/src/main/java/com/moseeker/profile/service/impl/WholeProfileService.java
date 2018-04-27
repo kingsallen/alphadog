@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
@@ -13,6 +14,8 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
@@ -44,7 +47,10 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
@@ -100,6 +106,9 @@ public class WholeProfileService {
 
     @Autowired
     private JobPositionDao jobPositionDao;
+
+    @Autowired
+    private JobApplicationDao jobApplicationDao;
 
     @Autowired
     private UserSettingsDao userSettingsDao;
@@ -171,6 +180,8 @@ public class WholeProfileService {
     RetriveProfile retriveProfile;
 
     UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
+
+    TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
 
     private Query getProfileQuery(int profileId){
         return new Query.QueryBuilder().where("profile_id",profileId).setPageSize(Integer.MAX_VALUE).buildQuery();
@@ -728,6 +739,20 @@ public class WholeProfileService {
         }
     }
 
+    public JobPositionDO getPositionById(int accountId, int positionId) throws TException {
+        Query query = new Query.QueryBuilder().where(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountId)
+                .and(JobPosition.JOB_POSITION.ID.getName(), positionId).buildQuery();
+        JobPositionDO positionDO = jobPositionDao.getData(query);
+        return positionDO;
+    }
+
+    public JobApplicationDO getApplicationByposition(int applier_id, int positionId) throws TException {
+        Query query = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionId)
+                .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), applier_id).buildQuery();
+        JobApplicationDO positionDO = jobApplicationDao.getData(query);
+        return positionDO;
+    }
+
     private List<Map<String, Object>> buildsWorks(ProfileProfileRecord profileRecord, Query query) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         List<ProfileWorksRecord> records = worksDao.getRecords(query);
@@ -1209,11 +1234,16 @@ public class WholeProfileService {
                 return res;
             }
         }
+
         //此处应该考虑账号合并导致的问题
         talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName);
         Set<Integer> userIdList=new HashSet<>();
         userIdList.add(newUerId);
         talentPoolEntity.realTimeUpload(userIdList,1);
+        pool.startTast(() -> {
+            talentpoolService.handlerCompanyTagAndProfile(userIdList,companyId);
+            return 0;
+        });
         return ResponseUtils.success("success");
     }
     /*
@@ -1242,6 +1272,8 @@ public class WholeProfileService {
                 map.put("company",company);
                 if(map.get("position_name")!=null){
                     map.put("job",map.get("position_name"));
+                } else {
+                    map.put("job",map.get("job"));
                 }
             }
         }
@@ -1318,7 +1350,7 @@ public class WholeProfileService {
             }else{
                 Map<String,Object> profileMap=new HashMap<>();
                 profileMap.put("user_id",newUserId);
-                profileMap.put("origin",0);
+                profileMap.put("origin","0");
                 resume.put("profile",profileMap);
             }
         }

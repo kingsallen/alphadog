@@ -2,6 +2,7 @@ package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
@@ -53,6 +54,30 @@ public class ProfileMiniService {
         this.filterApplication(result,record);
         return result;
     }
+
+    @CounterIface
+    public  Map<String,Object> getProfileMiniSug(int accountId,String keyword,int page,int pageSize) throws TException {
+        if(page == 0){
+            page = 1;
+        }
+        if(pageSize == 0){
+            pageSize = 10;
+        }
+        UserHrAccountRecord record=this.getAccountById(accountId);
+        if(record==null || !StringUtils.isNotNullOrEmpty(keyword)){
+            return null;
+        }
+        Map<String,String> map = this.handlerParams(accountId, record.getAccountType(), record.getCompanyId(), keyword, page, pageSize);
+        Response res=searchengineServices.searchProfileSuggest(map);
+        if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
+            if("\"\"".equals(res.getData().trim())){
+                return null;
+            }
+            Map<String,Object> result=JSON.parseObject(res.getData(),Map.class);
+            return result;
+        }
+        return null;
+    }
     /*
      处理数据，过滤掉无用的申请
      */
@@ -60,28 +85,33 @@ public class ProfileMiniService {
         if(result!=null&&!result.isEmpty()){
             int companyId=record.getCompanyId();
             int accountId=record.getId();
-            List<Map<String,Object>> userList= (List<Map<String, Object>>) result.get("users");
-            for(Map<String,Object> user:userList){
-                List<Map<String,Object>> applistNew=new ArrayList<>();
-                Map<String,Object> userMap= (Map<String, Object>) user.get("user");
-                List<Map<String,Object>> appList= (List<Map<String, Object>>) userMap.get("applications");
-                for(Map<String,Object> app:appList){
-                    if(record.getAccountType()==0){
-                        int appCompanyId = (int) app.get("companyId");
-                        if(appCompanyId==companyId){
-                            applistNew.add(app);
+            if(result.get("users") != null) {
+                List<Map<String, Object>> userList = (List<Map<String, Object>>) result.get("users");
+                for (Map<String, Object> user : userList) {
+                    List<Map<String, Object>> applistNew = new ArrayList<>();
+                    Map<String, Object> userMap = (Map<String, Object>) user.get("user");
+                    List<Map<String, Object>> appList = (List<Map<String, Object>>) userMap.get("applications");
+                    for (Map<String, Object> app : appList) {
+                        if (record.getAccountType() == 0) {
+                            int appCompanyId = (int) app.get("companyId");
+                            if (appCompanyId == companyId) {
+                                applistNew.add(app);
+                            }
+                        } else {
+                            int publisher = (int) app.get("publisher");
+                            if (publisher == accountId) {
+                                applistNew.add(app);
+                            }
                         }
-                    }else{
-                        int publisher=(int)app.get("publisher");
-                        if(publisher==accountId){
-                            applistNew.add(app);
-                        }
-                    }
 
+                    }
+                    userMap.put("applications", applistNew);
                 }
-                userMap.put("applications",applistNew);
+                result.put("accountType", record.getAccountType());
+            }else{
+                result=new HashMap<>();
+                result.put("totalNum",0);
             }
-            result.put("accountType",record.getAccountType());
         }else{
             result=new HashMap<>();
             result.put("totalNum",0);
@@ -158,5 +188,21 @@ public class ProfileMiniService {
         }
         accountIds=accountIds.substring(0,accountIds.lastIndexOf(","));
         return accountIds;
+    }
+
+    /*
+      获取请求es的参数
+     */
+    private Map<String,String> handlerParams(int accountId, int accountType, int company_id, String keyword,int pageNum,int pageSize){
+        Map<String,String> map=new HashMap<>();
+        map.put("company_id",String.valueOf(company_id));
+        map.put("account_type",String.valueOf(accountType));
+        map.put("hr_account_id",String.valueOf(accountId));
+        map.put("keyWord",keyword);
+        map.put("page_from",String.valueOf(pageNum));
+        map.put("page_size",String.valueOf(pageSize));
+        map.put("return_params","user.profiles.basic.name");
+        map.put("flag","1");
+        return map;
     }
 }

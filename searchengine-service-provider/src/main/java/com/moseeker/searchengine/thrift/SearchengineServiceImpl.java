@@ -1,24 +1,22 @@
 package com.moseeker.searchengine.thrift;
 
-import java.util.List;
-
-import java.util.Map;
-
-import com.alibaba.fastjson.JSON;
-import com.moseeker.searchengine.service.impl.TalentpoolSearchengine;
-import org.apache.thrift.TException;
-import org.elasticsearch.search.SearchHits;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.searchengine.service.impl.CompanySearchengine;
 import com.moseeker.searchengine.service.impl.PositionSearchEngine;
 import com.moseeker.searchengine.service.impl.SearchengineService;
+import com.moseeker.searchengine.service.impl.TalentpoolSearchengine;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SearchengineServiceImpl implements Iface {
@@ -114,7 +112,21 @@ public class SearchengineServiceImpl implements Iface {
 		}
 	}
 
-	@Override
+    @Override
+    public Response searchProfileSuggest(Map<String, String> params) throws TException {
+        try{
+            Map<String,Object> res=service.getProfileSuggest(params);
+            if(res==null||res.isEmpty()){
+                return ResponseUtils.success("");
+            }
+            return ResponseUtils.success(res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
 	public Response userQuery(Map<String, String> params) throws TException {
 		try{
 //			logger.info("+++++++++++++++++++");
@@ -122,6 +134,7 @@ public class SearchengineServiceImpl implements Iface {
 //			logger.info("+++++++++++++++++++");
 			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
 			if(res==null||res.isEmpty()){
+
 				return ResponseUtils.success("");
 			}
 			return ResponseUtils.success(res);
@@ -162,6 +175,31 @@ public class SearchengineServiceImpl implements Iface {
 			logger.info(e.getMessage(),e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
 		}
+	}
+
+	@Override
+	public List<Integer> queryCompanyTagUserIdList(Map<String, String> params) throws TException {
+		try{
+			List<Integer> res=talentpoolSearchengine.getUserListByCompanyTag(params);
+			if(res==null){
+				return new ArrayList<>();
+			}
+			return res;
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+		}
+		return new ArrayList<>();
+	}
+
+	@Override
+	public int talentSearchNum(Map<String, String> params) throws TException {
+		try{
+			int res=talentpoolSearchengine.talentSearchNum(params);
+			return res;
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+		}
+		return 0;
 	}
 
 

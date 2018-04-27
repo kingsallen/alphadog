@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.company;
 
+import com.moseeker.servicemanager.common.ParamUtils;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -59,4 +61,32 @@ public class WechatController {
 			// do nothing
 		}
 	}
+
+
+    /**
+     * 查询公众号信息
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/company/wechat", method = RequestMethod.GET)
+    @ResponseBody
+    public String getWechatBySingnature(HttpServletRequest request,
+                            HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("companyId", 0);
+            String signature = params.getString("signature", "");
+            Response result = companyServices.getWechatBySignature(signature, companyId);
+            if (result.getStatus() == 0) {
+                return ResponseLogNotification.success(request, result);
+            } else {
+                return ResponseLogNotification.fail(request, result);
+            }
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
 }

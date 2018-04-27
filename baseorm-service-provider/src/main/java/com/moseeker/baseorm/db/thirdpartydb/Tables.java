@@ -9,8 +9,11 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompany;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyCompanyChannelConf;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyZhilianPositionAddress;
 
 import javax.annotation.Generated;
 
@@ -54,12 +57,27 @@ public class Tables {
     public static final ThirdpartyAccountJob1001Subsite THIRDPARTY_ACCOUNT_JOB1001_SUBSITE = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE;
 
     /**
+     * 公司可同步渠道配置表
+     */
+    public static final ThirdpartyCompanyChannelConf THIRDPARTY_COMPANY_CHANNEL_CONF = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF;
+
+    /**
      * 一览人才的第三方职位子表
      */
     public static final ThirdpartyJob1001Position THIRDPARTY_JOB1001_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION;
 
     /**
+     * JobsDB的第三方职位子表
+     */
+    public static final ThirdpartyJobsdbPosition THIRDPARTY_JOBSDB_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION;
+
+    /**
      * 最佳东方的第三方职位子表
      */
     public static final ThirdpartyVeryeastPosition THIRDPARTY_VERYEAST_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION;
+
+    /**
+     * 第三方职位地址表
+     */
+    public static final ThirdpartyZhilianPositionAddress THIRDPARTY_ZHILIAN_POSITION_ADDRESS = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyZhilianPositionAddress.THIRDPARTY_ZHILIAN_POSITION_ADDRESS;
 }

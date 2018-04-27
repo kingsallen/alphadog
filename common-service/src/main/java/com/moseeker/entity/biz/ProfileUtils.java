@@ -240,9 +240,9 @@ public class ProfileUtils {
 		if (skills != null && skills.size() > 0) {
 			skills.forEach(skill -> {
 				ProfileSkillRecord record = BeanUtils.MapToRecord(skill, ProfileSkillRecord.class);
+				this.skillMaxLimit(record);
 				ValidationMessage<ProfileSkillRecord> vm = ProfileValidation.verifySkill(record);
 				if (record != null && vm.isPass()) {
-					this.skillMaxLimit(record);
 					skillRecords.add(record);
 				}
 			});
@@ -673,7 +673,7 @@ public class ProfileUtils {
 			record = BeanUtils.MapToRecord(basic, ProfileBasicRecord.class);
 			ValidationMessage<ProfileBasicRecord> validationMessage = ProfileValidation.verifyBasic(record);
 			if (!validationMessage.isPass()) {
-				return null;
+                record.setBirth(null);
 			}
 
 //			if(StringUtils.isNotNullOrEmpty(record.getSelfIntroduction()) && record.getSelfIntroduction().length() > Constant.DESCRIPTION_LENGTH) {

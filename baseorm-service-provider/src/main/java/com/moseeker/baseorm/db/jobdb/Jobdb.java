@@ -16,8 +16,14 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_0413;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1030;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1108;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1113;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
 
 import java.util.ArrayList;
@@ -44,7 +50,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1780831705;
+    private static final long serialVersionUID = 1680679144;
 
     /**
      * The reference instance of <code>jobdb</code>
@@ -97,6 +103,26 @@ public class Jobdb extends SchemaImpl {
     public final JobPosition JOB_POSITION = com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
 
     /**
+     * The table <code>jobdb.job_position_0413</code>.
+     */
+    public final JobPosition_0413 JOB_POSITION_0413 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_0413.JOB_POSITION_0413;
+
+    /**
+     * The table <code>jobdb.job_position_1030</code>.
+     */
+    public final JobPosition_1030 JOB_POSITION_1030 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1030.JOB_POSITION_1030;
+
+    /**
+     * The table <code>jobdb.job_position_1108</code>.
+     */
+    public final JobPosition_1108 JOB_POSITION_1108 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1108.JOB_POSITION_1108;
+
+    /**
+     * The table <code>jobdb.job_position_1113</code>.
+     */
+    public final JobPosition_1113 JOB_POSITION_1113 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1113.JOB_POSITION_1113;
+
+    /**
      * The table <code>jobdb.job_position_ccmail</code>.
      */
     public final JobPositionCcmail JOB_POSITION_CCMAIL = com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail.JOB_POSITION_CCMAIL;
@@ -110,6 +136,16 @@ public class Jobdb extends SchemaImpl {
      * 职位信息扩展表
      */
     public final JobPositionExt JOB_POSITION_EXT = com.moseeker.baseorm.db.jobdb.tables.JobPositionExt.JOB_POSITION_EXT;
+
+    /**
+     * 职位福利特色-关系表
+     */
+    public final JobPositionHrCompanyFeature JOB_POSITION_HR_COMPANY_FEATURE = com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE;
+
+    /**
+     * 简历筛选关联职位中间表
+     */
+    public final JobPositionProfileFilter JOB_POSITION_PROFILE_FILTER = com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER;
 
     /**
      * 职位分享描述配置模板
@@ -160,9 +196,15 @@ public class Jobdb extends SchemaImpl {
             JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM,
             JobPcReported.JOB_PC_REPORTED,
             JobPosition.JOB_POSITION,
+            JobPosition_0413.JOB_POSITION_0413,
+            JobPosition_1030.JOB_POSITION_1030,
+            JobPosition_1108.JOB_POSITION_1108,
+            JobPosition_1113.JOB_POSITION_1113,
             JobPositionCcmail.JOB_POSITION_CCMAIL,
             JobPositionCity.JOB_POSITION_CITY,
             JobPositionExt.JOB_POSITION_EXT,
+            JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE,
+            JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER,
             JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,
             JobPositionTopic.JOB_POSITION_TOPIC,
             JobResumeOther.JOB_RESUME_OTHER);

@@ -230,7 +230,7 @@ public class JobApplicationController {
 			applicationService.viewApplications(hrId, applicationIds);
 			return ResponseLogNotification.successJson(request, "success");
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.warn(e.getMessage());
 			return ResponseLogNotification.fail(request,e.getMessage());
 		}
 	}

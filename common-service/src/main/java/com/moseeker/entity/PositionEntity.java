@@ -1,17 +1,21 @@
 package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionHrCompanyFeatureDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +38,12 @@ public class PositionEntity {
 
     @Autowired
     private DictCityDao cityDao;
+
+    @Autowired
+    private JobPositionHrCompanyFeatureDao jobPositionHrCompanyFeatureDao;
+
+    @Autowired
+    private HrCompanyFeatureDao hrCompanyFeatureDao;
 
     /**
      * 查找职位信息
@@ -64,9 +74,16 @@ public class PositionEntity {
      * @param query 查询工具
      * @return 职位集合
      */
-    public List<JobPositionRecord> getPositions(Query query) {
+    public List<JobPositionRecordWithCityName> getPositions(Query query) {
 
+        List<JobPositionRecordWithCityName> positionRecordWithCityNameList = new ArrayList<>();
         List<JobPositionRecord> positionRecordList = positionDao.getRecords(query);
+        if (positionRecordList != null && positionRecordList.size() > 0) {
+            positionRecordList.forEach(jobPositionRecord -> {
+                positionRecordWithCityNameList.add(JobPositionRecordWithCityName.clone(jobPositionRecord));
+            });
+        }
+
         if (positionRecordList != null) {
             List<Integer> pidList = positionRecordList.stream()
                     .map(JobPositionRecord::getId).collect(Collectors.toList());
@@ -75,7 +92,8 @@ public class PositionEntity {
             List<JobPositionCityRecord> jobPositionCityRecordList = positionCityDao.getRecords(query);
 
             if (jobPositionCityRecordList == null || jobPositionCityRecordList.size() == 0) {
-                return positionRecordList;
+
+                return positionRecordWithCityNameList;
             }
 
             Set<Integer> cityIds = new HashSet<>();
@@ -88,11 +106,11 @@ public class PositionEntity {
 
 
             if (dictCityRecordList == null || dictCityRecordList.size() == 0) {
-                return positionRecordList;
+                return positionRecordWithCityNameList;
             }
 
             /** 职位数据如果存在job_position_city 数据，则使用职位数据如果存在job_position_city对应城市，否则直接取city */
-            for (JobPositionRecord positionRecord: positionRecordList) {
+            for (JobPositionRecordWithCityName positionRecord: positionRecordWithCityNameList) {
 
                 /** 职位城市关系记录 */
                 List<JobPositionCityRecord> positionCityRecordList = jobPositionCityRecordList.stream()
@@ -102,6 +120,7 @@ public class PositionEntity {
 
                 if (positionCityRecordList != null && positionCityRecordList.size() > 0) {
                     StringBuffer cityNameBuffer = new StringBuffer();
+                    StringBuffer cityENameBuffer = new StringBuffer();
                     for (JobPositionCityRecord positionCityRecord : positionCityRecordList) {
                         Optional<DictCityRecord> optionalDictCity = dictCityRecordList.stream()
                                 .filter(dictCityRecord ->
@@ -109,16 +128,19 @@ public class PositionEntity {
                                 .findAny();
                         if (optionalDictCity.isPresent()) {
                             cityNameBuffer.append(optionalDictCity.get().getName()).append(",");
+                            cityENameBuffer.append(optionalDictCity.get().getEname()).append(",");
                         }
                     }
                     if (cityNameBuffer.length() > 0) {
                         cityNameBuffer.deleteCharAt(cityNameBuffer.length()-1);
+                        cityENameBuffer.deleteCharAt(cityENameBuffer.length()-1);
                         positionRecord.setCity(cityNameBuffer.toString());
+                        positionRecord.setCityEname(cityENameBuffer.toString());
                     }
                 }
             }
         }
-        return positionRecordList;
+        return positionRecordWithCityNameList;
     }
 
     public List<Integer> getAppCvConfigIdByCompany(int companyId, int hrAccountId) {
@@ -150,6 +172,30 @@ public class PositionEntity {
         List<JobPositionDO> jobPositionList = positionDao.getDatas(queryBuilder.buildQuery());
         return (jobPositionList == null || jobPositionList.isEmpty()) ? new HashMap<>() :
                 jobPositionList.parallelStream().collect(Collectors.toMap(k -> k.getId(), v -> v.getAppCvConfigId()));
+    }
+
+    public List<Map<String,Object>> getPositionFeatureList(int pid){
+        List<Integer> fidList=this.getFeatureIdList(pid);
+        if(StringUtils.isEmptyList(fidList)){
+            return null;
+        }
+        Query query=new Query.QueryBuilder().where(new Condition("id",fidList.toArray(),ValueOp.IN)).buildQuery();
+        List<Map<String,Object>> result=hrCompanyFeatureDao.getMaps(query);
+        return result;
+    }
+    /*
+     获取职位的福利id
+     */
+    private List<Integer> getFeatureIdList(int pid){
+        List<JobPositionHrCompanyFeature> dataList=jobPositionHrCompanyFeatureDao.getPositionFeatureList(pid);
+        if(StringUtils.isEmptyList(dataList)){
+            return null;
+        }
+        List<Integer> list=new ArrayList<>();
+        for(JobPositionHrCompanyFeature feature:dataList){
+            list.add(feature.getFid());
+        }
+        return list;
     }
 
 }

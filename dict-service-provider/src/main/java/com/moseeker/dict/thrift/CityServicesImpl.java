@@ -38,6 +38,11 @@ public class CityServicesImpl implements Iface {
     		return service.getCitiesById(id);
     }
 
+    @Override
+    public Response getAllCitiesByLevelOrUsing(String level, int is_using, int hot_city) throws TException {
+        return service.getAllCitiesByLevelOrUsing(level, is_using, hot_city);
+    }
+
     public Response getCitiesResponseById(int id) {
         return service.getCitiesResponseById(id);
     }

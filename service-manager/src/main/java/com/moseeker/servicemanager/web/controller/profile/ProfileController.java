@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.slf4j.Logger;
@@ -367,6 +369,7 @@ public class ProfileController {
             Integer uid = params.getInt("uid");
             if (file != null) {
                 String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
+                logger.info("/profile/parser MultipartFile file :{}",file.getOriginalFilename());
                 Response res = service.resumeProfile(uid, file.getOriginalFilename(), data);
                 return ResponseLogNotification.success(request, res);
             } else {
@@ -491,8 +494,10 @@ public class ProfileController {
         try {
             Map<String, Object> params = ParamUtils.parseequestParameter(request);
             String  companyId=(String)params.get("company_id");
+            String  filename=(String)params.get("filename");
+            logger.info("talent pool MultipartFile file :{}",filename);
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
-            Response res = service.resumeTalentProfile( file.getOriginalFilename(), data,Integer.parseInt(companyId));
+            Response res = service.resumeTalentProfile( filename, data,Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -561,6 +566,7 @@ public class ProfileController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
     @RequestMapping(value = "/profile/upload", method = RequestMethod.GET)
     @ResponseBody
     public String getUploadprofile(HttpServletRequest request, HttpServletResponse response) {
@@ -580,5 +586,30 @@ public class ProfileController {
     }
 
 
+    @RequestMapping(value = "/api/v1/profile/user-profile", method = RequestMethod.GET)
+    @ResponseBody
+    public String getUserProfile(HttpServletRequest request, HttpServletResponse response) {
+        // PrintWriter writer = null;
+        try {
+            // GET方法 通用参数解析并赋值
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> userIdList = new ArrayList<>();
+            if (params.get("user_ids") instanceof String) {
+                userIdList.add(Integer.valueOf((String)params.get("user_ids")));
+            } else {
+                List<String> userIdStrList = (List<String>) params.get("user_ids");
+                if (userIdStrList != null && userIdStrList.size() > 0) {
+                    userIdStrList.forEach(idStr -> userIdList.add(Integer.valueOf(idStr)));
+                }
+            }
 
+            List<UserProfile> userProfileList = service.fetchUserProfile(userIdList);
+            return ResponseLogNotification.successJson(request, userProfileList);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
 }

@@ -75,6 +75,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -1071,9 +1073,9 @@ public class ProfileService {
      * @return
      * @throws CommonException
      */
-  public Map<String, Object> getApplicationOther(int userId, int accountId) throws CommonException{
+  public Map<String, Object> getApplicationOther(int userId, int accountId, int positionId) throws CommonException{
         // 根据HR编号获取公司对象
-      long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         Query query = new Query.QueryBuilder().where(ProfileProfile.PROFILE_PROFILE.USER_ID.getName(), userId).buildQuery();
         ProfileProfileDO profileDO = dao.getData(query);
         if(profileDO == null)
@@ -1083,65 +1085,77 @@ public class ProfileService {
         UserHrAccountDO accountDO = userHrAccountDao.getData(accountQuery);
         if(accountDO == null)
             throw  CommonException.PROGRAM_PARAM_NOTEXIST;
-      Query positionQuery = null;
-      List<Integer> accountIdList = new ArrayList<>();
-      List<JobApplicationDO> applicationDOList = new ArrayList<>();
-      List<JobApplicationDO> applicationDOS = new ArrayList<>();
-      Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), accountDO.getId()).buildQuery();
-      HrCompanyAccountDO companyAccountDO = hrCompanyAccountDao.getData(companyAccountQuery);
-      if (companyAccountDO == null)
-          throw CommonException.PROGRAM_PARAM_NOTEXIST;
-      long infoTime = System.currentTimeMillis();
-      logger.info("getApplicationOther others info  time:{}", infoTime-start);
-      HrCompanyDO companyDO = this.selectSuperCompany(companyAccountDO.getCompanyId());
-      if (companyAccountDO == null)
-          throw CommonException.PROGRAM_PARAM_NOTEXIST;
-      Query applicationQuery = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.COMPANY_ID.getName(),companyDO.getId())
-              .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
-      applicationDOList = jobApplicationDao.getDatas(applicationQuery);
-      long appTime = System.currentTimeMillis();
-      logger.info("getApplicationOther others appTime  time:{}", appTime -infoTime);
+        List<JobApplicationDO> applicationDOS = new ArrayList<>();
       List<Integer> updateList = new ArrayList<>();
-      if(accountDO.getAccountType() == 0){
-          for(JobApplicationDO applicationDO : applicationDOList){
-              if(applicationDO.getApplyType() == 0 || (applicationDO.getApplyType() == 1 && applicationDO.getEmailStatus() == 0)){
-                  applicationDOS.add(applicationDO);
-                  if(((int)applicationDO.getIsViewed())==1){
-                      updateList.add(applicationDO.getId());
-                  }
-              }
-          }
-      }else{
-          positionQuery =  new Query.QueryBuilder().where(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountDO.getId()).buildQuery();
-          List<JobPositionDO> positionDOList = jobPositionDao.getDatas(positionQuery);
-          List<Integer> positionIdList = positionDOList.stream().map(m ->m.getId()).collect(Collectors.toList());
-          for(JobApplicationDO applicationDO : applicationDOList){
-              if(applicationDO.getApplyType() == 0 || (applicationDO.getApplyType() == 1 && applicationDO.getEmailStatus() == 0)){
-                  applicationDOS.add(applicationDO);
-                  if(positionIdList.contains(applicationDO.getPositionId())){
-                      updateList.add(applicationDO.getId());
-                  }
-              }
+      List<JobApplicationDO> applicationDOList = new ArrayList<>();
+        if(positionId <= 0) {
+            Query positionQuery = null;
+            //获取这份简历在该公司下所有申请
+            Query companyAccountQuery = new Query.QueryBuilder().where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.getName(), accountDO.getId()).buildQuery();
+            HrCompanyAccountDO companyAccountDO = hrCompanyAccountDao.getData(companyAccountQuery);
+            if (companyAccountDO == null)
+                throw CommonException.PROGRAM_PARAM_NOTEXIST;
+            long infoTime = System.currentTimeMillis();
+            logger.info("getApplicationOther others info  time:{}", infoTime - start);
+            //查询母公司信息
+            HrCompanyDO companyDO = this.selectSuperCompany(companyAccountDO.getCompanyId());
+            if (companyAccountDO == null)
+                throw CommonException.PROGRAM_PARAM_NOTEXIST;
+            Query applicationQuery = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.COMPANY_ID.getName(), companyDO.getId())
+                    .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
+            applicationDOList = jobApplicationDao.getDatas(applicationQuery);
+            long appTime = System.currentTimeMillis();
+            logger.info("getApplicationOther others appTime  time:{}", appTime - infoTime);
 
-          }
-      }
+            if (accountDO.getAccountType() == 0) {
+                for (JobApplicationDO applicationDO : applicationDOList) {
+                    if (applicationDO.getApplyType() == 0 || (applicationDO.getApplyType() == 1 && applicationDO.getEmailStatus() == 0)) {
+                        applicationDOS.add(applicationDO);
+                        if (((int) applicationDO.getIsViewed()) == 1) {
+                            updateList.add(applicationDO.getId());
+                        }
+                    }
+                }
+            } else {
+                positionQuery = new Query.QueryBuilder().where(JobPosition.JOB_POSITION.PUBLISHER.getName(), accountDO.getId()).buildQuery();
+                List<JobPositionDO> positionDOList = jobPositionDao.getDatas(positionQuery);
+                List<Integer> positionIdList = positionDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
+                for (JobApplicationDO applicationDO : applicationDOList) {
+                    if (applicationDO.getApplyType() == 0 || (applicationDO.getApplyType() == 1 && applicationDO.getEmailStatus() == 0)) {
+                        applicationDOS.add(applicationDO);
+                        if (positionIdList.contains(applicationDO.getPositionId()) && ((int) applicationDO.getIsViewed()) == 1) {
+                            updateList.add(applicationDO.getId());
+                        }
+                    }
 
-      long positionTime = System.currentTimeMillis();
-      logger.info("getApplicationOther others position  time:{}", positionTime-appTime);
+                }
+            }
+
+            long positionTime = System.currentTimeMillis();
+            logger.info("getApplicationOther others position  time:{}", positionTime - appTime);
+
+
+        }else{
+            Query applicationQuery = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.POSITION_ID.getName(), positionId)
+                    .and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
+            JobApplicationDO application = jobApplicationDao.getData(applicationQuery);
+            if(application != null ){
+                applicationDOS.add(application);
+                if (((int) application.getIsViewed()) == 1) {
+                    updateList.add(application.getId());
+                }
+            }
+        }
       //把申请者申请的有效申请且属于这个HR账号管辖的职位的申请全部设置为已查阅
-      if(updateList != null && updateList.size()>0){
-         pool.startTast(() -> viewApplications(accountId, updateList));
+      if (updateList != null && updateList.size() > 0) {
+          pool.startTast(() -> viewApplications(accountId, updateList));
       }
-
-
       List<Integer> positionList = new ArrayList<>();
       logger.info("有效申请职位：{}；数量：{}", applicationDOS, applicationDOS.size());
       if(applicationDOS != null && applicationDOS.size()>0){
             positionList = applicationDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
-
-            return  getProfileOther(positionList, profileId);
         }
-        return  null;
+      return  getProfileOther(positionList, profileId);
     }
 
     private String viewApplications(int accountId, List<Integer> updateList){
@@ -1210,7 +1224,7 @@ public class ProfileService {
                 result.put(fieldName, new HashMap<String, Object>(){{put("result",true);put("msg","success");}});
             } else {
                 result.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg", org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getErrorMsg(),"自定义字段"+fieldName+"为空"));}});
-                logger.error("自定义字段校验失败! field_name:{}, value:{}, error_msg:{}", fieldName, customResult, configSysCvTplDO.getErrorMsg());
+                logger.warn("自定义字段校验失败! field_name:{}, value:{}, error_msg:{}", fieldName, customResult, configSysCvTplDO.getErrorMsg());
             }
         });
         return ResponseUtils.success(result);
@@ -1243,7 +1257,6 @@ public class ProfileService {
         return ResponseUtils.success(result);
     }
 
-
     private HrCompanyDO selectSuperCompany(int companyId){
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
@@ -1252,5 +1265,9 @@ public class ProfileService {
             companyDO = selectSuperCompany(companyDO.getParentId());
         }
         return companyDO;
+    }
+
+    public List<UserProfile> fetchUserProfile(List<Integer> userIdList) {
+        return profileEntity.fetchUserProfile(userIdList);
     }
 }
