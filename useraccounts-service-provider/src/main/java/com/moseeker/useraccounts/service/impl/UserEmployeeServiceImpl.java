@@ -247,6 +247,7 @@ public class UserEmployeeServiceImpl {
         dataList=userWxEntity.handlerData(dataList);
         return dataList;
     }
+
     private List<UserEmployeeDO> getEmployeeData(int companyId,String email){
         List<UserEmployeeRecord>  list=userEmployeeDao.getUserEmployeeLike(companyId,email);
         List<UserEmployeeDO> dataList=new ArrayList<>();
