@@ -46,7 +46,7 @@ service CompanyServices {
 
     hr_company_conf_struct.HrCompanyConfDO getCompanyConfById(1:i32 companyId)throws (1: common_struct.BIZException e)
     common_struct.Response updateHrCompanyConf(1:company_struct.HrCompanyConf hrCompanyConf)throws (1: common_struct.BIZException e)
-    common_struct.Response addHrAccountAndCompany(1:string companyName, 2: string mobile, 3:i32 wxuserId, 4:string remoteIp, 5:i32 source) throws (1: common_struct.BIZException e)
+    common_struct.Response addHrAccountAndCompany(1:string companyName, 2: string mobile, 3:i32 wxuserId, 4:string remoteIp, 5:i32 source, 6:i32 hr_source) throws (1: common_struct.BIZException e)
 
     common_struct.Response getFeatureById(1:i32 id) throws (1: common_struct.BIZException e)
     common_struct.Response getFeatureByCompanyId(1:i32 companyId) throws (1: common_struct.BIZException e)
