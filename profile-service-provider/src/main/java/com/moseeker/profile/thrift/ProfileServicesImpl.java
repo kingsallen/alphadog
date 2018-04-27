@@ -151,9 +151,9 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public Response getProfileTokenEcrypt(String token) throws TException {
+    public Response getProfileTokenDecrypt(String token) throws TException {
         try {
-            return service.getProfileTokenEcrypt(token);
+            return service.getProfileTokenDecrypt(token);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
