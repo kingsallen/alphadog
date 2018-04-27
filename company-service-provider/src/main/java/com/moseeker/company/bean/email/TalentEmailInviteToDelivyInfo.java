@@ -2,6 +2,8 @@ package com.moseeker.company.bean.email;
 
 import com.moseeker.company.bean.email.PositionInfo;
 
+import java.util.List;
+
 /**
  * Created by zztaiwll on 18/4/25.
  */
@@ -10,12 +12,14 @@ public class TalentEmailInviteToDelivyInfo {
     private String companyLogo;
     private String employeeName;
     private String customText;
-    private PositionInfo positions;
+    private List<PositionInfo> positions;
     private String positionNum;
     private String seeMorePosition;
     private String weixinQrcode;
     private String officialAccountName;
     private String rcpt;
+    private String positionName;
+
 
     public String getCompanyAbbr() {
         return companyAbbr;
@@ -49,11 +53,11 @@ public class TalentEmailInviteToDelivyInfo {
         this.customText = customText;
     }
 
-    public PositionInfo getPositions() {
+    public List<PositionInfo> getPositions() {
         return positions;
     }
 
-    public void setPositions(PositionInfo positions) {
+    public void setPositions(List<PositionInfo> positions) {
         this.positions = positions;
     }
 
@@ -95,6 +99,14 @@ public class TalentEmailInviteToDelivyInfo {
 
     public void setRcpt(String rcpt) {
         this.rcpt = rcpt;
+    }
+
+    public String getPositionName() {
+        return positionName;
+    }
+
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
     }
 }
 

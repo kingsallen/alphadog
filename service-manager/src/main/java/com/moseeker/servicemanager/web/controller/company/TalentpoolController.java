@@ -1168,4 +1168,89 @@ public class TalentpoolController {
         }
     }
 
+    /*
+       转发简历
+     */
+    @RequestMapping(value = "/api/talentpool/forward/resume", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendResumeEmail(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId=Integer.parseInt((String)params.get("company_id"));
+            Map<String,Object> conditionInfo=(Map<String,Object>)params.get("filter");
+            Map<String,String> condition=new HashMap<>();
+            if(!StringUtils.isEmptyMap(conditionInfo)){
+                for(String key:conditionInfo.keySet()){
+                    condition.put(key,String.valueOf(conditionInfo.get(key))) ;
+                }
+            }
+            int hrId=(int)params.get("hr_id");
+            boolean userAll=(boolean)params.get("user_all");
+            int flag=0;
+            if(userAll){
+                flag=1;
+            }
+            List<Integer> idList=( List<Integer>)params.get("employee");
+            List<Integer> userIdList=( List<Integer>)params.get("user_ids");
+            Response result=service.sendResumeEmail(condition,userIdList,idList,companyId,hrId,flag);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+       邀请投递简历
+     */
+    @RequestMapping(value = "/api/talentpool/application/invitation", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendInviteEmail(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId=Integer.parseInt((String)params.get("company_id"));
+            Map<String,Object> conditionInfo=(Map<String,Object>)params.get("filter");
+            Map<String,String> condition=new HashMap<>();
+            if(!StringUtils.isEmptyMap(conditionInfo)){
+                for(String key:conditionInfo.keySet()){
+                    condition.put(key,String.valueOf(conditionInfo.get(key))) ;
+                }
+            }
+            int hrId=(int)params.get("hr_id");
+            boolean userAll=(boolean)params.get("user_all");
+            int flag=0;
+            if(userAll){
+                flag=1;
+            }
+            boolean positionAll=(boolean)params.get("position_all");
+            int positionFlag=0;
+            if(positionAll){
+                positionFlag=1;
+            }
+            List<Integer> positionIdList=( List<Integer>)params.get("position_ids");
+            List<Integer> userIdList=( List<Integer>)params.get("user_ids");
+            Response result=service.sendInviteEmail(condition,userIdList,positionIdList,companyId,hrId,flag,positionFlag);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+      职位邀请投递
+     */
+    @RequestMapping(value = "/api/position/application/invitation", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendPositionInviteEmail(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId=(int)params.get("company_id");
+            int hrId=(int)params.get("hr_id");
+            int positionId=(int)params.get("position_id");
+            Response result=service.sendPositionInviteEmail(hrId,positionId,companyId);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

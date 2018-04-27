@@ -2,6 +2,9 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
@@ -16,9 +19,12 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.UserWxEntity;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.useraccounts.domain.AwardEntity;
@@ -54,6 +60,11 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     AwardRepository awardRepository;
+
+    @Autowired
+    private UserWxEntity userWxEntity;
+
+
 
     @Resource(name = "cacheClient")
     private RedisClient client;
@@ -232,11 +243,18 @@ public class UserEmployeeServiceImpl {
      获取经过认证的员工信息
      */
     public List<UserEmployeeDO> getUserEmployeeEmailValidate(int companyId,String email){
+        List<UserEmployeeDO> dataList=getEmployeeData(companyId, email);
+        dataList=userWxEntity.handlerData(dataList);
+        return dataList;
+    }
+    private List<UserEmployeeDO> getEmployeeData(int companyId,String email){
         Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("email","%"+email+"%", ValueOp.LIKE))
                 .and("disable",1).and("email_isvalid",1).orderBy("update_time", Order.DESC).buildQuery();
         List<UserEmployeeDO>  list=userEmployeeDao.getDatas(query);
         return list;
     }
+
+
     /*
      获取最近转发过的员工
      */

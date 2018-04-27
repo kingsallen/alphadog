@@ -13,6 +13,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.bean.TalentTagPOJO;
+import com.moseeker.company.bean.email.TalentEmailEnum;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.company.service.impl.TalentpoolEmailService;
@@ -536,6 +537,49 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response sendInviteEmail(Map<String, String> params, List<Integer> userIdList, List<Integer> positionIdList, int companyId, int hrId, int flag,int positionFlag) throws BIZException, TException {
+        try{
+            int result=talentpoolEmailService.talentPoolSendInviteToDelivyEmail(params,userIdList,positionIdList,companyId,hrId,flag,positionFlag);
+            if(result<0){
+                return  ResponseUtils.fail(TalentEmailEnum.intToEnum.get(result));
+            }
+            return ResponseUtils.success("success");
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+        }
+
+    }
+
+    @Override
+    public Response sendResumeEmail(Map<String, String> params, List<Integer> userIdList, List<Integer> idList, int companyId, int hrId, int flag) throws BIZException, TException {
+        try{
+            int result=talentpoolEmailService.talentPoolSendResumeEmail(idList,params,userIdList,companyId,hrId,flag);
+            if(result<0){
+                return  ResponseUtils.fail(TalentEmailEnum.intToEnum.get(result));
+            }
+            return ResponseUtils.success("success");
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+        }
+    }
+
+    @Override
+    public Response sendPositionInviteEmail(int hrId, int positionId, int companyId) throws BIZException, TException {
+        try{
+            int result=talentpoolEmailService.positionInviteDelivyEmail(hrId,positionId,companyId);
+            if(result<0){
+                return  ResponseUtils.fail(TalentEmailEnum.intToEnum.get(result));
+            }
+            return ResponseUtils.success("success");
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
         }
     }
 
