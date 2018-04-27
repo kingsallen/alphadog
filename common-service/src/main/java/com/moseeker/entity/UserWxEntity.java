@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -111,5 +112,13 @@ public class UserWxEntity {
             }
         }
         return result;
+    }
+
+    public <T> T getFieldById(int wxId, String fieldName, Class<T> clazz) {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.select(fieldName);
+        query.where("id", wxId);
+        HrWxWechatRecord wxWechatRecord = hrWxWechatDao.getRecord(query.buildQuery());
+        return wxWechatRecord.get(fieldName, clazz);
     }
 }
