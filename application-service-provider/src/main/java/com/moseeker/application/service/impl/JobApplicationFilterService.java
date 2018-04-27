@@ -253,6 +253,11 @@ public class JobApplicationFilterService {
         }else if(type == 3){
             res = bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
         }else if(type == 4){
+            try {
+                bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
+            }catch (Exception e){
+                logger.error(e.getMessage());
+            }
             res = bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
             sendProfileFilterExecuteEmail(user_id, position);
         }
@@ -277,7 +282,6 @@ public class JobApplicationFilterService {
                     } else {
                         username = userUserRecord.getNickname();
                     }
-                    logger.info("handerApplicationFilter cdn :{}",env.getProperty("http.cdn.url"));
                     String company_logo = CommonUtils.appendUrl(companyDO.getLogo(), env.getProperty("http.cdn.url"));
                     params.put("company_logo", company_logo);
                     String context = emailList.get(0).getContext();
@@ -300,7 +304,6 @@ public class JobApplicationFilterService {
                     emailStruct.setTo_email(userUserRecord.getEmail());
                     int id = emailEntity.handerTalentpoolEmailLogAndBalance(1, 2, position.getCompanyId(), position.getPublisher());
                     if (id > 0) {
-                        logger.info("handerApplicationFilter emailStruct:{}", emailStruct);
                         mqService.sendMandrilEmail(emailStruct);
                     }
                 }
