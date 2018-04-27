@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.entity.SearchengineEntity;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
@@ -169,4 +170,13 @@ public class UserHrAccountServiceTest {
 //        searchengineEntity.updateEmployeeAwards(list);
     }
 
+    @Test
+    public void switchChatLeaveToMobot() throws TException {
+        try {
+            userHrAccountService.switchChatLeaveToMobot(82690,(byte)1);
+        } catch (BIZException e){
+            System.err.println(e.message);
+        }
+
+    }
 }

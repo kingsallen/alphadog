@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
 
-    private static final long serialVersionUID = 364768918;
+    private static final long serialVersionUID = -502400345;
 
     /**
      * The reference instance of <code>userdb.user_hr_account</code>
@@ -72,9 +72,9 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
     public final TableField<UserHrAccountRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "邮箱");
 
     /**
-     * The column <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信账号
+     * The column <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信 账号
      */
-    public final TableField<UserHrAccountRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER, this, "绑定的微信账号");
+    public final TableField<UserHrAccountRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER, this, "绑定的微信 账号");
 
     /**
      * The column <code>userdb.user_hr_account.password</code>. 登录密码
@@ -152,6 +152,11 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
     public final TableField<UserHrAccountRecord, String> HEADIMGURL = createField("headimgurl", org.jooq.impl.SQLDataType.VARCHAR.length(120), this, "头像 url");
 
     /**
+     * The column <code>userdb.user_hr_account.leave_to_mobot</code>. HR聊天是否托管给智能招聘助手，0 不托管，1 托管
+     */
+    public final TableField<UserHrAccountRecord, Byte> LEAVE_TO_MOBOT = createField("leave_to_mobot", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "HR聊天是否托管给智能招聘助手，0 不托管，1 托管");
+
+    /**
      * Create a <code>userdb.user_hr_account</code> table reference
      */
     public UserHrAccount() {
@@ -216,6 +221,7 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserHrAccount rename(String name) {
         return new UserHrAccount(name, null);
     }
