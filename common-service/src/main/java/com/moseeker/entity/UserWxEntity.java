@@ -1,15 +1,23 @@
 package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -25,6 +33,14 @@ public class UserWxEntity {
     @Autowired
     private HrWxWechatDao hrWxWechatDao;
 
+    @Autowired
+    private UserUserDao userUserDao;
+
+    @Autowired
+    private UserWxUserDao userWxUserDao;
+
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
     /**
      *  获取用户wxUserId
      */
@@ -53,11 +69,47 @@ public class UserWxEntity {
         return wxUserId;
     }
 
-    public <T> T getFieldById(int wxId, String fieldName, Class<T> clazz) {
-        Query.QueryBuilder query = new Query.QueryBuilder();
-        query.select(fieldName);
-        query.where("id", wxId);
-        HrWxWechatRecord wxWechatRecord = hrWxWechatDao.getRecord(query.buildQuery());
-        return wxWechatRecord.get(fieldName, clazz);
+    public List<UserEmployeeDO> handlerData(List<UserEmployeeDO> dataList ){
+        if(!StringUtils.isEmptyList(dataList)){
+            List<Integer> userIdList=this.getUserIdList(dataList);
+            if(!StringUtils.isEmptyList(userIdList)){
+                List<UserWxUserDO> list=this.getUserWXUser(userIdList);
+                if(!StringUtils.isEmptyList(list)){
+                    for(UserWxUserDO userWxUserDO:list){
+                        int sysUserId=userWxUserDO.getSysuserId();
+                        String name=userWxUserDO.getNickname();
+                        if(StringUtils.isNotNullOrEmpty(name)){
+                            for(UserEmployeeDO DO:dataList){
+                                if(DO.getSysuserId()==sysUserId){
+                                    DO.setCfname(name);
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        }
+        return dataList;
+    }
+
+    private List<UserWxUserDO> getUserWXUser(List<Integer> userIdList){
+        Query query=new Query.QueryBuilder().where(new Condition("id",userIdList.toArray(),ValueOp.IN)).buildQuery();
+        List<UserWxUserDO>  list=userWxUserDao.getDatas(query);
+        return list;
+    }
+
+    private List<Integer> getUserIdList(List<UserEmployeeDO> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(UserEmployeeDO DO:list){
+            if(StringUtils.isNullOrEmpty(DO.getCname())){
+                result.add(DO.getSysuserId());
+            }
+        }
+        return result;
     }
 }

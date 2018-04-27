@@ -82,6 +82,10 @@ public final class ConstantErrorCodeMessage {
     public static final String TALENT_POOL_ACCOUNT_STATUS = "{'status':34005,'message':'子账号没有操作权限'}";
     public static final String COMPANY_NOT_MU = "{'status':34006,'message':'company_id不为母公司编号'}";
     public static final String COMPANY_SUPER_REPEART_NAME = "{'status':33001, 'message':'和超级账号重名'}";
+    public static final String TALENTPOOL_EMAIL_BALANCE = "{'status':34007, 'message':'邮件的额度不足'}";
+    public static final String TALENTPOOL_EMAIL_NOUSEREMPLOYEE = "{'status':34008, 'message':'没有选中收件的员工'}";
+    public static final String TALENTPOOL_EMAIL_NOCONFIGEMAIL = "{'status':34009, 'message':'该企业没有配置邮件'}";
+    public static final String TALENTPOOL_EMAIL_NOUSERPROFILE = "{'status':34010, 'message':'没有符合条件的简历'}";
 
     // 申请服务ERRCODE说明定义 4字头
     public static final String APPLICATION_VALIDATE_COUNT_CHECK = "{'status':41001,'message':'本月您已达到投递次数上限!'}";

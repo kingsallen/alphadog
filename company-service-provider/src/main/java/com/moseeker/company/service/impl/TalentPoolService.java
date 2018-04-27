@@ -1632,15 +1632,25 @@ public class TalentPoolService {
                 params.put("account_type", String.valueOf(flag));
                 filterList.add(params);
             }
-            FilterResp resp = service.queryProfileFilterUserIdList(filterList, 0, 0);
-            map.put("num", resp.getTalent_count());
-            HrCompanyEmailInfo info = talentPoolEmailEntity.getHrCompanyEmailInfoByCompanyId(company_id);
-            map.put("enable",false);
-            if(resp.getTalent_count() < info.getBalance()){
-                map.put("enable", true);
+            Response res = service.queryProfileFilterUserIdList(filterList, 0, 0);
+            if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
+                Map<String,Object> data=JSON.parseObject(res.getData());
+                long totalNum=(long)data.get("totalNum");
+                map.put("num",totalNum);
+                HrCompanyEmailInfo info = talentPoolEmailEntity.getHrCompanyEmailInfoByCompanyId(company_id);
+                map.put("enable",false);
+                if(totalNum < info.getBalance()){
+                    map.put("enable", true);
+                }
+                String time=redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.LAST_SEND_POSITION_INVITE.toString(),
+                        String.valueOf(hr_id));
+                map.put("last_send_time",time);
+                return ResponseUtils.success(map);
             }
+
+
         }
-        return ResponseUtils.success(map);
+        return ResponseUtils.success("");
     }
     //处理批量操作的结果
     private Map<String,Object> handlerBatchTalentResult( Set<Integer> unUseList,Set<Integer>unApplierIdList,Set<Integer> idList ,int companyd){

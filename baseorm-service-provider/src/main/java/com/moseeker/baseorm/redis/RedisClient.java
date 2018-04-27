@@ -117,10 +117,23 @@ public abstract class RedisClient {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str);
 		try {
-			logger.info("set===");
-			logger.info("key_identifier{}===str=={}==value=={}===ttl==={}",key_identifier,str,value,redisKey.getTtl());
-			logger.info("=================");
 			return redisCluster.setex(cacheKey, redisKey.getTtl(), value);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+		} finally {
+		}
+	}
+
+	/*
+	设置没有过期时间的兼职对
+	 */
+	public String setNoTime(int appId, String key_identifier, String str, String value)
+			throws CacheConfigNotExistException,RedisException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		String cacheKey = String.format(redisKey.getPattern(), str);
+		try {
+			return redisCluster.set(cacheKey, value);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
