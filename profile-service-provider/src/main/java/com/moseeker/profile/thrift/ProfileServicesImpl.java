@@ -5,6 +5,7 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -152,14 +153,15 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public Response getProfileTokenDecrypt(String token) throws TException {
+    public Response getProfileTokenDecrypt(String token) throws BIZException, TException {
         try {
             return service.getProfileTokenDecrypt(token);
         } catch (CommonException e) {
+            logger.error(e.getMessage(), e);
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
         }
     }
 
