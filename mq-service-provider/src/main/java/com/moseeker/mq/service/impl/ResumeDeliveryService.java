@@ -389,7 +389,7 @@ public class ResumeDeliveryService {
                 String qrcodeUrl = CommonUtils.appendUrl(hrWxWechatDO.getQrcode(), env.getProperty("http.cdn.url"));
                 params.put("weixin_qrcode", qrcodeUrl);
                 params.put("official_account_name", hrWxWechatDO.getName());
-                params.put("comapny_abbr", companyDO.getAbbreviation());
+                params.put("company_abbr", companyDO.getAbbreviation());
                 emailStruct.put("mergeVars", params);
                 //邮件发送的名称，邮箱
                 emailStruct.put("to_name", username);
