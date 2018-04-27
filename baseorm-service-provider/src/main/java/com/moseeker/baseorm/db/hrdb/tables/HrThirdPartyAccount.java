@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-    private static final long serialVersionUID = 59546196;
+    private static final long serialVersionUID = 86430401;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -115,6 +115,16 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
      * The column <code>hrdb.hr_third_party_account.ext</code>. 扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：会员名称
      */
     public final TableField<HrThirdPartyAccountRecord, String> EXT = createField("ext", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：会员名称");
+
+    /**
+     * The column <code>hrdb.hr_third_party_account.sync_require_company</code>. 智联同步时页面是否需要选择公司名称，0 不需要，1 需要
+     */
+    public final TableField<HrThirdPartyAccountRecord, Byte> SYNC_REQUIRE_COMPANY = createField("sync_require_company", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "智联同步时页面是否需要选择公司名称，0 不需要，1 需要");
+
+    /**
+     * The column <code>hrdb.hr_third_party_account.sync_require_department</code>. 智联同步时页面是否需要选择部门名称，0 不需要，1 需要
+     */
+    public final TableField<HrThirdPartyAccountRecord, Byte> SYNC_REQUIRE_DEPARTMENT = createField("sync_require_department", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "智联同步时页面是否需要选择部门名称，0 不需要，1 需要");
 
     /**
      * Create a <code>hrdb.hr_third_party_account</code> table reference

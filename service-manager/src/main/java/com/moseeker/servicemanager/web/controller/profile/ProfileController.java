@@ -24,19 +24,13 @@ import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.slf4j.Logger;
