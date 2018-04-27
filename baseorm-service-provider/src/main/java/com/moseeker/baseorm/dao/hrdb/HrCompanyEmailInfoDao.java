@@ -29,7 +29,6 @@ public class HrCompanyEmailInfoDao extends JooqCrudImpl<HrCompanyEmailInfo, HrCo
      */
     public HrCompanyEmailInfo getHrCompanyEmailInfoListByCompanyId(int companyId){
         List<HrCompanyEmailInfo> list=create.selectFrom(HR_COMPANY_EMAIL_INFO).where(HR_COMPANY_EMAIL_INFO.COMPANY_ID.eq(companyId))
-                .and(HR_COMPANY_EMAIL_INFO.DISABLE.eq((byte)0))
                 .fetchInto(HrCompanyEmailInfo.class);
         if(list != null && list.size()>0){
             return  list.get(0);
