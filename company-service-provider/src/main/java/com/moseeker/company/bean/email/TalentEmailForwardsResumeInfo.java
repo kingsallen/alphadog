@@ -24,6 +24,10 @@ public class TalentEmailForwardsResumeInfo {
     private int userId;
     private int birth;
     private String positionName;
+    private String companyName;
+    private String rcpt;
+    private String hrName;
+    private String profileFullUrl;
 
     public String getCompanyAbbr() {
         return companyAbbr;
@@ -159,5 +163,37 @@ public class TalentEmailForwardsResumeInfo {
 
     public void setPositionName(String positionName) {
         this.positionName = positionName;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getRcpt() {
+        return rcpt;
+    }
+
+    public void setRcpt(String rcpt) {
+        this.rcpt = rcpt;
+    }
+
+    public String getHrName() {
+        return hrName;
+    }
+
+    public void setHrName(String hrName) {
+        this.hrName = hrName;
+    }
+
+    public String getProfileFullUrl() {
+        return profileFullUrl;
+    }
+
+    public void setProfileFullUrl(String profileFullUrl) {
+        this.profileFullUrl = profileFullUrl;
     }
 }

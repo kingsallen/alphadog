@@ -148,7 +148,9 @@ public class UserEmployeeController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
+    /*
+     获取
+     */
     @RequestMapping(value="/api/talentpool/forward/employee", method = RequestMethod.GET)
     @ResponseBody
     public String getEmailValidate(HttpServletRequest request, @RequestBody ApplyTypeAwardFrom form) {
@@ -162,7 +164,9 @@ public class UserEmployeeController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
+    /*
+    获取最近转发人员
+     */
     @RequestMapping(value="/api/talentpool/forward/employee/history", method = RequestMethod.GET)
     @ResponseBody
     public String getUserEmployeePast(HttpServletRequest request, @RequestBody ApplyTypeAwardFrom form) {

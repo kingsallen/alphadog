@@ -224,14 +224,13 @@ public class TalentpoolSearchengine {
      根据筛选规则获取符合该规则的人才id
      */
     @CounterIface
-    public FilterResp getUserListByFilterIds(List<Map<String, String>> filterList, int page_number, int page_size){
-        FilterResp resp = new FilterResp();
-        List<Integer> list=new ArrayList<>();
+    public  Map<String, Object> getUserListByFilterIds(List<Map<String, String>> filterList, int page_number, int page_size){
+        Map<String, Object> result=new HashMap<>();
         try{
             TransportClient client=searchUtil.getEsClient();
             QueryBuilder query = this.convertBuild(filterList);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
-            String[] returnParams={"user.profiles.profile.user_id"};
+            String[] returnParams={"user.profiles.profile.user_id","user.profiles.basic.name","user.profiles.basic.email"};
             builder.setFetchSource(returnParams,null);
             builder.setSize(page_size);
             builder.setFrom((page_number-1)*page_size);
@@ -239,25 +238,12 @@ public class TalentpoolSearchengine {
             logger.info(builder.toString());
             logger.info("============================================");
             SearchResponse response = builder.execute().actionGet();
-            Map<String,Object> result = searchUtil.handleData(response,"userIdList");
-            logger.info("============================================");
-            logger.info(JSON.toJSONString(result));
-            logger.info("============================================");
-            if(result!=null&&!result.isEmpty()){
-                long totalNum=(long)result.get("totalNum");
-                if(totalNum>0){
-                    this.handlerResult(result,list);
-                }
-                resp.setTalent_count((int)totalNum);
-                resp.setUser_ids(list);
-            }
+            result = searchUtil.handleData(response,"users");
         }catch(Exception e){
             logger.info(e.getMessage(),e);
         }
-        logger.info("==========================");
-        logger.info(JSON.toJSONString(list));
-        logger.info("==========================");
-        return resp;
+
+        return result;
     }
     /*
      处理es返回的结果值获取人才列表id
@@ -315,9 +301,12 @@ public class TalentpoolSearchengine {
         String sex=params.get("sex");
         String isRecommend=params.get("is_recommend");
         String companyName=params.get("company_name");
+        String exists=params.get("exists");
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-
+        if(StringUtils.isNotNullOrEmpty(exists)){
+            this.exitsisQuery(exists,query);
+        }
         if(StringUtils.isNotNullOrEmpty(workYears)){
             this.queryByWorkYear(workYears,query);
         }
