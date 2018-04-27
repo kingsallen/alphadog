@@ -1,6 +1,8 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.constant.TalentPoolStatus;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyEmailInfoDao;
 import com.moseeker.baseorm.dao.logdb.LogTalentpoolEmailDailyLogDao;
@@ -26,19 +28,19 @@ import com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm;
 import com.moseeker.thrift.gen.company.struct.EmailAccountForm;
 import com.moseeker.thrift.gen.company.struct.EmailAccountInfo;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by zztaiwll on 17/12/1.
@@ -60,6 +62,8 @@ public class TalentPoolEmailEntity {
     private LogTalentpoolEmailDailyLogDao logTalentpoolEmailDailyLogDao;
     @Autowired
     private HrCompanyDao hrCompanyDao;
+    @Autowired
+    private HrCompanyConfDao companyConfDao;
 
     public HrCompanyEmailInfo getHrCompanyEmailInfoByCompanyId(int company_id){
         HrCompanyEmailInfo info = hrCompanyEmailInfoDao.getHrCompanyEmailInfoListByCompanyId(company_id);
@@ -102,8 +106,12 @@ public class TalentPoolEmailEntity {
     }
 
     public int handerTalentpoolEmailLogAndBalance(int useCount, int type, int company_id, int hr_id) throws TalentPoolException {
+        HrCompanyConfDO companyConfDO = companyConfDao.getHrCompanyConfByCompanyId(company_id);
+        if (companyConfDO == null || companyConfDO.getTalentpoolStatus() != TalentPoolStatus.HighLevel.getValue()) {
+            throw TalentPoolException.TALENT_POOL_EMAIL_ACCOUNT_NO_PERMISSION;
+        }
         HrCompanyEmailInfo companyEmailInfo = companyEmailInfoDao.getHrCompanyEmailInfoListByCompanyId(company_id);
-        int id = 0;
+        int id;
         switch (type) {
             case 0:  id = recharge(useCount, company_id, companyEmailInfo.getBalance(), 0); break;
             case 1:
@@ -174,6 +182,11 @@ public class TalentPoolEmailEntity {
             throw TalentPoolException.TALENT_POOL_EMAIL_ACCOUNT_RECHARGE_NOT_EXIST;
         }
 
+        HrCompanyConfDO companyConfDO = companyConfDao.getHrCompanyConfByCompanyId(record.getCompanyId());
+        if (companyConfDO == null || companyConfDO.getTalentpoolStatus() != TalentPoolStatus.HighLevel.getValue()) {
+            throw TalentPoolException.TALENT_POOL_EMAIL_ACCOUNT_NO_PERMISSION;
+        }
+
         int balance = lost - record.getLost();
         if (balance == 0) {
             return;
@@ -241,6 +254,7 @@ public class TalentPoolEmailEntity {
         emailAccountForm.setPage_number(pageNumber);
         emailAccountForm.setPage_size(pageSize);
         emailAccountForm.setTotal(total);
+
         List<HrCompanyEmailInfo> emailInfoList = hrCompanyEmailInfoDao.fetchOrderByCreateTime(companyIdList, index, pageSize);
         if (emailInfoList != null && emailInfoList.size() > 0) {
 
@@ -318,47 +332,50 @@ public class TalentPoolEmailEntity {
         if (endDate != null) {
             endTime = new Timestamp(endDate.getMillis());
         }
-
         int total = 0;
         List<EmailAccountConsumption> emailAccountConsumptionList = new ArrayList<>();
-        switch (emailAccountConsumptionType) {
-            case RECHARRGE:
-                total = emailLogDao.countRecharge(companyId, startTime, endTime);
-                List<LogTalentpoolEmailLogRecord> logRecordList = emailLogDao.fetchEmailAccountRechargeRecords(companyId, index, pageSize, startTime, endTime);
-                if (logRecordList != null && logRecordList.size() > 0) {
-                    emailAccountConsumptionList = logRecordList.stream()
-                            .map(logTalentpoolEmailLogRecord -> {
-                                EmailAccountConsumption emailAccountConsumption = new EmailAccountConsumption();
-                                emailAccountConsumption.setCompany_id(logTalentpoolEmailLogRecord.getCompanyId());
-                                emailAccountConsumption.setCreate_time(new DateTime(logTalentpoolEmailLogRecord.getCreateTime().getTime()).toString("YYYY-MM-dd"));
-                                emailAccountConsumption.setId(logTalentpoolEmailLogRecord.getId());
-                                emailAccountConsumption.setLost(logTalentpoolEmailLogRecord.getLost());
-                                return emailAccountConsumption;
-                            })
-                            .collect(Collectors.toList());
-                    emailAccountConsumptionForm.setPurchases(emailAccountConsumptionList);
-                }
-                break;
-            case COMSUMPTION:
-                total = logTalentpoolEmailDailyLogDao.countEmailAccountConsumption(companyId, emailAccountConsumptionType.getValue(), startTime, endTime);
-                List<LogTalentpoolEmailDailyLogRecord> logTalentpoolEmailDailyLogRecordList =
-                        logTalentpoolEmailDailyLogDao.fetchEmailAccountConsumption(companyId,
-                                emailAccountConsumptionType.getValue(), index, pageSize, startTime, endTime);
-                if (logTalentpoolEmailDailyLogRecordList != null && logTalentpoolEmailDailyLogRecordList.size() > 0) {
-                    emailAccountConsumptionList = logTalentpoolEmailDailyLogRecordList.stream()
-                            .map(logTalentpoolEmailDailyLogRecord -> {
-                                EmailAccountConsumption emailAccountConsumption = new EmailAccountConsumption();
-                                emailAccountConsumption.setCompany_id(logTalentpoolEmailDailyLogRecord.getCompanyId());
-                                emailAccountConsumption.setCreate_time(new DateTime(logTalentpoolEmailDailyLogRecord.getCreateTime().getTime()).toString("YYYY-MM-dd"));
-                                emailAccountConsumption.setId(logTalentpoolEmailDailyLogRecord.getId());
-                                emailAccountConsumption.setLost(logTalentpoolEmailDailyLogRecord.getLost());
-                                return emailAccountConsumption;
-                            })
-                            .collect(Collectors.toList());
-                    emailAccountConsumptionForm.setPurchases(emailAccountConsumptionList);
-                }
-                break;
-            default:
+
+        HrCompanyConfDO companyConfDO = companyConfDao.getHrCompanyConfByCompanyId(companyId);
+        if (companyConfDO == null && companyConfDO.getTalentpoolStatus() == TalentPoolStatus.HighLevel.getValue()) {
+            switch (emailAccountConsumptionType) {
+                case RECHARRGE:
+                    total = emailLogDao.countRecharge(companyId, startTime, endTime);
+                    List<LogTalentpoolEmailLogRecord> logRecordList = emailLogDao.fetchEmailAccountRechargeRecords(companyId, index, pageSize, startTime, endTime);
+                    if (logRecordList != null && logRecordList.size() > 0) {
+                        emailAccountConsumptionList = logRecordList.stream()
+                                .map(logTalentpoolEmailLogRecord -> {
+                                    EmailAccountConsumption emailAccountConsumption = new EmailAccountConsumption();
+                                    emailAccountConsumption.setCompany_id(logTalentpoolEmailLogRecord.getCompanyId());
+                                    emailAccountConsumption.setCreate_time(new DateTime(logTalentpoolEmailLogRecord.getCreateTime().getTime()).toString("YYYY-MM-dd"));
+                                    emailAccountConsumption.setId(logTalentpoolEmailLogRecord.getId());
+                                    emailAccountConsumption.setLost(logTalentpoolEmailLogRecord.getLost());
+                                    return emailAccountConsumption;
+                                })
+                                .collect(Collectors.toList());
+                        emailAccountConsumptionForm.setPurchases(emailAccountConsumptionList);
+                    }
+                    break;
+                case COMSUMPTION:
+                    total = logTalentpoolEmailDailyLogDao.countEmailAccountConsumption(companyId, emailAccountConsumptionType.getValue(), startTime, endTime);
+                    List<LogTalentpoolEmailDailyLogRecord> logTalentpoolEmailDailyLogRecordList =
+                            logTalentpoolEmailDailyLogDao.fetchEmailAccountConsumption(companyId,
+                                    emailAccountConsumptionType.getValue(), index, pageSize, startTime, endTime);
+                    if (logTalentpoolEmailDailyLogRecordList != null && logTalentpoolEmailDailyLogRecordList.size() > 0) {
+                        emailAccountConsumptionList = logTalentpoolEmailDailyLogRecordList.stream()
+                                .map(logTalentpoolEmailDailyLogRecord -> {
+                                    EmailAccountConsumption emailAccountConsumption = new EmailAccountConsumption();
+                                    emailAccountConsumption.setCompany_id(logTalentpoolEmailDailyLogRecord.getCompanyId());
+                                    emailAccountConsumption.setCreate_time(new DateTime(logTalentpoolEmailDailyLogRecord.getCreateTime().getTime()).toString("YYYY-MM-dd"));
+                                    emailAccountConsumption.setId(logTalentpoolEmailDailyLogRecord.getId());
+                                    emailAccountConsumption.setLost(logTalentpoolEmailDailyLogRecord.getLost());
+                                    return emailAccountConsumption;
+                                })
+                                .collect(Collectors.toList());
+                        emailAccountConsumptionForm.setPurchases(emailAccountConsumptionList);
+                    }
+                    break;
+                default:
+            }
         }
         emailAccountConsumptionForm.setPurchases(emailAccountConsumptionList);
         emailAccountConsumptionForm.setTotal(total);
