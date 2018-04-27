@@ -1807,10 +1807,6 @@ public class UserHrAccountService {
 
         UserHrAccountDO hrAccount = requiresNotNullAccount(accountId);
 
-        if(hrAccount.getAccountType() == HRAccountType.SubAccount.getType()){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.NO_AUTH_SET_LEAVE_TO_MOBOT);
-        }
-
         HrCompanyConfDO hrCompanyConf = companyServices.getCompanyConfById(hrAccount.getCompanyId());
 
         // 未开启ChatBot功能的企业，点击开关提示尚未采购该功能，详情请联系您的客户成功顾问。
