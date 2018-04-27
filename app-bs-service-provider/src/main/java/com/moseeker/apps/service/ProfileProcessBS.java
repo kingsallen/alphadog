@@ -186,7 +186,7 @@ public class ProfileProcessBS {
     @CounterIface
     public Response processProfile(int companyId, int progressStatus, List<Integer> appIds, int accountId) throws Exception {
         logger.info("ProfileProcessBS processProfile companyId:{}, progressStatus:{}, appIds:{}, accountId:{}", companyId, progressStatus, appIds, accountId);
-//        try {
+        try {
             if (appIds == null || appIds.size() == 0) {
                 return ResponseUtils
                         .fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
@@ -228,10 +228,7 @@ public class ProfileProcessBS {
                         List<Integer> recommenderIds = new ArrayList<Integer>();
                         List<RewardsToBeAddBean> rewardsToBeAdd = new ArrayList<RewardsToBeAddBean>();
                         // 简历还未被浏览就被拒绝，则视为已被浏览，需要在添加角色操作的历史记录之前插入建立被查看的历史记录
-                        List<HrOperationRecordDO> turnToCVCheckeds = new ArrayList<
-
-
-                                >();
+                        List<HrOperationRecordDO> turnToCVCheckeds = new ArrayList<>();
                         RewardsToBeAddBean reward = null;
                         HrOperationRecordDO turnToCVChecked = null;
                         for (ProcessValidationStruct record : list) {
@@ -318,12 +315,12 @@ public class ProfileProcessBS {
                         .fail("{\"status\":2201, \"message\":\"参数错误\"}");
             }
             return ResponseUtils.success("操作成功");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            logger.error(e.getMessage(), e);
-//            return ResponseUtils
-//                    .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-//        }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseUtils
+                    .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
 
     }
     /*
