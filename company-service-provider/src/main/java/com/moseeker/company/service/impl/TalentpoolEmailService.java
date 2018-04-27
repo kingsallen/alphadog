@@ -618,14 +618,76 @@ public class TalentpoolEmailService {
         }
     }
     private MandrillEmailListStruct convertToEmailStruct(EmailInviteBean emailInviteBean){
-        String res= JSON.toJSONString(emailInviteBean,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
-        MandrillEmailListStruct result= JSON.parseObject(res,MandrillEmailListStruct.class);
+        MandrillEmailListStruct result=new MandrillEmailListStruct();
+        result.setTemplateName(emailInviteBean.getTemplateName());
+        result.setSubject(emailInviteBean.getSubject());
+        result.setFrom_name(emailInviteBean.getFromName());
+        result.setFrom_email(emailInviteBean.getFromEmail());
+        List<TalentEmailInviteToDelivyInfo> merge=emailInviteBean.getMergeVars();
+        List<ReceiveInfo> to=emailInviteBean.getTo();
+        List<Map<String,String>> toReceive=new ArrayList<>();
+        List<Map<String,String>> mergeData=new ArrayList<>();
+        for(ReceiveInfo receiveInfo:to){
+            String tores=JSON.toJSONString(receiveInfo);
+            Map<String,Object> map=JSON.parseObject(tores);
+            Map<String,String> map1=new HashMap<>();
+            for(String key:map.keySet()){
+                map1.put(key,String.valueOf(map.get(key)));
+            }
+            toReceive.add(map1);
+        }
+        for(TalentEmailInviteToDelivyInfo info:merge){
+            String infos=JSON.toJSONString(info);
+            Map<String,Object> infoMap=JSON.parseObject(infos);
+            Map<String,String> infoMap1=new HashMap<>();
+            for(String key:infoMap.keySet()){
+                if(infoMap.get(key) instanceof Map||infoMap.get(key) instanceof List){
+                    infoMap1.put(key,JSON.toJSONString(infoMap.get(key)));
+                }else{
+                    infoMap1.put(key,String.valueOf(infoMap.get(key)));
+                }
+            }
+            mergeData.add(infoMap1);
+        }
+        result.setMergeVars(mergeData);
+        result.setTo(toReceive);
         return result;
     }
 
     private MandrillEmailListStruct convertToEmailStruct(EmailResumeBean emailInviteBean){
-        String res= JSON.toJSONString(emailInviteBean,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
-        MandrillEmailListStruct result= JSON.parseObject(res,MandrillEmailListStruct.class);
+        MandrillEmailListStruct result=new MandrillEmailListStruct();
+        result.setTemplateName(emailInviteBean.getTemplateName());
+        result.setSubject(emailInviteBean.getSubject());
+        result.setFrom_name(emailInviteBean.getFromName());
+        result.setFrom_email(emailInviteBean.getFromEmail());
+        List<TalentEmailForwardsResumeInfo> merge=emailInviteBean.getMergeVars();
+        List<ReceiveInfo> to=emailInviteBean.getTo();
+        List<Map<String,String>> toReceive=new ArrayList<>();
+        List<Map<String,String>> mergeData=new ArrayList<>();
+        for(ReceiveInfo receiveInfo:to){
+            String tores=JSON.toJSONString(receiveInfo);
+            Map<String,Object> map=JSON.parseObject(tores);
+            Map<String,String> map1=new HashMap<>();
+            for(String key:map.keySet()){
+                map1.put(key,String.valueOf(map.get(key)));
+            }
+            toReceive.add(map1);
+        }
+        for(TalentEmailForwardsResumeInfo info:merge){
+            String infos=JSON.toJSONString(info);
+            Map<String,Object> infoMap=JSON.parseObject(infos);
+            Map<String,String> infoMap1=new HashMap<>();
+            for(String key:infoMap.keySet()){
+                if(infoMap.get(key) instanceof Map||infoMap.get(key) instanceof List){
+                    infoMap1.put(key,JSON.toJSONString(infoMap.get(key)));
+                }else{
+                    infoMap1.put(key,String.valueOf(infoMap.get(key)));
+                }
+            }
+            mergeData.add(infoMap1);
+        }
+        result.setMergeVars(mergeData);
+        result.setTo(toReceive);
         return result;
     }
 
@@ -651,6 +713,7 @@ public class TalentpoolEmailService {
      */
     private List<InviteToDelivyUserInfo> talentEmailInviteInfoSearch(Map<String,String> params){
         try{
+            params.put("return_params","user.profiles.profile.user_id,user.profiles.basic.name,user.profiles.basic.email");
             Response res=searchService.userQuery(params);
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
@@ -700,8 +763,8 @@ public class TalentpoolEmailService {
                                 }
                                 Map<String,Object> basic=(Map<String,Object>)profiles.get("basic");
                                 if(!StringUtils.isEmptyMap(basic)){
-                                    String name=(String)profile.get("name");
-                                    String email=(String)profile.get("email");
+                                    String name=(String)basic.get("name");
+                                    String email=(String)basic.get("email");
                                     info.setEmail(email);
                                 }
 
@@ -1073,7 +1136,7 @@ public class TalentpoolEmailService {
                     String url=env.getProperty("talentpool.wholeProfile");
                     String token="user_id="+info.getUserId()+"&company_id="+companyId+"&hr_id="+hrId+"&timestamp="+new Date().getTime();
                     token=CommonUtils.encryptString(token);
-                    info.setProfileFullUrl(url);
+                    info.setProfileFullUrl(url+token);
                     if(StringUtils.isNullOrEmpty(abbr)){
                         abbr=info.getCompanyAbbr();
                     }
@@ -1206,17 +1269,20 @@ public class TalentpoolEmailService {
                                 }
                                 Map<String,Object> basic=(Map<String,Object>)profiles.get("basic");
                                 if(!StringUtils.isEmptyMap(basic)){
-                                    String name=(String)profile.get("name");
-                                    String email=(String)profile.get("email");
-                                    String heading=(String)profile.get("headimg");
-                                    String genderName=(String)profile.get("gender_name");
-                                    String cityName=(String)profile.get("city_name");
-                                    int highestDegree=(int)profile.get("highest_degree");
+                                    String name=(String)basic.get("name");
+                                    String email=(String)basic.get("email");
+                                    String heading=(String)basic.get("headimg");
+                                    String genderName=(String)basic.get("gender_name");
+                                    String cityName=(String)basic.get("city_name");
+                                    if(basic.get("highest_degree")!=null){
+                                        int highestDegree=(int)basic.get("highest_degree");
+                                        info.setDegreeName(DegreeConvertUtil.intToEnum.get(highestDegree));
+                                    }
+
                                     info.setEmail(email);
                                     info.setUserName(name);
                                     info.setHeading(heading);
                                     info.setCityName(cityName);
-                                    info.setDegreeName(DegreeConvertUtil.intToEnum.get(highestDegree));
                                     info.setGenderName(genderName);
                                 }
                                 Map<String,Object> recentJob=(Map<String,Object>)profiles.get("recent_job");

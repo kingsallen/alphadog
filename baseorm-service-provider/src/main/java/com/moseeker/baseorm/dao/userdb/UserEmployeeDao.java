@@ -86,6 +86,11 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return create.update(table).set(UserEmployee.USER_EMPLOYEE.AWARD, award).where(UserEmployee.USER_EMPLOYEE.ID.eq(employeeId)).and(UserEmployee.USER_EMPLOYEE.AWARD.eq(oldAward)).execute();
     }
 
-
+    public List<UserEmployeeRecord> getUserEmployeeLike(int companyId,String email){
+        List<UserEmployeeRecord> list= create.selectFrom(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId)).and(UserEmployee.USER_EMPLOYEE.EMAIL.like("%"+email+"%"))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)1)).and(UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID.eq((byte)1))
+                .orderBy(UserEmployee.USER_EMPLOYEE.UPDATE_TIME.desc()).fetch();
+        return list;
+    }
 
 }
