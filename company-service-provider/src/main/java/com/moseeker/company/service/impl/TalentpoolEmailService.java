@@ -658,7 +658,7 @@ public class TalentpoolEmailService {
                 return result;
             }
         }catch(Exception e){
-
+            logger.error(e.getMessage(),e);
         }
         return null;
     }
