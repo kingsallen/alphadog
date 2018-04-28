@@ -214,6 +214,7 @@ public class Keys {
     public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_ACCOUNT_PRIMARY;
     public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CONF_PRIMARY;
     public static final UniqueKey<HrCompanyEmailInfoRecord> KEY_HR_COMPANY_EMAIL_INFO_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_EMAIL_INFO_PRIMARY;
+    public static final UniqueKey<HrCompanyEmailInfoRecord> KEY_HR_COMPANY_EMAIL_INFO_HR_COMPANY_EMAIL_INFO_COMPANY_ID_PK = UniqueKeys0.KEY_HR_COMPANY_EMAIL_INFO_HR_COMPANY_EMAIL_INFO_COMPANY_ID_PK;
     public static final UniqueKey<HrCompanyFeatureRecord> KEY_HR_COMPANY_FEATURE_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_FEATURE_PRIMARY;
     public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY;
     public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY;
@@ -343,6 +344,7 @@ public class Keys {
         public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = createUniqueKey(HrCompanyAccount.HR_COMPANY_ACCOUNT, "KEY_hr_company_account_PRIMARY", HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID);
         public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = createUniqueKey(HrCompanyConf.HR_COMPANY_CONF, "KEY_hr_company_conf_PRIMARY", HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID);
         public static final UniqueKey<HrCompanyEmailInfoRecord> KEY_HR_COMPANY_EMAIL_INFO_PRIMARY = createUniqueKey(HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO, "KEY_hr_company_email_info_PRIMARY", HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO.ID);
+        public static final UniqueKey<HrCompanyEmailInfoRecord> KEY_HR_COMPANY_EMAIL_INFO_HR_COMPANY_EMAIL_INFO_COMPANY_ID_PK = createUniqueKey(HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO, "KEY_hr_company_email_info_hr_company_email_info_company_id_pk", HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO.COMPANY_ID);
         public static final UniqueKey<HrCompanyFeatureRecord> KEY_HR_COMPANY_FEATURE_PRIMARY = createUniqueKey(HrCompanyFeature.HR_COMPANY_FEATURE, "KEY_hr_company_feature_PRIMARY", HrCompanyFeature.HR_COMPANY_FEATURE.ID);
         public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = createUniqueKey(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, "KEY_hr_employee_cert_conf_PRIMARY", HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
         public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = createUniqueKey(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, "KEY_hr_employee_custom_fields_PRIMARY", HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);
