@@ -161,7 +161,8 @@ struct SearchCondition {
    26: string tag_id,//标签id
    27: string favorite_hrs,//收藏人id
    28: string city_code,//现居住地城市code
-   29: string intention_city_code//期望城市
+   29: string intention_city_code//期望城市,
+   30: string position_status
 
 }
 

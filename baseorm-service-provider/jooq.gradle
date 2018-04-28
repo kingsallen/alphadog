@@ -45,6 +45,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
         database() {
             inputSchema("hrdb")
             //inputSchema("hrdb")
+//            includes("hr_third_party_account")
 
             name("org.jooq.util.mysql.MySQLDatabase")
             unsignedTypes(false)
