@@ -843,7 +843,7 @@ public class TalentpoolEmailService {
     private List<InviteToDelivyUserInfo> convertInviteData(Map<String,Object> result){
         List<InviteToDelivyUserInfo> list=new ArrayList<>();
         if(!StringUtils.isEmptyMap(result)){
-            long totalNum=(long)result.get("totalNum");
+            int totalNum=Integer.parseInt(String.valueOf(result.get("totalNum")));
             if(totalNum>0){
                 List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("users");
                 for(Map<String,Object> map:dataList){
@@ -1363,7 +1363,7 @@ public class TalentpoolEmailService {
     private List<TalentEmailForwardsResumeInfo> convertData(Map<String,Object> result,int hrId){
         List<TalentEmailForwardsResumeInfo> list=new ArrayList<>();
         if(!StringUtils.isEmptyMap(result)){
-            long totalNum=(long)result.get("totalNum");
+            int totalNum=Integer.parseInt(String.valueOf(result.get("totalNum")));
             if(totalNum>0){
                 List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
                 for(Map<String,Object> map:dataList){
