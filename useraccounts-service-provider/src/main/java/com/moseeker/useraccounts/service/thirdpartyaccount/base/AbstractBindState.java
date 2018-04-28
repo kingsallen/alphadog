@@ -78,7 +78,7 @@ public abstract class AbstractBindState implements BindState{
         try {
             context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
         }catch (BIZException e){
-            logger.info("catch BIZException when dispatch after bind finished. exception {}",e);
+            logger.info("catch BIZException when dispatch after bindMessage finished. exception {}",e);
             return result;
         }
         return result;
