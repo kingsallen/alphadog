@@ -885,7 +885,7 @@ public class TalentpoolEmailService {
             Response res=searchService.queryProfileFilterUserIdList(params,0,0);
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
-                long totalNum = (long) data.get("totalNum");
+                int totalNum = Integer.parseInt(String.valueOf(data.get("totalNum"))) ;
                 return (int)totalNum;
             }
         }catch (Exception e){
