@@ -3,6 +3,7 @@ package com.moseeker.profile.config;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -18,10 +19,10 @@ import org.springframework.retry.support.RetryTemplate;
  * Created by jack on 17/05/2017.
  */
 @Configuration
+@EnableRabbit
 @ComponentScan({"com.moseeker.profile", "com.moseeker.common.aop.iface", "com.moseeker.entity"})
 @PropertySource("classpath:common.properties")
 @Import(com.moseeker.baseorm.config.AppConfig.class)
-@PropertySource("classpath:common.properties")
 public class AppConfig {
     @Autowired
     private Environment env;

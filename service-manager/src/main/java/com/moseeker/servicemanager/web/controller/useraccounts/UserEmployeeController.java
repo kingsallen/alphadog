@@ -153,7 +153,7 @@ public class UserEmployeeController {
      */
     @RequestMapping(value="/api/talentpool/forward/employee", method = RequestMethod.GET)
     @ResponseBody
-    public String getEmailValidate(HttpServletRequest request, @RequestBody ApplyTypeAwardFrom form) {
+    public String getEmailValidate(HttpServletRequest request,HttpServletResponse response) {
         try {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId=Integer.parseInt((String)params.get("company_id"));
@@ -169,7 +169,7 @@ public class UserEmployeeController {
      */
     @RequestMapping(value="/api/talentpool/forward/employee/history", method = RequestMethod.GET)
     @ResponseBody
-    public String getUserEmployeePast(HttpServletRequest request, @RequestBody ApplyTypeAwardFrom form) {
+    public String getUserEmployeePast(HttpServletRequest request,  HttpServletResponse response) {
         try {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId=Integer.parseInt((String)params.get("company_id"));

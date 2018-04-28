@@ -26,6 +26,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolEmailRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
@@ -313,8 +314,10 @@ public class TalentpoolEmailService {
     /*
      转发邀请投递职位邮件
      */
+    @CounterIface
     public  int talentPoolSendInviteToDelivyEmail(Map<String,String> params ,List<Integer> userIdList,List<Integer> positionIdList,int companyId,int hrId,int flag,int positionFlag){
         int sflag=validateCompanyAndOther(companyId,hrId);
+        logger.info("校验结果为======={}",sflag);
         if(sflag<0){
             return sflag ;
         }
@@ -327,6 +330,7 @@ public class TalentpoolEmailService {
     /*
     发送转发简历邮件
      */
+    @CounterIface
     public int talentPoolSendResumeEmail(List<Integer> idList,Map<String,String> params,List<Integer> userIdList,int companyId,int hrId,int flag){
         int sflag=validateCompanyAndOther(companyId,hrId);
         if(sflag<0){
@@ -342,6 +346,7 @@ public class TalentpoolEmailService {
     /*
     职位发布成功之后邀请投递邮件
      */
+    @CounterIface
     public int positionInviteDelivyEmail(int hrId,int positionId,int companyId){
         int flag=validateCompanyAndOther(companyId,hrId);
         if(flag<0){
@@ -394,16 +399,37 @@ public class TalentpoolEmailService {
     private int sendInviteToDelivyEmail(List<Integer> userIdList,List<Integer> positionIdList,int companyId,int hrId,int positionFlag){
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
         TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId);
+        logger.info("=============HrCompanyEmailInfoRecord===========");
+        logger.info(hrCompanyEmailInfoRecord.toString());
+        logger.info("================================================");
+        logger.info("=============TalentpoolEmailRecord===========");
+        logger.info(talentpoolEmailRecord.toString());
+        logger.info("================================================");
         boolean flag=this.validateSendEmail(hrCompanyEmailInfoRecord,talentpoolEmailRecord);
+        logger.info("校验邮件配置的结果========================{}",flag);
         if(flag){
             try {
                 HrCompanyRecord record = this.getCompanyInfo(companyId);
+                logger.info("=============HrCompanyRecord===========");
+                logger.info(record.toString());
+                logger.info("================================================");
                 boolean balanceFlag = this.validateBalance(hrCompanyEmailInfoRecord.getBalance(), userIdList.size());
+                logger.info("校验额度的结果========================{}",balanceFlag);
                 if (balanceFlag) {
                     List<InviteToDelivyUserInfo> userInfo = this.talentEmailInviteInfoSearch(userIdList);
+                    logger.info("=============List<InviteToDelivyUserInfo>===========");
+                    logger.info(JSON.toJSONString(userInfo));
+                    logger.info("================================================");
                     EmailInviteBean emailDate = this.handlerData(positionIdList, companyId, talentpoolEmailRecord.getContext(), userInfo, record, hrId,positionFlag);
+                    logger.info("=============EmailInviteBean===========");
+                    logger.info(JSON.toJSONString(emailDate));
+                    logger.info("================================================");
                     if(emailDate!=null) {
                         MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
+                        updateEmailInfoBalance(companyId, userInfo.size());
+                        logger.info("=============MandrillEmailListStruct===========");
+                        logger.info(JSON.toJSONString(struct));
+                        logger.info("================================================");
                         mqService.sendMandrilEmailList(struct);
                     }
                 }else{
@@ -423,13 +449,25 @@ public class TalentpoolEmailService {
     private  int sendAllInviteToDelivyEmail(Map<String,String> params,List<Integer> positionIdList,int companyId,int hrId,int positionFlag){
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
         TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId);
+        logger.info("=============HrCompanyEmailInfoRecord===========");
+        logger.info(hrCompanyEmailInfoRecord.toString());
+        logger.info("================================================");
+        logger.info("=============TalentpoolEmailRecord===========");
+        logger.info(talentpoolEmailRecord.toString());
+        logger.info("================================================");
         boolean flag=this.validateSendEmail(hrCompanyEmailInfoRecord,talentpoolEmailRecord);
+        logger.info("校验邮件配置的结果========================{}",flag);
         if(flag){
             try {
                 int totalNum = searchService.talentSearchNum(params);
                 boolean balanceFlag=this.validateBalance(hrCompanyEmailInfoRecord.getBalance(),totalNum);
+                logger.info("校验额度的结果========================{}",balanceFlag);
                 if(balanceFlag){
+                    updateEmailInfoBalance(companyId, totalNum);
                     HrCompanyRecord record=this.getCompanyInfo(companyId);
+                    logger.info("=============HrCompanyRecord===========");
+                    logger.info(record.toString());
+                    logger.info("================================================");
                     tp.startTast(() -> {
                         sendInviteEmailCore(params,positionIdList,companyId,talentpoolEmailRecord.getContext(),record,hrId,totalNum,positionFlag);
                         return 0;
@@ -493,9 +531,18 @@ public class TalentpoolEmailService {
             params.put("page_number", (i - 1) + "");
             try {
                 List<InviteToDelivyUserInfo> userInfo = this.talentEmailInviteInfoSearch(params);
+                logger.info("=============List<InviteToDelivyUserInfo>===========");
+                logger.info(JSON.toJSONString(userInfo));
+                logger.info("================================================");
                 EmailInviteBean emailDate = this.handlerData(positionIdList, companyId,context , userInfo, record, hrId, flag);
+                logger.info("=============EmailInviteBean===========");
+                logger.info(JSON.toJSONString(emailDate));
+                logger.info("================================================");
                 if(emailDate!=null){
                     MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
+                    logger.info("=============MandrillEmailListStruct===========");
+                    logger.info(JSON.toJSONString(struct));
+                    logger.info("================================================");
                     mqService.sendMandrilEmailList(struct);
                 }
 
@@ -526,23 +573,40 @@ public class TalentpoolEmailService {
      发送部分转发邮件
      */
     private int sendResumeEmail(List<Integer> idList,List<Integer> userIdList,int companyId,int hrId){
-        if(!StringUtils.isEmptyList(idList)) {
+        if(StringUtils.isEmptyList(idList)) {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
         TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId);
+        logger.info("=============HrCompanyEmailInfoRecord===========");
+        logger.info(hrCompanyEmailInfoRecord.toString());
+        logger.info("================================================");
+        logger.info("=============TalentpoolEmailRecord===========");
+        logger.info(talentpoolEmailRecord.toString());
+        logger.info("================================================");
         boolean flag=this.validateSendEmail(hrCompanyEmailInfoRecord,talentpoolEmailRecord);
+        logger.info("校验邮件配置的结果========================{}",flag);
         if(flag){
             try {
                 List<UserEmployeeDO> employeeList = this.getUserEmployeeList(idList);
+                logger.info("=============List<UserEmployeeDO>===========");
+                logger.info(JSON.toJSONString(employeeList));
+                logger.info("================================================");
                 if (!StringUtils.isEmptyList(employeeList)) {
                     int lost = userIdList.size() * employeeList.size();
+                    logger.info("lost==================================={}=============",lost);
                     if (!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(), lost)) {
                         return TalentEmailEnum.NOBALANCE.getValue();
                     }
                     EmailResumeBean emailList = this.convertResumeEmailData(employeeList, userIdList, companyId, talentpoolEmailRecord.getContext(), hrId);
+                    logger.info("=============EmailResumeBean===========");
+                    logger.info(JSON.toJSONString(emailList));
+                    logger.info("================================================");
                     updateEmailInfoBalance(companyId, lost);
                     MandrillEmailListStruct struct = convertToEmailStruct(emailList);
+                    logger.info("=============MandrillEmailListStruct===========");
+                    logger.info(JSON.toJSONString(struct));
+                    logger.info("================================================");
                     mqService.sendMandrilEmailList(struct);
                 } else {
                     return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
@@ -561,17 +625,28 @@ public class TalentpoolEmailService {
      发送全部转发邮件
      */
     private  int sendAllResumeEmail(List<Integer> idList,Map<String,String> params,int companyId,int hrId){
-        if(!StringUtils.isEmptyList(idList)) {
+        if(StringUtils.isEmptyList(idList)) {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
         TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId);
+        logger.info("=============HrCompanyEmailInfoRecord===========");
+        logger.info(hrCompanyEmailInfoRecord.toString());
+        logger.info("================================================");
+        logger.info("=============TalentpoolEmailRecord===========");
+        logger.info(talentpoolEmailRecord.toString());
+        logger.info("================================================");
         boolean flag=this.validateSendEmail(hrCompanyEmailInfoRecord,talentpoolEmailRecord);
+        logger.info("校验邮件配置的结果========================{}",flag);
         if(flag){
             try {
                 int talentNum = searchService.talentSearchNum(params);
+                logger.info("符合转发的人数========================{}",talentNum);
                 if(talentNum>0){
                     List<UserEmployeeDO> employeeList=this.getUserEmployeeList(idList);
+                    logger.info("=============List<UserEmployeeDO>===========");
+                    logger.info(JSON.toJSONString(employeeList));
+                    logger.info("================================================");
                     if(!StringUtils.isEmptyList(employeeList)){
                         int lost=talentNum*employeeList.size();
                         if(!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(),lost)){
@@ -609,7 +684,13 @@ public class TalentpoolEmailService {
 
             try{
                 EmailResumeBean emailList=this.convertResumeEmailData(employeeList,params,companyId,context,hrId);
+                logger.info("=============EmailResumeBean===========");
+                logger.info(JSON.toJSONString(emailList));
+                logger.info("================================================");
                 MandrillEmailListStruct struct = convertToEmailStruct(emailList);
+                logger.info("=============MandrillEmailListStruct===========");
+                logger.info(JSON.toJSONString(struct));
+                logger.info("================================================");
                 mqService.sendMandrilEmailList(struct);
             }catch(Exception e){
                 logger.error(e.getMessage(),e);
@@ -697,9 +778,15 @@ public class TalentpoolEmailService {
     private List<InviteToDelivyUserInfo> talentEmailInviteInfoSearch(List<Integer>UserIdList){
         try{
             Response res=searchService.userQueryById(UserIdList);
+            logger.info("=======获取邀请投递邮件的人员的信息======查询es获得结果的Response===========");
+            logger.info(JSON.toJSONString(res));
+            logger.info("================================================");
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
+                logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
+                logger.info(JSON.toJSONString(result));
+                logger.info("================================================");
                 return result;
             }
         }catch(Exception e){
@@ -714,9 +801,15 @@ public class TalentpoolEmailService {
         try{
             params.put("return_params","user.profiles.profile.user_id,user.profiles.basic.name,user.profiles.basic.email");
             Response res=searchService.userQuery(params);
+            logger.info("=======获取邀请投递邮件的人员的信息======查询es获得结果的Response===========");
+            logger.info(JSON.toJSONString(res));
+            logger.info("================================================");
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
+                logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
+                logger.info(JSON.toJSONString(result));
+                logger.info("================================================");
                 return result;
             }
         }catch(Exception e){
@@ -728,9 +821,15 @@ public class TalentpoolEmailService {
     private List<InviteToDelivyUserInfo>  talentEmailInviteInfoSearch(List<Map<String,String>> params,int page,int pageSize){
         try{
             Response res=searchService.queryProfileFilterUserIdList(params,page,pageSize);
+            logger.info("=======获取邀请投递邮件的人员的信息======查询es获得结果的Response===========");
+            logger.info(JSON.toJSONString(res));
+            logger.info("================================================");
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
+                logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
+                logger.info(JSON.toJSONString(result));
+                logger.info("================================================");
                 return result;
             }
         }catch(Exception e){
@@ -744,7 +843,7 @@ public class TalentpoolEmailService {
     private List<InviteToDelivyUserInfo> convertInviteData(Map<String,Object> result){
         List<InviteToDelivyUserInfo> list=new ArrayList<>();
         if(!StringUtils.isEmptyMap(result)){
-            long totalNum=(long)result.get("totalNum");
+            int totalNum=Integer.parseInt(String.valueOf(result.get("totalNum")));
             if(totalNum>0){
                 List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("users");
                 for(Map<String,Object> map:dataList){
@@ -786,7 +885,7 @@ public class TalentpoolEmailService {
             Response res=searchService.queryProfileFilterUserIdList(params,0,0);
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
-                long totalNum = (long) data.get("totalNum");
+                int totalNum = Integer.parseInt(String.valueOf(data.get("totalNum"))) ;
                 return (int)totalNum;
             }
         }catch (Exception e){
@@ -1221,26 +1320,38 @@ public class TalentpoolEmailService {
     private List<TalentEmailForwardsResumeInfo> talentEmailInfoSearch(Map<String,String> params,int hrId){
         try{
            Response res=searchService.userQuery(params);
+           logger.info("=========response ================");
+           logger.info(JSON.toJSONString(res));
+           logger.info("==================================");
            if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
               Map<String,Object> data= JSON.parseObject(res.getData());
                List<TalentEmailForwardsResumeInfo> result=this.convertData(data,hrId);
+               logger.info("=========List<TalentEmailForwardsResumeInfo>  ================");
+               logger.info(JSON.toJSONString(result));
+               logger.info("==================================");
                return result;
            }
         }catch(Exception e){
-
+            logger.error(e.getMessage(),e);
         }
         return null;
     }
     private List<TalentEmailForwardsResumeInfo> talentEmailInfoSearch(List<Integer>UserIdList,int hrId){
         try{
             Response res=searchService.userQueryById(UserIdList);
+            logger.info("=========response ================");
+            logger.info(JSON.toJSONString(res));
+            logger.info("==================================");
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<TalentEmailForwardsResumeInfo> result=this.convertData(data,hrId);
+                logger.info("=========List<TalentEmailForwardsResumeInfo>  ================");
+                logger.info(JSON.toJSONString(result));
+                logger.info("==================================");
                 return result;
             }
         }catch(Exception e){
-
+            logger.error(e.getMessage(),e);
         }
         return null;
     }
@@ -1252,7 +1363,7 @@ public class TalentpoolEmailService {
     private List<TalentEmailForwardsResumeInfo> convertData(Map<String,Object> result,int hrId){
         List<TalentEmailForwardsResumeInfo> list=new ArrayList<>();
         if(!StringUtils.isEmptyMap(result)){
-            long totalNum=(long)result.get("totalNum");
+            int totalNum=Integer.parseInt(String.valueOf(result.get("totalNum")));
             if(totalNum>0){
                 List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
                 for(Map<String,Object> map:dataList){
@@ -1403,7 +1514,7 @@ public class TalentpoolEmailService {
      获取公司配置的邮件模板
      */
     private TalentpoolEmailRecord getTalentpoolEmail(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1).buildQuery();
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",0).buildQuery();
         TalentpoolEmailRecord record=talentpoolEmailDao.getRecord(query);
         return record;
     }
