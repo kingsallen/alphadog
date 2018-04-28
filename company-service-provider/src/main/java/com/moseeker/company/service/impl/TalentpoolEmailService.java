@@ -573,7 +573,7 @@ public class TalentpoolEmailService {
      发送部分转发邮件
      */
     private int sendResumeEmail(List<Integer> idList,List<Integer> userIdList,int companyId,int hrId){
-        if(!StringUtils.isEmptyList(idList)) {
+        if(StringUtils.isEmptyList(idList)) {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
@@ -1514,7 +1514,7 @@ public class TalentpoolEmailService {
      获取公司配置的邮件模板
      */
     private TalentpoolEmailRecord getTalentpoolEmail(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1).buildQuery();
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",0).buildQuery();
         TalentpoolEmailRecord record=talentpoolEmailDao.getRecord(query);
         return record;
     }
