@@ -30,6 +30,7 @@ import com.moseeker.thrift.gen.company.struct.EmailAccountInfo;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import org.apache.thrift.Option;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -232,11 +233,24 @@ public class TalentPoolEmailEntity {
 
         List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(queryBuilder1.buildQuery());
         List<Integer> companyIdList = new ArrayList<>();
+
+        List<Integer> companyIdListFromName = null;
         if (companyDOList != null && companyDOList.size() > 0) {
-            companyIdList.addAll(companyDOList.stream().filter(hrCompanyDO -> hrCompanyDO.getId() > 0).map(HrCompanyDO::getId).collect(Collectors.toList()));
+            companyIdListFromName = companyDOList.stream().filter(hrCompanyDO -> hrCompanyDO.getId() > 0).map(HrCompanyDO::getId).collect(Collectors.toList());
         }
         if (companyId > 0) {
-            companyIdList.add(companyId);
+            if (companyIdListFromName != null && companyIdListFromName.size() > 0) {
+                Optional<Integer> optional = companyIdListFromName.stream().filter(cid -> cid.intValue() == companyId).findAny();
+                if (optional.isPresent()) {
+                    companyIdList.add(companyId);
+                }
+            } else {
+                companyIdList.add(companyId);
+            }
+        } else {
+            if (companyIdListFromName != null && companyIdListFromName.size() > 0) {
+                companyIdList = companyIdListFromName;
+            }
         }
         if (pageNumber <= 0) {
             pageNumber = 1;
