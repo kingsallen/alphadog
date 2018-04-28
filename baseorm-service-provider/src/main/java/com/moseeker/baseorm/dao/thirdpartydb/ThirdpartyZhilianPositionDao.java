@@ -4,6 +4,7 @@ import com.moseeker.baseorm.base.IThirdPartyPositionDao;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyZhilianPositionAddress;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -74,6 +75,9 @@ public class ThirdpartyZhilianPositionDao implements IThirdPartyPositionDao<List
     @Override
     @Transactional
     public int updateExtPosition(List<ThirdpartyZhilianPositionAddressDO> thirdpartyZhilianPositionAddressDOS) {
+        if(StringUtils.isEmptyList(thirdpartyZhilianPositionAddressDOS)){
+            return 1;
+        }
         int pid = thirdpartyZhilianPositionAddressDOS.get(0).getPid();
 
         //全删全插入
