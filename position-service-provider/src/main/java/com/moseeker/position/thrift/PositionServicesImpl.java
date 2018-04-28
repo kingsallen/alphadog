@@ -412,6 +412,7 @@ public class PositionServicesImpl implements Iface {
         try {
             return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount,extData);
         } catch (Exception e) {
+            e.printStackTrace();
             throw ExceptionUtils.convertException(e);
         }
     }
