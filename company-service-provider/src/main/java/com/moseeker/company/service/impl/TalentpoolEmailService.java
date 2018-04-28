@@ -1514,7 +1514,7 @@ public class TalentpoolEmailService {
      获取公司配置的邮件模板
      */
     private TalentpoolEmailRecord getTalentpoolEmail(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1).buildQuery();
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",0).buildQuery();
         TalentpoolEmailRecord record=talentpoolEmailDao.getRecord(query);
         return record;
     }
