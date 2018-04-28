@@ -519,9 +519,9 @@ public class UserHrAccountServiceImpl implements Iface {
      * @param timeSpan   月，季，年 2017 代表年积分，2017-08 代表月积分 20171 代表第一季度的积分
      */
     @Override
-    public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, String asc, int pageNumber, int pageSize, String timeSpan) throws BIZException, TException {
+    public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, String asc, int pageNumber, int pageSize, String timeSpan,String email_validate) throws BIZException, TException {
         try {
-            return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize, timeSpan);
+            return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize, timeSpan,email_validate);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

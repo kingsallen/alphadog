@@ -1000,7 +1000,7 @@ public class UserHrAccountService {
      * @param timespan   月，季，年
      * @param pageSize   每页的条数
      */
-    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan) throws CommonException {
+    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan,String emailValidate) throws CommonException {
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         // 公司ID未设置
         if (companyId == 0) {
@@ -1035,6 +1035,9 @@ public class UserHrAccountService {
                 filters.add(4);
                 queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), filters, ValueOp.IN));
             }
+        }
+        if(StringUtils.isNotNullOrEmpty(emailValidate)){
+            queryBuilder.and(UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID.getName(), Integer.parseInt(emailValidate));
         }
         // 排序条件
         if (!StringUtils.isNullOrEmpty(order)) {
