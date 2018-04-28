@@ -81,7 +81,7 @@ public class UserHrAccountServiceTest {
     @Test
     public void employeeList() {
         try {
-            System.out.println(userHrAccountService.employeeList("", 39978, 0, "", "", 1, 10, "2017"));
+            System.out.println(userHrAccountService.employeeList("", 39978, 0, "", "", 1, 10, "2017","0"));
         } catch (Exception e) {
             e.printStackTrace();
         }
