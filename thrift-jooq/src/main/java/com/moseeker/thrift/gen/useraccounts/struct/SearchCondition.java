@@ -40,7 +40,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
   private static final org.apache.thrift.protocol.TField FAVORITE_HRS_FIELD_DESC = new org.apache.thrift.protocol.TField("favorite_hrs", org.apache.thrift.protocol.TType.STRING, (short)27);
   private static final org.apache.thrift.protocol.TField CITY_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("city_code", org.apache.thrift.protocol.TType.STRING, (short)28);
   private static final org.apache.thrift.protocol.TField INTENTION_CITY_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("intention_city_code", org.apache.thrift.protocol.TType.STRING, (short)29);
-  private static final org.apache.thrift.protocol.TField POSITION_STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("position_status", org.apache.thrift.protocol.TType.STRING, (short)30);
+  private static final org.apache.thrift.protocol.TField POSITION_STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("position_status", org.apache.thrift.protocol.TType.I32, (short)30);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new SearchConditionStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new SearchConditionTupleSchemeFactory();
@@ -74,7 +74,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
   public java.lang.String favorite_hrs; // required
   public java.lang.String city_code; // required
   public java.lang.String intention_city_code; // required
-  public java.lang.String position_status; // required
+  public int position_status; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -233,6 +233,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
   private static final int __TYPE_ISSET_ID = 8;
   private static final int __IS_PUBLIC_ISSET_ID = 9;
   private static final int __IS_RECOMMEND_ISSET_ID = 10;
+  private static final int __POSITION_STATUS_ISSET_ID = 11;
   private short __isset_bitfield = 0;
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
@@ -296,7 +297,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     tmpMap.put(_Fields.INTENTION_CITY_CODE, new org.apache.thrift.meta_data.FieldMetaData("intention_city_code", org.apache.thrift.TFieldRequirementType.DEFAULT,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.POSITION_STATUS, new org.apache.thrift.meta_data.FieldMetaData("position_status", org.apache.thrift.TFieldRequirementType.DEFAULT,
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(SearchCondition.class, metaDataMap);
   }
@@ -334,7 +335,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
           java.lang.String favorite_hrs,
           java.lang.String city_code,
           java.lang.String intention_city_code,
-          java.lang.String position_status)
+          int position_status)
   {
     this();
     this.id = id;
@@ -378,6 +379,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     this.city_code = city_code;
     this.intention_city_code = intention_city_code;
     this.position_status = position_status;
+    setPosition_statusIsSet(true);
   }
 
   /**
@@ -450,9 +452,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     if (other.isSetIntention_city_code()) {
       this.intention_city_code = other.intention_city_code;
     }
-    if (other.isSetPosition_status()) {
-      this.position_status = other.position_status;
-    }
+    this.position_status = other.position_status;
   }
 
   public SearchCondition deepCopy() {
@@ -501,7 +501,8 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     this.favorite_hrs = null;
     this.city_code = null;
     this.intention_city_code = null;
-    this.position_status = null;
+    setPosition_statusIsSet(false);
+    this.position_status = 0;
   }
 
   public int getId() {
@@ -1189,28 +1190,27 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     }
   }
 
-  public java.lang.String getPosition_status() {
+  public int getPosition_status() {
     return this.position_status;
   }
 
-  public SearchCondition setPosition_status(java.lang.String position_status) {
+  public SearchCondition setPosition_status(int position_status) {
     this.position_status = position_status;
+    setPosition_statusIsSet(true);
     return this;
   }
 
   public void unsetPosition_status() {
-    this.position_status = null;
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __POSITION_STATUS_ISSET_ID);
   }
 
   /** Returns true if field position_status is set (has been assigned a value) and false otherwise */
   public boolean isSetPosition_status() {
-    return this.position_status != null;
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __POSITION_STATUS_ISSET_ID);
   }
 
   public void setPosition_statusIsSet(boolean value) {
-    if (!value) {
-      this.position_status = null;
-    }
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __POSITION_STATUS_ISSET_ID, value);
   }
 
   public void setFieldValue(_Fields field, java.lang.Object value) {
@@ -1451,7 +1451,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
         if (value == null) {
           unsetPosition_status();
         } else {
-          setPosition_status((java.lang.String)value);
+          setPosition_status((java.lang.Integer)value);
         }
         break;
 
@@ -1901,12 +1901,12 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
         return false;
     }
 
-    boolean this_present_position_status = true && this.isSetPosition_status();
-    boolean that_present_position_status = true && that.isSetPosition_status();
+    boolean this_present_position_status = true;
+    boolean that_present_position_status = true;
     if (this_present_position_status || that_present_position_status) {
       if (!(this_present_position_status && that_present_position_status))
         return false;
-      if (!this.position_status.equals(that.position_status))
+      if (this.position_status != that.position_status)
         return false;
     }
 
@@ -2011,9 +2011,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     if (isSetIntention_city_code())
       hashCode = hashCode * 8191 + intention_city_code.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetPosition_status()) ? 131071 : 524287);
-    if (isSetPosition_status())
-      hashCode = hashCode * 8191 + position_status.hashCode();
+    hashCode = hashCode * 8191 + position_status;
 
     return hashCode;
   }
@@ -2535,11 +2533,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     first = false;
     if (!first) sb.append(", ");
     sb.append("position_status:");
-    if (this.position_status == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.position_status);
-    }
+    sb.append(this.position_status);
     first = false;
     sb.append(")");
     return sb.toString();
@@ -2819,8 +2813,8 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
             }
             break;
           case 30: // POSITION_STATUS
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.position_status = iprot.readString();
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.position_status = iprot.readI32();
               struct.setPosition_statusIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -2964,11 +2958,9 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
         oprot.writeString(struct.intention_city_code);
         oprot.writeFieldEnd();
       }
-      if (struct.position_status != null) {
-        oprot.writeFieldBegin(POSITION_STATUS_FIELD_DESC);
-        oprot.writeString(struct.position_status);
-        oprot.writeFieldEnd();
-      }
+      oprot.writeFieldBegin(POSITION_STATUS_FIELD_DESC);
+      oprot.writeI32(struct.position_status);
+      oprot.writeFieldEnd();
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -3166,7 +3158,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
         oprot.writeString(struct.intention_city_code);
       }
       if (struct.isSetPosition_status()) {
-        oprot.writeString(struct.position_status);
+        oprot.writeI32(struct.position_status);
       }
     }
 
@@ -3291,7 +3283,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
         struct.setIntention_city_codeIsSet(true);
       }
       if (incoming.get(29)) {
-        struct.position_status = iprot.readString();
+        struct.position_status = iprot.readI32();
         struct.setPosition_statusIsSet(true);
       }
     }

@@ -271,7 +271,7 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     /**
      * Fetch records that have <code>position_status IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPositionStatus(String... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPositionStatus(Integer... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.POSITION_STATUS, values);
     }
 }
