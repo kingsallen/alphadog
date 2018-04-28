@@ -1176,7 +1176,7 @@ public class TalentpoolController {
     public String sendResumeEmail(HttpServletRequest request) throws Exception {
         try {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId=Integer.parseInt((String)params.get("company_id"));
+            int companyId=(int)params.get("company_id");
             Map<String,Object> conditionInfo=(Map<String,Object>)params.get("filter");
             Map<String,String> condition=new HashMap<>();
             if(!StringUtils.isEmptyMap(conditionInfo)){
@@ -1207,7 +1207,7 @@ public class TalentpoolController {
     public String sendInviteEmail(HttpServletRequest request) throws Exception {
         try {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId=Integer.parseInt((String)params.get("company_id"));
+            int companyId=(int)params.get("company_id");
             Map<String,Object> conditionInfo=(Map<String,Object>)params.get("filter");
             Map<String,String> condition=new HashMap<>();
             if(!StringUtils.isEmptyMap(conditionInfo)){
