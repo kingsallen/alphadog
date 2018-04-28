@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
 
-    private static final long serialVersionUID = 1839862822;
+    private static final long serialVersionUID = 1799497044;
 
     private Integer   id;
     private String    name;
@@ -55,7 +55,7 @@ public class HrSearchCondition implements Serializable {
     private String    favoriteHrs;
     private String    cityCode;
     private String    intentionCityCode;
-    private String    positionStatus;
+    private Integer   positionStatus;
 
     public HrSearchCondition() {}
 
@@ -124,7 +124,7 @@ public class HrSearchCondition implements Serializable {
         String    favoriteHrs,
         String    cityCode,
         String    intentionCityCode,
-        String    positionStatus
+        Integer   positionStatus
     ) {
         this.id = id;
         this.name = name;
@@ -399,11 +399,11 @@ public class HrSearchCondition implements Serializable {
         this.intentionCityCode = intentionCityCode;
     }
 
-    public String getPositionStatus() {
+    public Integer getPositionStatus() {
         return this.positionStatus;
     }
 
-    public void setPositionStatus(String positionStatus) {
+    public void setPositionStatus(Integer positionStatus) {
         this.positionStatus = positionStatus;
     }
 

@@ -726,7 +726,7 @@ public class TalentpoolSearchengine {
         String positionStatus=params.get("position_status");
         if ( StringUtils.isNotNullOrEmpty(publisherIds) || StringUtils.isNotNullOrEmpty(candidateSource) || StringUtils.isNotNullOrEmpty(recommend) ||
                 StringUtils.isNotNullOrEmpty(origins) || StringUtils.isNotNullOrEmpty(submitTime) ||
-                StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)||StringUtils.isNotNullOrEmpty(positionStatus)
+                StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)||(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus))
                 ) {
             String tagIds=params.get("tag_ids");
             String company_tag=params.get("company_tag");
@@ -754,7 +754,7 @@ public class TalentpoolSearchengine {
 
                 this.queryByOrigin(origins, companyId, query);
             }
-            if(StringUtils.isNotNullOrEmpty(positionStatus)){
+            if(StringUtils.isNotNullOrEmpty(positionStatus)&&Integer.parseInt(positionStatus)>-1){
                 this.queryByPositionStatus(Integer.parseInt(positionStatus),query);
             }
             if (StringUtils.isNotNullOrEmpty(positionIds)) {
@@ -855,7 +855,7 @@ public class TalentpoolSearchengine {
             String longTime=this.getLongTime(submitTime);
             sb.append(" val.submit_time>'"+longTime+"'&&");
         }
-        if(StringUtils.isNotNullOrEmpty(progressStatus)){
+        if(StringUtils.isNotNullOrEmpty(progressStatus)&&Integer.parseInt(progressStatus)>-1){
             sb.append(" val.progress_status=="+progressStatus+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(positionId)){
