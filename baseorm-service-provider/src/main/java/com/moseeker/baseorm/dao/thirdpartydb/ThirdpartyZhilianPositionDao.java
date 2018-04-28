@@ -74,6 +74,9 @@ public class ThirdpartyZhilianPositionDao implements IThirdPartyPositionDao<List
     @Override
     @Transactional
     public int updateExtPosition(List<ThirdpartyZhilianPositionAddressDO> thirdpartyZhilianPositionAddressDOS) {
+        if(StringUtils.isEmptyList(thirdpartyZhilianPositionAddressDOS)){
+            return 1;
+        }
         int pid = thirdpartyZhilianPositionAddressDOS.get(0).getPid();
 
         //全删全插入
