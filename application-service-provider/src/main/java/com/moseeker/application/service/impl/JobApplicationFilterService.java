@@ -251,7 +251,11 @@ public class JobApplicationFilterService {
         }else if(type == 3){
             bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
         }else if(type == 4){
-            bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
+            try {
+                bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
+            }catch (Exception e){
+                logger.error(e.getMessage());
+            }
             sendProfileFilterExecuteEmail(user_id, position);
         }
     }

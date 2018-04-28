@@ -4,6 +4,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -22,6 +23,7 @@ import java.util.List;
  * Created by lucky8987 on 17/5/10.
  */
 @Configuration
+@EnableRabbit
 @ComponentScan({"com.moseeker.company", "com.moseeker.common.aop.iface", "com.moseeker.entity"})
 @PropertySource("classpath:common.properties")
 @Import(com.moseeker.baseorm.config.AppConfig.class)

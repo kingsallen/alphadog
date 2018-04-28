@@ -247,11 +247,18 @@ public class UserEmployeeServiceImpl {
         dataList=userWxEntity.handlerData(dataList);
         return dataList;
     }
+
     private List<UserEmployeeDO> getEmployeeData(int companyId,String email){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("email","%"+email+"%", ValueOp.LIKE))
-                .and("disable",1).and("email_isvalid",1).orderBy("update_time", Order.DESC).buildQuery();
-        List<UserEmployeeDO>  list=userEmployeeDao.getDatas(query);
-        return list;
+        List<UserEmployeeRecord>  list=userEmployeeDao.getUserEmployeeLike(companyId,email);
+        List<UserEmployeeDO> dataList=new ArrayList<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(UserEmployeeRecord record:list){
+                UserEmployeeDO DO=BeanUtils.DBToStruct(UserEmployeeDO.class,record);
+                dataList.add(DO);
+            }
+
+        }
+        return dataList;
     }
 
 

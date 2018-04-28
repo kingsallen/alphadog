@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,7 +27,8 @@ public class ReceiveHandler {
     private static Logger log = LoggerFactory.getLogger(ReceiveHandler.class);
     @Autowired
     private CompanyTagService companyTagService;
-    @RabbitListener(queues = "#{profileCompanyTagRecomQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+
+    @RabbitListener(queues = "#{profileCompanyTagQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void profileCompanyTagRecomQueHandler(Message message, Channel channel) {
         String msgBody = "{}";
@@ -33,14 +36,25 @@ public class ReceiveHandler {
             msgBody = new String(message.getBody(), "UTF-8");
             if(StringUtils.isNotNullOrEmpty(msgBody)&&!"{}".equals(msgBody)){
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
-                Set<Integer> userIdSet= (Set<Integer>) jsonObject.get("user_ids");
-                Set<Integer> companyIdSet=(Set<Integer>)jsonObject.get("company_ids");
-                companyTagService.handlerProfileCompanyIds(userIdSet,companyIdSet);
+                List<Integer> userIdSet= (List<Integer>)jsonObject.get("user_ids");
+                List<Integer> companyIdSet=(List<Integer>)jsonObject.get("company_ids");
+                companyTagService.handlerProfileCompanyIds(convert(userIdSet),convert(companyIdSet));
             }
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    private Set<Integer> convert(List<Integer> list){
+        if(StringUtils.isEmptyList(list)){
+           return null;
+        }
+        Set<Integer> result=new HashSet<>();
+        for(Integer item:list){
+            result.add(item);
+        }
+        return result;
     }
 
 }

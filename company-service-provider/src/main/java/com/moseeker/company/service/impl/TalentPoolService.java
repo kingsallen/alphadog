@@ -1632,7 +1632,7 @@ public class TalentPoolService {
             Response res = service.queryProfileFilterUserIdList(filterList, 0, 0);
             if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data=JSON.parseObject(res.getData());
-                long totalNum=(long)data.get("totalNum");
+                int totalNum=(Integer)data.get("totalNum");
                 map.put("num",totalNum);
                 HrCompanyEmailInfo info = talentPoolEmailEntity.getHrCompanyEmailInfoByCompanyId(company_id);
                 map.put("enable",false);
