@@ -172,8 +172,8 @@ public class UserEmployeeController {
     public String getUserEmployeePast(HttpServletRequest request,  HttpServletResponse response) {
         try {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId=Integer.parseInt((String)params.get("company_id"));
-            Response res=service.getPastUserEmployee(companyId);
+            int hrId=Integer.parseInt((String)params.get("hr_id"));
+            Response res=service.getPastUserEmployee(hrId);
             return ResponseLogNotification.successJson(request,res);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
