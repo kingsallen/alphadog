@@ -358,6 +358,10 @@ public class ProfileBasicService {
         return result;
     }
 
+    public void delBasic(int profileId){
+        this.handlerCompanyTag(profileId);
+    }
+
     @Transactional
     public int[] delResources(List<Basic> structs) throws TException {
 

@@ -21,7 +21,6 @@ import org.springframework.retry.support.RetryTemplate;
 @ComponentScan({"com.moseeker.profile", "com.moseeker.common.aop.iface", "com.moseeker.entity"})
 @PropertySource("classpath:common.properties")
 @Import(com.moseeker.baseorm.config.AppConfig.class)
-@PropertySource("classpath:common.properties")
 public class AppConfig {
     @Autowired
     private Environment env;
