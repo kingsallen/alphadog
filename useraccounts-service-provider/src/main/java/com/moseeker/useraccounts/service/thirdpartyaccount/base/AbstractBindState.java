@@ -75,7 +75,12 @@ public abstract class AbstractBindState implements BindState{
     public HrThirdPartyAccountDO bindMessage(int hrId, int accountId, String code) throws Exception {
         HrThirdPartyAccountDO result=bindMessageOperation.bindMessage(hrId, accountId, code);
         context.updateBinding(result);
-        context.dispatch(result.getId(), Arrays.asList(hrId));
+        try {
+            context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
+        }catch (BIZException e){
+            logger.info("catch BIZException when dispatch after bind finished. exception {}",e);
+            return result;
+        }
         return result;
     }
 
