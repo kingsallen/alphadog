@@ -742,7 +742,8 @@ public class TalentpoolEmailService {
             }
             mergeData.add(infoMap1);
         }
-        result.setMergeVars(mergeData);
+        String merges = JSON.toJSONString(mergeData);
+        result.setMergeVars(merges);
         result.setTo(toReceive);
         return result;
     }
@@ -779,7 +780,8 @@ public class TalentpoolEmailService {
             }
             mergeData.add(infoMap1);
         }
-        result.setMergeVars(mergeData);
+        String merges = JSON.toJSONString(mergeData);
+        result.setMergeVars(merges);
         result.setTo(toReceive);
         return result;
     }

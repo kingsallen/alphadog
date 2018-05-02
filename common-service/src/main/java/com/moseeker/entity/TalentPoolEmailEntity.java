@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.constant.TalentPoolStatus;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
@@ -36,6 +37,7 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibra
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailListStruct;
+import java.util.jar.JarEntry;
 import org.apache.commons.collections.ArrayStack;
 import org.apache.thrift.Option;
 import org.joda.time.DateTime;
@@ -221,7 +223,8 @@ public class TalentPoolEmailEntity {
         map.put("send_date",sendDate);
         map.put("rcpt",userHrAccountRecord.getEmail());
         merges.add(map);
-        struct.setMergeVars(merges);
+        String mergeJson = JSON.toJSONString(merges);
+        struct.setMergeVars(mergeJson);
         return struct;
     }
 
