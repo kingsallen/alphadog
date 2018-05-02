@@ -1619,9 +1619,9 @@ public class TalentPoolService {
         }
         List<Map<String, Object>> filterMapList = talentPoolEntity.getProfileFilterByPosition(position_id, company_id);
         Map<String, Object> map = new HashMap<>();
-        map.put("isFilter", false);
+        map.put("is_filter", false);
         if(filterMapList != null && filterMapList.size()>0){
-            map.put("isFilter", true);
+            map.put("is_filter", true);
             List<Map<String, String>> filterList = new ArrayList<>();
             for(Map<String, Object> filterMap : filterMapList){
                 Map<String, String> params = new HashMap<>();
