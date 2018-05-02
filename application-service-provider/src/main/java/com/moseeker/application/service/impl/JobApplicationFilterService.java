@@ -254,11 +254,10 @@ public class JobApplicationFilterService {
             res = bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
         }else if(type == 4){
             try {
-                bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
+                res = bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
             }catch (Exception e){
                 logger.error(e.getMessage());
             }
-            res = bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
             sendProfileFilterExecuteEmail(user_id, position);
         }
         logger.info("handerApplicationFilter response info :{}", res);
