@@ -21,6 +21,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.Constant.EmailAccountConsumptionType;
 import com.moseeker.entity.Constant.TalentpoolEmailType;
 import com.moseeker.entity.exception.TalentPoolException;
@@ -102,9 +103,21 @@ public class TalentPoolEmailEntity {
             }
         }
         if(StringUtils.isNotNullOrEmpty(context)){
+            ValidateUtil vu = new ValidateUtil();
+            vu.addSensitiveValidate("正文内容", context, null, null);
+            String message = vu.validate();
+            if(StringUtils.isNotNullOrEmpty(message)){
+                return -2;
+            }
             emailRecord.setContext(context);
         }
         if(StringUtils.isNotNullOrEmpty(inscribe)){
+            ValidateUtil vu = new ValidateUtil();
+            vu.addSensitiveValidate("落款", inscribe, null, null);
+            String message = vu.validate();
+            if(StringUtils.isNotNullOrEmpty(message)){
+                return -3;
+            }
             emailRecord.setInscribe(inscribe);
         }
         int result = talentpoolEmailDao.updateRecord(emailRecord);

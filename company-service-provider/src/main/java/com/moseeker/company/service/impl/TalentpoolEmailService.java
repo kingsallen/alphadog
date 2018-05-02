@@ -288,6 +288,10 @@ public class TalentpoolEmailService {
             return ResponseUtils.success("");
         }else if(result == -1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.EMAIL_SWITCH_FAILED);
+        }else if(result == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.EMAIL_CONTEXT_FAILED);
+        }else if(result == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.EMAIL_INSCRIBE_FAILED);
         }else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
         }
