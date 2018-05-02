@@ -564,6 +564,9 @@ public class TalentpoolEmailService {
                 EmailInviteBean emailDate = this.handlerData(positionIdList, companyId,context , userInfo, record, hrId,0);
                 if(emailDate!=null) {
                     MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
+                    logger.info("=============MandrillEmailListStruct===========");
+                    logger.info(JSON.toJSONString(struct));
+                    logger.info("================================================");
                     mqService.sendMandrilEmailList(struct);
                 }
             }catch(Exception e){
