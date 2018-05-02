@@ -917,8 +917,8 @@ public class TalentpoolEmailService {
                 positionIdList=getPositionIds(companyId,hrId,count);
             }
             TalentEmailInviteToDelivyInfo delivyInfo=this.getInviteToDelivyInfoList(positionIdList,companyId,context,record);
-            logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
-            logger.info(JSON.toJSONString(result));
+            logger.info("=======转换response为List<TalentEmailInviteToDelivyInfo> ===========");
+            logger.info(JSON.toJSONString(delivyInfo));
             logger.info("================================================");
             if(delivyInfo==null||StringUtils.isEmptyList(userInfoList)){
                 return null;
