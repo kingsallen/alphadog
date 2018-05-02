@@ -174,7 +174,7 @@ public class UserEmployeeController {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
             int hrId=Integer.parseInt((String)params.get("hr_id"));
             Response res=service.getPastUserEmployee(hrId);
-            return ResponseLogNotification.successJson(request,res);
+            return ResponseLogNotification.success(request,res);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
