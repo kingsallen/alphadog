@@ -79,7 +79,9 @@ public class MandrillMailListConsumer {
 	public void sendMailList(MandrillEmailListStruct mandrillEmailListStruct) throws Exception {
         mandrillApi = new MandrillApi(mandrillApikey);
             try {
-
+                logger.info("sendMailList template:{}", mandrillEmailListStruct.getTemplateName());
+                logger.info("sendMailList to:{}", mandrillEmailListStruct.getTo());
+                logger.info("sendMailList mergeVars:{}", mandrillEmailListStruct.getMergeVars());
                 MandrillMessage message = new MandrillMessage();
 
                 List<Recipient> recipients = new ArrayList<Recipient>();
