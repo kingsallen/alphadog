@@ -10,17 +10,21 @@ import com.moseeker.apps.constants.TemplateMs.MsInfo;
 import com.moseeker.apps.utils.BusinessUtil;
 import com.moseeker.apps.utils.ProcessUtils;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
@@ -29,11 +33,14 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.TalentPoolEmailEntity;
+import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
@@ -43,27 +50,24 @@ import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,6 +91,9 @@ public class ProfileProcessBS {
     private JobApplicationDao jobApplicationDao;
 
     @Autowired
+    private JobPositionDao jobPositionDao;
+
+    @Autowired
     private HrWxNoticeMessageDao noticeMessageDao;
 
     @Autowired
@@ -103,6 +110,32 @@ public class ProfileProcessBS {
 
     @Autowired
     private HrOperationRecordDao hrOperationRecordDao;
+
+    @Autowired
+    private TalentpoolEmailDao talentpoolEmailDao;
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
+
+    @Autowired
+    private Environment env;
+
+    @Autowired
+    private HrCompanyAccountDao companyAccountDao;
+
+    @Autowired
+    private HrWxWechatDao hrWxWechatDao;
+
+    @Autowired
+    private UserUserDao userUserDao;
+
+    @Autowired
+    private TalentPoolEmailEntity emailEntity;
+
+    @Autowired
+    private HrCompanyConfDao companyConfDao;
+
+
 
     @Autowired
     private UserEmployeePointsRecordDao userEmployeePointsRecordDao;
@@ -272,6 +305,10 @@ public class ProfileProcessBS {
                         for (ProcessValidationStruct process : list) {
                             process.setRecruit_order(progressStatus);
                             process.setReward(result.getReward());
+                            //发送不匹配邮件
+                            if(progressStatus == 13) {
+                                sendProfileFilterExecuteEmail(process.getApplier_id(), process.getPosition_id());
+                            }
                         }
                         this.updateRecruitState(progressStatus, list,
                                 turnToCVCheckeds, employeesToBeUpdates, result,
@@ -654,6 +691,62 @@ public class ProfileProcessBS {
         Query query=new Query.QueryBuilder().where("id",accountId).buildQuery();
         UserHrAccount account=userHraccountDao.getData(query, UserHrAccount.class);
         return account;
+    }
+
+    //发送不匹配邮件
+    private void sendProfileFilterExecuteEmail(int user_id, int position_id) throws TException {
+        logger.info("开始发送不匹配邮件===================");
+        JobPositionRecord position = jobPositionDao.getPositionById(position_id);
+        HrCompanyConfDO companyConfDO = companyConfDao.getHrCompanyConfByCompanyId(position.getCompanyId());
+        if (companyConfDO.getTalentpoolStatus() == 2) {
+            MandrillEmailStruct emailStruct = new MandrillEmailStruct();
+            List<TalentpoolEmail> emailList = talentpoolEmailDao.getTalentpoolEmailByCompanyIdAndConfigId(position.getCompanyId(), Constant.TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS);
+            if (emailList != null && emailList.size() > 0 && emailList.get(0).getDisable() == 1) {
+                com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount accountDO = userHrAccountDao.getHrAccount(position.getPublisher());
+                UserUserRecord userUserRecord = userUserDao.getUserById(user_id);
+                HrWxWechatDO wechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(position.getCompanyId());
+                if (accountDO != null && userUserRecord != null && wechatDO != null) {
+                    HrCompanyDO companyDO = companyAccountDao.getHrCompany(accountDO.getId());
+                    if (companyDO != null) {
+                        Map<String, String> params = new HashMap<>();
+                        String username = "";
+                        if (userUserRecord.getName() != null && !userUserRecord.getName().isEmpty()) {
+                            username = userUserRecord.getName();
+                        } else {
+                            username = userUserRecord.getNickname();
+                        }
+                        String company_logo = CommonUtils.appendUrl(companyDO.getLogo(), env.getProperty("http.cdn.url"));
+                        params.put("company_logo", company_logo);
+                        String context = emailList.get(0).getContext();
+                        context = CommonUtils.replaceUtil(context, companyDO.getAbbreviation(), position.getTitle(),
+                                username, accountDO.getUsername(), wechatDO.getName());
+                        String inscribe = emailList.get(0).getInscribe();
+                        inscribe = CommonUtils.replaceUtil(inscribe, companyDO.getAbbreviation(), position.getTitle(),
+                                username, accountDO.getUsername(), wechatDO.getName());
+                        params.put("custom_text", context);
+                        params.put("company_sign", inscribe);
+                        params.put("employee_name", username);
+                        String qrcodeUrl = CommonUtils.appendUrl(wechatDO.getQrcode(), env.getProperty("http.cdn.url"));
+                        params.put("weixin_qrcode", qrcodeUrl);
+                        params.put("official_account_name", wechatDO.getName());
+                        params.put("send_time", DateUtils.dateToNormalDate(new Date()));
+                        params.put("company_abbr", companyDO.getAbbreviation());
+                        emailStruct.setMergeVars(params);
+                        emailStruct.setTemplateName(Constant.MISMATCH_NOTIFICATION);
+                        emailStruct.setTo_name(username);
+                        emailStruct.setTo_email(userUserRecord.getEmail());
+                        int id = emailEntity.handerTalentpoolEmailLogAndBalance(1, 2, position.getCompanyId(), position.getPublisher());
+                        if (id > 0) {
+                            mqService.sendMandrilEmail(emailStruct);
+                        }
+                    }
+                }
+            } else {
+                logger.info("没有查到邮件信息");
+            }
+        }else{
+            logger.info("没有开启智能人才库");
+        }
     }
 
 }

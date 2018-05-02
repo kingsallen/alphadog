@@ -22,6 +22,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.Constant.EmailAccountConsumptionType;
+import com.moseeker.entity.Constant.TalentpoolEmailType;
 import com.moseeker.entity.exception.TalentPoolException;
 import com.moseeker.thrift.gen.company.struct.EmailAccountConsumption;
 import com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm;
@@ -94,7 +95,11 @@ public class TalentPoolEmailEntity {
                 .and("config_id", type).buildQuery();
         TalentpoolEmailRecord emailRecord = talentpoolEmailDao.getRecord(query);
         if(disable>=0){
-            emailRecord.setDisable(disable);
+            if(TalentpoolEmailType.instanceFromByte(type).getStatus()) {
+                emailRecord.setDisable(disable);
+            }else {
+                return -1;
+            }
         }
         if(StringUtils.isNotNullOrEmpty(context)){
             emailRecord.setContext(context);
@@ -141,6 +146,15 @@ public class TalentPoolEmailEntity {
             consumption(useCount, type, company_id, hr_id, companyEmailInfo.getBalance(), index);
         }
 
+        if(balance == useCount){
+            List<TalentpoolEmailRecord> emailRecordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
+            for(TalentpoolEmailRecord record : emailRecordList){
+                if(TalentpoolEmailType.instanceFromByte(record.getId()).getStatus()) {
+                    record.setDisable(0);
+                }
+            }
+            talentpoolEmailDao.updateRecords(emailRecordList);
+        }
         long timeAtStartOfDay = new DateTime().withTimeAtStartOfDay().getMillis();
         logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, company_id, useCount, EmailAccountConsumptionType.COMSUMPTION.getValue(), 0);
 
