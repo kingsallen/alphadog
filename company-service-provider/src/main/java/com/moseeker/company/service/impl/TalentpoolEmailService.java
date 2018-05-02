@@ -780,6 +780,7 @@ public class TalentpoolEmailService {
         return result;
     }
 
+
     /*
     获取邀请投递邮件的人员的信息
     */
@@ -922,7 +923,7 @@ public class TalentpoolEmailService {
             UserHrAccountRecord hrAccountRecord=this.getUserHrInfo(hrId);
             List<ReceiveInfo> receiveInfos=new ArrayList<>();
             for(InviteToDelivyUserInfo userInfo:userInfoList){
-                TalentEmailInviteToDelivyInfo delivyInfo1=new TalentEmailInviteToDelivyInfo();
+                TalentEmailInviteToDelivyInfo delivyInfo1=this.convertDelivyInfo(delivyInfo);
                 String name=userInfo.getName();
                 String email=userInfo.getEmail();
                 int userId=userInfo.getUserId();
@@ -932,7 +933,7 @@ public class TalentpoolEmailService {
                     receiveInfo.setToEmail(email);
                     receiveInfos.add(receiveInfo);
                     delivyInfo1.setRcpt(email);
-                    context= CommonUtils.replaceUtil(context,delivyInfo.getCompanyAbbr(),delivyInfo.getPositionName(),name,hrAccountRecord.getUsername(),delivyInfo.getOfficialAccountName());
+                    context= CommonUtils.replaceUtil(context,delivyInfo1.getCompanyAbbr(),delivyInfo1.getPositionName(),name,hrAccountRecord.getUsername(),delivyInfo1.getOfficialAccountName());
                     delivyInfo1.setCustomText(context);
                     delivyInfo1.setEmployeeName(name);
                     if(flag==1){
@@ -964,6 +965,22 @@ public class TalentpoolEmailService {
             logger.error(e.getMessage(),e);
         }
         return null;
+    }
+
+    private TalentEmailInviteToDelivyInfo convertDelivyInfo(TalentEmailInviteToDelivyInfo info){
+        TalentEmailInviteToDelivyInfo info1=new TalentEmailInviteToDelivyInfo();
+        info1.setCompanyAbbr(info.getCompanyAbbr());
+        info1.setCompanyLogo(info.getCompanyLogo());
+        info1.setEmployeeName(info.getEmployeeName());
+        info1.setCustomText(info.getCustomText());
+        info1.setPositions(info.getPositions());
+        info1.setPositionNum(info.getPositionNum());
+        info1.setSeeMorePosition(info.getSeeMorePosition());
+        info1.setWeixinQrcode(info.getWeixinQrcode());
+        info1.setOfficialAccountName(info.getOfficialAccountName());
+        info1.setRcpt(info.getRcpt());
+        info1.setPositionName(info.getPositionName());
+        return info1;
     }
 
     /*
@@ -1248,19 +1265,20 @@ public class TalentpoolEmailService {
                 receiveInfo.setToName(name);
                 receiveInfos.add(receiveInfo);
                 for(TalentEmailForwardsResumeInfo info:dataInfo){
-                    info.setCoworkerName(name);
-                    context= CommonUtils.replaceUtil(context,info.getCompanyAbbr(),info.getPositionName(),info.getUserName(),null,info.getOfficialAccountName());
-                    info.setCustomText(context);
-                    info.setRcpt(email);
-                    info.setHrName(record.getUsername());
+                    TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
+                    info1.setCoworkerName(name);
+                    context= CommonUtils.replaceUtil(context,info1.getCompanyAbbr(),info1.getPositionName(),info1.getUserName(),null,info1.getOfficialAccountName());
+                    info1.setCustomText(context);
+                    info1.setRcpt(email);
+                    info1.setHrName(record.getUsername());
                     String url=env.getProperty("talentpool.wholeProfile");
-                    String token="user_id="+info.getUserId()+"&company_id="+companyId+"&hr_id="+hrId+"&timestamp="+new Date().getTime();
+                    String token="user_id="+info1.getUserId()+"&company_id="+companyId+"&hr_id="+hrId+"&timestamp="+new Date().getTime();
                     token=CommonUtils.encryptString(token);
-                    info.setProfileFullUrl(url+token);
+                    info1.setProfileFullUrl(url+token);
                     if(StringUtils.isNullOrEmpty(abbr)){
-                        abbr=info.getCompanyAbbr();
+                        abbr=info1.getCompanyAbbr();
                     }
-                    resumeInfoList.add(info);
+                    resumeInfoList.add(info1);
                 }
             }
         }
@@ -1269,8 +1287,31 @@ public class TalentpoolEmailService {
         result.setTemplateName("forwards-resume");
         return result;
     }
-
-
+     private TalentEmailForwardsResumeInfo convertInfo1(TalentEmailForwardsResumeInfo info){
+         TalentEmailForwardsResumeInfo info1=new TalentEmailForwardsResumeInfo();
+         info1.setCompanyAbbr(info.getCompanyAbbr());
+         info1.setCompanyLogo(info.getCompanyLogo());
+         info1.setCoworkerName(info.getCoworkerName());
+         info1.setCustomText(info.getCustomText());
+         info1.setHeading(info.getHeading());
+         info1.setUserName(info.getUserName());
+         info1.setGenderName(info.getGenderName());
+         info1.setCityName(info.getCityName());
+         info1.setDegreeName(info.getDegreeName());
+         info1.setEducationList(info.getEducationList());
+         info1.setWorkexps(info.getWorkexps());
+         info1.setWeixinQrcode(info.getWeixinQrcode());
+         info1.setOfficialAccountName(info.getOfficialAccountName());
+         info1.setEmail(info.getEmail());
+         info1.setUserId(info.getUserId());
+         info1.setBirth(info.getBirth());
+         info1.setPositionName(info.getPositionName());
+         info1.setCompanyName(info.getCompanyName());
+         info1.setProfileFullUrl(info.getProfileFullUrl());
+         info1.setHrName(info.getHrName());
+         info1.setRcpt(info.getRcpt());
+         return info1;
+     }
     /*
      获取应发送邮件的数量
      */
