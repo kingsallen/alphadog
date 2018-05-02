@@ -757,6 +757,7 @@ public class TalentpoolController {
     public String updateCompanyTag(HttpServletRequest request) throws Exception {
         try {
             Params<String, Object> data = ParamUtils.parseRequestParam(request);
+
             String hrId=String.valueOf(data.get("hr_id"));
             if(data.get("hr_id") == null || StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
@@ -1218,15 +1219,20 @@ public class TalentpoolController {
                 }
             }
             int hrId=(int)params.get("hr_id");
-            boolean userAll=(boolean)params.get("user_all");
+
             int flag=0;
+            if(params.get("user_all")!=null){
+            boolean userAll=(boolean)params.get("user_all");
             if(userAll){
                 flag=1;
             }
-            boolean positionAll=(boolean)params.get("position_all");
+            }
             int positionFlag=0;
+            if(params.get("position_all")!=null){
+            boolean positionAll=(boolean)params.get("position_all");
             if(positionAll){
                 positionFlag=1;
+            }
             }
             List<Integer> positionIdList=( List<Integer>)params.get("position_ids");
             List<Integer> userIdList=( List<Integer>)params.get("user_ids");
