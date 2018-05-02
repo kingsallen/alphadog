@@ -1,5 +1,10 @@
 package com.moseeker.company.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.company.bean.email.TalentEmailInviteToDelivyInfo;
 import com.moseeker.company.config.AppConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
@@ -24,6 +29,10 @@ public class TalentPoolServiceTest {
     private TalentPoolService talentPoolService;
     @Autowired
     private CompanyTagService companyTagService;
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
+    @Autowired
+    private TalentpoolEmailService talentpoolEmailService;
 
     @Test
     public void testBatchAddTalent() throws TException {
@@ -279,6 +288,19 @@ public class TalentPoolServiceTest {
 //        int type=0;
 //        companyTagService.handlerCompanyTag(tagIDList,type);
 //    }
+    @Test
+    public void pictureTest() throws TException {
+        List<Integer> positionidList=new ArrayList<>();
+        positionidList.add(1949409);
+        positionidList.add(1949408);
+        int companyId=39978;
+        String content="1234";
+        Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
+        HrCompanyRecord record=hrCompanyDao.getRecord(query);
+        TalentEmailInviteToDelivyInfo info=talentpoolEmailService.getInviteToDelivyInfoList(positionidList,companyId,content,record);
+        System.out.println(JSON.toJSONString(info));
+
+    }
 
 
 }

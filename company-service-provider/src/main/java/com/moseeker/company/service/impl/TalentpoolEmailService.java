@@ -1041,7 +1041,7 @@ public class TalentpoolEmailService {
     }
 
 
-    private TalentEmailInviteToDelivyInfo getInviteToDelivyInfoList(List<Integer> positionIdList,int companyId,String context, HrCompanyRecord record) throws TException {
+    public TalentEmailInviteToDelivyInfo getInviteToDelivyInfoList(List<Integer> positionIdList,int companyId,String context, HrCompanyRecord record) throws TException {
         List<JobPositionRecord> positionList=this.getPositionList(positionIdList);
         HrWxWechatRecord wechatRecord=getWxInfo(companyId);
         if(!StringUtils.isEmptyList(positionList)){
@@ -1053,11 +1053,11 @@ public class TalentpoolEmailService {
             }
             List<PositionInfo> positionInfoList=new ArrayList<>();
             delivyInfo.setCompanyAbbr(record.getAbbreviation());
-            delivyInfo.setCompanyLogo(record.getLogo());
+            delivyInfo.setCompanyLogo(CommonUtils.appendUrl(record.getLogo(),env.getProperty("http.cdn.url")));
             delivyInfo.setCustomText(context);
             delivyInfo.setPositionNum(positionIdList.size()+"");
             delivyInfo.setOfficialAccountName(wechatRecord.getName());
-            delivyInfo.setWeixinQrcode(wechatRecord.getQrcode());
+            delivyInfo.setWeixinQrcode(CommonUtils.appendUrl(wechatRecord.getQrcode(),env.getProperty("http.cdn.url")));
             delivyInfo.setSeeMorePosition(null);
             List<Integer> teamIdList=this.getTeamIdList(positionList);
             Map<Integer,String> positionPic=this.getPositionPicture(teamIdList,positionList,record);
@@ -1078,7 +1078,8 @@ public class TalentpoolEmailService {
                 positionInfo.setRow(i+"");
                 positionInfo.setWorkYear(jobPositionRecord.getExperience());
                 if(positionPic!=null&&!positionPic.isEmpty()){
-                    positionInfo.setPositionBg(positionPic.get(jobPositionRecord.getId()));
+
+                positionInfo.setPositionBg(CommonUtils.appendUrl(positionPic.get(jobPositionRecord.getId()),env.getProperty("http.cdn.url")));
                 }
                 i++;
                 positionInfoList.add(positionInfo);
@@ -1110,42 +1111,47 @@ public class TalentpoolEmailService {
 
     //注意验证公司是否开启，一会补上
     private Map<Integer,String> getPositionPicture(List<Integer> teamIdList,List<JobPositionRecord> positionList,HrCompanyRecord record) throws TException {
-        if(StringUtils.isEmptyList(teamIdList)){
-            return null;
-        }
         Map<Integer,String> result=new HashMap<>();
-        List<Map<String,Object>> list=pcRevisionEntity.HandleCmsResource(teamIdList,3);
         DictIndustryRecord dictIndustryRecord=this.getIndustryInfo(record.getIndustry());
         DictIndustryTypeRecord dictIndustryTypeRecord=this.getIndustryTypeInfo(dictIndustryRecord.getType());
-        if(StringUtils.isEmptyList(list)){
-            for(JobPositionRecord jobPositionRecord:positionList){
-                result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
+        if(!StringUtils.isEmptyList(teamIdList)){
+            List<Map<String,Object>> list=pcRevisionEntity.HandleCmsResource(teamIdList,3);
+
+            if(StringUtils.isEmptyList(list)){
+                for(JobPositionRecord jobPositionRecord:positionList){
+                    result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
+                }
+            }else {
+                for (JobPositionRecord jobPositionRecord : positionList) {
+                    logger.info("======================================");
+                    logger.info(jobPositionRecord.toString());
+                    logger.info("======================================");
+                    int teamId = jobPositionRecord.getTeamId();
+                    int flag = 0;
+                    if (teamId != 0) {
+                        for (Map<String, Object> map : list) {
+                            Integer configId = (Integer) map.get("configId");
+                            if (teamId == configId) {
+                                if (map.get("imgUrl") != null) {
+                                    result.put(jobPositionRecord.getId(), (String) map.get("imgUrl"));
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    if (flag == 0) {
+                        result.put(jobPositionRecord.getId(), dictIndustryTypeRecord.getJobImg());
+                    }
+
+                }
             }
         }else{
             for(JobPositionRecord jobPositionRecord:positionList){
-                logger.info("======================================");
-                logger.info(jobPositionRecord.toString());
-                logger.info("======================================");
-                int teamId=jobPositionRecord.getTeamId();
-                int flag=0;
-                if(teamId!=0){
-                    for(Map<String,Object> map:list){
-                        Integer configId=(Integer) map.get("configId");
-                        if(teamId==configId){
-                            if(map.get("imgUrl")!=null){
-                                result.put(jobPositionRecord.getId(), (String)map.get("imgUrl"));
-                            }
-                            break;
-                        }
-                    }
-                }
-
-                if(flag==0){
-                    result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
-                }
-
+                result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
             }
         }
+
         return result;
     }
 
@@ -1391,10 +1397,10 @@ public class TalentpoolEmailService {
             for(TalentEmailForwardsResumeInfo info:dataList){
                 if(hrCompanyRecord!=null){
                     info.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
-                    info.setCompanyLogo(hrCompanyRecord.getLogo());
+                    info.setCompanyLogo(CommonUtils.appendUrl(hrCompanyRecord.getLogo(),env.getProperty("http.cdn.url")));
                 }
                 if(hrWxWechatRecord!=null){
-                    info.setWeixinQrcode(hrWxWechatRecord.getQrcode());
+                    info.setWeixinQrcode(CommonUtils.appendUrl(hrWxWechatRecord.getQrcode(),env.getProperty("http.cdn.url")));
                     info.setOfficialAccountName(hrWxWechatRecord.getName());
                 }
                 info.setCustomText(context);
@@ -1481,7 +1487,7 @@ public class TalentpoolEmailService {
 
                                     info.setEmail(email);
                                     info.setUserName(name);
-                                    info.setHeading(heading);
+                                    info.setHeading(CommonUtils.appendUrl(heading,env.getProperty("http.cdn.url")));
                                     info.setCityName(cityName);
                                     info.setGenderName(genderName);
                                 }
