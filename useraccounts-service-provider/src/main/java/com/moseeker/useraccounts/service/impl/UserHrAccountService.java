@@ -31,6 +31,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.MD5Util;
@@ -44,6 +45,7 @@ import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.entity.exception.HRException;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -611,6 +613,7 @@ public class UserHrAccountService {
      */
     public Response postSearchCondition(SearchCondition searchCondition) {
         try {
+            boolean positionStatusFlag=searchCondition.isSetPosition_status();
             Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("hr_account_id", String.valueOf(searchCondition.getHr_account_id())).and("type", String.valueOf(searchCondition.getType()));
             int row = hrSearchConditionDao.getCount(query.buildQuery());
@@ -635,8 +638,9 @@ public class UserHrAccountService {
             if(record.getIsRecommend()==0){
                 record.setIsRecommend(null);
             }
-            if(!searchCondition.isSetPosition_status()){
-                record.setPositionStatus(null);
+
+            if(!positionStatusFlag){
+                record.setPositionStatus(-1);
             }
 
 
