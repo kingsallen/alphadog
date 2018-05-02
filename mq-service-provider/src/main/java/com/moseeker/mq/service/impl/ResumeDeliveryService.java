@@ -79,6 +79,8 @@ public class ResumeDeliveryService {
     @Autowired
     private HrCompanyDao companyDao;
     @Autowired
+    private HrCompanyAccountDao companyAccountDao;
+    @Autowired
     private ProfileProfileDao profileDao;
     @Autowired
     private ProfileEducationDao educationDao;
@@ -131,8 +133,7 @@ public class ResumeDeliveryService {
             if(positionDo == null){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
-            HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(),
-                    positionDo.getCompanyId()).buildQuery());
+            HrCompanyDO companyDO = companyAccountDao.getHrCompany(positionDo.getPublisher());
             if(companyDO == null ) return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             int companyId = companyDO.getId();
             if(companyDO.getParentId() != 0)
@@ -157,10 +158,11 @@ public class ResumeDeliveryService {
             HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),
                     env.getProperty("wechat.helper.signature")).buildQuery());
 
-            if(accountDo != null)
+            if(accountDo != null) {
                 //获取hr的微信号
                 hrWxUserDo = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.ID.getName(),
                         accountDo.getWxuserId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrWxWechatDO.getId()).buildQuery());
+            }
             //关注的聚合号
             HrWxWechatDO aggregationChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),
                     env.getProperty("wechat.qx.signature")).buildQuery());

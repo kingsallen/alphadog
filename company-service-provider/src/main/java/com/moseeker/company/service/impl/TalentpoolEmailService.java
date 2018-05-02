@@ -286,7 +286,9 @@ public class TalentpoolEmailService {
         int result = talentPoolEmailEntity.updateEmailInfo(company_id, type, disable, context, inscribe);
         if(result >0 ) {
             return ResponseUtils.success("");
-        }else{
+        }else if(result == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.EMAIL_SWITCH_FAILED);
+        }else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
         }
     }
