@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public enum TalentpoolEmailType {
 
-    Actived(69, true), Deleted(70, true), TakeOff(71, true), Intervation(72, false), Resume(72, false);
+    Actived(69, true), Deleted(70, true), TakeOff(71, true), Intervation(72, false), Resume(73, false);
 
     private static Map<Integer, TalentpoolEmailType> map = new HashMap<>();
 
