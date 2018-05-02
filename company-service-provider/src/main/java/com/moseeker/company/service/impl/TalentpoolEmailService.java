@@ -1426,7 +1426,7 @@ public class TalentpoolEmailService {
         if(!StringUtils.isEmptyMap(result)){
             int totalNum=Integer.parseInt(String.valueOf(result.get("totalNum")));
             if(totalNum>0){
-                List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
+                List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("users");
                 for(Map<String,Object> map:dataList){
                     TalentEmailForwardsResumeInfo info=new TalentEmailForwardsResumeInfo();
                     if(map!=null&&!map.isEmpty()){
