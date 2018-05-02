@@ -141,6 +141,13 @@ public class TalentPoolEmailEntity {
             consumption(useCount, type, company_id, hr_id, companyEmailInfo.getBalance(), index);
         }
 
+        if(balance == useCount){
+            List<TalentpoolEmailRecord> emailRecordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
+            for(TalentpoolEmailRecord record : emailRecordList){
+                record.setDisable(0);
+            }
+            talentpoolEmailDao.updateRecords(emailRecordList);
+        }
         long timeAtStartOfDay = new DateTime().withTimeAtStartOfDay().getMillis();
         logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, company_id, useCount, EmailAccountConsumptionType.COMSUMPTION.getValue(), 0);
 
