@@ -721,7 +721,7 @@ public class TalentpoolEmailService {
         List<Map<String,String>> toReceive=new ArrayList<>();
         List<Map<String,String>> mergeData=new ArrayList<>();
         for(ReceiveInfo receiveInfo:to){
-            String tores=JSON.toJSONString(receiveInfo);
+            String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
             Map<String,Object> map=JSON.parseObject(tores);
             Map<String,String> map1=new HashMap<>();
             for(String key:map.keySet()){
@@ -730,7 +730,7 @@ public class TalentpoolEmailService {
             toReceive.add(map1);
         }
         for(TalentEmailInviteToDelivyInfo info:merge){
-            String infos=JSON.toJSONString(info);
+            String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
             Map<String,Object> infoMap=JSON.parseObject(infos);
             Map<String,String> infoMap1=new HashMap<>();
             for(String key:infoMap.keySet()){
@@ -758,7 +758,7 @@ public class TalentpoolEmailService {
         List<Map<String,String>> toReceive=new ArrayList<>();
         List<Map<String,String>> mergeData=new ArrayList<>();
         for(ReceiveInfo receiveInfo:to){
-            String tores=JSON.toJSONString(receiveInfo);
+            String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
             Map<String,Object> map=JSON.parseObject(tores);
             Map<String,String> map1=new HashMap<>();
             for(String key:map.keySet()){
@@ -767,7 +767,7 @@ public class TalentpoolEmailService {
             toReceive.add(map1);
         }
         for(TalentEmailForwardsResumeInfo info:merge){
-            String infos=JSON.toJSONString(info);
+            String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
             Map<String,Object> infoMap=JSON.parseObject(infos);
             Map<String,String> infoMap1=new HashMap<>();
             for(String key:infoMap.keySet()){
