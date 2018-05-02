@@ -695,6 +695,7 @@ public class ProfileProcessBS {
 
     //发送不匹配邮件
     private void sendProfileFilterExecuteEmail(int user_id, int position_id) throws TException {
+        logger.info("开始发送不匹配邮件===================");
         JobPositionRecord position = jobPositionDao.getPositionById(position_id);
         HrCompanyConfDO companyConfDO = companyConfDao.getHrCompanyConfByCompanyId(position.getCompanyId());
         if (companyConfDO.getTalentpoolStatus() == 2) {
@@ -741,8 +742,10 @@ public class ProfileProcessBS {
                     }
                 }
             } else {
-                logger.info("没有查到");
+                logger.info("没有查到邮件信息");
             }
+        }else{
+            logger.info("没有开启智能人才库");
         }
     }
 
