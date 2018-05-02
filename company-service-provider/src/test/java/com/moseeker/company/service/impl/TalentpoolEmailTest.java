@@ -2,6 +2,7 @@ package com.moseeker.company.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.company.bean.email.EmailInviteBean;
 import com.moseeker.company.config.AppConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.junit.Test;
@@ -369,5 +370,10 @@ public class TalentpoolEmailTest {
         data.put("users",dataList);
         Response res= ResponseUtils.success(data);
         System.out.println(res.getData());
+    }
+
+    public void EmailDataTest(){
+        EmailInviteBean bean=new EmailInviteBean();
+
     }
 }

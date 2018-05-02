@@ -703,7 +703,7 @@ public class TalentpoolEmailService {
             //
         }
     }
-    private MandrillEmailListStruct convertToEmailStruct(EmailInviteBean emailInviteBean){
+    public MandrillEmailListStruct convertToEmailStruct(EmailInviteBean emailInviteBean){
         MandrillEmailListStruct result=new MandrillEmailListStruct();
         result.setTemplateName(emailInviteBean.getTemplateName());
         result.setSubject(emailInviteBean.getSubject());
@@ -1201,6 +1201,9 @@ public class TalentpoolEmailService {
     private EmailResumeBean convertResumeEmailData(List<UserEmployeeDO> employeeList,Map<String,String> params,int companyId,String context,int hrId) throws Exception {
         List<TalentEmailForwardsResumeInfo> dataInfo=this.handlerData(params,companyId,context,hrId);
         EmailResumeBean result=this.convertResumeEmailData(dataInfo,employeeList,context,hrId,companyId);
+        logger.info("===============EmailResumeBean=======================");
+        logger.info(JSON.toJSONString(result));
+        logger.info("======================================");
         return result;
     }
     /*
