@@ -6,6 +6,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.exception.HRException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -652,5 +653,20 @@ public class UserHrAccountServiceImpl implements Iface {
         Response response = service.getHrCompanyInfo(wechat_id, unionId, account_id);
         logger.info("getHrCompanyInfo fanhuizhi:{}", response);
         return response;
+    }
+
+    @Override
+    public UserHrAccountDO switchChatLeaveToMobot(int accountId, byte leaveToMobot) throws BIZException, TException {
+        try {
+            return service.switchChatLeaveToMobot(accountId,leaveToMobot);
+        } catch (HRException e){
+            throw ExceptionUtils.convertException(e);
+        } catch (BIZException e){
+            throw e;
+        } catch (Exception e){
+            logger.error("switch Chat LeaveToMobot error:{},accountId:{},leaveToMobot:{}",e,accountId,leaveToMobot);
+            throw new SysBIZException();
+        }
+
     }
 }
