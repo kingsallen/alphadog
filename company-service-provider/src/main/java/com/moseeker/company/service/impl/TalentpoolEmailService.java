@@ -564,6 +564,9 @@ public class TalentpoolEmailService {
                 EmailInviteBean emailDate = this.handlerData(positionIdList, companyId,context , userInfo, record, hrId,0);
                 if(emailDate!=null) {
                     MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
+                    logger.info("=============MandrillEmailListStruct===========");
+                    logger.info(JSON.toJSONString(struct));
+                    logger.info("================================================");
                     mqService.sendMandrilEmailList(struct);
                 }
             }catch(Exception e){
@@ -1044,7 +1047,9 @@ public class TalentpoolEmailService {
                 positionName=positionName+jobPositionRecord.getTitle()+",";
                 positionInfo.setRow(i+"");
                 positionInfo.setWorkYear(jobPositionRecord.getExperience());
-                positionInfo.setPositionBg(positionPic.get(jobPositionRecord.getId()));
+                if(positionPic!=null&&!positionPic.isEmpty()){
+                    positionInfo.setPositionBg(positionPic.get(jobPositionRecord.getId()));
+                }
                 i++;
                 positionInfoList.add(positionInfo);
             }
@@ -1088,6 +1093,9 @@ public class TalentpoolEmailService {
             }
         }else{
             for(JobPositionRecord jobPositionRecord:positionList){
+                logger.info("======================================");
+                logger.info(jobPositionRecord.toString());
+                logger.info("======================================");
                 int teamId=jobPositionRecord.getTeamId();
                 int flag=0;
                 if(teamId!=0){
