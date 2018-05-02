@@ -1186,10 +1186,12 @@ public class TalentpoolController {
                 }
             }
             int hrId=(int)params.get("hr_id");
-            boolean userAll=(boolean)params.get("user_all");
             int flag=0;
-            if(userAll){
-                flag=1;
+            if(params.get("user_all")==null){
+                boolean userAll=(boolean)params.get("user_all");
+                if(userAll){
+                    flag=1;
+                }
             }
             List<Integer> idList=( List<Integer>)params.get("employee");
             List<Integer> userIdList=( List<Integer>)params.get("user_ids");
