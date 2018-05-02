@@ -721,7 +721,7 @@ public class TalentpoolEmailService {
         List<Map<String,String>> toReceive=new ArrayList<>();
         List<Map<String,String>> mergeData=new ArrayList<>();
         for(ReceiveInfo receiveInfo:to){
-            String tores=JSON.toJSONString(receiveInfo);
+            String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
             Map<String,Object> map=JSON.parseObject(tores);
             Map<String,String> map1=new HashMap<>();
             for(String key:map.keySet()){
@@ -730,7 +730,7 @@ public class TalentpoolEmailService {
             toReceive.add(map1);
         }
         for(TalentEmailInviteToDelivyInfo info:merge){
-            String infos=JSON.toJSONString(info);
+            String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
             Map<String,Object> infoMap=JSON.parseObject(infos);
             Map<String,String> infoMap1=new HashMap<>();
             for(String key:infoMap.keySet()){
@@ -758,7 +758,7 @@ public class TalentpoolEmailService {
         List<Map<String,String>> toReceive=new ArrayList<>();
         List<Map<String,String>> mergeData=new ArrayList<>();
         for(ReceiveInfo receiveInfo:to){
-            String tores=JSON.toJSONString(receiveInfo);
+            String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
             Map<String,Object> map=JSON.parseObject(tores);
             Map<String,String> map1=new HashMap<>();
             for(String key:map.keySet()){
@@ -767,7 +767,7 @@ public class TalentpoolEmailService {
             toReceive.add(map1);
         }
         for(TalentEmailForwardsResumeInfo info:merge){
-            String infos=JSON.toJSONString(info);
+            String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
             Map<String,Object> infoMap=JSON.parseObject(infos);
             Map<String,String> infoMap1=new HashMap<>();
             for(String key:infoMap.keySet()){
@@ -917,8 +917,8 @@ public class TalentpoolEmailService {
                 positionIdList=getPositionIds(companyId,hrId,count);
             }
             TalentEmailInviteToDelivyInfo delivyInfo=this.getInviteToDelivyInfoList(positionIdList,companyId,context,record);
-            logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
-            logger.info(JSON.toJSONString(result));
+            logger.info("=======转换response为List<TalentEmailInviteToDelivyInfo> ===========");
+            logger.info(JSON.toJSONString(delivyInfo));
             logger.info("================================================");
             if(delivyInfo==null||StringUtils.isEmptyList(userInfoList)){
                 return null;
@@ -1271,7 +1271,23 @@ public class TalentpoolEmailService {
                 for(TalentEmailForwardsResumeInfo info:dataInfo){
                     TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
                     info1.setCoworkerName(name);
-                    context= CommonUtils.replaceUtil(context,info1.getCompanyAbbr(),info1.getPositionName(),info1.getUserName(),null,info1.getOfficialAccountName());
+                    String companyAbbr=info1.getCompanyAbbr();
+                    if(StringUtils.isNullOrEmpty(companyAbbr)){
+                        companyAbbr="";
+                    }
+                    String positionName=info1.getPositionName();
+                    if(StringUtils.isNullOrEmpty(positionName)){
+                        positionName="";
+                    }
+                    String userName=info1.getUserName();
+                    if(StringUtils.isNullOrEmpty(userName)){
+                        userName="";
+                    }
+                    String accountName=info1.getOfficialAccountName();
+                    if(StringUtils.isNullOrEmpty(accountName)){
+                        accountName="";
+                    }
+                    context= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
                     info1.setCustomText(context);
                     info1.setRcpt(email);
                     info1.setHrName(record.getUsername());
@@ -1286,6 +1302,11 @@ public class TalentpoolEmailService {
                 }
             }
         }
+        if(StringUtils.isEmptyList(resumeInfoList)||StringUtils.isEmptyList(receiveInfos)){
+            return null;
+        }
+        result.setTo(receiveInfos);
+        result.setMergeVars(resumeInfoList);
         result.setFromName(abbr+"才招聘团队");
         result.setFromEmail("info@moseeker.net");
         result.setTemplateName("forwards-resume");
@@ -1430,7 +1451,7 @@ public class TalentpoolEmailService {
         if(!StringUtils.isEmptyMap(result)){
             int totalNum=Integer.parseInt(String.valueOf(result.get("totalNum")));
             if(totalNum>0){
-                List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
+                List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("users");
                 for(Map<String,Object> map:dataList){
                     TalentEmailForwardsResumeInfo info=new TalentEmailForwardsResumeInfo();
                     if(map!=null&&!map.isEmpty()){
