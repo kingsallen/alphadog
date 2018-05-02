@@ -133,8 +133,8 @@ public class MqController {
             List to = (List)params.get("to");
             mandrillEmailStruct.setTo(to);
             List strMergeVars = (List)params.get("mergeVars");
-
-            mandrillEmailStruct.setMergeVars(strMergeVars);
+            String mergeVars = JSON.toJSONString(strMergeVars);
+            mandrillEmailStruct.setMergeVars(mergeVars);
 
             String subject = (String)params.get("subject");
             if (StringUtils.isNotNullOrEmpty(subject)){
