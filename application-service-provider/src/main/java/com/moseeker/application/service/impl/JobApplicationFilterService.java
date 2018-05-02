@@ -293,7 +293,7 @@ public class JobApplicationFilterService {
                     params.put("weixin_qrcode", qrcodeUrl);
                     params.put("official_account_name", wechatDO.getName());
                     params.put("send_time", DateUtils.dateToNormalDate(new Date()));
-                    params.put("comapny_abbr", companyDO.getAbbreviation());
+                    params.put("company_abbr", companyDO.getAbbreviation());
                     emailStruct.setMergeVars(params);
                     emailStruct.setTemplateName(Constant.MISMATCH_NOTIFICATION);
                     emailStruct.setTo_name(username);
