@@ -1042,7 +1042,9 @@ public class TalentpoolEmailService {
                 positionName=positionName+jobPositionRecord.getTitle()+",";
                 positionInfo.setRow(i+"");
                 positionInfo.setWorkYear(jobPositionRecord.getExperience());
-                positionInfo.setPositionBg(positionPic.get(jobPositionRecord.getId()));
+                if(positionPic!=null&&!positionPic.isEmpty()){
+                    positionInfo.setPositionBg(positionPic.get(jobPositionRecord.getId()));
+                }
                 i++;
                 positionInfoList.add(positionInfo);
             }
@@ -1086,6 +1088,9 @@ public class TalentpoolEmailService {
             }
         }else{
             for(JobPositionRecord jobPositionRecord:positionList){
+                logger.info("======================================");
+                logger.info(jobPositionRecord.toString());
+                logger.info("======================================");
                 int teamId=jobPositionRecord.getTeamId();
                 int flag=0;
                 if(teamId!=0){
