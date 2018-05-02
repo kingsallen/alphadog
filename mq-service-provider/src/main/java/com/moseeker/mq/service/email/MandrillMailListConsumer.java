@@ -79,9 +79,7 @@ public class MandrillMailListConsumer {
 	public void sendMailList(MandrillEmailListStruct mandrillEmailListStruct) throws Exception {
         mandrillApi = new MandrillApi(mandrillApikey);
             try {
-                logger.info("sendMailList template:{}", mandrillEmailListStruct.getTemplateName());
-                logger.info("sendMailList to:{}", mandrillEmailListStruct.getTo());
-                logger.info("sendMailList mergeVars:{}", mandrillEmailListStruct.getMergeVars());
+
                 MandrillMessage message = new MandrillMessage();
 
                 List<Recipient> recipients = new ArrayList<Recipient>();
@@ -111,16 +109,14 @@ public class MandrillMailListConsumer {
                     String rcpt = "";
                     MergeVarBucket mergeVar = new MergeVarBucket();
                     MergeVar[] vars = new MergeVar[var.size()];
-                    int vars_i = 0;
-                    vars = parseMergeVars(var, vars, vars_i);
-                            vars_i++;
+                    vars = parseMergeVars(var, vars);
                     for (Entry<String, Object> entry : var.entrySet()) {
                         if("rcpt".equals(entry.getKey())){
                             rcpt = (String)entry.getValue();
                         }
                     }
 
-                    if (vars_i > 0) {
+                    if (vars.length>0) {
                         mergeVar.setVars(vars);
                         mergeVar.setRcpt(rcpt);
                         mergeVars.add(mergeVar);
@@ -149,6 +145,7 @@ public class MandrillMailListConsumer {
                 message.setTrackClicks(true);
                 message.setTrackOpens(true);
                 message.setViewContentLink(true);
+
                 MandrillMessageStatus[] messageStatus = mandrillApi.messages().sendTemplate(mandrillEmailListStruct.getTemplateName(),
                         null,message, false);
                 logger.info("messageStatus :{}",messageStatus);
@@ -161,8 +158,8 @@ public class MandrillMailListConsumer {
 	}
 
 
-	private MergeVar[] parseMergeVars(Map<String, Object> mergeVars, MergeVar[] vars, int vars_i){
-
+	private MergeVar[] parseMergeVars(Map<String, Object> mergeVars, MergeVar[] vars){
+        int vars_i = 0;
         for (Entry<String, Object> entry : mergeVars.entrySet()){
             vars[vars_i] = new MergeVar();
             vars[vars_i].setName(entry.getKey());
@@ -172,13 +169,14 @@ public class MandrillMailListConsumer {
                 List<MergeVar[]> list = new ArrayList<>();
                 int i = 0;
                 for (Map<String, Object> var : (List<Map<String, Object>>)entry.getValue()) {
-                    MergeVar[] vara = new MergeVar[mergeVars.size()];
-                    vara = parseMergeVars(var, vara, i);
+                    MergeVar[] vara = new MergeVar[var.size()];
+                    vara = parseMergeVars(var, vara);
                     list.add(vara);
                     i++;
                 }
                 vars[vars_i].setContent(list);
             }
+            vars_i ++;
         }
 
 
