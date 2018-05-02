@@ -562,6 +562,9 @@ public class TalentpoolEmailService {
             try {
                 List<InviteToDelivyUserInfo> userInfo = this.talentEmailInviteInfoSearch(params,i,300);
                 EmailInviteBean emailDate = this.handlerData(positionIdList, companyId,context , userInfo, record, hrId,0);
+                logger.info("=============EmailInviteBean===========");
+                logger.info(JSON.toJSONString(emailDate));
+                logger.info("================================================");
                 if(emailDate!=null) {
                     MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
                     logger.info("=============MandrillEmailListStruct===========");
