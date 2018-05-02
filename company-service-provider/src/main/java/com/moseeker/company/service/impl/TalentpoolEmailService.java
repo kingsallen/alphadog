@@ -1271,7 +1271,23 @@ public class TalentpoolEmailService {
                 for(TalentEmailForwardsResumeInfo info:dataInfo){
                     TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
                     info1.setCoworkerName(name);
-                    context= CommonUtils.replaceUtil(context,info1.getCompanyAbbr(),info1.getPositionName(),info1.getUserName(),null,info1.getOfficialAccountName());
+                    String companyAbbr=info1.getCompanyAbbr();
+                    if(StringUtils.isNullOrEmpty(companyAbbr)){
+                        companyAbbr="";
+                    }
+                    String positionName=info1.getPositionName();
+                    if(StringUtils.isNullOrEmpty(positionName)){
+                        positionName="";
+                    }
+                    String userName=info1.getUserName();
+                    if(StringUtils.isNullOrEmpty(userName)){
+                        userName="";
+                    }
+                    String accountName=info1.getOfficialAccountName();
+                    if(StringUtils.isNullOrEmpty(accountName)){
+                        accountName="";
+                    }
+                    context= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
                     info1.setCustomText(context);
                     info1.setRcpt(email);
                     info1.setHrName(record.getUsername());
