@@ -1302,6 +1302,11 @@ public class TalentpoolEmailService {
                 }
             }
         }
+        if(StringUtils.isEmptyList(resumeInfoList)||StringUtils.isEmptyList(receiveInfos)){
+            return null;
+        }
+        result.setTo(receiveInfos);
+        result.setMergeVars(resumeInfoList);
         result.setFromName(abbr+"才招聘团队");
         result.setFromEmail("info@moseeker.net");
         result.setTemplateName("forwards-resume");
