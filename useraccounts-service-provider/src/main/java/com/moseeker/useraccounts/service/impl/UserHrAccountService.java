@@ -616,6 +616,7 @@ public class UserHrAccountService {
      */
     public Response postSearchCondition(SearchCondition searchCondition) {
         try {
+            boolean positionStatusFlag=searchCondition.isSetPosition_status();
             Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("hr_account_id", String.valueOf(searchCondition.getHr_account_id())).and("type", String.valueOf(searchCondition.getType()));
             int row = hrSearchConditionDao.getCount(query.buildQuery());
@@ -640,8 +641,9 @@ public class UserHrAccountService {
             if(record.getIsRecommend()==0){
                 record.setIsRecommend(null);
             }
-            if(!searchCondition.isSetPosition_status()){
-                record.setPositionStatus(null);
+
+            if(!positionStatusFlag){
+                record.setPositionStatus(-1);
             }
 
 
