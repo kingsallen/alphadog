@@ -912,6 +912,9 @@ public class TalentpoolEmailService {
                 positionIdList=getPositionIds(companyId,hrId,count);
             }
             TalentEmailInviteToDelivyInfo delivyInfo=this.getInviteToDelivyInfoList(positionIdList,companyId,context,record);
+            logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
+            logger.info(JSON.toJSONString(result));
+            logger.info("================================================");
             if(delivyInfo==null||StringUtils.isEmptyList(userInfoList)){
                 return null;
             }
@@ -919,6 +922,7 @@ public class TalentpoolEmailService {
             UserHrAccountRecord hrAccountRecord=this.getUserHrInfo(hrId);
             List<ReceiveInfo> receiveInfos=new ArrayList<>();
             for(InviteToDelivyUserInfo userInfo:userInfoList){
+                TalentEmailInviteToDelivyInfo delivyInfo1=new TalentEmailInviteToDelivyInfo();
                 String name=userInfo.getName();
                 String email=userInfo.getEmail();
                 int userId=userInfo.getUserId();
@@ -927,22 +931,22 @@ public class TalentpoolEmailService {
                     receiveInfo.setToName(name);
                     receiveInfo.setToEmail(email);
                     receiveInfos.add(receiveInfo);
-                    delivyInfo.setRcpt(email);
+                    delivyInfo1.setRcpt(email);
                     context= CommonUtils.replaceUtil(context,delivyInfo.getCompanyAbbr(),delivyInfo.getPositionName(),name,hrAccountRecord.getUsername(),delivyInfo.getOfficialAccountName());
-                    delivyInfo.setCustomText(context);
-                    delivyInfo.setEmployeeName(name);
+                    delivyInfo1.setCustomText(context);
+                    delivyInfo1.setEmployeeName(name);
                     if(flag==1){
-                        delivyInfo.setPositionNum(this.getPositionIdNum(companyId,hrId,count)+"");
+                        delivyInfo1.setPositionNum(this.getPositionIdNum(companyId,hrId,count)+"");
                         String url=env.getProperty("talentpool.allposition")+this.getCompanyIds(count,companyId,hrId);
-                        delivyInfo.setSeeMorePosition(url);
+                        delivyInfo1.setSeeMorePosition(url);
                     }else{
                         if(positionIdList.size()>10){
-                            delivyInfo.setPositionNum(this.getPositionIdNum(companyId,hrId,count)+"");
+                            delivyInfo1.setPositionNum(this.getPositionIdNum(companyId,hrId,count)+"");
                             String url=env.getProperty("talentpool.allposition")+this.getCompanyIds(count,companyId,hrId);
-                            delivyInfo.setSeeMorePosition(url);
+                            delivyInfo1.setSeeMorePosition(url);
                         }
                     }
-                    mergeVars.add(delivyInfo);
+                    mergeVars.add(delivyInfo1);
                 }
             }
             if(StringUtils.isEmptyList(mergeVars)||StringUtils.isEmptyList(receiveInfos)){
