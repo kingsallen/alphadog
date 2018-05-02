@@ -1186,7 +1186,7 @@ public class TalentpoolController {
             }
             int hrId=(int)params.get("hr_id");
             int flag=0;
-            if(params.get("user_all")==null){
+            if(params.get("user_all")!=null){
                 boolean userAll=(boolean)params.get("user_all");
                 if(userAll){
                     flag=1;
