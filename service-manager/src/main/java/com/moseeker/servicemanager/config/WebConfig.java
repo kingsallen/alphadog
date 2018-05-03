@@ -2,7 +2,6 @@ package com.moseeker.servicemanager.config;
 
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4;
 import com.moseeker.baseorm.config.AppConfig;
-import com.moseeker.consistencysuport.producer.MessageChannelConfig;
 import com.moseeker.servicemanager.common.UTF8StringHttpMessageConverter;
 import org.springframework.context.annotation.*;
 import org.springframework.http.MediaType;
