@@ -26,6 +26,7 @@ import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
+<<<<<<< HEAD
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+=======
+>>>>>>> feature/v3.8
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.slf4j.Logger;

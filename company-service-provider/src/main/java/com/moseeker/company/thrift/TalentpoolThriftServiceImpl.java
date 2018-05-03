@@ -109,7 +109,11 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.batchCancelTalent(hr_id,ConvertListToSet(user_ids),company_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
+<<<<<<< HEAD
             throw ExceptionUtils.convertException(e);
+=======
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+>>>>>>> feature/v3.8
         }
     }
 
@@ -119,7 +123,11 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             return talentPoolService.addHrTag(hr_id,company_id,name);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
+<<<<<<< HEAD
             throw ExceptionUtils.convertException(e);
+=======
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+>>>>>>> feature/v3.8
         }
     }
 

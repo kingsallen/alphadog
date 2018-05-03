@@ -1414,6 +1414,7 @@ public class PositionService {
      * @param query 查询条件
      * @return 微信端职位列表信息
      */
+    @CounterIface
     public List<WechatPositionListData> getPositionList(WechatPositionListQuery query) {
 
         List<WechatPositionListData> dataList = new ArrayList<>();
