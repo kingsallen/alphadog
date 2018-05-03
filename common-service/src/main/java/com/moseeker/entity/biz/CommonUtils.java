@@ -6,6 +6,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import javax.crypto.Cipher;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  * Created by moseeker on 2018/4/23.
@@ -14,6 +15,7 @@ public class CommonUtils {
 
     public static String replaceUtil(String context, String companyName, String positionName, String profileName,
             String hrName, String wechatName){
+        context = StringEscapeUtils.escapeHtml4(context);
         context = context.replace("\n","<br>");
         context = context.replace("#公司简称#",companyName);
         context = context.replace("#职位名称#",positionName);
@@ -92,5 +94,6 @@ public class CommonUtils {
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         return cipher.doFinal(content);
     }
+
 
 }

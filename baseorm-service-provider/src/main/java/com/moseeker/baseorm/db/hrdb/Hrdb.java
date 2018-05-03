@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
@@ -86,7 +87,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1229979634;
+    private static final long serialVersionUID = 1599558644;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -142,6 +143,11 @@ public class Hrdb extends SchemaImpl {
      * 公司级别的配置信息表
      */
     public final HrCompanyConf HR_COMPANY_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf.HR_COMPANY_CONF;
+
+    /**
+     * 邮件额度每天使用日志
+     */
+    public final HrCompanyCs HR_COMPANY_CS = com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs.HR_COMPANY_CS;
 
     /**
      * 企业邮件总量信息表
@@ -413,6 +419,7 @@ public class Hrdb extends SchemaImpl {
             HrCompany.HR_COMPANY,
             HrCompanyAccount.HR_COMPANY_ACCOUNT,
             HrCompanyConf.HR_COMPANY_CONF,
+            HrCompanyCs.HR_COMPANY_CS,
             HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO,
             HrCompanyFeature.HR_COMPANY_FEATURE,
             HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,

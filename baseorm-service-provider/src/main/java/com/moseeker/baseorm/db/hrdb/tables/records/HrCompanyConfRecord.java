@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = -672809083;
+    private static final long serialVersionUID = 1799637767;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -296,14 +296,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.hr_chat</code>. IM聊天开关，0：不开启，1：开启
+     * Setter for <code>hrdb.hr_company_conf.hr_chat</code>. IM聊天开关，0：不开启，1：开启，2：开启+chatbot
      */
     public void setHrChat(Byte value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.hr_chat</code>. IM聊天开关，0：不开启，1：开启
+     * Getter for <code>hrdb.hr_company_conf.hr_chat</code>. IM聊天开关，0：不开启，1：开启，2：开启+chatbot
      */
     public Byte getHrChat() {
         return (Byte) get(19);

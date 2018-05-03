@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = -1441208083;
+    private static final long serialVersionUID = 1760006908;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
@@ -200,6 +200,11 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
      * The column <code>hrdb.hr_search_condition.intention_city_code</code>.
      */
     public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_CODE = createField("intention_city_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.position_status</code>. 职位状态 0;有效，1下架 2删除
+     */
+    public final TableField<HrSearchConditionRecord, Integer> POSITION_STATUS = createField("position_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("-1", org.jooq.impl.SQLDataType.INTEGER)), this, "职位状态 0;有效，1下架 2删除");
 
     /**
      * Create a <code>hrdb.hr_search_condition</code> table reference

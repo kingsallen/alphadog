@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.constant.TalentPoolStatus;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyCsDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyEmailInfoDao;
 import com.moseeker.baseorm.dao.logdb.LogTalentpoolEmailDailyLogDao;
@@ -12,6 +13,7 @@ import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysTemplateMessageLibrary;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyCs;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolEmailDailyLogRecord;
@@ -66,6 +68,8 @@ public class TalentPoolEmailEntity {
     @Autowired
     private HrCompanyEmailInfoDao companyEmailInfoDao;
     @Autowired
+    private HrCompanyCsDao companyCsDao;
+    @Autowired
     private LogTalentpoolEmailLogDao emailLogDao;
     @Autowired
     private LogTalentpoolEmailDailyLogDao logTalentpoolEmailDailyLogDao;
@@ -75,6 +79,8 @@ public class TalentPoolEmailEntity {
     private HrCompanyConfDao companyConfDao;
     @Autowired
     private UserHrAccountDao userHrAccountDao;
+    @Autowired
+    private MandrillMailListConsumer mandrillMailListConsumer;
 
     public HrCompanyEmailInfo getHrCompanyEmailInfoByCompanyId(int company_id){
         HrCompanyEmailInfo info = hrCompanyEmailInfoDao.getHrCompanyEmailInfoListByCompanyId(company_id);
@@ -170,7 +176,7 @@ public class TalentPoolEmailEntity {
         if(balance == useCount){
             List<TalentpoolEmailRecord> emailRecordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
             for(TalentpoolEmailRecord record : emailRecordList){
-                if(TalentpoolEmailType.instanceFromByte(record.getId()).getStatus()) {
+                if(TalentpoolEmailType.instanceFromByte(record.getId()).getStatus() && TalentpoolEmailType.instanceFromByte(record.getId()).getStatus()) {
                     record.setDisable(0);
                 }
             }
@@ -179,7 +185,7 @@ public class TalentPoolEmailEntity {
         long timeAtStartOfDay = new DateTime().withTimeAtStartOfDay().getMillis();
         logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, company_id, useCount, EmailAccountConsumptionType.COMSUMPTION.getValue(), 0);
         if(balance>100&&balance-useCount<=100){
-
+            sendEmailToHrAndCs(balance-useCount, company_id);
         }
         LogTalentpoolEmailLogRecord record = new LogTalentpoolEmailLogRecord();
         record.setCompanyId(company_id);
@@ -192,17 +198,15 @@ public class TalentPoolEmailEntity {
     /*
      向hr和cs发送邮件
      */
-    private MandrillEmailListStruct sendEmailToHrAndCs(int balance,int companyId){
+    private void sendEmailToHrAndCs(int balance,int companyId){
         Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
         HrCompanyRecord record=hrCompanyDao.getRecord(query);
         if(record==null){
-          return null;
+          return ;
         }
         Query query1=new Query.QueryBuilder().where("id",record.getHraccountId()).buildQuery();
         UserHrAccountRecord userHrAccountRecord=userHrAccountDao.getRecord(query1);
-        if(userHrAccountRecord==null){
-            return null;
-        }
+
         String companyName=record.getName();
         SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd");
         String sendDate=ff.format(new Date());
@@ -211,21 +215,41 @@ public class TalentPoolEmailEntity {
         struct.setFrom_name("仟寻MoSeeker");
         struct.setSubject("【仟寻招聘】邮件额度不足");
         struct.setTemplateName("insufficient-amount-of-email");
+        HrCompanyCs companyCs = companyCsDao.getHrCompanyCsByCompanyId(companyId);
         List<Map<String,String>> tos=new ArrayList<>();
-        Map<String,String> to1=new HashMap<>();
-        to1.put("to_email",userHrAccountRecord.getEmail());
-        tos.add(to1);
-        struct.setTo(tos);
         List<Map<String,String>> merges=new ArrayList<>();
-        Map<String,String> map=new HashMap<>();
-        map.put("company",companyName);
-        map.put("email_amount",balance+"");
-        map.put("send_date",sendDate);
-        map.put("rcpt",userHrAccountRecord.getEmail());
-        merges.add(map);
+        if(userHrAccountRecord==null){
+            Map<String,String> to1=new HashMap<>();
+            to1.put("to_email",userHrAccountRecord.getEmail());
+            to1.put("to_name",userHrAccountRecord.getUsername());
+            tos.add(to1);
+            Map<String,String> map=new HashMap<>();
+            map.put("company",companyName);
+            map.put("email_amount",balance+"");
+            map.put("send_date",sendDate);
+            map.put("rcpt",userHrAccountRecord.getEmail());
+            merges.add(map);
+        }
+       if(companyCs != null){
+           Map<String,String> to1=new HashMap<>();
+           to1.put("to_email",companyCs.getEmail());
+           to1.put("to_name",companyCs.getName());
+           tos.add(to1);
+           Map<String,String> map=new HashMap<>();
+           map.put("company",companyName);
+           map.put("email_amount",balance+"");
+           map.put("send_date",sendDate);
+           map.put("rcpt",companyCs.getEmail());
+           merges.add(map);
+       }
+        struct.setTo(tos);
         String mergeJson = JSON.toJSONString(merges);
         struct.setMergeVars(mergeJson);
-        return struct;
+        try {
+            mandrillMailListConsumer.sendMailList(struct);
+        } catch (Exception e) {
+            logger.error("邮件剩余额度发送邮件失败：{}",e.getMessage());
+        }
     }
 
     private int recharge(int useCount, int companyId, int balance, int index) throws TalentPoolException {
