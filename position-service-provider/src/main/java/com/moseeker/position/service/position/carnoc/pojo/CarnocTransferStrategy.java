@@ -55,9 +55,11 @@ public class CarnocTransferStrategy {
             return carnocExp;
         }
 
-        public static String moseekerToCarnoc(String degree) {
+        public static String moseekerToCarnoc(String exp) {
+            if(exp == null) exp = "";
             String carnoc = "";
-            switch (degree) {
+            switch (exp) {
+                case "" :
                 case "0":
                     carnoc = UNLIMITED.carnocExp;
                     break;
