@@ -798,7 +798,11 @@ public class TalentpoolEmailService {
             }
             mergeData.add(infoMap1);
         }
+        logger.info("=============mergeData=============");
+
         String merges = JSON.toJSONString(mergeData);
+        logger.info(merges);
+        logger.info("===============================");
         result.setMergeVars(merges);
         result.setTo(toReceive);
         return result;
