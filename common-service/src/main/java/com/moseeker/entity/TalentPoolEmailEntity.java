@@ -220,7 +220,7 @@ public class TalentPoolEmailEntity {
         HrCompanyCs companyCs = companyCsDao.getHrCompanyCsByCompanyId(companyId);
         List<Map<String,String>> tos=new ArrayList<>();
         List<Map<String,String>> merges=new ArrayList<>();
-        if(userHrAccountRecord==null){
+        if(userHrAccountRecord!=null){
             Map<String,String> to1=new HashMap<>();
             to1.put("to_email",userHrAccountRecord.getEmail());
             to1.put("to_name",userHrAccountRecord.getUsername());
