@@ -18,10 +18,9 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {"com.moseeker.servicemanager.web", "com.moseeker.servicemanager.config",
-        "com.moseeker.servicemanager.exception", "com.moseeker.consistencysuport.producer",
-        "com.moseeker.servicemanager.consistency"})
+        "com.moseeker.servicemanager.exception"})
 @PropertySource("classpath:common.properties")
-@Import({AppConfig.class,MessageChannelConfig.class})
+@Import({AppConfig.class})
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean(name = "multipartResolver")

@@ -18,6 +18,4 @@ include 'demo-service-provider'
 include 'candidate-service-provider'
 include 'chat-service-provider'
 include 'common-service'
-include 'consistency-suport'
-include 'demo1-service-provider'
 

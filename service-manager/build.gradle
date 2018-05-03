@@ -17,7 +17,6 @@ dependencies {
     compile project(":common")
     compile project(":rpc-center")
     compile project(":baseorm-service-provider")
-    compile project(":consistency-suport")
 
     compile deps["fastjson"]
     compile deps["zookeeper"]
