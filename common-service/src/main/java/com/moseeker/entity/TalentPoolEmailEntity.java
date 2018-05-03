@@ -110,7 +110,7 @@ public class TalentPoolEmailEntity {
                 .and("config_id", type).buildQuery();
         TalentpoolEmailRecord emailRecord = talentpoolEmailDao.getRecord(query);
         if(disable>=0){
-            if(TalentpoolEmailType.instanceFromByte(type).getStatus()) {
+            if(TalentpoolEmailType.instanceFromByte(type).getStatus() || disable == 1) {
                 emailRecord.setDisable(disable);
             }else {
                 return -1;
@@ -177,8 +177,8 @@ public class TalentPoolEmailEntity {
             List<TalentpoolEmailRecord> emailRecordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
             for(TalentpoolEmailRecord record : emailRecordList){
                 logger.info("handerTalentpoolEmailLogAndBalance email status id:{};disable:{}",record.getId(),record.getDisable());
-                logger.info("handerTalentpoolEmailLogAndBalance bool:{}",TalentpoolEmailType.instanceFromByte(record.getId()).getStatus());
-                if(TalentpoolEmailType.instanceFromByte(record.getId()).getStatus()) {
+                logger.info("handerTalentpoolEmailLogAndBalance bool:{}",TalentpoolEmailType.instanceFromByte(record.getConfigId()).getStatus());
+                if(TalentpoolEmailType.instanceFromByte(record.getConfigId()).getStatus()) {
                     record.setDisable(0);
                 }
             }

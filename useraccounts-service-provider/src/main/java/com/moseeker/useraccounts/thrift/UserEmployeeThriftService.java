@@ -14,6 +14,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
@@ -130,21 +131,20 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     }
 
     @Override
-    public Response getValidateUserEmployee(int company_id, String email) throws BIZException, TException {
+    public Response getValidateUserEmployee(int company_id, String email, int pageNum, int pageSize) throws BIZException, TException {
         try{
-            List<UserEmployeeDO> list=employeeService.getUserEmployeeEmailValidate(company_id,email);
-            if(list!=null&&list.size()>0){
-                return ResponseUtils.success(list);
-            }
-            return ResponseUtils.success("");
+            UserEmployeeVOPageVO VO=employeeService.getUserEmployeeEmailValidate(company_id,email,pageNum,pageSize);
+            return ResponseUtils.success(VO);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
     }
-/*
- 注意这里的companyId是hrId,积重难返
- */
+
+
+    /*
+     注意这里的companyId是hrId,积重难返
+     */
     @Override
     public Response getPastUserEmployee(int company_id) throws BIZException, TException {
         try{
@@ -152,7 +152,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             if(list!=null&&list.size()>0){
                 return ResponseUtils.success(list);
             }
-            return ResponseUtils.success("");
+            return ResponseUtils.successWithoutStringify(null);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);

@@ -156,7 +156,15 @@ public class UserEmployeeController {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId=Integer.parseInt((String)params.get("company_id"));
             String email=(String)params.get("email");
-            Response res=service.getValidateUserEmployee(companyId,email);
+            String page=(String)params.get("page_num");
+            String pageSize=(String)params.get("page_size");
+            if(StringUtils.isNullOrEmpty(page)){
+                page="1";
+            }
+            if(StringUtils.isNullOrEmpty(pageSize)){
+                pageSize="10";
+            }
+            Response res=service.getValidateUserEmployee(companyId,email,Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.successJson(request,res);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

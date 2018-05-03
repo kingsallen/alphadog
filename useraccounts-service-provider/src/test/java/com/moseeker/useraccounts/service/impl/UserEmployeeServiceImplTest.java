@@ -1,7 +1,9 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
 import com.moseeker.useraccounts.config.AppConfig;
 import java.util.HashMap;
 import org.junit.Test;
@@ -87,5 +89,6 @@ public class UserEmployeeServiceImplTest {
     public void delResource() throws Exception {
 
     }
+
 
 }

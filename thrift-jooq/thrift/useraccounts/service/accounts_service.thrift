@@ -228,7 +228,7 @@ service UserEmployeeService {
     
     void addEmployeeAward(1: list<i32> applicationIdList, 2: i32 eventType) throws (1:common_struct.BIZException e);
 
-    common_struct.Response getValidateUserEmployee(1: i32 company_id,2: string email) throws (1:common_struct.BIZException e);
+    common_struct.Response getValidateUserEmployee(1: i32 company_id,2: string email,3: i32 pageNum,4: i32 pageSize) throws (1:common_struct.BIZException e);
 
     common_struct.Response getPastUserEmployee(1: i32 company_id) throws (1:common_struct.BIZException e);
 }
