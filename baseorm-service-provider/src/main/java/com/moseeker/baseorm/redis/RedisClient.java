@@ -142,8 +142,8 @@ public abstract class RedisClient {
 		}
 	}
 	/*
-        设置没有过期时间的兼职对
-         */
+	设置没有过期时间的兼职对
+	 */
 	public String setNoTime(int appId, String key_identifier, String str, String value)
 			throws CacheConfigNotExistException,RedisException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
@@ -157,6 +157,7 @@ public abstract class RedisClient {
 		} finally {
 		}
 	}
+
 	/**
 	 * 查询关键词对应的字符串
 	 * @param appId 调用方项目编号
@@ -256,7 +257,6 @@ public abstract class RedisClient {
 			throws CacheConfigNotExistException,RedisException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
-		logger.info("cacheKey: {}; value:{}",cacheKey,redisCluster.get(cacheKey));
 		try {
 			return redisCluster.get(cacheKey);
 		} catch (Exception e) {

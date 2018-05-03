@@ -34,6 +34,7 @@ public class PositionPcServiceTest {
     private PositionService positionService;
     @Autowired
 	private PersonaRecomEntity personaRecomEntity;
+
     //测试总接口
     @Test
     public void recommendPcPosition() throws TException{
@@ -65,9 +66,8 @@ public class PositionPcServiceTest {
 	  @Test
 	  public void getJDMaps() throws TException{
 		  List<Integer> list=new ArrayList<Integer>();
-		  list.add(1404);
-		  list.add(1414);
-		  List<Map<String,Object>> map=(List<Map<String, Object>>) pcRevisionEntity.HandleCmsResource(list,2);
+		  list.add(188362421);
+		  List<Map<String,Object>> map=(List<Map<String, Object>>) pcRevisionEntity.HandleCmsResource(list,3);
 		  for(Map<String,Object> map1:map){
 			  System.out.println(JSON.toJSONString(map1));
 		  }
