@@ -139,7 +139,7 @@ public class MandrillMailListConsumer {
                 message.setTrackClicks(true);
                 message.setTrackOpens(true);
                 message.setViewContentLink(true);
-
+                logger.info("sendMailList mergeVar:{}", JSON.toJSONString(message.getMergeVars()));
                 MandrillMessageStatus[] messageStatus = mandrillApi.messages().sendTemplate(mandrillEmailListStruct.getTemplateName(),
                         null,message, false);
                 logger.info("messageStatus :{}",messageStatus);
