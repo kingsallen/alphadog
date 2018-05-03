@@ -109,8 +109,12 @@ public class MandrillMailListConsumer {
                     String rcpt = "";
                     MergeVarBucket mergeVar = new MergeVarBucket();
                     MergeVar[] vars = new MergeVar[var.size()];
-                    vars = parseMergeVars(var, vars);
-                    for (Entry<String, Object> entry : var.entrySet()) {
+                    int vars_i = 0;
+                    for (Map.Entry<String, Object> entry : var.entrySet()) {
+                        vars[vars_i] = new MergeVar();
+                        vars[vars_i].setName(entry.getKey());
+                        vars[vars_i].setContent(entry.getValue());
+                        vars_i++;
                         if("rcpt".equals(entry.getKey())){
                             rcpt = (String)entry.getValue();
                         }
@@ -158,30 +162,6 @@ public class MandrillMailListConsumer {
 	}
 
 
-	private MergeVar[] parseMergeVars(Map<String, Object> mergeVars, MergeVar[] vars){
-        int vars_i = 0;
-        for (Entry<String, Object> entry : mergeVars.entrySet()){
-            vars[vars_i] = new MergeVar();
-            vars[vars_i].setName(entry.getKey());
-            if(entry.getValue() instanceof  String) {
-                vars[vars_i].setContent(entry.getValue());
-            }else if(entry.getValue() instanceof  List){
-                List<MergeVar[]> list = new ArrayList<>();
-                int i = 0;
-                for (Map<String, Object> var : (List<Map<String, Object>>)entry.getValue()) {
-                    MergeVar[] vara = new MergeVar[var.size()];
-                    vara = parseMergeVars(var, vara);
-                    list.add(vara);
-                    i++;
-                }
-                vars[vars_i].setContent(list);
-            }
-            vars_i ++;
-        }
-
-
-	    return vars;
-    }
 
 
 }

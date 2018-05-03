@@ -1,5 +1,6 @@
 package com.moseeker.company.rabittmq;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.service.impl.CompanyTagService;
@@ -37,10 +38,17 @@ public class ReceiveHandler {
         String msgBody = "{}";
         try {
             msgBody = new String(message.getBody(), "UTF-8");
+            log.info("========获取的数据为===================");
+            log.info(msgBody);
+            log.info("===========================");
             if(StringUtils.isNotNullOrEmpty(msgBody)&&!"{}".equals(msgBody)){
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
                 List<Integer> userIdSet= (List<Integer>)jsonObject.get("user_ids");
                 List<Integer> companyIdSet=(List<Integer>)jsonObject.get("company_ids");
+                log.info("========userIdSet==========companyIdSet=========");
+                log.info(JSON.toJSONString(userIdSet));
+                log.info(JSON.toJSONString(companyIdSet));
+                log.info("===========================");
                 companyTagService.handlerProfileCompanyIds(convert(userIdSet),convert(companyIdSet));
             }
 
