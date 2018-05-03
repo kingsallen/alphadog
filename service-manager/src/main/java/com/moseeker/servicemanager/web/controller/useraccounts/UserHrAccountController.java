@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -1120,7 +1121,7 @@ public class UserHrAccountController {
             UserHrAccountDO res = userHrAccountService.switchChatLeaveToMobot(account_id,leave_to_mobot);
 
             //驼峰转下划线
-            UserHrAccount underLineResult = JSON.parseObject(JSON.toJSONString(res, serializeConfig),UserHrAccount.class);
+            UserHrAccount underLineResult = JSON.parseObject(JSON.toJSONString(res, serializeConfig, SerializerFeature.DisableCircularReferenceDetect),UserHrAccount.class);
             //转换json的时候去掉thrift结构体中的set方法
             JSONObject jsonResult = JSON.parseObject(BeanUtils.convertStructToJSON(underLineResult));
 
