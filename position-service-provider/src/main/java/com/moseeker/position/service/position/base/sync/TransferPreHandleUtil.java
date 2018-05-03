@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.position.service.position.base.sync.check.AbstractTransferCheck;
+import com.moseeker.position.service.position.base.sync.check.AbstractTransferPreHandler;
 import com.moseeker.position.service.position.base.sync.check.ITransferCheck;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import java.util.*;
  * 职位转换检测抽象类
  */
 @Component
-public class TransferCheckUtil {
+public class TransferPreHandleUtil {
 
     @Autowired
     List<AbstractTransferCheck> checkList;
@@ -35,4 +36,20 @@ public class TransferCheckUtil {
         return Collections.emptyList();
     }
 
+    @Autowired
+    List<AbstractTransferPreHandler> preHandlerList;
+
+    public void handleBeforeTransfer(SyncRequestType requestType, ChannelType channelType, JSONObject jsonForm, JobPositionDO moseekerPosition){
+        if(requestType==null || channelType==null || jsonForm==null || jsonForm.isEmpty()){
+            return;
+        }
+
+        for(AbstractTransferPreHandler preHandler:preHandlerList){
+            if(preHandler.getChannelType()==channelType){
+                preHandler.handle(jsonForm,moseekerPosition);
+                break;
+            }
+        }
+        return;
+    }
 }

@@ -172,6 +172,9 @@ public final class ConstantErrorCodeMessage {
 
     //IM服务
     public static final String CHAT_ROOM_NOT_EXIST = "{'status':91001,'message':'聊天室不存在！'}";
+    public static final String CANT_SET_LEAVE_TO_MOBOT = "{'status':91002,'message':'尚未采购该功能，详情请联系您的客户成功顾问。'}";
+    public static final String NO_AUTH_SET_LEAVE_TO_MOBOT = "{'status':91002,'message':'子账号没有权限设置该功能。'}";
+
 
     //APPBS错误代码61000
 

@@ -21,7 +21,7 @@ import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer
 import com.moseeker.position.service.position.base.sync.PositionSyncVerifyHandlerUtil;
 import com.moseeker.position.service.position.base.sync.verify.MobileVeifyHandler;
 import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
-import com.moseeker.position.service.position.base.sync.TransferCheckUtil;
+import com.moseeker.position.service.position.base.sync.TransferPreHandleUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.position.utils.PositionSyncHandler;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -70,7 +70,7 @@ public class PositionBS {
     @Autowired
     private PositionChangeUtil positionChangeUtil;
     @Autowired
-    private TransferCheckUtil transferCheckUtil;
+    private TransferPreHandleUtil transferPreHandleUtil;
     @Autowired
     private PositionEmailNotification emailNotification;
     @Autowired
@@ -213,7 +213,7 @@ public class PositionBS {
             }
 
             //验证同步数据中的参数
-            List<String> checkMsg=transferCheckUtil.checkBeforeTransfer(requestType,channelType,p,moseekerJobPosition);
+            List<String> checkMsg= transferPreHandleUtil.checkBeforeTransfer(requestType,channelType,p,moseekerJobPosition);
             if(!StringUtils.isEmptyList(checkMsg)){
                 results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,JSON.toJSONString(checkMsg)));
                 continue;
