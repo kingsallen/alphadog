@@ -319,6 +319,10 @@ public class TalentpoolEmailService {
         talentPoolEmailEntity.handerTalentpoolEmailLogAndBalance(useBalance,3,company_id,0);
         return ResponseUtils.success("success");
     }
+    public Response updateEmailInfoBalance(int company_id, int useBalance,int type){
+        talentPoolEmailEntity.handerTalentpoolEmailLogAndBalance(useBalance,type,company_id,0);
+        return ResponseUtils.success("success");
+    }
     /*
      转发邀请投递职位邮件
      */
@@ -434,7 +438,7 @@ public class TalentpoolEmailService {
                     logger.info("================================================");
                     if(emailDate!=null) {
                         MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
-                        updateEmailInfoBalance(companyId, userInfo.size());
+                        updateEmailInfoBalance(companyId, userInfo.size(),4);
                         logger.info("=============MandrillEmailListStruct===========");
                         logger.info(JSON.toJSONString(struct));
                         logger.info("================================================");
@@ -471,7 +475,7 @@ public class TalentpoolEmailService {
                 boolean balanceFlag=this.validateBalance(hrCompanyEmailInfoRecord.getBalance(),totalNum);
                 logger.info("校验额度的结果========================{}",balanceFlag);
                 if(balanceFlag){
-                    updateEmailInfoBalance(companyId, totalNum);
+                    updateEmailInfoBalance(companyId, totalNum,4);
                     HrCompanyRecord record=this.getCompanyInfo(companyId);
                     logger.info("=============HrCompanyRecord===========");
                     logger.info(record.toString());
@@ -508,6 +512,7 @@ public class TalentpoolEmailService {
                     boolean balanceFlag=this.validateBalance(hrCompanyEmailInfoRecord.getBalance(),totalNum);
                     if(balanceFlag){
                         HrCompanyRecord record=this.getCompanyInfo(companyId);
+                        updateEmailInfoBalance(companyId, totalNum,4);
                         tp.startTast(() -> {
                             sendPositionInviteEmailCore(params,positionIdList,companyId,talentpoolEmailRecord.getContext(),record,hrId,totalNum);
                             return 0;
@@ -564,6 +569,7 @@ public class TalentpoolEmailService {
      */
     private void sendPositionInviteEmailCore(List<Map<String,String>> params,List<Integer> positionIdList,int companyId,String context,HrCompanyRecord record,int hrId,int totalNum){
         int totalPage=(int)Math.ceil((double)totalNum/300);
+
         for(int i=1;i<=totalPage;i++) {
             try {
                 List<InviteToDelivyUserInfo> userInfo = this.talentEmailInviteInfoSearch(params,i,300);
@@ -616,7 +622,7 @@ public class TalentpoolEmailService {
                     logger.info("=============EmailResumeBean===========");
                     logger.info(JSON.toJSONString(emailList));
                     logger.info("================================================");
-                    updateEmailInfoBalance(companyId, lost);
+                    updateEmailInfoBalance(companyId, lost,5);
                     MandrillEmailListStruct struct = convertToEmailStruct(emailList);
                     logger.info("=============MandrillEmailListStruct===========");
                     logger.info(JSON.toJSONString(struct));
@@ -683,7 +689,7 @@ public class TalentpoolEmailService {
                         if(!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(),lost)){
                             return TalentEmailEnum.NOBALANCE.getValue();
                         }
-                        updateEmailInfoBalance(companyId,lost);
+                        updateEmailInfoBalance(companyId,lost,5);
                         tp.startTast(() -> {
                             sendResumeEmailCore(employeeList,params,companyId,hrId,talentpoolEmailRecord.getContext(),talentNum);
                             return 0;
