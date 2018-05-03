@@ -2,7 +2,9 @@ package com.moseeker.company.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.company.bean.email.TalentEmailInviteToDelivyInfo;
 import com.moseeker.company.config.AppConfig;
@@ -33,6 +35,8 @@ public class TalentPoolServiceTest {
     private HrCompanyDao hrCompanyDao;
     @Autowired
     private TalentpoolEmailService talentpoolEmailService;
+    @Autowired
+    private JobPositionDao jobPositionDao;
 
     @Test
     public void testBatchAddTalent() throws TException {
@@ -300,6 +304,18 @@ public class TalentPoolServiceTest {
         TalentEmailInviteToDelivyInfo info=talentpoolEmailService.getInviteToDelivyInfoList(positionidList,companyId,content,record);
         System.out.println(JSON.toJSONString(info));
 
+    }
+
+    @Test
+    public void test() throws TException {
+        List<Integer> teamIDList=new ArrayList<>();
+        teamIDList.add(188362421);
+        Query query=new Query.QueryBuilder().where("id",1949423).buildQuery();
+        List<JobPositionRecord> records=jobPositionDao.getRecords(query);
+        Query query1=new Query.QueryBuilder().where("id",39978).buildQuery();
+        HrCompanyRecord record=hrCompanyDao.getRecord(query1);
+        Map<Integer,String> result=talentpoolEmailService.getPositionPicture(teamIDList,records,record);
+        System.out.println(JSON.toJSONString(result));
     }
 
 

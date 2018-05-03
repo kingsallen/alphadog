@@ -1129,7 +1129,7 @@ public class TalentpoolEmailService {
     }
 
     //注意验证公司是否开启，一会补上
-    private Map<Integer,String> getPositionPicture(List<Integer> teamIdList,List<JobPositionRecord> positionList,HrCompanyRecord record) throws TException {
+    public Map<Integer,String> getPositionPicture(List<Integer> teamIdList,List<JobPositionRecord> positionList,HrCompanyRecord record) throws TException {
         Map<Integer,String> result=new HashMap<>();
         DictIndustryRecord dictIndustryRecord=this.getIndustryInfo(record.getIndustry());
         DictIndustryTypeRecord dictIndustryTypeRecord=this.getIndustryTypeInfo(dictIndustryRecord.getType());
@@ -1153,6 +1153,7 @@ public class TalentpoolEmailService {
                             if (teamId == configId) {
                                 if (map.get("imgUrl") != null) {
                                     result.put(jobPositionRecord.getId(), (String) map.get("imgUrl"));
+                                    flag=1;
                                 }
                                 break;
                             }
