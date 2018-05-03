@@ -1095,10 +1095,10 @@ public class TalentpoolEmailService {
                 positionName=positionName+jobPositionRecord.getTitle()+",";
                 positionInfo.setRow(i+"");
                 positionInfo.setWorkYear(jobPositionRecord.getExperience());
+                positionInfo.setSalary(jobPositionRecord.getSalary());
                 if(positionPic!=null&&!positionPic.isEmpty()){
-
-                positionInfo.setPositionBg(CommonUtils.appendUrl(positionPic.get(jobPositionRecord.getId()),env.getProperty("http.cdn.url")));
-                positionInfo.setPositionName(jobPositionRecord.getTitle());
+                    positionInfo.setPositionBg(CommonUtils.appendUrl(positionPic.get(jobPositionRecord.getId()),env.getProperty("http.cdn.url")));
+                    positionInfo.setPositionName(jobPositionRecord.getTitle());
                 }
                 i++;
                 positionInfoList.add(positionInfo);
