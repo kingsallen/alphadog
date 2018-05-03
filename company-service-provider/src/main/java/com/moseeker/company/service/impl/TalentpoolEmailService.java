@@ -744,7 +744,7 @@ public class TalentpoolEmailService {
         List<TalentEmailInviteToDelivyInfo> merge=emailInviteBean.getMergeVars();
         List<ReceiveInfo> to=emailInviteBean.getTo();
         List<Map<String,String>> toReceive=new ArrayList<>();
-        List<Map<String,String>> mergeData=new ArrayList<>();
+        List<Map<String,Object>> mergeData=new ArrayList<>();
         for(ReceiveInfo receiveInfo:to){
             String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
             Map<String,Object> map=JSON.parseObject(tores);
@@ -757,13 +757,10 @@ public class TalentpoolEmailService {
         for(TalentEmailInviteToDelivyInfo info:merge){
             String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
             Map<String,Object> infoMap=JSON.parseObject(infos);
-            Map<String,String> infoMap1=new HashMap<>();
+            Map<String,Object> infoMap1=new HashMap<>();
             for(String key:infoMap.keySet()){
-                if(infoMap.get(key) instanceof Map||infoMap.get(key) instanceof List){
-                    infoMap1.put(key,JSON.toJSONString(infoMap.get(key)));
-                }else{
-                    infoMap1.put(key,String.valueOf(infoMap.get(key)));
-                }
+               infoMap1.put(key,infoMap.get(key));
+
             }
             mergeData.add(infoMap1);
         }
@@ -782,7 +779,7 @@ public class TalentpoolEmailService {
         List<TalentEmailForwardsResumeInfo> merge=emailInviteBean.getMergeVars();
         List<ReceiveInfo> to=emailInviteBean.getTo();
         List<Map<String,String>> toReceive=new ArrayList<>();
-        List<Map<String,String>> mergeData=new ArrayList<>();
+        List<Map<String,Object>> mergeData=new ArrayList<>();
         for(ReceiveInfo receiveInfo:to){
             String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
             Map<String,Object> map=JSON.parseObject(tores);
@@ -795,13 +792,9 @@ public class TalentpoolEmailService {
         for(TalentEmailForwardsResumeInfo info:merge){
             String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
             Map<String,Object> infoMap=JSON.parseObject(infos);
-            Map<String,String> infoMap1=new HashMap<>();
+            Map<String,Object> infoMap1=new HashMap<>();
             for(String key:infoMap.keySet()){
-                if(infoMap.get(key) instanceof Map||infoMap.get(key) instanceof List){
-                    infoMap1.put(key,JSON.toJSONString(infoMap.get(key)));
-                }else{
-                    infoMap1.put(key,String.valueOf(infoMap.get(key)));
-                }
+                infoMap1.put(key,infoMap.get(key));
             }
             mergeData.add(infoMap1);
         }
