@@ -756,7 +756,7 @@ public class TalentpoolEmailService {
         }
         for(TalentEmailInviteToDelivyInfo info:merge){
             String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
-            Map<String,Object> infoMap=JSON.parseObject(infos);
+            Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
             Map<String,Object> infoMap1=new HashMap<>();
             for(String key:infoMap.keySet()){
                infoMap1.put(key,infoMap.get(key));
@@ -791,7 +791,7 @@ public class TalentpoolEmailService {
         }
         for(TalentEmailForwardsResumeInfo info:merge){
             String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
-            Map<String,Object> infoMap=JSON.parseObject(infos);
+            Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
             Map<String,Object> infoMap1=new HashMap<>();
             for(String key:infoMap.keySet()){
                 infoMap1.put(key,infoMap.get(key));
