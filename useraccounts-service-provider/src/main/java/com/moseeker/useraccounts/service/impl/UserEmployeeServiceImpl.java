@@ -27,6 +27,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
 import com.moseeker.useraccounts.domain.AwardEntity;
 import com.moseeker.useraccounts.infrastructure.AwardRepository;
 import com.moseeker.useraccounts.service.aggregate.ApplicationsAggregateId;
@@ -242,23 +243,9 @@ public class UserEmployeeServiceImpl {
     /*
      获取经过认证的员工信息
      */
-    public List<UserEmployeeDO> getUserEmployeeEmailValidate(int companyId,String email){
-        List<UserEmployeeDO> dataList=getEmployeeData(companyId, email);
-        dataList=userWxEntity.handlerData(dataList);
-        return dataList;
-    }
-
-    private List<UserEmployeeDO> getEmployeeData(int companyId,String email){
-        List<UserEmployeeRecord>  list=userEmployeeDao.getUserEmployeeLike(companyId,email);
-        List<UserEmployeeDO> dataList=new ArrayList<>();
-        if(!StringUtils.isEmptyList(list)){
-            for(UserEmployeeRecord record:list){
-                UserEmployeeDO DO=BeanUtils.DBToStruct(UserEmployeeDO.class,record);
-                dataList.add(DO);
-            }
-
-        }
-        return dataList;
+    public UserEmployeeVOPageVO  getUserEmployeeEmailValidate(int companyId, String email, int pageNum, int pageSize){
+        UserEmployeeVOPageVO VO=userWxEntity.getFordEmployeeData(companyId,email,pageNum,pageSize);
+        return VO;
     }
 
 
