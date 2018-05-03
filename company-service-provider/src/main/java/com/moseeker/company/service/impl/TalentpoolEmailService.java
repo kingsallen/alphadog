@@ -1646,10 +1646,7 @@ public class TalentpoolEmailService {
         if(StringUtils.isEmptyList(idList)){
             return null;
         }
-        Query query=new Query.QueryBuilder().where(new Condition("id",idList.toArray(), ValueOp.IN))
-                .buildQuery();
-        List<UserEmployeeDO> list=userEmployeeDao.getDatas(query);
-        list=userWxEntity.handlerData(list);
+        List<UserEmployeeDO> list=userWxEntity.getForWordEmployeeInfo(idList);
         return list;
 
     }
