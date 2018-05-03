@@ -16,6 +16,7 @@ public class CommonUtils {
     public static String replaceUtil(String context, String companyName, String positionName, String profileName,
             String hrName, String wechatName){
         context = StringEscapeUtils.escapeHtml4(context);
+        context = context.replace(" ","&nbsp;");
         context = context.replace("\n","<br>");
         context = context.replace("#公司简称#",companyName);
         context = context.replace("#职位名称#",positionName);
