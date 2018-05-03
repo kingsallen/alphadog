@@ -2,7 +2,6 @@ package com.moseeker.servicemanager.config;
 
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4;
 import com.moseeker.baseorm.config.AppConfig;
-import com.moseeker.consistencysuport.producer.MessageChannelConfig;
 import com.moseeker.servicemanager.common.UTF8StringHttpMessageConverter;
 import org.springframework.context.annotation.*;
 import org.springframework.http.MediaType;
@@ -18,10 +17,9 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {"com.moseeker.servicemanager.web", "com.moseeker.servicemanager.config",
-        "com.moseeker.servicemanager.exception", "com.moseeker.consistencysuport.producer",
-        "com.moseeker.servicemanager.consistency"})
+        "com.moseeker.servicemanager.exception"})
 @PropertySource("classpath:common.properties")
-@Import({AppConfig.class,MessageChannelConfig.class})
+@Import({AppConfig.class})
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean(name = "multipartResolver")
