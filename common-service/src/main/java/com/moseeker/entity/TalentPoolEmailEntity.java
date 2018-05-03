@@ -176,7 +176,9 @@ public class TalentPoolEmailEntity {
         if(balance == useCount){
             List<TalentpoolEmailRecord> emailRecordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
             for(TalentpoolEmailRecord record : emailRecordList){
-                if(TalentpoolEmailType.instanceFromByte(record.getId()).getStatus() && TalentpoolEmailType.instanceFromByte(record.getId()).getStatus()) {
+                logger.info("handerTalentpoolEmailLogAndBalance email status id:{};disable:{}",record.getId(),record.getDisable());
+                logger.info("handerTalentpoolEmailLogAndBalance bool:{}",TalentpoolEmailType.instanceFromByte(record.getId()).getStatus());
+                if(TalentpoolEmailType.instanceFromByte(record.getId()).getStatus()) {
                     record.setDisable(0);
                 }
             }
