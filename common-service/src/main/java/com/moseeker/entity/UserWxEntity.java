@@ -95,23 +95,23 @@ public class UserWxEntity {
        VO.setData(list);
        return VO;
 
-    }
+                                }
     /*
      根据雇员id获取雇员的名称，id,email
      */
     public List<UserEmployeeDO> getForWordEmployeeInfo(List<Integer> idList){
         if(StringUtils.isEmptyList(idList)){
             return null;
-        }
+                            }
         List<Map<String,Object>> dataList=userEmployeeDao.getUserEmployeeInfoById(idList);
         if(StringUtils.isEmptyList(dataList)){
             return null;
-        }
+                        }
         List<UserWxUserRecord> userWXList=this.getEmployeeName(dataList);
         this.handlerEmployeeData(userWXList,dataList);
         List<UserEmployeeDO> result=this.ConvertToUserEmployeeDO(dataList);
         return result;
-    }
+                    }
     /*
      将map转换成UserEmployeeVO
      */
@@ -176,7 +176,7 @@ public class UserWxEntity {
         List<UserWxUserRecord> list=this.getUserWxUserData(userIdList);
         return list;
 
-    }
+            }
     /*
      获取没有名字的userId
      */

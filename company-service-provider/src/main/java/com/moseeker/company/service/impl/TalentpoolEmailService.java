@@ -406,7 +406,7 @@ public class TalentpoolEmailService {
      */
     private int sendInviteToDelivyEmail(List<Integer> userIdList,List<Integer> positionIdList,int companyId,int hrId,int positionFlag){
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
-        TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId);
+        TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId,72);
         logger.info("=============HrCompanyEmailInfoRecord===========");
         logger.info(hrCompanyEmailInfoRecord.toString());
         logger.info("================================================");
@@ -456,7 +456,7 @@ public class TalentpoolEmailService {
      */
     private  int sendAllInviteToDelivyEmail(Map<String,String> params,List<Integer> positionIdList,int companyId,int hrId,int positionFlag){
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
-        TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId);
+        TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId,72);
         logger.info("=============HrCompanyEmailInfoRecord===========");
         logger.info(hrCompanyEmailInfoRecord.toString());
         logger.info("================================================");
@@ -496,7 +496,7 @@ public class TalentpoolEmailService {
 
     private int sendPositionInviteEmail(int positionId,int hrId,int companyId,int hrFlag){
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
-        TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId);
+        TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId,72);
         boolean flag=this.validateSendEmail(hrCompanyEmailInfoRecord,talentpoolEmailRecord);
         if(flag) {
             try {
@@ -591,7 +591,7 @@ public class TalentpoolEmailService {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
-        TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId);
+        TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId,73);
         logger.info("=============HrCompanyEmailInfoRecord===========");
         logger.info(hrCompanyEmailInfoRecord.toString());
         logger.info("================================================");
@@ -660,7 +660,7 @@ public class TalentpoolEmailService {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
-        TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId);
+        TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId,73);
         logger.info("=============HrCompanyEmailInfoRecord===========");
         logger.info(hrCompanyEmailInfoRecord.toString());
         logger.info("================================================");
@@ -1626,8 +1626,8 @@ public class TalentpoolEmailService {
     /*
      获取公司配置的邮件模板
      */
-    private TalentpoolEmailRecord getTalentpoolEmail(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1).buildQuery();
+    private TalentpoolEmailRecord getTalentpoolEmail(int companyId,int type){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("disable",1).and("config_id",type).buildQuery();
         TalentpoolEmailRecord record=talentpoolEmailDao.getRecord(query);
         return record;
     }
