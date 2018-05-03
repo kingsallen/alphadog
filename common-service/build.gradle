@@ -10,6 +10,7 @@ dependencies {
     compile deps["spring-core"]
     compile deps["spring-context"]
     compile deps["spring-test"]
+    compile("org.apache.commons:commons-lang3:3.7")
     compile deps["spring-beans"]
     compile deps["spring-core"]
     compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')

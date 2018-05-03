@@ -5,7 +5,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.mq.service.email.MandrillMailListConsumer;
+import com.moseeker.entity.MandrillMailListConsumer;
 import com.moseeker.mq.service.impl.EmailProducer;
 import com.moseeker.mq.service.impl.MandrillEmailProducer;
 import com.moseeker.mq.service.impl.ResumeDeliveryService;
