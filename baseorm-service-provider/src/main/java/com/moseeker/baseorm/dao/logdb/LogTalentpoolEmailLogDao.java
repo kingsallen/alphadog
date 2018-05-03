@@ -45,7 +45,7 @@ public class LogTalentpoolEmailLogDao extends JooqCrudImpl<com.moseeker.baseorm.
             condition = condition.and(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.CREATE_TIME.ge(startDate));
         }
         if (endDate != null) {
-            condition = condition.and(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.CREATE_TIME.le(endDate));
+            condition = condition.and(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.CREATE_TIME.lt(endDate));
         }
 
         return create.selectCount()
@@ -63,7 +63,7 @@ public class LogTalentpoolEmailLogDao extends JooqCrudImpl<com.moseeker.baseorm.
             condition = condition.and(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.CREATE_TIME.ge(startDate));
         }
         if (endDate != null) {
-            condition = condition.and(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.CREATE_TIME.le(endDate));
+            condition = condition.and(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.CREATE_TIME.lt(endDate));
         }
 
         return create.selectFrom(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG)

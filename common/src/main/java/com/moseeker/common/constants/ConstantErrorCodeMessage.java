@@ -176,6 +176,9 @@ public final class ConstantErrorCodeMessage {
     public static final String MQ_TEMPLATE_NOTICE_CLOSE = "{'status':71001,'message':'模板消息开关关闭！'}";
     public static final String MQ_WECHAT_NOT_INFO = "{'status':71001,'message':'公众号信息不存在！'}";
 
+    //mq服务提示信息说明
+    public static final String CONSISTENCY_TOOL = "{'status':81001,'message':'重复的参数转换器！'}";
+
 
     //IM服务
     public static final String CHAT_ROOM_NOT_EXIST = "{'status':91001,'message':'聊天室不存在！'}";
