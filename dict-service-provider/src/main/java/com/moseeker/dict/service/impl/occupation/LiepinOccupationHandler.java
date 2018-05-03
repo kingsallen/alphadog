@@ -25,11 +25,6 @@ public class LiepinOccupationHandler  extends AbstractOccupationHandler<DictLiep
     }
 
     @Override
-    public String parentKeyName() {
-        return "parent_id";
-    }
-
-    @Override
     public ChannelType getChannelType() {
         return ChannelType.LIEPIN;
     }
