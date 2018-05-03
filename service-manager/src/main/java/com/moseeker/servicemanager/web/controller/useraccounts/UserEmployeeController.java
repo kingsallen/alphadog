@@ -165,7 +165,7 @@ public class UserEmployeeController {
                 pageSize="10";
             }
             Response res=service.getValidateUserEmployee(companyId,email,Integer.parseInt(page),Integer.parseInt(pageSize));
-            return ResponseLogNotification.successJson(request,res);
+            return ResponseLogNotification.success(request,res);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
