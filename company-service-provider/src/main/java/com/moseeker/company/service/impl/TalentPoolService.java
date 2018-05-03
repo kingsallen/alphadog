@@ -1638,7 +1638,7 @@ public class TalentPoolService {
                 map.put("num",totalNum);
                 HrCompanyEmailInfo info = talentPoolEmailEntity.getHrCompanyEmailInfoByCompanyId(company_id);
                 map.put("enable",false);
-                if(totalNum < info.getBalance()){
+                if(totalNum <= info.getBalance()){
                     map.put("enable", true);
                 }
                 String time=redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.LAST_SEND_POSITION_INVITE.toString(),
