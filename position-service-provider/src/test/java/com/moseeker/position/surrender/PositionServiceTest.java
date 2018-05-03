@@ -127,7 +127,6 @@ public class PositionServiceTest {
     	service.cityCode(cities,1909944);
 	}*/
 
-<<<<<<< HEAD
 //	@Test
 //	@Commit
 //	public void batchHandlerJobPostion() throws BIZException {
@@ -144,7 +143,6 @@ public class PositionServiceTest {
 //
 //		service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
 //	}
-=======
 	@Test
 	@Commit
 	public void batchHandlerJobPostion() throws BIZException {
@@ -165,7 +163,7 @@ public class PositionServiceTest {
 			e.printStackTrace();
 		}
 	}
->>>>>>> feature/v3.8
+
 
 	private String position="{\n" +
 			"  'degree': 0,\n" +
