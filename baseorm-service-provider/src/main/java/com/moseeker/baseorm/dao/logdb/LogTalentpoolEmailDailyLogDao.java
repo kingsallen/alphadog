@@ -38,7 +38,7 @@ public class LogTalentpoolEmailDailyLogDao extends JooqCrudImpl<LogTalentpoolEma
             condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.ge(startDate));
         }
         if (endDate != null) {
-            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.le(endDate));
+            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.lt(endDate));
         }
 
         return create.selectFrom(LOG_TALENTPOOL_EMAIL_DAILY_LOG)
@@ -55,7 +55,7 @@ public class LogTalentpoolEmailDailyLogDao extends JooqCrudImpl<LogTalentpoolEma
             condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.ge(startDate));
         }
         if (endDate != null) {
-            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.le(endDate));
+            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.lt(endDate));
         }
         return create.selectCount()
                 .from(LOG_TALENTPOOL_EMAIL_DAILY_LOG)
