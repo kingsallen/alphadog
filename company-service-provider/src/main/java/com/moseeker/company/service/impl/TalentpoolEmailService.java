@@ -1295,7 +1295,7 @@ public class TalentpoolEmailService {
         List<ReceiveInfo> receiveInfos=new ArrayList<>();
         for(UserEmployeeDO DO:employeeList){
             String email=DO.getEmail();
-            String name=DO.getCfname()+DO.getCname();
+            String name=DO.getCname();
             if(StringUtils.isNotNullOrEmpty(email)){
                 ReceiveInfo receiveInfo=new ReceiveInfo();
                 receiveInfo.setToEmail(email);
