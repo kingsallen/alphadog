@@ -938,8 +938,8 @@ public class TalentpoolEmailService {
                 positionIdList=getPositionIds(companyId,hrId,count);
             }
             TalentEmailInviteToDelivyInfo delivyInfo=this.getInviteToDelivyInfoList(positionIdList,companyId,context,record);
-            logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
-            logger.info(JSON.toJSONString(result));
+            logger.info("=======转换response为List<TalentEmailInviteToDelivyInfo> ===========");
+            logger.info(JSON.toJSONString(delivyInfo));
             logger.info("================================================");
             if(delivyInfo==null||StringUtils.isEmptyList(userInfoList)){
                 return null;
@@ -1298,7 +1298,23 @@ public class TalentpoolEmailService {
                 for(TalentEmailForwardsResumeInfo info:dataInfo){
                     TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
                     info1.setCoworkerName(name);
-                    context= CommonUtils.replaceUtil(context,info1.getCompanyAbbr(),info1.getPositionName(),info1.getUserName(),null,info1.getOfficialAccountName());
+                    String companyAbbr=info1.getCompanyAbbr();
+                    if(StringUtils.isNullOrEmpty(companyAbbr)){
+                        companyAbbr="";
+                    }
+                    String positionName=info1.getPositionName();
+                    if(StringUtils.isNullOrEmpty(positionName)){
+                        positionName="";
+                    }
+                    String userName=info1.getUserName();
+                    if(StringUtils.isNullOrEmpty(userName)){
+                        userName="";
+                    }
+                    String accountName=info1.getOfficialAccountName();
+                    if(StringUtils.isNullOrEmpty(accountName)){
+                        accountName="";
+                    }
+                    context= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
                     info1.setCustomText(context);
                     info1.setRcpt(email);
                     info1.setHrName(record.getUsername());
@@ -1313,6 +1329,11 @@ public class TalentpoolEmailService {
                 }
             }
         }
+        if(StringUtils.isEmptyList(resumeInfoList)||StringUtils.isEmptyList(receiveInfos)){
+            return null;
+        }
+        result.setTo(receiveInfos);
+        result.setMergeVars(resumeInfoList);
         result.setFromName(abbr+"才招聘团队");
         result.setFromEmail("info@moseeker.net");
         result.setTemplateName("forwards-resume");
