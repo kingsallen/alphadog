@@ -7,7 +7,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictJobsDBOccupationDO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JobsDBOccupationHandler extends AbstractOccupationHandler<DictJobsDBOccupationDO>{
+public class JobsDBOccupationHandler extends DefaultOccupationHandler<DictJobsDBOccupationDO>{
 
     @Override
     public ChannelType getChannelType() {
