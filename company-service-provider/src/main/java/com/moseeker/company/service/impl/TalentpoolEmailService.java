@@ -1517,18 +1517,19 @@ public class TalentpoolEmailService {
                                     info.setGenderName(genderName);
                                 }
                                 Map<String,Object> recentJob=(Map<String,Object>)profiles.get("recent_job");
+                                List<Map<String,Object>> expJob=(List<Map<String,Object>>)profiles.get("other_workexps");
                                 List<Map<String,Object>> educationsList=(List<Map<String,Object>>)profiles.get("educations");
                                 List<Map<String,Object>> applist=(List<Map<String,Object>>)userMap.get("applications");
-                                TalentEducationInfo talentEducationInfo=this.getTalentEducationInfo(educationsList);
-                                TalentWorkExpInfo talentWorkExpInfo=this.getTalentWorkExpInfo(recentJob);
+                                List<TalentEducationInfo> talentEducationInfo=this.getTalentEducationInfo(educationsList);
+                                List<TalentWorkExpInfo> talentWorkExpInfo=this.getTalentWorkExpInfo(recentJob,expJob);
                                 info.setEducationList(talentEducationInfo);
                                 info.setWorkexps(talentWorkExpInfo);
                                 int year=(int)userMap.get("age");
                                 info.setBirth(year);
                                 info.setPositionName(this.getPositionName(applist,hrId));
                                 info.setCompanyName("");
-                                if(talentWorkExpInfo!=null){
-                                    info.setCompanyName(talentWorkExpInfo.getWorkCompany());
+                                if(!StringUtils.isEmptyList(talentEducationInfo)){
+                                    info.setCompanyName(talentWorkExpInfo.get(0).getWorkCompany());
                                 }
 
                                 list.add(info);
@@ -1563,26 +1564,30 @@ public class TalentpoolEmailService {
     /*
      获取学历信息
      */
-    private TalentEducationInfo getTalentEducationInfo(List<Map<String,Object>> educationsList){
+    private List<TalentEducationInfo> getTalentEducationInfo(List<Map<String,Object>> educationsList){
+        List<TalentEducationInfo> list=new ArrayList<>();
         if(!StringUtils.isEmptyList(educationsList)) {
-            TalentEducationInfo info = new TalentEducationInfo();
-            Map<String, Object> education = educationsList.get(0);
-            String startTime = (String) education.get("start_date");
-            int endUntilNow = (int) education.get("end_until_now");
-            String endTime = (String) education.get("end_date");
-            String collegeName = (String) education.get("college_name");
-            int degree = (int) education.get("degree");
-            String majorName = (String) education.get("major_name");
-            if (endUntilNow == 1) {
-                SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                endTime = ff.format(new Date());
+            for(Map<String,Object> education:educationsList){
+                TalentEducationInfo info = new TalentEducationInfo();
+                String startTime = (String) education.get("start_date");
+                int endUntilNow = (int) education.get("end_until_now");
+                String endTime = (String) education.get("end_date");
+                String collegeName = (String) education.get("college_name");
+                int degree = (int) education.get("degree");
+                String majorName = (String) education.get("major_name");
+                if (endUntilNow == 1) {
+                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
+                    endTime = ff.format(new Date());
+                }
+                info.setStartTime(startTime);
+                info.setCollegeName(collegeName);
+                info.setDegree(DegreeConvertUtil.intToEnum.get(degree));
+                info.setEndTime(endTime);
+                info.setMajorName(majorName);
+                list.add(info);
             }
-            info.setStartTime(startTime);
-            info.setCollegeName(collegeName);
-            info.setDegree(DegreeConvertUtil.intToEnum.get(degree));
-            info.setEndTime(endTime);
-            info.setMajorName(majorName);
-            return info;
+
+            return list;
         }
         return null;
 
@@ -1590,7 +1595,8 @@ public class TalentpoolEmailService {
     /*
      获取工作经验
      */
-    private TalentWorkExpInfo getTalentWorkExpInfo(Map<String,Object> recentJob){
+    private List<TalentWorkExpInfo> getTalentWorkExpInfo(Map<String,Object> recentJob,List<Map<String,Object>> expList){
+        List<TalentWorkExpInfo> list=new ArrayList<>();
         if(!StringUtils.isEmptyMap(recentJob)){
             TalentWorkExpInfo info=new TalentWorkExpInfo();
             String workStartTime= (String) recentJob.get("start_date");
@@ -1606,10 +1612,29 @@ public class TalentpoolEmailService {
             info.setWorkEndTime(workEndTime);
             info.setWorkJob(job);
             info.setWorkStartTime(workStartTime);
-            return info;
+            list.add(info);
 
         }
-        return null;
+        if(!StringUtils.isEmptyList(expList)){
+            for(Map<String,Object> map:expList){
+                TalentWorkExpInfo info=new TalentWorkExpInfo();
+                String workStartTime= (String) map.get("start_date");
+                String workEndTime= (String) map.get("end_date");
+                String companyName= (String) map.get("end_date");
+                String job= (String) map.get("job");
+                int endUntilNow=(int)map.get("end_until_now");
+                if(endUntilNow==1){
+                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
+                    workEndTime = ff.format(new Date());
+                }
+                info.setWorkCompany(companyName);
+                info.setWorkEndTime(workEndTime);
+                info.setWorkJob(job);
+                info.setWorkStartTime(workStartTime);
+                list.add(info);
+            }
+        }
+        return list;
     }
 
 

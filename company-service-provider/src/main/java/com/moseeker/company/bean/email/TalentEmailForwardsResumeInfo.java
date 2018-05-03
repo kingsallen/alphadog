@@ -3,6 +3,8 @@ package com.moseeker.company.bean.email;
 import com.moseeker.company.bean.TalentWorkExpInfo;
 import com.moseeker.company.bean.email.TalentEducationInfo;
 
+import java.util.List;
+
 /**
  * Created by zztaiwll on 18/4/24.
  */
@@ -16,8 +18,8 @@ public class TalentEmailForwardsResumeInfo {
     private String genderName;
     private String cityName;
     private String degreeName;
-    private TalentEducationInfo educationList;
-    private TalentWorkExpInfo workexps;
+    private List<TalentEducationInfo> educationList;
+    private List<TalentWorkExpInfo> workexps;
     private String weixinQrcode;
     private String officialAccountName;
     private String email;
@@ -101,19 +103,19 @@ public class TalentEmailForwardsResumeInfo {
         this.degreeName = degreeName;
     }
 
-    public TalentEducationInfo getEducationList() {
+    public List<TalentEducationInfo> getEducationList() {
         return educationList;
     }
 
-    public void setEducationList(TalentEducationInfo educationList) {
+    public void setEducationList(List<TalentEducationInfo> educationList) {
         this.educationList = educationList;
     }
 
-    public TalentWorkExpInfo getWorkexps() {
+    public List<TalentWorkExpInfo> getWorkexps() {
         return workexps;
     }
 
-    public void setWorkexps(TalentWorkExpInfo workexps) {
+    public void setWorkexps(List<TalentWorkExpInfo> workexps) {
         this.workexps = workexps;
     }
 
