@@ -153,7 +153,7 @@ public class UserWxEntity {
      将微信的昵称填入到雇员信息里面
      */
     private void handlerEmployeeData(List<UserWxUserRecord> userWXList,List<Map<String,Object>> dataList){
-        if(StringUtils.isEmptyList(userWXList)){
+        if(!StringUtils.isEmptyList(userWXList)){
             for(Map<String,Object> map:dataList){
                 int userId=(int)map.get("sysuser_id");
                 for(UserWxUserRecord record:userWXList){
