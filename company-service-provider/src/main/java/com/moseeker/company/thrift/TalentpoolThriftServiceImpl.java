@@ -446,14 +446,14 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             DateTime endDateTime = null;
             if (StringUtils.isNotBlank(endDate)) {
                 try {
-                    endDateTime = DateTime.parse(endDate).plusDays(1);
+                    endDateTime = DateTime.parse(endDate).plusDays(1).withTimeAtStartOfDay();
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                     throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("结束时间格式不正确！"));
                 }
             }
-            if (startDateTime != null && endDateTime != null && startDateTime.getMillis() >= endDateTime.getMillis()) {
-                throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("开始时间必须要小于结束时间！"));
+            if (startDateTime != null && endDateTime != null && startDateTime.getMillis() > endDateTime.getMillis()) {
+                throw ExceptionConvertUtil.convertCommonException(CommonException.validateFailed("开始时间必不能大于结束时间！"));
             }
             return talentpoolEmailService.fetchEmailAccountConsumption(companyId, emailAccountConsumptionType, pageNumber, pageSize, startDateTime, endDateTime);
         } catch (Exception e) {
