@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = -672809083;
+    private static final long serialVersionUID = 1799637767;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.

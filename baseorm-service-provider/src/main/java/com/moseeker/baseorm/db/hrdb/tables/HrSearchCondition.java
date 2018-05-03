@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = -1441208083;
+    private static final long serialVersionUID = 1760006908;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
