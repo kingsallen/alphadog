@@ -66,6 +66,8 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import org.apache.thrift.TException;
 
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -623,7 +625,11 @@ public class TalentpoolEmailService {
                 } else {
                     return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
                 }
-                client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"",JSON.toJSONString(employeeList));
+                List<Map<String,Object>> employeeData=this.handlerEmployeeData(employeeList);
+                if(!StringUtils.isEmptyList(employeeData)){
+                    client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"",JSON.toJSONString(employeeData,serializeConfig, SerializerFeature.DisableCircularReferenceDetect));
+                }
+
             }catch(Exception e){
                 logger.error(e.getMessage(),e);
             }
@@ -631,6 +637,19 @@ public class TalentpoolEmailService {
             return TalentEmailEnum.NOCONFIGEMAIL.getValue();
         }
         return 0;
+    }
+
+    private List<Map<String,Object>> handlerEmployeeData(List<UserEmployeeDO> employeeList) throws TException {
+        if(StringUtils.isEmptyList(employeeList)){
+            return null;
+        }
+        List<Map<String,Object>> list=new ArrayList<>();
+        for(UserEmployeeDO DO:employeeList){
+            String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+            Map<String,Object> DOData=JSON.parseObject(DOs, Map.class);
+            list.add(DOData);
+        }
+        return list;
     }
 
     /*
