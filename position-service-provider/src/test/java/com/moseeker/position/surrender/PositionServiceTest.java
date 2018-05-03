@@ -127,6 +127,7 @@ public class PositionServiceTest {
     	service.cityCode(cities,1909944);
 	}*/
 
+<<<<<<< HEAD
 //	@Test
 //	@Commit
 //	public void batchHandlerJobPostion() throws BIZException {
@@ -143,6 +144,28 @@ public class PositionServiceTest {
 //
 //		service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
 //	}
+=======
+	@Test
+	@Commit
+	public void batchHandlerJobPostion() throws BIZException {
+		BatchHandlerJobPostion batchHandlerJobPostion=new BatchHandlerJobPostion();
+
+		JobPostrionObj jobPostrionObj=JSON.toJavaObject(JSON.parseObject(position),JobPostrionObj.class);
+
+		batchHandlerJobPostion.setData(Arrays.asList(jobPostrionObj,jobPostrionObj));
+		batchHandlerJobPostion.setFields_nooverwrite("");
+		batchHandlerJobPostion.setNodelete(true);
+		batchHandlerJobPostion.setFields_nohash("");
+		batchHandlerJobPostion.setIsCreateDeparment(true);
+
+
+		try {
+			service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
+		} catch (TException e) {
+			e.printStackTrace();
+		}
+	}
+>>>>>>> feature/v3.8
 
 	private String position="{\n" +
 			"  'degree': 0,\n" +

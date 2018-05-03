@@ -1,6 +1,7 @@
 package com.moseeker.entity.biz;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
@@ -1033,5 +1034,12 @@ public class ProfileUtils {
 		pagination.setTotalRow(totalRow);
 		pagination.setResults(list);
 		return pagination;
+	}
+
+	public static void main(String[] args) {
+		JSONObject other = new JSONObject();
+		other.put("height", 1);
+		String str = JSON.toJSONString(other);
+		System.out.println(str);
 	}
 }
