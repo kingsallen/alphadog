@@ -367,7 +367,7 @@ public class TalentpoolEmailService {
         int result=this.sendPositionInviteEmail(positionId,hrId,companyId,flag);
         SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd");
         String datetime=ff.format(new Date());
-        client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.LAST_SEND_POSITION_INVITE.toString(),hrId+"",datetime);
+        client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.LAST_SEND_POSITION_INVITE.toString(),hrId+"",positionId+"",datetime);
         return result;
 
     }

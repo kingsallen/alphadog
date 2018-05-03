@@ -1642,7 +1642,7 @@ public class TalentPoolService {
                     map.put("enable", true);
                 }
                 String time=redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.LAST_SEND_POSITION_INVITE.toString(),
-                        String.valueOf(hr_id));
+                        String.valueOf(hr_id),String.valueOf(position_id));
                 map.put("last_send_time",time);
                 return ResponseUtils.success(map);
             }
