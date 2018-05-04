@@ -332,6 +332,7 @@ public class TalentPoolEmailEntity {
         List<Integer> companyIdListFromName = null;
         Query.QueryBuilder queryBuilder1 = new Query.QueryBuilder();
         if (org.apache.commons.lang.StringUtils.isNotBlank(companyName)) {
+            companyName = companyName.trim();
             queryBuilder1.where(HrCompany.HR_COMPANY.NAME.getName(), companyName).or(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName);
             List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(queryBuilder1.buildQuery());
             if (companyDOList != null && companyDOList.size() > 0) {
