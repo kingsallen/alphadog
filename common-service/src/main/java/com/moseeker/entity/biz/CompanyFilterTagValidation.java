@@ -419,7 +419,7 @@ public class CompanyFilterTagValidation {
             }
 
         }
-        int resultYear=(int)Math.floor(((double)end-(double)start)/((double)3600*24*30*12*1000));
+        int resultYear=(int)Math.floor(((double)end-(double)start)/((double)3600*24*365*1000));
 
         if(StringUtils.isNotNullOrEmpty(workyears)){
             String array[]=workyears.split(",");
