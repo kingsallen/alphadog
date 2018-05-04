@@ -792,7 +792,7 @@ public class TalentpoolEmailService {
             for(ReceiveInfo receiveInfo:to){
                 Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
                 infoMap.put("rcpt",receiveInfo.getToEmail());
-                infoMap.put("coworkerName",receiveInfo.getToName());
+                infoMap.put("coworker_name",receiveInfo.getToName());
                 mergeData.add(infoMap);
                 String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
                 Map<String,Object> map=JSON.parseObject(tores);
