@@ -51,13 +51,12 @@ public class TalentpoolController {
                 Response result = service.batchAddTalent(hrId,userIdList,companyId);
                 return ResponseLogNotification.success(request, result);
             }else{
-                Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
                 Map<String,String> params=new HashMap<>();
-                if(reqParams==null||reqParams.isEmpty()){
+                if(data==null||data.isEmpty()){
                     return ResponseLogNotification.fail(request, "参数不能为空");
                 }
-                for(String key:reqParams.keySet()){
-                    params.put(key,String.valueOf(reqParams.get(key)));
+                for(String key:data.keySet()){
+                    params.put(key,String.valueOf(data.get(key)));
                 }
                 service.addAllTalent(hrId,params,companyId);
                 Response res= ResponseUtils.success("");
@@ -88,13 +87,12 @@ public class TalentpoolController {
                 Response result = service.batchCancelTalent(hrId, userIdList, companyId);
                 return ResponseLogNotification.success(request, result);
             }else{
-                Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
                 Map<String,String> params=new HashMap<>();
-                if(reqParams==null||reqParams.isEmpty()){
+                if(data==null||data.isEmpty()){
                     return ResponseLogNotification.fail(request, "参数不能为空");
                 }
-                for(String key:reqParams.keySet()){
-                    params.put(key,String.valueOf(reqParams.get(key)));
+                for(String key:data.keySet()){
+                    params.put(key,String.valueOf(data.get(key)));
                 }
                 service.cancleAllTalent(hrId,params,companyId);
                 Response res= ResponseUtils.success("");
@@ -229,13 +227,12 @@ public class TalentpoolController {
                 Response result = service.batchNewAddTalentTag(hrId,userIdList,tagIdList,companyId);
                 return ResponseLogNotification.success(request, result);
             }else{
-                Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
                 Map<String,String> params=new HashMap<>();
-                if(reqParams==null||reqParams.isEmpty()){
+                if(data==null||data.isEmpty()){
                     return ResponseLogNotification.fail(request, "参数不能为空");
                 }
-                for(String key:reqParams.keySet()){
-                    params.put(key,String.valueOf(reqParams.get(key)));
+                for(String key:data.keySet()){
+                    params.put(key,String.valueOf(data.get(key)));
                 }
                 service.addAllTalentTag(params,tagIdList,companyId,hrId);
                 Response res= ResponseUtils.success("");
@@ -287,13 +284,12 @@ public class TalentpoolController {
                 Response result = service.batchAddPublicTalent(hrId, companyId, userIdList);
                 return ResponseLogNotification.success(request, result);
             }else{
-                Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
                 Map<String,String> params=new HashMap<>();
-                if(reqParams==null||reqParams.isEmpty()){
+                if(data==null||data.isEmpty()){
                     return ResponseLogNotification.fail(request, "参数不能为空");
                 }
-                for(String key:reqParams.keySet()){
-                    params.put(key,String.valueOf(reqParams.get(key)));
+                for(String key:data.keySet()){
+                    params.put(key,String.valueOf(data.get(key)));
                 }
                 service.addAllTalentPublic(hrId,params,companyId);
                 Response res= ResponseUtils.success("");
@@ -351,13 +347,12 @@ public class TalentpoolController {
                 Response result = service.batchCancelPublicTalent(hrId, companyId, userIdList);
                 return ResponseLogNotification.success(request, result);
             }else{
-                Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
                 Map<String,String> params=new HashMap<>();
-                if(reqParams==null||reqParams.isEmpty()){
+                if(data==null||data.isEmpty()){
                     return ResponseLogNotification.fail(request, "参数不能为空");
                 }
-                for(String key:reqParams.keySet()){
-                    params.put(key,String.valueOf(reqParams.get(key)));
+                for(String key:data.keySet()){
+                    params.put(key,String.valueOf(data.get(key)));
                 }
                 service.addAllTalentPrivate(hrId,params,companyId);
                 Response res= ResponseUtils.success("");
