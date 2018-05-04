@@ -641,7 +641,7 @@ public class TalentpoolEmailService {
                     logger.info("=============employeeData===========");
                     logger.info(JSON.toJSONString(employeeData));
                     logger.info("================================================");
-                    client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"",JSON.toJSONString(employeeData,serializeConfig, SerializerFeature.DisableCircularReferenceDetect));
+                    this.handlerRedisEmployee(employeeData,hrId);
                 }
 
             }catch(Exception e){
@@ -651,6 +651,31 @@ public class TalentpoolEmailService {
             return TalentEmailEnum.NOCONFIGEMAIL.getValue();
         }
         return 0;
+    }
+
+    private void handlerRedisEmployee(List<Map<String,Object>> employeeData,int hrId){
+        String res=client.get(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"");
+        if(StringUtils.isNotNullOrEmpty(res)){
+            if(employeeData.size()>10){
+                employeeData=employeeData.subList(0,10);
+            }
+        }else{
+            List<Map<String,Object>> resData= (List<Map<String, Object>>) JSON.parse(res);
+            if(employeeData.size()>10){
+                employeeData=employeeData.subList(0,10);
+            }else{
+                int resSize=resData.size();
+                int size=employeeData.size();
+                int num=10-size;
+                if(resSize<num){
+                    num=resSize;
+                }
+                for(int i=0;i<num;i++){
+                    employeeData.add(resData.get(i));
+                }
+            }
+        }
+        client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"",JSON.toJSONString(employeeData,serializeConfig, SerializerFeature.DisableCircularReferenceDetect));
     }
 
     private List<Map<String,Object>> handlerEmployeeData(List<UserEmployeeDO> employeeList) throws TException {
@@ -1377,39 +1402,6 @@ public class TalentpoolEmailService {
                 receiveInfo.setToEmail(email);
                 receiveInfo.setToName(name);
                 receiveInfos.add(receiveInfo);
-                for(TalentEmailForwardsResumeInfo info:dataInfo){
-                    TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
-                    info1.setCoworkerName(name);
-                    String companyAbbr=info1.getCompanyAbbr();
-                    if(StringUtils.isNullOrEmpty(companyAbbr)){
-                        companyAbbr="";
-                    }
-                    String positionName=info1.getPositionName();
-                    if(StringUtils.isNullOrEmpty(positionName)){
-                        positionName="";
-                    }
-                    String userName=info1.getUserName();
-                    if(StringUtils.isNullOrEmpty(userName)){
-                        userName="";
-                    }
-                    String accountName=info1.getOfficialAccountName();
-                    if(StringUtils.isNullOrEmpty(accountName)){
-                        accountName="";
-                    }
-                    String context1= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
-                    info1.setCustomText(context1);
-                    info1.setRcpt(email);
-                    info1.setHrName(record.getUsername());
-                    String url=env.getProperty("talentpool.wholeProfile");
-                    String token="user_id="+info1.getUserId()+"&company_id="+companyId+"&hr_id="+hrId+"&timestamp="+new Date().getTime();
-                    token=CommonUtils.encryptString(token);
-                    logger.info("简历链接：{}",url+token);
-                    info1.setProfileFullUrl(url+token);
-                    if(StringUtils.isNullOrEmpty(abbr)){
-                        abbr=info1.getCompanyAbbr();
-                    }
-                    resumeInfoList.add(info1);
-                }
             }
         }
         for(TalentEmailForwardsResumeInfo info:dataInfo){
@@ -1665,7 +1657,7 @@ public class TalentpoolEmailService {
                 for(Map<String,Object> app:applications){
                     int itemId=(int)app.get("company_id");
                     String title=(String)app.get("title");
-                    double status=(double)app.get("status");
+                    int status=Integer.parseInt(String.valueOf(app.get("status")));
                     if(companyId==itemId&&status==0){
                         positionName=positionName+title+",";
                     }
@@ -1676,7 +1668,7 @@ public class TalentpoolEmailService {
                 for(Map<String,Object> app:applications){
                     int publisher=(int)app.get("publisher");
                     String title=(String)app.get("title");
-                    double status=(double)app.get("status");
+                    int status=Integer.parseInt(String.valueOf(app.get("status")));
                     if(hrId==publisher&&status==0){
                         positionName=positionName+title+",";
                     }
