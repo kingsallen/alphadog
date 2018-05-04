@@ -1130,9 +1130,26 @@ public class TalentpoolEmailService {
                 if(!StringUtils.isEmptyMap(positionCitys)){
                     positionInfo.setCompanyAddr(positionCitys.get(jobPositionRecord.getId()));
                 }
-                positionInfo.setWorkYear(jobPositionRecord.getExperience()+"年");
+                String workYear=jobPositionRecord.getExperience();
+                int above=jobPositionRecord.getExperienceAbove();
+                if(StringUtils.isNotNullOrEmpty(workYear)){
+                    if(above>0){
+                        workYear=workYear+"年及以上";
+                    }else{
+                        workYear=workYear+"年";
+                    }
+                }
+                positionInfo.setWorkYear(workYear);
                 positionInfo.setPositionUrl(env.getProperty("talentpool.singleposition").replace("{{position_id}}",jobPositionRecord.getId()+""));
-                positionInfo.setSalary(jobPositionRecord.getSalary());
+                String salary="";
+                int salaryBottom=jobPositionRecord.getSalaryBottom();
+                int salaryTop=jobPositionRecord.getSalaryTop();
+                if(salaryBottom==0&&salaryTop==0){
+                    salary="薪资面议";
+                }else{
+                    salary=salaryBottom+"K - "+salaryTop+"K";
+                }
+                positionInfo.setSalary(salary);
                 if(positionPic!=null&&!positionPic.isEmpty()){
                     positionInfo.setPositionBg(CommonUtils.appendUrl(positionPic.get(jobPositionRecord.getId()),env.getProperty("http.cdn.url")));
                     positionInfo.setPositionName(jobPositionRecord.getTitle());
@@ -1351,48 +1368,46 @@ public class TalentpoolEmailService {
         String abbr="";
         List<TalentEmailForwardsResumeInfo> resumeInfoList=new ArrayList<>();
         List<ReceiveInfo> receiveInfos=new ArrayList<>();
-        for(UserEmployeeDO DO:employeeList){
-            String email=DO.getEmail();
-            String name=DO.getCname();
-            if(StringUtils.isNotNullOrEmpty(email)){
-                ReceiveInfo receiveInfo=new ReceiveInfo();
+        for(UserEmployeeDO DO:employeeList) {
+            String email = DO.getEmail();
+            String name = DO.getCname();
+            if (StringUtils.isNotNullOrEmpty(email)) {
+                ReceiveInfo receiveInfo = new ReceiveInfo();
                 receiveInfo.setToEmail(email);
                 receiveInfo.setToName(name);
                 receiveInfos.add(receiveInfo);
-                for(TalentEmailForwardsResumeInfo info:dataInfo){
-                    TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
-                    info1.setCoworkerName(name);
-                    String companyAbbr=info1.getCompanyAbbr();
-                    if(StringUtils.isNullOrEmpty(companyAbbr)){
-                        companyAbbr="";
-                    }
-                    String positionName=info1.getPositionName();
-                    if(StringUtils.isNullOrEmpty(positionName)){
-                        positionName="";
-                    }
-                    String userName=info1.getUserName();
-                    if(StringUtils.isNullOrEmpty(userName)){
-                        userName="";
-                    }
-                    String accountName=info1.getOfficialAccountName();
-                    if(StringUtils.isNullOrEmpty(accountName)){
-                        accountName="";
-                    }
-                    String context1= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
-                    info1.setCustomText(context1);
-                    info1.setRcpt(email);
-                    info1.setHrName(record.getUsername());
-                    String url=env.getProperty("talentpool.wholeProfile");
-                    String token="user_id="+info1.getUserId()+"&company_id="+companyId+"&hr_id="+hrId+"&timestamp="+new Date().getTime();
-                    token=CommonUtils.encryptString(token);
-                    logger.info("简历链接：{}",url+token);
-                    info1.setProfileFullUrl(url+token);
-                    if(StringUtils.isNullOrEmpty(abbr)){
-                        abbr=info1.getCompanyAbbr();
-                    }
-                    resumeInfoList.add(info1);
-                }
             }
+        }
+        for(TalentEmailForwardsResumeInfo info:dataInfo){
+            TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
+            String companyAbbr=info1.getCompanyAbbr();
+            if(StringUtils.isNullOrEmpty(companyAbbr)){
+                companyAbbr="";
+            }
+            String positionName=info1.getPositionName();
+            if(StringUtils.isNullOrEmpty(positionName)){
+                positionName="";
+            }
+            String userName=info1.getUserName();
+            if(StringUtils.isNullOrEmpty(userName)){
+                userName="";
+            }
+            String accountName=info1.getOfficialAccountName();
+            if(StringUtils.isNullOrEmpty(accountName)){
+                accountName="";
+            }
+            String context1= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
+            info1.setCustomText(context1);
+            info1.setHrName(record.getUsername());
+            String url=env.getProperty("talentpool.wholeProfile");
+            String token="user_id="+info1.getUserId()+"&company_id="+companyId+"&hr_id="+hrId+"&timestamp="+new Date().getTime();
+            token=CommonUtils.encryptString(token);
+            info1.setProfileFullUrl(url+token);
+            if(StringUtils.isNullOrEmpty(abbr)){
+                abbr=info1.getCompanyAbbr();
+            }
+            resumeInfoList.add(info1);
+
         }
         if(StringUtils.isEmptyList(resumeInfoList)||StringUtils.isEmptyList(receiveInfos)){
             return null;
