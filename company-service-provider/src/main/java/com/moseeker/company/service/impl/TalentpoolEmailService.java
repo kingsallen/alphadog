@@ -1170,9 +1170,9 @@ public class TalentpoolEmailService {
                 int above=jobPositionRecord.getExperienceAbove();
                 if(StringUtils.isNotNullOrEmpty(workYear)){
                     if(above>0){
-                        workYear=workYear+"年及以上";
+                        workYear=workYear+"年工作经验及以上";
                     }else{
-                        workYear=workYear+"年";
+                        workYear=workYear+"年工作经验";
                     }
                 }
                 positionInfo.setWorkYear(workYear);
