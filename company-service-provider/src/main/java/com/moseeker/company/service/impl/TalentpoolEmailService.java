@@ -1061,7 +1061,9 @@ public class TalentpoolEmailService {
         return totalNum;
     }
 
-
+    /*
+    组装邀请投递的信息
+     */
     public TalentEmailInviteToDelivyInfo getInviteToDelivyInfoList(List<Integer> positionIdList,int companyId,String context, HrCompanyRecord record) throws TException {
         List<JobPositionRecord> positionList=this.getPositionList(positionIdList);
         HrWxWechatRecord wechatRecord=getWxInfo(companyId);
@@ -1082,21 +1084,29 @@ public class TalentpoolEmailService {
             delivyInfo.setSeeMorePosition(null);
             List<Integer> teamIdList=this.getTeamIdList(positionList);
             Map<Integer,String> positionPic=this.getPositionPicture(teamIdList,positionList,record);
+            Map<Integer,String> positionCitys=this.getPositionCity(positionIdList);
             String positionName="";
+            int i=1;
             for(JobPositionRecord jobPositionRecord:positionList){
-                int i=1;
                 int publisher=jobPositionRecord.getPublisher();
                 PositionInfo positionInfo=new  PositionInfo();
                 for(Integer key:publisherCompany.keySet()){
                     if(key==publisher){
                         HrCompanyRecord hrCompanyRecord=publisherCompany.get(key);
                         positionInfo.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
-                        positionInfo.setCompanyAddr(hrCompanyRecord.getAddress());
+
                         break;
                     }
                 }
                 positionName=positionName+jobPositionRecord.getTitle()+",";
-                positionInfo.setRow(i+"");
+                if(i%2==0){
+                    positionInfo.setRow("0");
+                }else{
+                    positionInfo.setRow("1");
+                }
+                if(!StringUtils.isEmptyMap(positionCitys)){
+                    positionInfo.setCompanyAddr(positionCitys.get(jobPositionRecord.getId()));
+                }
                 positionInfo.setWorkYear(jobPositionRecord.getExperience());
                 positionInfo.setPositionId(jobPositionRecord.getId()+"");
                 positionInfo.setSalary(jobPositionRecord.getSalary());
@@ -1113,6 +1123,32 @@ public class TalentpoolEmailService {
             delivyInfo.setPositionName(positionName);
             delivyInfo.setPositions(positionInfoList);
             return delivyInfo;
+        }
+        return null;
+    }
+
+    /*
+     获取职位的地点
+     */
+    private Map<Integer,String> getPositionCity(List<Integer> positionIdList){
+        Map<Integer,List<String>> result=pcRevisionEntity.handlePositionCity(positionIdList);
+        if(!StringUtils.isEmptyMap(result)){
+            Map<Integer,String> dataResult=new HashMap<>();
+            for(Integer key:result.keySet()){
+                List<String> list=result.get(key);
+                String positionCitys="";
+                if(!StringUtils.isEmptyList(list)){
+                    for(String item:list){
+                        positionCitys+=item+",";
+                    }
+                    if(StringUtils.isNotNullOrEmpty(positionCitys)){
+                        positionCitys=positionCitys.substring(0,positionCitys.lastIndexOf(","));
+                    }
+                }
+                dataResult.put(key,positionCitys);
+
+            }
+            return dataResult;
         }
         return null;
     }
