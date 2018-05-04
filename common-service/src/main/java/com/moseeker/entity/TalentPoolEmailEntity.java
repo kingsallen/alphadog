@@ -338,13 +338,14 @@ public class TalentPoolEmailEntity {
         }
         if (org.apache.commons.lang.StringUtils.isNotBlank(companyName)) {
             if (condition != null) {
-                condition = condition.addInnerCondition(new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName).addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.AND));
+                condition.addInnerCondition(new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName).addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.AND));
             } else {
                 condition = new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName).addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.OR);
             }
         }
 
         if (condition != null) {
+            logger.info("fetchEmailAccounts condition:{}", condition);
             Query.QueryBuilder queryBuilder1 = new Query.QueryBuilder();
             queryBuilder1.where(condition);
             List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(queryBuilder1.buildQuery());
