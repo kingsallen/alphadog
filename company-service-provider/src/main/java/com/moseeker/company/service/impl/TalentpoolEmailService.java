@@ -623,11 +623,16 @@ public class TalentpoolEmailService {
                     logger.info(JSON.toJSONString(emailList));
                     logger.info("================================================");
                     updateEmailInfoBalance(companyId, lost,5);
-                    MandrillEmailListStruct struct = convertToEmailStruct(emailList);
+                    List<MandrillEmailListStruct> struct = convertToEmailStruct(emailList);
                     logger.info("=============MandrillEmailListStruct===========");
                     logger.info(JSON.toJSONString(struct));
                     logger.info("================================================");
-                    mqService.sendMandrilEmailList(struct);
+                    if(!StringUtils.isEmptyList(struct)){
+                        for(MandrillEmailListStruct item:struct){
+                            mqService.sendMandrilEmailList(item);
+                        }
+                    }
+
                 } else {
                     return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
                 }
@@ -724,11 +729,16 @@ public class TalentpoolEmailService {
                 logger.info("=============EmailResumeBean===========");
                 logger.info(JSON.toJSONString(emailList));
                 logger.info("================================================");
-                MandrillEmailListStruct struct = convertToEmailStruct(emailList);
+                List<MandrillEmailListStruct> structs = convertToEmailStruct(emailList);
                 logger.info("=============MandrillEmailListStruct===========");
-                logger.info(JSON.toJSONString(struct));
+                logger.info(JSON.toJSONString(structs));
                 logger.info("================================================");
-                mqService.sendMandrilEmailList(struct);
+                if(!StringUtils.isEmptyList(structs)){
+                    for(MandrillEmailListStruct struct:structs){
+                        mqService.sendMandrilEmailList(struct);
+                    }
+                }
+
             }catch(Exception e){
                 logger.error(e.getMessage(),e);
             }
@@ -770,41 +780,41 @@ public class TalentpoolEmailService {
         return result;
     }
 
-    private MandrillEmailListStruct convertToEmailStruct(EmailResumeBean emailInviteBean){
-        MandrillEmailListStruct result=new MandrillEmailListStruct();
-        result.setTemplateName(emailInviteBean.getTemplateName());
-        result.setSubject(emailInviteBean.getSubject());
-        result.setFrom_name(emailInviteBean.getFromName());
-        result.setFrom_email(emailInviteBean.getFromEmail());
+    private List<MandrillEmailListStruct> convertToEmailStruct(EmailResumeBean emailInviteBean){
+        List<MandrillEmailListStruct> dataList=new ArrayList<>();
         List<TalentEmailForwardsResumeInfo> merge=emailInviteBean.getMergeVars();
         List<ReceiveInfo> to=emailInviteBean.getTo();
-        List<Map<String,String>> toReceive=new ArrayList<>();
-        List<Map<String,Object>> mergeData=new ArrayList<>();
-        for(ReceiveInfo receiveInfo:to){
-            String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
-            Map<String,Object> map=JSON.parseObject(tores);
-            Map<String,String> map1=new HashMap<>();
-            for(String key:map.keySet()){
-                map1.put(key,String.valueOf(map.get(key)));
-            }
-            toReceive.add(map1);
-        }
         for(TalentEmailForwardsResumeInfo info:merge){
-            String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
-            Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
-            Map<String,Object> infoMap1=new HashMap<>();
-            for(String key:infoMap.keySet()){
-                infoMap1.put(key,infoMap.get(key));
+            MandrillEmailListStruct result=new MandrillEmailListStruct();
+            List<Map<String,Object>> mergeData=new ArrayList<>();
+            String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+            List<Map<String,String>> toReceive=new ArrayList<>();
+            for(ReceiveInfo receiveInfo:to){
+                Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
+
+                infoMap.put("rcpt",receiveInfo.getToEmail());
+                mergeData.add(infoMap);
+                String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
+                Map<String,Object> map=JSON.parseObject(tores);
+                Map<String,String> map1=new HashMap<>();
+                for(String key:map.keySet()){
+                    map1.put(key,String.valueOf(map.get(key)));
+                }
+                toReceive.add(map1);
+
             }
-            mergeData.add(infoMap1);
+            result.setTemplateName(emailInviteBean.getTemplateName());
+            result.setSubject(emailInviteBean.getSubject());
+            result.setFrom_name(emailInviteBean.getFromName());
+            result.setFrom_email(emailInviteBean.getFromEmail());
+            logger.info("=============mergeData=============");
+            String merges = JSON.toJSONString(mergeData);
+            logger.info(merges);
+            logger.info("===============================");
+            result.setMergeVars(merges);
+            result.setTo(toReceive);
         }
-        logger.info("=============mergeData=============");
-        String merges = JSON.toJSONString(mergeData);
-        logger.info(merges);
-        logger.info("===============================");
-        result.setMergeVars(merges);
-        result.setTo(toReceive);
-        return result;
+        return dataList;
     }
 
 
@@ -975,7 +985,7 @@ public class TalentpoolEmailService {
                         delivyInfo1.setSeeMorePosition(url);
                     }else{
                         if(positionIdList.size()>10){
-                            delivyInfo1.setPositionNum(this.getPositionIdNum(companyId,hrId,count)+"");
+                            delivyInfo1.setPositionNum(positionNum+"");
                             String url=env.getProperty("talentpool.allposition")+this.getCompanyIds(count,companyId,hrId);
                             delivyInfo1.setSeeMorePosition(url);
                         }
