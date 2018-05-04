@@ -411,10 +411,7 @@ public class TalentPoolEmailEntity {
                                 hrCompanyEmailInfo.getCompanyId().intValue())
                         .findAny();
                 if (hrCompanyDOOptional.isPresent()) {
-                    abbreviation = hrCompanyDOOptional.get().getAbbreviation();
-                    if (org.apache.commons.lang.StringUtils.isBlank(abbreviation)) {
-                        abbreviation = hrCompanyDOOptional.get().getName();
-                    }
+                    abbreviation = org.apache.commons.lang.StringUtils.isNotBlank(hrCompanyDOOptional.get().getName())?hrCompanyDOOptional.get().getName():hrCompanyDOOptional.get().getAbbreviation();
                 }
                 logger.info("fetchEmailAccounts abbreviation:{}", abbreviation);
                 emailAccountInfo.setAbbersive(abbreviation);
