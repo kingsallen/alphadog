@@ -1125,7 +1125,7 @@ public class TalentpoolEmailService {
                 if(!StringUtils.isEmptyMap(positionCitys)){
                     positionInfo.setCompanyAddr(positionCitys.get(jobPositionRecord.getId()));
                 }
-                positionInfo.setWorkYear(jobPositionRecord.getExperience());
+                positionInfo.setWorkYear(jobPositionRecord.getExperience()+"年");
                 positionInfo.setPositionUrl(env.getProperty("talentpool.singleposition").replace("{{position_id}}",jobPositionRecord.getId()+""));
                 positionInfo.setSalary(jobPositionRecord.getSalary());
                 if(positionPic!=null&&!positionPic.isEmpty()){
