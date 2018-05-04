@@ -479,7 +479,7 @@ public class UserCenterService {
 
                 }
             } catch (CommonException e) {
-                logger.error(e.getMessage(), e);
+                logger.warn(e.getMessage(), e);
             }
         }
         logger.info("getApplicationDetail:"+applicationDetailVO);
