@@ -1,6 +1,7 @@
 package com.moseeker.entity.biz;
 
 import com.moseeker.common.util.StringUtils;
+import java.net.URLEncoder;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -52,7 +53,8 @@ public class CommonUtils {
         //公钥加密
         byte[] encryptedBytes = encrypt(info.getBytes(), publicKey);
         String s= new String(Base64.getEncoder().encode(encryptedBytes));
-        return s;
+        String code = URLEncoder.encode(s);
+        return code;
     }
 
     public static String stringDecrypt(String token) throws Exception {
