@@ -641,7 +641,7 @@ public class TalentpoolEmailService {
                     logger.info("=============employeeData===========");
                     logger.info(JSON.toJSONString(employeeData));
                     logger.info("================================================");
-                    client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"",JSON.toJSONString(employeeData,serializeConfig, SerializerFeature.DisableCircularReferenceDetect));
+                    this.handlerRedisEmployee(employeeData,hrId);
                 }
 
             }catch(Exception e){
@@ -651,6 +651,31 @@ public class TalentpoolEmailService {
             return TalentEmailEnum.NOCONFIGEMAIL.getValue();
         }
         return 0;
+    }
+
+    private void handlerRedisEmployee(List<Map<String,Object>> employeeData,int hrId){
+        String res=client.get(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"");
+        if(StringUtils.isNotNullOrEmpty(res)){
+            if(employeeData.size()>10){
+                employeeData=employeeData.subList(0,10);
+            }
+        }else{
+            List<Map<String,Object>> resData= (List<Map<String, Object>>) JSON.parse(res);
+            if(employeeData.size()>10){
+                employeeData=employeeData.subList(0,10);
+            }else{
+                int resSize=resData.size();
+                int size=employeeData.size();
+                int num=10-size;
+                if(resSize<num){
+                    num=resSize;
+                }
+                for(int i=0;i<num;i++){
+                    employeeData.add(resData.get(i));
+                }
+            }
+        }
+        client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"",JSON.toJSONString(employeeData,serializeConfig, SerializerFeature.DisableCircularReferenceDetect));
     }
 
     private List<Map<String,Object>> handlerEmployeeData(List<UserEmployeeDO> employeeList) throws TException {
@@ -1632,7 +1657,7 @@ public class TalentpoolEmailService {
                 for(Map<String,Object> app:applications){
                     int itemId=(int)app.get("company_id");
                     String title=(String)app.get("title");
-                    int status=(int)app.get("status");
+                    int status=Integer.parseInt(String.valueOf(app.get("status")));
                     if(companyId==itemId&&status==0){
                         positionName=positionName+title+",";
                     }
@@ -1643,7 +1668,7 @@ public class TalentpoolEmailService {
                 for(Map<String,Object> app:applications){
                     int publisher=(int)app.get("publisher");
                     String title=(String)app.get("title");
-                    int status=(int)app.get("status");
+                    int status=Integer.parseInt(String.valueOf(app.get("status")));
                     if(hrId==publisher&&status==0){
                         positionName=positionName+title+",";
                     }
