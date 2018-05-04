@@ -362,20 +362,30 @@ public class TalentPoolEmailEntity {
             emailAccountForm.setTotal(0);
             return emailAccountForm;
         }
-
+        logger.info("fetchEmailAccounts companyIdList:{}", companyIdList);
         if (companyId > 0) {
+            logger.info("fetchEmailAccounts companyId > 0, companyId:{}", companyId);
             if (companyIdListFromName != null && companyIdListFromName.size() > 0) {
+                logger.info("fetchEmailAccounts companyIdListFromName not empty, companyIdListFromName:{}", companyIdListFromName);
                 Optional<Integer> optional = companyIdListFromName.stream().filter(cid -> cid.intValue() == companyId).findAny();
+                logger.info("fetchEmailAccounts optional:{}", optional);
                 if (optional.isPresent()) {
+                    logger.info("fetchEmailAccounts optional exist! optional.isPresent:{}", optional.isPresent());
                     companyIdList.add(companyId);
                 }
+                logger.info("fetchEmailAccounts companyIdList:{}", companyIdList);
             } else {
+                logger.info("fetchEmailAccounts companyIdListFromName is empty! companyIdListFromName:{}", companyIdListFromName);
                 companyIdList.add(companyId);
             }
+            logger.info("fetchEmailAccounts companyIdList:{}", companyIdList);
         } else {
+            logger.info("fetchEmailAccounts companyId <= 0, companyId:{}", companyId);
             if (companyIdListFromName != null && companyIdListFromName.size() > 0) {
+                logger.info("fetchEmailAccounts companyIdListFromName not empty!, companyIdListFromName:{}", companyIdListFromName);
                 companyIdList = companyIdListFromName;
             }
+            logger.info("fetchEmailAccounts companyIdList:{}", companyIdList);
         }
         logger.info("fetchEmailAccounts companyIdList:{}", companyIdList);
         logger.info("fetchEmailAccounts hrCompanyDOList:{}", companyIdList);
