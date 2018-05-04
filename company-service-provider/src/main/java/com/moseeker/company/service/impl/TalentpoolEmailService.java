@@ -1249,11 +1249,19 @@ public class TalentpoolEmailService {
         DictIndustryTypeRecord dictIndustryTypeRecord=this.getIndustryTypeInfo(dictIndustryRecord.getType());
         if(!StringUtils.isEmptyList(teamIdList)){
             List<Map<String,Object>> list=pcRevisionEntity.HandleCmsResource(teamIdList,3);
-
             if(StringUtils.isEmptyList(list)){
-                for(JobPositionRecord jobPositionRecord:positionList){
-                    result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
+                String banner=record.getBanner();
+                if(StringUtils.isNotNullOrEmpty(banner)){
+                    for(JobPositionRecord jobPositionRecord:positionList){
+                        result.put(jobPositionRecord.getId(),banner);
+                    }
+                }else{
+                    for(JobPositionRecord jobPositionRecord:positionList){
+
+                        result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
+                    }
                 }
+
             }else {
                 for (JobPositionRecord jobPositionRecord : positionList) {
                     logger.info("======================================");
@@ -1273,16 +1281,27 @@ public class TalentpoolEmailService {
                             }
                         }
                     }
-
                     if (flag == 0) {
-                        result.put(jobPositionRecord.getId(), dictIndustryTypeRecord.getJobImg());
+                        String banner=record.getBanner();
+                        if(StringUtils.isNotNullOrEmpty(banner)){
+                            result.put(jobPositionRecord.getId(), banner);
+                        }else{
+                            result.put(jobPositionRecord.getId(), dictIndustryTypeRecord.getJobImg());
+                        }
                     }
 
                 }
             }
         }else{
-            for(JobPositionRecord jobPositionRecord:positionList){
-                result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
+            String banner=record.getBanner();
+            if(StringUtils.isNotNullOrEmpty(banner)){
+                for(JobPositionRecord jobPositionRecord:positionList){
+                    result.put(jobPositionRecord.getId(),banner);
+                }
+            }else{
+                for(JobPositionRecord jobPositionRecord:positionList){
+                    result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
+                }
             }
         }
 
