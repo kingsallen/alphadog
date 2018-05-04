@@ -1630,7 +1630,7 @@ public class TalentpoolEmailService {
                 String majorName = (String) education.get("major_name");
                 if (endUntilNow == 1) {
 //                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");/**/
-                    endTime ="至今";
+                    endTime ="今";
                 }
                 info.setStartTime(startTime);
                 info.setCollegeName(collegeName);
@@ -1659,7 +1659,7 @@ public class TalentpoolEmailService {
             int endUntilNow=(int)recentJob.get("end_until_now");
             if(endUntilNow==1){
 //                SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                workEndTime = "至今";
+                workEndTime = "今";
             }
             info.setWorkCompany(companyName);
             info.setWorkEndTime(workEndTime);
@@ -1678,7 +1678,7 @@ public class TalentpoolEmailService {
                 int endUntilNow=(int)map.get("end_until_now");
                 if(endUntilNow==1){
 //                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                    workEndTime ="至今";// ff.format(new Date());
+                    workEndTime ="今";// ff.format(new Date());
                 }
                 info.setWorkCompany(companyName);
                 info.setWorkEndTime(workEndTime);
