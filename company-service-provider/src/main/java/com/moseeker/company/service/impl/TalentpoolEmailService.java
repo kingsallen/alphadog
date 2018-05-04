@@ -982,15 +982,15 @@ public class TalentpoolEmailService {
                     receiveInfo.setToEmail(email);
                     receiveInfos.add(receiveInfo);
                     delivyInfo1.setRcpt(email);
-                    context= CommonUtils.replaceUtil(context,delivyInfo1.getCompanyAbbr(),delivyInfo1.getPositionName(),name,hrAccountRecord.getUsername(),delivyInfo1.getOfficialAccountName());
-                    delivyInfo1.setCustomText(context);
+                    String context1= CommonUtils.replaceUtil(context,delivyInfo1.getCompanyAbbr(),delivyInfo1.getPositionName(),name,hrAccountRecord.getUsername(),delivyInfo1.getOfficialAccountName());
+                    delivyInfo1.setCustomText(context1);
                     delivyInfo1.setEmployeeName(name);
                     if(flag==1){
                         delivyInfo1.setPositionNum(this.getPositionIdNum(companyId,hrId,count)+"");
                         String url=env.getProperty("talentpool.allposition")+this.getCompanyIds(count,companyId,hrId);
                         delivyInfo1.setSeeMorePosition(url);
                     }else{
-                        if(positionIdList.size()>10){
+                        if(positionNum>10){
                             delivyInfo1.setPositionNum(positionNum+"");
                             String url=env.getProperty("talentpool.allposition")+this.getCompanyIds(count,companyId,hrId);
                             delivyInfo1.setSeeMorePosition(url);
@@ -1378,8 +1378,8 @@ public class TalentpoolEmailService {
                     if(StringUtils.isNullOrEmpty(accountName)){
                         accountName="";
                     }
-                    context= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
-                    info1.setCustomText(context);
+                    String context1= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
+                    info1.setCustomText(context1);
                     info1.setRcpt(email);
                     info1.setHrName(record.getUsername());
                     String url=env.getProperty("talentpool.wholeProfile");
