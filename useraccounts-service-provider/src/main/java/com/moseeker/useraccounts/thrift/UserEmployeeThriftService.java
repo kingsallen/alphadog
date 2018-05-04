@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -148,7 +149,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     @Override
     public Response getPastUserEmployee(int company_id) throws BIZException, TException {
         try{
-            List<UserEmployeeDO> list=employeeService.getPastUserEmployeeEmail(company_id);
+            List<Map<String,Object>> list=employeeService.getPastUserEmployeeEmail(company_id);
             if(list!=null&&list.size()>0){
                 return ResponseUtils.success(list);
             }
