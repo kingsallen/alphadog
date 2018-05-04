@@ -936,8 +936,14 @@ public class TalentpoolEmailService {
         try{
             EmailInviteBean result=new EmailInviteBean();
             int count=talentPoolEntity.valiadteMainAccount(hrId,companyId);
+            int positionNum=0;
             if(flag==1){
-                positionIdList=getPositionIds(companyId,hrId,count);
+                positionIdList=this.getPositionIds(companyId,hrId,count);
+            }else{
+                positionNum=positionIdList.size();
+                if(positionNum>10){
+                    positionIdList=positionIdList.subList(0,10);
+                }
             }
             TalentEmailInviteToDelivyInfo delivyInfo=this.getInviteToDelivyInfoList(positionIdList,companyId,context,record);
             logger.info("=======转换response为List<TalentEmailInviteToDelivyInfo> ===========");
@@ -993,6 +999,7 @@ public class TalentpoolEmailService {
         }
         return null;
     }
+
 
     private TalentEmailInviteToDelivyInfo convertDelivyInfo(TalentEmailInviteToDelivyInfo info){
         TalentEmailInviteToDelivyInfo info1=new TalentEmailInviteToDelivyInfo();
