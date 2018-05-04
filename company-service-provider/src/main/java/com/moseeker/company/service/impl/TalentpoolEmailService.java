@@ -1098,6 +1098,7 @@ public class TalentpoolEmailService {
                 positionName=positionName+jobPositionRecord.getTitle()+",";
                 positionInfo.setRow(i+"");
                 positionInfo.setWorkYear(jobPositionRecord.getExperience());
+                positionInfo.setPositionId(jobPositionRecord.getId()+"");
                 positionInfo.setSalary(jobPositionRecord.getSalary());
                 if(positionPic!=null&&!positionPic.isEmpty()){
                     positionInfo.setPositionBg(CommonUtils.appendUrl(positionPic.get(jobPositionRecord.getId()),env.getProperty("http.cdn.url")));
@@ -1574,8 +1575,8 @@ public class TalentpoolEmailService {
                 int degree = (int) education.get("degree");
                 String majorName = (String) education.get("major_name");
                 if (endUntilNow == 1) {
-                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                    endTime = ff.format(new Date());
+//                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");/**/
+                    endTime ="至今";
                 }
                 info.setStartTime(startTime);
                 info.setCollegeName(collegeName);
@@ -1599,12 +1600,12 @@ public class TalentpoolEmailService {
             TalentWorkExpInfo info=new TalentWorkExpInfo();
             String workStartTime= (String) recentJob.get("start_date");
             String workEndTime= (String) recentJob.get("end_date");
-            String companyName= (String) recentJob.get("end_date");
+            String companyName= (String) recentJob.get("company_name");
             String job= (String) recentJob.get("job");
             int endUntilNow=(int)recentJob.get("end_until_now");
             if(endUntilNow==1){
-                SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                workEndTime = ff.format(new Date());
+//                SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
+                workEndTime = "至今";
             }
             info.setWorkCompany(companyName);
             info.setWorkEndTime(workEndTime);
@@ -1618,12 +1619,12 @@ public class TalentpoolEmailService {
                 TalentWorkExpInfo info=new TalentWorkExpInfo();
                 String workStartTime= (String) map.get("start_date");
                 String workEndTime= (String) map.get("end_date");
-                String companyName= (String) map.get("end_date");
+                String companyName= (String) map.get("company_name");
                 String job= (String) map.get("job");
                 int endUntilNow=(int)map.get("end_until_now");
                 if(endUntilNow==1){
-                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                    workEndTime = ff.format(new Date());
+//                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
+                    workEndTime ="至今";// ff.format(new Date());
                 }
                 info.setWorkCompany(companyName);
                 info.setWorkEndTime(workEndTime);
