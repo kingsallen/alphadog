@@ -4,6 +4,7 @@ package com.moseeker.company.bean.email;
  * Created by zztaiwll on 18/4/25.
  */
 public class PositionInfo {
+  private String positionId;
   private String positionBg;
   private String positionName;
   private String companyAbbr;
@@ -11,6 +12,14 @@ public class PositionInfo {
   private String salary;
   private String workYear;
   private String row;
+
+    public String getPositionId() {
+        return positionId;
+    }
+
+    public void setPositionId(String positionId) {
+        this.positionId = positionId;
+    }
 
     public String getPositionBg() {
         return positionBg;

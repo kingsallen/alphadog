@@ -756,7 +756,7 @@ public class TalentpoolEmailService {
         }
         for(TalentEmailInviteToDelivyInfo info:merge){
             String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
-            Map<String,Object> infoMap=JSON.parseObject(infos);
+            Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
             Map<String,Object> infoMap1=new HashMap<>();
             for(String key:infoMap.keySet()){
                infoMap1.put(key,infoMap.get(key));
@@ -791,14 +791,17 @@ public class TalentpoolEmailService {
         }
         for(TalentEmailForwardsResumeInfo info:merge){
             String infos=JSON.toJSONString(info,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
-            Map<String,Object> infoMap=JSON.parseObject(infos);
+            Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
             Map<String,Object> infoMap1=new HashMap<>();
             for(String key:infoMap.keySet()){
                 infoMap1.put(key,infoMap.get(key));
             }
             mergeData.add(infoMap1);
         }
+        logger.info("=============mergeData=============");
         String merges = JSON.toJSONString(mergeData);
+        logger.info(merges);
+        logger.info("===============================");
         result.setMergeVars(merges);
         result.setTo(toReceive);
         return result;
@@ -1058,7 +1061,9 @@ public class TalentpoolEmailService {
         return totalNum;
     }
 
-
+    /*
+    组装邀请投递的信息
+     */
     public TalentEmailInviteToDelivyInfo getInviteToDelivyInfoList(List<Integer> positionIdList,int companyId,String context, HrCompanyRecord record) throws TException {
         List<JobPositionRecord> positionList=this.getPositionList(positionIdList);
         HrWxWechatRecord wechatRecord=getWxInfo(companyId);
@@ -1079,22 +1084,31 @@ public class TalentpoolEmailService {
             delivyInfo.setSeeMorePosition(null);
             List<Integer> teamIdList=this.getTeamIdList(positionList);
             Map<Integer,String> positionPic=this.getPositionPicture(teamIdList,positionList,record);
+            Map<Integer,String> positionCitys=this.getPositionCity(positionIdList);
             String positionName="";
+            int i=1;
             for(JobPositionRecord jobPositionRecord:positionList){
-                int i=1;
                 int publisher=jobPositionRecord.getPublisher();
                 PositionInfo positionInfo=new  PositionInfo();
                 for(Integer key:publisherCompany.keySet()){
                     if(key==publisher){
                         HrCompanyRecord hrCompanyRecord=publisherCompany.get(key);
                         positionInfo.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
-                        positionInfo.setCompanyAddr(hrCompanyRecord.getAddress());
+
                         break;
                     }
                 }
                 positionName=positionName+jobPositionRecord.getTitle()+",";
-                positionInfo.setRow(i+"");
+                if(i%2==0){
+                    positionInfo.setRow("0");
+                }else{
+                    positionInfo.setRow("1");
+                }
+                if(!StringUtils.isEmptyMap(positionCitys)){
+                    positionInfo.setCompanyAddr(positionCitys.get(jobPositionRecord.getId()));
+                }
                 positionInfo.setWorkYear(jobPositionRecord.getExperience());
+                positionInfo.setPositionId(jobPositionRecord.getId()+"");
                 positionInfo.setSalary(jobPositionRecord.getSalary());
                 if(positionPic!=null&&!positionPic.isEmpty()){
                     positionInfo.setPositionBg(CommonUtils.appendUrl(positionPic.get(jobPositionRecord.getId()),env.getProperty("http.cdn.url")));
@@ -1109,6 +1123,32 @@ public class TalentpoolEmailService {
             delivyInfo.setPositionName(positionName);
             delivyInfo.setPositions(positionInfoList);
             return delivyInfo;
+        }
+        return null;
+    }
+
+    /*
+     获取职位的地点
+     */
+    private Map<Integer,String> getPositionCity(List<Integer> positionIdList){
+        Map<Integer,List<String>> result=pcRevisionEntity.handlePositionCity(positionIdList);
+        if(!StringUtils.isEmptyMap(result)){
+            Map<Integer,String> dataResult=new HashMap<>();
+            for(Integer key:result.keySet()){
+                List<String> list=result.get(key);
+                String positionCitys="";
+                if(!StringUtils.isEmptyList(list)){
+                    for(String item:list){
+                        positionCitys+=item+",";
+                    }
+                    if(StringUtils.isNotNullOrEmpty(positionCitys)){
+                        positionCitys=positionCitys.substring(0,positionCitys.lastIndexOf(","));
+                    }
+                }
+                dataResult.put(key,positionCitys);
+
+            }
+            return dataResult;
         }
         return null;
     }
@@ -1546,7 +1586,8 @@ public class TalentpoolEmailService {
             for(Map<String,Object> app:applications){
                 int publisher=(int)app.get("publisher");
                 String title=(String)app.get("title");
-                if(hrId==publisher){
+                int status=(int)app.get("status");
+                if(hrId==publisher&&status==0){
                     positionName=positionName+title+",";
                 }
             }
@@ -1571,8 +1612,8 @@ public class TalentpoolEmailService {
                 int degree = (int) education.get("degree");
                 String majorName = (String) education.get("major_name");
                 if (endUntilNow == 1) {
-                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                    endTime = ff.format(new Date());
+//                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");/**/
+                    endTime ="至今";
                 }
                 info.setStartTime(startTime);
                 info.setCollegeName(collegeName);
@@ -1596,12 +1637,12 @@ public class TalentpoolEmailService {
             TalentWorkExpInfo info=new TalentWorkExpInfo();
             String workStartTime= (String) recentJob.get("start_date");
             String workEndTime= (String) recentJob.get("end_date");
-            String companyName= (String) recentJob.get("end_date");
+            String companyName= (String) recentJob.get("company_name");
             String job= (String) recentJob.get("job");
             int endUntilNow=(int)recentJob.get("end_until_now");
             if(endUntilNow==1){
-                SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                workEndTime = ff.format(new Date());
+//                SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
+                workEndTime = "至今";
             }
             info.setWorkCompany(companyName);
             info.setWorkEndTime(workEndTime);
@@ -1615,12 +1656,12 @@ public class TalentpoolEmailService {
                 TalentWorkExpInfo info=new TalentWorkExpInfo();
                 String workStartTime= (String) map.get("start_date");
                 String workEndTime= (String) map.get("end_date");
-                String companyName= (String) map.get("end_date");
+                String companyName= (String) map.get("company_name");
                 String job= (String) map.get("job");
                 int endUntilNow=(int)map.get("end_until_now");
                 if(endUntilNow==1){
-                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                    workEndTime = ff.format(new Date());
+//                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
+                    workEndTime ="至今";// ff.format(new Date());
                 }
                 info.setWorkCompany(companyName);
                 info.setWorkEndTime(workEndTime);
