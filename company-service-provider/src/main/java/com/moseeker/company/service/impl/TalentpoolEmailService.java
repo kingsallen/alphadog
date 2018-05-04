@@ -1776,6 +1776,8 @@ public class TalentpoolEmailService {
                 String companyName= (String) map.get("company_name");
                 String job= (String) map.get("job");
                 int endUntilNow=(int)map.get("end_until_now");
+                workStartTime = DateUtils.dateFormat(workStartTime, 7);
+                workEndTime = DateUtils.dateFormat(workEndTime, 7);
                 if(endUntilNow==1){
 //                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
                     workEndTime ="今";// ff.format(new Date());
