@@ -1071,7 +1071,7 @@ public class PositionController {
     public String positionException( HttpServletRequest request, HttpServletResponse response){
         try{
             ParamUtils.initModelForm(request,HrThirdPartyPositionDO.class);
-            return "";
+            throw new NullPointerException();
         }catch(Exception e){
             logger.error(e.getMessage());
             return ResponseLogNotification.fail(request, e.getMessage());
