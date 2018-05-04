@@ -518,7 +518,9 @@ public class TalentPoolEntity {
         if(positionProfileFilterList != null && positionProfileFilterList.size()>0){
             List<Integer> filterIdList = positionProfileFilterList.stream().map(m -> m.getPfid()).collect(Collectors.toList());
             List<Integer> filterIdList3 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList, 3);
-            profileFilterList = getProfileFilterMapByPosition(company_id,  1, filterIdList3);
+            if (filterIdList3 != null && filterIdList3.size()>0) {
+                profileFilterList = getProfileFilterMapByPosition(company_id, 1, filterIdList3);
+            }
         }
         return profileFilterList;
     }
