@@ -325,18 +325,40 @@ public class TalentPoolEmailEntity {
         EmailAccountForm emailAccountForm = new EmailAccountForm();
         emailAccountForm.setCompany_id(companyId);
 
-        Query.QueryBuilder queryBuilder1 = new Query.QueryBuilder();
-        if (org.apache.commons.lang.StringUtils.isNotBlank(companyName)) {
-            queryBuilder1.where(HrCompany.HR_COMPANY.NAME.getName(), companyName).or(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName);
-        }
-
-        List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(queryBuilder1.buildQuery());
         List<Integer> companyIdList = new ArrayList<>();
 
         List<Integer> companyIdListFromName = null;
-        if (companyDOList != null && companyDOList.size() > 0) {
-            companyIdListFromName = companyDOList.stream().filter(hrCompanyDO -> hrCompanyDO.getId() > 0).map(HrCompanyDO::getId).collect(Collectors.toList());
+        Query.QueryBuilder queryBuilder1 = new Query.QueryBuilder();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(companyName)) {
+            companyName = companyName.trim();
+            queryBuilder1.where(HrCompany.HR_COMPANY.NAME.getName(), companyName).or(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName);
+            List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(queryBuilder1.buildQuery());
+            if (companyDOList != null && companyDOList.size() > 0) {
+                companyIdListFromName = companyDOList.stream().filter(hrCompanyDO -> hrCompanyDO.getId() > 0).map(HrCompanyDO::getId).collect(Collectors.toList());
+            }
+            if (companyIdListFromName == null) {
+                companyIdListFromName = new ArrayList<>();
+            }
         }
+
+        if (pageNumber <= 0) {
+            pageNumber = 1;
+        }
+        if (pageSize <= 0) {
+            pageSize = 10;
+        }
+        if (pageSize >= Constant.DATABASE_PAGE_SIZE) {
+            pageSize =  Constant.DATABASE_PAGE_SIZE;
+        }
+        int index = (pageNumber - 1) * pageSize;
+        emailAccountForm.setPage_number(pageNumber);
+        emailAccountForm.setPage_size(pageSize);
+
+        if (companyIdListFromName != null && companyIdListFromName.size() == 0) {
+            emailAccountForm.setTotal(0);
+            return emailAccountForm;
+        }
+
         if (companyId > 0) {
             if (companyIdListFromName != null && companyIdListFromName.size() > 0) {
                 Optional<Integer> optional = companyIdListFromName.stream().filter(cid -> cid.intValue() == companyId).findAny();
@@ -351,21 +373,7 @@ public class TalentPoolEmailEntity {
                 companyIdList = companyIdListFromName;
             }
         }
-        if (pageNumber <= 0) {
-            pageNumber = 1;
-        }
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-        if (pageSize >= Constant.DATABASE_PAGE_SIZE) {
-            pageSize =  Constant.DATABASE_PAGE_SIZE;
-        }
-        int index = (pageNumber - 1) * pageSize;
-
-
         int total = hrCompanyEmailInfoDao.countEmailAccounts(companyIdList);
-        emailAccountForm.setPage_number(pageNumber);
-        emailAccountForm.setPage_size(pageSize);
         emailAccountForm.setTotal(total);
 
         List<HrCompanyEmailInfo> emailInfoList = hrCompanyEmailInfoDao.fetchOrderByCreateTime(companyIdList, index, pageSize);
