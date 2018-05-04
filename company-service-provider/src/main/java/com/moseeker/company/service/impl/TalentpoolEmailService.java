@@ -645,17 +645,14 @@ public class TalentpoolEmailService {
         return 0;
     }
 
-
     private List<Map<String,Object>> handlerEmployeeData(List<UserEmployeeDO> employeeList) throws TException {
         if(StringUtils.isEmptyList(employeeList)){
             return null;
         }
         List<Map<String,Object>> list=new ArrayList<>();
         for(UserEmployeeDO DO:employeeList){
-            Map<String,Object> DOData=new HashMap<>();
-            DOData.put("id",DO.getId());
-            DOData.put("name",DO.getCname());
-            DOData.put("email",DO.getEmail());
+            String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+            Map<String,Object> DOData=JSON.parseObject(DOs, Map.class);
             list.add(DOData);
         }
         return list;
@@ -939,8 +936,14 @@ public class TalentpoolEmailService {
         try{
             EmailInviteBean result=new EmailInviteBean();
             int count=talentPoolEntity.valiadteMainAccount(hrId,companyId);
+            int positionNum=0;
             if(flag==1){
-                positionIdList=getPositionIds(companyId,hrId,count);
+                positionIdList=this.getPositionIds(companyId,hrId,count);
+            }else{
+                positionNum=positionIdList.size();
+                if(positionNum>10){
+                    positionIdList=positionIdList.subList(0,10);
+                }
             }
             TalentEmailInviteToDelivyInfo delivyInfo=this.getInviteToDelivyInfoList(positionIdList,companyId,context,record);
             logger.info("=======转换response为List<TalentEmailInviteToDelivyInfo> ===========");
@@ -996,6 +999,7 @@ public class TalentpoolEmailService {
         }
         return null;
     }
+
 
     private TalentEmailInviteToDelivyInfo convertDelivyInfo(TalentEmailInviteToDelivyInfo info){
         TalentEmailInviteToDelivyInfo info1=new TalentEmailInviteToDelivyInfo();
@@ -1378,7 +1382,7 @@ public class TalentpoolEmailService {
         }
         result.setTo(receiveInfos);
         result.setMergeVars(resumeInfoList);
-        result.setFromName(abbr+"人才招聘团队");
+        result.setFromName(abbr+"才招聘团队");
         result.setFromEmail("info@moseeker.net");
         result.setTemplateName("forwards-resume");
         return result;
@@ -1461,7 +1465,6 @@ public class TalentpoolEmailService {
                 if(hrCompanyRecord!=null){
                     info.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
                     info.setCompanyLogo(CommonUtils.appendUrl(hrCompanyRecord.getLogo(),env.getProperty("http.cdn.url")));
-
                 }
                 if(hrWxWechatRecord!=null){
                     info.setWeixinQrcode(CommonUtils.appendUrl(hrWxWechatRecord.getQrcode(),env.getProperty("http.cdn.url")));
@@ -1590,8 +1593,7 @@ public class TalentpoolEmailService {
             for(Map<String,Object> app:applications){
                 int publisher=(int)app.get("publisher");
                 String title=(String)app.get("title");
-                int status=(int)app.get("status");
-                if(hrId==publisher&&status==0){
+                if(hrId==publisher){
                     positionName=positionName+title+",";
                 }
             }
