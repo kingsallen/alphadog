@@ -1587,7 +1587,11 @@ public class TalentpoolEmailService {
 
                                     info.setEmail(email);
                                     info.setUserName(name);
-                                    info.setHeading(CommonUtils.appendUrl(heading,env.getProperty("http.cdn.url")));
+                                    if(StringUtils.isNotNullOrEmpty(heading)) {
+                                        info.setHeading(CommonUtils.appendUrl(heading, env.getProperty("http.cdn.url")));
+                                    }else{
+                                        info.setHeading(env.getProperty("email.user.heading.url"));
+                                    }
                                     info.setCityName(cityName);
                                     info.setGenderName(genderName);
                                 }
