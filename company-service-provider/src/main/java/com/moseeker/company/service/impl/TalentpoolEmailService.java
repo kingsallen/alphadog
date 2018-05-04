@@ -1115,7 +1115,7 @@ public class TalentpoolEmailService {
                     positionInfo.setCompanyAddr(positionCitys.get(jobPositionRecord.getId()));
                 }
                 positionInfo.setWorkYear(jobPositionRecord.getExperience());
-                positionInfo.setPositionId(jobPositionRecord.getId()+"");
+                positionInfo.setPositionUrl(env.getProperty("http.cdn.url").replace("{{position_id}}",jobPositionRecord.getId()+""));
                 positionInfo.setSalary(jobPositionRecord.getSalary());
                 if(positionPic!=null&&!positionPic.isEmpty()){
                     positionInfo.setPositionBg(CommonUtils.appendUrl(positionPic.get(jobPositionRecord.getId()),env.getProperty("http.cdn.url")));
@@ -1382,7 +1382,7 @@ public class TalentpoolEmailService {
         }
         result.setTo(receiveInfos);
         result.setMergeVars(resumeInfoList);
-        result.setFromName(abbr+"才招聘团队");
+        result.setFromName(abbr+"人才招聘团队");
         result.setFromEmail("info@moseeker.net");
         result.setTemplateName("forwards-resume");
         return result;
