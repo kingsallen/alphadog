@@ -1665,7 +1665,7 @@ public class TalentpoolEmailService {
                 for(Map<String,Object> app:applications){
                     int itemId=(int)app.get("company_id");
                     String title=(String)app.get("title");
-                    int status=(int)app.get("status");
+                    double status=(double)app.get("status");
                     if(companyId==itemId&&status==0){
                         positionName=positionName+title+",";
                     }
@@ -1676,7 +1676,7 @@ public class TalentpoolEmailService {
                 for(Map<String,Object> app:applications){
                     int publisher=(int)app.get("publisher");
                     String title=(String)app.get("title");
-                    int status=(int)app.get("status");
+                    double status=(double)app.get("status");
                     if(hrId==publisher&&status==0){
                         positionName=positionName+title+",";
                     }
