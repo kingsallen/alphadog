@@ -223,7 +223,7 @@ public class TalentPoolEntity {
      * @return
      */
     public String validateCompanyTalentPoolV3ByFilter(TalentpoolCompanyTagDO companyTagDO){
-        logger.info("companyTagDO info :{}",companyTagDO);
+
         if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins()) || StringUtils.isNotNullOrEmpty(companyTagDO.getWork_years())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getDegree())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position()) || companyTagDO.getMin_age() > 0 || companyTagDO.getMax_age()>0
@@ -519,7 +519,7 @@ public class TalentPoolEntity {
         if(positionProfileFilterList != null && positionProfileFilterList.size()>0){
             List<Integer> filterIdList = positionProfileFilterList.stream().map(m -> m.getPfid()).collect(Collectors.toList());
             List<Integer> filterIdList3 = talentpoolProfileFilterExcuteDao.getFilterExcuteByFilterIdListAndExecuterId(filterIdList, 3);
-            if(filterIdList3 != null && filterIdList3.size()>0) {
+            if (filterIdList3 != null && filterIdList3.size()>0) {
                 profileFilterList = getProfileFilterMapByPosition(company_id, 1, filterIdList3);
             }
         }
@@ -840,7 +840,7 @@ public class TalentPoolEntity {
             //获取与筛选规则有关系的职位数据
             Query query = new Query.QueryBuilder().where(new Condition(JobPosition.JOB_POSITION.ID.getName(), positionIds, ValueOp.IN))
                     .and(JobPosition.JOB_POSITION.COMPANY_ID.getName(), company_id)
-                    .and(new Condition(JobPosition.JOB_POSITION.STATUS.getName(), 1 ,ValueOp.NEQ)).buildQuery();
+                    .and(new Condition(JobPosition.JOB_POSITION.STATUS.getName(), 1, ValueOp.NEQ)).buildQuery();
             positionDOS = jobPositionDao.getDatas(query);
         }
 

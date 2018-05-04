@@ -657,7 +657,7 @@ public class TalentpoolEmailService {
 
     private void handlerRedisEmployee(List<Map<String,Object>> employeeData,int hrId){
         String res=client.get(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"");
-        if(StringUtils.isNotNullOrEmpty(res)){
+        if(StringUtils.isNullOrEmpty(res)){
             if(employeeData.size()>10){
                 employeeData=employeeData.subList(0,10);
             }
