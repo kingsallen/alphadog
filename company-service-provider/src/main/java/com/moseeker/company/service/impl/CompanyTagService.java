@@ -3,6 +3,7 @@ package com.moseeker.company.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolCompanyTagDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolCompanyTagUserDao;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -124,6 +125,7 @@ public class CompanyTagService {
         try {
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
             List<Integer> tagIdList=new ArrayList<>();
+            List<TalentpoolCompanyTagUser> deleList=new ArrayList<>();
             List<TalentpoolCompanyTag> tagList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, 0, Integer.MAX_VALUE);
             if (!StringUtils.isEmptyList(tagList)) {
                 for (Integer userId : idList) {
@@ -131,6 +133,10 @@ public class CompanyTagService {
                     if (res.getStatus() == 0 && StringUtils.isNotNullOrEmpty(res.getData())) {
                         Map<String, Object> profiles = JSON.parseObject(res.getData());
                         for (TalentpoolCompanyTag tag : tagList) {
+                            TalentpoolCompanyTagUser delRecord=new TalentpoolCompanyTagUser();
+                            delRecord.setUserId(userId);
+                            delRecord.setTagId(tag.getId());
+                            deleList.add(delRecord);
                             String tagStr = JSON.toJSONString(tag);
                             Map<String, Object> tagMap = JSON.parseObject(tagStr);
                             boolean isflag = companyFilterTagValidation.validateProfileAndComapnyTag(profiles, userId, companyId, tagMap);
@@ -145,7 +151,7 @@ public class CompanyTagService {
                     }
                 }
             }
-            talentpoolCompanyTagUserDao.deleteByUserId(idList);
+            talentpoolCompanyTagUserDao.deleteByUserIdAndTagId(deleList);
             if (!StringUtils.isEmptyList(list)) {
                 talentpoolCompanyTagUserDao.addAllRecord(list);
                 for (Integer userId : idList) {
