@@ -638,6 +638,9 @@ public class TalentpoolEmailService {
                 }
                 List<Map<String,Object>> employeeData=this.handlerEmployeeData(employeeList);
                 if(!StringUtils.isEmptyList(employeeData)){
+                    logger.info("=============employeeData===========");
+                    logger.info(JSON.toJSONString(employeeData));
+                    logger.info("================================================");
                     client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"",JSON.toJSONString(employeeData,serializeConfig, SerializerFeature.DisableCircularReferenceDetect));
                 }
 
@@ -656,8 +659,10 @@ public class TalentpoolEmailService {
         }
         List<Map<String,Object>> list=new ArrayList<>();
         for(UserEmployeeDO DO:employeeList){
-            String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
-            Map<String,Object> DOData=JSON.parseObject(DOs, Map.class);
+            Map<String,Object> DOData=new HashMap<>();
+            DOData.put("id",DO.getId());
+            DOData.put("name",DO.getCname());
+            DOData.put("email",DO.getEmail());
             list.add(DOData);
         }
         return list;
@@ -791,8 +796,9 @@ public class TalentpoolEmailService {
             List<Map<String,String>> toReceive=new ArrayList<>();
             for(ReceiveInfo receiveInfo:to){
                 Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
+
                 infoMap.put("rcpt",receiveInfo.getToEmail());
-                infoMap.put("coworkerName",receiveInfo.getToName());
+                infoMap.put("coworker_name",receiveInfo.getToName());
                 mergeData.add(infoMap);
                 String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
                 Map<String,Object> map=JSON.parseObject(tores);
@@ -1469,7 +1475,7 @@ public class TalentpoolEmailService {
      根据params查询es组织数据，获得需要发送的邮件内容
      */
     private List<TalentEmailForwardsResumeInfo> handlerData(Map<String,String> params,int companyId,String context,int hrId){
-        List<TalentEmailForwardsResumeInfo> dataList=this.talentEmailInfoSearch(params,hrId);
+        List<TalentEmailForwardsResumeInfo> dataList=this.talentEmailInfoSearch(params,hrId,companyId);
         dataList=this.handlerData(dataList,companyId,context);
         return dataList;
     }
@@ -1477,7 +1483,7 @@ public class TalentpoolEmailService {
      根据user_id查询es组织数据，获得需要发送的邮件内容
      */
     private List<TalentEmailForwardsResumeInfo> handlerData(List<Integer>userIdList,int companyId,String context,int hrId){
-        List<TalentEmailForwardsResumeInfo> dataList=this.talentEmailInfoSearch(userIdList,hrId);
+        List<TalentEmailForwardsResumeInfo> dataList=this.talentEmailInfoSearch(userIdList,hrId,companyId);
         dataList=this.handlerData(dataList,companyId,context);
         return dataList;
     }
@@ -1505,7 +1511,7 @@ public class TalentpoolEmailService {
     /*
       获取被发送人的信息
      */
-    private List<TalentEmailForwardsResumeInfo> talentEmailInfoSearch(Map<String,String> params,int hrId){
+    private List<TalentEmailForwardsResumeInfo> talentEmailInfoSearch(Map<String,String> params,int hrId,int companyId){
         try{
            Response res=searchService.userQuery(params);
            logger.info("=========response ================");
@@ -1513,7 +1519,7 @@ public class TalentpoolEmailService {
            logger.info("==================================");
            if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
               Map<String,Object> data= JSON.parseObject(res.getData());
-               List<TalentEmailForwardsResumeInfo> result=this.convertData(data,hrId);
+               List<TalentEmailForwardsResumeInfo> result=this.convertData(data,hrId,companyId);
                logger.info("=========List<TalentEmailForwardsResumeInfo>  ================");
                logger.info(JSON.toJSONString(result));
                logger.info("==================================");
@@ -1524,7 +1530,7 @@ public class TalentpoolEmailService {
         }
         return null;
     }
-    private List<TalentEmailForwardsResumeInfo> talentEmailInfoSearch(List<Integer>UserIdList,int hrId){
+    private List<TalentEmailForwardsResumeInfo> talentEmailInfoSearch(List<Integer>UserIdList,int hrId,int companyId){
         try{
             Response res=searchService.userQueryById(UserIdList);
             logger.info("=========response ================");
@@ -1532,7 +1538,7 @@ public class TalentpoolEmailService {
             logger.info("==================================");
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
-                List<TalentEmailForwardsResumeInfo> result=this.convertData(data,hrId);
+                List<TalentEmailForwardsResumeInfo> result=this.convertData(data,hrId,companyId);
                 logger.info("=========List<TalentEmailForwardsResumeInfo>  ================");
                 logger.info(JSON.toJSONString(result));
                 logger.info("==================================");
@@ -1548,7 +1554,7 @@ public class TalentpoolEmailService {
     /*
      获取所需要收件人的信息的数据
      */
-    private List<TalentEmailForwardsResumeInfo> convertData(Map<String,Object> result,int hrId){
+    private List<TalentEmailForwardsResumeInfo> convertData(Map<String,Object> result,int hrId,int companyId){
         List<TalentEmailForwardsResumeInfo> list=new ArrayList<>();
         if(!StringUtils.isEmptyMap(result)){
             int totalNum=Integer.parseInt(String.valueOf(result.get("totalNum")));
@@ -1581,7 +1587,11 @@ public class TalentpoolEmailService {
 
                                     info.setEmail(email);
                                     info.setUserName(name);
-                                    info.setHeading(CommonUtils.appendUrl(heading,env.getProperty("http.cdn.url")));
+                                    if(StringUtils.isNotNullOrEmpty(heading)) {
+                                        info.setHeading(CommonUtils.appendUrl(heading, env.getProperty("http.cdn.url")));
+                                    }else{
+                                        info.setHeading(env.getProperty("email.user.heading.url"));
+                                    }
                                     info.setCityName(cityName);
                                     info.setGenderName(genderName);
                                 }
@@ -1595,7 +1605,7 @@ public class TalentpoolEmailService {
                                 info.setWorkexps(talentWorkExpInfo);
                                 int year=(int)userMap.get("age");
                                 info.setBirth(year);
-                                info.setPositionName(this.getPositionName(applist,hrId));
+                                info.setPositionName(this.getPositionName(applist,hrId,companyId));
                                 info.setCompanyName("");
                                 if(!StringUtils.isEmptyList(talentEducationInfo)){
                                     info.setCompanyName(talentWorkExpInfo.get(0).getWorkCompany());
@@ -1614,17 +1624,33 @@ public class TalentpoolEmailService {
     /*
      获取职位信息
      */
-    private String getPositionName(List<Map<String,Object>> applications,int hrId){
+    private String getPositionName(List<Map<String,Object>> applications,int hrId,int companyId){
         String positionName="";
-        if(!StringUtils.isEmptyList(applications)){
-            for(Map<String,Object> app:applications){
-                int publisher=(int)app.get("publisher");
-                String title=(String)app.get("title");
-                if(hrId==publisher){
-                    positionName=positionName+title+",";
+        int count=talentPoolEntity.valiadteMainAccount(hrId,companyId);
+        if(count>0){
+            if(!StringUtils.isEmptyList(applications)){
+                for(Map<String,Object> app:applications){
+                    int itemId=(int)app.get("company_id");
+                    String title=(String)app.get("title");
+                    int status=(int)app.get("status");
+                    if(companyId==itemId&&status==0){
+                        positionName=positionName+title+",";
+                    }
+                }
+            }
+        }else{
+            if(!StringUtils.isEmptyList(applications)){
+                for(Map<String,Object> app:applications){
+                    int publisher=(int)app.get("publisher");
+                    String title=(String)app.get("title");
+                    int status=(int)app.get("status");
+                    if(hrId==publisher&&status==0){
+                        positionName=positionName+title+",";
+                    }
                 }
             }
         }
+
         if(StringUtils.isNotNullOrEmpty(positionName)){
             positionName=positionName.substring(0,positionName.lastIndexOf(","));
         }
