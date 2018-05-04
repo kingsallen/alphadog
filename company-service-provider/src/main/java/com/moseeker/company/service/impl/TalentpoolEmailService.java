@@ -1068,10 +1068,10 @@ public class TalentpoolEmailService {
     private int getPositionIdNum(int companyId,int hrId,int  count){
         int totalNum=0;
         if(count==0){
-            Query query=new Query.QueryBuilder().where("publisher",hrId).and("status",0).setPageNum(1).setPageSize(10).buildQuery();
+            Query query=new Query.QueryBuilder().where("publisher",hrId).and("status",0).buildQuery();
             totalNum =jobPositionDao.getCount(query);
         }else{
-            Query query=new Query.QueryBuilder().where("company_id",companyId).and("status",0).setPageNum(1).setPageSize(10).buildQuery();
+            Query query=new Query.QueryBuilder().where("company_id",companyId).and("status",0).buildQuery();
             totalNum =jobPositionDao.getCount(query);
         }
 
