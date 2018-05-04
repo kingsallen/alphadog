@@ -175,7 +175,8 @@ public class RedisAppender extends AppenderSkeleton implements Runnable {
             LoggingEvent event;
             int index = 0;
             while (index < batch.length && (event = events.poll()) != null) {
-                StringBuilder logBuilder = new StringBuilder();
+                batch[index++] = layout.format(event);
+                /*StringBuilder logBuilder = new StringBuilder();
 
                 logBuilder.append(layout.format(event));
 
@@ -189,7 +190,7 @@ public class RedisAppender extends AppenderSkeleton implements Runnable {
                     }
                 }
 
-                batch[index++] = logBuilder.toString();
+                batch[index++] = logBuilder.toString();*/
             }
 
             if (index > 0) {
