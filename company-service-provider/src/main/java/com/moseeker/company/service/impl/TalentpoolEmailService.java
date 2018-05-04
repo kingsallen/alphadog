@@ -796,8 +796,8 @@ public class TalentpoolEmailService {
             List<Map<String,String>> toReceive=new ArrayList<>();
             for(ReceiveInfo receiveInfo:to){
                 Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
+
                 infoMap.put("rcpt",receiveInfo.getToEmail());
-                infoMap.put("coworkerName",receiveInfo.getToName());
                 mergeData.add(infoMap);
                 String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
                 Map<String,Object> map=JSON.parseObject(tores);
@@ -1376,7 +1376,6 @@ public class TalentpoolEmailService {
                 receiveInfo.setToEmail(email);
                 receiveInfo.setToName(name);
                 receiveInfos.add(receiveInfo);
-<<<<<<< HEAD
                 for(TalentEmailForwardsResumeInfo info:dataInfo){
                     TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
                     info1.setCoworkerName(name);
@@ -1410,8 +1409,6 @@ public class TalentpoolEmailService {
                     }
                     resumeInfoList.add(info1);
                 }
-=======
->>>>>>> feature/talentpool3-3
             }
         }
         for(TalentEmailForwardsResumeInfo info:dataInfo){
