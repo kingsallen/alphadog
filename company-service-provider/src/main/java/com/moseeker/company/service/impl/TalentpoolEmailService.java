@@ -977,15 +977,15 @@ public class TalentpoolEmailService {
                     receiveInfo.setToEmail(email);
                     receiveInfos.add(receiveInfo);
                     delivyInfo1.setRcpt(email);
-                    context= CommonUtils.replaceUtil(context,delivyInfo1.getCompanyAbbr(),delivyInfo1.getPositionName(),name,hrAccountRecord.getUsername(),delivyInfo1.getOfficialAccountName());
-                    delivyInfo1.setCustomText(context);
+                    String context1= CommonUtils.replaceUtil(context,delivyInfo1.getCompanyAbbr(),delivyInfo1.getPositionName(),name,hrAccountRecord.getUsername(),delivyInfo1.getOfficialAccountName());
+                    delivyInfo1.setCustomText(context1);
                     delivyInfo1.setEmployeeName(name);
                     if(flag==1){
                         delivyInfo1.setPositionNum(this.getPositionIdNum(companyId,hrId,count)+"");
                         String url=env.getProperty("talentpool.allposition")+this.getCompanyIds(count,companyId,hrId);
                         delivyInfo1.setSeeMorePosition(url);
                     }else{
-                        if(positionIdList.size()>10){
+                        if(positionNum>10){
                             delivyInfo1.setPositionNum(positionNum+"");
                             String url=env.getProperty("talentpool.allposition")+this.getCompanyIds(count,companyId,hrId);
                             delivyInfo1.setSeeMorePosition(url);
@@ -1125,7 +1125,7 @@ public class TalentpoolEmailService {
                 if(!StringUtils.isEmptyMap(positionCitys)){
                     positionInfo.setCompanyAddr(positionCitys.get(jobPositionRecord.getId()));
                 }
-                positionInfo.setWorkYear(jobPositionRecord.getExperience());
+                positionInfo.setWorkYear(jobPositionRecord.getExperience()+"年");
                 positionInfo.setPositionUrl(env.getProperty("talentpool.singleposition").replace("{{position_id}}",jobPositionRecord.getId()+""));
                 positionInfo.setSalary(jobPositionRecord.getSalary());
                 if(positionPic!=null&&!positionPic.isEmpty()){
@@ -1373,8 +1373,8 @@ public class TalentpoolEmailService {
                     if(StringUtils.isNullOrEmpty(accountName)){
                         accountName="";
                     }
-                    context= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
-                    info1.setCustomText(context);
+                    String context1= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
+                    info1.setCustomText(context1);
                     info1.setRcpt(email);
                     info1.setHrName(record.getUsername());
                     String url=env.getProperty("talentpool.wholeProfile");
@@ -1630,7 +1630,7 @@ public class TalentpoolEmailService {
                 String majorName = (String) education.get("major_name");
                 if (endUntilNow == 1) {
 //                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");/**/
-                    endTime ="至今";
+                    endTime ="今";
                 }
                 info.setStartTime(startTime);
                 info.setCollegeName(collegeName);
@@ -1659,7 +1659,7 @@ public class TalentpoolEmailService {
             int endUntilNow=(int)recentJob.get("end_until_now");
             if(endUntilNow==1){
 //                SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                workEndTime = "至今";
+                workEndTime = "今";
             }
             info.setWorkCompany(companyName);
             info.setWorkEndTime(workEndTime);
@@ -1678,7 +1678,7 @@ public class TalentpoolEmailService {
                 int endUntilNow=(int)map.get("end_until_now");
                 if(endUntilNow==1){
 //                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                    workEndTime ="至今";// ff.format(new Date());
+                    workEndTime ="今";// ff.format(new Date());
                 }
                 info.setWorkCompany(companyName);
                 info.setWorkEndTime(workEndTime);
