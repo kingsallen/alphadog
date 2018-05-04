@@ -791,8 +791,8 @@ public class TalentpoolEmailService {
             List<Map<String,String>> toReceive=new ArrayList<>();
             for(ReceiveInfo receiveInfo:to){
                 Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
-
                 infoMap.put("rcpt",receiveInfo.getToEmail());
+                infoMap.put("coworkerName",receiveInfo.getToName());
                 mergeData.add(infoMap);
                 String tores=JSON.toJSONString(receiveInfo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);;
                 Map<String,Object> map=JSON.parseObject(tores);
@@ -1363,47 +1363,46 @@ public class TalentpoolEmailService {
         String abbr="";
         List<TalentEmailForwardsResumeInfo> resumeInfoList=new ArrayList<>();
         List<ReceiveInfo> receiveInfos=new ArrayList<>();
-        for(UserEmployeeDO DO:employeeList){
-            String email=DO.getEmail();
-            String name=DO.getCname();
-            if(StringUtils.isNotNullOrEmpty(email)){
-                ReceiveInfo receiveInfo=new ReceiveInfo();
+        for(UserEmployeeDO DO:employeeList) {
+            String email = DO.getEmail();
+            String name = DO.getCname();
+            if (StringUtils.isNotNullOrEmpty(email)) {
+                ReceiveInfo receiveInfo = new ReceiveInfo();
                 receiveInfo.setToEmail(email);
                 receiveInfo.setToName(name);
                 receiveInfos.add(receiveInfo);
-                for(TalentEmailForwardsResumeInfo info:dataInfo){
-                    TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
-                    info1.setCoworkerName(name);
-                    String companyAbbr=info1.getCompanyAbbr();
-                    if(StringUtils.isNullOrEmpty(companyAbbr)){
-                        companyAbbr="";
-                    }
-                    String positionName=info1.getPositionName();
-                    if(StringUtils.isNullOrEmpty(positionName)){
-                        positionName="";
-                    }
-                    String userName=info1.getUserName();
-                    if(StringUtils.isNullOrEmpty(userName)){
-                        userName="";
-                    }
-                    String accountName=info1.getOfficialAccountName();
-                    if(StringUtils.isNullOrEmpty(accountName)){
-                        accountName="";
-                    }
-                    String context1= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
-                    info1.setCustomText(context1);
-                    info1.setRcpt(email);
-                    info1.setHrName(record.getUsername());
-                    String url=env.getProperty("talentpool.wholeProfile");
-                    String token="user_id="+info1.getUserId()+"&company_id="+companyId+"&hr_id="+hrId+"&timestamp="+new Date().getTime();
-                    token=CommonUtils.encryptString(token);
-                    info1.setProfileFullUrl(url+token);
-                    if(StringUtils.isNullOrEmpty(abbr)){
-                        abbr=info1.getCompanyAbbr();
-                    }
-                    resumeInfoList.add(info1);
-                }
             }
+        }
+        for(TalentEmailForwardsResumeInfo info:dataInfo){
+            TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
+            String companyAbbr=info1.getCompanyAbbr();
+            if(StringUtils.isNullOrEmpty(companyAbbr)){
+                companyAbbr="";
+            }
+            String positionName=info1.getPositionName();
+            if(StringUtils.isNullOrEmpty(positionName)){
+                positionName="";
+            }
+            String userName=info1.getUserName();
+            if(StringUtils.isNullOrEmpty(userName)){
+                userName="";
+            }
+            String accountName=info1.getOfficialAccountName();
+            if(StringUtils.isNullOrEmpty(accountName)){
+                accountName="";
+            }
+            String context1= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
+            info1.setCustomText(context1);
+            info1.setHrName(record.getUsername());
+            String url=env.getProperty("talentpool.wholeProfile");
+            String token="user_id="+info1.getUserId()+"&company_id="+companyId+"&hr_id="+hrId+"&timestamp="+new Date().getTime();
+            token=CommonUtils.encryptString(token);
+            info1.setProfileFullUrl(url+token);
+            if(StringUtils.isNullOrEmpty(abbr)){
+                abbr=info1.getCompanyAbbr();
+            }
+            resumeInfoList.add(info1);
+
         }
         if(StringUtils.isEmptyList(resumeInfoList)||StringUtils.isEmptyList(receiveInfos)){
             return null;
