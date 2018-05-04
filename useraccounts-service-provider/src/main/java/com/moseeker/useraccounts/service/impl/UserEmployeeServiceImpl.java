@@ -252,10 +252,10 @@ public class UserEmployeeServiceImpl {
     /*
      获取最近转发过的员工
      */
-    public List<UserEmployeeDO> getPastUserEmployeeEmail(int companyId){
+    public List<Map<String,Object>> getPastUserEmployeeEmail(int companyId){
         String result=client.get(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),String.valueOf(companyId));
         if(StringUtils.isNotNullOrEmpty(result)){
-            List<UserEmployeeDO> list=JSON.parseArray(result,UserEmployeeDO.class);
+            List<Map<String,Object>> list=(List<Map<String,Object>>)JSON.parse(result);
             return list;
         }
         return new ArrayList<>();
