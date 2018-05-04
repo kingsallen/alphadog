@@ -6,6 +6,7 @@ import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -1064,4 +1065,18 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/position/exception", method = RequestMethod.POST)
+    @ResponseBody
+    public String positionException( HttpServletRequest request, HttpServletResponse response){
+        try{
+            ParamUtils.initModelForm(request,HrThirdPartyPositionDO.class);
+            return "";
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
 }
