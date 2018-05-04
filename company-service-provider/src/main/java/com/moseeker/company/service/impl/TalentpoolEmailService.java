@@ -813,6 +813,7 @@ public class TalentpoolEmailService {
             logger.info("===============================");
             result.setMergeVars(merges);
             result.setTo(toReceive);
+            dataList.add(result);
         }
         return dataList;
     }
