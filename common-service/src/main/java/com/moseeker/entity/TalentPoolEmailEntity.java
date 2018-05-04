@@ -337,6 +337,9 @@ public class TalentPoolEmailEntity {
             if (companyDOList != null && companyDOList.size() > 0) {
                 companyIdListFromName = companyDOList.stream().filter(hrCompanyDO -> hrCompanyDO.getId() > 0).map(HrCompanyDO::getId).collect(Collectors.toList());
             }
+            if (companyIdListFromName == null) {
+                companyIdListFromName = new ArrayList<>();
+            }
         }
 
         if (pageNumber <= 0) {
