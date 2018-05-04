@@ -985,7 +985,7 @@ public class TalentpoolEmailService {
                         String url=env.getProperty("talentpool.allposition")+this.getCompanyIds(count,companyId,hrId);
                         delivyInfo1.setSeeMorePosition(url);
                     }else{
-                        if(positionIdList.size()>10){
+                        if(positionNum>10){
                             delivyInfo1.setPositionNum(positionNum+"");
                             String url=env.getProperty("talentpool.allposition")+this.getCompanyIds(count,companyId,hrId);
                             delivyInfo1.setSeeMorePosition(url);
