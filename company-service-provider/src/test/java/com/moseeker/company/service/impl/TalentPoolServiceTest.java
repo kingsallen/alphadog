@@ -318,5 +318,14 @@ public class TalentPoolServiceTest {
         System.out.println(JSON.toJSONString(result));
     }
 
+    @Test
+    public void testCompanyPic(){
+        int companyId=39978;
+        Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
+        HrCompanyRecord record=hrCompanyDao.getRecord(query);
+        Map<String,Object> map= (Map<String, Object>) JSON.parse(record.getBanner());
+        System.out.println(map.get("banner0"));
+    }
+
 
 }

@@ -1249,10 +1249,23 @@ public class TalentpoolEmailService {
         Map<Integer,String> result=new HashMap<>();
         DictIndustryRecord dictIndustryRecord=this.getIndustryInfo(record.getIndustry());
         DictIndustryTypeRecord dictIndustryTypeRecord=this.getIndustryTypeInfo(dictIndustryRecord.getType());
+        String banner=record.getBanner();
+        if(StringUtils.isNotNullOrEmpty(banner)){
+            Map<String,String> bannerMap= (Map<String, String>) JSON.parse(banner);
+            if(!StringUtils.isEmptyMap(bannerMap)){
+                banner=bannerMap.get("banner0");
+            }else{
+                banner="";
+            }
+
+        }else{
+            banner="";
+        }
         if(!StringUtils.isEmptyList(teamIdList)){
             List<Map<String,Object>> list=pcRevisionEntity.HandleCmsResource(teamIdList,3);
+
             if(StringUtils.isEmptyList(list)){
-                String banner=record.getBanner();
+
                 if(StringUtils.isNotNullOrEmpty(banner)){
                     for(JobPositionRecord jobPositionRecord:positionList){
                         result.put(jobPositionRecord.getId(),banner);
@@ -1284,7 +1297,6 @@ public class TalentpoolEmailService {
                         }
                     }
                     if (flag == 0) {
-                        String banner=record.getBanner();
                         if(StringUtils.isNotNullOrEmpty(banner)){
                             result.put(jobPositionRecord.getId(), banner);
                         }else{
@@ -1295,7 +1307,6 @@ public class TalentpoolEmailService {
                 }
             }
         }else{
-            String banner=record.getBanner();
             if(StringUtils.isNotNullOrEmpty(banner)){
                 for(JobPositionRecord jobPositionRecord:positionList){
                     result.put(jobPositionRecord.getId(),banner);

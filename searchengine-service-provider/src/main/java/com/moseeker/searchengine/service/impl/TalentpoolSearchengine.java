@@ -90,7 +90,7 @@ public class TalentpoolSearchengine {
                 }
             }
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
 
         }
         return userIdList;
