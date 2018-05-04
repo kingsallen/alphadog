@@ -645,14 +645,17 @@ public class TalentpoolEmailService {
         return 0;
     }
 
+
     private List<Map<String,Object>> handlerEmployeeData(List<UserEmployeeDO> employeeList) throws TException {
         if(StringUtils.isEmptyList(employeeList)){
             return null;
         }
         List<Map<String,Object>> list=new ArrayList<>();
         for(UserEmployeeDO DO:employeeList){
-            String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
-            Map<String,Object> DOData=JSON.parseObject(DOs, Map.class);
+            Map<String,Object> DOData=new HashMap<>();
+            DOData.put("id",DO.getId());
+            DOData.put("name",DO.getCname());
+            DOData.put("email",DO.getEmail());
             list.add(DOData);
         }
         return list;
@@ -1375,7 +1378,7 @@ public class TalentpoolEmailService {
         }
         result.setTo(receiveInfos);
         result.setMergeVars(resumeInfoList);
-        result.setFromName(abbr+"才招聘团队");
+        result.setFromName(abbr+"人才招聘团队");
         result.setFromEmail("info@moseeker.net");
         result.setTemplateName("forwards-resume");
         return result;
@@ -1458,6 +1461,7 @@ public class TalentpoolEmailService {
                 if(hrCompanyRecord!=null){
                     info.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
                     info.setCompanyLogo(CommonUtils.appendUrl(hrCompanyRecord.getLogo(),env.getProperty("http.cdn.url")));
+
                 }
                 if(hrWxWechatRecord!=null){
                     info.setWeixinQrcode(CommonUtils.appendUrl(hrWxWechatRecord.getQrcode(),env.getProperty("http.cdn.url")));
