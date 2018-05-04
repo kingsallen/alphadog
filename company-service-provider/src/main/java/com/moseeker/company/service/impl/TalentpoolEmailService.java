@@ -1380,6 +1380,7 @@ public class TalentpoolEmailService {
                     String url=env.getProperty("talentpool.wholeProfile");
                     String token="user_id="+info1.getUserId()+"&company_id="+companyId+"&hr_id="+hrId+"&timestamp="+new Date().getTime();
                     token=CommonUtils.encryptString(token);
+                    logger.info("简历链接：{}",url+token);
                     info1.setProfileFullUrl(url+token);
                     if(StringUtils.isNullOrEmpty(abbr)){
                         abbr=info1.getCompanyAbbr();
