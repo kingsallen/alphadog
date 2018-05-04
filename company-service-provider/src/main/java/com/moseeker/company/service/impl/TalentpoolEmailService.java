@@ -34,6 +34,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.constants.DegreeConvertUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.company.bean.email.*;
 import com.moseeker.entity.Constant.EmailAccountConsumptionType;
 import com.moseeker.common.util.StringUtils;
@@ -53,6 +54,7 @@ import com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm;
 import com.moseeker.thrift.gen.company.struct.EmailAccountForm;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -655,7 +657,7 @@ public class TalentpoolEmailService {
 
     private void handlerRedisEmployee(List<Map<String,Object>> employeeData,int hrId){
         String res=client.get(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"");
-        if(StringUtils.isNotNullOrEmpty(res)){
+        if(StringUtils.isNullOrEmpty(res)){
             if(employeeData.size()>10){
                 employeeData=employeeData.subList(0,10);
             }
@@ -1168,9 +1170,9 @@ public class TalentpoolEmailService {
                 int above=jobPositionRecord.getExperienceAbove();
                 if(StringUtils.isNotNullOrEmpty(workYear)){
                     if(above>0){
-                        workYear=workYear+"年及以上";
+                        workYear=workYear+"年工作经验及以上";
                     }else{
-                        workYear=workYear+"年";
+                        workYear=workYear+"年工作经验";
                     }
                 }
                 positionInfo.setWorkYear(workYear);
@@ -1249,11 +1251,19 @@ public class TalentpoolEmailService {
         DictIndustryTypeRecord dictIndustryTypeRecord=this.getIndustryTypeInfo(dictIndustryRecord.getType());
         if(!StringUtils.isEmptyList(teamIdList)){
             List<Map<String,Object>> list=pcRevisionEntity.HandleCmsResource(teamIdList,3);
-
             if(StringUtils.isEmptyList(list)){
-                for(JobPositionRecord jobPositionRecord:positionList){
-                    result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
+                String banner=record.getBanner();
+                if(StringUtils.isNotNullOrEmpty(banner)){
+                    for(JobPositionRecord jobPositionRecord:positionList){
+                        result.put(jobPositionRecord.getId(),banner);
+                    }
+                }else{
+                    for(JobPositionRecord jobPositionRecord:positionList){
+
+                        result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
+                    }
                 }
+
             }else {
                 for (JobPositionRecord jobPositionRecord : positionList) {
                     logger.info("======================================");
@@ -1273,16 +1283,27 @@ public class TalentpoolEmailService {
                             }
                         }
                     }
-
                     if (flag == 0) {
-                        result.put(jobPositionRecord.getId(), dictIndustryTypeRecord.getJobImg());
+                        String banner=record.getBanner();
+                        if(StringUtils.isNotNullOrEmpty(banner)){
+                            result.put(jobPositionRecord.getId(), banner);
+                        }else{
+                            result.put(jobPositionRecord.getId(), dictIndustryTypeRecord.getJobImg());
+                        }
                     }
 
                 }
             }
         }else{
-            for(JobPositionRecord jobPositionRecord:positionList){
-                result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
+            String banner=record.getBanner();
+            if(StringUtils.isNotNullOrEmpty(banner)){
+                for(JobPositionRecord jobPositionRecord:positionList){
+                    result.put(jobPositionRecord.getId(),banner);
+                }
+            }else{
+                for(JobPositionRecord jobPositionRecord:positionList){
+                    result.put(jobPositionRecord.getId(),dictIndustryTypeRecord.getJobImg());
+                }
             }
         }
 
@@ -1692,7 +1713,7 @@ public class TalentpoolEmailService {
     /*
      获取学历信息
      */
-    private List<TalentEducationInfo> getTalentEducationInfo(List<Map<String,Object>> educationsList){
+    private List<TalentEducationInfo> getTalentEducationInfo(List<Map<String,Object>> educationsList) {
         List<TalentEducationInfo> list=new ArrayList<>();
         if(!StringUtils.isEmptyList(educationsList)) {
             for(Map<String,Object> education:educationsList){
@@ -1703,10 +1724,12 @@ public class TalentpoolEmailService {
                 String collegeName = (String) education.get("college_name");
                 int degree = (int) education.get("degree");
                 String majorName = (String) education.get("major_name");
+                endTime = DateUtils.dateFormat(endTime, 7);
                 if (endUntilNow == 1) {
 //                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");/**/
                     endTime ="今";
                 }
+                startTime = DateUtils.dateFormat(startTime, 7);
                 info.setStartTime(startTime);
                 info.setCollegeName(collegeName);
                 info.setDegree(DegreeConvertUtil.intToEnum.get(degree));
@@ -1732,6 +1755,8 @@ public class TalentpoolEmailService {
             String companyName= (String) recentJob.get("company_name");
             String job= (String) recentJob.get("job");
             int endUntilNow=(int)recentJob.get("end_until_now");
+            workStartTime = DateUtils.dateFormat(workStartTime, 7);
+            workEndTime = DateUtils.dateFormat(workEndTime, 7);
             if(endUntilNow==1){
 //                SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
                 workEndTime = "今";
@@ -1751,6 +1776,8 @@ public class TalentpoolEmailService {
                 String companyName= (String) map.get("company_name");
                 String job= (String) map.get("job");
                 int endUntilNow=(int)map.get("end_until_now");
+                workStartTime = DateUtils.dateFormat(workStartTime, 7);
+                workEndTime = DateUtils.dateFormat(workEndTime, 7);
                 if(endUntilNow==1){
 //                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
                     workEndTime ="今";// ff.format(new Date());
@@ -1854,4 +1881,6 @@ public class TalentpoolEmailService {
         UserHrAccountRecord record=userHrAccountDao.getRecord(query);
         return record;
     }
+
+
 }
