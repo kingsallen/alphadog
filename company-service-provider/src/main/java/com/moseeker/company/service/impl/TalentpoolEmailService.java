@@ -638,6 +638,9 @@ public class TalentpoolEmailService {
                 }
                 List<Map<String,Object>> employeeData=this.handlerEmployeeData(employeeList);
                 if(!StringUtils.isEmptyList(employeeData)){
+                    logger.info("=============employeeData===========");
+                    logger.info(JSON.toJSONString(employeeData));
+                    logger.info("================================================");
                     client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"",JSON.toJSONString(employeeData,serializeConfig, SerializerFeature.DisableCircularReferenceDetect));
                 }
 
@@ -656,8 +659,10 @@ public class TalentpoolEmailService {
         }
         List<Map<String,Object>> list=new ArrayList<>();
         for(UserEmployeeDO DO:employeeList){
-            String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
-            Map<String,Object> DOData=JSON.parseObject(DOs, Map.class);
+            Map<String,Object> DOData=new HashMap<>();
+            DOData.put("id",DO.getId());
+            DOData.put("name",DO.getCname());
+            DOData.put("email",DO.getEmail());
             list.add(DOData);
         }
         return list;
