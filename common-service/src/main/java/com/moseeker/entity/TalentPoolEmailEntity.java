@@ -338,7 +338,7 @@ public class TalentPoolEmailEntity {
         }
         if (org.apache.commons.lang.StringUtils.isNotBlank(companyName)) {
             if (condition != null) {
-                condition.addInnerCondition(new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName).addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.AND));
+                condition.addInnerCondition(new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName).addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.OR), ConditionOp.AND);
             } else {
                 condition = new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName).addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.OR);
             }
