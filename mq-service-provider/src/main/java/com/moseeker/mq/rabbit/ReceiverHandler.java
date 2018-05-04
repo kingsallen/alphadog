@@ -75,7 +75,7 @@ public class ReceiverHandler {
             logDeadLetterDO.setQueueName(message.getMessageProperties().getConsumerQueue());
             logDeadLetterDao.addData(logDeadLetterDO);
             if(e.getMessage().contains("重复的加积分操作")){
-                log.info(e.getMessage(), e);
+                log.warn(e.getMessage(), e);
             }else{
                 log.error(e.getMessage(), e);
             }
