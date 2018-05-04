@@ -34,6 +34,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.constants.DegreeConvertUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.company.bean.email.*;
 import com.moseeker.entity.Constant.EmailAccountConsumptionType;
 import com.moseeker.common.util.StringUtils;
@@ -53,6 +54,7 @@ import com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm;
 import com.moseeker.thrift.gen.company.struct.EmailAccountForm;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -1692,7 +1694,7 @@ public class TalentpoolEmailService {
     /*
      获取学历信息
      */
-    private List<TalentEducationInfo> getTalentEducationInfo(List<Map<String,Object>> educationsList){
+    private List<TalentEducationInfo> getTalentEducationInfo(List<Map<String,Object>> educationsList) {
         List<TalentEducationInfo> list=new ArrayList<>();
         if(!StringUtils.isEmptyList(educationsList)) {
             for(Map<String,Object> education:educationsList){
@@ -1703,10 +1705,12 @@ public class TalentpoolEmailService {
                 String collegeName = (String) education.get("college_name");
                 int degree = (int) education.get("degree");
                 String majorName = (String) education.get("major_name");
+                endTime = DateUtils.dateFormat(endTime, 7);
                 if (endUntilNow == 1) {
 //                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");/**/
                     endTime ="今";
                 }
+                startTime = DateUtils.dateFormat(startTime, 7);
                 info.setStartTime(startTime);
                 info.setCollegeName(collegeName);
                 info.setDegree(DegreeConvertUtil.intToEnum.get(degree));
@@ -1732,6 +1736,8 @@ public class TalentpoolEmailService {
             String companyName= (String) recentJob.get("company_name");
             String job= (String) recentJob.get("job");
             int endUntilNow=(int)recentJob.get("end_until_now");
+            workStartTime = DateUtils.dateFormat(workStartTime, 7);
+            workEndTime = DateUtils.dateFormat(workEndTime, 7);
             if(endUntilNow==1){
 //                SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
                 workEndTime = "今";
@@ -1854,4 +1860,6 @@ public class TalentpoolEmailService {
         UserHrAccountRecord record=userHrAccountDao.getRecord(query);
         return record;
     }
+
+
 }
