@@ -664,15 +664,23 @@ public class TalentpoolEmailService {
             if(employeeData.size()>10){
                 employeeData=employeeData.subList(0,10);
             }else{
-                int resSize=resData.size();
-                int size=employeeData.size();
-                int num=10-size;
-                if(resSize<num){
-                    num=resSize;
-                }
-                for(int i=0;i<num;i++){
-                    employeeData.add(resData.get(i));
-                }
+               for(Map<String,Object> map:resData){
+                   int id=(int)map.get("id");
+                   int flag=0;
+                   for(Map<String,Object> itemMap:employeeData){
+                       int itemId=(int)itemMap.get("id");
+                       if(itemId==id){
+                           flag=1;
+                           break;
+                       }
+                   }
+                   if(flag==0){
+                       employeeData.add(map);
+                   }
+               }
+               if(employeeData.size()>10){
+                   employeeData=employeeData.subList(0,10);
+               }
             }
         }
         client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"",JSON.toJSONString(employeeData,serializeConfig, SerializerFeature.DisableCircularReferenceDetect));
@@ -1657,7 +1665,7 @@ public class TalentpoolEmailService {
                 for(Map<String,Object> app:applications){
                     int itemId=(int)app.get("company_id");
                     String title=(String)app.get("title");
-                    int status=Integer.parseInt(String.valueOf(app.get("status")));
+                    int status=(int)Double.parseDouble(String.valueOf(app.get("status")));
                     if(companyId==itemId&&status==0){
                         positionName=positionName+title+",";
                     }
@@ -1668,7 +1676,7 @@ public class TalentpoolEmailService {
                 for(Map<String,Object> app:applications){
                     int publisher=(int)app.get("publisher");
                     String title=(String)app.get("title");
-                    int status=Integer.parseInt(String.valueOf(app.get("status")));
+                    int status=(int)Double.parseDouble(String.valueOf(app.get("status")));
                     if(hrId==publisher&&status==0){
                         positionName=positionName+title+",";
                     }
