@@ -324,6 +324,7 @@ public class TalentPoolEmailEntity {
     public EmailAccountForm fetchEmailAccounts(int companyId, String companyName, int pageNumber,
                                                int pageSize) throws CommonException {
 
+        logger.info("fetchEmailAccounts companyId:{}, companyName:{}, pageNumber:{}, pageSize:{}", companyId, companyName, pageNumber, pageSize);
         EmailAccountForm emailAccountForm = new EmailAccountForm();
         emailAccountForm.setCompany_id(companyId);
 
@@ -342,6 +343,7 @@ public class TalentPoolEmailEntity {
                 companyIdListFromName = new ArrayList<>();
             }
         }
+        logger.info("fetchEmailAccounts companyIdListFromName:{}", companyIdListFromName);
 
         if (pageNumber <= 0) {
             pageNumber = 1;
@@ -375,6 +377,8 @@ public class TalentPoolEmailEntity {
                 companyIdList = companyIdListFromName;
             }
         }
+        logger.info("fetchEmailAccounts companyIdList:{}", companyIdList);
+        logger.info("fetchEmailAccounts hrCompanyDOList:{}", companyIdList);
         int total = hrCompanyEmailInfoDao.countEmailAccounts(companyIdList);
         emailAccountForm.setTotal(total);
 
