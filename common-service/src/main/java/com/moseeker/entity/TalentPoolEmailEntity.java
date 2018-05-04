@@ -25,6 +25,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.ConditionOp;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
@@ -322,24 +323,45 @@ public class TalentPoolEmailEntity {
     public EmailAccountForm fetchEmailAccounts(int companyId, String companyName, int pageNumber,
                                                int pageSize) throws CommonException {
 
+        logger.info("fetchEmailAccounts companyId:{}, companyName:{}, pageNumber:{}, pageSize:{}", companyId, companyName, pageNumber, pageSize);
         EmailAccountForm emailAccountForm = new EmailAccountForm();
         emailAccountForm.setCompany_id(companyId);
 
         List<Integer> companyIdList = new ArrayList<>();
 
-        List<Integer> companyIdListFromName = null;
-        Query.QueryBuilder queryBuilder1 = new Query.QueryBuilder();
+        Condition condition = null;
+
+        if (companyId > 0) {
+            condition = new Condition(HrCompany.HR_COMPANY.ID.getName(), companyId);
+        }
         if (org.apache.commons.lang.StringUtils.isNotBlank(companyName)) {
-            companyName = companyName.trim();
-            queryBuilder1.where(HrCompany.HR_COMPANY.NAME.getName(), companyName).or(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName);
-            List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(queryBuilder1.buildQuery());
-            if (companyDOList != null && companyDOList.size() > 0) {
-                companyIdListFromName = companyDOList.stream().filter(hrCompanyDO -> hrCompanyDO.getId() > 0).map(HrCompanyDO::getId).collect(Collectors.toList());
-            }
-            if (companyIdListFromName == null) {
-                companyIdListFromName = new ArrayList<>();
+            if (condition != null) {
+                condition = condition.addInnerCondition(new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName).addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.OR));
+            } else {
+                condition = new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName).addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.OR);
             }
         }
+
+        if (condition != null) {
+            Query.QueryBuilder queryBuilder1 = new Query.QueryBuilder();
+            queryBuilder1.where(condition);
+            List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(queryBuilder1.buildQuery());
+            if (companyDOList != null && companyDOList.size() > 0) {
+                companyIdList = companyDOList.stream().filter(hrCompanyDO -> hrCompanyDO.getId() > 0).map(HrCompanyDO::getId).collect(Collectors.toList());
+            }
+        }
+        emailAccountForm.setPage_number(pageNumber);
+        emailAccountForm.setPage_size(pageSize);
+
+        if (condition != null && (companyIdList == null || companyIdList.size() == 0)) {
+            emailAccountForm.setTotal(0);
+            return emailAccountForm;
+        }
+        if (condition == null) {
+            companyIdList = null;
+        }
+
+        logger.info("fetchEmailAccounts companyIdList:{}", companyIdList);
 
         if (pageNumber <= 0) {
             pageNumber = 1;
@@ -351,28 +373,6 @@ public class TalentPoolEmailEntity {
             pageSize =  Constant.DATABASE_PAGE_SIZE;
         }
         int index = (pageNumber - 1) * pageSize;
-        emailAccountForm.setPage_number(pageNumber);
-        emailAccountForm.setPage_size(pageSize);
-
-        if (companyIdListFromName != null && companyIdListFromName.size() == 0) {
-            emailAccountForm.setTotal(0);
-            return emailAccountForm;
-        }
-
-        if (companyId > 0) {
-            if (companyIdListFromName != null && companyIdListFromName.size() > 0) {
-                Optional<Integer> optional = companyIdListFromName.stream().filter(cid -> cid.intValue() == companyId).findAny();
-                if (optional.isPresent()) {
-                    companyIdList.add(companyId);
-                }
-            } else {
-                companyIdList.add(companyId);
-            }
-        } else {
-            if (companyIdListFromName != null && companyIdListFromName.size() > 0) {
-                companyIdList = companyIdListFromName;
-            }
-        }
         int total = hrCompanyEmailInfoDao.countEmailAccounts(companyIdList);
         emailAccountForm.setTotal(total);
 
@@ -384,13 +384,13 @@ public class TalentPoolEmailEntity {
                     .map(hrCompanyEmailInfo -> hrCompanyEmailInfo.getCompanyId())
                     .collect(Collectors.toList());
 
-            Condition condition = new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN);
+            Condition condition1 = new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN);
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder
                     .select(HrCompany.HR_COMPANY.ID.getName())
                     .select(HrCompany.HR_COMPANY.NAME.getName())
                     .select(HrCompany.HR_COMPANY.ABBREVIATION.getName())
-                    .where(condition);
+                    .where(condition1);
             List<HrCompanyDO> hrCompanyDOList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
 
             logger.info("fetchEmailAccounts hrCompanyDOList:{}", hrCompanyDOList);
@@ -409,10 +409,7 @@ public class TalentPoolEmailEntity {
                                 hrCompanyEmailInfo.getCompanyId().intValue())
                         .findAny();
                 if (hrCompanyDOOptional.isPresent()) {
-                    abbreviation = hrCompanyDOOptional.get().getAbbreviation();
-                    if (org.apache.commons.lang.StringUtils.isBlank(abbreviation)) {
-                        abbreviation = hrCompanyDOOptional.get().getName();
-                    }
+                    abbreviation = org.apache.commons.lang.StringUtils.isNotBlank(hrCompanyDOOptional.get().getName())?hrCompanyDOOptional.get().getName():hrCompanyDOOptional.get().getAbbreviation();
                 }
                 logger.info("fetchEmailAccounts abbreviation:{}", abbreviation);
                 emailAccountInfo.setAbbersive(abbreviation);
