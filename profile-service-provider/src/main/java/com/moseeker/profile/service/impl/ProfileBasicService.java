@@ -155,6 +155,13 @@ public class ProfileBasicService {
                 } else {
                     throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
                 }
+            }else if(StringUtils.isNotNullOrEmpty(struct.getCity_name())){
+                DictCityRecord city = cityDao.getCityByName(struct.getCity_name());
+                if (city != null) {
+                    struct.setCity_code(city.getCode());
+                } else {
+                    throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
+                }
             }
             if (struct.getNationality_code() > 0) {
                 DictCountryRecord country = countryDao.getCountryByID(struct.getNationality_code());
