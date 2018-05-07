@@ -83,7 +83,7 @@ public class TalentpoolSearchengine {
             builder.setFetchSource(returnParams,null);
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
-            Map<String,Object> result = searchUtil.handleData(response, "users");
+            Map<String,Object> result = searchUtil.handleData(response, "userIdList");
             if(result!=null&&!result.isEmpty()){
                 long totalNum=(long)result.get("totalNum");
                 if(totalNum>0){
