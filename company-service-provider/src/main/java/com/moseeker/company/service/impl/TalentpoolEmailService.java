@@ -253,9 +253,11 @@ public class TalentpoolEmailService {
                 for(TalentpoolEmail email : info){
                     if(email.getConfigId() == libraryDO.getId()){
                         List<String> symbol = new ArrayList<>();
-                        symbol.add("#职位名称#");
+                        if(type != 71) {
+                            symbol.add("#职位名称#");
+                            symbol.add("#HR姓名#");
+                        }
                         symbol.add("#求职者姓名#");
-                        symbol.add("#HR姓名#");
                         symbol.add("#公司简称#");
                         symbol.add("#公众号名称#");
                         data.put("symbol", symbol);
