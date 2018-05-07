@@ -795,7 +795,13 @@ public class TalentPoolService {
                                         for(Integer userId:userIdList){
                                             Set<Integer> userIdSet = new HashSet<>();
                                             userIdSet.add(userId);
-                                            this.AddbatchPublicTalent(hrId,companyId,userIdSet);
+                                            try {
+                                                logger.info("========执行为{}公开的操作=====",JSON.toJSON(userIdSet));
+                                                Response res=this.AddbatchPublicTalent(hrId, companyId, userIdSet);
+                                                logger.info("========执行为{}公开的操作的结果为{}=====",JSON.toJSON(userIdSet),JSON.toJSONString(res));
+                                            }catch(Exception e){
+                                                logger.info(e.getMessage(),e);
+                                            }
                                         }
 
                                     }
