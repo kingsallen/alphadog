@@ -792,8 +792,12 @@ public class TalentPoolService {
                                 try {
                                     List<Integer> userIdList = service.getTalentUserIdList(params);
                                     if (!StringUtils.isEmptyList(userIdList)) {
-                                        Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
-                                        this.AddbatchPublicTalent(hrId,companyId,userIdSet);
+                                        for(Integer userId:userIdList){
+                                            Set<Integer> userIdSet = new HashSet<>();
+                                            userIdSet.add(userId);
+                                            this.AddbatchPublicTalent(hrId,companyId,userIdSet);
+                                        }
+
                                     }
                                 } catch (Exception e) {
                                     logger.error(e.getMessage(), e);
