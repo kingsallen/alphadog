@@ -792,8 +792,18 @@ public class TalentPoolService {
                                 try {
                                     List<Integer> userIdList = service.getTalentUserIdList(params);
                                     if (!StringUtils.isEmptyList(userIdList)) {
-                                        Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
-                                        this.AddbatchPublicTalent(hrId,companyId,userIdSet);
+                                        for(Integer userId:userIdList){
+                                            Set<Integer> userIdSet = new HashSet<>();
+                                            userIdSet.add(userId);
+                                            try {
+                                                logger.info("========执行为{}公开的操作=====",JSON.toJSON(userIdSet));
+                                                Response res=this.AddbatchPublicTalent(hrId, companyId, userIdSet);
+                                                logger.info("========执行为{}公开的操作的结果为{}=====",JSON.toJSON(userIdSet),JSON.toJSONString(res));
+                                            }catch(Exception e){
+                                                logger.info(e.getMessage(),e);
+                                            }
+                                        }
+
                                     }
                                 } catch (Exception e) {
                                     logger.error(e.getMessage(), e);
