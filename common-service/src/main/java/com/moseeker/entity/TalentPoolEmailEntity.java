@@ -120,6 +120,7 @@ public class TalentPoolEmailEntity {
         if(StringUtils.isNotNullOrEmpty(context)){
             ValidateUtil vu = new ValidateUtil();
             vu.addSensitiveValidate("正文内容", context, null, null);
+            vu.addStringLengthValidate("正文内容", context,null,null,0, 1000);
             String message = vu.validate();
             if(StringUtils.isNotNullOrEmpty(message)){
                 return -2;
@@ -129,6 +130,7 @@ public class TalentPoolEmailEntity {
         if(StringUtils.isNotNullOrEmpty(inscribe)){
             ValidateUtil vu = new ValidateUtil();
             vu.addSensitiveValidate("落款", inscribe, null, null);
+            vu.addStringLengthValidate("正文内容", inscribe,null,null,0, 50);
             String message = vu.validate();
             if(StringUtils.isNotNullOrEmpty(message)){
                 return -3;
