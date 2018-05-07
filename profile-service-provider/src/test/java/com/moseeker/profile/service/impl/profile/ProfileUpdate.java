@@ -19,6 +19,6 @@ public class ProfileUpdate {
     private ProfileBasicService profileBasicService;
     @Test
     public  void basicTest(){
-        profileBasicService.delBasic(251314);
+//        profileBasicService.delBasic(251314);
     }
 }
