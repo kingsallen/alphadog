@@ -155,6 +155,13 @@ public class ProfileBasicService {
                 } else {
                     throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
                 }
+            }else if(StringUtils.isNotNullOrEmpty(struct.getCity_name())){
+                DictCityRecord city = cityDao.getCityByName(struct.getCity_name());
+                if (city != null) {
+                    struct.setCity_code(city.getCode());
+                }else{
+                    logger.warn("根据cityName：{}；没有查找到对应city数据", struct.getCity_name());
+                }
             }
             if (struct.getNationality_code() > 0) {
                 DictCountryRecord country = countryDao.getCountryByID(struct.getNationality_code());
@@ -204,6 +211,13 @@ public class ProfileBasicService {
                     struct.setCity_name(city.getName());
                 } else {
                     throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
+                }
+            }else if(StringUtils.isNotNullOrEmpty(struct.getCity_name())){
+                DictCityRecord city = cityDao.getCityByName(struct.getCity_name());
+                if (city != null) {
+                    struct.setCity_code(city.getCode());
+                }else{
+                    logger.warn("根据cityName：{}；没有查找到对应city数据", struct.getCity_name());
                 }
             }
             if (struct.getNationality_code() > 0) {
