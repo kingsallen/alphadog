@@ -94,6 +94,9 @@ public class TalentpoolSearchengine {
             logger.info(e.getMessage()+"=================",e);
 
         }
+        logger.info("==================userIdList======================");
+        logger.info(JSON.toJSONString(userIdList));
+        logger.info("==================================");
         return userIdList;
     }
 
