@@ -87,8 +87,8 @@ public final class ConstantErrorCodeMessage {
     public static final String TALENTPOOL_EMAIL_NOCONFIGEMAIL = "{'status':34009, 'message':'该企业没有配置邮件'}";
     public static final String TALENTPOOL_EMAIL_NOUSERPROFILE = "{'status':34010, 'message':'没有符合条件的简历'}";
     public static final String EMAIL_SWITCH_FAILED = "{'status':34011,'message':'手动触发，开关不能关闭!'}";
-    public static final String EMAIL_CONTEXT_FAILED = "{'status':34012,'message':'正文内容含有敏感词!'}";
-    public static final String EMAIL_INSCRIBE_FAILED = "{'status':34012,'message':'落款含有敏感词!'}";
+    public static final String EMAIL_CONTEXT_FAILED = "{'status':34012,'message':'正文内容含有敏感词或超过1000个字!'}";
+    public static final String EMAIL_INSCRIBE_FAILED = "{'status':34012,'message':'落款含有敏感词或超过50个字!'}";
 
     // 申请服务ERRCODE说明定义 4字头
     public static final String APPLICATION_VALIDATE_COUNT_CHECK = "{'status':41001,'message':'本月您已达到投递次数上限!'}";
