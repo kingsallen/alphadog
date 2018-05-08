@@ -485,6 +485,26 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
     }
+    public void shouldTermsQuery(List<String> fieldsList,List<Integer>dataIdList, QueryBuilder query) {
+        if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String fields : fieldsList) {
+                QueryBuilder fullf = QueryBuilders.termsQuery(fields, dataIdList);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+
+    public void exitsisQuery(List<String> list, QueryBuilder query) {
+       if(list!=null&&list.size()>0){
+          for(String filed:list){
+              QueryBuilder keyand = QueryBuilders.existsQuery(filed);
+              ((BoolQueryBuilder) query).must(keyand);
+          }
+       }
+    }
 
     //terms查询，查询的值包含多个值
     public void shouldTermsQuery(Map<String, Object> map, QueryBuilder query) {
@@ -683,6 +703,24 @@ public class SearchUtil {
                 ((BoolQueryBuilder) builder).must(keyand);
             }
         }
+    }
+    /*
+     对子账号查询公开的或子账号收藏的人才
+     */
+    public void childAccountTalentpool(String hrId,QueryBuilder builder ){
+        //查询这个公司公开的
+        QueryBuilder keyand = QueryBuilders.boolQuery();
+        QueryBuilder query0=QueryBuilders.matchQuery("user.talent_pool.is_public",1);
+        ((BoolQueryBuilder) keyand).should(query0);
+        //查人这个账号收藏的
+        QueryBuilder keyand1 = QueryBuilders.boolQuery();
+        QueryBuilder query1=QueryBuilders.matchQuery("user.talent_pool.hr_id",Integer.parseInt(hrId));
+        ((BoolQueryBuilder) keyand1).must(query1);
+        QueryBuilder query2=QueryBuilders.matchQuery("user.talent_pool.is_talent",1);
+        ((BoolQueryBuilder) keyand1).must(query2);
+        ((BoolQueryBuilder) keyand).should(keyand1);
+        ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+        ((BoolQueryBuilder) builder).must(keyand);
     }
 
     /*

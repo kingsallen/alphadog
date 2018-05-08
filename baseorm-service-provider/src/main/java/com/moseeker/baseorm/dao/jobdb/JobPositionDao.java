@@ -620,4 +620,23 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 .buildQuery();
         return getRecord(queryUtil);
     }
+
+    /**
+     * 获取所有在招职位
+     * @param companyId
+     * @return
+     */
+    public List<Integer> getStstusPositionIds(List<Integer> companyId) {
+
+        Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyId))
+                .and(JobPosition.JOB_POSITION.STATUS.in((byte)0))
+                .fetch();
+        if (result != null && result.size() > 0) {
+            return result.stream().filter(record1 -> record1.value1() != null && record1.value1().intValue() > 0)
+                    .map(record1 -> record1.value1()).collect(Collectors.toList());
+        }
+        return null;
+    }
 }

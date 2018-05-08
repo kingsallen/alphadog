@@ -60,6 +60,9 @@ public class ProfileBasicService {
     @Autowired
     private ProfileEntity profileEntity;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
     public List<Basic> getResources(Query query) {
         List<Basic> basics = dao.getDatas(query, Basic.class);
         if (basics != null && basics.size() > 0) {
@@ -152,6 +155,13 @@ public class ProfileBasicService {
                 } else {
                     throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
                 }
+            }else if(StringUtils.isNotNullOrEmpty(struct.getCity_name())){
+                DictCityRecord city = cityDao.getCityByName(struct.getCity_name());
+                if (city != null) {
+                    struct.setCity_code(city.getCode());
+                }else{
+                    logger.warn("根据cityName：{}；没有查找到对应city数据", struct.getCity_name());
+                }
             }
             if (struct.getNationality_code() > 0) {
                 DictCountryRecord country = countryDao.getCountryByID(struct.getNationality_code());
@@ -179,6 +189,8 @@ public class ProfileBasicService {
                     }
                 /* 计算用户基本信息的简历完整度 */
                     profileEntity.reCalculateUserUser(struct.getProfile_id());
+
+                    this.handlerCompanyTag(struct.getProfile_id());
                     return resultStruct;
                 }
             }
@@ -186,6 +198,8 @@ public class ProfileBasicService {
 
         return resultStruct;
     }
+
+
 
     @Transactional
     public int putResource(Basic struct) throws TException {
@@ -197,6 +211,13 @@ public class ProfileBasicService {
                     struct.setCity_name(city.getName());
                 } else {
                     throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
+                }
+            }else if(StringUtils.isNotNullOrEmpty(struct.getCity_name())){
+                DictCityRecord city = cityDao.getCityByName(struct.getCity_name());
+                if (city != null) {
+                    struct.setCity_code(city.getCode());
+                }else{
+                    logger.warn("根据cityName：{}；没有查找到对应city数据", struct.getCity_name());
                 }
             }
             if (struct.getNationality_code() > 0) {
@@ -230,10 +251,12 @@ public class ProfileBasicService {
 				/* 计算用户基本信息的简历完整度 */
                     profileEntity.reCalculateUserUser(struct.getProfile_id());
                     profileEntity.reCalculateProfileBasic(struct.getProfile_id());
+                    this.handlerCompanyTag(struct.getProfile_id());
                 }
             } else {
                 throw ProfileException.validateFailed(validationMessage.getResult());
             }
+
         }
         return i;
     }
@@ -264,6 +287,7 @@ public class ProfileBasicService {
                 /* 计算用户基本信息的简历完整度 */
                 profileEntity.reCalculateUserUser(profileId);
                 profileEntity.reCalculateProfileBasic(profileId);
+                this.handlerCompanyTag(profileId);
             });
         }
 
@@ -315,6 +339,7 @@ public class ProfileBasicService {
                 /* 计算用户基本信息的简历完整度 */
                 profileEntity.reCalculateUserUser(profileId);
                 profileEntity.reCalculateProfileBasic(profileId);
+                this.handlerCompanyTag(profileId);
             });
             return putResult;
         } else {
@@ -340,6 +365,7 @@ public class ProfileBasicService {
                 /* 计算用户基本信息的简历完整度 */
                     profileEntity.reCalculateUserUser(struct.getProfile_id());
                     profileEntity.reCalculateProfileBasic(struct.getProfile_id());
+                    this.handlerCompanyTag(struct.getProfile_id());
                 }
             }
         }
@@ -372,6 +398,7 @@ public class ProfileBasicService {
                 for (ProfileBasicDO data : deleteDatas) {
                     profileEntity.reCalculateUserUser(data.getProfileId());
                     profileEntity.reCalculateProfileBasic(data.getProfileId());
+                    this.handlerCompanyTag(data.getProfileId());
                 }
             }
 
@@ -413,5 +440,8 @@ public class ProfileBasicService {
                 }
             }
         }
+    }
+    private void  handlerCompanyTag(int profileId){
+        profileCompanyTagService.handlerProfileCompanyTag(profileId,0);
     }
 }

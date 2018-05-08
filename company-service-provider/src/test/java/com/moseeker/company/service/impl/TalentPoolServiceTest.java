@@ -1,5 +1,12 @@
 package com.moseeker.company.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.company.bean.email.TalentEmailInviteToDelivyInfo;
 import com.moseeker.company.config.AppConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
@@ -24,6 +31,12 @@ public class TalentPoolServiceTest {
     private TalentPoolService talentPoolService;
     @Autowired
     private CompanyTagService companyTagService;
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
+    @Autowired
+    private TalentpoolEmailService talentpoolEmailService;
+    @Autowired
+    private JobPositionDao jobPositionDao;
 
     @Test
     public void testBatchAddTalent() throws TException {
@@ -271,7 +284,7 @@ public class TalentPoolServiceTest {
         Response res=talentPoolService.addCompanyTag(companyTagDO, hrId);
         System.out.println(res+"");
     }
-//
+
 //    @Test
 //    public void testUpdateEs() throws TException {
 //        List<Integer> tagIDList=new ArrayList<>();
@@ -279,6 +292,40 @@ public class TalentPoolServiceTest {
 //        int type=0;
 //        companyTagService.handlerCompanyTag(tagIDList,type);
 //    }
+    @Test
+    public void pictureTest() throws TException {
+        List<Integer> positionidList=new ArrayList<>();
+        positionidList.add(1949409);
+        positionidList.add(1949408);
+        int companyId=39978;
+        String content="1234";
+        Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
+        HrCompanyRecord record=hrCompanyDao.getRecord(query);
+        TalentEmailInviteToDelivyInfo info=talentpoolEmailService.getInviteToDelivyInfoList(positionidList,companyId,content,record);
+        System.out.println(JSON.toJSONString(info));
+
+    }
+
+    @Test
+    public void test() throws TException {
+        List<Integer> teamIDList=new ArrayList<>();
+        teamIDList.add(188362421);
+        Query query=new Query.QueryBuilder().where("id",1949423).buildQuery();
+        List<JobPositionRecord> records=jobPositionDao.getRecords(query);
+        Query query1=new Query.QueryBuilder().where("id",39978).buildQuery();
+        HrCompanyRecord record=hrCompanyDao.getRecord(query1);
+        Map<Integer,String> result=talentpoolEmailService.getPositionPicture(teamIDList,records,record);
+        System.out.println(JSON.toJSONString(result));
+    }
+
+    @Test
+    public void testCompanyPic(){
+        int companyId=39978;
+        Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
+        HrCompanyRecord record=hrCompanyDao.getRecord(query);
+        Map<String,Object> map= (Map<String, Object>) JSON.parse(record.getBanner());
+        System.out.println(map.get("banner0"));
+    }
 
 
 }

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolCompanyTag extends TableImpl<TalentpoolCompanyTagRecord> {
 
-    private static final long serialVersionUID = -285291372;
+    private static final long serialVersionUID = 1887004434;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_company_tag</code>
@@ -134,7 +134,7 @@ public class TalentpoolCompanyTag extends TableImpl<TalentpoolCompanyTagRecord> 
     /**
      * The column <code>talentpooldb.talentpool_company_tag.sex</code>. 性别 0男，1女 2不限
      */
-    public final TableField<TalentpoolCompanyTagRecord, Integer> SEX = createField("sex", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("2", org.jooq.impl.SQLDataType.INTEGER)), this, "性别 0男，1女 2不限");
+    public final TableField<TalentpoolCompanyTagRecord, Integer> SEX = createField("sex", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "性别 0男，1女 2不限");
 
     /**
      * The column <code>talentpooldb.talentpool_company_tag.is_recommend</code>. 是否只看内推 0否，1是

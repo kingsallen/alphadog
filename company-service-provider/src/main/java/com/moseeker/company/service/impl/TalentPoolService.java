@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
@@ -16,9 +17,12 @@ import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUse
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
@@ -30,13 +34,19 @@ import com.moseeker.company.bean.*;
 import com.moseeker.company.utils.ValidateTalent;
 import com.moseeker.company.utils.ValidateTalentTag;
 import com.moseeker.company.utils.ValidateUtils;
+import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.pojo.talentpool.PageInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
-import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import java.util.*;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +103,12 @@ public class TalentPoolService {
     private TalentpoolCompanyTagDao talentpoolCompanyTagDao;
     @Autowired
     private HrCompanyDao hrCompanyDao;
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+    @Autowired
+    private TalentPoolEmailEntity talentPoolEmailEntity;
 
+    SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
 
     /*
@@ -151,8 +166,38 @@ public class TalentPoolService {
         });
         return ResponseUtils.success(result);
     }
+    /*
+     处理所有的加入人才库
+     */
+    @CounterIface
+    public void addAllTalent(int hrId,Map<String,String> params,int companyId){
+        try{
+            tp.startTast(() -> {
+                int total=service.talentSearchNum(params);
+                if(total>0) {
+                    int totalPageNum = (int) Math.ceil((double) total / 100);
+                    for(int i=1;i<=totalPageNum;i++){
+                        params.put("page_number", i + "");
+                        params.put("page_size", 100 + "");
+                        try {
+                            List<Integer> userIdList = service.getTalentUserIdList(params);
+                            if (!StringUtils.isEmptyList(userIdList)) {
+                                Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                this.batchAddTalent(hrId, userIdSet, companyId);
+                            }
+                        } catch (Exception e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+                return 0;
+            });
+        }catch(Exception e){
+
+        }
 
 
+    }
 
 
     /*
@@ -194,7 +239,36 @@ public class TalentPoolService {
         }
         return ResponseUtils.success(result);
     }
+    /*
+     全部取消收藏
+     */
+    public void cancleAllTalent(int hrId, Map<String,String> params, int companyId){
+        try{
+            tp.startTast(() -> {
+                int total=service.talentSearchNum(params);
+                if(total>0) {
+                    int totalPageNum = (int) Math.ceil((double) total / 100);
+                    for(int i=1;i<=totalPageNum;i++){
+                        params.put("page_number", i + "");
+                        params.put("page_size", 100 + "");
+                            try {
+                                List<Integer> userIdList = service.getTalentUserIdList(params);
+                                if (!StringUtils.isEmptyList(userIdList)) {
+                                    Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                    this.batchCancelTalent(hrId, userIdSet, companyId);
+                                }
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
+                            }
 
+                    }
+                }
+                return 0;
+             });
+        }catch(Exception e){
+
+        }
+    }
 
     /*
      批量添加标签
@@ -238,7 +312,45 @@ public class TalentPoolService {
         result.put("use",usertagMap);
         return ResponseUtils.success(result);
     }
+    /*
+     将标签打到人才上
+     */
+    @CounterIface
+    public void addAllTalentTag(Map<String,String> params,List<Integer> tagIdList,int companyId,int hrId){
+        try{
+            tp.startTast(() -> {
+                int total=service.talentSearchNum(params);
+                if(total>0){
+                    int totalPageNum=(int)Math.ceil((double)total/100);
+                    Set<Integer> tagIdSet=this.talentPoolEntity.converListToSet(tagIdList);
+                    for(int i=1;i<=totalPageNum;i++){
+                        params.put("page_number", i + "");
+                        params.put("page_size", 100 + "");
+                            try {
+                                List<Integer> userIdList = service.getTalentUserIdList(params);
+                                if (!StringUtils.isEmptyList(userIdList)) {
+                                    Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                    this.addNewBatchTalentTag(hrId, userIdSet, tagIdSet, companyId);
+                                }
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
+                            }
 
+                    }
+
+                }
+                return 0;
+             });
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
+
+    }
+
+
+    /*
+
+     */
 
     /*
      批量添加标签先删除所有先前的标签，然后打上新的标签
@@ -662,7 +774,50 @@ public class TalentPoolService {
         }
         return ResponseUtils.success(result);
     }
+    /*
+     所有选中的人才公开处理
+     */
+    @CounterIface
+    public void addAllTalentPublic(Map<String,String> params,int companyId,int hrId){
+        try{
+            tp.startTast(() -> {
+                int validateFlag=validateCompany(companyId);
+                if(validateFlag==0){
+                    int total=service.talentSearchNum(params);
+                    if(total>0){
+                        int totalPageNum=(int)Math.ceil((double)total/100);
+                        for(int i=1;i<=totalPageNum;i++){
+                            params.put("page_number", i + "");
+                            params.put("page_size", 100 + "");
+                                try {
+                                    List<Integer> userIdList = service.getTalentUserIdList(params);
+                                    if (!StringUtils.isEmptyList(userIdList)) {
+                                        for(Integer userId:userIdList){
+                                            Set<Integer> userIdSet = new HashSet<>();
+                                            userIdSet.add(userId);
+                                            try {
+                                                logger.info("========执行为{}公开的操作=====",JSON.toJSON(userIdSet));
+                                                Response res=this.AddbatchPublicTalent(hrId, companyId, userIdSet);
+                                                logger.info("========执行为{}公开的操作的结果为{}=====",JSON.toJSON(userIdSet),JSON.toJSONString(res));
+                                            }catch(Exception e){
+                                                logger.info(e.getMessage(),e);
+                                            }
+                                        }
 
+                                    }
+                                } catch (Exception e) {
+                                    logger.error(e.getMessage(), e);
+                                }
+                        }
+
+                    }
+                }
+                return 0;
+            });
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
+    }
     /*
      批量公开
      @auth:zzt
@@ -779,6 +934,39 @@ public class TalentPoolService {
         return ResponseUtils.success(result);
     }
 
+    /*
+     删除所有选中的人才公开处理
+     */
+    @CounterIface
+    public void addAllTalentPrivate(Map<String,String> params,int companyId,int hrId){
+        try{
+            tp.startTast(() -> {
+                int validateFlag=validateCompany(companyId);
+                if(validateFlag==0){
+                    int total=service.talentSearchNum(params);
+                    if(total>0){
+                        int totalPageNum=(int)Math.ceil((double)total/100);
+                        for(int i=1;i<=totalPageNum;i++){
+                            params.put("page_number", i + "");
+                            params.put("page_size", 100 + "");
+                            try {
+                                List<Integer> userIdList = service.getTalentUserIdList(params);
+                                if (!StringUtils.isEmptyList(userIdList)) {
+                                    Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
+                                    this.cancelBatchPublicTalent(hrId,companyId,userIdSet);
+                                }
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
+                            }
+                        }
+                    }
+                }
+                return 0;
+            });
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
+    }
 
 
     /*
@@ -1043,7 +1231,6 @@ public class TalentPoolService {
      * @param company_tag_ids
      * @return
      */
-
     public Response deleteCompanyTags(int hrId, int companyId, List<Integer> company_tag_ids){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
         if(flag == -1){
@@ -1101,9 +1288,6 @@ public class TalentPoolService {
     }
 
 
-
-
-
     public Response addCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
         if(flag == -1){
@@ -1115,29 +1299,40 @@ public class TalentPoolService {
         }else if(flag == 1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
-        String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
-        if("OK".equals(result)){
-            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
-            if(StringUtils.isNullOrEmpty(filterString)){
-                int id = talentPoolEntity.addCompanyTag(companyTagDO);
-                List<Integer> idList = new ArrayList<>();
-                idList.add(id);
-                //ES更新
-                try {
-                tp.startTast(() -> {
-                        Map<String, Object> map = JSON.parseObject(JSON.toJSONString(companyTagDO));
-                        tagService.handlerCompanyTag(idList, 0, map);
-                    return 0;
-                });
-                }catch(Exception e){
-                    logger.error(e.getMessage(),e);
+        try {
+            String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(), companyTagDO.getCompany_id() + "", companyTagDO.getName());
+            if (StringUtils.isNullOrEmpty(info)) {
+                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(), companyTagDO.getCompany_id() + "", companyTagDO.getName(), "true");
+                String result = talentPoolEntity.validateCompanyTalentPoolV3ByTagName(companyTagDO.getName(), companyTagDO.getCompany_id(), companyTagDO.getId());
+                if ("OK".equals(result)) {
+                    String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(companyTagDO);
+                    if (StringUtils.isNullOrEmpty(filterString)) {
+                        int id = talentPoolEntity.addCompanyTag(companyTagDO);
+                        List<Integer> idList = new ArrayList<>();
+                        idList.add(id);
+                        //ES更新
+                        try {
+                            tp.startTast(() -> {
+                                Map<String, Object> map = JSON.parseObject(JSON.toJSONString(companyTagDO));
+                                tagService.handlerCompanyTag(idList, 0, map);
+                                return 0;
+                            });
+                        } catch (Exception e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                        return ResponseUtils.success("");
+                    } else {
+                        return ResponseUtils.fail(1, filterString);
+                    }
                 }
-                return  ResponseUtils.success("");
-            }else{
-                return ResponseUtils.fail(1, filterString);
+                return ResponseUtils.fail(1, result);
             }
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }finally {
+            redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(), companyTagDO.getCompany_id() + "", companyTagDO.getName());
         }
-        return ResponseUtils.fail(1, result);
+        return ResponseUtils.fail(1, "请稍后重试");
     }
 
 
@@ -1252,6 +1447,220 @@ public class TalentPoolService {
         tagService.handlerCompanyTagTalent(userIdSet,companyId);
     }
 
+
+    /**
+     * 获取简历筛选规则的列表
+     * @param hrId          hr编号
+     * @param companyId     公司编号
+     * @param page_number   当前页数
+     * @param page_size     每页数据量
+     * @return              筛选列表
+     * @throws TException
+     */
+    public Response getProfileFilterList(int hrId,int companyId, int page_number, int page_size) throws TException {
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(companyId);
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }
+        PageInfo info = this.getLimitStart( page_number, page_size);
+        Map<String, Object> filterListInfo = new HashMap<>();
+        List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter> filterList = talentPoolEntity
+                .handlerProfileFiltercompanyId(companyId, info.getLimit(), info.getPageSize());
+        int count = talentPoolEntity.handlerProfileFilterCountBycompanyId(companyId);
+        if(filterList != null && filterList.size()>0){
+            List<Map<String, Object>> profileFilterList = talentPoolEntity.handlerFilterPositionCountByFilterIdList(filterList, companyId);
+
+            filterListInfo.put("filter_data", profileFilterList);
+        }
+        filterListInfo.put("total", count);
+        filterListInfo.put("page_number", page_number);
+        filterListInfo.put("page_size", info.getPageSize());
+        String result=JSON.toJSONString(filterListInfo,serializeConfig);
+        return ResponseUtils.successWithoutStringify(result);
+    }
+
+    /**
+     * 更新简历筛选规则的标签状态
+     * @param hrId          hr编号
+     * @param companyId     公司编号
+     * @param disable       规则状态
+     * @param filter_ids    规则标签
+     * @return
+     */
+    public Response handerProfileFilters(int hrId, int companyId, int disable, List<Integer> filter_ids){
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(companyId);
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        int result = talentPoolEntity.updateProfileFilterStatusByFilterIds(companyId, disable, filter_ids);
+        return ResponseUtils.success("");
+    }
+
+    /**
+     * 获取企业筛选规则信息
+     * @param hrId          hr编号
+     * @param companyId     公司编号
+     * @param filter_id     筛选规则编号
+     * @return
+     */
+    public Response getProfileFilterInfo(int hrId, int companyId, int filter_id){
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(companyId);
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        Map<String, Object> profileFilterInfo = talentPoolEntity.getProfileFilterInfo(companyId, filter_id);
+
+        return ResponseUtils.successWithoutStringify(JSON.toJSONString(profileFilterInfo, serializeConfig));
+    }
+
+    public Response addProfileFilter(TalentpoolCompanyTagDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(filterDO.getCompany_id());
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,filterDO.getCompany_id());
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        try {
+            String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName());
+            if (!StringUtils.isNotNullOrEmpty(info)) {
+                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName(), "true");
+                String result = talentPoolEntity.validateCompanyTalentPoolV3ByFilterName(filterDO.getName(), filterDO.getCompany_id(), filterDO.getId());
+                if ("OK".equals(result)) {
+                    String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
+                    if (StringUtils.isNullOrEmpty(filterString)) {
+                        int id = talentPoolEntity.addCompanyProfileFilter(filterDO, ActionFormList, positionIdList, position_total);
+                        Map<String, Object> params = new HashMap<>();
+                        params.put("id", id);
+                        params.put("name",filterDO.getName());
+                        return ResponseUtils.success(params);
+                    } else {
+                        return ResponseUtils.fail(1, filterString);
+                    }
+                }
+                return ResponseUtils.fail(1, result);
+            }
+        }catch(Exception e){
+            logger.error(e.getMessage());
+        }finally {
+            redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName());
+        }
+        return ResponseUtils.fail(1, "请稍后重试");
+    }
+
+    public Response updateProfileFilter(TalentpoolCompanyTagDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(filterDO.getCompany_id());
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,filterDO.getCompany_id());
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }else if(flag == 1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
+        }
+        String result = talentPoolEntity.validateCompanyTalentPoolV3ByFilterName(filterDO.getName(), filterDO.getCompany_id(), filterDO.getId());
+        if("OK".equals(result)){
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
+            if(StringUtils.isNullOrEmpty(filterString)){
+                int id = talentPoolEntity.updateCompanyProfileFilter(filterDO, ActionFormList, positionIdList, position_total);
+                return  ResponseUtils.success("");
+            }else{
+                return ResponseUtils.fail(1, filterString);
+            }
+        }
+        return ResponseUtils.fail(1, result);
+    }
+
+    public Response getTalentCountByPositionFilter(int hr_id, int company_id, int position_id) throws TException {
+        HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(company_id);
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id, company_id);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }
+        List<Map<String, Object>> filterMapList = talentPoolEntity.getProfileFilterByPosition(position_id, company_id);
+        Map<String, Object> map = new HashMap<>();
+        map.put("is_filter", false);
+        if(filterMapList != null && filterMapList.size()>0){
+            map.put("is_filter", true);
+            List<Map<String, String>> filterList = new ArrayList<>();
+            for(Map<String, Object> filterMap : filterMapList){
+                Map<String, String> params = new HashMap<>();
+                if (filterMap != null && !filterMap.isEmpty()) {
+                    for (String key : filterMap.keySet()) {
+                        params.put(key, String.valueOf(filterMap.get(key)));
+                    }
+                }
+                params.put("hr_id", String.valueOf(hr_id));
+                params.put("account_type", String.valueOf(flag));
+                filterList.add(params);
+            }
+            Response res = service.queryProfileFilterUserIdList(filterList, 0, 0);
+            if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
+                Map<String,Object> data=JSON.parseObject(res.getData());
+                int totalNum=(Integer)data.get("totalNum");
+                map.put("num",totalNum);
+                HrCompanyEmailInfo info = talentPoolEmailEntity.getHrCompanyEmailInfoByCompanyId(company_id);
+                map.put("enable",false);
+                if(totalNum <= info.getBalance()){
+                    map.put("enable", true);
+                }
+                String time=redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.LAST_SEND_POSITION_INVITE.toString(),
+                        String.valueOf(hr_id),String.valueOf(position_id));
+                map.put("last_send_time",time);
+                return ResponseUtils.success(map);
+            }
+
+
+        }
+        return ResponseUtils.success("");
+    }
     //处理批量操作的结果
     private Map<String,Object> handlerBatchTalentResult( Set<Integer> unUseList,Set<Integer>unApplierIdList,Set<Integer> idList ,int companyd){
         List<Map<String,Object>> userHrList=talentPoolEntity.getCompanyHrList(companyd);
