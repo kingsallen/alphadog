@@ -1476,11 +1476,11 @@ public class TalentPoolService {
         List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter> filterList = talentPoolEntity
                 .handlerProfileFiltercompanyId(companyId, info.getLimit(), info.getPageSize());
         int count = talentPoolEntity.handlerProfileFilterCountBycompanyId(companyId);
+        List<Map<String, Object>> profileFilterList = new ArrayList<>();
         if(filterList != null && filterList.size()>0){
-            List<Map<String, Object>> profileFilterList = talentPoolEntity.handlerFilterPositionCountByFilterIdList(filterList, companyId);
-
-            filterListInfo.put("filter_data", profileFilterList);
+            profileFilterList = talentPoolEntity.handlerFilterPositionCountByFilterIdList(filterList, companyId);
         }
+        filterListInfo.put("filter_data", profileFilterList);
         filterListInfo.put("total", count);
         filterListInfo.put("page_number", page_number);
         filterListInfo.put("page_size", info.getPageSize());
