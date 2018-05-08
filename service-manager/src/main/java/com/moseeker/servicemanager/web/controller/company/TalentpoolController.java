@@ -408,18 +408,22 @@ public class TalentpoolController {
             int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
             int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
-            String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
-            if(StringUtils.isNotNullOrEmpty(page)){
-                pageNum=Integer.parseInt(page);
+            if(data.get("page_number") !=null) {
+                String page = String.valueOf(data.get("page_number"));
+                if(StringUtils.isNotNullOrEmpty(page)){
+                    pageNum=Integer.parseInt(page);
 
+                }
             }
-            String size=String.valueOf(data.get("page_size"));
             int pageSize=10;
-            if(StringUtils.isNotNullOrEmpty(size)){
-                pageSize=Integer.parseInt(size);
-
+            if(data.get("page_size") !=null) {
+                String size = String.valueOf(data.get("page_size"));
+                if(StringUtils.isNotNullOrEmpty(size)){
+                    pageSize=Integer.parseInt(size);
+                }
             }
+
             Response result = service.getTalentAllComment(hrId,companyId,userId,pageNum,pageSize);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
