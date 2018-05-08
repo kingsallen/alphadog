@@ -738,7 +738,13 @@ public class TalentpoolEmailService {
                     }else{
                         return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
                     }
-                    client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"",JSON.toJSONString(employeeList));
+                    List<Map<String,Object>> employeeData=this.handlerEmployeeData(employeeList);
+                    if(!StringUtils.isEmptyList(employeeData)){
+                        logger.info("=============employeeData===========");
+                        logger.info(JSON.toJSONString(employeeData));
+                        logger.info("================================================");
+                        this.handlerRedisEmployee(employeeData,hrId);
+                    }
                 }else{
                     return TalentEmailEnum.NOUSERPROFILE.getValue();
                 }
