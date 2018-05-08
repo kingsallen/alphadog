@@ -275,9 +275,6 @@ public class TalentPoolEmailEntity {
             recharge(useCount, companyId, companyEmailInfo.getBalance(), index);
         }
 
-        long timeAtStartOfDay = new DateTime().withTimeAtStartOfDay().getMillis();
-        logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, companyId, useCount);
-
         LogTalentpoolEmailLogRecord record = new LogTalentpoolEmailLogRecord();
         record.setCompanyId(companyId);
         record.setType(0);
