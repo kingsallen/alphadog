@@ -289,17 +289,11 @@ public class TalentpoolEmailService {
         }else if(flag == 1){
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
-        int result = talentPoolEmailEntity.updateEmailInfo(company_id, type, disable, context, inscribe);
-        if(result >0 ) {
+        String result = talentPoolEmailEntity.updateEmailInfo(company_id, type, disable, context, inscribe);
+        if("OK".equals(result) ) {
             return ResponseUtils.success("");
-        }else if(result == -1){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.EMAIL_SWITCH_FAILED);
-        }else if(result == -2){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.EMAIL_CONTEXT_FAILED);
-        }else if(result == -3){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.EMAIL_INSCRIBE_FAILED);
-        }else {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+        }else{
+            return ResponseUtils.fail(1,result);
         }
     }
 

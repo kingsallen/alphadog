@@ -106,7 +106,7 @@ public class TalentPoolEmailEntity {
         return talentpoolEmailDao.getTalentpoolEmailByCompanyIdAndConfigId(company_id, config_id);
     }
 
-    public int updateEmailInfo( int company_id, int type, int disable, String context, String inscribe){
+    public String updateEmailInfo( int company_id, int type, int disable, String context, String inscribe){
         Query query = new Query.QueryBuilder().where("company_id", company_id)
                 .and("config_id", type).buildQuery();
         TalentpoolEmailRecord emailRecord = talentpoolEmailDao.getRecord(query);
@@ -114,16 +114,20 @@ public class TalentPoolEmailEntity {
             if(TalentpoolEmailType.instanceFromByte(type).getStatus() || disable == 1) {
                 emailRecord.setDisable(disable);
             }else {
-                return -1;
+                return "手动触发，开关不能关闭!";
             }
         }
         if(StringUtils.isNotNullOrEmpty(context)){
             ValidateUtil vu = new ValidateUtil();
             vu.addSensitiveValidate("正文内容", context, null, null);
-            vu.addStringLengthValidate("正文内容", context,null,null,0, 1000);
+            if(type != 71) {
+                vu.addStringLengthValidate("正文内容", context, null, null, 0, 1000);
+            }else{
+                vu.addStringLengthValidate("正文内容", context, null, null, 0, 500);
+            }
             String message = vu.validate();
             if(StringUtils.isNotNullOrEmpty(message)){
-                return -2;
+                return message;
             }
             emailRecord.setContext(context);
         }
@@ -133,12 +137,12 @@ public class TalentPoolEmailEntity {
             vu.addStringLengthValidate("正文内容", inscribe,null,null,0, 50);
             String message = vu.validate();
             if(StringUtils.isNotNullOrEmpty(message)){
-                return -3;
+                return message;
             }
             emailRecord.setInscribe(inscribe);
         }
         int result = talentpoolEmailDao.updateRecord(emailRecord);
-        return result;
+        return "OK";
     }
 
     public int handerTalentpoolEmailLogAndBalance(int useCount, int type, int company_id, int hr_id) throws TalentPoolException {
