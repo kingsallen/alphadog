@@ -275,9 +275,6 @@ public class TalentPoolEmailEntity {
             recharge(useCount, companyId, companyEmailInfo.getBalance(), index);
         }
 
-        long timeAtStartOfDay = new DateTime().withTimeAtStartOfDay().getMillis();
-        logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, companyId, useCount);
-
         LogTalentpoolEmailLogRecord record = new LogTalentpoolEmailLogRecord();
         record.setCompanyId(companyId);
         record.setType(0);
@@ -346,7 +343,10 @@ public class TalentPoolEmailEntity {
         }
         if (org.apache.commons.lang.StringUtils.isNotBlank(companyName)) {
             if (condition != null) {
-                condition.addInnerCondition(new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName).addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.OR), ConditionOp.AND);
+                Condition condition1 = new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName);
+                condition1.addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.OR);
+                condition.addInnerCondition(condition1);
+                //condition.addInnerCondition(new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName).addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.OR), ConditionOp.AND);
             } else {
                 condition = new Condition(HrCompany.HR_COMPANY.NAME.getName(), companyName);
                 condition.addCondition(new Condition(HrCompany.HR_COMPANY.ABBREVIATION.getName(), companyName), ConditionOp.OR);
