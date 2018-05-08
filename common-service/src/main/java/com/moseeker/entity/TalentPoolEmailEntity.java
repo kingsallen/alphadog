@@ -121,9 +121,9 @@ public class TalentPoolEmailEntity {
             ValidateUtil vu = new ValidateUtil();
             vu.addSensitiveValidate("正文内容", context, null, null);
             if(type != 71) {
-                vu.addStringLengthValidate("正文内容", context, null, null, 0, 1000);
+                vu.addStringLengthValidate("正文内容", context, null, null, 0, 1001);
             }else{
-                vu.addStringLengthValidate("正文内容", context, null, null, 0, 500);
+                vu.addStringLengthValidate("正文内容", context, null, null, 0, 501);
             }
             String message = vu.validate();
             if(StringUtils.isNotNullOrEmpty(message)){
@@ -134,7 +134,7 @@ public class TalentPoolEmailEntity {
         if(StringUtils.isNotNullOrEmpty(inscribe)){
             ValidateUtil vu = new ValidateUtil();
             vu.addSensitiveValidate("落款", inscribe, null, null);
-            vu.addStringLengthValidate("正文内容", inscribe,null,null,0, 50);
+            vu.addStringLengthValidate("落款", inscribe,null,null,0, 50);
             String message = vu.validate();
             if(StringUtils.isNotNullOrEmpty(message)){
                 return message;
@@ -183,6 +183,8 @@ public class TalentPoolEmailEntity {
         if(balance == useCount){
             List<TalentpoolEmailRecord> emailRecordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
             for(TalentpoolEmailRecord record : emailRecordList){
+                logger.info("handerTalentpoolEmailLogAndBalance email status id:{};disable:{}",record.getId(),record.getDisable());
+                logger.info("handerTalentpoolEmailLogAndBalance bool:{}",TalentpoolEmailType.instanceFromByte(record.getConfigId()).getStatus());
                 if(TalentpoolEmailType.instanceFromByte(record.getConfigId()).getStatus()) {
                     record.setDisable(0);
                 }
@@ -350,6 +352,7 @@ public class TalentPoolEmailEntity {
         }
 
         if (condition != null) {
+            logger.info("fetchEmailAccounts condition:{}", condition);
             Query.QueryBuilder queryBuilder1 = new Query.QueryBuilder();
             queryBuilder1.where(condition);
             List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(queryBuilder1.buildQuery());
