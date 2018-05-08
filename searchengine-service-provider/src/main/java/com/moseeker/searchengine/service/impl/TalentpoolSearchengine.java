@@ -1109,8 +1109,8 @@ public class TalentpoolSearchengine {
         searchUtil.shouldTermQuery(map,queryBuilder);
     }
     /*
-  按照最后工作的公司查询
- */
+      按照最后工作的公司查询
+     */
     private void queryByLastCompany(String companys,QueryBuilder queryBuilder){
         List<String> list=new ArrayList<>();
         list.add("user.profiles.recent_job.company_name");
@@ -1266,8 +1266,8 @@ public class TalentpoolSearchengine {
         return fieldList;
     }
     /*
-        组装全文检索查询的权重
-   */
+      组装全文检索查询的权重
+     */
     private List<Integer> getBoostList(){
         List<Integer> boostList=new ArrayList<>();
         boostList.add(20);
@@ -1340,7 +1340,7 @@ public class TalentpoolSearchengine {
         return build;
     }
     /*
-        初试通过的统计
+       初试通过的统计
      */
     private AbstractAggregationBuilder handleFirstTrialOkCountAgg(Map<String,String> params){
         MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("first_trial_ok_count")
@@ -1351,7 +1351,7 @@ public class TalentpoolSearchengine {
         return build;
     }
     /*
-        入职的统计
+      入职的统计
      */
     private AbstractAggregationBuilder handleEntryCountAgg(Map<String,String> params){
         MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("entry_count")
@@ -1362,7 +1362,7 @@ public class TalentpoolSearchengine {
         return build;
     }
     /*
-        面试通过的统计
+      面试通过的统计
      */
     private AbstractAggregationBuilder handleInterviewOkCountAgg(Map<String,String> params){
         MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("interview_ok_count")
@@ -1373,7 +1373,7 @@ public class TalentpoolSearchengine {
         return build;
     }
     /*
-        所有申请的统计
+      所有申请的统计
      */
     private AbstractAggregationBuilder handleAllApplicationCountAgg(Map<String,String> params){
         String progressStatus = params.get("progress");
