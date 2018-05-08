@@ -7,7 +7,7 @@ package com.moseeker.baseorm.db.logdb.tables.daos;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolEmailDailyLogRecord;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -73,20 +73,6 @@ public class LogTalentpoolEmailDailyLogDao extends DAOImpl<LogTalentpoolEmailDai
     }
 
     /**
-     * Fetch records that have <code>type IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogTalentpoolEmailDailyLog> fetchByType(Byte... values) {
-        return fetch(LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG.TYPE, values);
-    }
-
-    /**
-     * Fetch records that have <code>hr_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogTalentpoolEmailDailyLog> fetchByHrId(Integer... values) {
-        return fetch(LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG.HR_ID, values);
-    }
-
-    /**
      * Fetch records that have <code>lost IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogTalentpoolEmailDailyLog> fetchByLost(Integer... values) {
@@ -94,9 +80,9 @@ public class LogTalentpoolEmailDailyLogDao extends DAOImpl<LogTalentpoolEmailDai
     }
 
     /**
-     * Fetch records that have <code>create_time IN (values)</code>
+     * Fetch records that have <code>date IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogTalentpoolEmailDailyLog> fetchByCreateTime(Timestamp... values) {
-        return fetch(LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME, values);
+    public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogTalentpoolEmailDailyLog> fetchByDate(Date... values) {
+        return fetch(LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG.DATE, values);
     }
 }

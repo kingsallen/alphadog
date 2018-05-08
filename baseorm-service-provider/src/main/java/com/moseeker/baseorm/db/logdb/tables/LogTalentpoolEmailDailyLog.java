@@ -8,7 +8,7 @@ import com.moseeker.baseorm.db.logdb.Keys;
 import com.moseeker.baseorm.db.logdb.Logdb;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolEmailDailyLogRecord;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogTalentpoolEmailDailyLog extends TableImpl<LogTalentpoolEmailDailyLogRecord> {
 
-    private static final long serialVersionUID = 84872967;
+    private static final long serialVersionUID = -979166915;
 
     /**
      * The reference instance of <code>logdb.log_talentpool_email_daily_log</code>
@@ -62,25 +62,14 @@ public class LogTalentpoolEmailDailyLog extends TableImpl<LogTalentpoolEmailDail
     public final TableField<LogTalentpoolEmailDailyLogRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司id");
 
     /**
-     * The column <code>logdb.log_talentpool_email_daily_log.type</code>. 邮件类别 1:投递成功邮件 2：不匹配通知邮件 3：生日祝福邮件 4：邀请投递邮件
-5：转发求职者简历邮件 0充值
+     * The column <code>logdb.log_talentpool_email_daily_log.lost</code>. 本日使用点数
      */
-    public final TableField<LogTalentpoolEmailDailyLogRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "邮件类别 1:投递成功邮件 2：不匹配通知邮件 3：生日祝福邮件 4：邀请投递邮件\n5：转发求职者简历邮件 0充值");
+    public final TableField<LogTalentpoolEmailDailyLogRecord, Integer> LOST = createField("lost", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "本日使用点数");
 
     /**
-     * The column <code>logdb.log_talentpool_email_daily_log.hr_id</code>. hr_id
+     * The column <code>logdb.log_talentpool_email_daily_log.date</code>.
      */
-    public final TableField<LogTalentpoolEmailDailyLogRecord, Integer> HR_ID = createField("hr_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_id");
-
-    /**
-     * The column <code>logdb.log_talentpool_email_daily_log.lost</code>. 本次使用点数或者充值点数
-     */
-    public final TableField<LogTalentpoolEmailDailyLogRecord, Integer> LOST = createField("lost", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "本次使用点数或者充值点数");
-
-    /**
-     * The column <code>logdb.log_talentpool_email_daily_log.create_time</code>. 创建时间
-     */
-    public final TableField<LogTalentpoolEmailDailyLogRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+    public final TableField<LogTalentpoolEmailDailyLogRecord, Date> DATE = createField("date", org.jooq.impl.SQLDataType.DATE, this, "");
 
     /**
      * Create a <code>logdb.log_talentpool_email_daily_log</code> table reference

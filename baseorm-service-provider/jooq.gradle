@@ -43,7 +43,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
     }
     generator() {
         database() {
-            inputSchema("hrdb")
+            inputSchema("logdb")
             //inputSchema("hrdb")
 //            includes("hr_third_party_account")
 
@@ -60,7 +60,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             daos true
         }
         target() {
-            packageName('com.moseeker.baseorm.db.hrdb')
+            packageName('com.moseeker.baseorm.db.logdb')
             directory('src/main/java')
         }
     }
