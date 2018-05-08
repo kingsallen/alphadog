@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.redis.log;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import redis.clients.jedis.Jedis;
@@ -174,7 +175,21 @@ public class RedisAppender extends AppenderSkeleton implements Runnable {
             LoggingEvent event;
             int index = 0;
             while (index < batch.length && (event = events.poll()) != null) {
-                batch[index++] = layout.format(event);
+                StringBuilder logBuilder = new StringBuilder();
+
+                logBuilder.append(layout.format(event));
+
+                if(layout.ignoresThrowable()) {
+                    String[] s = event.getThrowableStrRep();
+                    if (s != null) {
+                        int len = s.length;
+                        for(int i = 0; i < len; i++) {
+                            logBuilder.append(s[i]).append(Layout.LINE_SEP);
+                        }
+                    }
+                }
+
+                batch[index++] = logBuilder.toString();
             }
 
             if (index > 0) {
