@@ -5,7 +5,7 @@ package com.moseeker.baseorm.db.logdb.tables.pojos;
 
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.sql.Date;
 
 import javax.annotation.Generated;
 
@@ -23,40 +23,32 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogTalentpoolEmailDailyLog implements Serializable {
 
-    private static final long serialVersionUID = -1704385647;
+    private static final long serialVersionUID = -1209358593;
 
-    private Integer   id;
-    private Integer   companyId;
-    private Byte      type;
-    private Integer   hrId;
-    private Integer   lost;
-    private Timestamp createTime;
+    private Integer id;
+    private Integer companyId;
+    private Integer lost;
+    private Date    date;
 
     public LogTalentpoolEmailDailyLog() {}
 
     public LogTalentpoolEmailDailyLog(LogTalentpoolEmailDailyLog value) {
         this.id = value.id;
         this.companyId = value.companyId;
-        this.type = value.type;
-        this.hrId = value.hrId;
         this.lost = value.lost;
-        this.createTime = value.createTime;
+        this.date = value.date;
     }
 
     public LogTalentpoolEmailDailyLog(
-        Integer   id,
-        Integer   companyId,
-        Byte      type,
-        Integer   hrId,
-        Integer   lost,
-        Timestamp createTime
+        Integer id,
+        Integer companyId,
+        Integer lost,
+        Date    date
     ) {
         this.id = id;
         this.companyId = companyId;
-        this.type = type;
-        this.hrId = hrId;
         this.lost = lost;
-        this.createTime = createTime;
+        this.date = date;
     }
 
     public Integer getId() {
@@ -75,22 +67,6 @@ public class LogTalentpoolEmailDailyLog implements Serializable {
         this.companyId = companyId;
     }
 
-    public Byte getType() {
-        return this.type;
-    }
-
-    public void setType(Byte type) {
-        this.type = type;
-    }
-
-    public Integer getHrId() {
-        return this.hrId;
-    }
-
-    public void setHrId(Integer hrId) {
-        this.hrId = hrId;
-    }
-
     public Integer getLost() {
         return this.lost;
     }
@@ -99,12 +75,12 @@ public class LogTalentpoolEmailDailyLog implements Serializable {
         this.lost = lost;
     }
 
-    public Timestamp getCreateTime() {
-        return this.createTime;
+    public Date getDate() {
+        return this.date;
     }
 
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override
@@ -113,10 +89,8 @@ public class LogTalentpoolEmailDailyLog implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(companyId);
-        sb.append(", ").append(type);
-        sb.append(", ").append(hrId);
         sb.append(", ").append(lost);
-        sb.append(", ").append(createTime);
+        sb.append(", ").append(date);
 
         sb.append(")");
         return sb.toString();
