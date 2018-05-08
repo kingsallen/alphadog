@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-    private static final long serialVersionUID = 86430401;
+    private static final long serialVersionUID = -426143758;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -57,9 +57,9 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
     public final TableField<HrThirdPartyAccountRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "编号");
 
     /**
-     * The column <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
+     * The column <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航
      */
-    public final TableField<HrThirdPartyAccountRecord, Short> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "1=51job,2=猎聘,3=智联,4=linkedin");
+    public final TableField<HrThirdPartyAccountRecord, Short> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航");
 
     /**
      * The column <code>hrdb.hr_third_party_account.username</code>. 帐号
@@ -122,9 +122,9 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
     public final TableField<HrThirdPartyAccountRecord, Byte> SYNC_REQUIRE_COMPANY = createField("sync_require_company", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "智联同步时页面是否需要选择公司名称，0 不需要，1 需要");
 
     /**
-     * The column <code>hrdb.hr_third_party_account.sync_require_department</code>. 智联同步时页面是否需要选择部门名称，0 不需要，1 需要
+     * The column <code>hrdb.hr_third_party_account.syn​c_require_department</code>. 智联同步时页面是否需要选择部门名称，0 不需要，1 需要
      */
-    public final TableField<HrThirdPartyAccountRecord, Byte> SYNC_REQUIRE_DEPARTMENT = createField("sync_require_department", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "智联同步时页面是否需要选择部门名称，0 不需要，1 需要");
+    public final TableField<HrThirdPartyAccountRecord, Byte> SYN​C_REQUIRE_DEPARTMENT = createField("syn​c_require_department", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "智联同步时页面是否需要选择部门名称，0 不需要，1 需要");
 
     /**
      * Create a <code>hrdb.hr_third_party_account</code> table reference

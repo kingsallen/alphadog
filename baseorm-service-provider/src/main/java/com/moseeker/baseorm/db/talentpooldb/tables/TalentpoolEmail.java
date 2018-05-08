@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolEmail extends TableImpl<TalentpoolEmailRecord> {
 
-    private static final long serialVersionUID = -1500752173;
+    private static final long serialVersionUID = 1523035443;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_email</code>
@@ -62,14 +62,14 @@ public class TalentpoolEmail extends TableImpl<TalentpoolEmailRecord> {
     public final TableField<TalentpoolEmailRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "状态 0是不开启 1是开启 2 关闭");
 
     /**
-     * The column <code>talentpooldb.talentpool_email.inscribe</code>. 落款
+     * The column <code>talentpooldb.talentpool_email.inscribe</code>. 邮件自定义落款
      */
-    public final TableField<TalentpoolEmailRecord, String> INSCRIBE = createField("inscribe", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "落款");
+    public final TableField<TalentpoolEmailRecord, String> INSCRIBE = createField("inscribe", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "邮件自定义落款");
 
     /**
-     * The column <code>talentpooldb.talentpool_email.context</code>. 邮件内容
+     * The column <code>talentpooldb.talentpool_email.context</code>. 邮件自定义文案
      */
-    public final TableField<TalentpoolEmailRecord, String> CONTEXT = createField("context", org.jooq.impl.SQLDataType.CLOB, this, "邮件内容");
+    public final TableField<TalentpoolEmailRecord, String> CONTEXT = createField("context", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "邮件自定义文案");
 
     /**
      * The column <code>talentpooldb.talentpool_email.config_id</code>. 邮件配置模板id
@@ -87,9 +87,9 @@ public class TalentpoolEmail extends TableImpl<TalentpoolEmailRecord> {
     public final TableField<TalentpoolEmailRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>talentpooldb.talentpool_email.company_id</code>.
+     * The column <code>talentpooldb.talentpool_email.company_id</code>. 公司编号
      */
-    public final TableField<TalentpoolEmailRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<TalentpoolEmailRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "公司编号");
 
     /**
      * Create a <code>talentpooldb.talentpool_email</code> table reference

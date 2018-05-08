@@ -168,12 +168,12 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=Integer.parseInt(String.valueOf(data.get("hr_id"))) ;
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
-            String page=String.valueOf(data.get("page_number"));
+            String page=(String)data.get("page_number");
             int pageNum=0;
             if(StringUtils.isNotNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
             }
-            String size=String.valueOf(data.get("page_size"));
+            String size=(String)data.get("page_size");
             int pageSize=10;
             if(StringUtils.isNotNullOrEmpty(size)){
                 pageSize=Integer.parseInt(size);
@@ -309,13 +309,13 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
-            String page=String.valueOf(data.get("page_number"));
+            String page=(String)data.get("page_number");
             int pageNum=0;
             if(StringUtils.isNotNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
 
             }
-            String size=String.valueOf(data.get("page_size"));
+            String size=(String)data.get("page_size");
             int pageSize=10;
             if(StringUtils.isNotNullOrEmpty(size)){
                 pageSize=Integer.parseInt(size);
@@ -408,13 +408,13 @@ public class TalentpoolController {
             int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
             int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
-            String page=String.valueOf(data.get("page_number"));
+            String page=(String)data.get("page_number");
             int pageNum=0;
             if(StringUtils.isNotNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
 
             }
-            String size=String.valueOf(data.get("page_size"));
+            String size=(String)data.get("page_size");
             int pageSize=10;
             if(StringUtils.isNotNullOrEmpty(size)){
                 pageSize=Integer.parseInt(size);
@@ -619,7 +619,7 @@ public class TalentpoolController {
             String hrId=String.valueOf(params.get("hr_id"));
             String companyId=String.valueOf(params.get("company_id"));
             int page_number = params.getInt("page_number", 1);
-            int page_size = params.getInt("page_size",0);
+            int page_size = params.getInt("page_size",10);
             if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
@@ -783,7 +783,7 @@ public class TalentpoolController {
             String hrId=String.valueOf(params.get("hr_id"));
             String companyId=String.valueOf(params.get("company_id"));
             int page_number = params.getInt("page_number", 1);
-            int page_size = params.getInt("page_size",0);
+            int page_size = params.getInt("page_size",10);
             if(params.get("hr_id") ==null || StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }

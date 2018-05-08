@@ -792,8 +792,18 @@ public class TalentPoolService {
                                 try {
                                     List<Integer> userIdList = service.getTalentUserIdList(params);
                                     if (!StringUtils.isEmptyList(userIdList)) {
-                                        Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
-                                        this.AddbatchPublicTalent(hrId,companyId,userIdSet);
+                                        for(Integer userId:userIdList){
+                                            Set<Integer> userIdSet = new HashSet<>();
+                                            userIdSet.add(userId);
+                                            try {
+                                                logger.info("========执行为{}公开的操作=====",JSON.toJSON(userIdSet));
+                                                Response res=this.AddbatchPublicTalent(hrId, companyId, userIdSet);
+                                                logger.info("========执行为{}公开的操作的结果为{}=====",JSON.toJSON(userIdSet),JSON.toJSONString(res));
+                                            }catch(Exception e){
+                                                logger.info(e.getMessage(),e);
+                                            }
+                                        }
+
                                     }
                                 } catch (Exception e) {
                                     logger.error(e.getMessage(), e);
@@ -1447,6 +1457,7 @@ public class TalentPoolService {
      * @return              筛选列表
      * @throws TException
      */
+    @CounterIface
     public Response getProfileFilterList(int hrId,int companyId, int page_number, int page_size) throws TException {
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(companyId);
         if(companyDO == null){
@@ -1485,6 +1496,7 @@ public class TalentPoolService {
      * @param filter_ids    规则标签
      * @return
      */
+    @CounterIface
     public Response handerProfileFilters(int hrId, int companyId, int disable, List<Integer> filter_ids){
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(companyId);
         if(companyDO == null){
@@ -1511,6 +1523,7 @@ public class TalentPoolService {
      * @param filter_id     筛选规则编号
      * @return
      */
+    @CounterIface
     public Response getProfileFilterInfo(int hrId, int companyId, int filter_id){
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(companyId);
         if(companyDO == null){
@@ -1531,6 +1544,8 @@ public class TalentPoolService {
         return ResponseUtils.successWithoutStringify(JSON.toJSONString(profileFilterInfo, serializeConfig));
     }
 
+
+    @CounterIface
     public Response addProfileFilter(TalentpoolCompanyTagDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(filterDO.getCompany_id());
         if(companyDO == null){
@@ -1548,11 +1563,15 @@ public class TalentPoolService {
         }
         try {
             String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName());
+            logger.info("addProfileFilter redis info:{}", info);
             if (!StringUtils.isNotNullOrEmpty(info)) {
                 redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName(), "true");
+                logger.info("addProfileFilter redis info:{}", info);
                 String result = talentPoolEntity.validateCompanyTalentPoolV3ByFilterName(filterDO.getName(), filterDO.getCompany_id(), filterDO.getId());
+                logger.info("addProfileFilter result:{}", result);
                 if ("OK".equals(result)) {
                     String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(filterDO);
+                    logger.info("addProfileFilter filterString:{}", filterString);
                     if (StringUtils.isNullOrEmpty(filterString)) {
                         int id = talentPoolEntity.addCompanyProfileFilter(filterDO, ActionFormList, positionIdList, position_total);
                         Map<String, Object> params = new HashMap<>();
@@ -1566,7 +1585,7 @@ public class TalentPoolService {
                 return ResponseUtils.fail(1, result);
             }
         }catch(Exception e){
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(),e);
         }finally {
             redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName());
         }

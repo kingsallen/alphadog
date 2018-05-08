@@ -84,7 +84,6 @@ public class ScheduledTask {
             logger.info("获取职位同步结果队列报错");
             e.printStackTrace();
             failNotification.sendHandlerFailureMail(data,e);
-            throw e;
         }
     }
 }

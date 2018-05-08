@@ -14,37 +14,21 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class LiepinOccupationResultHandler extends AbstractOccupationResultHandler<DictLiepinOccupationDO> implements LiepinResultHandlerAdapter{
-    Logger logger= LoggerFactory.getLogger(LiepinOccupationResultHandler.class);
-
-    @Autowired
-    DictLiepinOccupationDao occupationDao;
+public class LiepinOccupationResultHandler extends AbstractOccupationResultHandler<DictLiepinOccupationDO> implements LiepinResultHandlerAdapter {
+    Logger logger = LoggerFactory.getLogger(LiepinOccupationResultHandler.class);
 
     @Override
     protected DictLiepinOccupationDO buildOccupation(List<String> texts, List<String> codes, Map<String, Integer> newCode, JSONObject msg) {
-        DictLiepinOccupationDO temp=new DictLiepinOccupationDO();
+        DictLiepinOccupationDO temp = new DictLiepinOccupationDO();
 
-        temp.setOtherCode(codes.get(codes.size()-1));
+        temp.setOtherCode(codes.get(codes.size() - 1));
         temp.setCode(newCode.get(temp.getOtherCode()));
-        temp.setLevel((short)codes.size());
+        temp.setLevel((short) codes.size());
         temp.setName(PositionParamRefreshUtils.lastString(texts));
         temp.setParentId(newCode.get(PositionParamRefreshUtils.parentCode(codes)));
-        temp.setStatus((short)1);
+        temp.setStatus((short) 1);
 
         return temp;
-    }
-
-    @Override
-    protected void persistent(List<DictLiepinOccupationDO> data) {
-        int delCount=occupationDao.deleteAll();
-        logger.info("liepin delete old Occupation "+delCount);
-        occupationDao.addAllData(data);
-        logger.info("liepin insert success");
-    }
-
-    @Override
-    protected List<DictLiepinOccupationDO> getAll() {
-        return occupationDao.getAllOccupation();
     }
 
     @Override

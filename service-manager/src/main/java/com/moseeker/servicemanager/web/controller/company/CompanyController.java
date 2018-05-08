@@ -658,6 +658,7 @@ public class CompanyController {
             String wxuserId=String.valueOf(data.get("wxuser_id"));
             String remote_ip=String.valueOf(data.get("remote_ip"));
             String source=String.valueOf(data.get("source"));
+            String hr_source =String.valueOf(data.get("hr_source"));
             if(StringUtils.isNullOrEmpty(mobile)){
                 ResponseLogNotification.fail(request,"注册手机号不可以为空");
             }
@@ -668,7 +669,7 @@ public class CompanyController {
                 ResponseLogNotification.fail(request,"微信名称不可以为空");
             }
             logger.info("addHrAccountAndCompany hr注册参数：companyName={}, mobile={},wxuserId={}",company_name, mobile, wxuserId);
-            Response result = companyServices.addHrAccountAndCompany(company_name, mobile, Integer.parseInt(wxuserId), remote_ip, Integer.parseInt(source));
+            Response result = companyServices.addHrAccountAndCompany(company_name, mobile, Integer.parseInt(wxuserId), remote_ip, Integer.parseInt(source), Integer.parseInt(hr_source));
             logger.info("addHrAccountAndCompany hr注册成功结果：{};提示信息：{}",result.getStatus(), result.getMessage());
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);

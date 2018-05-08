@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogTalentpoolEmailLogRecord extends UpdatableRecordImpl<LogTalentpoolEmailLogRecord> implements Record7<Integer, Integer, Integer, Integer, Integer, Integer, Timestamp> {
 
-    private static final long serialVersionUID = -504195241;
+    private static final long serialVersionUID = 1715761513;
 
     /**
      * Setter for <code>logdb.log_talentpool_email_log.id</code>.

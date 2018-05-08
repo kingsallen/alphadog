@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.dictdb.DictJobsDBOccupationDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
+import com.moseeker.position.service.position.base.refresh.handler.DefaultOccupationResultHandler;
 import com.moseeker.position.utils.PositionParamRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictJobsDBOccupationDO;
 import org.slf4j.Logger;
@@ -20,58 +21,21 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandler<DictJobsDBOccupationDO> implements JobsDBResultHandlerAdapter {
-    Logger logger= LoggerFactory.getLogger(JobsDBOccupationResultHandler.class);
-
-    @Autowired
-    private DictJobsDBOccupationDao occupationDao;
-
-    @Override
-    protected DictJobsDBOccupationDO buildOccupation(List<String> texts,List<String> codes,Map<String, Integer> newCode,JSONObject msg) {
-        DictJobsDBOccupationDO temp=new DictJobsDBOccupationDO();
-
-        temp.setCodeOther(codes.get(codes.size()-1));
-        temp.setCode(newCode.get(temp.getCodeOther()));
-        temp.setLevel((short)codes.size());
-        temp.setName(PositionParamRefreshUtils.lastString(texts));
-        temp.setParentId(newCode.get(PositionParamRefreshUtils.parentCode(codes)));
-        temp.setStatus((short)1);
-
-        return temp;
-    }
-
-    @Override
-    @Transactional
-    protected void persistent(List<DictJobsDBOccupationDO> data) {
-        int delCount=occupationDao.deleteAll();
-        logger.info("jobsdb delete old Occupation "+delCount);
-        occupationDao.addAllData(data);
-        logger.info("jobsdb insert success");
-    }
-
-    @Override
-    protected List<DictJobsDBOccupationDO> getAll() {
-        return occupationDao.getAllOccupation();
-    }
-
-    @Override
-    protected boolean equals(DictJobsDBOccupationDO oldData, DictJobsDBOccupationDO newData) {
-        return oldData.getName().equals(newData.getName())
-                && oldData.getCodeOther().equals(newData.getCodeOther())
-                && oldData.getLevel() == newData.getLevel();
-    }
+public class JobsDBOccupationResultHandler extends DefaultOccupationResultHandler<DictJobsDBOccupationDO> implements JobsDBResultHandlerAdapter {
+    Logger logger = LoggerFactory.getLogger(JobsDBOccupationResultHandler.class);
 
     @Override
     protected List<Occupation> toList(JSONObject msg) {
         TypeReference<List<JobFunction>> typeRef
-                = new TypeReference<List<JobFunction>>() {};
+                = new TypeReference<List<JobFunction>>() {
+        };
 
-        List<JobFunction> occupations= JSON.parseObject(msg.getString(occupationKey()),typeRef);
+        List<JobFunction> occupations = JSON.parseObject(msg.getString(occupationKey()), typeRef);
 
-        List<Occupation> result=new ArrayList<>();
+        List<Occupation> result = new ArrayList<>();
 
-        for(JobFunction jobFunction:occupations){
-            recursiveOccupation(jobFunction,result,null);
+        for (JobFunction jobFunction : occupations) {
+            recursiveOccupation(jobFunction, result, null);
         }
 
         return result;
@@ -79,14 +43,15 @@ public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandl
 
     /**
      * 递归生成occupation
+     *
      * @param jobFunction
      * @param result
      */
-    private void recursiveOccupation(JobFunction jobFunction,List<Occupation> result,Occupation parent){
-        Occupation thisOccupation=new Occupation();
+    private void recursiveOccupation(JobFunction jobFunction, List<Occupation> result, Occupation parent) {
+        Occupation thisOccupation = new Occupation();
         thisOccupation.setCode(new ArrayList<>());
         thisOccupation.setText(new ArrayList<>());
-        if(parent!=null){
+        if (parent != null) {
             thisOccupation.getCode().addAll(parent.getCode());
             thisOccupation.getText().addAll(parent.getText());
         }
@@ -96,24 +61,24 @@ public class JobsDBOccupationResultHandler extends AbstractOccupationResultHandl
 
         result.add(thisOccupation);
 
-        if(!StringUtils.isEmptyList(jobFunction.getChildren())){
-            for(JobFunction childJobFunction:jobFunction.getChildren()) {
-                recursiveOccupation(childJobFunction,result,thisOccupation);
+        if (!StringUtils.isEmptyList(jobFunction.getChildren())) {
+            for (JobFunction childJobFunction : jobFunction.getChildren()) {
+                recursiveOccupation(childJobFunction, result, thisOccupation);
             }
         }
     }
 
     @Override
-    protected String occupationKey(){
+    protected String occupationKey() {
         return "job_functions";
     }
 
     @Override
-    public ChannelType getChannelType() {
-        return ChannelType.JOBSDB;
+    protected Class<DictJobsDBOccupationDO> getOccupationClass() {
+        return DictJobsDBOccupationDO.class;
     }
 
-    private static class JobFunction{
+    private static class JobFunction {
         private int id;
         private String name;
         private List<JobFunction> Children;

@@ -10,7 +10,6 @@ import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.UrlUtil;
@@ -22,7 +21,7 @@ import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer
 import com.moseeker.position.service.position.base.sync.PositionSyncVerifyHandlerUtil;
 import com.moseeker.position.service.position.base.sync.verify.MobileVeifyHandler;
 import com.moseeker.position.service.position.base.sync.verify.PositionSyncVerifyHandler;
-import com.moseeker.position.service.position.base.sync.TransferCheckUtil;
+import com.moseeker.position.service.position.base.sync.TransferPreHandleUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.position.utils.PositionSyncHandler;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -37,7 +36,6 @@ import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +70,7 @@ public class PositionBS {
     @Autowired
     private PositionChangeUtil positionChangeUtil;
     @Autowired
-    private TransferCheckUtil transferCheckUtil;
+    private TransferPreHandleUtil transferPreHandleUtil;
     @Autowired
     private PositionEmailNotification emailNotification;
     @Autowired
@@ -164,7 +162,7 @@ public class PositionBS {
         positionSyncHandler.requireAvailablePostiion(moseekerJobPosition);
 
         if(positionSyncHandler.alreadyInRedis(moseekerJobPosition.getId())){
-            throw new BIZException(ResultMessage.AREADY_BINDING_IN_REDIS.getStatus(),ResultMessage.AREADY_BINDING_IN_REDIS.getMessage());
+            throw new BIZException(ResultMessage.AREADY_SYNCING_IN_REDIS.getStatus(),ResultMessage.AREADY_SYNCING_IN_REDIS.getMessage());
         }
 
         // 返回结果
@@ -210,12 +208,12 @@ public class PositionBS {
 
             //验证是否有正在绑定的第三方职位
             if(positionSyncHandler.containsAlreadySyncThirdPosition(avaliableAccount.getId(),moseekerJobPosition.getId(),alreadySyncPosition)){
-                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_BINDING_IN_DATABASE.getMessage()));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_SYNCING_IN_DATABASE.getMessage()));
                 continue;
             }
 
             //验证同步数据中的参数
-            List<String> checkMsg=transferCheckUtil.checkBeforeTransfer(requestType,channelType,p,moseekerJobPosition);
+            List<String> checkMsg= transferPreHandleUtil.checkBeforeTransfer(requestType,channelType,p,moseekerJobPosition);
             if(!StringUtils.isEmptyList(checkMsg)){
                 results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,JSON.toJSONString(checkMsg)));
                 continue;
