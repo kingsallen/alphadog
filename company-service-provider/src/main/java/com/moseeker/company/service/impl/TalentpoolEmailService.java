@@ -539,7 +539,7 @@ public class TalentpoolEmailService {
         int totalPage=(int)Math.ceil((double)totalNum/300);
         for(int i=1;i<=totalPage;i++) {
             params.put("page_size", 300 + "");
-            params.put("page_number", (i - 1) + "");
+            params.put("page_number", i + "");
             try {
                 List<InviteToDelivyUserInfo> userInfo = this.talentEmailInviteInfoSearch(params);
                 logger.info("=============List<InviteToDelivyUserInfo>===========");
@@ -764,7 +764,7 @@ public class TalentpoolEmailService {
         int totalPage=(int)Math.ceil((double)totalNum/300);
         for(int i=1;i<=totalPage;i++){
             params.put("page_size",300+"");
-            params.put("page_number",(i-1)+"");
+            params.put("page_number",i+"");
 
             try{
                 EmailResumeBean emailList=this.convertResumeEmailData(employeeList,params,companyId,context,hrId);
