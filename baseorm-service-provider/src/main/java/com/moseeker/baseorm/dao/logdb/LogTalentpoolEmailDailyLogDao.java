@@ -31,7 +31,7 @@ public class LogTalentpoolEmailDailyLogDao extends JooqCrudImpl<LogTalentpoolEma
         super(table, logTalentpoolEmailDailyLogClass);
     }
 
-    public List<LogTalentpoolEmailDailyLogRecord> fetchEmailAccountConsumption(int companyId, byte value, int index, int pageSize, Date startDate, Date endDate) {
+    public List<LogTalentpoolEmailDailyLogRecord> fetchEmailAccountConsumption(int companyId, int index, int pageSize, Date startDate, Date endDate) {
 
         Condition condition = LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId);
         if (startDate != null) {
@@ -48,7 +48,7 @@ public class LogTalentpoolEmailDailyLogDao extends JooqCrudImpl<LogTalentpoolEma
                 .fetch();
     }
 
-    public int countEmailAccountConsumption(int companyId, byte value, Date startDate, Date endDate) {
+    public int countEmailAccountConsumption(int companyId, Date startDate, Date endDate) {
         Condition condition = LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId);
         if (startDate != null) {
             condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.DATE.ge(startDate));

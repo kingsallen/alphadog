@@ -494,10 +494,10 @@ public class TalentPoolEmailEntity {
                     if (endDate != null) {
                         endTime1 = new java.sql.Date(endDate.getMillis());
                     }
-                    total = logTalentpoolEmailDailyLogDao.countEmailAccountConsumption(companyId, emailAccountConsumptionType.getValue(), startTime1, endTime1);
+                    total = logTalentpoolEmailDailyLogDao.countEmailAccountConsumption(companyId, startTime1, endTime1);
                     List<LogTalentpoolEmailDailyLogRecord> logTalentpoolEmailDailyLogRecordList =
-                            logTalentpoolEmailDailyLogDao.fetchEmailAccountConsumption(companyId,
-                                    emailAccountConsumptionType.getValue(), index, pageSize, startTime1, endTime1);
+                            logTalentpoolEmailDailyLogDao.fetchEmailAccountConsumption(companyId, index, pageSize,
+                                    startTime1, endTime1);
                     if (logTalentpoolEmailDailyLogRecordList != null && logTalentpoolEmailDailyLogRecordList.size() > 0) {
                         emailAccountConsumptionList = logTalentpoolEmailDailyLogRecordList.stream()
                                 .map(logTalentpoolEmailDailyLogRecord -> {
