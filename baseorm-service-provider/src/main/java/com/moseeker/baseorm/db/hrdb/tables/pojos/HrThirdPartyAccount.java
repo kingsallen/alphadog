@@ -76,7 +76,7 @@ public class HrThirdPartyAccount implements Serializable {
         String    errorMessage,
         String    ext,
         Byte      syncRequireCompany,
-        Byte      syn​cRequireDepartment
+        Byte      syncRequireDepartment
     ) {
         this.id = id;
         this.channel = channel;

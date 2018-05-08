@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class PositionZhilian implements Serializable {
     private String title;
-    private List<List<String>> cities;
+    private List<City> cities;
     private String address;
     private List<String> occupation;
     private String salary_low;
@@ -23,7 +23,15 @@ public class PositionZhilian implements Serializable {
     private String job_id;
     private String count;
     private String company;
+    private String department;
 
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 
     public String getCompany() {
         return company;
@@ -41,11 +49,11 @@ public class PositionZhilian implements Serializable {
         this.title = title;
     }
 
-    public List<List<String>> getCities() {
+    public List<City> getCities() {
         return cities;
     }
 
-    public void setCities(List<List<String>> cities) {
+    public void setCities(List<City> cities) {
         this.cities = cities;
     }
 
@@ -137,4 +145,24 @@ public class PositionZhilian implements Serializable {
         this.count = count;
     }
 
+    public static class City{
+        private List<String> code;
+        private String address;
+
+        public List<String> getCode() {
+            return code;
+        }
+
+        public void setCode(List<String> code) {
+            this.code = code;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+    }
 }

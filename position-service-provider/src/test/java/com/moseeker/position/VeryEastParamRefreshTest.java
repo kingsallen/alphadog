@@ -3,6 +3,7 @@ package com.moseeker.position;
 import com.moseeker.position.config.AppConfig;
 import com.moseeker.position.service.position.jobsdb.refresh.JobsDBParamRefresher;
 import com.moseeker.position.service.position.veryeast.refresh.VeryEastParamRefresher;
+import com.moseeker.position.service.position.zhilian.refresher.ZhilianParamRefresher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import java.io.IOException;
 public class VeryEastParamRefreshTest{
 
     @Autowired
-    JobsDBParamRefresher refresh;
+    ZhilianParamRefresher refresh;
 
     String file="/Users/pyb/Desktop/environ.response.json";
 

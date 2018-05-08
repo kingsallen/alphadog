@@ -227,7 +227,7 @@ public class PositionEmailNotification {
             }
 
             if(!StringUtils.isNullOrEmpty(notInOldData)) {
-                messageBuilder.append("【本次新增】：").append(JSON.toJSONString(notInOldData)).append(br);    //数据库不存在，但本次刷新存在
+                messageBuilder.append("【本次新增】：").append(notInOldData).append(br);    //数据库不存在，但本次刷新存在
             }
 
 

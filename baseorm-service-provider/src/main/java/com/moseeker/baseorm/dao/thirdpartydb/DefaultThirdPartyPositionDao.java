@@ -40,12 +40,12 @@ public class DefaultThirdPartyPositionDao implements IThirdPartyPositionDao<Empt
     }
 
     @Override
-    public int updateData(EmptyExtThirdPartyPosition emptyExtThirdPartyPosition) {
+    public int updateExtPosition(EmptyExtThirdPartyPosition emptyExtThirdPartyPosition) {
         return 1;
     }
 
     @Override
-    public int[] updateDatas(List<EmptyExtThirdPartyPosition> list) {
+    public int[] updateExtPositions(List<EmptyExtThirdPartyPosition> list) {
         int result[] =new int[list.size()];
         Arrays.fill(result,1);
         return result;

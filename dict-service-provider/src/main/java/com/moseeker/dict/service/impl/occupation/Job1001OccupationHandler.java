@@ -26,11 +26,6 @@ public class Job1001OccupationHandler extends AbstractOccupationHandler<DictJob1
     }
 
     @Override
-    protected String parentKeyName() {
-        return "parent_id";
-    }
-
-    @Override
     public ChannelType getChannelType() {
         return ChannelType.JOB1001;
     }

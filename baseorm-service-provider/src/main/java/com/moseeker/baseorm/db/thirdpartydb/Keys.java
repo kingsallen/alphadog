@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyCompanyChannelConf;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyZhilianPositionAddress;
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountCityRecord;
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountCompanyAddressRecord;
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountCompanyRecord;
@@ -22,6 +23,7 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyCompanyChan
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyJob1001PositionRecord;
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyJobsdbPositionRecord;
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyVeryeastPositionRecord;
+import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyZhilianPositionAddressRecord;
 
 import javax.annotation.Generated;
 
@@ -57,6 +59,7 @@ public class Keys {
     public static final Identity<ThirdpartyJob1001PositionRecord, Integer> IDENTITY_THIRDPARTY_JOB1001_POSITION = Identities0.IDENTITY_THIRDPARTY_JOB1001_POSITION;
     public static final Identity<ThirdpartyJobsdbPositionRecord, Integer> IDENTITY_THIRDPARTY_JOBSDB_POSITION = Identities0.IDENTITY_THIRDPARTY_JOBSDB_POSITION;
     public static final Identity<ThirdpartyVeryeastPositionRecord, Integer> IDENTITY_THIRDPARTY_VERYEAST_POSITION = Identities0.IDENTITY_THIRDPARTY_VERYEAST_POSITION;
+    public static final Identity<ThirdpartyZhilianPositionAddressRecord, Integer> IDENTITY_THIRDPARTY_ZHILIAN_POSITION_ADDRESS = Identities0.IDENTITY_THIRDPARTY_ZHILIAN_POSITION_ADDRESS;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -72,6 +75,7 @@ public class Keys {
     public static final UniqueKey<ThirdpartyJob1001PositionRecord> KEY_THIRDPARTY_JOB1001_POSITION_PRIMARY = UniqueKeys0.KEY_THIRDPARTY_JOB1001_POSITION_PRIMARY;
     public static final UniqueKey<ThirdpartyJobsdbPositionRecord> KEY_THIRDPARTY_JOBSDB_POSITION_PRIMARY = UniqueKeys0.KEY_THIRDPARTY_JOBSDB_POSITION_PRIMARY;
     public static final UniqueKey<ThirdpartyVeryeastPositionRecord> KEY_THIRDPARTY_VERYEAST_POSITION_PRIMARY = UniqueKeys0.KEY_THIRDPARTY_VERYEAST_POSITION_PRIMARY;
+    public static final UniqueKey<ThirdpartyZhilianPositionAddressRecord> KEY_THIRDPARTY_ZHILIAN_POSITION_ADDRESS_PRIMARY = UniqueKeys0.KEY_THIRDPARTY_ZHILIAN_POSITION_ADDRESS_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -92,6 +96,7 @@ public class Keys {
         public static Identity<ThirdpartyJob1001PositionRecord, Integer> IDENTITY_THIRDPARTY_JOB1001_POSITION = createIdentity(ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION, ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION.ID);
         public static Identity<ThirdpartyJobsdbPositionRecord, Integer> IDENTITY_THIRDPARTY_JOBSDB_POSITION = createIdentity(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION, ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.ID);
         public static Identity<ThirdpartyVeryeastPositionRecord, Integer> IDENTITY_THIRDPARTY_VERYEAST_POSITION = createIdentity(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION, ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.ID);
+        public static Identity<ThirdpartyZhilianPositionAddressRecord, Integer> IDENTITY_THIRDPARTY_ZHILIAN_POSITION_ADDRESS = createIdentity(ThirdpartyZhilianPositionAddress.THIRDPARTY_ZHILIAN_POSITION_ADDRESS, ThirdpartyZhilianPositionAddress.THIRDPARTY_ZHILIAN_POSITION_ADDRESS.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -105,5 +110,6 @@ public class Keys {
         public static final UniqueKey<ThirdpartyJob1001PositionRecord> KEY_THIRDPARTY_JOB1001_POSITION_PRIMARY = createUniqueKey(ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION, "KEY_thirdparty_job1001_position_PRIMARY", ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION.ID);
         public static final UniqueKey<ThirdpartyJobsdbPositionRecord> KEY_THIRDPARTY_JOBSDB_POSITION_PRIMARY = createUniqueKey(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION, "KEY_thirdparty_jobsdb_position_PRIMARY", ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.ID);
         public static final UniqueKey<ThirdpartyVeryeastPositionRecord> KEY_THIRDPARTY_VERYEAST_POSITION_PRIMARY = createUniqueKey(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION, "KEY_thirdparty_veryeast_position_PRIMARY", ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.ID);
+        public static final UniqueKey<ThirdpartyZhilianPositionAddressRecord> KEY_THIRDPARTY_ZHILIAN_POSITION_ADDRESS_PRIMARY = createUniqueKey(ThirdpartyZhilianPositionAddress.THIRDPARTY_ZHILIAN_POSITION_ADDRESS, "KEY_thirdparty_zhilian_position_address_PRIMARY", ThirdpartyZhilianPositionAddress.THIRDPARTY_ZHILIAN_POSITION_ADDRESS.ID);
     }
 }

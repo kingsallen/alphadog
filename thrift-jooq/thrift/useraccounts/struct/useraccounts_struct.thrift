@@ -97,7 +97,9 @@ struct UserHrAccount{
     16: optional i32               source          , // 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
     17: optional string            download_token  , // 下载行业报告校验码
     18: optional Timestamp         create_time     , // 创建时间
-    19: optional Timestamp         update_time       // 修改时间
+    19: optional Timestamp         update_time     , // 修改时间
+    20: optional string            headimgurl      , // 头像url
+    21: optional i8                leave_to_mobot    // IM聊天开关，0：不开启，1：开启，2：开启+chatbot
 }
 
 struct DownloadReport {

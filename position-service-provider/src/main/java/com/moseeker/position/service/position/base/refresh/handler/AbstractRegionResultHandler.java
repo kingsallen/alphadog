@@ -53,10 +53,11 @@ public abstract class AbstractRegionResultHandler extends AbstractJsonResultHand
                 DictCityMapDO cityMap=new DictCityMapDO();
 
                 cityMap.setCreateTime(nowTime);
-                cityMap.setCodeOther(thirdPartyRegion.codeToString());
                 cityMap.setStatus(0);
                 cityMap.setCode(moseekerCode);
                 cityMap.setChannel(channelValue);
+                // 有些渠道cother_other要城市名称，有些要code，所以默认code,要文字可以继承后覆盖
+                setCodeOther(cityMap,thirdPartyRegion);
 
                 cityMapList.add(cityMap);
             }
@@ -68,12 +69,13 @@ public abstract class AbstractRegionResultHandler extends AbstractJsonResultHand
             cityMapDao.addAllData(cityMapList);
             logger.info("channel {} region insert success",channelValue);
         }
-
-
-
     }
 
-    private static class Region {
+    protected void setCodeOther(DictCityMapDO cityMap,Region thirdPartyRegion){
+        cityMap.setCodeOther(thirdPartyRegion.codeToString());
+    }
+
+    protected static class Region {
         private List<String> text;
         private List<String> code;
 
@@ -96,6 +98,11 @@ public abstract class AbstractRegionResultHandler extends AbstractJsonResultHand
         public String codeToString(){
             if(code==null || code.isEmpty()) return "";
             return JSON.toJSONString(code);
+        }
+
+        public String textToString(){
+            if(text==null || text.isEmpty()) return "";
+            return JSON.toJSONString(text);
         }
     }
 }
