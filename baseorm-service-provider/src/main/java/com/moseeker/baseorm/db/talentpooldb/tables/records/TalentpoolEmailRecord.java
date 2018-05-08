@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolEmailRecord extends UpdatableRecordImpl<TalentpoolEmailRecord> implements Record8<Integer, Integer, String, String, Integer, Timestamp, Timestamp, Integer> {
 
-    private static final long serialVersionUID = -80560374;
+    private static final long serialVersionUID = 878016476;
 
     /**
      * Setter for <code>talentpooldb.talentpool_email.id</code>.
@@ -61,28 +61,28 @@ public class TalentpoolEmailRecord extends UpdatableRecordImpl<TalentpoolEmailRe
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_email.inscribe</code>. 落款
+     * Setter for <code>talentpooldb.talentpool_email.inscribe</code>. 邮件自定义落款
      */
     public void setInscribe(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_email.inscribe</code>. 落款
+     * Getter for <code>talentpooldb.talentpool_email.inscribe</code>. 邮件自定义落款
      */
     public String getInscribe() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_email.context</code>. 邮件内容
+     * Setter for <code>talentpooldb.talentpool_email.context</code>. 邮件自定义文案
      */
     public void setContext(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_email.context</code>. 邮件内容
+     * Getter for <code>talentpooldb.talentpool_email.context</code>. 邮件自定义文案
      */
     public String getContext() {
         return (String) get(3);
@@ -131,14 +131,14 @@ public class TalentpoolEmailRecord extends UpdatableRecordImpl<TalentpoolEmailRe
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_email.company_id</code>.
+     * Setter for <code>talentpooldb.talentpool_email.company_id</code>. 公司编号
      */
     public void setCompanyId(Integer value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_email.company_id</code>.
+     * Getter for <code>talentpooldb.talentpool_email.company_id</code>. 公司编号
      */
     public Integer getCompanyId() {
         return (Integer) get(7);

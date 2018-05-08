@@ -204,7 +204,7 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     /**
      * The column <code>hrdb.hr_search_condition.position_status</code>. 职位状态 0;有效，1下架 2删除
      */
-    public final TableField<HrSearchConditionRecord, Integer> POSITION_STATUS = createField("position_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "职位状态 0;有效，1下架 2删除");
+    public final TableField<HrSearchConditionRecord, Integer> POSITION_STATUS = createField("position_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("-1", org.jooq.impl.SQLDataType.INTEGER)), this, "职位状态 0;有效，1下架 2删除");
 
     /**
      * Create a <code>hrdb.hr_search_condition</code> table reference
