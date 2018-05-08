@@ -10,6 +10,7 @@ import org.jooq.Condition;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -30,32 +31,30 @@ public class LogTalentpoolEmailDailyLogDao extends JooqCrudImpl<LogTalentpoolEma
         super(table, logTalentpoolEmailDailyLogClass);
     }
 
-    public List<LogTalentpoolEmailDailyLogRecord> fetchEmailAccountConsumption(int companyId, byte value, int index, int pageSize, Timestamp startDate, Timestamp endDate) {
+    public List<LogTalentpoolEmailDailyLogRecord> fetchEmailAccountConsumption(int companyId, byte value, int index, int pageSize, Date startDate, Date endDate) {
 
-        Condition condition = LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId)
-                .and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.TYPE.eq(value));
+        Condition condition = LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId);
         if (startDate != null) {
-            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.ge(startDate));
+            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.DATE.ge(startDate));
         }
         if (endDate != null) {
-            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.lt(endDate));
+            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.DATE.lt(endDate));
         }
 
         return create.selectFrom(LOG_TALENTPOOL_EMAIL_DAILY_LOG)
                 .where(condition)
-                .orderBy(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.desc())
+                .orderBy(LOG_TALENTPOOL_EMAIL_DAILY_LOG.DATE.desc())
                 .limit(index, pageSize)
                 .fetch();
     }
 
-    public int countEmailAccountConsumption(int companyId, byte value, Timestamp startDate, Timestamp endDate) {
-        Condition condition = LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId)
-                .and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.TYPE.eq(value));
+    public int countEmailAccountConsumption(int companyId, byte value, Date startDate, Date endDate) {
+        Condition condition = LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId);
         if (startDate != null) {
-            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.ge(startDate));
+            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.DATE.ge(startDate));
         }
         if (endDate != null) {
-            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.lt(endDate));
+            condition = condition.and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.DATE.lt(endDate));
         }
         return create.selectCount()
                 .from(LOG_TALENTPOOL_EMAIL_DAILY_LOG)
@@ -64,23 +63,21 @@ public class LogTalentpoolEmailDailyLogDao extends JooqCrudImpl<LogTalentpoolEma
                 .value1();
     }
 
-    public void upsertDailyLog(long today, int companyId, int useCount, byte type, int hrId) throws CommonException {
+    public void upsertDailyLog(long today, int companyId, int useCount) throws CommonException {
         int execute = create
                 .insertInto(LOG_TALENTPOOL_EMAIL_DAILY_LOG)
                 .columns(LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID,
-                        LOG_TALENTPOOL_EMAIL_DAILY_LOG.TYPE,
-                        LOG_TALENTPOOL_EMAIL_DAILY_LOG.HR_ID,
                         LOG_TALENTPOOL_EMAIL_DAILY_LOG.LOST,
-                        LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME)
-                .values(companyId, type, hrId, useCount, new Timestamp(today))
+                        LOG_TALENTPOOL_EMAIL_DAILY_LOG.DATE)
+                .values(companyId, useCount, new Date(today))
                 .onDuplicateKeyIgnore()
                 .execute();
         if (execute == 0) {
-            updateLost(today, companyId, type, useCount, 0);
+            updateLost(today, companyId, useCount, 0);
         }
     }
 
-    private void updateLost(long today, int companyId, byte type, int useCount, int index) throws CommonException {
+    private void updateLost(long today, int companyId, int useCount, int index) throws CommonException {
         if (index >= Constant.RETRY_UPPER_LIMIT) {
             throw CommonException.PROGRAM_UPDATE_FIALED;
         }
@@ -88,8 +85,7 @@ public class LogTalentpoolEmailDailyLogDao extends JooqCrudImpl<LogTalentpoolEma
         LogTalentpoolEmailDailyLogRecord logTalentpoolEmailDailyLogRecord =
                 create.selectFrom(LOG_TALENTPOOL_EMAIL_DAILY_LOG)
                 .where(LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID.eq(companyId))
-                .and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.CREATE_TIME.eq(new Timestamp(today)))
-                .and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.TYPE.eq(type))
+                .and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.DATE.eq(new Date(today)))
                 .fetchOne();
         if (logTalentpoolEmailDailyLogRecord != null) {
             int execute = create.update(LOG_TALENTPOOL_EMAIL_DAILY_LOG)
@@ -98,7 +94,7 @@ public class LogTalentpoolEmailDailyLogDao extends JooqCrudImpl<LogTalentpoolEma
                     .and(LOG_TALENTPOOL_EMAIL_DAILY_LOG.LOST.eq(logTalentpoolEmailDailyLogRecord.getLost()))
                     .execute();
             if (execute == 0) {
-                updateLost(today, companyId, type, useCount, index);
+                updateLost(today, companyId, useCount, index);
             }
         } else {
             throw CommonException.NODATA_EXCEPTION;

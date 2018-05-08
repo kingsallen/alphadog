@@ -40,6 +40,9 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibra
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailListStruct;
+
+import java.sql.*;
+import java.util.Date;
 import java.util.jar.JarEntry;
 import org.apache.commons.collections.ArrayStack;
 import org.apache.thrift.Option;
@@ -49,7 +52,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -192,7 +194,7 @@ public class TalentPoolEmailEntity {
             talentpoolEmailDao.updateRecords(emailRecordList);
         }
         long timeAtStartOfDay = new DateTime().withTimeAtStartOfDay().getMillis();
-        logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, company_id, useCount, EmailAccountConsumptionType.COMSUMPTION.getValue(), 0);
+        logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, company_id, useCount);
         if(balance>100&&balance-useCount<=100){
             sendEmailToHrAndCs(balance-useCount, company_id);
         }
@@ -274,7 +276,7 @@ public class TalentPoolEmailEntity {
         }
 
         long timeAtStartOfDay = new DateTime().withTimeAtStartOfDay().getMillis();
-        logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, companyId, useCount, EmailAccountConsumptionType.RECHARRGE.getValue(), 0);
+        logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, companyId, useCount);
 
         LogTalentpoolEmailLogRecord record = new LogTalentpoolEmailLogRecord();
         record.setCompanyId(companyId);
@@ -303,7 +305,7 @@ public class TalentPoolEmailEntity {
 
         DateTime dateTime = new DateTime(record.getCreateTime());
         long timeAtStartOfDay = dateTime.withTimeAtStartOfDay().getMillis();
-        logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, record.getCompanyId(), balance, EmailAccountConsumptionType.RECHARRGE.getValue(), 0);
+        logTalentpoolEmailDailyLogDao.upsertDailyLog(timeAtStartOfDay, record.getCompanyId(), balance);
 
         HrCompanyEmailInfo companyEmailInfo = companyEmailInfoDao.getHrCompanyEmailInfoListByCompanyId(record.getCompanyId());
         int count = companyEmailInfoDao.updateHrCompanyEmailInfoListByCompanyIdAndBalance(record.getCompanyId(), balance+companyEmailInfo.getBalance(), companyEmailInfo.getBalance());
@@ -452,14 +454,6 @@ public class TalentPoolEmailEntity {
 
         int index = (pageNumber - 1) * pageSize;
 
-        Timestamp startTime = null;
-        if (startDate != null) {
-            startTime = new Timestamp(startDate.getMillis());
-        }
-        Timestamp endTime = null;
-        if (endDate != null) {
-            endTime = new Timestamp(endDate.getMillis());
-        }
         int total = 0;
         List<EmailAccountConsumption> emailAccountConsumptionList = new ArrayList<>();
 
@@ -467,6 +461,14 @@ public class TalentPoolEmailEntity {
         if (companyConfDO != null && companyConfDO.getTalentpoolStatus() == TalentPoolStatus.HighLevel.getValue()) {
             switch (emailAccountConsumptionType) {
                 case RECHARRGE:
+                    Timestamp startTime = null;
+                    if (startDate != null) {
+                        startTime = new Timestamp(startDate.getMillis());
+                    }
+                    Timestamp endTime = null;
+                    if (endDate != null) {
+                        endTime = new Timestamp(endDate.getMillis());
+                    }
                     total = emailLogDao.countRecharge(companyId, startTime, endTime);
                     List<LogTalentpoolEmailLogRecord> logRecordList = emailLogDao.fetchEmailAccountRechargeRecords(companyId, index, pageSize, startTime, endTime);
                     if (logRecordList != null && logRecordList.size() > 0) {
@@ -484,16 +486,24 @@ public class TalentPoolEmailEntity {
                     }
                     break;
                 case COMSUMPTION:
-                    total = logTalentpoolEmailDailyLogDao.countEmailAccountConsumption(companyId, emailAccountConsumptionType.getValue(), startTime, endTime);
+                    java.sql.Date startTime1 = null;
+                    if (startDate != null) {
+                        startTime1 = new java.sql.Date(startDate.getMillis());
+                    }
+                    java.sql.Date endTime1 = null;
+                    if (endDate != null) {
+                        endTime1 = new java.sql.Date(endDate.getMillis());
+                    }
+                    total = logTalentpoolEmailDailyLogDao.countEmailAccountConsumption(companyId, emailAccountConsumptionType.getValue(), startTime1, endTime1);
                     List<LogTalentpoolEmailDailyLogRecord> logTalentpoolEmailDailyLogRecordList =
                             logTalentpoolEmailDailyLogDao.fetchEmailAccountConsumption(companyId,
-                                    emailAccountConsumptionType.getValue(), index, pageSize, startTime, endTime);
+                                    emailAccountConsumptionType.getValue(), index, pageSize, startTime1, endTime1);
                     if (logTalentpoolEmailDailyLogRecordList != null && logTalentpoolEmailDailyLogRecordList.size() > 0) {
                         emailAccountConsumptionList = logTalentpoolEmailDailyLogRecordList.stream()
                                 .map(logTalentpoolEmailDailyLogRecord -> {
                                     EmailAccountConsumption emailAccountConsumption = new EmailAccountConsumption();
                                     emailAccountConsumption.setCompany_id(logTalentpoolEmailDailyLogRecord.getCompanyId());
-                                    emailAccountConsumption.setCreate_time(new DateTime(logTalentpoolEmailDailyLogRecord.getCreateTime().getTime()).toString("YYYY-MM-dd"));
+                                    emailAccountConsumption.setCreate_time(new DateTime(logTalentpoolEmailDailyLogRecord.getDate().getTime()).toString("YYYY-MM-dd"));
                                     emailAccountConsumption.setId(logTalentpoolEmailDailyLogRecord.getId());
                                     emailAccountConsumption.setLost(logTalentpoolEmailDailyLogRecord.getLost());
                                     return emailAccountConsumption;
