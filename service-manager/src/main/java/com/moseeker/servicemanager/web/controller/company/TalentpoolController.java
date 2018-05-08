@@ -408,13 +408,13 @@ public class TalentpoolController {
             int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
             int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
-            String page=String.valueOf(data.get("page_number"));
+            String page=(String)data.get("page_number");
             int pageNum=0;
             if(StringUtils.isNotNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
 
             }
-            String size=String.valueOf(data.get("page_size"));
+            String size=(String)data.get("page_size");
             int pageSize=10;
             if(StringUtils.isNotNullOrEmpty(size)){
                 pageSize=Integer.parseInt(size);
