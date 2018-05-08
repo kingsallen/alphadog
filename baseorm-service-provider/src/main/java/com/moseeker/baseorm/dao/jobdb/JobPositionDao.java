@@ -620,4 +620,22 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 .buildQuery();
         return getRecord(queryUtil);
     }
+
+    /**
+     * 查询职位，用来查询唯一职位,忽略职位是否已经逻辑删除
+     * @param companyId 公司ID
+     * @param source    来源
+     * @param sourceId  来源ID
+     * @param jobnumber 职位编号
+     * @return 查询到的职位
+     */
+    public JobPositionRecord getUniquePositionIgnoreStatus(int companyId, int source, int sourceId, String jobnumber) {
+        Query queryUtil = new Query.QueryBuilder()
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.getName(), companyId)
+                .and(JobPosition.JOB_POSITION.SOURCE.getName(), source)
+                .and(JobPosition.JOB_POSITION.SOURCE_ID.getName(), sourceId)
+                .and(JobPosition.JOB_POSITION.JOBNUMBER.getName(), jobnumber)
+                .buildQuery();
+        return getRecord(queryUtil);
+    }
 }
