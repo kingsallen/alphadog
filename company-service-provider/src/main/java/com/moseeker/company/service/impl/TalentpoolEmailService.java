@@ -419,7 +419,7 @@ public class TalentpoolEmailService {
         logger.info("校验邮件配置的结果========================{}",flag);
         if(flag){
             try {
-                HrCompanyRecord record = this.getCompanyInfo(companyId);
+                HrCompanyRecord record = this.getHrCompanyRecord(hrId,companyId);
                 logger.info("=============HrCompanyRecord===========");
                 logger.info(record.toString());
                 logger.info("================================================");
@@ -474,7 +474,7 @@ public class TalentpoolEmailService {
                 logger.info("校验额度的结果========================{}",balanceFlag);
                 if(balanceFlag){
                     updateEmailInfoBalance(companyId, totalNum,4);
-                    HrCompanyRecord record=this.getCompanyInfo(companyId);
+                    HrCompanyRecord record=this.getHrCompanyRecord(hrId,companyId);
                     logger.info("=============HrCompanyRecord===========");
                     logger.info(record.toString());
                     logger.info("================================================");
@@ -509,7 +509,7 @@ public class TalentpoolEmailService {
                 if(totalNum>0){
                     boolean balanceFlag=this.validateBalance(hrCompanyEmailInfoRecord.getBalance(),totalNum);
                     if(balanceFlag){
-                        HrCompanyRecord record=this.getCompanyInfo(companyId);
+                        HrCompanyRecord record=this.getHrCompanyRecord(hrId,companyId);
                         updateEmailInfoBalance(companyId, totalNum,4);
                         tp.startTast(() -> {
                             sendPositionInviteEmailCore(params,positionIdList,companyId,talentpoolEmailRecord.getContext(),record,hrId,totalNum);
@@ -539,7 +539,7 @@ public class TalentpoolEmailService {
         int totalPage=(int)Math.ceil((double)totalNum/300);
         for(int i=1;i<=totalPage;i++) {
             params.put("page_size", 300 + "");
-            params.put("page_number", (i - 1) + "");
+            params.put("page_number", i + "");
             try {
                 List<InviteToDelivyUserInfo> userInfo = this.talentEmailInviteInfoSearch(params);
                 logger.info("=============List<InviteToDelivyUserInfo>===========");
@@ -738,7 +738,13 @@ public class TalentpoolEmailService {
                     }else{
                         return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
                     }
-                    client.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"",JSON.toJSONString(employeeList));
+                    List<Map<String,Object>> employeeData=this.handlerEmployeeData(employeeList);
+                    if(!StringUtils.isEmptyList(employeeData)){
+                        logger.info("=============employeeData===========");
+                        logger.info(JSON.toJSONString(employeeData));
+                        logger.info("================================================");
+                        this.handlerRedisEmployee(employeeData,hrId);
+                    }
                 }else{
                     return TalentEmailEnum.NOUSERPROFILE.getValue();
                 }
@@ -758,7 +764,7 @@ public class TalentpoolEmailService {
         int totalPage=(int)Math.ceil((double)totalNum/300);
         for(int i=1;i<=totalPage;i++){
             params.put("page_size",300+"");
-            params.put("page_number",(i-1)+"");
+            params.put("page_number",i+"");
 
             try{
                 EmailResumeBean emailList=this.convertResumeEmailData(employeeList,params,companyId,context,hrId);
@@ -1408,7 +1414,7 @@ public class TalentpoolEmailService {
     根据user-id查询简历组装发送数据
      */
     private EmailResumeBean convertResumeEmailData(List<UserEmployeeDO> employeeList,List<Integer>userIdList,int companyId,String context,int hrId) throws Exception {
-        List<TalentEmailForwardsResumeInfo> dataInfo=this.handlerData(userIdList,companyId,context,hrId);
+        List<TalentEmailForwardsResumeInfo> dataInfo=this.handlerDataResume(userIdList,companyId,context,hrId);
         EmailResumeBean result=this.convertResumeEmailData(dataInfo,employeeList,context,hrId,companyId);
         return result;
     }
@@ -1537,23 +1543,23 @@ public class TalentpoolEmailService {
      */
     private List<TalentEmailForwardsResumeInfo> handlerData(Map<String,String> params,int companyId,String context,int hrId){
         List<TalentEmailForwardsResumeInfo> dataList=this.talentEmailInfoSearch(params,hrId,companyId);
-        dataList=this.handlerData(dataList,companyId,context);
+        dataList=this.handlerData(dataList,companyId,context,hrId);
         return dataList;
     }
     /*
      根据user_id查询es组织数据，获得需要发送的邮件内容
      */
-    private List<TalentEmailForwardsResumeInfo> handlerData(List<Integer>userIdList,int companyId,String context,int hrId){
+    private List<TalentEmailForwardsResumeInfo> handlerDataResume(List<Integer>userIdList,int companyId,String context,int hrId){
         List<TalentEmailForwardsResumeInfo> dataList=this.talentEmailInfoSearch(userIdList,hrId,companyId);
-        dataList=this.handlerData(dataList,companyId,context);
+        dataList=this.handlerData(dataList,companyId,context,hrId);
         return dataList;
     }
     /*
      组织数据，获得需要发送的邮件内容
      */
-    private List<TalentEmailForwardsResumeInfo> handlerData(List<TalentEmailForwardsResumeInfo> dataList,int companyId,String context){
+    private List<TalentEmailForwardsResumeInfo> handlerData(List<TalentEmailForwardsResumeInfo> dataList,int companyId,String context,int hrId){
         if(!StringUtils.isEmptyList(dataList)){
-            HrCompanyRecord hrCompanyRecord=this.getCompanyInfo(companyId);
+            HrCompanyRecord hrCompanyRecord=this.getHrCompanyRecord(hrId,companyId);
             HrWxWechatRecord hrWxWechatRecord=this.getWxInfo(companyId);
             for(TalentEmailForwardsResumeInfo info:dataList){
                 if(hrCompanyRecord!=null){
@@ -1798,7 +1804,19 @@ public class TalentpoolEmailService {
         }
         return list;
     }
-
+    /*
+     获取hr下的公司
+     */
+    private HrCompanyRecord getHrCompanyRecord(int hrId,int companyId){
+        List<Integer> hrIdList=new ArrayList<>();
+        hrIdList.add(hrId);
+        List<HrCompanyAccountRecord> recordList=this.getCompanyAccountList(hrIdList);
+        if(!StringUtils.isEmptyList(recordList)){
+            companyId=recordList.get(0).getCompanyId();
+        }
+        HrCompanyRecord record=this.getCompanyInfo(companyId);
+        return record;
+    }
 
     /*
      获取企业信息
