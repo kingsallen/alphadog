@@ -99,94 +99,92 @@ public class ProfileBS {
 
         //更新profile数据
         resume.put("channel", channel);
-//		try {
-        //查询是否存在相同手机号码的C端帐号
-        Query findRetrieveUserQU = new Query.QueryBuilder().where("mobile", mobile).and("country_code", countryCode).and("source", UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
-        UserUserDO user = userUserDao.getData(findRetrieveUserQU); //userDao.getUser(findRetrieveUserQU);
-        logger.info("ProfileBS retrieveProfile user:{}", user);
-        if (user == null) {
-            user = new UserUserDO();
-        }
-        if (user.getId() > 0) {
-            logger.info("ProfileBS retrieveProfile user exist");
-            //查找该帐号是否有profile
-            int origin = ApplicationSource.channelToOrigin(channel);
-            logger.info("ProfileBS retrieveProfile origin:{}", origin);
-            JobApplication application = initApplication(user.getId(), positionId, position.getCompany_id(), origin);
-            logger.info("ProfileBS retrieveProfile application:{}", application);
-            //更新用户数据
-            map.put("id", user.getId());
-            HashMap<String, Object> profileProfile = new HashMap<String, Object>();
-            profileProfile.put("user_id", user.getId());
-            profileProfile.put("source", 0);
-            resume.put("profile", profileProfile);
-
-            //如果有profile，进行profile合并,简历回流一般都是临时用户，很少有涉及国外，所以传国家编码86
-            if (useraccountsServices.ifExistProfile(countryCode, mobile)) {
-                logger.info("ProfileBS retrieveProfile profile exist");
-                Response improveProfile = wholeProfileService.improveProfile(JSON.toJSONString(resume));
-                if (improveProfile.getStatus() == 0) {
-//                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
-//                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
-                    Response response = applicationService.postApplication(application);
-//                        return response;
-//                    }
-                    return ResultMessage.SUCCESS.toResponse(new JSONObject());
-                } else {
-                    return improveProfile;
-                }
-            } else {
-                logger.info("ProfileBS retrieveProfile profile not exist");
-                //如果不存在profile，进行profile创建
-                Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
-                logger.info("ProfileBS retrieveProfile response:{}",response);
-                if (response.getStatus() == 0) {
-                    applicationService.postApplication(application);
-                    return ResultMessage.SUCCESS.toResponse(new JSONObject());
-                } else {
-                    return response;
-                }
+		try {
+            //查询是否存在相同手机号码的C端帐号
+            Query findRetrieveUserQU = new Query.QueryBuilder().where("mobile", mobile).and("country_code", countryCode).and("source", UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
+            UserUserDO user = userUserDao.getData(findRetrieveUserQU); //userDao.getUser(findRetrieveUserQU);
+            logger.info("ProfileBS retrieveProfile user:{}", user);
+            if (user == null) {
+                user = new UserUserDO();
             }
-        } else {
-            logger.info("ProfileBS retrieveProfile user not exist");
-            //如果不存在C端帐号，创建帐号
-            UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
-            logger.info("ProfileBS retrieveProfile user:{}", user1);
-            user1.setSource((byte) UserSource.RETRIEVE_PROFILE.getValue());
-            int userId = useraccountsServices.createRetrieveProfileUser(user1);
-            logger.info("ProfileBS retrieveProfile userId:{}", userId);
-            //创建profile
-            if (userId > 0) {
-                map.put("id", userId);
-
+            if (user.getId() > 0) {
+                logger.info("ProfileBS retrieveProfile user exist");
+                //查找该帐号是否有profile
+                int origin = ApplicationSource.channelToOrigin(channel);
+                JobApplication application = initApplication(user.getId(), positionId, position.getCompany_id(), origin);
+                logger.info("ProfileBS retrieveProfile application:{}", application);
+                //更新用户数据
+                map.put("id", user.getId());
                 HashMap<String, Object> profileProfile = new HashMap<String, Object>();
-                profileProfile.put("user_id", userId);
+                profileProfile.put("user_id", user.getId());
                 profileProfile.put("source", 0);
                 resume.put("profile", profileProfile);
 
-                Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
-                logger.info("ProfileBS retrieveProfile response:{}", response);
-                //创建申请
-                if (response.getStatus() == 0) {
-                    // 判断来源
-                    int origin = ApplicationSource.channelToOrigin(channel);
-                    JobApplication application = initApplication(userId, positionId, position.getCompany_id(), origin);
-//                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
-//                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
-                    applicationService.postApplication(application);
-//                    }
-                    return ResultMessage.SUCCESS.toResponse(new JSONObject());
+                //如果有profile，进行profile合并,简历回流一般都是临时用户，很少有涉及国外，所以传国家编码86
+                if (useraccountsServices.ifExistProfile(countryCode, mobile)) {
+                    logger.info("ProfileBS retrieveProfile profile exist");
+                    Response improveProfile = wholeProfileService.improveProfile(JSON.toJSONString(resume));
+                    if (improveProfile.getStatus() == 0) {
+    //                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
+    //                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
+                        Response response = applicationService.postApplication(application);
+    //                        return response;
+    //                    }
+                        return ResultMessage.SUCCESS.toResponse(new JSONObject());
+                    } else {
+                        return improveProfile;
+                    }
                 } else {
-                    return response;
+                    logger.info("ProfileBS retrieveProfile profile not exist");
+                    //如果不存在profile，进行profile创建
+                    Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
+                    logger.info("ProfileBS retrieveProfile response:{}",response);
+                    if (response.getStatus() == 0) {
+                        applicationService.postApplication(application);
+                        return ResultMessage.SUCCESS.toResponse(new JSONObject());
+                    } else {
+                        return response;
+                    }
+                }
+            } else {
+                logger.info("ProfileBS retrieveProfile user not exist");
+                //如果不存在C端帐号，创建帐号
+                UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
+                logger.info("ProfileBS retrieveProfile user:{}", user1);
+                user1.setSource((byte) UserSource.RETRIEVE_PROFILE.getValue());
+                int userId = useraccountsServices.createRetrieveProfileUser(user1);
+                logger.info("ProfileBS retrieveProfile userId:{}", userId);
+                //创建profile
+                if (userId > 0) {
+                    map.put("id", userId);
+
+                    HashMap<String, Object> profileProfile = new HashMap<String, Object>();
+                    profileProfile.put("user_id", userId);
+                    profileProfile.put("source", 0);
+                    resume.put("profile", profileProfile);
+
+                    Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
+                    logger.info("ProfileBS retrieveProfile response:{}", response);
+                    //创建申请
+                    if (response.getStatus() == 0) {
+                        // 判断来源
+                        int origin = ApplicationSource.channelToOrigin(channel);
+                        JobApplication application = initApplication(userId, positionId, position.getCompany_id(), origin);
+    //                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
+    //                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
+                        applicationService.postApplication(application);
+    //                    }
+                        return ResultMessage.SUCCESS.toResponse(new JSONObject());
+                    } else {
+                        return response;
+                    }
                 }
             }
-        }
-//		} catch (TException e) {
-//			e.printStackTrace();
-//			logger.error(e.getMessage(), e);
-//		} finally {
-//			//do nothing
-//		}
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
         return ResponseUtils.success(new JSONObject());
     }
 
