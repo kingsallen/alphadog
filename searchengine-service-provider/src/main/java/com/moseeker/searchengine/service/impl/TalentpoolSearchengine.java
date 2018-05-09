@@ -134,6 +134,9 @@ public class TalentpoolSearchengine {
         try {
             client = searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
+            logger.info("=========================================");
+            logger.info(query.toString());
+            logger.info("=========================================");
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             builder.setSize(0);
             logger.info(builder.toString());
@@ -146,7 +149,7 @@ public class TalentpoolSearchengine {
             logger.info(JSON.toJSONString(result));
             return total;
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage(),e);
             if (e.getMessage().contains("all shards")) {
                 return 0;
             }
