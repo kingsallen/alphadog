@@ -1667,6 +1667,13 @@ public class TalentPoolEntity {
         client.lpush(Constant.APPID_ALPHADOG,
                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
     }
+    public void realTimePublicUpdate(List<Integer> userIdList){
+        Map<String,Object> result=new HashMap<>();
+        result.put("tableName","talentpool_hr_talent");
+        result.put("user_id",userIdList);
+        client.lpush(Constant.APPID_ALPHADOG,
+                "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+    }
 
     public void realTimeUpdateUpload(List<Integer> userIdList){
 
