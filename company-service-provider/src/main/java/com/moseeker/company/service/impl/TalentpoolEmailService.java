@@ -457,6 +457,7 @@ public class TalentpoolEmailService {
     发送全部邮件
      */
     private  int sendAllInviteToDelivyEmail(Map<String,String> params,List<Integer> positionIdList,int companyId,int hrId,int positionFlag){
+        params.put("company_id",companyId+"");
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
         TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId,72);
         logger.info("=============HrCompanyEmailInfoRecord===========");
@@ -706,6 +707,7 @@ public class TalentpoolEmailService {
         if(StringUtils.isEmptyList(idList)) {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
+        params.put("company_id",companyId+"");
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
         TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId,73);
         logger.info("=============HrCompanyEmailInfoRecord===========");
