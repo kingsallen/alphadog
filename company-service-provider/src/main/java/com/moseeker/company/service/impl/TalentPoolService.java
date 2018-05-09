@@ -58,7 +58,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by zztaiwll on 17/12/4.
  */
 @Service
-@Transactional
 public class TalentPoolService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
@@ -115,6 +114,7 @@ public class TalentPoolService {
       修改开启人才库的申请记录
      */
     @CounterIface
+    @Transactional
     public Response upsertTalentPoolApplication(int hrId,int companyId,int type){
         int count=this.validateHrAndCompany(hrId,companyId);
         if(count==0){
@@ -141,6 +141,7 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
     */
+    @Transactional
     public Response batchAddTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
@@ -209,6 +210,7 @@ public class TalentPoolService {
       @return response(status:0,message:"success,data:[])
               response(status:1,message:"xxxxxx")
      */
+    @Transactional
     public Response batchCancelTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
         //验证hr
         int flag=talentPoolEntity.validateHr(hrId,companyId);
@@ -280,6 +282,7 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
+    @Transactional
     public Response addBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
         ValidateTagBean validateResult=validateTalentTag.validateAddTag(hrId, userIdList, tagIdList, companyId,0);
         if(validateResult.getStatus()==1){
@@ -419,6 +422,7 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
+    @Transactional
     public Response batchCancelTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
 
         ValidateTagBean validateResult=this.validateCancleTag(hrId, userIdList, tagIdList, companyId);
@@ -463,6 +467,7 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
+    @Transactional
     public Response addHrTag(int hrId,int companyId,String name)throws TException{
         if(StringUtils.isNullOrEmpty(name)){
             return ResponseUtils.fail(1,"标签名称不能为空");
@@ -497,6 +502,7 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
+    @Transactional
     public Response deleteHrTag(int hrId,int companyId,int tagId)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
@@ -533,6 +539,7 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
+    @Transactional
     public Response updateHrTag(int hrId,int companyId,int tagId,String name)throws TException{
         if(StringUtils.isNullOrEmpty(name)){
             return ResponseUtils.fail(1,"标签名称不能为空");
@@ -600,7 +607,7 @@ public class TalentPoolService {
       @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-
+    @Transactional
     public Response addTalentComment(int hrId,int companyId,int userId,String content)throws TException{
 
         if(StringUtils.isNullOrEmpty(content)){
@@ -731,6 +738,7 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
+    @Transactional
     public Response delTalentComment(int hrId,int companyId,int comId)throws TException{
         int count=talentPoolEntity.getUserHrCommentCount(comId,hrId);
         if(count==0){
@@ -827,7 +835,7 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 2, argsName = "user_id")
+//    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 2, argsName = "user_id")
     @CounterIface
     public Response AddbatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
@@ -862,6 +870,7 @@ public class TalentPoolService {
         talentpoolHrTalentDao.updateRecords(list);
         talentpoolTalentDao.batchUpdateNum(new ArrayList<>(userIdList),companyId,1,0);
         Map<Integer,Object> result=this.handlePublicTalentData(userIdList,companyId);
+        talentPoolEntity.realTimePublicUpdate(talentPoolEntity.converSetToList(userIdList));
         if(result==null||result.isEmpty()){
             return  ResponseUtils.success("");
         }
@@ -895,7 +904,7 @@ public class TalentPoolService {
      @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 2, argsName = "user_id")
+//    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 2, argsName = "user_id")
     @CounterIface
     public Response cancelBatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
@@ -928,6 +937,7 @@ public class TalentPoolService {
         talentpoolTalentDao.batchUpdateNum(new ArrayList<>(userIdList),companyId,-1,0);
         talentPoolEntity.handlerPublicTag(userIdList,companyId);
         Map<Integer,Object> result=this.handlePublicTalentData(userIdList,companyId);
+        talentPoolEntity.realTimePublicUpdate(talentPoolEntity.converSetToList(userIdList));
         if(result==null||result.isEmpty()){
             return  ResponseUtils.success("");
         }
@@ -1237,6 +1247,7 @@ public class TalentPoolService {
      * @param company_tag_ids
      * @return
      */
+    @Transactional
     public Response deleteCompanyTags(int hrId, int companyId, List<Integer> company_tag_ids){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
         if(flag == -1){
@@ -1293,7 +1304,7 @@ public class TalentPoolService {
         return params;
     }
 
-
+    @Transactional
     public Response addCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
         if(flag == -1){
@@ -1341,7 +1352,7 @@ public class TalentPoolService {
         return ResponseUtils.fail(1, "请稍后重试");
     }
 
-
+    @Transactional
     public Response updateCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
         if(flag == -1){
@@ -1552,6 +1563,7 @@ public class TalentPoolService {
 
 
     @CounterIface
+    @Transactional
     public Response addProfileFilter(TalentpoolCompanyTagDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(filterDO.getCompany_id());
         if(companyDO == null){
@@ -1597,7 +1609,7 @@ public class TalentPoolService {
         }
         return ResponseUtils.fail(1, "请稍后重试");
     }
-
+    @Transactional
     public Response updateProfileFilter(TalentpoolCompanyTagDO filterDO, List<ActionForm> ActionFormList, List<Integer> positionIdList, int hr_id, int position_total){
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(filterDO.getCompany_id());
         if(companyDO == null){
