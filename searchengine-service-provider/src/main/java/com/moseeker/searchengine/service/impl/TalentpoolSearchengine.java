@@ -138,7 +138,7 @@ public class TalentpoolSearchengine {
             int total=(int)((long)result.get("totalNum"));
             return total;
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage(),e);
             if (e.getMessage().contains("all shards")) {
                 return 0;
             }
