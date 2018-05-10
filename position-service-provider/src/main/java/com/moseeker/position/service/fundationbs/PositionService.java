@@ -686,7 +686,7 @@ public class PositionService {
                     if (!existed) {
                         // 需要删除的职位必须sourceId 必须相同
                         if (jobPositionRecord.getSourceId() == sourceId) {
-                            jobPositionRecord.setStatus((byte) 1);
+                            jobPositionRecord.setStatus((byte) PositionStatus.BANNED.getValue());
                             jobPositionIds.add(jobPositionRecord.getId());
                         }
                     }
