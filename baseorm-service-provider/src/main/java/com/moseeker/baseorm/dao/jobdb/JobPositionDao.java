@@ -21,6 +21,7 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -635,6 +636,8 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 .and(JobPosition.JOB_POSITION.SOURCE.getName(), source)
                 .and(JobPosition.JOB_POSITION.SOURCE_ID.getName(), sourceId)
                 .and(JobPosition.JOB_POSITION.JOBNUMBER.getName(), jobnumber)
+                .orderBy(JobPosition.JOB_POSITION.STATUS.getName())
+                .orderBy(JobPosition.JOB_POSITION.UPDATE_TIME.getName(), Order.DESC)
                 .buildQuery();
         return getRecord(queryUtil);
     }

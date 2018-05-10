@@ -592,7 +592,7 @@ public class PositionService {
         // 替换掉标题里的换行符
         String title = record.getTitle();
         if(title != null) {
-            record.setTitle(title.replace("\r\n", "").trim());
+            record.setTitle(title.replace("\r", "").replace("\n","").trim());
         }
 
         // 当职位要求为空时候，设置空串
@@ -749,7 +749,7 @@ public class PositionService {
             logger.info("提交的部门信息：" + jobPositionHandlerDate.getDepartment());
 
             // 基础校验
-            if(basicCheckBatchPostionData(jobPositionHandlerDate,jobPositionFailMessPojos)){
+            if(!basicCheckBatchPostionData(jobPositionHandlerDate,jobPositionFailMessPojos)){
                 continue;
             }
 
@@ -925,7 +925,7 @@ public class PositionService {
                         //更新的职位只有在title变化时才发布新职位
                         //das端在更新职位时同样有这个判断，所以修改此处时考虑是否需要修改das中的PositionHandler.update方法
                         //考虑是否写个共通
-                        if(!record.getTitle().equals(jobPositionRecord.getTitle())){
+                        if(jobPositionHandlerDate.isSetTitle() && !jobPositionRecord.getTitle().equals(record.getTitle())){
                             //添加修改标题的职位对应的需要作废的第三方职位数据parent_id
                             thirdPartyPositionDisablelist.add(record.getId());
                         }
