@@ -153,6 +153,11 @@ public final class ConstantErrorCodeMessage {
     public static final String FEATURE_MUST_EXISTS="{'status':52003,'message':'福利特色不存在！'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
+    public static final String POSITION_TITLE_NOT_EMPTY="{'status':52003,'message':'职位标题不能为空!'}";
+    public static final String POSITION_ACCOUNTABILITIES_NOT_EMPTY="{'status':52004,'message':'职位描述不能为空!'}";
+    public static final String POSITION_REQUIREMENT_NOT_EMPTY="{'status':52005,'message':'任职条件不能为空!'}";
+    public static final String POSITION_CITY_NOT_EMPTY="{'status':52006,'message':'工作地点不能为空!'}";
+
 
     //职位同步
     public static final String POSITION_SYNC_VERIFY_TIMEOUT = "{'status':61001,'message':'验证已超时，职位同步失败'}";
