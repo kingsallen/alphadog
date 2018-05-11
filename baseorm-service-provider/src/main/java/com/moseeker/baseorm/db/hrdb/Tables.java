@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
@@ -129,6 +130,11 @@ public class Tables {
      * 公司级别的配置信息表
      */
     public static final HrCompanyConf HR_COMPANY_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf.HR_COMPANY_CONF;
+
+    /**
+     * 公司和CS匹配表
+     */
+    public static final HrCompanyCs HR_COMPANY_CS = com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs.HR_COMPANY_CS;
 
     /**
      * 企业邮件总量信息表

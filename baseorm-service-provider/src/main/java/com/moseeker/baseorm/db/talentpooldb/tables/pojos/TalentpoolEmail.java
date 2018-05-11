@@ -23,60 +23,48 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolEmail implements Serializable {
 
-    private static final long serialVersionUID = -1860752069;
+    private static final long serialVersionUID = 315214153;
 
     private Integer   id;
-    private String    name;
-    private Integer   type;
     private Integer   disable;
-    private Integer   receive;
-    private String    sendType;
     private String    inscribe;
     private String    context;
     private Integer   configId;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   companyId;
 
     public TalentpoolEmail() {}
 
     public TalentpoolEmail(TalentpoolEmail value) {
         this.id = value.id;
-        this.name = value.name;
-        this.type = value.type;
         this.disable = value.disable;
-        this.receive = value.receive;
-        this.sendType = value.sendType;
         this.inscribe = value.inscribe;
         this.context = value.context;
         this.configId = value.configId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.companyId = value.companyId;
     }
 
     public TalentpoolEmail(
         Integer   id,
-        String    name,
-        Integer   type,
         Integer   disable,
-        Integer   receive,
-        String    sendType,
         String    inscribe,
         String    context,
         Integer   configId,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   companyId
     ) {
         this.id = id;
-        this.name = name;
-        this.type = type;
         this.disable = disable;
-        this.receive = receive;
-        this.sendType = sendType;
         this.inscribe = inscribe;
         this.context = context;
         this.configId = configId;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.companyId = companyId;
     }
 
     public Integer getId() {
@@ -87,44 +75,12 @@ public class TalentpoolEmail implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getType() {
-        return this.type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
     public Integer getDisable() {
         return this.disable;
     }
 
     public void setDisable(Integer disable) {
         this.disable = disable;
-    }
-
-    public Integer getReceive() {
-        return this.receive;
-    }
-
-    public void setReceive(Integer receive) {
-        this.receive = receive;
-    }
-
-    public String getSendType() {
-        return this.sendType;
-    }
-
-    public void setSendType(String sendType) {
-        this.sendType = sendType;
     }
 
     public String getInscribe() {
@@ -167,21 +123,26 @@ public class TalentpoolEmail implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getCompanyId() {
+        return this.companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("TalentpoolEmail (");
 
         sb.append(id);
-        sb.append(", ").append(name);
-        sb.append(", ").append(type);
         sb.append(", ").append(disable);
-        sb.append(", ").append(receive);
-        sb.append(", ").append(sendType);
         sb.append(", ").append(inscribe);
         sb.append(", ").append(context);
         sb.append(", ").append(configId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(companyId);
 
         sb.append(")");
         return sb.toString();

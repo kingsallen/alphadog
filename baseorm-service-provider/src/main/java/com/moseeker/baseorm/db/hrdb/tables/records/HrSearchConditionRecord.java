@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 1832350132;
+    private static final long serialVersionUID = 673353402;
 
     /**
      * Setter for <code>hrdb.hr_search_condition.id</code>.
@@ -128,14 +128,14 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.city_name</code>. 现居住地
+     * Setter for <code>hrdb.hr_search_condition.city_name</code>. 现居住地, 允许多个，使用逗号分隔，要和city_code保持一致
      */
     public void setCityName(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.city_name</code>. 现居住地
+     * Getter for <code>hrdb.hr_search_condition.city_name</code>. 现居住地, 允许多个，使用逗号分隔，要和city_code保持一致
      */
     public String getCityName() {
         return (String) get(7);
@@ -212,14 +212,14 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
+     * Setter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地, 允许多个，使用逗号分隔，要和intention_city_code保持一致
      */
     public void setIntentionCityName(String value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
+     * Getter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地, 允许多个，使用逗号分隔，要和intention_city_code保持一致
      */
     public String getIntentionCityName() {
         return (String) get(13);
@@ -422,28 +422,28 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.city_code</code>.
+     * Setter for <code>hrdb.hr_search_condition.city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔,表示现居住地
      */
     public void setCityCode(String value) {
         set(28, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.city_code</code>.
+     * Getter for <code>hrdb.hr_search_condition.city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔,表示现居住地
      */
     public String getCityCode() {
         return (String) get(28);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.intention_city_code</code>.
+     * Setter for <code>hrdb.hr_search_condition.intention_city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔，表示期望工作地
      */
     public void setIntentionCityCode(String value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.intention_city_code</code>.
+     * Getter for <code>hrdb.hr_search_condition.intention_city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔，表示期望工作地
      */
     public String getIntentionCityCode() {
         return (String) get(29);

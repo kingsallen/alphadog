@@ -1,9 +1,6 @@
 package com.moseeker.mq.service.impl;
 
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCcmailDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -11,6 +8,7 @@ import com.moseeker.baseorm.dao.logdb.LogEmailSendrecordDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileEducationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileWorkexpDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
@@ -20,6 +18,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCcmailRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
@@ -33,12 +32,11 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.MessageTemplateEntity;
+import com.moseeker.entity.TalentPoolEmailEntity;
+import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.mq.service.sms.SmsService;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogEmailSendrecordDO;
@@ -81,6 +79,8 @@ public class ResumeDeliveryService {
     @Autowired
     private HrCompanyDao companyDao;
     @Autowired
+    private HrCompanyAccountDao companyAccountDao;
+    @Autowired
     private ProfileProfileDao profileDao;
     @Autowired
     private ProfileEducationDao educationDao;
@@ -104,6 +104,12 @@ public class ResumeDeliveryService {
     private TemlateMsgHttp msgHttp;
     @Autowired
     private SmsService smsService;
+    @Autowired
+    private TalentpoolEmailDao talentpoolEmailDao;
+    @Autowired
+    private HrCompanyConfDao hrCompanyConfDao;
+    @Autowired
+    private TalentPoolEmailEntity emailEntity;
 
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
     private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
@@ -127,8 +133,7 @@ public class ResumeDeliveryService {
             if(positionDo == null){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
-            HrCompanyDO companyDO = companyDao.getData(new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(),
-                    positionDo.getCompanyId()).buildQuery());
+            HrCompanyDO companyDO = companyAccountDao.getHrCompany(positionDo.getPublisher());
             if(companyDO == null ) return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             int companyId = companyDO.getId();
             if(companyDO.getParentId() != 0)
@@ -149,14 +154,15 @@ public class ResumeDeliveryService {
                     companyId).buildQuery());
 
 
-            //关注的微信公众号
+            //仟寻招聘助手
             HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),
                     env.getProperty("wechat.helper.signature")).buildQuery());
 
-            if(accountDo != null)
+            if(accountDo != null) {
                 //获取hr的微信号
                 hrWxUserDo = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.ID.getName(),
                         accountDo.getWxuserId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrWxWechatDO.getId()).buildQuery());
+            }
             //关注的聚合号
             HrWxWechatDO aggregationChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),
                     env.getProperty("wechat.qx.signature")).buildQuery());
@@ -185,6 +191,7 @@ public class ResumeDeliveryService {
                     if(sendResponse.getStatus()!=0) {
                         sendResponse = sendTemplateMessageToApplierByQX(templateMessageDO, hrChatDO, aggregationChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
                     }
+                    sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
                     if(sendResponse.getStatus()!=0) {
                         sendSMSToApplier(companyDO, positionDo, userUserDO, "4");
                     }
@@ -203,6 +210,7 @@ public class ResumeDeliveryService {
                     if(sendResponse.getStatus()!=0) {
                         sendSMSToApplier(companyDO, positionDo, userUserDO, "1");
                     }
+                    sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
                     sendResponse = sendTemplateMessageToRecom(templateMessageDOForRecom, hrChatDO, userUserDO, positionDo, messageEmailStruct.getRecommender_user_id(),  workExp, lastWorkName);
                     if(sendResponse.getStatus() !=0) {
                     sendTemplateMessageToRecomByQX(hrChatDO, aggregationChatDO, positionDo, messageEmailStruct.getRecommender_user_id(),  workExp, lastWorkName);
@@ -214,6 +222,7 @@ public class ResumeDeliveryService {
                 break;
                 //聚合号
                 case 4:{
+                    sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
                     Response sendResponse = sendTemplateMessageToApplierByQX(templateMessageDO, hrChatDO, aggregationChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
                     if(sendResponse.getStatus()!=0) {
                         sendSMSToApplier(companyDO, positionDo, userUserDO, "2");
@@ -227,6 +236,7 @@ public class ResumeDeliveryService {
                 break;
                 //简历回流
                 default:{
+                    sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
                     Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
@@ -253,8 +263,8 @@ public class ResumeDeliveryService {
                                                  int application_id, HrCompanyDO companyDO, JobPositionDO positionDO) {
         List<HrWxNoticeMessageDO> wxNoticeMessageDO = null;
         Response response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-        String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
         if(templateMessageDO != null && hrChatDO != null){
+            String url = handlerUrl().replace("{}", hrChatDO.getAccessToken());
             UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(),
                     userUserDO.getId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
             if(userWxDO == null) return response;
@@ -350,6 +360,65 @@ public class ResumeDeliveryService {
         return response;
     }
 
+    public void sendEmailToApplier(UserHrAccountDO accountDO,HrCompanyDO companyDO, JobPositionDO positionDO, UserUserDO userUserDO, HrWxWechatDO hrWxWechatDO){
+        int company_id =  companyDO.getId();
+        if(companyDO.getParentId()>0){
+            company_id = companyDO.getParentId();
+        }
+        HrCompanyConfDO confDO = hrCompanyConfDao.getHrCompanyConfByCompanyId(company_id);
+        if(confDO.getTalentpoolStatus() == 2) {
+            //获取邮件信息
+            List<TalentpoolEmail> emailList = talentpoolEmailDao.getTalentpoolEmailByCompanyIdAndConfigId(company_id, Constant.TALENTPOOL_EMAIL_PROFILE_SEND);
+            if(emailList != null && emailList.size()>0 && emailList.get(0).getDisable()==1){
+                TalentpoolEmail email = emailList.get(0);
+                Map<String, Object> emailStruct = new HashMap<>();
+                emailStruct.put("templateName", Constant.DELIVERY_SUCCESS);
+                Map<String, Object> params = new HashMap<>();
+                params.put("send_time", DateUtils.dateToNormalDate(new Date()));
+                String comapny_logo  = CommonUtils.appendUrl(companyDO.getLogo(),env.getProperty("http.cdn.url"));
+                params.put("company_logo", comapny_logo);
+                String username = "";
+                if (userUserDO.getName() != null && !userUserDO.getName().isEmpty()) {
+                    username = userUserDO.getName();
+                } else {
+                    username = userUserDO.getNickname();
+                }
+                params.put("employee_name", username);
+                String context = CommonUtils.replaceUtil(email.getContext(), companyDO.getAbbreviation(),positionDO.getTitle(),username, accountDO.getUsername(), hrWxWechatDO.getName());
+                params.put("custom_text", context);
+                String inscribe  = CommonUtils.replaceUtil(email.getInscribe(), companyDO.getAbbreviation(),positionDO.getTitle(),username, accountDO.getUsername(), hrWxWechatDO.getName());
+                params.put("company_sign", inscribe);
+                String qrcodeUrl = CommonUtils.appendUrl(hrWxWechatDO.getQrcode(), env.getProperty("http.cdn.url"));
+                params.put("weixin_qrcode", qrcodeUrl);
+                params.put("official_account_name", hrWxWechatDO.getName());
+                params.put("company_abbr", companyDO.getAbbreviation());
+                emailStruct.put("mergeVars", params);
+                //邮件发送的名称，邮箱
+                emailStruct.put("to_name", username);
+                emailStruct.put("to_email", userUserDO.getEmail());
+
+                logger.info("sendEmailToHr emailStruct:{}", emailStruct);
+                int id = emailEntity.handerTalentpoolEmailLogAndBalance(1,1,company_id,accountDO.getId());
+                if(id > 0) {
+                    //发送邮件给候选人
+                    Response sendEmail = new Response();
+                    sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+                    logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
+
+                    //记录发送邮件的结果
+                    LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
+                    emailrecord.setEmail(accountDO.getEmail());
+                    emailrecord.setContent(sendEmail.getMessage());
+                    emailSendrecordDao.addData(emailrecord);
+                }else{
+                    logger.info("邮件额度不足！");
+                }
+            }
+        }else{
+            logger.info("没有开启智能人才库");
+        }
+    }
+
     /**
      * 向推荐人发送模板消息
      * @param templateMessageDO 推荐人的模板对象
@@ -440,6 +509,8 @@ public class ResumeDeliveryService {
         logger.info("sendMessageAndEmail sendTemplateMessageToRecomByQX response:{}", response);
         return response;
     }
+
+
 
 
     /**
@@ -688,5 +759,7 @@ public class ResumeDeliveryService {
         }
         return "";
     }
+
+
 }
 

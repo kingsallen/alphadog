@@ -93,4 +93,15 @@ public class TalentpoolCompanyTagUserDao extends JooqCrudImpl<com.moseeker.baseo
         int result=create.deleteFrom(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER).where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.in(userIdSet)).execute();
         return result;
     }
+    /*
+    根据userid和tagId删除user_tag
+     */
+    public void deleteByUserIdAndTagId(List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser> list){
+        for(com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser tagUser:list){
+            create.deleteFrom(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER)
+                    .where(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID.eq(tagUser.getUserId()))
+                    .and(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID.eq(tagUser.getTagId()))
+                    .execute();
+        }
+    }
 }

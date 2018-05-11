@@ -119,6 +119,9 @@ public class JobApplicataionService {
     private HistoryJobApplicationDao historyJobApplicationDao;
 
     @Autowired
+    private  JobApplicationFilterService filterService;
+
+    @Autowired
     EmployeeEntity employeeEntity;
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
@@ -214,6 +217,10 @@ public class JobApplicataionService {
 
     private void sendMessageAndEmailThread (MessageEmailStruct messageEmailStruct){
         logger.info("sendMessageAndEmailThread messageEmailStruct{}", messageEmailStruct);
+        tp.startTast(() -> {
+            filterService.handerApplicationFilter(messageEmailStruct);
+            return 0;
+        });
         //发送模板消息，短信，邮件
         tp.startTast(() -> {
             Response resppnse = mqServer.sendMessageAndEmailToDelivery(messageEmailStruct);
