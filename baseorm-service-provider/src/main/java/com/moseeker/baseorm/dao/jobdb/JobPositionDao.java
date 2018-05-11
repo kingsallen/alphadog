@@ -21,6 +21,7 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -617,6 +618,26 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 .and(JobPosition.JOB_POSITION.SOURCE_ID.getName(), sourceId)
                 .and(JobPosition.JOB_POSITION.JOBNUMBER.getName(), jobnumber)
                 .and(new com.moseeker.common.util.query.Condition(JobPosition.JOB_POSITION.STATUS.getName(), PositionStatus.DELETED.getValue(),ValueOp.NEQ))
+                .buildQuery();
+        return getRecord(queryUtil);
+    }
+
+    /**
+     * 查询职位，用来查询唯一职位,忽略职位是否已经逻辑删除
+     * @param companyId 公司ID
+     * @param source    来源
+     * @param sourceId  来源ID
+     * @param jobnumber 职位编号
+     * @return 查询到的职位
+     */
+    public JobPositionRecord getUniquePositionIgnoreStatus(int companyId, int source, int sourceId, String jobnumber) {
+        Query queryUtil = new Query.QueryBuilder()
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.getName(), companyId)
+                .and(JobPosition.JOB_POSITION.SOURCE.getName(), source)
+                .and(JobPosition.JOB_POSITION.SOURCE_ID.getName(), sourceId)
+                .and(JobPosition.JOB_POSITION.JOBNUMBER.getName(), jobnumber)
+                .orderBy(JobPosition.JOB_POSITION.STATUS.getName())
+                .orderBy(JobPosition.JOB_POSITION.UPDATE_TIME.getName(), Order.DESC)
                 .buildQuery();
         return getRecord(queryUtil);
     }
