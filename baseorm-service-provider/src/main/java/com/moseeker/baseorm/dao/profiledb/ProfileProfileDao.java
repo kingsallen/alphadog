@@ -1054,16 +1054,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 .map(record -> new AbstractMap.SimpleEntry<>(record.into(jobposition).intoMap(), record.into(jobApplication).intoMap()))
                 .collect(Collectors.toList());
 
-        System.out.println(create.select()
-                .from(jobposition.join(jobApplication).on(JobPosition.JOB_POSITION.ID.eq(JobApplication.JOB_APPLICATION.POSITION_ID)))
-                .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(profileApplicationForm.getCompany_id()))
-                .and(JobPosition.JOB_POSITION.SOURCE_ID.eq(profileApplicationForm.getSource_id()))
-                .and(JobApplication.JOB_APPLICATION.ATS_STATUS.eq(profileApplicationForm.getAts_status()))
-                .and(buildProfileCondition(profileApplicationForm.getConditions()))
-                .orderBy(JobApplication.JOB_APPLICATION._CREATE_TIME.desc())
-                .limit(pageSize)
-                .offset((page - 1) * pageSize).toString());
-
         List<Integer> appIdList = positionApplications.stream().map(entry -> (Integer) entry.getValue().get("id")).collect(Collectors.toList());
         List<JobApplicationAtsRecord> atsRecordList = create.select()
                 .from(JobApplicationAts.JOB_APPLICATION_ATS)
