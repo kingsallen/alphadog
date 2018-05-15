@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = -273105751;
+    private static final long serialVersionUID = 2136655285;
 
     /**
      * The reference instance of <code>userdb.user_employee</code>
@@ -198,9 +198,9 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
     public final TableField<UserEmployeeRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "email");
 
     /**
-     * The column <code>userdb.user_employee.activation</code>. 员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证
+     * The column <code>userdb.user_employee.activation</code>. '员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
      */
-    public final TableField<UserEmployeeRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("3", org.jooq.impl.SQLDataType.TINYINT)), this, "员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证");
+    public final TableField<UserEmployeeRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("3", org.jooq.impl.SQLDataType.TINYINT)), this, "'员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证");
 
     /**
      * The column <code>userdb.user_employee.activation_code</code>. 激活码
@@ -308,24 +308,24 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
     public final TableField<UserEmployeeRecord, String> CUSTOM_FIELD_VALUES = createField("custom_field_values", org.jooq.impl.SQLDataType.VARCHAR.length(4096).nullable(false).defaultValue(org.jooq.impl.DSL.inline("[]", org.jooq.impl.SQLDataType.VARCHAR)), this, "自定 义字段键值, 结构[{<id>: \"<value>\"},{...},...]");
 
     /**
-     * The column <code>userdb.user_employee.team_id</code>.
+     * The column <code>userdb.user_employee.team_id</code>. 团队id
      */
-    public final TableField<UserEmployeeRecord, Integer> TEAM_ID = createField("team_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UserEmployeeRecord, Integer> TEAM_ID = createField("team_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "团队id");
 
     /**
-     * The column <code>userdb.user_employee.job_grade</code>.
+     * The column <code>userdb.user_employee.job_grade</code>. 职级
      */
-    public final TableField<UserEmployeeRecord, Byte> JOB_GRADE = createField("job_grade", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<UserEmployeeRecord, Byte> JOB_GRADE = createField("job_grade", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "职级");
 
     /**
-     * The column <code>userdb.user_employee.city_code</code>.
+     * The column <code>userdb.user_employee.city_code</code>. 城市code
      */
-    public final TableField<UserEmployeeRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UserEmployeeRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "城市code");
 
     /**
-     * The column <code>userdb.user_employee.degree</code>.
+     * The column <code>userdb.user_employee.degree</code>. 学历
      */
-    public final TableField<UserEmployeeRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<UserEmployeeRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "学历");
 
     /**
      * Create a <code>userdb.user_employee</code> table reference
@@ -392,6 +392,7 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserEmployee rename(String name) {
         return new UserEmployee(name, null);
     }

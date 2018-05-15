@@ -371,7 +371,7 @@ public class SearchengineController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-    //pc端企业搜索的es
+    //微信端职位index查询
     @RequestMapping(value = "/api/position/suggest", method = RequestMethod.POST)
     @ResponseBody
     public String searchPositionSuggest(HttpServletRequest request, HttpServletResponse response){
@@ -392,6 +392,44 @@ public class SearchengineController {
         }
     }
 
+    @RequestMapping(value = "/api/profile/pastposition", method = RequestMethod.POST)
+    @ResponseBody
+    public String searchProfilePosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String,String> params=new HashMap<>();
+            if(reqParams==null||reqParams.isEmpty()){
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }
+            for(String key:reqParams.keySet()){
+                params.put(key,StringUtils.filterStringForSearch(String.valueOf(reqParams.get(key))));
+            }
+            Response res=searchengineServices.searchPositionSuggest(params);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
+    @RequestMapping(value = "/api/profile/pastcompany", method = RequestMethod.POST)
+    @ResponseBody
+    public String searchProfileCompany(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String,String> params=new HashMap<>();
+            if(reqParams==null||reqParams.isEmpty()){
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }
+            for(String key:reqParams.keySet()){
+                params.put(key,StringUtils.filterStringForSearch(String.valueOf(reqParams.get(key))));
+            }
+            Response res=searchengineServices.searchPositionSuggest(params);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
 }

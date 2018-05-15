@@ -11,7 +11,6 @@ import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyFollow;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeeCopy;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
@@ -51,7 +50,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1107043028;
+    private static final long serialVersionUID = -1797637794;
 
     /**
      * The reference instance of <code>userdb</code>
@@ -92,11 +91,6 @@ public class Userdb extends SchemaImpl {
      * The table <code>userdb.user_employee</code>.
      */
     public final UserEmployee USER_EMPLOYEE = com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
-
-    /**
-     * The table <code>userdb.user_employee_copy</code>.
-     */
-    public final UserEmployeeCopy USER_EMPLOYEE_COPY = com.moseeker.baseorm.db.userdb.tables.UserEmployeeCopy.USER_EMPLOYEE_COPY;
 
     /**
      * 员工积分记录表
@@ -200,7 +194,6 @@ public class Userdb extends SchemaImpl {
             UserCompanyFollow.USER_COMPANY_FOLLOW,
             UserCompanyVisitReq.USER_COMPANY_VISIT_REQ,
             UserEmployee.USER_EMPLOYEE,
-            UserEmployeeCopy.USER_EMPLOYEE_COPY,
             UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD,
             UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL,
             UserFavPosition.USER_FAV_POSITION,

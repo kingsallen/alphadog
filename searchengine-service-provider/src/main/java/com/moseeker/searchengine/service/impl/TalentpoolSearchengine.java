@@ -241,6 +241,86 @@ public class TalentpoolSearchengine {
         return result;
     }
     /*
+    根据条件搜索曾任职务
+     */
+    public List<String> searchPastPosition(Map<String, String> params){
+        List<String> result=new ArrayList<>();
+        try{
+            TransportClient client=searchUtil.getEsClient();
+            String pageNum=params.get("page_number");
+            String pageSize=params.get("page_size");
+            QueryBuilder query = null;
+            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+            String[] returnParams={""};
+            builder.setFetchSource(returnParams,null);
+            builder.setSize(this.handlePageSize(pageSize));
+            builder.setFrom(this.handlePageFrom(pageNum,pageSize));
+            logger.info("============================================");
+            logger.info(builder.toString());
+            logger.info("============================================");
+            SearchResponse response = builder.execute().actionGet();
+            Map<String,Object> map=searchUtil.handleData(response,"users");
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+        }
+        return result;
+    }
+    /*
+     处理页数开始位置
+     */
+    private int handlePageFrom(String pageNum,String pageSize){
+        if(StringUtils.isNotNullOrEmpty(pageNum)){
+            if(StringUtils.isNotNullOrEmpty(pageSize)){
+                return (Integer.parseInt(pageNum)-1)*Integer.parseInt(pageSize);
+            }else{
+                return (Integer.parseInt(pageNum)-1)*15;
+            }
+        }
+        return 0;
+    }
+    /*
+     处理每页的数量
+   */
+    private int handlePageSize(String pageSize){
+        if(StringUtils.isNotNullOrEmpty(pageSize)){
+            return Integer.parseInt(pageSize);
+        }
+        return 15;
+    }
+    private QueryBuilder handlerProfilePastPosition(Map<String, String> params){
+
+        return null;
+    }
+    private QueryBuilder handlerProfilePastCompany(Map<String, String> params){
+
+        return null;
+    }
+     /*
+    根据条件搜索曾任公司
+     */
+     public List<String> searchPastCompany(Map<String, String> params){
+         List<String> result=new ArrayList<>();
+         try{
+             TransportClient client=searchUtil.getEsClient();
+             String pageNum=params.get("page_number");
+             String pageSize=params.get("page_size");
+             QueryBuilder query = null;
+             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+             String[] returnParams={""};
+             builder.setFetchSource(returnParams,null);
+             builder.setSize(this.handlePageSize(pageSize));
+             builder.setFrom(this.handlePageFrom(pageNum,pageSize));
+             logger.info("============================================");
+             logger.info(builder.toString());
+             logger.info("============================================");
+             SearchResponse response = builder.execute().actionGet();
+             Map<String,Object> map=searchUtil.handleData(response,"users");
+         }catch(Exception e){
+             logger.info(e.getMessage(),e);
+         }
+         return result;
+     }
+    /*
      处理es返回的结果值获取人才列表id
      */
     private void handlerResult(Map<String,Object> result,List<Integer> userIdList){

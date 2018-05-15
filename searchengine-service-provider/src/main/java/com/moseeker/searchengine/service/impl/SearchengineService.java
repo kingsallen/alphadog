@@ -887,7 +887,6 @@ public class SearchengineService {
         }
         String page=params.get("page_from");
         String pageSize=params.get("page_size");
-
         if(StringUtils.isBlank(page)){
             page="1";
         }

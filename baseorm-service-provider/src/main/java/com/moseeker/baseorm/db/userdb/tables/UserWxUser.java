@@ -221,6 +221,7 @@ public class UserWxUser extends TableImpl<UserWxUserRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserWxUser rename(String name) {
         return new UserWxUser(name, null);
     }

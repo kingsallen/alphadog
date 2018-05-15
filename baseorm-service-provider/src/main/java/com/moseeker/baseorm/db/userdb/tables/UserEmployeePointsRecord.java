@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeePointsRecord extends TableImpl<UserEmployeePointsRecordRecord> {
 
-    private static final long serialVersionUID = 428898444;
+    private static final long serialVersionUID = -559715662;
 
     /**
      * The reference instance of <code>userdb.user_employee_points_record</code>
@@ -97,9 +97,9 @@ public class UserEmployeePointsRecord extends TableImpl<UserEmployeePointsRecord
     public final TableField<UserEmployeePointsRecordRecord, Long> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "job_position.id");
 
     /**
-     * The column <code>userdb.user_employee_points_record.berecom_wxuser_id</code>. 已废弃
+     * The column <code>userdb.user_employee_points_record.berecom_wxuser_id</code>. 已废弃，user_wx_user.id，被推荐人的微信 id
      */
-    public final TableField<UserEmployeePointsRecordRecord, Long> BERECOM_WXUSER_ID = createField("berecom_wxuser_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "已废弃");
+    public final TableField<UserEmployeePointsRecordRecord, Long> BERECOM_WXUSER_ID = createField("berecom_wxuser_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "已废弃，user_wx_user.id，被推荐人的微信 id");
 
     /**
      * The column <code>userdb.user_employee_points_record.award_config_id</code>. 积分记录来源hr_points_conf.id
@@ -181,6 +181,7 @@ public class UserEmployeePointsRecord extends TableImpl<UserEmployeePointsRecord
     /**
      * Rename this table
      */
+    @Override
     public UserEmployeePointsRecord rename(String name) {
         return new UserEmployeePointsRecord(name, null);
     }

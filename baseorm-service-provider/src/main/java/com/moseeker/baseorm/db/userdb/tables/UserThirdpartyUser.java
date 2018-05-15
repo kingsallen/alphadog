@@ -151,6 +151,7 @@ public class UserThirdpartyUser extends TableImpl<UserThirdpartyUserRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserThirdpartyUser rename(String name) {
         return new UserThirdpartyUser(name, null);
     }
