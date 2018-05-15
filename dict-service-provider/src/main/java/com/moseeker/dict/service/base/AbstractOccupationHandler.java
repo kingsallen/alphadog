@@ -31,7 +31,9 @@ public abstract class AbstractOccupationHandler<T> implements IChannelType {
     OccupationUtil occupationUtil;
 
     //职位表中作为parentId的参数名称
-    protected abstract String parentKeyName();
+    protected String parentKeyName() {
+        return "parent_id";
+    }
 
     //获取职位
     protected List<T> getAllOccupation() throws BIZException {

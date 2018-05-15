@@ -66,38 +66,10 @@ public class TalentpoolEmailDao extends DAOImpl<TalentpoolEmailRecord, com.mosee
     }
 
     /**
-     * Fetch records that have <code>name IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail> fetchByName(String... values) {
-        return fetch(TalentpoolEmail.TALENTPOOL_EMAIL.NAME, values);
-    }
-
-    /**
-     * Fetch records that have <code>type IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail> fetchByType(Integer... values) {
-        return fetch(TalentpoolEmail.TALENTPOOL_EMAIL.TYPE, values);
-    }
-
-    /**
      * Fetch records that have <code>disable IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail> fetchByDisable(Integer... values) {
         return fetch(TalentpoolEmail.TALENTPOOL_EMAIL.DISABLE, values);
-    }
-
-    /**
-     * Fetch records that have <code>receive IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail> fetchByReceive(Integer... values) {
-        return fetch(TalentpoolEmail.TALENTPOOL_EMAIL.RECEIVE, values);
-    }
-
-    /**
-     * Fetch records that have <code>send_type IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail> fetchBySendType(String... values) {
-        return fetch(TalentpoolEmail.TALENTPOOL_EMAIL.SEND_TYPE, values);
     }
 
     /**
@@ -133,5 +105,12 @@ public class TalentpoolEmailDao extends DAOImpl<TalentpoolEmailRecord, com.mosee
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail> fetchByUpdateTime(Timestamp... values) {
         return fetch(TalentpoolEmail.TALENTPOOL_EMAIL.UPDATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>company_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail> fetchByCompanyId(Integer... values) {
+        return fetch(TalentpoolEmail.TALENTPOOL_EMAIL.COMPANY_ID, values);
     }
 }

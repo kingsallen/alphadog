@@ -42,7 +42,7 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<PositionZh
     public PositionZhilianWithAccount changeToThirdPartyPosition(PositionZhilianForm positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
         PositionZhilianWithAccount positionZhilianWithAccount=createAndInitAccountInfo(positionForm,positionDB,account);
 
-        PositionZhilian positionZhilian=createAndInitPositionInfo(positionForm,positionDB);
+        PositionZhilian positionZhilian = createAndInitPositionInfo(positionForm, positionDB);
 
         positionZhilianWithAccount.setPosition_info(positionZhilian);
 
@@ -59,9 +59,9 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<PositionZh
         position51WithAccount.setAccount_id(String.valueOf(account.getId()));
 
         //智联有手机验证，所以加上手机号
-        UserHrAccountDO userHrAccountDO=getPublisherAccountInfo(positionDB);
+        UserHrAccountDO userHrAccountDO = getPublisherAccountInfo(positionDB);
 
-        if(userHrAccountDO!=null){
+        if (userHrAccountDO != null) {
             position51WithAccount.setMobile(userHrAccountDO.getMobile());
         }
         return position51WithAccount;
@@ -77,12 +77,12 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<PositionZh
 
         positionZhilian.setOccupation(positionForm.getOccupation());
 
-        positionZhilian.setSalary_low(getSalaryBottom(positionForm.getSalaryBottom())+"");
-        positionZhilian.setSalary_high(getSalaryTop(positionForm.getSalaryTop())+"");
+        positionZhilian.setSalary_low(getSalaryBottom(positionForm.getSalaryBottom()) + "");
+        positionZhilian.setSalary_high(getSalaryTop(positionForm.getSalaryTop()) + "");
 
-        setWorkyears(positionDB,positionZhilian);
+        setWorkyears(positionDB, positionZhilian);
 
-        setDegree((int) positionDB.getDegree(),  positionZhilian);
+        setDegree((int) positionDB.getDegree(), positionZhilian);
 
         String description = getDescription(positionDB.getAccountabilities(), positionDB.getRequirement());
         positionZhilian.setDescription(description);
@@ -112,8 +112,8 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<PositionZh
                 experience = Integer.valueOf(positionDB.getExperience().trim());
             }
         } catch (NumberFormatException e) {
-            logger.info("zhilian parse experience error {}",positionDB.getExperience());
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"parse experience error");
+            logger.info("zhilian parse experience error {}", positionDB.getExperience());
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "parse experience error");
         }
         position.setWorkyears(ExperienceChangeUtil.getZhilianExperience(experience).getValue());
     }
@@ -150,7 +150,6 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<PositionZh
     }
 
 
-
     @Override
     public ChannelType getChannel() {
         return ChannelType.ZHILIAN;
@@ -165,7 +164,7 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<PositionZh
     public HrThirdPartyPositionDO toThirdPartyPosition(PositionZhilianForm form,PositionZhilianWithAccount pwa) {
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
 
-        PositionZhilian p=pwa.position_info;
+        PositionZhilian p = pwa.position_info;
 
         String syncTime = (new DateTime()).toString("yyyy-MM-dd HH:mm:ss");
         data.setSyncTime(syncTime);

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccount implements Serializable {
 
-    private static final long serialVersionUID = -968150535;
+    private static final long serialVersionUID = -1970271168;
 
     private Integer   id;
     private Integer   companyId;
@@ -45,6 +45,7 @@ public class UserHrAccount implements Serializable {
     private Timestamp createTime;
     private Timestamp updateTime;
     private String    headimgurl;
+    private Byte      leaveToMobot;
 
     public UserHrAccount() {}
 
@@ -69,6 +70,7 @@ public class UserHrAccount implements Serializable {
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
         this.headimgurl = value.headimgurl;
+        this.leaveToMobot = value.leaveToMobot;
     }
 
     public UserHrAccount(
@@ -91,7 +93,8 @@ public class UserHrAccount implements Serializable {
         String    downloadToken,
         Timestamp createTime,
         Timestamp updateTime,
-        String    headimgurl
+        String    headimgurl,
+        Byte      leaveToMobot
     ) {
         this.id = id;
         this.companyId = companyId;
@@ -113,6 +116,7 @@ public class UserHrAccount implements Serializable {
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.headimgurl = headimgurl;
+        this.leaveToMobot = leaveToMobot;
     }
 
     public Integer getId() {
@@ -275,6 +279,14 @@ public class UserHrAccount implements Serializable {
         this.headimgurl = headimgurl;
     }
 
+    public Byte getLeaveToMobot() {
+        return this.leaveToMobot;
+    }
+
+    public void setLeaveToMobot(Byte leaveToMobot) {
+        this.leaveToMobot = leaveToMobot;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserHrAccount (");
@@ -299,6 +311,7 @@ public class UserHrAccount implements Serializable {
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
         sb.append(", ").append(headimgurl);
+        sb.append(", ").append(leaveToMobot);
 
         sb.append(")");
         return sb.toString();

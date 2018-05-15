@@ -7,25 +7,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictJobsDBOccupationDO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JobsDBOccupationHandler extends AbstractOccupationHandler<DictJobsDBOccupationDO>{
-    @Override
-    public JSONObject toJsonObject(DictJobsDBOccupationDO occupation) {
-        JSONObject obj=new JSONObject();
-
-        obj.put("code", occupation.getCode());
-        obj.put("parent_id", occupation.getParentId());
-        obj.put("name", occupation.getName());
-        obj.put("code_other", occupation.getCodeOther());
-        obj.put("level", occupation.getLevel());
-        obj.put("status", occupation.getStatus());
-
-        return obj;
-    }
-
-    @Override
-    public String parentKeyName() {
-        return "parent_id";
-    }
+public class JobsDBOccupationHandler extends DefaultOccupationHandler<DictJobsDBOccupationDO>{
 
     @Override
     public ChannelType getChannelType() {

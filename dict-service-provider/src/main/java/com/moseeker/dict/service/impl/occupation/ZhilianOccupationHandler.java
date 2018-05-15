@@ -11,25 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ZhilianOccupationHandler extends AbstractOccupationHandler<DictZhilianOccupationDO> {
-    @Override
-    public JSONObject toJsonObject(DictZhilianOccupationDO occupation) {
-        JSONObject obj=new JSONObject();
-
-        obj.put("code", occupation.getCode());
-        obj.put("parent_id", occupation.getParentId());
-        obj.put("name", occupation.getName());
-        obj.put("code_other", occupation.getCodeOther());
-        obj.put("level", occupation.getLevel());
-        obj.put("status", occupation.getStatus());
-
-        return obj;
-    }
-
-    @Override
-    public String parentKeyName() {
-        return "parent_id";
-    }
+public class ZhilianOccupationHandler extends DefaultOccupationHandler<DictZhilianOccupationDO> {
 
     @Override
     public ChannelType getChannelType() {

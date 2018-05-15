@@ -38,7 +38,7 @@ public class MandrillMailSend {
         try {
             initConstantlyMail(mandrillApikey);
             if (params == null || params.get("to_email") == null || params.get("to_name") == null || params.get("mergeVars") == null
-                    || params.get("subject") == null || params.get("templateName") == null)
+                     || params.get("templateName") == null)
                 return null;
 
             MandrillMessage message = new MandrillMessage();

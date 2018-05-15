@@ -74,7 +74,12 @@ public class ReceiverHandler {
             logDeadLetterDO.setRoutingKey(message.getMessageProperties().getReceivedRoutingKey());
             logDeadLetterDO.setQueueName(message.getMessageProperties().getConsumerQueue());
             logDeadLetterDao.addData(logDeadLetterDO);
-            log.error(e.getMessage(), e);
+            if(e.getMessage().contains("重复的加积分操作")){
+                log.warn(e.getMessage(), e);
+            }else{
+                log.error(e.getMessage(), e);
+            }
+
         }
     }
     /*
@@ -217,6 +222,12 @@ public class ReceiverHandler {
         logVo.setReq_params(jsonObject.toJSONString());
         logVo.setUser_id(jsonObject.getIntValue("user_id"));
         logVo.setRecom_params(params);
+    }
+    /*
+     处理简历的企业标签
+     */
+    public void handlerProfileCompanyTag(){
+
     }
 
 }

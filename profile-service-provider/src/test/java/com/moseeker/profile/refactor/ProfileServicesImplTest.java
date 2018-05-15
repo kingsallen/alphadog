@@ -14,6 +14,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 
+import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Test;
@@ -160,10 +161,12 @@ public class ProfileServicesImplTest {
         }
     }
 
-    ////@Test
+    @Test
     public void getProfileByApplication() throws TException {
         try {
-
+            String json = "{\"ats_status\":1,\"company_id\":39978,\"conditions\":{\"apply_start\":\"2018-01-04 00:00:00\",\"filter\":\"{}\",\"company_id\":\"39978\",\"dl_url_required\":\"true\",\"apply_stop\":\"2018-04-04 23:59:59\",\"appid\":\"1\",\"ats_status\":\"1\",\"source_id\":\"10\",\"page\":\"1\",\"recommender\":\"true\",\"page_size\":\"50\"},\"conditionsSize\":11,\"dl_url_required\":true,\"filter\":{},\"filterSize\":0,\"recommender\":true,\"setAts_status\":true,\"setCompany_id\":true,\"setConditions\":true,\"setDl_url_required\":true,\"setFilter\":true,\"setRecommender\":true,\"setSource_id\":true,\"source_id\":10}";
+            ProfileApplicationForm profileApplicationForm = JSON.parseObject(json,ProfileApplicationForm.class);
+            profileService.getProfileByApplication(profileApplicationForm);
         } catch (Exception e) {
             e.printStackTrace();
 

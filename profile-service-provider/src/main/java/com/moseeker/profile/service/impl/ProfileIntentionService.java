@@ -70,6 +70,9 @@ public class ProfileIntentionService {
     @Autowired
     private ProfileEntity profileEntity;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
     public Pagination getPagination(Query query) throws TException {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
@@ -202,7 +205,7 @@ public class ProfileIntentionService {
             Set<Integer> profileIds = new HashSet<>();
             profileIds.add(struct.getProfile_id());
             profileDao.updateUpdateTime(profileIds);
-
+            profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
             return ResponseUtils.success(String.valueOf(record.getId()));
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
@@ -222,6 +225,7 @@ public class ProfileIntentionService {
 				/* 计算profile完整度 */
             profileEntity.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
             updateUpdateTime(struct);
+            profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
             return ResponseUtils.success(String.valueOf(intentionId));
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -250,6 +254,7 @@ public class ProfileIntentionService {
                 profileEntity.reCalculateProfileIntention(record.getProfileId().intValue(), record.getId().intValue());
                 /* 更新profile的更新时间 */
                 updateUpdateTime(struct);
+                profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
                 return ResponseUtils.success(String.valueOf(intentionId));
             }
         }
@@ -283,6 +288,7 @@ public class ProfileIntentionService {
         profileIds.forEach(profileId -> {
                  /* 计算profile完整度 */
             profileEntity.reCalculateProfileIntention(profileId, 0);
+            profileCompanyTagService.handlerCompanyTag(profileId);
         });
         profileDao.updateUpdateTime(profileIds);
         return ResponseUtils.success("0");
@@ -304,6 +310,7 @@ public class ProfileIntentionService {
                 updateIntentionIndustry(struct, struct.getId());
                 updateIntentionPosition(struct, struct.getId());
                 profileEntity.reCalculateProfileIntention(struct.getProfile_id(), struct.getId());
+                profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
             });
             return ResponseUtils.success("1");
         }
@@ -344,6 +351,7 @@ public class ProfileIntentionService {
                 profileIds.forEach(profileId -> {
                  /* 计算profile完整度 */
                     profileEntity.reCalculateProfileIntention(profileId, 0);
+                    profileCompanyTagService.handlerCompanyTag(profileId);
                 });
                 return ResponseUtils.success("1");
             }

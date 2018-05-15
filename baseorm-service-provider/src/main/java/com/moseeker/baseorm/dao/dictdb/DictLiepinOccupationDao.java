@@ -59,6 +59,7 @@ public class DictLiepinOccupationDao extends AbstractDictOccupationDao<DictLiepi
         return DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.OTHER_CODE.getName();
     }
 
+    @Override
     public int deleteAll(){
         Condition condition=new Condition(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE.getName(),0, ValueOp.NEQ);
         return delete(condition);

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyEmailInfo extends TableImpl<HrCompanyEmailInfoRecord> {
 
-    private static final long serialVersionUID = 1593220468;
+    private static final long serialVersionUID = -1047630421;
 
     /**
      * The reference instance of <code>hrdb.hr_company_email_info</code>
@@ -132,7 +132,7 @@ public class HrCompanyEmailInfo extends TableImpl<HrCompanyEmailInfoRecord> {
      */
     @Override
     public List<UniqueKey<HrCompanyEmailInfoRecord>> getKeys() {
-        return Arrays.<UniqueKey<HrCompanyEmailInfoRecord>>asList(Keys.KEY_HR_COMPANY_EMAIL_INFO_PRIMARY);
+        return Arrays.<UniqueKey<HrCompanyEmailInfoRecord>>asList(Keys.KEY_HR_COMPANY_EMAIL_INFO_PRIMARY, Keys.KEY_HR_COMPANY_EMAIL_INFO_HR_COMPANY_EMAIL_INFO_COMPANY_ID_PK);
     }
 
     /**

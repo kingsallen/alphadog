@@ -204,4 +204,11 @@ public class UserHrAccountDao extends DAOImpl<UserHrAccountRecord, com.moseeker.
     public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount> fetchByHeadimgurl(String... values) {
         return fetch(UserHrAccount.USER_HR_ACCOUNT.HEADIMGURL, values);
     }
+
+    /**
+     * Fetch records that have <code>leave_to_mobot IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount> fetchByLeaveToMobot(Byte... values) {
+        return fetch(UserHrAccount.USER_HR_ACCOUNT.LEAVE_TO_MOBOT, values);
+    }
 }
