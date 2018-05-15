@@ -288,11 +288,15 @@ public class TalentpoolSearchengine {
         return 15;
     }
     private QueryBuilder handlerProfilePastPosition(Map<String, String> params){
-
+        String publisher=params.get("publisher");
+        String companyId=params.get("company_id");
+        String keyWord=params.get("keyword");
         return null;
     }
     private QueryBuilder handlerProfilePastCompany(Map<String, String> params){
-
+        String publisher=params.get("publisher");
+        String companyId=params.get("company_id");
+        String keyWord=params.get("keyword");
         return null;
     }
      /*
