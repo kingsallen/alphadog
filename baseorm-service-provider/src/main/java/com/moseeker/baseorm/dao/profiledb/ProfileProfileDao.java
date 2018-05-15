@@ -1614,7 +1614,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     for (Map<String, Object> mp : allRecommenderUser) {
                         Integer user_id = (Integer) mp.get("id");
                         if (user_id != null && user_id.intValue() > 0 && user_id.intValue() == recommenderId.intValue()) {
-                            recommenderMap = mp;
+                            recommenderMap.putAll(mp);
                             break;
                         }
                     }
