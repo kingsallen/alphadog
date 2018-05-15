@@ -1627,6 +1627,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             recommenderMap.put("custom_field_values", mp.get("custom_field_values"));
                             recommenderMap.put("auth_method", mp.get("auth_method"));
                             recommenderMap.put("employee_email", mp.get("email"));
+                            recommenderMap.put("is_first_post_user", false);
 
                             if(allCandidateRecomRecord.containsKey(applicationId)){
                                 CandidateRecomRecordDO recomRecord = allCandidateRecomRecord.get(applicationId).get(0);
