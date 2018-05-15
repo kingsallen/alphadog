@@ -2,7 +2,6 @@ package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
-import com.moseeker.common.annotation.iface.CounterInfo;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
@@ -10,7 +9,6 @@ import com.moseeker.common.log.ReqParams;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
-import com.moseeker.entity.pojos.Data;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -76,7 +74,12 @@ public class ReceiverHandler {
             logDeadLetterDO.setRoutingKey(message.getMessageProperties().getReceivedRoutingKey());
             logDeadLetterDO.setQueueName(message.getMessageProperties().getConsumerQueue());
             logDeadLetterDao.addData(logDeadLetterDO);
-            log.error(e.getMessage(), e);
+            if(e.getMessage().contains("重复的加积分操作")){
+                log.warn(e.getMessage(), e);
+            }else{
+                log.error(e.getMessage(), e);
+            }
+
         }
     }
     /*
@@ -219,6 +222,12 @@ public class ReceiverHandler {
         logVo.setReq_params(jsonObject.toJSONString());
         logVo.setUser_id(jsonObject.getIntValue("user_id"));
         logVo.setRecom_params(params);
+    }
+    /*
+     处理简历的企业标签
+     */
+    public void handlerProfileCompanyTag(){
+
     }
 
 }

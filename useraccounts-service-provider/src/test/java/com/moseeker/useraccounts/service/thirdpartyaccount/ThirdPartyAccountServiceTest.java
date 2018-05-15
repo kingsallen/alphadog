@@ -4,26 +4,15 @@ package com.moseeker.useraccounts.service.thirdpartyaccount;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.common.util.AopTargetUtils;
-import com.moseeker.entity.ThridPartyAcountEntity;
-import com.moseeker.entity.pojos.Data;
-import com.moseeker.entity.pojos.ThirdPartyAccountExt;
+import com.moseeker.useraccounts.service.thirdpartyaccount.info.ThirdPartyAcountEntity;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.useraccounts.config.AppConfig;
-import com.moseeker.useraccounts.service.thirdpartyaccount.base.ChaosHandler;
 import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindOperation;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.HashMap;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -35,7 +24,7 @@ public class ThirdPartyAccountServiceTest {
     HRThirdPartyAccountDao thirdPartyAccountDao;
 
     @Autowired
-    ThridPartyAcountEntity thridPartyAcountEntity;
+    ThirdPartyAcountEntity thridPartyAcountEntity;
 
     /*@Mock
     ChaosHandler chaosHandler;*/

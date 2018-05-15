@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.ValueFilter;
-import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
@@ -15,6 +14,7 @@ import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
@@ -28,11 +28,10 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategory
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
-import com.moseeker.baseorm.db.hrdb.tables.daos.*;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
@@ -56,18 +55,18 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.PositionEntity;
+import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
 import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.service.position.*;
 import com.moseeker.position.service.position.qianxun.Degree;
-import com.moseeker.position.service.position.qianxun.WorkType;
+import com.moseeker.common.constants.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -83,7 +82,6 @@ import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 
-import static java.lang.Math.log;
 import static java.lang.Math.round;
 import static java.lang.Math.toIntExact;
 import java.sql.Timestamp;
@@ -91,7 +89,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
@@ -164,7 +161,12 @@ public class PositionService {
     private JobPositionCcmailDao jobPositionCcmailDao;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
-
+    @Autowired
+    private JobPositionHrCompanyFeatureDao jobPositionHrCompanyFeatureDao;
+    @Autowired
+    private HrCompanyFeatureDao hrCompanyFeatureDao;
+    @Autowired
+    PositionATSService positionATSService;
 
     private static List<DictAlipaycampusJobcategoryRecord> alipaycampusJobcategory;
 
@@ -223,10 +225,9 @@ public class PositionService {
             return ResponseUtils
                     .fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
         }
-        // NullPoint check
+        // NullPoint checkFormWrong
         JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
         if (jobPositionPojo == null) {
-            logger.error("无法根据ID查找到职位。 positionId:{}", positionId);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         SearchData searchData=new SearchData();
@@ -329,8 +330,33 @@ public class PositionService {
         if(jobPositionPojo.salary_bottom==0&&jobPositionPojo.salary_top==0){
             jobPositionPojo.salary="薪资面议";
         }
+        List<Map<String,Object>> positionFeature=positionEntity.getPositionFeatureList(positionId);
+        if(!StringUtils.isEmptyList(positionFeature)){
+            jobPositionPojo.position_feature=positionFeature;
+        }
+        jobPositionPojo.feature=this.getFeatureString(positionFeature);
         return ResponseUtils.success(jobPositionPojo);
     }
+    /*
+     获取字符串形式的福利特色
+     */
+    private String getFeatureString( List<Map<String,Object>> list){
+        if(StringUtils.isEmptyList(list)){
+            return "";
+        }
+        String features="";
+        for(Map<String,Object> map:list){
+            String feature=(String)map.get("feature");
+            if(StringUtils.isNotNullOrEmpty(feature)){
+                features+=feature+"#";
+            }
+        }
+        if(StringUtils.isNotNullOrEmpty(features)){
+            features=features.substring(0,features.lastIndexOf("#"));
+        }
+        return features;
+    }
+
     /*
      * 获取城市
      */
@@ -471,6 +497,131 @@ public class PositionService {
         return dbOnlineList;
     }
 
+    private boolean containsFeature(Map<String,HrCompanyFeature> featureMap, JobPostrionObj jobPositionHandlerDate){
+        String feature = jobPositionHandlerDate.getFeature();
+        if(StringUtils.isNullOrEmpty(feature)){
+            return true;
+        }
+
+        for(String featureName:feature.split("#")){
+            if (!featureMap.containsKey(featureName)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private JobPostrionObj buildPositionFeature(JobPostrionObj obj){
+        JobPostrionObj positionFeature = new JobPostrionObj();
+        positionFeature.setJobnumber(obj.getJobnumber());
+        positionFeature.setCompany_id(obj.getCompany_id());
+        positionFeature.setSource_id(obj.getSource_id());
+        positionFeature.setSource(obj.getSource());
+
+        return positionFeature;
+    }
+
+    private enum DBOperation{
+        INSERT,
+        UPDATE
+        ;
+    }
+
+    /**
+     * 在ATS批量同步职位的时候对基本参数进行校验
+     * @param jobPositionHandlerDate    职位参数
+     * @param jobPositionFailMessPojos  错误信息，如果校验未通过，需要往这个list里添加错误信息
+     * @return
+     */
+    private boolean basicCheckBatchPostionData(JobPostrionObj jobPositionHandlerDate,List<JobPositionFailMess> jobPositionFailMessPojos){
+        if(jobPositionHandlerDate.getCompany_id()<=0
+                || jobPositionHandlerDate.getSource_id() <= 0
+                || StringUtils.isNullOrEmpty(jobPositionHandlerDate.getJobnumber())){
+            handlerFailMess(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST,jobPositionFailMessPojos,jobPositionHandlerDate);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 在ATS批量同步职位的时候对参数进行校验，需要知道职位是插入还是更新
+     * @param jobPositionHandlerDate    职位参数
+     * @param jobPositionFailMessPojos  错误信息，如果校验未通过，需要往这个list里添加错误信息
+     * @param op    职位是插入操作还是更新操作
+     * @return  true:校验通过. false:校验未通过
+     */
+    private boolean checkBatchPostionData(JobPostrionObj jobPositionHandlerDate,List<JobPositionFailMess> jobPositionFailMessPojos,DBOperation op){
+        boolean insert = (op == DBOperation.INSERT);    //是否插入操作
+        boolean update = (op == DBOperation.UPDATE);    //是否更新操作
+
+        // 更新操作的时候，如果没有set标题，无需判断标题是否为空
+        // 插入操作的时候，无论是否set标题，都要判断标题是否为空
+        // 下同
+        if(((update && jobPositionHandlerDate.isSetTitle()) || insert)
+                && StringUtils.isNullOrEmpty(jobPositionHandlerDate.getTitle())){
+            handlerFailMess(ConstantErrorCodeMessage.POSITION_TITLE_NOT_EMPTY,jobPositionFailMessPojos,jobPositionHandlerDate);
+            return false;
+        }
+
+        if(((update && jobPositionHandlerDate.isSetAccountabilities()) || insert)
+                && StringUtils.isNullOrEmpty(jobPositionHandlerDate.getAccountabilities())){
+            handlerFailMess(ConstantErrorCodeMessage.POSITION_ACCOUNTABILITIES_NOT_EMPTY,jobPositionFailMessPojos,jobPositionHandlerDate);
+            return false;
+        }
+
+        if(((update && jobPositionHandlerDate.isSetRequirement()) || insert)
+                 && StringUtils.isNullOrEmpty(jobPositionHandlerDate.getRequirement())){
+            handlerFailMess(ConstantErrorCodeMessage.POSITION_REQUIREMENT_NOT_EMPTY,jobPositionFailMessPojos,jobPositionHandlerDate);
+            return false;
+        }
+
+        if(((update && jobPositionHandlerDate.isSetCity()) || insert)
+                 && StringUtils.isEmptyList(jobPositionHandlerDate.getCity())){
+            handlerFailMess(ConstantErrorCodeMessage.POSITION_CITY_NOT_EMPTY,jobPositionFailMessPojos,jobPositionHandlerDate);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * ATS职位数据预处理
+     * @param record    职位参数
+     */
+    private void preHandlePostionData(JobPositionRecord record){
+        // 替换掉标题里的换行符
+        String title = record.getTitle();
+        if(title != null) {
+            record.setTitle(title.replace("\r", "").replace("\n","").trim());
+        }
+
+        // 当职位要求为空时候，设置空串
+        if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getRequirement())) {
+            record.setRequirement("");
+        }
+
+        // 换算薪资范围
+        if (record.getSalaryBottom() == 0 && record.getSalaryTop() == 0) {
+            record.setSalary("面议");
+        }
+        if (record.getSalaryBottom() > 0 && record.getSalaryTop() == 999) {
+            record.setSalary(record.getSalaryBottom() + "K以上");
+        }
+    }
+
+    /**
+     * 批量ATS职位适配器，包装batchHandlerJobPostion方法，
+     * 原来准备在执行完batchHandlerJobPostion后加上更新职位福利特色
+     * 现将福利特色处理放在batchHandlerJobPostion中
+     * @param batchHandlerJobPosition
+     * @return
+     * @throws BIZException
+     */
+    public JobPostionResponse batchHandlerJobPostionAdapter(BatchHandlerJobPostion batchHandlerJobPosition) throws TException {
+        JobPostionResponse response = batchHandlerJobPostion(batchHandlerJobPosition);
+        return response;
+    }
+
     /**
      * 批量处理修改职位
      *
@@ -478,7 +629,7 @@ public class PositionService {
      * @return
      */
     @CounterIface
-    public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) throws BIZException {
+    public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) throws TException {
         logger.info("------开始批量修改职位--------");
         // 提交的数据为空
         if (batchHandlerJobPosition==null || com.moseeker.common.util.StringUtils.isEmptyList(batchHandlerJobPosition.getData())) {
@@ -498,6 +649,8 @@ public class PositionService {
         Map<String,JobCustomRecord> jobCustomMap = jobCustomGroupByName(companyId);
         // 数据库中该公司的职位列表
         Map<Integer,JobPositionRecord> dbListMap = dbListGroupById(companyId);
+        // 因为之前新增了不存在的福利特色，所以重新按照公司ID再查询一遍福利特色
+        Map<String,HrCompanyFeature> featureMap = positionATSService.getCompanyFeatureGroupByName(companyId);
         List<JobPositionRecord> dbOnlineList = getDBOnlineList(dbListMap);
 
         // 需要更新ES的jobpostionID
@@ -533,7 +686,7 @@ public class PositionService {
                     if (!existed) {
                         // 需要删除的职位必须sourceId 必须相同
                         if (jobPositionRecord.getSourceId() == sourceId) {
-                            jobPositionRecord.setStatus((byte) 1);
+                            jobPositionRecord.setStatus((byte) PositionStatus.BANNED.getValue());
                             jobPositionIds.add(jobPositionRecord.getId());
                         }
                     }
@@ -572,7 +725,7 @@ public class PositionService {
         List<JobPositionCityRecord> jobPositionCityRecordsUpdatelist = new ArrayList<>();
         // 需要新增的JobPositionCity数据
         List<JobPositionCityRecord> jobPositionCityRecordsAddlist = new ArrayList<>();
-        // 需要新增的JobPositionCity数据
+        // 需要新增的JobPositionCcmail数据
         List<JobPositionCcmailRecord> jobPositionCcmailRecordsAddlist = new ArrayList<>();
         // 需要作废的第三方职位
         List<Integer> thirdPartyPositionDisablelist = new ArrayList<>();
@@ -584,21 +737,57 @@ public class PositionService {
         List<Integer> deleteCitylist = new ArrayList<>();
         // 需要删除的抄送邮箱数据职位ID列表
         List<Integer> ccmailPositionIdsToDelete = new ArrayList<>();
+        // 需要更新的福利特色数据
+        List<JobPostrionObj> needBindFeatureData = new ArrayList<>();
         // 公司下HR账号ID
         Map<Integer,UserHrAccountDO> userHrAccountMap = userHrAccountGroupByID(companyId);
+        // 职位数据是更新还是插入操作
+        DBOperation dbOperation;
         // 处理数据
         for (JobPostrionObj jobPositionHandlerDate : jobPositionHandlerDates) {
             logger.info("提交的数据：" + jobPositionHandlerDate.toString());
             logger.info("提交的部门信息：" + jobPositionHandlerDate.getDepartment());
-            JobPositionRecord record = BeanUtils.structToDB(jobPositionHandlerDate, JobPositionRecord.class);
-            // 当职位要求为空时候，设置空串
-            if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getRequirement())) {
-                record.setRequirement("");
+
+            // 基础校验
+            if(!basicCheckBatchPostionData(jobPositionHandlerDate,jobPositionFailMessPojos)){
+                continue;
             }
+
+            // 按company_id + .source_id + .jobnumber + source=9取得数据
+            JobPositionRecord jobPositionRecord = jobPositionDao.getUniquePositionIgnoreStatus(
+                    jobPositionHandlerDate.getCompany_id(),
+                    PositionSource.ATS.getCode(),
+                    jobPositionHandlerDate.getSource_id(),
+                    jobPositionHandlerDate.getJobnumber());
+
+            // 更新或者新增数据
+            if (jobPositionHandlerDate.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
+                dbOperation = DBOperation.UPDATE;
+            }else{
+                dbOperation = DBOperation.INSERT;
+            }
+
+            // 参数校验
+            if(!checkBatchPostionData(jobPositionHandlerDate,jobPositionFailMessPojos,dbOperation)){
+                continue;
+            }
+
+            JobPositionRecord record = BeanUtils.structToDB(jobPositionHandlerDate, JobPositionRecord.class);
+            // 参数预处理
+            preHandlePostionData(record);
+
             // 判断publisher是否存在
             if(!userHrAccountMap.containsKey(jobPositionHandlerDate.getPublisher())){
                 handlerFailMess(ConstantErrorCodeMessage.POSITION_PUBLISHER_NOT_EXIST, jobPositionFailMessPojos, jobPositionHandlerDate);
                 continue;
+            }
+
+            // 处理职位福利特色数据
+            if (!containsFeature(featureMap,jobPositionHandlerDate)){
+                handlerFailMess(ConstantErrorCodeMessage.FEATURE_MUST_EXISTS, jobPositionFailMessPojos, jobPositionHandlerDate);
+                continue;
+            }else {
+                needBindFeatureData.add(jobPositionHandlerDate);
             }
 
             int team_id = 0;
@@ -641,7 +830,7 @@ public class PositionService {
             int jobOccupationId = 0;
             // 验证职能信息是否正确
             if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getOccupation())) {
-                JobOccupationDO jobOccupationDO = (JobOccupationDO) jobOccupationMap.get(jobPositionHandlerDate.getOccupation().trim());
+                JobOccupationDO jobOccupationDO = jobOccupationMap.get(jobPositionHandlerDate.getOccupation().trim());
                 if (jobOccupationDO != null) {
                     jobOccupationId = jobOccupationDO.getId();
                 } else {
@@ -664,31 +853,10 @@ public class PositionService {
                     customId = jobCustomRecord.getId();
                 } else {
                     logger.info("-----职位自定义字段错误,职位自定义为:" + jobPositionHandlerDate.getCustom());
-                    JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
-                    jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
-                    jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
-                    jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
-                    jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                    JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.POSITION_DATA_CUSTOM_ERROR);
-                    jobPositionFailMessPojo.setMessage(jsonObject.getString("message").replace("{MESSAGE}", jobPositionHandlerDate.getCustom()));
-                    jobPositionFailMessPojo.setStatus(jsonObject.getInteger("status"));
-                    jobPositionFailMessPojos.add(jobPositionFailMessPojo);
+                    handlerFailMess(ConstantErrorCodeMessage.POSITION_DATA_CUSTOM_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getCustom()),jobPositionFailMessPojos,jobPositionHandlerDate);
                     continue;
                 }
             }
-            // 换算薪资范围
-            if (record.getSalaryBottom().intValue() == 0 && record.getSalaryTop().intValue() == 0) {
-                record.setSalary("面议");
-            }
-            if (record.getSalaryBottom().intValue() > 0 && record.getSalaryTop().intValue() == 999) {
-                record.setSalary(record.getSalaryBottom().intValue() + "K以上");
-            }
-            // 按company_id + .source_id + .jobnumber + source=9取得数据
-            JobPositionRecord jobPositionRecord = jobPositionDao.getUniquePosition(
-                    jobPositionHandlerDate.getCompany_id(),
-                    PositionSource.ATS.getCode(),
-                    jobPositionHandlerDate.getSource_id(),
-                    jobPositionHandlerDate.getJobnumber());
 
             // 城市信息
             String city = citys(jobPositionHandlerDate.getCity());
@@ -699,10 +867,12 @@ public class PositionService {
                 continue;
             }
             // 更新或者新增数据
-            if (jobPositionHandlerDate.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {  // 数据更新
+            if (dbOperation == DBOperation.UPDATE) {  // 数据更新
                 // 按company_id + .source_id + .jobnumber + source=9取得数据为空时，按Id进行更新
                 if (!com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
                     record.setId(jobPositionRecord.getId());
+                    // 把ID存入方法参数中，配合batchHandlerJobPostionAdapter方法
+                    jobPositionHandlerDate.setId(jobPositionRecord.getId());
                     jobPositionIds.add(jobPositionRecord.getId());
                 }
                 // 添加同步数据
@@ -755,7 +925,7 @@ public class PositionService {
                         //更新的职位只有在title变化时才发布新职位
                         //das端在更新职位时同样有这个判断，所以修改此处时考虑是否需要修改das中的PositionHandler.update方法
                         //考虑是否写个共通
-                        if(!record.getTitle().equals(jobPositionRecord.getTitle())){
+                        if(jobPositionHandlerDate.isSetTitle() && !jobPositionRecord.getTitle().equals(record.getTitle())){
                             //添加修改标题的职位对应的需要作废的第三方职位数据parent_id
                             thirdPartyPositionDisablelist.add(record.getId());
                         }
@@ -810,6 +980,8 @@ public class PositionService {
                         jobPositionCityRecordsAddlist.addAll(jobPositionCityRecordList);
                     }
                 }
+                // 把ID存入方法参数中，配合batchHandlerJobPostionAdapter方法
+                jobPositionHandlerDate.setId(pid);
                 // 需要新增的JobPosition数据
                 jobPositionAddRecordList.add(record);
                 // 需要同步的数据
@@ -892,8 +1064,13 @@ public class PositionService {
                 thirdpartyPositionDao.disable(Arrays.asList(condition));
                 logger.info("-------------作废thirdPartyPosition数据结束------------------");
             }
+            if (needBindFeatureData.size() > 0){
+                BatchHandlerJobPostion featureData = new BatchHandlerJobPostion();
+                featureData.setData(needBindFeatureData);
+                positionATSService.updatePositionFeature(featureData);
+            }
         } catch (Exception e) {
-            logger.info("更新和插入数据发生异常,异常信息为：" + e.getMessage());
+            logger.error("更新和插入数据发生异常,异常信息为：" + e.getMessage());
             e.printStackTrace();
         }
         JobPostionResponse jobPostionResponse = new JobPostionResponse();
@@ -1062,6 +1239,7 @@ public class PositionService {
         jobPositionFailMessPojo.setSourceId(jobPostrionObj.getSource_id());
         jobPositionFailMessPojo.setJobPostionId(jobPostrionObj.getId());
         jobPositionFailMessPojo.setDepartment(jobPostrionObj.getDepartment());
+        jobPositionFailMessPojo.setFeature(jobPostrionObj.getFeature());
         JSONObject jsonObject = JSONObject.parseObject(message);
         jobPositionFailMessPojo.setMessage(jsonObject.getString("message"));
         jobPositionFailMessPojo.setStatus(jsonObject.getInteger("status"));
@@ -1541,12 +1719,12 @@ public class PositionService {
         logger.info("jdIdList: " + jdIdList);
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(con).and("status",0).buildQuery();
-        List<JobPositionRecord> jobRecords = positionEntity.getPositions(q);
+        List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
         //List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
         //Map<Integer, Set<String>> cityMap = commonPositionUtils.handlePositionCity(jdIdList);
         for (int i = 0; i < jdIdList.size(); i++) {
             int positionId = jdIdList.get(i);
-            for (JobPositionRecord jr : jobRecords) {
+            for (JobPositionRecordWithCityName jr : jobRecords) {
                 if (positionId == jr.getId()) {
                     logger.info("pid: " + String.valueOf(jr.getId()));
                     WechatPositionListData e = new WechatPositionListData();
@@ -1570,6 +1748,7 @@ public class PositionService {
                     e.setIn_hb(jr.getHbStatus() > 0);
                     e.setCount(jr.getCount());
                     e.setCity(jr.getCity());
+                    e.setCity_ename(jr.getCityEname());
                     e.setPriority(jr.getPriority());
                     e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
                     e.setCandidate_source(jr.getCandidateSource());
@@ -1778,13 +1957,14 @@ public class PositionService {
         String pidFilter = "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]";
         Condition condition = new Condition("id", pids.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(condition).orderBy("priority").buildQuery();
-        List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
+
+        List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
 
         // filter 出已经发完红包的职位
         jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
         int totalNum=this.getRpPositionCount(hbConfigId);
         // 拼装职位信息
-        for (JobPositionRecord jr : jobRecords) {
+        for (JobPositionRecordWithCityName jr : jobRecords) {
             WechatRpPositionListData e = new WechatRpPositionListData();
             e.setTitle(jr.getTitle());
             e.setId(jr.getId());
@@ -1796,6 +1976,7 @@ public class PositionService {
             e.setIn_hb(true);
             e.setCount(jr.getCount());
             e.setCity(jr.getCity());
+            e.setCity_ename(jr.getCityEname());
             e.setCandidate_source(jr.getCandidateSource());
             e.setRequirement(jr.getRequirement());
             e.setTotalNum(totalNum);
@@ -2126,7 +2307,7 @@ public class PositionService {
      * @param query
      * @return
      */
-    public List<JobPositionRecord> getPositionRecords(Query query) {
+    public List<JobPositionRecordWithCityName> getPositionRecords(Query query) {
         return positionEntity.getPositions(query);
     }
 

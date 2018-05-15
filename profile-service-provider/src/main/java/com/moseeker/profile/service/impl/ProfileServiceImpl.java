@@ -29,12 +29,12 @@ import static com.moseeker.profile.exception.ProfileException.PROFILE_USER_NOTEX
 public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     ProfileEntity profileEntity;
-
     @Autowired
     UserUserDao userUserDao;
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
 
     @Override
     public int upsertProfile(int userId, String profileParameter) throws CommonException {
@@ -58,9 +58,13 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
             profileProfileRecord.setSource(220);
             profilePojo.setProfileRecord(profileProfileRecord);
             logger.info("开始保存的参数=====");
-            return profileEntity.createProfile(profilePojo, userUserDO);
+            int profileId= profileEntity.createProfile(profilePojo, userUserDO);
+            //处理打企业标签
+            profileCompanyTagService.handlerProfileCompanyTag(profileId,userUserDO.getId());
+            return profileId;
         } else {
             profileEntity.updateProfile(profilePojo, profileProfileDO);
+            profileCompanyTagService.handlerProfileCompanyTag(profileProfileDO.getId(),userUserDO.getId());
             return profileProfileDO.getId();
         }
     }

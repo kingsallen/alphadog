@@ -111,6 +111,16 @@ service PositionServices {
     common_struct.Response getMiniPositionShare(1:i32 positionId);
 
 
+     common_struct.Response getFeatureByPId(1:i32 pid);
+
+     common_struct.Response updatePositionFeature(1:i32 pid,2:i32 fid);
+
+     common_struct.Response updatePositionFeatures(1:i32 pid,2:list<i32> fidList);
+
+     common_struct.Response updatePositionFeatureBatch(1: list<position_struct.JobPositionHrCompanyFeatureDO> featureList);
+
+     common_struct.Response getPositionFeatureBetch(1:list<i32> pidList);
+
 }
 /*
 	查询第三方自定义职能

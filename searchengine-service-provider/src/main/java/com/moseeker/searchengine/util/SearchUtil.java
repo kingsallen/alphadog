@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
@@ -211,10 +215,12 @@ public class SearchUtil {
     	SearchHit[] searchData=hit.getHits();
     	if(totalNum>0){
     		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+    		if(searchData!=null&&searchData.length>0){
     		for(SearchHit ss:searchData){
     			Map<String,Object> obj=ss.getSource();
     			list.add(obj);
     		}
+            }
     		data.put(dataName, list);
     	}
     	return data;
@@ -244,6 +250,7 @@ public class SearchUtil {
     public void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
     	if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords.trim())){
     		hasKey=true;
+            keywords=keywords.trim();
     		String words[]=keywords.split(",");
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		StringBuffer sb=new StringBuffer();
@@ -299,6 +306,7 @@ public class SearchUtil {
     //组装query_string关键字带权重查询语句
     public void keyWordforQueryStringPropery(String keywords,QueryBuilder query,List<String> fieldList,List<Integer> properyList){
         if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords)){
+            keywords=keywords.trim();
             String words[]=keywords.split(",");
             StringBuffer sb=new StringBuffer();
             for(int i=0;i<words.length;i++){
@@ -477,6 +485,26 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
     }
+    public void shouldTermsQuery(List<String> fieldsList,List<Integer>dataIdList, QueryBuilder query) {
+        if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String fields : fieldsList) {
+                QueryBuilder fullf = QueryBuilders.termsQuery(fields, dataIdList);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+
+    public void exitsisQuery(List<String> list, QueryBuilder query) {
+       if(list!=null&&list.size()>0){
+          for(String filed:list){
+              QueryBuilder keyand = QueryBuilders.existsQuery(filed);
+              ((BoolQueryBuilder) query).must(keyand);
+          }
+       }
+    }
 
     //terms查询，查询的值包含多个值
     public void shouldTermsQuery(Map<String, Object> map, QueryBuilder query) {
@@ -502,6 +530,46 @@ public class SearchUtil {
                 String list=(String)map.get(key);
                 QueryBuilder fullf = QueryBuilders.matchQuery(key, list);
                 ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+    public void shouldMatchParseQuery(Map<String, Object> map, QueryBuilder query){
+        if (map != null && !map.isEmpty()) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String key : map.keySet()) {
+                String list=(String)map.get(key);
+                QueryBuilder fullf = QueryBuilders.matchPhraseQuery(key, list);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+    public void shouldMatchQuery(List<String> fieldList,String condition ,QueryBuilder query){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.matchQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+    public void shouldMatchParseQuery(List<String> fieldList,String condition ,QueryBuilder query){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.matchPhraseQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
             }
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(keyand);
@@ -598,7 +666,7 @@ public class SearchUtil {
      */
     public void handlerTagIds(String tagIds,String hrId,QueryBuilder builder){
         List<String> tagIdList=this.stringConvertList(tagIds);
-        if(!tagIdList.contains("alltalent")){
+        if(tagIdList != null && tagIdList.size() >0 && !tagIdList.contains("alltalent")){
 
             if(tagIdList.size()==1){
                 if(tagIdList.contains("allpublic")){
@@ -634,6 +702,47 @@ public class SearchUtil {
                 ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
                 ((BoolQueryBuilder) builder).must(keyand);
             }
+        }
+    }
+    /*
+     对子账号查询公开的或子账号收藏的人才
+     */
+    public void childAccountTalentpool(String hrId,QueryBuilder builder ){
+        //查询这个公司公开的
+        QueryBuilder keyand = QueryBuilders.boolQuery();
+        QueryBuilder query0=QueryBuilders.matchQuery("user.talent_pool.is_public",1);
+        ((BoolQueryBuilder) keyand).should(query0);
+        //查人这个账号收藏的
+        QueryBuilder keyand1 = QueryBuilders.boolQuery();
+        QueryBuilder query1=QueryBuilders.matchQuery("user.talent_pool.hr_id",Integer.parseInt(hrId));
+        ((BoolQueryBuilder) keyand1).must(query1);
+        QueryBuilder query2=QueryBuilders.matchQuery("user.talent_pool.is_talent",1);
+        ((BoolQueryBuilder) keyand1).must(query2);
+        ((BoolQueryBuilder) keyand).should(keyand1);
+        ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+        ((BoolQueryBuilder) builder).must(keyand);
+    }
+
+    /*
+     处理按照标签查询
+     */
+    public void handlerCompanyTag(String CompanyTag,QueryBuilder builder){
+        List<String> tagIdList=this.stringConvertList(CompanyTag);
+
+        if(tagIdList != null && tagIdList.size() >0){
+            QueryBuilder query2=QueryBuilders.termsQuery("user.company_tag.id",tagIdList);
+            ((BoolQueryBuilder) builder).must(query2);
+//            if(tagIdList.size()==1){
+//                handleMatch(Integer.parseInt(tagIdList.get(0)),builder,"user.talent_pool.company_tags.id");
+//            }else{
+//                QueryBuilder keyand = QueryBuilders.boolQuery();
+//                if(tagIdList.size()>0){
+//                    QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.company_tags.id",tagIdList);
+//                    ((BoolQueryBuilder) keyand).should(query2);
+//                }
+//                ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+//                ((BoolQueryBuilder) builder).must(keyand);
+//            }
         }
     }
 

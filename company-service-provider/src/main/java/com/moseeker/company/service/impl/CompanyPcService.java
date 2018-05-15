@@ -1,14 +1,26 @@
 package com.moseeker.company.service.impl;
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyEmailInfoRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolEmailRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.entity.PcRevisionEntity;
+import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
@@ -18,6 +30,7 @@ import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by zztaiwll on 17/8/14.
@@ -45,6 +58,18 @@ public class CompanyPcService {
     private HrWxWechatDao hrWxWechatDao;
     @Autowired
     private DictIndustryDao dictIndustryDao;
+    @Autowired
+    private TalentPoolEntity poolEntity;
+
+    @Autowired
+    private TalentpoolEmailDao talentpoolEmailDao;
+
+    @Autowired
+    private HrCompanyEmailInfoDao emailInfoDao;
+
+    @Autowired
+    private ConfigSysTemplateMessageLibraryDao libraryDao;
+
     /*
       获取企业详情
      */
@@ -204,6 +229,70 @@ public class CompanyPcService {
         Query query=new Query.QueryBuilder().where("parent_id",0).and("type",0).or("fortune",1).buildQuery();
         List<HrCompanyDO> list=hrCompanyDao.getDatas(query);
         return list;
+    }
+
+    //开启关闭只能人才库
+    @Transactional
+    public Response updateComapnyConfStatus(int status, int company_id){
+        HrCompanyDO companyDO = poolEntity.getCompanyDOByCompanyIdAndParentId(company_id);
+        if(companyDO == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NOT_MU);
+        }else if(companyDO.getType() != 0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }
+        int oldStatus = -1;
+        HrCompanyConfDO confDO = this.getHrCompanyConf(company_id);
+        oldStatus = confDO.getTalentpoolStatus();
+        confDO.setTalentpoolStatus((byte)status);
+        int result = hrCompanyConfDao.updateData(confDO);
+        if(result >0) {
+            HrCompanyEmailInfoRecord infoRecord = emailInfoDao.getHrCompanyEmailInfoRecordByCompanyId(company_id);
+            if (infoRecord == null){
+                infoRecord = new HrCompanyEmailInfoRecord();
+                infoRecord.setCompanyId(company_id);
+                emailInfoDao.addRecord(infoRecord);
+            }
+            //开启智能人才库
+            if (status == 2 && oldStatus != 2) {
+                Integer[] configIds = Constant.TALENTPOOL_EMAIL_SWITCH_ID;
+                List<Integer> configIdList = Arrays.asList(configIds);
+                List<ConfigSysTemplateMessageLibraryDO> libraryDOList = libraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(configIdList, 0);
+                List<TalentpoolEmailRecord> recordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
+                if (libraryDOList != null && libraryDOList.size() > 0) {
+                    for (ConfigSysTemplateMessageLibraryDO libraryDO : libraryDOList) {
+                        boolean bool = false;
+                        if (recordList != null && recordList.size() > 0) {
+                            for (TalentpoolEmailRecord record : recordList) {
+                                if (record.getConfigId() == libraryDO.getId()) {
+                                    record.setDisable(libraryDO.getDisplay());
+                                    talentpoolEmailDao.updateRecord(record);
+                                    bool = true;
+                                }
+                            }
+                        }
+                        if (!bool) {
+                            TalentpoolEmailRecord emailRecord = new TalentpoolEmailRecord();
+                            emailRecord.setDisable(libraryDO.getDisplay());
+                            emailRecord.setConfigId(libraryDO.getId());
+                            emailRecord.setContext(libraryDO.getFirst());
+                            emailRecord.setInscribe(libraryDO.getRemark());
+                            emailRecord.setCompanyId(company_id);
+                            talentpoolEmailDao.addRecord(emailRecord);
+                        }
+                    }
+                }
+            //关闭智能人才库
+            } else if (result > 0 && status != 2 && oldStatus == 2) {
+                List<TalentpoolEmailRecord> recordList = talentpoolEmailDao.getTalentpoolEmailRecordByCompanyId(company_id);
+                if (recordList != null && recordList.size() > 0) {
+                    for (TalentpoolEmailRecord record : recordList) {
+                        record.setDisable(2);
+                        talentpoolEmailDao.updateRecord(record);
+                    }
+                }
+            }
+        }
+        return  ResponseUtils.success("");
     }
 
     /*
@@ -680,6 +769,21 @@ public class CompanyPcService {
     private DictIndustryDO getDictIndustryByName(String name){
         Query query=new Query.QueryBuilder().where("name",name).buildQuery();
         DictIndustryDO DO=dictIndustryDao.getData(query);
+        return DO;
+    }
+
+    /*
+        获取企业微信号配置
+         */
+    public HrWxWechatDO  getHrWxWechatDOBySignature(String signature, int companyId){
+        HrWxWechatDO DO= new HrWxWechatDO();
+        if(StringUtils.isNotNullOrEmpty(signature)){
+            Query query = new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),signature).buildQuery();
+            DO = hrWxWechatDao.getData(query);
+        }else if(companyId > 0){
+            Query query = new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),companyId).buildQuery();
+            DO = hrWxWechatDao.getData(query);
+        }
         return DO;
     }
 }

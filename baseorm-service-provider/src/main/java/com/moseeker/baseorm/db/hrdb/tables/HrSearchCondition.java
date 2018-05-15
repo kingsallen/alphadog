@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 871284419;
+    private static final long serialVersionUID = -263119456;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
@@ -87,9 +87,9 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, String> WORK_YEARS = createField("work_years", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "工作年限、工龄");
 
     /**
-     * The column <code>hrdb.hr_search_condition.city_name</code>. 现居住地
+     * The column <code>hrdb.hr_search_condition.city_name</code>. 现居住地, 允许多个，使用逗号分隔，要和city_code保持一致
      */
-    public final TableField<HrSearchConditionRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "现居住地");
+    public final TableField<HrSearchConditionRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "现居住地, 允许多个，使用逗号分隔，要和city_code保持一致");
 
     /**
      * The column <code>hrdb.hr_search_condition.degree</code>. 学历
@@ -117,9 +117,9 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, Integer> MAX_AGE = createField("max_age", org.jooq.impl.SQLDataType.INTEGER, this, "最大年龄");
 
     /**
-     * The column <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
+     * The column <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地, 允许多个，使用逗号分隔，要和intention_city_code保持一致
      */
-    public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_NAME = createField("intention_city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "期望工作地");
+    public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_NAME = createField("intention_city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "期望工作地, 允许多个，使用逗号分隔，要和intention_city_code保持一致");
 
     /**
      * The column <code>hrdb.hr_search_condition.sex</code>. 性别
@@ -190,6 +190,16 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
      * The column <code>hrdb.hr_search_condition.favorite_hrs</code>. 收藏人
      */
     public final TableField<HrSearchConditionRecord, String> FAVORITE_HRS = createField("favorite_hrs", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "收藏人");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔,表示现居住地
+     */
+    public final TableField<HrSearchConditionRecord, String> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "dictdb.dict_city.code,多个code之间使用逗号分隔,表示现居住地");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.intention_city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔，表示期望工作地
+     */
+    public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_CODE = createField("intention_city_code", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "dictdb.dict_city.code,多个code之间使用逗号分隔，表示期望工作地");
 
     /**
      * Create a <code>hrdb.hr_search_condition</code> table reference

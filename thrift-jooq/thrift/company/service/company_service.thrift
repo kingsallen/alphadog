@@ -3,7 +3,9 @@
 
 include "../../common/struct/common_struct.thrift"
 include "../struct/company_struct.thrift"
+include "../struct/talentpool_struct.thrift"
 include "../../dao/struct/hrdb_struct.thrift"
+include "../../dao/struct/hrdb/hr_company_conf_struct.thrift"
 include "../../employee/struct/employee_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.company.service
@@ -42,8 +44,19 @@ service CompanyServices {
     common_struct.Response companyPaidOrFortune() throws (1: common_struct.BIZException e)
     common_struct.Response getTalentPoolStatus(1:i32 hrId,2:i32 companyId)throws (1: common_struct.BIZException e)
 
+    hr_company_conf_struct.HrCompanyConfDO getCompanyConfById(1:i32 companyId)throws (1: common_struct.BIZException e)
     common_struct.Response updateHrCompanyConf(1:company_struct.HrCompanyConf hrCompanyConf)throws (1: common_struct.BIZException e)
-    common_struct.Response addHrAccountAndCompany(1:string companyName, 2: string mobile, 3:i32 wxuserId, 4:string remoteIp, 5:i32 source) throws (1: common_struct.BIZException e)
+    common_struct.Response addHrAccountAndCompany(1:string companyName, 2: string mobile, 3:i32 wxuserId, 4:string remoteIp, 5:i32 source, 6:i32 hr_source) throws (1: common_struct.BIZException e)
+
+    common_struct.Response getFeatureById(1:i32 id) throws (1: common_struct.BIZException e)
+    common_struct.Response getFeatureByCompanyId(1:i32 companyId) throws (1: common_struct.BIZException e)
+    common_struct.Response updateCompanyFeature(1:company_struct.HrCompanyFeatureDO data) throws (1: common_struct.BIZException e)
+    common_struct.Response updateCompanyFeatures(1:list<company_struct.HrCompanyFeatureDO> dataList) throws (1: common_struct.BIZException e)
+    common_struct.Response addCompanyFeature(1:company_struct.HrCompanyFeatureDO data) throws (1: common_struct.BIZException e)
+    common_struct.Response addCompanyFeatures(1:list<company_struct.HrCompanyFeatureDO> dataList) throws (1: common_struct.BIZException e)
+    common_struct.Response getCompanyFeatureIdList(1:list<i32> dataList) throws (1: common_struct.BIZException e)
+    common_struct.Response getWechatBySignature(1:string signature, 2:i32 companyId) throws (1: common_struct.BIZException e)
+    common_struct.Response updateHrCompanyConfStatus(1:i32 status, 2:i32 companyId) throws (1: common_struct.BIZException e)
 
 }
 
@@ -54,7 +67,7 @@ service HrTeamServices {
 }
 
 service TalentpoolServices {
-    common_struct.Response upsertTalentPoolApp(1:i32 hrId,2:i32 companyId)throws (1: common_struct.BIZException e)
+    common_struct.Response upsertTalentPoolApp(1:i32 hrId,2:i32 companyId,3: i32 type)throws (1: common_struct.BIZException e)
     common_struct.Response getTalentAllComment(1:i32 hr_id,2:i32 company_id,3:i32 user_id,4: i32 page_number,5:i32 page_size)throws(1: common_struct.BIZException e)
     common_struct.Response getHrTag(1:i32 hr_id,2:i32 company_id,3:i32 page_number,4:i32 page_size) throws (1: common_struct.BIZException e)
     common_struct.Response batchAddTalent(1:i32 hr_id,2:list<i32> user_ids,3:i32 company_id) throws (1: common_struct.BIZException e)
@@ -76,4 +89,43 @@ service TalentpoolServices {
     common_struct.Response getHrUserTag(1:i32 hr_id,2:i32 company_id,3:i32 user_id) throws (1: common_struct.BIZException e)
     common_struct.Response getUserOrigin(1:i32 hr_id,2:i32 company_id,3:i32 user_id) throws (1: common_struct.BIZException e)
     common_struct.Response getTalentAndPublicHr(1:i32 hr_id,2:i32 company_id,3:list<i32> user_ids) throws (1: common_struct.BIZException e)
+    common_struct.Response getPositionOrCompanyPast(1:i32 company_id,2:i32 type,3: i32 flag) throws (1: common_struct.BIZException e)
+    common_struct.Response addPositionOrCompanyPast(1:i32 company_id,2:i32 type,3: i32 flag,4: string name) throws (1: common_struct.BIZException e)
+    common_struct.Response getCompanyTagList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
+    common_struct.Response deleteCompanyTagByIds(1:i32 hr_id,2:i32 company_id,3:list<i32> company_tag_ids) throws (1: common_struct.BIZException e)
+    common_struct.Response getCompanyIdInfo(1:i32 hr_id,2:i32 company_id,3:i32 company_tag_id) throws (1: common_struct.BIZException e)
+    common_struct.Response addCompanyTag(1:talentpool_struct.TalentpoolCompanyTagDO companyTagDO, 2:i32 hr_id) throws (1: common_struct.BIZException e)
+    common_struct.Response updateCompanyTag(1:talentpool_struct.TalentpoolCompanyTagDO companyTagDO, 2:i32 hr_id) throws (1: common_struct.BIZException e)
+    common_struct.Response getTalentTagList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
+    common_struct.Response getProfileFilterList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
+    common_struct.Response handerProfileFilterByIds(1:i32 hr_id,2:i32 company_id,3:i32 disable, 4:list<i32> filter_ids) throws (1: common_struct.BIZException e)
+    common_struct.Response getProfileFilterInfo(1:i32 hr_id,2:i32 company_id,3:i32 filter_id) throws (1: common_struct.BIZException e)
+    common_struct.Response addProfileFilter(1:talentpool_struct.TalentpoolCompanyTagDO companyTagDO, 2:list<talentpool_struct.ActionForm> actionForm,3:list<i32> positionIdList, 4:i32 hr_id, 5:i32 position_total) throws (1: common_struct.BIZException e)
+    common_struct.Response updateProfileFilter(1:talentpool_struct.TalentpoolCompanyTagDO companyTagDO, 2:list<talentpool_struct.ActionForm> actionForm,3:list<i32> positionIdList, 4:i32 hr_id, 5:i32 position_total) throws (1: common_struct.BIZException e)
+    void  handlerCompanyTagAndProfile(1:set<i32> userid_list,2:i32 company_id) throws (1: common_struct.BIZException e)
+    common_struct.Response getTalentCountByPositionFilter(1:i32 hr_id, 2:i32 company_id, 3:i32 position_id) throws (1: common_struct.BIZException e)
+    common_struct.Response getEmailBalance(1:i32 hr_id,2:i32 company_id) throws (1: common_struct.BIZException e)
+    common_struct.Response getEmailTemplateList(1:i32 hr_id,2:i32 company_id) throws (1: common_struct.BIZException e)
+    common_struct.Response getEmailInfo(1:i32 hr_id,2:i32 company_id,3:i32 type) throws (1: common_struct.BIZException e)
+    common_struct.Response updateCompanyEmailInfo(1:i32 hr_id,2:i32 company_id,3:i32 type, 4:i32 disable, 5:string context,6:string inscribe) throws (1: common_struct.BIZException e)
+
+    talentpool_struct.EmailAccountForm fetchEmailAccounts(1: i32 companyId, 2: string companyName, 3: i32 pageNumber, 4: i32 pageSize) throws (1: common_struct.BIZException e)
+
+    talentpool_struct.EmailAccountConsumptionForm fetchEmailAccountConsumption(1: i32 companyId, 2: i8 type, 3: i32 pageNumber, 4: i32 pageSize, 5: string startDate, 6: string endDate) throws (1: common_struct.BIZException e)
+
+    i32 rechargeEmailAccount(1: i32 companyId, 2: i32 lost) throws (1: common_struct.BIZException e)
+
+    void updateEmailAccountRechargeValue(1:i32 id, 2: i32 lost) throws (1: common_struct.BIZException e)
+    void  addAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  addAllTalentTag(1:map<string,string> params,2:list<i32> tagList,3:i32 companyId,4:i32 hrId) throws (1: common_struct.BIZException e)
+    void  addAllTalentPublic(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  addAllTalentPrivate(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  cancleAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    common_struct.Response updateCompanyEmailBalance(1:i32 company_id,2:i32 balance) throws (1: common_struct.BIZException e)
+
+    common_struct.Response sendInviteEmail(1: map<string,string> params ,2: list<i32> userIdList,3: list<i32> positionIdList,4: i32 companyId,5: i32 hrId,6: i32 flag,7: i32 positionFlag) throws (1: common_struct.BIZException e)
+
+    common_struct.Response sendResumeEmail(1: map<string,string> params ,2: list<i32> userIdList,3: list<i32> idList,4: i32 companyId,5: i32 hrId,6: i32 flag) throws (1: common_struct.BIZException e)
+    common_struct.Response sendPositionInviteEmail( 1:i32 hrId,2: i32 positionId,3: i32 companyId) throws (1: common_struct.BIZException e)
+
 }

@@ -4,10 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
-import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.iface.IChannelType;
 import com.moseeker.common.util.query.Condition;
-import com.moseeker.position.utils.PositionRefreshUtils;
+import com.moseeker.position.utils.PositionParamRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.slf4j.Logger;
@@ -49,15 +48,16 @@ public abstract class AbstractRegionResultHandler extends AbstractJsonResultHand
                 Region moseekerRegion=data.getJSONObject("moseekerRegion").toJavaObject(Region.class);
                 Region thirdPartyRegion=data.getJSONObject("thirdPartyRegion").toJavaObject(Region.class);
 
-                int moseekerCode= PositionRefreshUtils.lastCode(moseekerRegion.getCode());
+                int moseekerCode= PositionParamRefreshUtils.lastCode(moseekerRegion.getCode());
 
                 DictCityMapDO cityMap=new DictCityMapDO();
 
                 cityMap.setCreateTime(nowTime);
-                cityMap.setCodeOther(thirdPartyRegion.codeToString());
                 cityMap.setStatus(0);
                 cityMap.setCode(moseekerCode);
                 cityMap.setChannel(channelValue);
+                // 有些渠道cother_other要城市名称，有些要code，所以默认code,要文字可以继承后覆盖
+                setCodeOther(cityMap,thirdPartyRegion);
 
                 cityMapList.add(cityMap);
             }
@@ -69,12 +69,13 @@ public abstract class AbstractRegionResultHandler extends AbstractJsonResultHand
             cityMapDao.addAllData(cityMapList);
             logger.info("channel {} region insert success",channelValue);
         }
-
-
-
     }
 
-    private static class Region {
+    protected void setCodeOther(DictCityMapDO cityMap,Region thirdPartyRegion){
+        cityMap.setCodeOther(thirdPartyRegion.codeToString());
+    }
+
+    protected static class Region {
         private List<String> text;
         private List<String> code;
 
@@ -97,6 +98,11 @@ public abstract class AbstractRegionResultHandler extends AbstractJsonResultHand
         public String codeToString(){
             if(code==null || code.isEmpty()) return "";
             return JSON.toJSONString(code);
+        }
+
+        public String textToString(){
+            if(text==null || text.isEmpty()) return "";
+            return JSON.toJSONString(text);
         }
     }
 }

@@ -121,11 +121,42 @@ public abstract class RedisClient {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
-//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		} finally {
 		}
 	}
 
+	/*
+	设置没有过期时间的兼职对
+	 */
+	public String setNoTime(int appId, String key_identifier, String str,String str1, String value)
+			throws CacheConfigNotExistException,RedisException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		String cacheKey = String.format(redisKey.getPattern(), str,str1);
+		try {
+			return redisCluster.set(cacheKey, value);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+		} finally {
+		}
+	}
+	/*
+	设置没有过期时间的兼职对
+	 */
+	public String setNoTime(int appId, String key_identifier, String str, String value)
+			throws CacheConfigNotExistException,RedisException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		String cacheKey = String.format(redisKey.getPattern(), str);
+		try {
+			return redisCluster.set(cacheKey, value);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+		} finally {
+		}
+	}
 	/**
 	 * 查询关键词对应的字符串
 	 * @param appId 调用方项目编号

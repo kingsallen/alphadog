@@ -10,9 +10,4 @@ public class VERedisResultHandler extends AbstractRedisResultHandler implements 
     protected String[] param() {
         return new String[]{"indate","salary","accommodation","degree","experience","computerLevel","languageType","languageLevel","workMode"};
     }
-
-    @Override
-    protected String keyIdentifier() {
-        return RefreshConstant.VERY_EAST_REDIS_PARAM_KEY;
-    }
 }

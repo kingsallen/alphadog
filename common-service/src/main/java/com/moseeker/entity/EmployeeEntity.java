@@ -147,7 +147,7 @@ public class EmployeeEntity {
         query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", awardConfigId).and("berecom_user_id", berecomUserId);
         UserEmployeePointsRecordDO userEmployeePointsRecordDO = employeePointsRecordDao.getData(query.buildQuery());
         if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
-            logger.error("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
+            logger.warn("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
             throw new Exception("重复的加积分操作");
         }
         // 进行加积分操作

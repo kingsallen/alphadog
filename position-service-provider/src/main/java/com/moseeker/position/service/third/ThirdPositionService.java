@@ -277,6 +277,8 @@ public class ThirdPositionService {
             throw new CommonException(-1, "无效的第三方帐号！");
         }
         thirdPartyAccount.setId(thirdPostion.getR1().getThirdPartyAccountId());
+        // 传过来的参数没有channel，需要加上查询出的channel
+        thirdPartyPosition.setChannel(thirdPostion.getR1().getChannel());
         int result = thirdPartyPositionDao.updateData(thirdPartyPosition,positionChangeUtil.toThirdPartyPosition(thirdPostion.getR1().getChannel(),extData));
 
         if (result < 1) {

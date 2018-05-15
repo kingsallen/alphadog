@@ -160,4 +160,16 @@ public class HrCompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
         }
         return companys.get(0);
     }
+    /*
+	根据id获取公司的
+	 */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> getChildHrCompanyById(int companyId){
+        List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> companys=
+                create.selectFrom(HrCompany.HR_COMPANY).where(HrCompany.HR_COMPANY.PARENT_ID.eq(companyId)).and(HrCompany.HR_COMPANY.DISABLE.eq((byte)1))
+                        .fetchInto(com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany.class);
+        if(StringUtils.isEmptyList(companys)){
+            return null;
+        }
+        return companys;
+    }
 }

@@ -47,6 +47,7 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -178,7 +179,12 @@ public class WholeProfileService {
     @Autowired
     RetriveProfile retriveProfile;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
     UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
+
+    TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
 
     private Query getProfileQuery(int profileId){
         return new Query.QueryBuilder().where("profile_id",profileId).setPageSize(Integer.MAX_VALUE).buildQuery();
@@ -460,6 +466,7 @@ public class WholeProfileService {
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
+                profileCompanyTagService.handlerCompanyTag(0,userId);
 
                 return ResponseUtils.success(String.valueOf(id));
             }
@@ -515,6 +522,7 @@ public class WholeProfileService {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
+            profileCompanyTagService.handlerCompanyTag(id,userId);
             return ResponseUtils.success(id);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
@@ -543,6 +551,7 @@ public class WholeProfileService {
         }else if(id==0){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
         }else{
+            profileCompanyTagService.handlerCompanyTag(id,userRecord.getId());
             return ResponseUtils.success(id);
         }
     }
@@ -621,6 +630,7 @@ public class WholeProfileService {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
+            profileCompanyTagService.handlerCompanyTag(profileId,userRecord.getId());
             return ResponseUtils.success(null);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
@@ -685,7 +695,10 @@ public class WholeProfileService {
                 profileEntity.improveWorks(destWorks, originProfileId);
                 profileEntity.improveWorkexp(destWorkxps, originProfileId);
                 profileEntity.getCompleteness(0, null, originProfile.getId().intValue());
+
             }
+            profileCompanyTagService.handlerCompanyTag(0,destUserId);
+            profileCompanyTagService.handlerCompanyTag(0,originUserId);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -1231,11 +1244,16 @@ public class WholeProfileService {
                 return res;
             }
         }
+
         //此处应该考虑账号合并导致的问题
         talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName);
         Set<Integer> userIdList=new HashSet<>();
         userIdList.add(newUerId);
         talentPoolEntity.realTimeUpload(userIdList,1);
+        pool.startTast(() -> {
+            talentpoolService.handlerCompanyTagAndProfile(userIdList,companyId);
+            return 0;
+        });
         return ResponseUtils.success("success");
     }
     /*
@@ -1264,6 +1282,8 @@ public class WholeProfileService {
                 map.put("company",company);
                 if(map.get("position_name")!=null){
                     map.put("job",map.get("position_name"));
+                } else {
+                    map.put("job",map.get("job"));
                 }
             }
         }
@@ -1340,7 +1360,7 @@ public class WholeProfileService {
             }else{
                 Map<String,Object> profileMap=new HashMap<>();
                 profileMap.put("user_id",newUserId);
-                profileMap.put("origin",0);
+                profileMap.put("origin","0");
                 resume.put("profile",profileMap);
             }
         }

@@ -148,4 +148,18 @@ public class HrThirdPartyAccountDao extends DAOImpl<HrThirdPartyAccountRecord, c
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccount> fetchByExt(String... values) {
         return fetch(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT, values);
     }
+
+    /**
+     * Fetch records that have <code>sync_require_company IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccount> fetchBySyncRequireCompany(Byte... values) {
+        return fetch(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYNC_REQUIRE_COMPANY, values);
+    }
+
+    /**
+     * Fetch records that have <code>syn​c_require_department IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccount> fetchBySyn​cRequireDepartment(Byte... values) {
+        return fetch(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYN​C_REQUIRE_DEPARTMENT, values);
+    }
 }

@@ -1,5 +1,6 @@
 package com.moseeker.chat.thriftservice;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.chat.service.ChatService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
@@ -85,8 +86,8 @@ public class ChatThriftService implements Iface {
         try {
             return chatService.saveChat(chat);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+            logger.error(JSON.toJSONString(chat) + e.getMessage(), e);
+            throw e;
         }
     }
 

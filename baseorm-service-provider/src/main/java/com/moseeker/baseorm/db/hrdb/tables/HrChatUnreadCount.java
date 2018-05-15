@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
 
-    private static final long serialVersionUID = 1992499777;
+    private static final long serialVersionUID = 1892478859;
 
     /**
      * The reference instance of <code>hrdb.hr_chat_unread_count</code>
@@ -86,14 +86,14 @@ public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
     public final TableField<HrChatUnreadCountRecord, Byte> USER_HAVE_UNREAD_MSG = createField("user_have_unread_msg", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "user是否有未读消息 ，0：没有，1有未读消息");
 
     /**
-     * The column <code>hrdb.hr_chat_unread_count.apply</code>. 是否投递简历 0 未投递， 1已经投递过简历
-     */
-    public final TableField<HrChatUnreadCountRecord, Byte> APPLY = createField("apply", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否投递简历 0 未投递， 1已经投递过简历");
-
-    /**
      * The column <code>hrdb.hr_chat_unread_count.update_time</code>. 更新时间
      */
     public final TableField<HrChatUnreadCountRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>hrdb.hr_chat_unread_count.apply</code>. 是否投递简历 0 未投递， 1已经投递过简历
+     */
+    public final TableField<HrChatUnreadCountRecord, Byte> APPLY = createField("apply", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否投递简历 0 未投递， 1已经投递过简历");
 
     /**
      * Create a <code>hrdb.hr_chat_unread_count</code> table reference

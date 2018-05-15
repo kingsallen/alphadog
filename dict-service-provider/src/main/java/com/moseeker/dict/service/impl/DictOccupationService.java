@@ -35,12 +35,11 @@ public class DictOccupationService {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-	public static Map<Class,AbstractOccupationHandler> map;
+	@Autowired
+	private List<AbstractOccupationHandler> handlers;
 
 	@Autowired
-	public DictOccupationService(List<AbstractOccupationHandler> list){
-		map=list.stream().collect(Collectors.toMap(h->h.getClass(), h->h));
-	}
+	private DefaultOccupationHandler defaultOccupationHandler;
 
 	/*
 	 * 查询第三方职位职能
@@ -76,53 +75,23 @@ public class DictOccupationService {
 	}
 
 	public JSONArray getRedisOccupation(int channel){
-		OccupationChannel occupationChannel=OccupationChannel.getInstance(channel);
-		String result=redisClient.get(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),occupationChannel.key);
+		ChannelType occupationChannel=ChannelType.instaceFromInteger(channel);
+		String result=redisClient.get(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),String.valueOf(occupationChannel.getValue()));
 		logger.info("redis occupation : {}",result);
 		return JSON.parseArray(result);
 	}
 
 	public void setRedisOccupation(int channel,JSONArray array){
-		if(array!=null && !array.isEmpty()) {
-			OccupationChannel occupationChannel = OccupationChannel.getInstance(channel);
-			logger.info("set redis occupation : {}",array);
-			redisClient.set(Constant.APPID_ALPHADOG, ConstantEnum.JOB_OCCUPATION_KEY.toString(), occupationChannel.key, array.toJSONString());
-		}
+		ChannelType occupationChannel=ChannelType.instaceFromInteger(channel);
+		logger.info("set redis occupation : {}",array);
+		redisClient.set(Constant.APPID_ALPHADOG, ConstantEnum.JOB_OCCUPATION_KEY.toString(), String.valueOf(occupationChannel.getValue()), array.toJSONString());
 	}
 
 	public AbstractOccupationHandler getOccuaptionHandler(int channel){
-		OccupationChannel occupationChannel=OccupationChannel.getInstance(channel);
-		return map.get(occupationChannel.clazz);
-	}
-
-	private enum OccupationChannel{
-		Job51(ChannelType.JOB51.getValue(),"51JobList", Job51OccupationHandler.class),
-		ZhiLian(ChannelType.ZHILIAN.getValue(),"zPinList",ZhilianOccupationHandler.class),
-		LiePin(ChannelType.LIEPIN.getValue(),"liePinList",LiepinOccupationHandler.class),
-		VeryEast(ChannelType.VERYEAST.getValue(),"veryEastList",VeryEastOccupationHandler.class),
-		Job1001(ChannelType.JOB1001.getValue(),"Job1001",Job1001OccupationHandler.class);
-
-		OccupationChannel(int code,String key,Class<? extends AbstractOccupationHandler> clazz){
-			this.code=code;
-			this.key=key;
-			this.clazz=clazz;
+		ChannelType occupationChannel=ChannelType.instaceFromInteger(channel);
+		if(handlers.stream().anyMatch(h->h.getChannelType() == occupationChannel)){
+			return handlers.stream().filter(h->h.getChannelType() == occupationChannel).findFirst().get();
 		}
-
-		private int code;
-		private String key;
-		private Class clazz;
-
-		public String key(){
-			return key;
-		}
-
-		public static OccupationChannel getInstance(int code){
-			for(OccupationChannel oc:values()){
-				if(oc.code==code){
-					return oc;
-				}
-			}
-			return null;
-		}
+		return defaultOccupationHandler;
 	}
 }

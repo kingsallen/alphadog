@@ -2,7 +2,6 @@ package com.moseeker.useraccounts.service.thirdpartyaccount;
 
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
@@ -15,7 +14,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.entity.ThridPartyAcountEntity;
+import com.moseeker.useraccounts.service.thirdpartyaccount.info.ThirdPartyAcountEntity;
 import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -65,7 +64,7 @@ public class ThirdPartyAccountService {
     EmailNotification emailNotification;
 
     @Autowired
-    ThridPartyAcountEntity thridPartyAcountEntity;
+    ThirdPartyAcountEntity thridPartyAcountEntity;
 
     @Autowired
     ThirdPartyAccountContext stateContext;
@@ -308,6 +307,21 @@ public class ThirdPartyAccountService {
                 accountDO.setBinding((short) BindingStatus.BOUND.getValue());
                 logger.info(accountDO.getBinding()+"更新成功，状态为"+accountDO.getBinding());
             }
+
+            // 职位同步时是否需要填写公司，暂时只有智联要
+            if(accountExt.getData().isHas_company()){
+                accountDO.setSyncRequireCompany(ThirdPartyAccountConf.REQUIRE_COMPANY.ON);
+            } else{
+                accountDO.setSyncRequireCompany(ThirdPartyAccountConf.REQUIRE_COMPANY.OFF);
+            }
+
+            // 职位同步时是否需要填写部门，暂时只有智联要
+            if(accountExt.getData().isHas_departments()){
+                accountDO.setSyncRequireDepartment(ThirdPartyAccountConf.REQUIRE_DEPARTMENT.ON);
+            } else{
+                accountDO.setSyncRequireDepartment(ThirdPartyAccountConf.REQUIRE_DEPARTMENT.OFF);
+            }
+
             thirdPartyAccountDao.updateData(accountDO);
         }
     }

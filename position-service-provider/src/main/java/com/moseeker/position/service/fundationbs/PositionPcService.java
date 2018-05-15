@@ -20,6 +20,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.entity.PcRevisionEntity;
+import com.moseeker.entity.PositionEntity;
 import com.moseeker.thrift.gen.dao.struct.analytics.StJobSimilarityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryTypeDO;
@@ -106,6 +107,8 @@ public class PositionPcService {
 	private JobPositionShareTplConfDao jobPositionShareTplConfDao;
 	@Autowired
 	private DictIndustryTypeDao dictIndustryTypeDao;
+	@Autowired
+	private PositionEntity positionEntity;
 	/*
      * 获取pc首页职位推荐
      */
@@ -161,6 +164,8 @@ public class PositionPcService {
 		if(DO==null){
 			return null;
 		}
+        String feature=getPositionFeature(positionId);
+        DO.setFeature(feature);
 		this.handlerForPositionDetail(map,DO,positionId);
 		return map;
 	}
@@ -259,6 +264,27 @@ public class PositionPcService {
 			map.put("customField",customField);
 		}
 	}
+
+	/*
+	 修改福利特色
+	 */
+	public String getPositionFeature(int pid){
+		List<Map<String,Object>> list= positionEntity.getPositionFeatureList(pid);
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
+		String features="";
+		for(Map<String,Object> map:list){
+			String feature=(String)map.get("feature");
+			if(StringUtils.isNotNullOrEmpty(feature)){
+				features+=feature+"#";
+			}
+		}
+		if(StringUtils.isNotNullOrEmpty(features)){
+			features=features.substring(0,features.lastIndexOf("#"));
+		}
+		return features;
+	}
 	//添加举报信息
 	@CounterIface
 	public  Response addPositionReport(JobPcReportedDO DO){
@@ -286,6 +312,8 @@ public class PositionPcService {
 		}
 		return ResponseUtils.fail(1,"举报职位失败");
 	}
+
+
 	/*
 	  获取pc端的广告位
 	 */

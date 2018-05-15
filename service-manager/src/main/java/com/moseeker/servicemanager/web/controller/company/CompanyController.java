@@ -1,8 +1,14 @@
 package com.moseeker.servicemanager.web.controller.company;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -16,9 +22,11 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import com.moseeker.thrift.gen.position.service.PositionServices;
+import com.moseeker.thrift.gen.profile.struct.WorkExp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -26,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sun.swing.StringUIClientPropertyKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +43,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -45,6 +56,13 @@ public class CompanyController {
     CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
 
 	private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
+
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public CompanyController(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
 
     @RequestMapping(value = "/company", method = RequestMethod.GET)
     @ResponseBody
@@ -85,7 +103,7 @@ public class CompanyController {
     @ResponseBody
     public String addCompany(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            Map<String, Object> data = parseRequestParam(request);
             Hrcompany company = ParamUtils.initModelForm(data, Hrcompany.class);
             if (company.getSource() == 0) {
                 Integer appid = BeanUtils.converToInteger(data.get("appid"));
@@ -125,7 +143,7 @@ public class CompanyController {
     @ResponseBody
     public String employeeDetails(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             CompanyOptions companyOptions = companyServices.getCompanyOptions(companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(companyOptions)));
@@ -148,7 +166,7 @@ public class CompanyController {
     @ResponseBody
     public String getCompanyRewardConf(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
             if (companyId == 0) {
                 return ResponseLogNotification.fail(request, "公司Id不能为空");
@@ -175,7 +193,7 @@ public class CompanyController {
     @ResponseBody
     public String updateCompanyRewardConf(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
             if (companyId == 0) {
                 return ResponseLogNotification.fail(request, "公司Id不能为空");
@@ -218,7 +236,7 @@ public class CompanyController {
     @ResponseBody
     public String addImporterMonitor(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             int hraccountId = params.getInt("hraccountId") != null ? params.getInt("hraccountId") : 0;
             int type = params.getInt("type") != null ? params.getInt("type") : 0;
@@ -248,7 +266,7 @@ public class CompanyController {
     @ResponseBody
     public String getImporterMonitor(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             int hraccountId = params.getInt("hraccountId") != null ? params.getInt("hraccountId") : 0;
             int type = params.getInt("type") != null ? params.getInt("type") : 0;
@@ -274,7 +292,7 @@ public class CompanyController {
     @ResponseBody
     public String bindingSwitch(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             int disable = params.getInt("disable") != null ? params.getInt("disable") : 0;
             Response res = companyServices.bindingSwitch(companyId, disable);
@@ -299,7 +317,7 @@ public class CompanyController {
     @ResponseBody
     public String getHrEmployeeCertConf(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
             int hraccountId = params.getInt("hraccountId", 0);
             int type = params.getInt("type", 0);
@@ -324,7 +342,7 @@ public class CompanyController {
     @ResponseBody
     public String updateEmployeeBindConf(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
             Integer authMode = params.getInt("authMode");
             String emailSuffix = params.getString("emailSuffix");
@@ -404,7 +422,7 @@ public class CompanyController {
     @ResponseBody
     public String getPcBanner(HttpServletRequest request, HttpServletResponse response) {
         try{
-            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            Map<String, Object> data = parseRequestParam(request);
             String page=(String) data.get("page");
             String pageSize=(String) data.get("pagesize");
             if(page==null){
@@ -427,7 +445,7 @@ public class CompanyController {
     @ResponseBody
     public String getPcQXRecommendCompany(HttpServletRequest request, HttpServletResponse response) {
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer page = params.getInt("page");
             Integer pageSize = params.getInt("pageSize");
             if(page==null){
@@ -450,7 +468,7 @@ public class CompanyController {
     @ResponseBody
     public String getPcQXRecommendAll(HttpServletRequest request, HttpServletResponse response) {
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer page = params.getInt("page");
             Integer pageSize = params.getInt("pageSize");
             if(page==null){
@@ -471,7 +489,7 @@ public class CompanyController {
     @ResponseBody
     public String companyDetails(HttpServletRequest request, HttpServletResponse response) {
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer companyId = params.getInt("companyId");
             logger.info("param====companyId=={}",companyId);
             Response res=companyServices.companyDetails(companyId);
@@ -488,7 +506,7 @@ public class CompanyController {
     @ResponseBody
     public String getPcCompanyInfo(HttpServletRequest request, HttpServletResponse response) {
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer companyId = params.getInt("companyId");
             logger.info("param====companyId=={}",companyId);
             Response res=companyServices.companyMessage(companyId);
@@ -508,7 +526,7 @@ public class CompanyController {
     @RequestMapping(value = "/company/customfields", method = RequestMethod.GET)
     @ResponseBody
     public String getCustomfields(HttpServletRequest request) throws Exception {
-        Params<String, Object> params = ParamUtils.parseRequestParam(request);
+        Params<String, Object> params = parseRequestParam(request);
         int companyId = params.getInt("companyId", 0);
         List<HrEmployeeCustomFieldsVO> result = companyServices.getHrEmployeeCustomFields(companyId);
         return ResponseLogNotification.success(request,
@@ -525,7 +543,7 @@ public class CompanyController {
     @ResponseBody
     public String getFortuneOrPaid(HttpServletRequest request) throws Exception {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Response result = companyServices.companyPaidOrFortune();
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
@@ -543,7 +561,7 @@ public class CompanyController {
     @ResponseBody
     public String getTalentpoolStstus(HttpServletRequest request) throws Exception {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             String hrId=String.valueOf(params.get("hr_id"));
             String companyId=String.valueOf(params.get("company_id"));
             if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
@@ -560,6 +578,29 @@ public class CompanyController {
         }
     }
 
+    /**
+     * 根据公司ID获取公司配置，如果是子公司，查询母公司配置
+     */
+    @RequestMapping(value = "/api/hrcompany/conf", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCompanyConf(HttpServletRequest request) {
+        try {
+            Params<String, Object> data = ParamUtils.parseRequestParam(request);
+            int companyId = data.getInt("company_id");
+            HrCompanyConfDO result = companyServices.getCompanyConfById(companyId);
+            //驼峰转下划线
+            HrCompanyConf underLineResult = JSON.parseObject(JSON.toJSONString(result, serializeConfig),HrCompanyConf.class);
+            //转换json的时候去掉thrift结构体中的set方法
+            JSONObject jsonResult = JSON.parseObject(BeanUtils.convertStructToJSON(underLineResult));
+            return ResponseLogNotification.successJson(request, jsonResult);
+        } catch (BIZException e) {
+            return ResponseLogNotification.failJson(request, e);
+        } catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     /*
        修改hr_company_conf
    */
@@ -567,9 +608,33 @@ public class CompanyController {
     @ResponseBody
     public String updateCompanyConf(HttpServletRequest request) throws Exception {
         try {
-            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            Map<String, Object> data = parseRequestParam(request);
             HrCompanyConf companyConf = ParamUtils.initModelForm(data, HrCompanyConf.class);
             Response result = companyServices.updateHrCompanyConf(companyConf);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+       修改hr_company_conf
+   */
+    @RequestMapping(value = "/api/hrcompany/conf/status", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String updateCompanyConfStatus(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            String company_id=String.valueOf(data.get("company_id"));
+            String status=String.valueOf(data.get("status"));
+            if(StringUtils.isNullOrEmpty(status)){
+                ResponseLogNotification.fail(request,"人才库状态不可以为空");
+            }
+            if(StringUtils.isNullOrEmpty(company_id)){
+                ResponseLogNotification.fail(request,"公司编号不可以为空");
+            }
+            Response result = companyServices.updateHrCompanyConfStatus(Integer.parseInt(status), Integer.parseInt(company_id));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
@@ -587,12 +652,13 @@ public class CompanyController {
     @ResponseBody
     public String addHrAccountAndCompany(HttpServletRequest request) throws Exception {
         try {
-            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            Map<String, Object> data = parseRequestParam(request);
             String company_name=String.valueOf(data.get("company_name"));
             String mobile=String.valueOf(data.get("mobile"));
             String wxuserId=String.valueOf(data.get("wxuser_id"));
             String remote_ip=String.valueOf(data.get("remote_ip"));
             String source=String.valueOf(data.get("source"));
+            String hr_source =String.valueOf(data.get("hr_source"));
             if(StringUtils.isNullOrEmpty(mobile)){
                 ResponseLogNotification.fail(request,"注册手机号不可以为空");
             }
@@ -603,13 +669,121 @@ public class CompanyController {
                 ResponseLogNotification.fail(request,"微信名称不可以为空");
             }
             logger.info("addHrAccountAndCompany hr注册参数：companyName={}, mobile={},wxuserId={}",company_name, mobile, wxuserId);
-            Response result = companyServices.addHrAccountAndCompany(company_name, mobile, Integer.parseInt(wxuserId), remote_ip, Integer.parseInt(source));
+            Response result = companyServices.addHrAccountAndCompany(company_name, mobile, Integer.parseInt(wxuserId), remote_ip, Integer.parseInt(source), Integer.parseInt(hr_source));
             logger.info("addHrAccountAndCompany hr注册成功结果：{};提示信息：{}",result.getStatus(), result.getMessage());
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);
             } else {
                 return ResponseLogNotification.fail(request, result);
             }
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    @RequestMapping(value = "/api/company/feature", method = RequestMethod.POST)
+    @ResponseBody
+    public String addCompanyFeature(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            HrCompanyFeatureDO DO=ParamUtils.initModelForm(data, HrCompanyFeatureDO.class);
+            Response res=companyServices.addCompanyFeature(DO);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature/list", method = RequestMethod.POST)
+    @ResponseBody
+    public String addCompanyFeatureList(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            List<Map<String,Object>> list= (List<Map<String, Object>>) data.get("data");
+            List<HrCompanyFeatureDO> dataList=new ArrayList<>();
+            for(Map<String,Object> map:list){
+                HrCompanyFeatureDO DO=ParamUtils.initModelForm(map, HrCompanyFeatureDO.class);
+                dataList.add(DO);
+            }
+            Response res=companyServices.addCompanyFeatures(dataList);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateCompanyFeature(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            HrCompanyFeatureDO DO=ParamUtils.initModelForm(data, HrCompanyFeatureDO.class);
+            Response res=companyServices.updateCompanyFeature(DO);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature/list", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateCompanyFeatureList(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            List<Map<String,Object>> list= (List<Map<String, Object>>) data.get("data");
+            List<HrCompanyFeatureDO> dataList=new ArrayList<>();
+            for(Map<String,Object> map:list){
+                HrCompanyFeatureDO DO=ParamUtils.initModelForm(map, HrCompanyFeatureDO.class);
+                dataList.add(DO);
+            }
+            Response res=companyServices.updateCompanyFeatures(dataList);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getSingleCompanyFeature(@PathVariable("id") int id, HttpServletRequest request) throws Exception {
+        try {
+            Response res= companyServices.getFeatureById(id);
+            return  ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCompanyFeatureByCompanyId(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            String companyId=(String)data.get("company_id");
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(companyId)){
+                return ResponseLogNotification.fail(request, "公司id不能为空或者为0");
+            }
+            Response res= companyServices.getFeatureByCompanyId(Integer.parseInt(companyId));
+            return  ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/api/company/feature/list", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCompanyFeatureByIdList(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            String ids=(String)data.get("data");
+            if(StringUtils.isNullOrEmpty(ids)){
+                return ResponseLogNotification.fail(request, "福利id不能为空或者为0");
+            }
+            List<Integer> dataList=ParamUtils.convertIntList(ids);
+            Response res= companyServices.getCompanyFeatureIdList(dataList);
+            return  ResponseLogNotification.success(request,res);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());

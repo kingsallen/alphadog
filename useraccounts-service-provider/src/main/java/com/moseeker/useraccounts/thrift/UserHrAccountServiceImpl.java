@@ -6,6 +6,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.exception.HRException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -519,9 +520,9 @@ public class UserHrAccountServiceImpl implements Iface {
      * @param timeSpan   月，季，年 2017 代表年积分，2017-08 代表月积分 20171 代表第一季度的积分
      */
     @Override
-    public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, String asc, int pageNumber, int pageSize, String timeSpan) throws BIZException, TException {
+    public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, String asc, int pageNumber, int pageSize, String timeSpan,String email_validate) throws BIZException, TException {
         try {
-            return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize, timeSpan);
+            return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize, timeSpan,email_validate);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
@@ -652,5 +653,20 @@ public class UserHrAccountServiceImpl implements Iface {
         Response response = service.getHrCompanyInfo(wechat_id, unionId, account_id);
         logger.info("getHrCompanyInfo fanhuizhi:{}", response);
         return response;
+    }
+
+    @Override
+    public UserHrAccountDO switchChatLeaveToMobot(int accountId, byte leaveToMobot) throws BIZException, TException {
+        try {
+            return service.switchChatLeaveToMobot(accountId,leaveToMobot);
+        } catch (HRException e){
+            throw ExceptionUtils.convertException(e);
+        } catch (BIZException e){
+            throw e;
+        } catch (Exception e){
+            logger.error("switch Chat LeaveToMobot error:{},accountId:{},leaveToMobot:{}",e,accountId,leaveToMobot);
+            throw new SysBIZException();
+        }
+
     }
 }

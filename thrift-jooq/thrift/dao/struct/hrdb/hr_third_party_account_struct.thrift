@@ -17,4 +17,6 @@ struct HrThirdPartyAccountDO {
 	12: optional i32 remainProfileNum,	//第三方账号剩余简历数
 	13: optional string errorMessage,    //同步刷新失败的理由
     14: optional string ext //扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码,51：公司名称
+    15: optional i8 syncRequireCompany,    //智联同步时页面是否需要选择公司名称，0 不需要，1 需要
+    16: optional i8 syncRequireDepartment  //智联同步时页面是否需要选择部门名称，0 不需要，1 需要
 }

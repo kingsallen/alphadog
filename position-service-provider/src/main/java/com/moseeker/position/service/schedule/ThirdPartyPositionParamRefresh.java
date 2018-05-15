@@ -3,10 +3,7 @@ package com.moseeker.position.service.schedule;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.constants.RefreshConstant;
+import com.moseeker.common.constants.*;
 import com.moseeker.position.service.position.base.refresh.AbstractRabbitMQParamRefresher;
 import com.moseeker.position.service.position.base.PositionFactory;
 import com.moseeker.position.utils.PositionEmailNotification;
@@ -48,6 +45,10 @@ public class ThirdPartyPositionParamRefresh {
 
     @Scheduled(cron = "0 0 1 * * SAT")
     public void refresh() throws BIZException {
+        refresh(0);
+    }
+
+    public void refresh(int channel) throws BIZException{
         long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(), "");
         if (check>1) {
             //绑定中
@@ -56,9 +57,18 @@ public class ThirdPartyPositionParamRefresh {
         }
         redisClient.expire(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(), "", RefreshConstant.REFRESH_THIRD_PARTY_PARAM_TIMEOUT);
 
+        boolean refreshAll;
+        if(channel==0){
+            refreshAll = true;
+        }else{
+            refreshAll = false;
+        }
+
         refreshList.forEach(r->{
             try {
-                r.refresh();
+                if(refreshAll || r.getChannelType().getValue()==channel) {
+                    r.refresh();
+                }
             }catch (Exception e){
                 logger.error("refresh error {}",e.getMessage());
                 emailNotification.sendRefreshFailureMail("refresh push error",r,e);
@@ -79,15 +89,15 @@ public class ThirdPartyPositionParamRefresh {
             JSONObject obj=JSONObject.parseObject(json);
             Integer status=obj.getInteger("status");
             if(status!=0){
-                logger.error("refresh error message : {} ,json :{}",obj.getString("message"),json);
-                return;
+                String errorMsg = obj.getString("message");
+                logger.error("refresh error message : {} ,json :{}",errorMsg,json);
+                throw new RuntimeException(errorMsg);
             }
             int channel=obj.getJSONObject("data").getIntValue("channel");
             ChannelType channelType=ChannelType.instaceFromInteger(channel);
             if(channelType==null){
                 throw new RuntimeException("no matched ChannelType when refresh "+channel);
             }
-
 
             if(refresherFactory.hasRabbitMQParamRefresher(channelType)){
                 refresher=refresherFactory.getRabbitMQParamRefresher(channelType);

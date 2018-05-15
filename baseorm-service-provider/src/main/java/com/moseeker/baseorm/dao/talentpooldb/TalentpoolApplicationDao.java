@@ -22,12 +22,13 @@ public class TalentpoolApplicationDao extends JooqCrudImpl<com.moseeker.baseorm.
         super(table, talentpoolApplicationClass);
     }
 
-    public int inserOrUpdateTalentPoolApplication(int hrId, int companyId){
+    public int inserOrUpdateTalentPoolApplication(int hrId, int companyId,int type){
         int result=create.insertInto(TalentpoolApplication.TALENTPOOL_APPLICATION,TalentpoolApplication.TALENTPOOL_APPLICATION.HR_ID ,
-                TalentpoolApplication.TALENTPOOL_APPLICATION.COMPANY_ID)
-                .values(hrId, companyId)
+                TalentpoolApplication.TALENTPOOL_APPLICATION.COMPANY_ID,TalentpoolApplication.TALENTPOOL_APPLICATION.TYPE)
+                .values(hrId, companyId,type)
                 .onDuplicateKeyUpdate()
                 .set(TalentpoolApplication.TALENTPOOL_APPLICATION.UPDATE_TIME,new Timestamp(System.currentTimeMillis()))
+                .set(TalentpoolApplication.TALENTPOOL_APPLICATION.TYPE,type)
                 .execute();
         return result;
 

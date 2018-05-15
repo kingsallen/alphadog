@@ -16,7 +16,11 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_0413;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1030;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationAtsRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
@@ -29,8 +33,12 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPcReportedRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCcmailRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionExtRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionHrCompanyFeatureRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionProfileFilterRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionShareTplConfRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPosition_0413Record;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPosition_1030Record;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobResumeOtherRecord;
 
 import javax.annotation.Generated;
@@ -66,6 +74,8 @@ public class Keys {
     public static final Identity<JobPcRecommendPositionItemRecord, Integer> IDENTITY_JOB_PC_RECOMMEND_POSITION_ITEM = Identities0.IDENTITY_JOB_PC_RECOMMEND_POSITION_ITEM;
     public static final Identity<JobPcReportedRecord, Integer> IDENTITY_JOB_PC_REPORTED = Identities0.IDENTITY_JOB_PC_REPORTED;
     public static final Identity<JobPositionRecord, Integer> IDENTITY_JOB_POSITION = Identities0.IDENTITY_JOB_POSITION;
+    public static final Identity<JobPosition_0413Record, Integer> IDENTITY_JOB_POSITION_0413 = Identities0.IDENTITY_JOB_POSITION_0413;
+    public static final Identity<JobPosition_1030Record, Integer> IDENTITY_JOB_POSITION_1030 = Identities0.IDENTITY_JOB_POSITION_1030;
     public static final Identity<JobPositionCcmailRecord, Integer> IDENTITY_JOB_POSITION_CCMAIL = Identities0.IDENTITY_JOB_POSITION_CCMAIL;
     public static final Identity<JobPositionShareTplConfRecord, Integer> IDENTITY_JOB_POSITION_SHARE_TPL_CONF = Identities0.IDENTITY_JOB_POSITION_SHARE_TPL_CONF;
 
@@ -82,9 +92,13 @@ public class Keys {
     public static final UniqueKey<JobPcRecommendPositionItemRecord> KEY_JOB_PC_RECOMMEND_POSITION_ITEM_PRIMARY = UniqueKeys0.KEY_JOB_PC_RECOMMEND_POSITION_ITEM_PRIMARY;
     public static final UniqueKey<JobPcReportedRecord> KEY_JOB_PC_REPORTED_PRIMARY = UniqueKeys0.KEY_JOB_PC_REPORTED_PRIMARY;
     public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_PRIMARY;
+    public static final UniqueKey<JobPosition_0413Record> KEY_JOB_POSITION_0413_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_0413_PRIMARY;
+    public static final UniqueKey<JobPosition_1030Record> KEY_JOB_POSITION_1030_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_1030_PRIMARY;
     public static final UniqueKey<JobPositionCcmailRecord> KEY_JOB_POSITION_CCMAIL_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_CCMAIL_PRIMARY;
     public static final UniqueKey<JobPositionCityRecord> KEY_JOB_POSITION_CITY_IDX_PID_CODE = UniqueKeys0.KEY_JOB_POSITION_CITY_IDX_PID_CODE;
     public static final UniqueKey<JobPositionExtRecord> KEY_JOB_POSITION_EXT_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_EXT_PRIMARY;
+    public static final UniqueKey<JobPositionHrCompanyFeatureRecord> KEY_JOB_POSITION_HR_COMPANY_FEATURE_PID_FID = UniqueKeys0.KEY_JOB_POSITION_HR_COMPANY_FEATURE_PID_FID;
+    public static final UniqueKey<JobPositionProfileFilterRecord> KEY_JOB_POSITION_PROFILE_FILTER_PID_FID = UniqueKeys0.KEY_JOB_POSITION_PROFILE_FILTER_PID_FID;
     public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY;
     public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = UniqueKeys0.KEY_JOB_RESUME_OTHER_PRIMARY;
 
@@ -106,6 +120,8 @@ public class Keys {
         public static Identity<JobPcRecommendPositionItemRecord, Integer> IDENTITY_JOB_PC_RECOMMEND_POSITION_ITEM = createIdentity(JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM, JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM.ID);
         public static Identity<JobPcReportedRecord, Integer> IDENTITY_JOB_PC_REPORTED = createIdentity(JobPcReported.JOB_PC_REPORTED, JobPcReported.JOB_PC_REPORTED.ID);
         public static Identity<JobPositionRecord, Integer> IDENTITY_JOB_POSITION = createIdentity(JobPosition.JOB_POSITION, JobPosition.JOB_POSITION.ID);
+        public static Identity<JobPosition_0413Record, Integer> IDENTITY_JOB_POSITION_0413 = createIdentity(JobPosition_0413.JOB_POSITION_0413, JobPosition_0413.JOB_POSITION_0413.ID);
+        public static Identity<JobPosition_1030Record, Integer> IDENTITY_JOB_POSITION_1030 = createIdentity(JobPosition_1030.JOB_POSITION_1030, JobPosition_1030.JOB_POSITION_1030.ID);
         public static Identity<JobPositionCcmailRecord, Integer> IDENTITY_JOB_POSITION_CCMAIL = createIdentity(JobPositionCcmail.JOB_POSITION_CCMAIL, JobPositionCcmail.JOB_POSITION_CCMAIL.ID);
         public static Identity<JobPositionShareTplConfRecord, Integer> IDENTITY_JOB_POSITION_SHARE_TPL_CONF = createIdentity(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
     }
@@ -120,9 +136,13 @@ public class Keys {
         public static final UniqueKey<JobPcRecommendPositionItemRecord> KEY_JOB_PC_RECOMMEND_POSITION_ITEM_PRIMARY = createUniqueKey(JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM, "KEY_job_pc_recommend_position_item_PRIMARY", JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM.ID);
         public static final UniqueKey<JobPcReportedRecord> KEY_JOB_PC_REPORTED_PRIMARY = createUniqueKey(JobPcReported.JOB_PC_REPORTED, "KEY_job_pc_reported_PRIMARY", JobPcReported.JOB_PC_REPORTED.ID);
         public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = createUniqueKey(JobPosition.JOB_POSITION, "KEY_job_position_PRIMARY", JobPosition.JOB_POSITION.ID);
+        public static final UniqueKey<JobPosition_0413Record> KEY_JOB_POSITION_0413_PRIMARY = createUniqueKey(JobPosition_0413.JOB_POSITION_0413, "KEY_job_position_0413_PRIMARY", JobPosition_0413.JOB_POSITION_0413.ID);
+        public static final UniqueKey<JobPosition_1030Record> KEY_JOB_POSITION_1030_PRIMARY = createUniqueKey(JobPosition_1030.JOB_POSITION_1030, "KEY_job_position_1030_PRIMARY", JobPosition_1030.JOB_POSITION_1030.ID);
         public static final UniqueKey<JobPositionCcmailRecord> KEY_JOB_POSITION_CCMAIL_PRIMARY = createUniqueKey(JobPositionCcmail.JOB_POSITION_CCMAIL, "KEY_job_position_ccmail_PRIMARY", JobPositionCcmail.JOB_POSITION_CCMAIL.ID);
         public static final UniqueKey<JobPositionCityRecord> KEY_JOB_POSITION_CITY_IDX_PID_CODE = createUniqueKey(JobPositionCity.JOB_POSITION_CITY, "KEY_job_position_city_IDX_pid_code", JobPositionCity.JOB_POSITION_CITY.PID, JobPositionCity.JOB_POSITION_CITY.CODE);
         public static final UniqueKey<JobPositionExtRecord> KEY_JOB_POSITION_EXT_PRIMARY = createUniqueKey(JobPositionExt.JOB_POSITION_EXT, "KEY_job_position_ext_PRIMARY", JobPositionExt.JOB_POSITION_EXT.PID);
+        public static final UniqueKey<JobPositionHrCompanyFeatureRecord> KEY_JOB_POSITION_HR_COMPANY_FEATURE_PID_FID = createUniqueKey(JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE, "KEY_job_position_hr_company_feature_pid_fid", JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE.PID, JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE.FID);
+        public static final UniqueKey<JobPositionProfileFilterRecord> KEY_JOB_POSITION_PROFILE_FILTER_PID_FID = createUniqueKey(JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER, "KEY_job_position_profile_filter_pid_fid", JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER.PID, JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER.PFID);
         public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = createUniqueKey(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, "KEY_job_position_share_tpl_conf_PRIMARY", JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
         public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = createUniqueKey(JobResumeOther.JOB_RESUME_OTHER, "KEY_job_resume_other_PRIMARY", JobResumeOther.JOB_RESUME_OTHER.APP_ID);
     }

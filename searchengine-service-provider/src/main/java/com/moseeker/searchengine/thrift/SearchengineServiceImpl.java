@@ -8,6 +8,9 @@ import com.moseeker.searchengine.service.impl.SearchengineService;
 import com.moseeker.searchengine.service.impl.TalentpoolSearchengine;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
+
+import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.thrift.TException;
@@ -132,6 +135,7 @@ public class SearchengineServiceImpl implements Iface {
 //			logger.info("+++++++++++++++++++");
 			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
 			if(res==null||res.isEmpty()){
+
 				return ResponseUtils.success("");
 			}
 			return ResponseUtils.success(res);
@@ -173,6 +177,72 @@ public class SearchengineServiceImpl implements Iface {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
 		}
 	}
+
+	@Override
+	public List<Integer> queryCompanyTagUserIdList(Map<String, String> params) throws TException {
+		try{
+			List<Integer> res=talentpoolSearchengine.getUserListByCompanyTag(params);
+			if(res==null){
+				return new ArrayList<>();
+			}
+			return res;
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+		}
+		return new ArrayList<>();
+	}
+
+    @Override
+    public Response queryProfileFilterUserIdList(List<Map<String, String>> filterMapList, int page_number, int page_size) throws TException {
+
+        try{
+            Map<String,Object> res=talentpoolSearchengine.getUserListByFilterIds(filterMapList, page_number, page_size);
+            if(res==null||res.isEmpty()){
+                return ResponseUtils.success("");
+            }
+            return ResponseUtils.success(res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+        }
+        return ResponseUtils.fail(1,"查询失败");
+    }
+
+	@Override
+	public List<Integer> getTalentUserIdList(Map<String, String> params) throws TException {
+		try{
+			return talentpoolSearchengine.getTalentUserList(params);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+		}
+		return new ArrayList<>();
+	}
+
+	@Override
+	public Response userQueryById(List<Integer> userIdlist) throws TException {
+		try{
+			Map<String,Object> res=talentpoolSearchengine.getEsDataByUserIds(userIdlist);
+			if(res==null||res.isEmpty()){
+				return ResponseUtils.success("");
+			}
+			return ResponseUtils.success(res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
+	@Override
+	public int talentSearchNum(Map<String, String> params) throws TException {
+		try{
+			int res=talentpoolSearchengine.talentSearchNum(params);
+			return res;
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+		}
+		return 0;
+	}
+
+
 
 
 }

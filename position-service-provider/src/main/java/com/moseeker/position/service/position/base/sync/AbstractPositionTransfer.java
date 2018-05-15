@@ -8,11 +8,13 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -30,8 +32,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
-public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
+public abstract class AbstractPositionTransfer<Form, R, Info, ExtP> {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
     protected FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
@@ -40,13 +43,16 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
     private JobPositionCityDao jobPositionCityDao;
 
     @Autowired
-    private DictCityMapDao cityMapDao;
+    protected DictCityMapDao cityMapDao;
 
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
 
     @Autowired
     private UserHrAccountDao userHrAccountDao;
+
+    @Autowired
+    private PositionQxService positionQxService;
 
     /**
      * 将仟寻职位转成第卅方职位
@@ -56,24 +62,24 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
      * @param account
      * @return
      */
-    public TransferResult changeToThirdPartyPosition(JSONObject jsonForm, JobPositionDO positionDB,HrThirdPartyAccountDO account) throws Exception{
-        logger.info("change To ThirdPartyPosition start : jsonForm : {},  positionDB : {}, account : {}",jsonForm,positionDB,account);
-        if(jsonForm==null || positionDB==null || account==null){
+    public TransferResult changeToThirdPartyPosition(JSONObject jsonForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
+        logger.info("change To ThirdPartyPosition start : jsonForm : {},  positionDB : {}, account : {}", jsonForm, positionDB, account);
+        if (jsonForm == null || positionDB == null || account == null) {
             logger.error("change To ThirdPartyPosition param empty");
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"change To ThirdPartyPosition param error");
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "change To ThirdPartyPosition param error");
         }
-        TransferResult result=new TransferResult();
+        TransferResult result = new TransferResult();
 
-        Form positionForm=parseJsonForm(jsonForm);
+        Form positionForm = parseJsonForm(jsonForm);
 
 
-        R positionWithAccount=changeToThirdPartyPosition(positionForm,positionDB,account);
+        R positionWithAccount = changeToThirdPartyPosition(positionForm, positionDB, account);
         logger.info("change To positionWithAccount {}", JSON.toJSONString(positionWithAccount));
 
-        HrThirdPartyPositionDO hrThirdPartyPositionDO=toThirdPartyPosition(positionForm,positionWithAccount);
+        HrThirdPartyPositionDO hrThirdPartyPositionDO = toThirdPartyPosition(positionForm, positionWithAccount);
         logger.info("change To hrThirdPartyPositionDO {}", JSON.toJSONString(hrThirdPartyPositionDO));
 
-        ExtP extPosition=toExtThirdPartyPosition(positionForm,positionWithAccount);
+        ExtP extPosition = toExtThirdPartyPosition(positionForm, positionWithAccount);
         logger.info("change To extPosition {}", JSON.toJSONString(extPosition));
 
         result.setPositionWithAccount(positionWithAccount);
@@ -86,45 +92,58 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
 
     /**
      * 根据json字符串转换成表单
+     *
      * @param json
      * @return
      * @throws BIZException
      */
     public Form parseJsonForm(JSONObject json) throws BIZException {
-        logger.info("parse json form json : {}",json);
+        logger.info("parse json form json : {}", json);
         try {
-            Form form= JSONObject.parseObject(json.toJSONString(),getFormClass());
-            logger.info("parse json form form : {}",JSON.toJSONString(form));
+            Form form = JSONObject.parseObject(json.toJSONString(), getFormClass());
+            logger.info("parse json form form : {}", JSON.toJSONString(form));
             return form;
-        }catch (Exception e){
-            logger.info("parse json form error : {}",json);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"parse json form error");
+        } catch (Exception e) {
+            logger.info("parse json form error : {}", json);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "parse json form error");
         }
     }
 
-    public List<String> toChaosJson(R r){
+    public List<String> toChaosJson(R r) {
         return Arrays.asList(JSON.toJSONString(r));
     }
 
 
-    /**========================抽象方法，让每个渠道去实现自己的逻辑========================*/
-    public abstract R changeToThirdPartyPosition(Form positionForm, JobPositionDO positionDB,HrThirdPartyAccountDO account) throws Exception;
+    /**
+     * ========================抽象方法，让每个渠道去实现自己的逻辑========================
+     */
+    public abstract R changeToThirdPartyPosition(Form positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception;
+
     //生成并且初始化需要同步的账号信息
-    protected abstract R createAndInitAccountInfo(Form positionForm, JobPositionDO positionDB,HrThirdPartyAccountDO account);
+    protected abstract R createAndInitAccountInfo(Form positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account);
+
     //生成并且初始化需要同步的职位信息
-    protected abstract Info createAndInitPositionInfo(Form positionForm, JobPositionDO positionDB) throws  Exception;
+    protected abstract Info createAndInitPositionInfo(Form positionForm, JobPositionDO positionDB) throws Exception;
+
     //获取渠道类型
     public abstract ChannelType getChannel();
+
     //获取前台表单对应类型class
     public abstract Class<Form> getFormClass();
+
     //转换成额外的第三方职位
-    public abstract HrThirdPartyPositionDO toThirdPartyPosition(Form form,R pwa);
-    public abstract ExtP toExtThirdPartyPosition(Form form,R r);
-    public abstract ExtP toExtThirdPartyPosition(Map<String,String> data);
-    public abstract JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition,ExtP extPosition);
+    public abstract HrThirdPartyPositionDO toThirdPartyPosition(Form form, R pwa);
+
+    public abstract ExtP toExtThirdPartyPosition(Form form, R r);
+
+    public abstract ExtP toExtThirdPartyPosition(Map<String, String> data);
+
+    public abstract JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, ExtP extPosition);
 
 
-    /**========================每个渠道共用的逻辑，当然也可以覆盖实现自己的逻辑========================*/
+    /**
+     * ========================每个渠道共用的逻辑，当然也可以覆盖实现自己的逻辑========================
+     */
     protected static int getSalaryBottom(int salaryBottom) {
         if (salaryBottom > 0) {
             return salaryBottom * 1000;
@@ -150,31 +169,26 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
     /**
      * 设置职位福利特色
      *
-     * @param feature  福利特色
+     * @param positionDB 仟寻职位
      */
-    protected static List<String> getFeature(String feature) {
-        if (StringUtils.isNotNullOrEmpty(feature)) {
-            String[] featureArray = feature.trim().split(",");
-            List<String> featureList = new ArrayList<>();
-            for (String featureElement : featureArray) {
-                if (!featureElement.trim().equals("")) {
-                    featureList.add(featureElement);
-                }
-            }
-            if (featureList.size() > 0) {
-                return featureList;
-            }
+    protected List<String> getFeature(JobPositionDO positionDB) {
+        List<HrCompanyFeature> features = positionQxService.getPositionFeature(positionDB.getId());
+        if (StringUtils.isEmptyList(features)) {
+            //爬虫需要即使数据库这个字段为空，也需要要一个空列表
+            return new ArrayList<>();
+        } else {
+            return features.stream().map(f -> f.getFeature()).collect(Collectors.toList());
         }
-        return Collections.emptyList();
     }
 
     /**
      * 合并职位责任和职位要求
+     *
      * @param accounTabilities 职位责任
-     * @param requirement 职位要求
+     * @param requirement      职位要求
      * @return
      */
-    protected static String getDescription(String accounTabilities, String requirement) {
+    protected String getDescription(String accounTabilities, String requirement) {
         StringBuffer descript = new StringBuffer();
         if (StringUtils.isNotNullOrEmpty(accounTabilities)) {
             descript.append(accounTabilities);
@@ -191,11 +205,12 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
 
     /**
      * 获取仟寻职位的发布城市对应的完整城市链
+     *
      * @param positionDB
      * @return
      */
     public List<List<String>> getCities(JobPositionDO positionDB) {
-        if(positionDB==null || positionDB.getId()==0){
+        if (positionDB == null || positionDB.getId() == 0) {
             return Collections.emptyList();
         }
 
@@ -220,10 +235,10 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
     }
 
     //初始化公司
-    public String getCompanyName(int publisher){
+    public String getCompanyName(int publisher) {
         HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(publisher);//获取发布者对应的公司，只返回一个
         if (subCompany != null) {
-            logger.info("初始化公司名称:{}",subCompany);
+            logger.info("初始化公司名称:{}", subCompany);
             return subCompany.getAbbreviation();
         } else {
             return "";
@@ -232,30 +247,32 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
 
     /**
      * 根据pattern格式补全
+     *
      * @param list
      * @param pattern 例如："00000"表示用0补全到5位
      * @return
      */
-    public List<List<String>> formateList(List<List<String>> list,String pattern){
-        if(list==null || list.isEmpty()){
+    public List<List<String>> formateList(List<List<String>> list, String pattern) {
+        if (list == null || list.isEmpty()) {
             return list;
         }
-        List<List<String>> result=new ArrayList<>();
-        for(List<String> o:list){
-            result.add(formateStr(o,pattern));
+        List<List<String>> result = new ArrayList<>();
+        for (List<String> o : list) {
+            result.add(formateStr(o, pattern));
         }
         return result;
     }
-    public List<String> formateStr(List<String> list,String pattern){
-        if(list==null || list.isEmpty()){
+
+    public List<String> formateStr(List<String> list, String pattern) {
+        if (list == null || list.isEmpty()) {
             return list;
         }
         DecimalFormat df = new DecimalFormat(pattern);
-        List<String> result=new ArrayList<>();
-        for(String s:list){
-            try{
+        List<String> result = new ArrayList<>();
+        for (String s : list) {
+            try {
                 result.add(df.format(Integer.valueOf(s)));
-            }catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 continue;
             }
         }
@@ -264,12 +281,13 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
 
     /**
      * 把moseeker职位的经验要求转换成int
+     *
      * @param e
      * @return
      * @throws BIZException
      */
     public int experienceToInt(String e) throws BIZException {
-        if(StringUtils.isNullOrEmpty(e)){
+        if (StringUtils.isNullOrEmpty(e)) {
             return 0;
         }
         //工作经验要求
@@ -279,22 +297,22 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
                 experience = Integer.valueOf(e.trim());
             }
         } catch (NumberFormatException exp) {
-            logger.info("transfer experience To Int error ："+e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"transfer experience To Int error ："+e);
+            logger.info("transfer experience To Int error ：" + e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "transfer experience To Int error ：" + e);
         }
 
         return experience;
     }
 
-    protected UserHrAccountDO getPublisherAccountInfo(JobPositionDO position){
-        if(position==null){
+    protected UserHrAccountDO getPublisherAccountInfo(JobPositionDO position) {
+        if (position == null) {
             return null;
         }
         return userHrAccountDao.getValidAccount(position.getPublisher());
     }
 
     protected String getEmail(JobPositionDO positionDB) throws Exception {
-        if(positionDB==null || positionDB.getId()==0){
+        if (positionDB == null || positionDB.getId() == 0) {
             return "";
         }
         String email = getConfigString("chaos.email");
@@ -307,7 +325,7 @@ public abstract class AbstractPositionTransfer<Form,R,Info,ExtP>{
         return configUtils.get(key, String.class);
     }
 
-    public static class TransferResult<R,ExtP>{
+    public static class TransferResult<R, ExtP> {
         private R positionWithAccount;
         private ExtP extPosition;
         private HrThirdPartyPositionDO thirdPartyPositionDO;

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 
-    private static final long serialVersionUID = -710121475;
+    private static final long serialVersionUID = -1660270051;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_hr_chat</code>
@@ -72,9 +72,9 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     public final TableField<HrWxHrChatRecord, Integer> PID = createField("pid", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_position.id");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者（websocket），1：HR （hr后台回复，或者sysplat 仟寻回复聚合号的求职者），2：chatbot （ 如果公司开启了 chatbot-compnany_conf.hr_chat， 请求chatbot后再回复就是2）
+     * The column <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)
      */
-    public final TableField<HrWxHrChatRecord, Byte> SPEAKER = createField("speaker", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "聊天的发起人，0：求职者（websocket），1：HR （hr后台回复，或者sysplat 仟寻回复聚合号的求职者），2：chatbot （ 如果公司开启了 chatbot-compnany_conf.hr_chat， 请求chatbot后再回复就是2）");
+    public final TableField<HrWxHrChatRecord, Byte> SPEAKER = createField("speaker", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.status</code>. 状态，0：有效，1：无效

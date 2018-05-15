@@ -1,5 +1,9 @@
 package com.moseeker.company.thrift;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
@@ -9,9 +13,13 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.CompanyPcService;
 import com.moseeker.entity.CompanyConfigEntity;
+import com.moseeker.entity.TalentPoolEmailEntity;
+import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.company.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -33,6 +41,12 @@ public class CompanyServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public CompanyServicesImpl(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
     @Autowired
     private CompanyService service;
 
@@ -42,7 +56,11 @@ public class CompanyServicesImpl implements Iface {
     private CompanyPcService companyPcService;
 
     public Response getAllCompanies(CommonQuery query) {
-       return service.getAllCompanies(query);
+        try{
+            return service.getAllCompanies(query);
+        }catch(Exception e){
+            return ResponseUtils.fail(e.getMessage());
+        }
     }
 
 	@Override
@@ -324,23 +342,26 @@ public class CompanyServicesImpl implements Iface {
         try{
             int result=service.getTalentPoolSwitch(hrId,companyId);
             Map<String,Object> map=new HashMap<>();
-            if(result==0){
-                map.put("open",false);
-                return ResponseUtils.success(map);
-            }
-            if(result==2){
+            if(result==-1){
                 return ResponseUtils.fail(1,"此账号不是此公司的账号");
             }
-            if(result==3){
+            if(result==-2){
                 return ResponseUtils.fail(1,"此公司无配置,联系客服人员");
             }
-            map.put("open",true);
+            if(result==-3){
+                return ResponseUtils.fail(1,"该公司不是付费公司，无法使用该功能");
+            }
+            map.put("open",result);
             return ResponseUtils.success(map);
-
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
+    }
+
+    @Override
+    public HrCompanyConfDO getCompanyConfById(int companyId) throws BIZException {
+        return service.getHrCompanyConfById(companyId);
     }
 
 
@@ -356,9 +377,136 @@ public class CompanyServicesImpl implements Iface {
     }
 
     @Override
-    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, int source) throws BIZException, TException {
+    public Response addHrAccountAndCompany(String companyName, String mobile, int wxuserId, String remoteIp, int source, int hr_source) throws BIZException, TException {
         try {
-            return service.addHrAccountAndCompany(companyName, mobile, wxuserId, remoteIp, (byte)source);
+            return service.addHrAccountAndCompany(companyName, mobile, wxuserId, remoteIp, (byte)source, (byte)hr_source);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response getFeatureById(int id) throws BIZException, TException {
+        try {
+            HrCompanyFeature hrCompanyFeature=service.getCompanyFeatureById(id);
+            if(hrCompanyFeature==null){
+                hrCompanyFeature=new HrCompanyFeature();
+            }
+            String result=JSON.toJSONString(hrCompanyFeature,serializeConfig);
+            return ResponseUtils.successWithoutStringify(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response getFeatureByCompanyId(int companyId) throws BIZException, TException {
+        try {
+            List<HrCompanyFeature> list=service.getCompanyFeatureByCompanyId(companyId);
+            if(StringUtils.isEmptyList(list)){
+                list=new ArrayList<>();
+            }
+            String result=JSON.toJSONString(list,serializeConfig);
+            return ResponseUtils.successWithoutStringify(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response updateCompanyFeature(HrCompanyFeatureDO data) throws BIZException, TException {
+        try {
+            int result= service.updateCompanyFeature(data);
+            return ResponseUtils.success(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response updateCompanyFeatures(List<HrCompanyFeatureDO> dataList) throws BIZException, TException {
+        try {
+            int result= service.updateCompanyFeatureList(dataList);
+            return ResponseUtils.success(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response addCompanyFeature(HrCompanyFeatureDO data) throws BIZException, TException {
+        try {
+            int result= service.addCompanyFeature(data);
+            return ResponseUtils.success(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response addCompanyFeatures(List<HrCompanyFeatureDO> dataList) throws BIZException, TException {
+        try {
+            int result= service.addCompanyFeatureList(dataList);
+            if(result>0){
+                return ResponseUtils.success(result);
+            }else{
+                return ResponseUtils.fail("福利特色最多只能有8个");
+            }
+
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response getCompanyFeatureIdList(List<Integer> dataList) throws BIZException, TException {
+        try {
+            List<HrCompanyFeature> list=service.getCompanyFeatureByIdList(dataList);
+            if(StringUtils.isEmptyList(list)){
+                list=new ArrayList<>();
+            }
+            String result=JSON.toJSONString(list,serializeConfig);
+            return ResponseUtils.successWithoutStringify(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response getWechatBySignature(String signature, int companyId) throws BIZException, TException {
+        HrWxWechatDO wechatDO = companyPcService.getHrWxWechatDOBySignature(signature, companyId);
+        return ResponseUtils.success(wechatDO);
+    }
+
+    @Override
+    public Response updateHrCompanyConfStatus(int status, int companyId) throws BIZException, TException {
+        try {
+            Response result= companyPcService.updateComapnyConfStatus(status, companyId);
+            return result;
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

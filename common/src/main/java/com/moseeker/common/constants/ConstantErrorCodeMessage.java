@@ -17,6 +17,7 @@ public final class ConstantErrorCodeMessage {
     public static final String VALIDATE_FAILED = "{'status':90014, 'message':'{MESSAGE}'}";
     public static final String PROGRAM_PARAM_NOTEXIST = "{'status':90015,'message':'参数不正确!'}";
     public static final String PROGRAM_CONFIG_INCOMPLETE = "{'status':90016,'message':'配置信息丢失!'}";
+    public static final String LOAD_CONFIG_ERROR = "{'status':91001,'message':'加载配置信息错误!'}";
 
     // 用户服务ERRCODE说明定义 1字头
     public static final String LOGIN_ACCOUNT_ILLEAGUE = "{'status':10010,'message':'用户名密码不匹配!'}";
@@ -37,6 +38,7 @@ public final class ConstantErrorCodeMessage {
     public static final String WEXIN_IS_SAME = "{'status':10025,'message':'该手机号码绑定的微信和之前微信一样，不需要重新绑定！'}";
     public static final String WEXIN_IS_INVALID = "{'status':10026,'message':'unionid 有误'}";
     public static final String MOBILE_WECHAT_IS_INVALID = "{'status':10027,'message':'该手机号码或微信账号已经注册'}";
+    public static final String HRCOMPANY_CONF_NOTEXIST = "{'status':10028,'message':'公司配置不存在!'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 
@@ -73,8 +75,20 @@ public final class ConstantErrorCodeMessage {
     public static final String CRAWLER_SERVICE_IMPORT_UPPER_LIMIT = "{'status':32008,'message':'导入次数过多!'}";
     public static final String CRAWLER_RESUME_EMPTY = "{'status':32009,'message':'简历导入失败，请重新尝试!'}";
     public static final String CRAWLER_SERVICE_PROFILE_EMPTY = "{'status':32010,'message':'简历为空'}";
-
+    //talentpool
+    public static final String COMPANY_STATUS_NOT_AUTHORITY = "{'status':34001,'message':'免费公司没有权限'}";
+    public static final String COMPANY_CONF_TALENTPOOL_NOT = "{'status':34002,'message':'该公司还没有开启智能人才库'}";
+    public static final String HR_NOT_IN_COMPANY = "{'status':34003,'message':'该hr不属于该company_id'}";
+    public static final String TALENT_POOL_ACCOUNT_STATUS = "{'status':34005,'message':'子账号没有操作权限'}";
+    public static final String COMPANY_NOT_MU = "{'status':34006,'message':'company_id不为母公司编号'}";
     public static final String COMPANY_SUPER_REPEART_NAME = "{'status':33001, 'message':'和超级账号重名'}";
+    public static final String TALENTPOOL_EMAIL_BALANCE = "{'status':34007, 'message':'邮件的额度不足'}";
+    public static final String TALENTPOOL_EMAIL_NOUSEREMPLOYEE = "{'status':34008, 'message':'没有选中收件的员工'}";
+    public static final String TALENTPOOL_EMAIL_NOCONFIGEMAIL = "{'status':34009, 'message':'该企业没有配置邮件'}";
+    public static final String TALENTPOOL_EMAIL_NOUSERPROFILE = "{'status':34010, 'message':'没有符合条件的简历'}";
+    public static final String EMAIL_SWITCH_FAILED = "{'status':34011,'message':'手动触发，开关不能关闭!'}";
+    public static final String EMAIL_CONTEXT_FAILED = "{'status':34012,'message':'正文内容含有敏感词或超过1000个字!'}";
+    public static final String EMAIL_INSCRIBE_FAILED = "{'status':34012,'message':'落款含有敏感词或超过50个字!'}";
 
     // 申请服务ERRCODE说明定义 4字头
     public static final String APPLICATION_VALIDATE_COUNT_CHECK = "{'status':41001,'message':'本月您已达到投递次数上限!'}";
@@ -108,6 +122,7 @@ public final class ConstantErrorCodeMessage {
     public static final String SUBACCOUNT_REBIND_ERROR ="{'status':42020,'message':'子账号不能重新绑定第三方账号!'}";
     public static final String DEL_STATUS_ERROR ="{'status':42021,'message':'第三方账号状态错误，无法删除!'}";
     public static final String DEL_NO_AUTHORIZED ="{'status':42022,'message':'删除第三方账号失败，这个HR没有操作这个账号权限!'}";
+    public static final String THIRD_PARTY_ACCOUNT_NOT_EXIST="{'status':43001,'message':'第三方账号不存在！'}";
 
     //Position服务提示信息说明
     public static final String POSITION_NODELETE_BLANK = "{'status':51001,'message':'参数nodelete不能为空！'}";
@@ -133,7 +148,16 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_ALREADY_BANNED = "{'status':51022,'message':'该职位已撤下!'}";
     public static final String POSITION_PUBLISHER_NOT_EXIST = "{'status':51023,'message':'发布者不存在'}";
     public static final String SOURCE_ERROR = "{'status':51024,'message':'来源错误！'}";
+    public static final String FEATURE_MUST_EXISTS="{'status':52003,'message':'福利特色不存在！'}";
+    public static final String REQUEST_SCRAPER_CONNECTION_ERROR="{'status':52001,'message':'访问scraper连接错误！'}";
+    public static final String REQUEST_SCRAPER_URL_NOT_EXIST="{'status':52002,'message':'scraper服务URL不存在！'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
+
+    public static final String POSITION_TITLE_NOT_EMPTY="{'status':52003,'message':'职位标题不能为空!'}";
+    public static final String POSITION_ACCOUNTABILITIES_NOT_EMPTY="{'status':52004,'message':'职位描述不能为空!'}";
+    public static final String POSITION_REQUIREMENT_NOT_EMPTY="{'status':52005,'message':'任职条件不能为空!'}";
+    public static final String POSITION_CITY_NOT_EMPTY="{'status':52006,'message':'工作地点不能为空!'}";
+
 
     //职位同步
     public static final String POSITION_SYNC_VERIFY_TIMEOUT = "{'status':61001,'message':'验证已超时，职位同步失败'}";
@@ -146,9 +170,24 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_SYNC_EMPTY_MOBILE_CODE = "{'status':61008,'message':'验证处理--验证码为空'}";
     public static final String POSITION_SYNC_NOT_FIND_THIRD_PARTY_POSITION = "{'status':61009,'message':'找不到第三方职位同步信息'}";
     public static final String POSITION_SYNC_INFO_SENDED = "{'status':61010,'message':'验证信息发送成功'}";
+    public static final String WRONG_SYNC_CHANNEL = "{'status':61011,'message':'第三方渠道不存在！'}";
+    public static final String SUB_COMPANY_CANT_CONF_CHANNEL = "{'status':61012,'message':'不能给子公司配置同步渠道！'}";
+    public static final String ONLY_PAY_COMPANY_CAN_CONF_CHANNEL = "{'status':61015,'message':'只能给付费公司配置同步渠道！'}";
+
+    public static final String NO_AUTH_IMPORT_VERYEAST_PROFILE = "{'status':61016,'message':'该公司没有导入最佳东方简历的权限！'}";
+
+
     //mq服务提示信息说明
     public static final String MQ_TEMPLATE_NOTICE_CLOSE = "{'status':71001,'message':'模板消息开关关闭！'}";
     public static final String MQ_WECHAT_NOT_INFO = "{'status':71001,'message':'公众号信息不存在！'}";
+    public static final String THIRD_PARTY_CHANNEL_NOT_EXIST = "{'status':61011,'message':'第三方渠道不存在！'}";
+
+
+    //IM服务
+    public static final String CHAT_ROOM_NOT_EXIST = "{'status':91001,'message':'聊天室不存在！'}";
+    public static final String CANT_SET_LEAVE_TO_MOBOT = "{'status':91002,'message':'尚未采购该功能，详情请联系您的客户成功顾问。'}";
+    public static final String NO_AUTH_SET_LEAVE_TO_MOBOT = "{'status':91002,'message':'子账号没有权限设置该功能。'}";
+
 
     //APPBS错误代码61000
 
