@@ -336,7 +336,7 @@ public class TalentpoolSearchengine {
         list.add("user.peofiles.recent_job.job");
         list.add("user.peofiles.other_workexps.job");
         if(StringUtils.isNotNullOrEmpty(keyWord)){
-            searchUtil.handleKeyWordforQueryString(keyWord,false,query,list);
+            searchUtil.shouldMatchQuery(list,keyWord,query);
         }
         this.searchPastCommon(searchPast,query);
         this.existsPast(list,query);
@@ -353,7 +353,7 @@ public class TalentpoolSearchengine {
         list.add("user.peofiles.recent_job.company_name");
         list.add("user.peofiles.other_workexps.company_name");
         if(StringUtils.isNotNullOrEmpty(keyWord)){
-            searchUtil.handleKeyWordforQueryString(keyWord,false,query,list);
+            searchUtil.shouldMatchQuery(list,keyWord,query);
         }
         this.searchPastCommon(searchPast,query);
         this.existsPast(list,query);
