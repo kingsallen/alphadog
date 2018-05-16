@@ -976,7 +976,6 @@ public class TalentpoolSearchengine {
     }
 
     private void queryApplications(Map<String,String> params,QueryBuilder query){
-
         String publisherIds = params.get("publisher");
         String candidateSource = params.get("candidate_source");
         String recommend = params.get("is_recommend");
@@ -986,6 +985,7 @@ public class TalentpoolSearchengine {
         String positionIds = params.get("position_id");
         String companyId = params.get("company_id");
         String positionWord=params.get("position_key_word");
+        String positionStatus=params.get("position_status");
         if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord)) {
             String tagIds=params.get("tag_ids");
             String company_tag=params.get("company_tag");
@@ -1013,6 +1013,11 @@ public class TalentpoolSearchengine {
             }
             if(StringUtils.isNotNullOrEmpty(positionIds)){
                 this.queryByPositionId(positionIds, query);
+            }
+            if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
+                this.queryByPositionIdStatus(positionStatus,query);
+            }else{
+                this.queryByPositionIdStatus(query);
             }
         }
 
@@ -1070,7 +1075,7 @@ public class TalentpoolSearchengine {
         suggetParams.put("page_size",Integer.MAX_VALUE+"");
         suggetParams.put("return_params","title,id");
         String status=params.get("position_status");
-        if(StringUtils.isNotNullOrEmpty(status)){
+        if(StringUtils.isNotNullOrEmpty(status)&&!"-1".equals(status)){
             suggetParams.put("flag","0");
         }else{
             suggetParams.put("flag","1");
@@ -1161,6 +1166,11 @@ public class TalentpoolSearchengine {
                     sb.append("val.publisher in "+publisherIdList.toString()+"&&");
                 }
             }
+        }
+        if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
+            sb.append("val.status=="+positionStatus+"&&");
+        }else{
+            sb.append("(val.status==0||val.status=2)&&");
         }
         if(StringUtils.isNotNullOrEmpty(companyId)){
             sb.append("val.company_id=="+companyId+"&&");
@@ -1335,6 +1345,14 @@ public class TalentpoolSearchengine {
      */
     private void queryByPositionId(String positionIds,QueryBuilder queryBuilder ){
         searchUtil.handleTerms(positionIds,queryBuilder,"user.applications.position_id");
+    }
+
+    private void queryByPositionIdStatus(String status,QueryBuilder queryBuilder ){
+        searchUtil.handleTerms(status,queryBuilder,"user.applications.status");
+    }
+
+    private void queryByPositionIdStatus(QueryBuilder queryBuilder ){
+        searchUtil.handleTerms("0,2",queryBuilder,"user.applications.status");
     }
 
     /*
