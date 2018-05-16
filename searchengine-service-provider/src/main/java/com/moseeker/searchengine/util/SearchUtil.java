@@ -593,6 +593,20 @@ public class SearchUtil {
         }
         return null;
     }
+    //将list格式的字符串转化为xx,xx,xx
+    public String listConvertString(List<Integer> positionIdList) {
+        if (positionIdList!=null&&positionIdList.size()>0) {
+            String positionIds="";
+            for(Integer id:positionIdList){
+                positionIds+=id+",";
+            }
+            if(StringUtils.isNotBlank(positionIds)){
+                positionIds=positionIds.substring(0,positionIds.lastIndexOf(","));
+            }
+            return positionIds;
+        }
+        return null;
+    }
     /*
      处理工作年龄数据的查询语句
      */
@@ -738,17 +752,6 @@ public class SearchUtil {
         if(tagIdList != null && tagIdList.size() >0){
             QueryBuilder query2=QueryBuilders.termsQuery("user.company_tag.id",tagIdList);
             ((BoolQueryBuilder) builder).must(query2);
-//            if(tagIdList.size()==1){
-//                handleMatch(Integer.parseInt(tagIdList.get(0)),builder,"user.talent_pool.company_tags.id");
-//            }else{
-//                QueryBuilder keyand = QueryBuilders.boolQuery();
-//                if(tagIdList.size()>0){
-//                    QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.company_tags.id",tagIdList);
-//                    ((BoolQueryBuilder) keyand).should(query2);
-//                }
-//                ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
-//                ((BoolQueryBuilder) builder).must(keyand);
-//            }
         }
     }
 

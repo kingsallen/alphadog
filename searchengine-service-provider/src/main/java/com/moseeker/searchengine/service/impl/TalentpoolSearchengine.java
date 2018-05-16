@@ -11,6 +11,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.searchengine.domain.PastPOJO;
 import com.moseeker.searchengine.domain.SearchPast;
+import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -43,7 +44,8 @@ public class TalentpoolSearchengine {
     private SearchUtil searchUtil;
     @Autowired
     private UserHrAccountDao userHrAccountDao;
-
+    @Autowired
+    private SearchMethodUtil searchMethodUtil;
 
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params) {
@@ -659,13 +661,13 @@ public class TalentpoolSearchengine {
         return query;
     }
 
-
     /*
      组装查询语句
      */
     public QueryBuilder query(Map<String,String> params){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        this.handlerPositionId(params);
         this.queryCommons(params,query);
         this.queryProfiles(params,query);
         this.queryApplications(params,query);
@@ -826,15 +828,9 @@ public class TalentpoolSearchengine {
         String pastPosition=params.get("past_position");
         String intentionCity=params.get("intention_city_name");
         String companyTag=params.get("company_tag");
-
-        if(
-                StringUtils.isNotNullOrEmpty(keyword)||
-                        StringUtils.isNotNullOrEmpty(cityName)||
-                        StringUtils.isNotNullOrEmpty(companyName)||
-                        StringUtils.isNotNullOrEmpty(pastPosition)||
-                        StringUtils.isNotNullOrEmpty(intentionCity)||
-                        StringUtils.isNotNullOrEmpty(companyTag)
-                ){
+        String pastPositionKeyWord=params.get("past_position_key_word");
+        String pastCompanyKeyWord=params.get("past_company_key_word");
+        if(this.validateCommon(keyword,cityName,companyName,pastPosition,intentionCity,companyTag,pastPositionKeyWord,pastCompanyKeyWord) ){
             if(StringUtils.isNotNullOrEmpty(intentionCity)){
                 if(!intentionCity.contains("全国")){
                     intentionCity=intentionCity+",全国";
@@ -844,33 +840,78 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(keyword)){
                 this.queryByKeyWord(keyword,query);
             }
-            if(StringUtils.isNotNullOrEmpty(cityName)){
-                if(!cityName.contains("全国")){
-                    cityName=cityName+",全国";
-                }
-                this.queryByHome(cityName,query);
+            this.homeQuery(cityName,query);
+            String lastCompany=params.get("in_last_job_search_company");
+            this.pastCompanyQuery(lastCompany,companyName,pastCompanyKeyWord,query);
+            String lastPosition=params.get("in_last_job_search_position");
+            this.pastPositionQuery(lastPosition,pastPosition,pastPositionKeyWord,query);
+            if(StringUtils.isNotNullOrEmpty(companyTag)){
+                this.queryByCompanyTag(companyTag,query);
             }
+        }
+
+    }
+    /*
+     判断是否继续执行查询操作
+     */
+    private boolean validateCommon(String keyword,String cityName,String companyName,String pastPosition,String intentionCity,String companyTag,
+                                   String pastPositionKeyWord,String pastCompanyKeyWord){
+        return StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(cityName)||
+                StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition)||
+                StringUtils.isNotNullOrEmpty(intentionCity)||StringUtils.isNotNullOrEmpty(companyTag)||
+                StringUtils.isNotNullOrEmpty(pastPositionKeyWord)||StringUtils.isNotNullOrEmpty(pastCompanyKeyWord);
+    }
+    /*
+     处理现居住地
+     */
+    private void homeQuery(String cityName,QueryBuilder query){
+        if(StringUtils.isNotNullOrEmpty(cityName)){
+            if(!cityName.contains("全国")){
+                cityName=cityName+",全国";
+            }
+            this.queryByHome(cityName,query);
+        }
+    }
+    /*
+     查询曾任职位
+     */
+    private void pastCompanyQuery(String lastCompany,String companyName,String pastCompanyKeyWord,QueryBuilder query){
+        if(StringUtils.isNotNullOrEmpty(pastCompanyKeyWord)){
+            if(StringUtils.isNotNullOrEmpty(lastCompany)&&"1".equals(lastCompany)){
+                this.queryByLastCompany(pastCompanyKeyWord,query);
+            }else {
+                this.queryByCompany(pastCompanyKeyWord, query);
+            }
+        }else{
             if(StringUtils.isNotNullOrEmpty(companyName)){
-                String lastCompany=params.get("in_last_job_search_company");
+
                 if(StringUtils.isNotNullOrEmpty(lastCompany)&&"1".equals(lastCompany)){
                     this.queryByLastCompany(companyName,query);
                 }else {
                     this.queryByCompany(companyName, query);
                 }
             }
+        }
+    }
+    /*
+    处理曾任职位
+     */
+    private void pastPositionQuery(String lastPosition,String pastPosition,String pastPositionKeyWord,QueryBuilder query ){
+        if(StringUtils.isNotNullOrEmpty(pastPositionKeyWord)){
+            if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
+                this.queryByLastPositions(pastPositionKeyWord,query);
+            }else{
+                this.queryByWorkJob(pastPositionKeyWord,query);
+            }
+        }else{
             if(StringUtils.isNotNullOrEmpty(pastPosition)){
-                String lastPosition=params.get("in_last_job_search_position");
                 if(StringUtils.isNotNullOrEmpty(lastPosition)&&"1".equals(lastPosition)){
                     this.queryByLastPositions(pastPosition,query);
                 }else{
                     this.queryByWorkJob(pastPosition,query);
                 }
             }
-            if(StringUtils.isNotNullOrEmpty(companyTag)){
-                this.queryByCompanyTag(companyTag,query);
-            }
         }
-
     }
     /*
      组装简历部分查询条件
@@ -936,10 +977,8 @@ public class TalentpoolSearchengine {
         String progressStatus = params.get("progress_status");
         String positionIds = params.get("position_id");
         String companyId = params.get("company_id");
-        if ( StringUtils.isNotNullOrEmpty(publisherIds) || StringUtils.isNotNullOrEmpty(candidateSource) || StringUtils.isNotNullOrEmpty(recommend) ||
-                StringUtils.isNotNullOrEmpty(origins) || StringUtils.isNotNullOrEmpty(submitTime) ||
-                StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)
-                ) {
+        String positionWord=params.get("position_key_word");
+        if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord)) {
             String tagIds=params.get("tag_ids");
             String company_tag=params.get("company_tag");
             String favoriteHrs=params.get("favorite_hrs");
@@ -949,7 +988,6 @@ public class TalentpoolSearchengine {
                     this.queryByPublisher(publisherIds, query);
                 }
             }
-
             if (StringUtils.isNotNullOrEmpty(candidateSource)) {
                 this.queryByCandidateSource(Integer.parseInt(candidateSource), query);
             }
@@ -963,14 +1001,82 @@ public class TalentpoolSearchengine {
                 this.queryByProgress(Integer.parseInt(progressStatus), query);
             }
             if (StringUtils.isNotNullOrEmpty(origins)) {
-
                 this.queryByOrigin(origins, companyId, query);
             }
-            if (StringUtils.isNotNullOrEmpty(positionIds)) {
+            if(StringUtils.isNotNullOrEmpty(positionIds)){
                 this.queryByPositionId(positionIds, query);
             }
         }
 
+    }
+    /*
+     处理职位id,这里改变了参数
+     */
+    private void handlerPositionId(Map<String,String> params){
+        String positionWord=params.get("position_key_word");
+        if(StringUtils.isNotNullOrEmpty(positionWord)){
+            String positionIds=this.PositionIdQuery(params,positionWord);
+            if(StringUtils.isNotNullOrEmpty(positionIds)){
+                params.put("position_id",positionIds);
+            }
+        }
+    }
+    /*
+     处理职位
+     */
+    private String PositionIdQuery(Map<String,String> params,String positionWord){
+        if(StringUtils.isNotNullOrEmpty(positionWord)){
+            Map<String,String> suggetParams=this.convertParams(params);
+            Map<String,Object> result=searchMethodUtil.suggestPosition(suggetParams);
+            List<Integer> positionIdList=this.getSuggestPositionId(result);
+            String positionIds=searchUtil.listConvertString(positionIdList);
+            return positionIds;
+        }
+        return null;
+    }
+    /*
+     获取positionId的列表
+     */
+    private List<Integer> getSuggestPositionId(Map<String,Object> result){
+        List<Integer> positionIdList=new ArrayList<>();
+        if(!StringUtils.isEmptyMap(result)){
+            List<Map<String,Object>> positionList= (List<Map<String, Object>>) result.get("suggest");
+            if(!StringUtils.isEmptyList(positionList)){
+                for(Map<String,Object> position:positionList){
+                    int positionId= (int) position.get("id");
+                    positionIdList.add(positionId);
+                }
+            }
+        }
+        return positionIdList;
+    }
+    /*
+     组装参数
+     */
+    private Map<String,String> convertParams(Map<String,String> params){
+        Map<String,String> suggetParams=new HashMap<>();
+        suggetParams.put("keyWord",params.get("position_key_word"));
+        suggetParams.put("company_id",params.get("company_id"));
+        suggetParams.put("publisher",params.get("publisher"));
+        suggetParams.put("page_from","1");
+        suggetParams.put("page_size",Integer.MAX_VALUE+"");
+        suggetParams.put("return_params","title,id");
+        String status=params.get("position_status");
+        if(StringUtils.isNotNullOrEmpty(status)){
+            suggetParams.put("flag","0");
+        }else{
+            suggetParams.put("flag","1");
+        }
+        return suggetParams;
+    }
+    /*
+     校验是否向下执行
+     */
+    private boolean validateApplication(String publisherIds,String candidateSource,String recommend,String origins,String submitTime,
+                                        String progressStatus,String positionIds,String positionWord){
+        return StringUtils.isNotNullOrEmpty(publisherIds) || StringUtils.isNotNullOrEmpty(candidateSource) || StringUtils.isNotNullOrEmpty(recommend) ||
+                StringUtils.isNotNullOrEmpty(origins) || StringUtils.isNotNullOrEmpty(submitTime) ||
+                StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds);
     }
 
     /*
