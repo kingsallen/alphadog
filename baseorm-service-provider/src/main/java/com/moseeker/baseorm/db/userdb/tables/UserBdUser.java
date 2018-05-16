@@ -156,6 +156,7 @@ public class UserBdUser extends TableImpl<UserBdUserRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserBdUser rename(String name) {
         return new UserBdUser(name, null);
     }

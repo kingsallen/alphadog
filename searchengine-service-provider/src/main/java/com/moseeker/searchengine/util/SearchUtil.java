@@ -264,10 +264,6 @@ public class SearchUtil {
     				sb.append(words[i]+" or ");
     			}
     		}
-//    		if(words.length>1){
-//                sb.deleteCharAt(sb.lastIndexOf("r"));
-//                sb.deleteCharAt(sb.lastIndexOf("o"));
-//            }
     		String condition=sb.toString();
     		QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
     		for(String field:list){
@@ -521,7 +517,6 @@ public class SearchUtil {
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(keyand);
         }
-
     }
     public void shouldMatchQuery(Map<String, Object> map, QueryBuilder query){
         if (map != null && !map.isEmpty()) {
@@ -529,6 +524,17 @@ public class SearchUtil {
             for (String key : map.keySet()) {
                 String list=(String)map.get(key);
                 QueryBuilder fullf = QueryBuilders.matchQuery(key, list);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+    public void shouldExistsQuery(List<String> list, QueryBuilder query){
+        if (list!=null&&list.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String key : list) {
+                QueryBuilder fullf = QueryBuilders.existsQuery(key);
                 ((BoolQueryBuilder) keyand).should(fullf);
             }
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
@@ -584,6 +590,20 @@ public class SearchUtil {
                 list.add(ss);
             }
             return list;
+        }
+        return null;
+    }
+    //将list格式的字符串转化为xx,xx,xx
+    public String listConvertString(List<Integer> positionIdList) {
+        if (positionIdList!=null&&positionIdList.size()>0) {
+            String positionIds="";
+            for(Integer id:positionIdList){
+                positionIds+=id+",";
+            }
+            if(StringUtils.isNotBlank(positionIds)){
+                positionIds=positionIds.substring(0,positionIds.lastIndexOf(","));
+            }
+            return positionIds;
         }
         return null;
     }
@@ -732,17 +752,6 @@ public class SearchUtil {
         if(tagIdList != null && tagIdList.size() >0){
             QueryBuilder query2=QueryBuilders.termsQuery("user.company_tag.id",tagIdList);
             ((BoolQueryBuilder) builder).must(query2);
-//            if(tagIdList.size()==1){
-//                handleMatch(Integer.parseInt(tagIdList.get(0)),builder,"user.talent_pool.company_tags.id");
-//            }else{
-//                QueryBuilder keyand = QueryBuilders.boolQuery();
-//                if(tagIdList.size()>0){
-//                    QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.company_tags.id",tagIdList);
-//                    ((BoolQueryBuilder) keyand).should(query2);
-//                }
-//                ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
-//                ((BoolQueryBuilder) builder).must(keyand);
-//            }
         }
     }
 

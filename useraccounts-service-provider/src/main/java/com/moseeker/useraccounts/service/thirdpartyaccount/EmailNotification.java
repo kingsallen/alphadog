@@ -72,7 +72,7 @@ public class EmailNotification {
         HrCompanyDO company = companyDao.getCompanyById(thirdPartyAccount.getCompanyId());
 
         if (mails == null || mails.size() == 0) {
-            logger.error("没有配置同步邮箱地址!");
+            logger.warn("没有配置同步邮箱地址!");
             return;
         }
 
@@ -131,7 +131,7 @@ public class EmailNotification {
 
     public void sendThirdPartyAccountExtHandlerFailureMail(List<String> mails, HrThirdPartyAccountDO accountDO, String message, HrCompanyDO company) {
         if (mails == null || mails.size() == 0) {
-            logger.error("没有配置同步邮箱地址!");
+            logger.warn("没有配置同步邮箱地址!");
             return;
         }
         try {
@@ -185,7 +185,7 @@ public class EmailNotification {
 
     public void sendFailureMail(List<String> mails, HrThirdPartyAccountDO thirdPartyAccount) {
         if (mails == null || mails.size() == 0) {
-            logger.error("没有配置同步邮箱地址!");
+            logger.warn("没有配置同步邮箱地址!");
             return;
         }
         try {

@@ -161,8 +161,11 @@ struct SearchCondition {
    26: string tag_id,//标签id
    27: string favorite_hrs,//收藏人id
    28: string city_code,//现居住地城市code
-   29: string intention_city_code//期望城市,
-   30: optional i32 position_status
+   29: string intention_city_code,//期望城市
+   30: string position_status,//职位状态
+   31: string position_key_word,//职位关键字
+   32: string past_position_key_word,//曾任职位的关键字
+   33: string past_company_key_word// 曾任公司的关键字
 
 }
 
