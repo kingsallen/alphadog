@@ -282,7 +282,7 @@ public class SearchengineServiceImpl implements Iface {
 	public Response searchpastCompany(Map<String, String> params) throws BIZException, TException {
 		try{
 			SearchPast searchPast=this.convertParams(params);
-			PastPOJO result=talentpoolSearchengine.searchPastPosition(searchPast);
+			PastPOJO result=talentpoolSearchengine.searchPastCompany(searchPast);
 			Response res=ResponseUtils.success(result);
 			return res;
 		}catch(Exception e){

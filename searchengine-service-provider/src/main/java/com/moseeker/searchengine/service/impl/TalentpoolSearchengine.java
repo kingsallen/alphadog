@@ -253,7 +253,7 @@ public class TalentpoolSearchengine {
             String pageSize=searchPast.getPageSize();
             QueryBuilder query = this.handlerProfilePastPosition(searchPast);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
-            String[] returnParams={"user.peofiles.recent_job.job","user.peofiles.other_workexps.job"};
+            String[] returnParams={"user.profiles.recent_job.job","user.profiles.other_workexps.job"};
             builder.setFetchSource(returnParams,null);
             builder.setSize(this.handlePageSize(pageSize));
             builder.setFrom(this.handlePageFrom(pageNum,pageSize));
@@ -280,7 +280,7 @@ public class TalentpoolSearchengine {
              String pageSize=searchPast.getPageSize();
              QueryBuilder query = this.handlerProfilePastCompany(searchPast);
              SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
-             String[] returnParams={"user.peofiles.recent_job.company_name","user.peofiles.other_workexps.company_name"};
+             String[] returnParams={"user.profiles.recent_job.company_name","user.profiles.other_workexps.company_name"};
              builder.setFetchSource(returnParams,null);
              builder.setSize(this.handlePageSize(pageSize));
              builder.setFrom(this.handlePageFrom(pageNum,pageSize));
@@ -335,8 +335,8 @@ public class TalentpoolSearchengine {
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         String keyWord=searchPast.getKeyword();
         List<String> list=new ArrayList<>();
-        list.add("user.peofiles.recent_job.job");
-        list.add("user.peofiles.other_workexps.job");
+        list.add("user.profiles.recent_job.job");
+        list.add("user.profiles.other_workexps.job");
         if(StringUtils.isNotNullOrEmpty(keyWord)){
             searchUtil.shouldMatchQuery(list,keyWord,query);
         }
@@ -352,8 +352,8 @@ public class TalentpoolSearchengine {
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         String keyWord=searchPast.getKeyword();
         List<String> list=new ArrayList<>();
-        list.add("user.peofiles.recent_job.company_name");
-        list.add("user.peofiles.other_workexps.company_name");
+        list.add("user.profiles.recent_job.company_name");
+        list.add("user.profiles.other_workexps.company_name");
         if(StringUtils.isNotNullOrEmpty(keyWord)){
             searchUtil.shouldMatchQuery(list,keyWord,query);
         }
