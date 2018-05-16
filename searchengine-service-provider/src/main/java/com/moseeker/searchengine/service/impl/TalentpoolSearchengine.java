@@ -418,7 +418,13 @@ public class TalentpoolSearchengine {
                     Map<String, Object> profiles = (Map<String, Object>) user.get("profiles");
                     if (!StringUtils.isEmptyMap(profiles)) {
                         Map<String, Object> recentJob = (Map<String, Object>) profiles.get("recent_job");
+                        logger.info("==================recentJob============================");
+                        logger.info(JSON.toJSONString(recentJob));
+                        logger.info("=======================================================");
                         List<Map<String, Object>> workExpsList = (List<Map<String, Object>>) profiles.get("other_workexps");
+                        logger.info("==================workExpsList============================");
+                        logger.info(JSON.toJSONString(workExpsList));
+                        logger.info("=======================================================");
                         if (flag == 1) {//处理pastPosition
                             this.convertJobList(recentJob,workExpsList,list);
                         } else {
@@ -436,6 +442,9 @@ public class TalentpoolSearchengine {
     private void convertJobList(Map<String,Object> recentJob,List<Map<String,Object>>workExpsList,List<String> list){
         if (!StringUtils.isEmptyMap(recentJob)) {
             String job = (String) recentJob.get("job");
+            logger.info("=====================job==================================");
+            logger.info(job);
+            logger.info("=======================================================");
             if (!list.contains(job)) {
                 list.add(job);
             }
@@ -443,6 +452,9 @@ public class TalentpoolSearchengine {
         if (!StringUtils.isEmptyList(workExpsList)) {
             for (Map<String, Object> workExp : workExpsList) {
                 String workJob = (String) workExp.get("job");
+                logger.info("=====================workJob==================================");
+                logger.info(workJob);
+                logger.info("=======================================================");
                 if (!list.contains(workJob)) {
                     list.add(workJob);
                 }
