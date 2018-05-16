@@ -417,7 +417,7 @@ public class TalentpoolSearchengine {
                         logger.info("==================workExpsList============================");
                         logger.info(JSON.toJSONString(workExpsList));
                         logger.info("=======================================================");
-                        if (flag == 1) {//处理pastPosition
+                        if (flag == 0) {//处理pastPosition
                             this.convertJobList(recentJob,workExpsList,list);
                         } else {
                             this.convertCompanyList(recentJob,workExpsList,list);
