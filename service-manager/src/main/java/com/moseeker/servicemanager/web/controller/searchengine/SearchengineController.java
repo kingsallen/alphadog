@@ -404,7 +404,7 @@ public class SearchengineController {
             for(String key:reqParams.keySet()){
                 params.put(key,StringUtils.filterStringForSearch(String.valueOf(reqParams.get(key))));
             }
-            Response res=searchengineServices.searchPositionSuggest(params);
+            Response res=searchengineServices.searchpastPosition(params);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
@@ -424,7 +424,7 @@ public class SearchengineController {
             for(String key:reqParams.keySet()){
                 params.put(key,StringUtils.filterStringForSearch(String.valueOf(reqParams.get(key))));
             }
-            Response res=searchengineServices.searchPositionSuggest(params);
+            Response res=searchengineServices.searchpastCompany(params);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
             logger.info(e.getMessage(),e);

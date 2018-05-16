@@ -264,10 +264,6 @@ public class SearchUtil {
     				sb.append(words[i]+" or ");
     			}
     		}
-//    		if(words.length>1){
-//                sb.deleteCharAt(sb.lastIndexOf("r"));
-//                sb.deleteCharAt(sb.lastIndexOf("o"));
-//            }
     		String condition=sb.toString();
     		QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
     		for(String field:list){
@@ -521,7 +517,6 @@ public class SearchUtil {
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(keyand);
         }
-
     }
     public void shouldMatchQuery(Map<String, Object> map, QueryBuilder query){
         if (map != null && !map.isEmpty()) {
@@ -529,6 +524,17 @@ public class SearchUtil {
             for (String key : map.keySet()) {
                 String list=(String)map.get(key);
                 QueryBuilder fullf = QueryBuilders.matchQuery(key, list);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+    public void shouldExistsQuery(List<String> list, QueryBuilder query){
+        if (list!=null&&list.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String key : list) {
+                QueryBuilder fullf = QueryBuilders.existsQuery(key);
                 ((BoolQueryBuilder) keyand).should(fullf);
             }
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);

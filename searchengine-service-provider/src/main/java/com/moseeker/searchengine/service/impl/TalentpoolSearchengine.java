@@ -5,13 +5,13 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.searchengine.domain.PastPOJO;
+import com.moseeker.searchengine.domain.SearchPast;
 import com.moseeker.searchengine.util.SearchUtil;
-import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -243,15 +243,15 @@ public class TalentpoolSearchengine {
     /*
     根据条件搜索曾任职务
      */
-    public List<String> searchPastPosition(Map<String, String> params){
-        List<String> result=new ArrayList<>();
+    @CounterIface
+    public PastPOJO searchPastPosition(SearchPast searchPast){
         try{
             TransportClient client=searchUtil.getEsClient();
-            String pageNum=params.get("page_number");
-            String pageSize=params.get("page_size");
-            QueryBuilder query = null;
+            String pageNum=searchPast.getPageNumber();
+            String pageSize=searchPast.getPageSize();
+            QueryBuilder query = this.handlerProfilePastPosition(searchPast);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
-            String[] returnParams={""};
+            String[] returnParams={"user.peofiles.recent_job.job","user.peofiles.other_workexps.job"};
             builder.setFetchSource(returnParams,null);
             builder.setSize(this.handlePageSize(pageSize));
             builder.setFrom(this.handlePageFrom(pageNum,pageSize));
@@ -260,14 +260,61 @@ public class TalentpoolSearchengine {
             logger.info("============================================");
             SearchResponse response = builder.execute().actionGet();
             Map<String,Object> map=searchUtil.handleData(response,"users");
+            PastPOJO result=this.handlerResultPast(map,this.handlePageNum(pageNum),this.handlePageSize(pageSize),0);
+            return result;
         }catch(Exception e){
             logger.info(e.getMessage(),e);
         }
-        return result;
+        return null;
+    }
+     /*
+       根据条件搜索曾任公司
+     */
+     @CounterIface
+     public PastPOJO searchPastCompany(SearchPast searchPast){
+         try{
+             TransportClient client=searchUtil.getEsClient();
+             String pageNum=searchPast.getPageNumber();
+             String pageSize=searchPast.getPageSize();
+             QueryBuilder query = this.handlerProfilePastCompany(searchPast);
+             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+             String[] returnParams={"user.peofiles.recent_job.company_name","user.peofiles.other_workexps.company_name"};
+             builder.setFetchSource(returnParams,null);
+             builder.setSize(this.handlePageSize(pageSize));
+             builder.setFrom(this.handlePageFrom(pageNum,pageSize));
+             logger.info("============================================");
+             logger.info(builder.toString());
+             logger.info("============================================");
+             SearchResponse response = builder.execute().actionGet();
+             Map<String,Object> map=searchUtil.handleData(response,"users");
+             PastPOJO result=this.handlerResultPast(map,this.handlePageNum(pageNum),this.handlePageSize(pageSize),1);
+             return result;
+         }catch(Exception e){
+             logger.info(e.getMessage(),e);
+         }
+         return null;
+     }
+    /*
+     处理页数
+     */
+    private int handlePageNum(String pageNum){
+        if(StringUtils.isNotNullOrEmpty(pageNum)){
+            return Integer.parseInt(pageNum);
+        }
+        return 1;
     }
     /*
-     处理页数开始位置
-     */
+     处理每页的数量
+   */
+    private int handlePageSize(String pageSize){
+        if(StringUtils.isNotNullOrEmpty(pageSize)){
+            return Integer.parseInt(pageSize);
+        }
+        return 15;
+    }
+    /*
+    处理页数开始位置
+    */
     private int handlePageFrom(String pageNum,String pageSize){
         if(StringUtils.isNotNullOrEmpty(pageNum)){
             if(StringUtils.isNotNullOrEmpty(pageSize)){
@@ -279,51 +326,138 @@ public class TalentpoolSearchengine {
         return 0;
     }
     /*
-     处理每页的数量
-   */
-    private int handlePageSize(String pageSize){
-        if(StringUtils.isNotNullOrEmpty(pageSize)){
-            return Integer.parseInt(pageSize);
-        }
-        return 15;
-    }
-    private QueryBuilder handlerProfilePastPosition(Map<String, String> params){
-        String publisher=params.get("publisher");
-        String companyId=params.get("company_id");
-        String keyWord=params.get("keyword");
-        return null;
-    }
-    private QueryBuilder handlerProfilePastCompany(Map<String, String> params){
-        String publisher=params.get("publisher");
-        String companyId=params.get("company_id");
-        String keyWord=params.get("keyword");
-        return null;
-    }
-     /*
-    根据条件搜索曾任公司
+     处理曾任职位的查询
      */
-     public List<String> searchPastCompany(Map<String, String> params){
-         List<String> result=new ArrayList<>();
-         try{
-             TransportClient client=searchUtil.getEsClient();
-             String pageNum=params.get("page_number");
-             String pageSize=params.get("page_size");
-             QueryBuilder query = null;
-             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
-             String[] returnParams={""};
-             builder.setFetchSource(returnParams,null);
-             builder.setSize(this.handlePageSize(pageSize));
-             builder.setFrom(this.handlePageFrom(pageNum,pageSize));
-             logger.info("============================================");
-             logger.info(builder.toString());
-             logger.info("============================================");
-             SearchResponse response = builder.execute().actionGet();
-             Map<String,Object> map=searchUtil.handleData(response,"users");
-         }catch(Exception e){
-             logger.info(e.getMessage(),e);
-         }
-         return result;
-     }
+    private QueryBuilder handlerProfilePastPosition(SearchPast searchPast){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        String keyWord=searchPast.getKeyword();
+        List<String> list=new ArrayList<>();
+        list.add("user.peofiles.recent_job.job");
+        list.add("user.peofiles.other_workexps.job");
+        if(StringUtils.isNotNullOrEmpty(keyWord)){
+            searchUtil.handleKeyWordforQueryString(keyWord,false,query,list);
+        }
+        this.searchPastCommon(searchPast,query);
+        this.existsPast(list,query);
+        return query;
+    }
+    /*
+     处理曾任公司的查询
+     */
+    private QueryBuilder handlerProfilePastCompany(SearchPast searchPast){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        String keyWord=searchPast.getKeyword();
+        List<String> list=new ArrayList<>();
+        list.add("user.peofiles.recent_job.company_name");
+        list.add("user.peofiles.other_workexps.company_name");
+        if(StringUtils.isNotNullOrEmpty(keyWord)){
+            searchUtil.handleKeyWordforQueryString(keyWord,false,query,list);
+        }
+        this.searchPastCommon(searchPast,query);
+        this.existsPast(list,query);
+        return query;
+    }
+    /*
+     查询曾任职务或者曾任公司的公共部分
+     */
+    private void searchPastCommon(SearchPast searchPast,QueryBuilder query){
+        String publisher=searchPast.getPublisher();
+        String companyId=searchPast.getCompanyId();
+        if(StringUtils.isNotNullOrEmpty(publisher)){
+            searchUtil.handleTerms(publisher,query,"user.applications.publisher");
+        }
+        if(StringUtils.isNotNullOrEmpty(companyId)){
+            searchUtil.handleTerms(companyId,query,"user.applications.company_id");
+        }
+    }
+    /*
+     查询字段是否存在
+     */
+    private void existsPast(List<String> list,QueryBuilder query){
+        if(!StringUtils.isEmptyList(list)){
+            searchUtil.shouldExistsQuery(list,query);
+        }
+    }
+    /*
+     处理结果
+     */
+    private PastPOJO handlerResultPast(Map<String,Object> result,int pageNum,int pageSize,int flag){
+        PastPOJO pastpojo=new PastPOJO();
+        long totalNum=(long)result.get("totalNum");
+        if(totalNum>0){
+            List<String> list=this.handlerPastListString(result,flag);
+            pastpojo.setList(list);
+            pastpojo.setTotalRow((int)totalNum);
+            int totalPages=(int)Math.ceil((double)totalNum/pageSize);
+            pastpojo.setTotalPage(totalPages);
+            pastpojo.setPageNumber(pageNum);
+            pastpojo.setPageSize(pageSize);
+        }
+        return pastpojo;
+    }
+
+    private List<String> handlerPastListString(Map<String,Object> result,int flag) {
+        List<Map<String,Object>> usersList=(List<Map<String,Object>>)result.get("users");
+        List<String> list=new ArrayList<>();
+        if(!StringUtils.isEmptyList(usersList)) {
+            for (Map<String, Object> users : usersList) {
+                Map<String, Object> user = (Map<String, Object>) users.get("user");
+                if (!StringUtils.isEmptyMap(user)) {
+                    Map<String, Object> profiles = (Map<String, Object>) user.get("profiles");
+                    if (!StringUtils.isEmptyMap(profiles)) {
+                        Map<String, Object> recentJob = (Map<String, Object>) profiles.get("recent_job");
+                        List<Map<String, Object>> workExpsList = (List<Map<String, Object>>) profiles.get("other_workexps");
+                        if (flag == 1) {//处理pastPosition
+                            this.convertJobList(recentJob,workExpsList,list);
+                        } else {
+                            this.convertCompanyList(recentJob,workExpsList,list);
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+    /*
+     处理曾任职位
+     */
+    private void convertJobList(Map<String,Object> recentJob,List<Map<String,Object>>workExpsList,List<String> list){
+        if (!StringUtils.isEmptyMap(recentJob)) {
+            String job = (String) recentJob.get("job");
+            if (!list.contains(job)) {
+                list.add(job);
+            }
+        }
+        if (!StringUtils.isEmptyList(workExpsList)) {
+            for (Map<String, Object> workExp : workExpsList) {
+                String workJob = (String) workExp.get("job");
+                if (!list.contains(workJob)) {
+                    list.add(workJob);
+                }
+            }
+        }
+    }
+    /*
+    处理曾任公司
+    */
+    private void convertCompanyList(Map<String,Object> recentJob,List<Map<String,Object>>workExpsList,List<String> list){
+        if (!StringUtils.isEmptyMap(recentJob)) {
+            String job = (String) recentJob.get("company_name");
+            if (!list.contains(job)) {
+                list.add(job);
+            }
+        }
+        if (!StringUtils.isEmptyList(workExpsList)) {
+            for (Map<String, Object> workExp : workExpsList) {
+                String workJob = (String) workExp.get("company_name");
+                if (!list.contains(workJob)) {
+                    list.add(workJob);
+                }
+            }
+        }
+    }
     /*
      处理es返回的结果值获取人才列表id
      */
