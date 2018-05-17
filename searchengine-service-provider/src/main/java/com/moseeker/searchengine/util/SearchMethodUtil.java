@@ -6,6 +6,10 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.search.sort.ScriptSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +80,7 @@ public class SearchMethodUtil {
                 .setTrackScores(true);
         String returnParams=params.get("return_params");
         this.handlerReturnParams(returnParams,responseBuilder);
+        this.handlerSort(params,responseBuilder);
         logger.info(responseBuilder.toString());
         SearchResponse res=responseBuilder.execute().actionGet();
         return res;
@@ -96,11 +101,34 @@ public class SearchMethodUtil {
                 .setTrackScores(true);
         String returnParams=params.get("return_params");
         this.handlerReturnParams(returnParams,responseBuilder);
+        this.handlerSort(params,responseBuilder);
         logger.info(responseBuilder.toString());
         SearchResponse res=responseBuilder.execute().actionGet();
         return res;
     }
 
+    /*
+        处理排序
+     */
+    private void handlerSort(Map<String,String> params,SearchRequestBuilder responseBuilder){
+        String flag=params.get("flag");
+        if("-1".equals(flag)){
+            SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(), "number");
+            builder.order(SortOrder.DESC);
+            responseBuilder.addSort(builder);
+        }
+    }
+    /*
+     根据script排序
+     */
+    private Script buildScriptSort(){
+        StringBuffer sb=new StringBuffer();
+        sb.append("double score=0 ;");
+        sb.append("value=doc['status'].value;if(value==0){score=100}else if(value==2){score=50}else{score=10};return score");
+        String scripts=sb.toString();
+        Script script=new Script(scripts);
+        return script;
+    }
     /*
      提取公共部分，进行封装
      */
@@ -128,6 +156,8 @@ public class SearchMethodUtil {
         }
         if(Integer.parseInt(flag)==0){
             searchUtil.handleMatch(0,query,"status");
+        }else if(Integer.parseInt(flag)==-1){
+
         }else{
             this.handlerStatusQuery(query);
         }

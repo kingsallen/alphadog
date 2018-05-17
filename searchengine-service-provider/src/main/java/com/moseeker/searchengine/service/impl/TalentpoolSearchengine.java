@@ -1028,8 +1028,6 @@ public class TalentpoolSearchengine {
             }
             if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
                 this.queryByPositionIdStatus(positionStatus,query);
-            }else{
-                this.queryByPositionIdStatus(query);
             }
         }
 
@@ -1363,9 +1361,6 @@ public class TalentpoolSearchengine {
         searchUtil.handleTerms(status,queryBuilder,"user.applications.status");
     }
 
-    private void queryByPositionIdStatus(QueryBuilder queryBuilder ){
-        searchUtil.handleTerms("0,2",queryBuilder,"user.applications.status");
-    }
 
     /*
       构建是否公开的查询语句,注意这个位置要做成nest的查询
