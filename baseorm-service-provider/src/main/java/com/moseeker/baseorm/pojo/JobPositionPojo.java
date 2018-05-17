@@ -74,10 +74,8 @@ public class JobPositionPojo {
     public int target_industry; // 期望人选所在行业',
     public int current_status; // '0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭',
     public int position_code; // '职能字典code, dict_position.code',
-
     public Date publish_date; // 'Default: now, set by js',
     public Date stop_date; // '截止日期',
-
     public Timestamp update_time;
 
     // 派生字段 非表中字段
