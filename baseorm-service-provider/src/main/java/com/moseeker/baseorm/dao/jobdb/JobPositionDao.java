@@ -635,16 +635,15 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
      * @param jobnumber 职位编号
      * @return 查询到的职位
      */
-    public JobPositionRecord getUniquePositionIgnoreStatus(int companyId, int source, int sourceId, String jobnumber) {
-        Query queryUtil = new Query.QueryBuilder()
-                .where(JobPosition.JOB_POSITION.COMPANY_ID.getName(), companyId)
-                .and(JobPosition.JOB_POSITION.SOURCE.getName(), source)
-                .and(JobPosition.JOB_POSITION.SOURCE_ID.getName(), sourceId)
-                .and(JobPosition.JOB_POSITION.JOBNUMBER.getName(), jobnumber)
-                .orderBy(JobPosition.JOB_POSITION.STATUS.getName())
-                .orderBy(JobPosition.JOB_POSITION.UPDATE_TIME.getName(), Order.DESC)
-                .buildQuery();
-        return getRecord(queryUtil);
+    public JobPositionRecord getUniquePositionIgnoreDelete(int companyId, int source, int sourceId, String jobnumber) {
+        return create.selectFrom(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq((short)source))
+                .and(JobPosition.JOB_POSITION.SOURCE_ID.eq(sourceId))
+                .and(JobPosition.JOB_POSITION.JOBNUMBER.eq(jobnumber))
+                .and(JobPosition.JOB_POSITION.STATUS.ne((byte)PositionStatus.DELETED.getValue()))
+                .orderBy(JobPosition.JOB_POSITION.STATUS.asc(),JobPosition.JOB_POSITION.UPDATE_TIME.desc())
+                .fetchOne();
     }
 
     /**
