@@ -1,6 +1,9 @@
 package com.moseeker.searchengine.thrift;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -38,6 +41,12 @@ public class SearchengineServiceImpl implements Iface {
 	private PositionSearchEngine positionSearchEngine;
 	@Autowired
 	private TalentpoolSearchengine talentpoolSearchengine;
+
+	private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+	public SearchengineServiceImpl(){
+		serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+	}
 
 	@Override
 	public Response query(String keywords, String cities, String industries, String occupations, String scale,
@@ -261,8 +270,9 @@ public class SearchengineServiceImpl implements Iface {
 		try{
 			SearchPast searchPast=this.convertParams(params);
 			PastPOJO result=talentpoolSearchengine.searchPastPosition(searchPast);
-			Response res=ResponseUtils.success(result);
-			return res;
+			String res= JSON.toJSONString(result,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+			Response respose=ResponseUtils.successWithoutStringify(res);
+			return respose;
 		}catch(Exception e){
 			logger.error(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
@@ -283,8 +293,9 @@ public class SearchengineServiceImpl implements Iface {
 		try{
 			SearchPast searchPast=this.convertParams(params);
 			PastPOJO result=talentpoolSearchengine.searchPastCompany(searchPast);
-			Response res=ResponseUtils.success(result);
-			return res;
+			String res= JSON.toJSONString(result,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+			Response respose=ResponseUtils.successWithoutStringify(res);
+			return respose;
 		}catch(Exception e){
 			logger.error(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
