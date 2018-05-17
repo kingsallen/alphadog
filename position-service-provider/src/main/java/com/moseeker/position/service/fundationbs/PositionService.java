@@ -754,7 +754,7 @@ public class PositionService {
             }
 
             // 按company_id + .source_id + .jobnumber + source=9取得数据
-            JobPositionRecord jobPositionRecord = jobPositionDao.getUniquePositionIgnoreStatus(
+            JobPositionRecord jobPositionRecord = jobPositionDao.getUniquePositionIgnoreDelete(
                     jobPositionHandlerDate.getCompany_id(),
                     PositionSource.ATS.getCode(),
                     jobPositionHandlerDate.getSource_id(),
