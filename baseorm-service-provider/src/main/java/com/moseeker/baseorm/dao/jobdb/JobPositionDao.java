@@ -643,6 +643,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 .and(JobPosition.JOB_POSITION.JOBNUMBER.eq(jobnumber))
                 .and(JobPosition.JOB_POSITION.STATUS.ne((byte)PositionStatus.DELETED.getValue()))
                 .orderBy(JobPosition.JOB_POSITION.STATUS.asc(),JobPosition.JOB_POSITION.UPDATE_TIME.desc())
+                .limit(1)
                 .fetchOne();
     }
 
