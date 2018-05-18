@@ -391,7 +391,7 @@ public class SearchengineController {
         }
     }
 
-    @RequestMapping(value = "/api/profile/pastposition", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/profile/pastposition", method = RequestMethod.GET)
     @ResponseBody
     public String searchProfilePosition(HttpServletRequest request, HttpServletResponse response){
         try{
@@ -401,7 +401,7 @@ public class SearchengineController {
                 return ResponseLogNotification.fail(request, "参数不能为空");
             }
             for(String key:reqParams.keySet()){
-                params.put(key,StringUtils.filterStringForSearch(String.valueOf(reqParams.get(key))));
+                params.put(key,StringUtils.filterStringForSearch((String)reqParams.get(key)));
             }
             Response res=searchengineServices.searchpastPosition(params);
             return ResponseLogNotification.success(request,res);
@@ -411,7 +411,7 @@ public class SearchengineController {
         }
     }
 
-    @RequestMapping(value = "/api/profile/pastcompany", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/profile/pastcompany", method = RequestMethod.GET)
     @ResponseBody
     public String searchProfileCompany(HttpServletRequest request, HttpServletResponse response){
         try{
@@ -421,7 +421,7 @@ public class SearchengineController {
                 return ResponseLogNotification.fail(request, "参数不能为空");
             }
             for(String key:reqParams.keySet()){
-                params.put(key,StringUtils.filterStringForSearch(String.valueOf(reqParams.get(key))));
+                params.put(key,StringUtils.filterStringForSearch((String)reqParams.get(key)));
             }
             Response res=searchengineServices.searchpastCompany(params);
             return ResponseLogNotification.success(request,res);
