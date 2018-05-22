@@ -39,7 +39,7 @@ public class VoiceFormConvertUtil {
             if (file.exists()) {
                 logger.info("fileAddress is exists!");
             }
-            Process p = run.exec("ffmpeg -i " + fileName + " " + targetFileName, null, new File(fileAddress));
+            Process p = run.exec("/usr/bin/ffmpeg -i " + fileName + " " + targetFileName, null, new File(fileAddress));
             logger.info("===================转换结束====================");
             //释放进程
             p.getOutputStream().close();

@@ -29,10 +29,8 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.RespnoseUtil;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
@@ -54,10 +52,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -1095,7 +1091,7 @@ public class ChatService {
         if(userId == 0 && hrId == 0){
             return false;
         }
-        HrWxHrChatListDO hrWxHrChatListDO = chaoDao.getChatRoom(roomId, userId, hrId);
+        HrWxHrChatListDO hrWxHrChatListDO = chaoDao.getChatRoomByRoomId(roomId);
         if(null != hrWxHrChatListDO){
             int dbHrId = hrWxHrChatListDO.getHraccountId();
             int dbUserId = hrWxHrChatListDO.getSysuserId();

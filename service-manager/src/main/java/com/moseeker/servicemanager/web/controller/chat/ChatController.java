@@ -401,8 +401,8 @@ public class ChatController {
             validateUtil.addRequiredValidate("素材id", serverId, null, null);
             validateUtil.addStringLengthValidate("素材id", serverId, null, null, 1, 256);
             validateUtil.addIntTypeValidate("聊天室id", roomId, null, null, 1, Integer.MAX_VALUE);
-            validateUtil.addIntTypeValidate("用户id", userId, null, null, 1, Integer.MAX_VALUE);
-            validateUtil.addIntTypeValidate("hrid", hrId, null, null, 1, Integer.MAX_VALUE);
+            validateUtil.addIntTypeValidate("用户id", userId, null, null, 0, Integer.MAX_VALUE);
+            validateUtil.addIntTypeValidate("hrid", hrId, null, null, 0, Integer.MAX_VALUE);
 
             String message = validateUtil.validate();
             logger.info("=========message:{}===============================", message);
