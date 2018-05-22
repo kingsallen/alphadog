@@ -30,7 +30,6 @@ public class PersonaRecomEntity {
     private HistoryCampaignPersonaRecomDao historyCampaignPersonaRecomDao;
     //将推荐职位数据插入数据库
     @CounterIface
-    @Transactional
     public int handlePersonaRecomData(int userId,String positionIds,int companyId,int type) throws TException {
         int result=this.handlerHistoryData(userId,companyId,type);
         if(result==0){

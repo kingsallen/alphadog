@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.logdb;
 
 
+import com.moseeker.baseorm.db.logdb.tables.LogAiRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
 import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
 import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
@@ -19,6 +20,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMessageRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord;
+import com.moseeker.baseorm.db.logdb.tables.records.LogAiRecomRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogCronjobRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogDeadLetterRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogEmailSendrecordRecord;
@@ -60,6 +62,7 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<LogAiRecomRecord, Integer> IDENTITY_LOG_AI_RECOM = Identities0.IDENTITY_LOG_AI_RECOM;
     public static final Identity<LogCronjobRecord, Integer> IDENTITY_LOG_CRONJOB = Identities0.IDENTITY_LOG_CRONJOB;
     public static final Identity<LogDeadLetterRecord, Integer> IDENTITY_LOG_DEAD_LETTER = Identities0.IDENTITY_LOG_DEAD_LETTER;
     public static final Identity<LogEmailSendrecordRecord, Integer> IDENTITY_LOG_EMAIL_SENDRECORD = Identities0.IDENTITY_LOG_EMAIL_SENDRECORD;
@@ -80,6 +83,8 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<LogAiRecomRecord> KEY_LOG_AI_RECOM_PRIMARY = UniqueKeys0.KEY_LOG_AI_RECOM_PRIMARY;
+    public static final UniqueKey<LogAiRecomRecord> KEY_LOG_AI_RECOM_LOG_AI_RECOM_ID_UINDEX = UniqueKeys0.KEY_LOG_AI_RECOM_LOG_AI_RECOM_ID_UINDEX;
     public static final UniqueKey<LogCronjobRecord> KEY_LOG_CRONJOB_PRIMARY = UniqueKeys0.KEY_LOG_CRONJOB_PRIMARY;
     public static final UniqueKey<LogDeadLetterRecord> KEY_LOG_DEAD_LETTER_PRIMARY = UniqueKeys0.KEY_LOG_DEAD_LETTER_PRIMARY;
     public static final UniqueKey<LogEmailSendrecordRecord> KEY_LOG_EMAIL_SENDRECORD_PRIMARY = UniqueKeys0.KEY_LOG_EMAIL_SENDRECORD_PRIMARY;
@@ -108,6 +113,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
+        public static Identity<LogAiRecomRecord, Integer> IDENTITY_LOG_AI_RECOM = createIdentity(LogAiRecom.LOG_AI_RECOM, LogAiRecom.LOG_AI_RECOM.ID);
         public static Identity<LogCronjobRecord, Integer> IDENTITY_LOG_CRONJOB = createIdentity(LogCronjob.LOG_CRONJOB, LogCronjob.LOG_CRONJOB.ID);
         public static Identity<LogDeadLetterRecord, Integer> IDENTITY_LOG_DEAD_LETTER = createIdentity(LogDeadLetter.LOG_DEAD_LETTER, LogDeadLetter.LOG_DEAD_LETTER.ID);
         public static Identity<LogEmailSendrecordRecord, Integer> IDENTITY_LOG_EMAIL_SENDRECORD = createIdentity(LogEmailSendrecord.LOG_EMAIL_SENDRECORD, LogEmailSendrecord.LOG_EMAIL_SENDRECORD.ID);
@@ -126,6 +132,8 @@ public class Keys {
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
+        public static final UniqueKey<LogAiRecomRecord> KEY_LOG_AI_RECOM_PRIMARY = createUniqueKey(LogAiRecom.LOG_AI_RECOM, "KEY_log_ai_recom_PRIMARY", LogAiRecom.LOG_AI_RECOM.ID);
+        public static final UniqueKey<LogAiRecomRecord> KEY_LOG_AI_RECOM_LOG_AI_RECOM_ID_UINDEX = createUniqueKey(LogAiRecom.LOG_AI_RECOM, "KEY_log_ai_recom_log_ai_recom_id_uindex", LogAiRecom.LOG_AI_RECOM.ID);
         public static final UniqueKey<LogCronjobRecord> KEY_LOG_CRONJOB_PRIMARY = createUniqueKey(LogCronjob.LOG_CRONJOB, "KEY_log_cronjob_PRIMARY", LogCronjob.LOG_CRONJOB.ID);
         public static final UniqueKey<LogDeadLetterRecord> KEY_LOG_DEAD_LETTER_PRIMARY = createUniqueKey(LogDeadLetter.LOG_DEAD_LETTER, "KEY_log_dead_letter_PRIMARY", LogDeadLetter.LOG_DEAD_LETTER.ID);
         public static final UniqueKey<LogEmailSendrecordRecord> KEY_LOG_EMAIL_SENDRECORD_PRIMARY = createUniqueKey(LogEmailSendrecord.LOG_EMAIL_SENDRECORD, "KEY_log_email_sendrecord_PRIMARY", LogEmailSendrecord.LOG_EMAIL_SENDRECORD.ID);

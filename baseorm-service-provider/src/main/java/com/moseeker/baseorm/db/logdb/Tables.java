@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.logdb;
 
 
+import com.moseeker.baseorm.db.logdb.tables.LogAiRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
 import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
 import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
@@ -35,6 +36,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * 智能画像日志表
+     */
+    public static final LogAiRecom LOG_AI_RECOM = com.moseeker.baseorm.db.logdb.tables.LogAiRecom.LOG_AI_RECOM;
 
     /**
      * The table <code>logdb.log_cronjob</code>.
@@ -82,7 +88,7 @@ public class Tables {
     public static final LogSmsSendrecord LOG_SMS_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord.LOG_SMS_SENDRECORD;
 
     /**
-     * 邮件额度每天消耗日志
+     * 邮件额度每天使用日志
      */
     public static final LogTalentpoolEmailDailyLog LOG_TALENTPOOL_EMAIL_DAILY_LOG = com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG;
 
