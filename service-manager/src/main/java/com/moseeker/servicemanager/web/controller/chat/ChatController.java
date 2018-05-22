@@ -5,7 +5,6 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChatMsgType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.common.validation.rules.DateType;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -415,10 +414,13 @@ public class ChatController {
                     voiceLocalUrl = JSONObject.parseObject(urlResponse.getData()).getString("voiceLocalUrl");
                     logger.info("=========voiceLocalUrl:{}===============================", voiceLocalUrl);
                     File file = new File(voiceLocalUrl);
+                    if(!file.exists()){
+                        return ResponseLogNotification.failJson(request, "文件不存在");
+                    }
                     FileInputStream in = new FileInputStream(file);
                     long fileLength = file.length();
                     if (fileLength > Integer.MAX_VALUE) {
-                        return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.FILE_TOO_BIG);
+                        return ResponseLogNotification.failJson(request, "文件过大");
                     }
                     ByteArrayOutputStream bos = new ByteArrayOutputStream((int) file.length());
                     byte[] bytes = new byte[8192];
@@ -436,7 +438,7 @@ public class ChatController {
                     logger.info("=========jsonObject:{}===============================", jsonObject);
                     return ResponseLogNotification.successJson(request, jsonObject);
                 }
-                return ResponseLogNotification.fail(request, urlResponse);
+                return ResponseLogNotification.failJson(request, urlResponse.getMessage());
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
