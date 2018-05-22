@@ -58,45 +58,25 @@ public class PositionServiceTest {
 	}
 
 //    @Test
+    public void test() throws Exception {
+    	List<Integer> list=new ArrayList<Integer>();
+    	list.add(124340);
+    	list.add(124341);
+    	list.add(124342);
+        List<RpExtInfo> res= service.getPositionListRpExt(list);
+        System.out.println(res);
+    }
 
-//	public void testCitys(){
-//    	List<City> list=new ArrayList<>();
-//    	City city=new City();
-//    	city.setType("text");
-//    	city.setValue("");
-//    	list.add(city);
-//
-//		city=new City();
-//		city.setType("text");
-//		list.add(city);
-//
-//		city=new City();
-//		city.setType("text");
-//		city.setValue("");
-//		list.add(city);
-//
-//    	city=new City();
-//		city.setType("text");
-//		city.setValue("北京");
-//		list.add(city);
-//
-//		city=new City();
-//		city.setType("text");
-//		city.setValue("北京");
-//		list.add(city);
-////    	System.out.println(service.citys(list));
-//	}
-//
-//    /*@Test
-//    public void cityCode(){
-//    	List<City> cities=new ArrayList<>();
-//    	City city=new City();
-//    	city.setType("text");
-//    	city.setValue("九龙城区");
-//    	cities.add(city);
-//    	service.cityCode(cities,1909944);
-//	}*/
-//
+    @Autowired
+    ThirdPositionService thirdPositionService;
+
+//    @Test
+    public void testThirdPartyPosition() throws BIZException {
+        ThirdPartyPositionInfoForm infoForm = new ThirdPartyPositionInfoForm();
+        ThirdPartyPositionResult result = thirdPositionService.getThirdPartyPositionInfo(infoForm);
+
+        System.out.println(JSON.toJSONString(result));
+    }
 
     /*@Test
     public void cityCode(){
@@ -108,9 +88,64 @@ public class PositionServiceTest {
     	service.cityCode(cities,1909944);
 	}*/
 
+    @Test
+	public void testCitys(){
+    	List<City> list=new ArrayList<>();
+    	City city=new City();
+    	city.setType("text");
+    	city.setValue("");
+    	list.add(city);
+
+		city=new City();
+		city.setType("text");
+		list.add(city);
+
+		city=new City();
+		city.setType("text");
+		city.setValue("");
+		list.add(city);
+
+    	city=new City();
+		city.setType("text");
+		city.setValue("北京");
+		list.add(city);
+
+		city=new City();
+		city.setType("text");
+		city.setValue("北京");
+		list.add(city);
+//    	System.out.println(service.citys(list));
+	}
+
+    /*@Test
+    public void cityCode(){
+    	List<City> cities=new ArrayList<>();
+    	City city=new City();
+    	city.setType("text");
+    	city.setValue("九龙城区");
+    	cities.add(city);
+    	service.cityCode(cities,1909944);
+	}*/
+
+//	@Test
+//	@Commit
+//	public void batchHandlerJobPostion() throws BIZException {
+//		BatchHandlerJobPostion batchHandlerJobPostion=new BatchHandlerJobPostion();
+//
+//		JobPostrionObj jobPostrionObj=JSON.toJavaObject(JSON.parseObject(position),JobPostrionObj.class);
+//
+//		batchHandlerJobPostion.setData(Arrays.asList(jobPostrionObj,jobPostrionObj));
+//		batchHandlerJobPostion.setFields_nooverwrite("");
+//		batchHandlerJobPostion.setNodelete(true);
+//		batchHandlerJobPostion.setFields_nohash("");
+//		batchHandlerJobPostion.setIsCreateDeparment(true);
+//
+//
+//		service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
+//	}
 	@Test
 	@Commit
-	public void batchHandlerJobPostion() throws TException {
+	public void batchHandlerJobPostion() throws BIZException {
 		BatchHandlerJobPostion batchHandlerJobPostion=new BatchHandlerJobPostion();
 
 		JobPostrionObj jobPostrionObj=JSON.toJavaObject(JSON.parseObject(position),JobPostrionObj.class);
@@ -122,8 +157,13 @@ public class PositionServiceTest {
 		batchHandlerJobPostion.setIsCreateDeparment(true);
 
 
-		service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
+		try {
+			service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
+		} catch (TException e) {
+			e.printStackTrace();
+		}
 	}
+
 
 	private String position="{\n" +
 			"  'degree': 0,\n" +

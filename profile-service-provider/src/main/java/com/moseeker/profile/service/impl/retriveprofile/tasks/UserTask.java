@@ -67,7 +67,6 @@ public abstract class UserTask implements Task<UserTaskParam, Integer> {
      */
     protected UserUserRecord initUser(UserTaskParam param) {
         UserUserRecord userUserRecord = new UserUserRecord();
-        userUserRecord.setUsername(param.getMobile());
         if (StringUtils.isNotNullOrEmpty(param.getEmail())) {
             userUserRecord.setEmail(param.getEmail());
         }
@@ -78,7 +77,7 @@ public abstract class UserTask implements Task<UserTaskParam, Integer> {
             }
         }
         if (userUserRecord.getMobile() == null) {
-            userUserRecord.setMobile(Long.valueOf(userUserRecord.getUsername()));
+            userUserRecord.setMobile(Long.valueOf(param.getMobile()));
         }
         userUserRecord.setPassword("");
         userUserRecord.setSource((short) UserSource.RETRIEVE_PROFILE.getValue());

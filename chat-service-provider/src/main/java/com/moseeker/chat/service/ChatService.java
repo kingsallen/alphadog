@@ -29,8 +29,10 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.RespnoseUtil;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
@@ -52,8 +54,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -311,6 +315,7 @@ public class ChatService {
      * @return 聊天室分页信息
      */
     public UserChatRoomsVO listUserChatRoom(int userId, int pageNo, int pageSize) {
+
         logger.info("userChatRoomsVO userId:{}, pageNo:{} pageSize:{}", userId, pageNo, pageSize);
         UserChatRoomsVO userChatRoomsVO = new UserChatRoomsVO();
 
@@ -333,7 +338,7 @@ public class ChatService {
                 logger.info("roomIdArray:{}", roomIdArray);
                 logger.info("hrIdArray:{}", hrIdArray);
 
-                /** 异步查找聊天室内容，HR信息，HR所属的公司信息 */
+                //** 异步查找聊天室内容，HR信息，HR所属的公司信息 *//*
                 Future chatRoomsFuture = pool.startTast(() -> chaoDao.listChatRoom(roomIdArray));
                 Future hrsFuture = pool.startTast(() -> chaoDao.listHr(hrIdArray));
                 Future companyFuture = pool.startTast(() -> chaoDao.listCompany(hrIdArray));
@@ -343,7 +348,7 @@ public class ChatService {
                     UserChatRoomVO userChatRoomVO = new UserChatRoomVO();
                     userChatRoomVO.setId(hrChatUnreadCountDO.getRoomId());
 
-                    /** 匹配聊天室的状态的和最后发送消息的时间 */
+                    //** 匹配聊天室的状态的和最后发送消息的时间 *//*
                     try {
                         List<HrWxHrChatListDO> chatRooms = (List<HrWxHrChatListDO>) chatRoomsFuture.get();
                         if(chatRooms != null && chatRooms.size() > 0) {
@@ -359,7 +364,7 @@ public class ChatService {
                         logger.error(e.getMessage(), e);
                     }
 
-                    /** 匹配HR的编号、头像和名称 */
+                    //** 匹配HR的编号、头像和名称 *//*
                     try {
                         List<UserHrAccountDO> hrAccountDOList = (List<UserHrAccountDO>) hrsFuture.get();
                         if(hrAccountDOList != null && hrAccountDOList.size() > 0) {
@@ -371,18 +376,16 @@ public class ChatService {
                                 userChatRoomVO.setName(hrAccountDOOptional.get().getUsername());
                                 userChatRoomVO.setHeadImgUrl(hrAccountDOOptional.get().getHeadimgurl());
 
-                                /** 根据HR所属公司，匹配公司的名称和logo */
-                                List<HrCompanyDO> companyDOList = (List<HrCompanyDO>) companyFuture.get();
-                                if(companyDOList != null && companyDOList.size() > 0) {
-                                    Optional<HrCompanyDO> companyDOOptional = companyDOList.stream()
-                                            .filter(companyDO -> companyDO.getId() == hrAccountDOOptional.get().getCompanyId()).findAny();
-                                    if(companyDOOptional.isPresent()) {
-                                        userChatRoomVO.setCompanyLogo(companyDOOptional.get().getLogo());
+                                //** 根据HR所属公司，匹配公司的名称和logo *//*
+                                Map<Integer, HrCompanyDO> companyDOMap = (Map<Integer, HrCompanyDO>) companyFuture.get();
+                                if(companyDOMap != null && companyDOMap.size() > 0) {
+                                    if(companyDOMap.containsKey(hrAccountDOOptional.get().getId()) && companyDOMap.get(hrAccountDOOptional.get().getId()).getId() > 0) {
+                                        userChatRoomVO.setCompanyLogo(companyDOMap.get(hrAccountDOOptional.get().getId()).getLogo());
                                         String companyName;
-                                        if(StringUtils.isNotNullOrEmpty(companyDOOptional.get().getAbbreviation())) {
-                                            companyName = companyDOOptional.get().getAbbreviation();
+                                        if(StringUtils.isNotNullOrEmpty(companyDOMap.get(hrAccountDOOptional.get().getId()).getAbbreviation())) {
+                                            companyName = companyDOMap.get(hrAccountDOOptional.get().getId()).getAbbreviation();
                                         } else {
-                                            companyName = companyDOOptional.get().getName();
+                                            companyName = companyDOMap.get(hrAccountDOOptional.get().getId()).getName();
                                         }
                                         userChatRoomVO.setCompanyName(companyName);
                                     }
@@ -519,6 +522,7 @@ public class ChatService {
      * 添加聊天内容，并修改未读消息数量
      * @param chat 聊天信息
      */
+
     public int saveChat(ChatVO chat) throws BIZException {
         try {
 
@@ -738,7 +742,7 @@ public class ChatService {
                     positionVO.setCity(positionDO.getCity());
 
                     if(positionDO.getCompanyId() > 0) {
-                        HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getCompanyId());
+                        HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getPublisher());
                         String companyName;
                         if(StringUtils.isNotNullOrEmpty(companyDO.getAbbreviation())) {
                             companyName = companyDO.getAbbreviation();
@@ -894,6 +898,7 @@ public class ChatService {
      * @throws CommonException
      */
     public ChatHistory listMessage(int roomId, int chatId, int pageSize) throws CommonException {
+        logger.info("listMessage roomId:{} speaker:{}, pageSize:{}", roomId, chatId, pageSize);
         ChatHistory chatHistory = new ChatHistory();
         chatHistory.setConversationId(roomId);
         if (pageSize <= 0 || pageSize > Constant.PAGE_SIZE) {
@@ -917,6 +922,7 @@ public class ChatService {
             }
         }
         HrChatUnreadCountRecord hrChatUnreadCountRecord = chaoDao.fetchRoomById(roomId);
+        logger.info("listMessage hrChatUnreadCountRecord:{}", hrChatUnreadCountRecord);
         if (hrChatUnreadCountRecord != null ) {
             if (hrChatUnreadCountRecord.getUpdateTime() != null) {
                 chatHistory.setHrLeaveTime(
@@ -927,12 +933,14 @@ public class ChatService {
                 chatHistory.setUserId(userUserDO.getId());
                 chatHistory.setName(userUserDO.getName());
             }
+            logger.info("listMessage hrChatUnreadCountRecord:{}, chatId:{}", hrChatUnreadCountRecord, chatId);
             updateLeaveTime(hrChatUnreadCountRecord, chatId);
         }
         return chatHistory;
     }
 
     private void updateLeaveTime(HrChatUnreadCountRecord hrChatUnreadCountRecord, int chatId) {
+        logger.info("ChatService updateLeaveTime hrChatUnreadCountRecord:{}, chatId:{}", hrChatUnreadCountRecord, chatId);
         if (chatId == 0) {
             hrChatUnreadCountRecord.setHrChatTime(new Timestamp(System.currentTimeMillis()));
             hrChatUnreadCountRecord.setHrHaveUnreadMsg((byte) 0);
@@ -945,6 +953,7 @@ public class ChatService {
         } else {
             HrWxHrChatRecord chatRecord = chaoDao.getChat(chatId);
             if (chatRecord != null) {
+                logger.info("ChatService updateLeaveTime chatRecord:{}, chatId:{}", chatRecord, chatId);
                 if (hrChatUnreadCountRecord.getHrChatTime() == null || hrChatUnreadCountRecord.getHrChatTime().getTime() < chatRecord.getCreateTime().getTime()) {
                     hrChatUnreadCountRecord.setHrChatTime(chatRecord.getCreateTime());
                     hrChatUnreadCountRecord.setHrHaveUnreadMsg((byte) 0);
@@ -1004,10 +1013,13 @@ public class ChatService {
     }
 
     public void roleLeaveChatRoom(int roleId, byte speaker) {
+        logger.info("ChatService roleLeaveChatRoom roleId:{}, speaker:{}",roleId, speaker);
         if (chaoDao.roleExist(roleId, speaker)) {
             List<Integer> roomIdList = chaoDao.fetchRoomIdByRole(roleId, speaker);
+            logger.info("ChatService roleLeaveChatRoom roomIdList::{}",roomIdList);
             if (roomIdList != null && roomIdList.size() > 0) {
                 pool.startTast(() -> {
+                    logger.info("ChatService roleLeaveChatRoom roomIdList::{}",roomIdList);
                     roomIdList.forEach(roomId -> leaveChatRoom(roomId, speaker));
                     return true;
                 });

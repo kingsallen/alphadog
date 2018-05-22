@@ -101,7 +101,7 @@ struct WechatPositionListData {
     15: optional string city,
     16: optional i32 priority,
     17: optional i32 publisher,
-    18: optional string accountabilities,
+    18: optional string accountabilities
     19: optional i32 totalNum,
     20: optional i32 candidate_source,
     21: optional string requirement,

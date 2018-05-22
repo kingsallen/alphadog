@@ -148,9 +148,9 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_ALREADY_BANNED = "{'status':51022,'message':'该职位已撤下!'}";
     public static final String POSITION_PUBLISHER_NOT_EXIST = "{'status':51023,'message':'发布者不存在'}";
     public static final String SOURCE_ERROR = "{'status':51024,'message':'来源错误！'}";
-    public static final String FEATURE_MUST_EXISTS="{'status':52003,'message':'福利特色不存在！'}";
     public static final String REQUEST_SCRAPER_CONNECTION_ERROR="{'status':52001,'message':'访问scraper连接错误！'}";
     public static final String REQUEST_SCRAPER_URL_NOT_EXIST="{'status':52002,'message':'scraper服务URL不存在！'}";
+    public static final String FEATURE_MUST_EXISTS="{'status':52003,'message':'福利特色不存在！'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
     public static final String POSITION_TITLE_NOT_EMPTY="{'status':52003,'message':'职位标题不能为空!'}";
@@ -180,13 +180,16 @@ public final class ConstantErrorCodeMessage {
     //mq服务提示信息说明
     public static final String MQ_TEMPLATE_NOTICE_CLOSE = "{'status':71001,'message':'模板消息开关关闭！'}";
     public static final String MQ_WECHAT_NOT_INFO = "{'status':71001,'message':'公众号信息不存在！'}";
-    public static final String THIRD_PARTY_CHANNEL_NOT_EXIST = "{'status':61011,'message':'第三方渠道不存在！'}";
+
+    //mq服务提示信息说明
+    public static final String CONSISTENCY_TOOL = "{'status':81001,'message':'重复的参数转换器！'}";
 
 
     //IM服务
     public static final String CHAT_ROOM_NOT_EXIST = "{'status':91001,'message':'聊天室不存在！'}";
     public static final String CANT_SET_LEAVE_TO_MOBOT = "{'status':91002,'message':'尚未采购该功能，详情请联系您的客户成功顾问。'}";
     public static final String NO_AUTH_SET_LEAVE_TO_MOBOT = "{'status':91002,'message':'子账号没有权限设置该功能。'}";
+
     public static final String FILE_TOO_BIG = "{'status':91004,'message':'文件长度过大。'}";
 
     //APPBS错误代码61000

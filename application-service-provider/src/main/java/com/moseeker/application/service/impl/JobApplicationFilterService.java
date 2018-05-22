@@ -197,6 +197,7 @@ public class JobApplicationFilterService {
     private  boolean validateProfileAndFilterOther(TalentpoolProfileFilter filter, MessageEmailStruct filterInfoStruct){
         if(StringUtils.isNotNullOrEmpty(filter.getOrigins())){
             boolean flag = validateProfileAndFilterOrigins(filter.getOrigins(), filterInfoStruct.getOrigin());
+            logger.info("handerApplicationFilter origins isflag:{}", flag);
             if(!flag){
                 return  flag;
             }
@@ -243,20 +244,22 @@ public class JobApplicationFilterService {
         userIds.add(user_id);
         List<Integer> applicaitionIds = new ArrayList<>();
         applicaitionIds.add(application_id);
+        Response res = new Response();
         if(type == 1){
-            talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId());
+            res = talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId());
         }else if(type == 2){
             talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId());
-            talentpoolService.batchAddPublicTalent(position.getPublisher(), position.getCompanyId(), userIds);
+            res = talentpoolService.batchAddPublicTalent(position.getPublisher(), position.getCompanyId(), userIds);
         }else if(type == 3){
-            bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
+            res = bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
         }else if(type == 4){
             try {
-                bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
+                res = bsService.profileProcess(position.getCompanyId(), 13, applicaitionIds, position.getPublisher());
             }catch (Exception e){
                 logger.error(e.getMessage());
             }
         }
+        logger.info("handerApplicationFilter response info :{}", res);
     }
 
 

@@ -28,6 +28,7 @@
 //    //获取团队列表
 //    @Test
 //    public void teamListTest() throws Exception {
+
 //        Map<String,Object> result=companyPcService.getTeamListinfo(2,1,10);
 //        System.out.println(result+"======");
 //    }

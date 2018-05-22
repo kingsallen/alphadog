@@ -112,6 +112,7 @@ public class CandidateVJobPositionRecom extends TableImpl<CandidateVJobPositionR
     /**
      * Rename this table
      */
+    @Override
     public CandidateVJobPositionRecom rename(String name) {
         return new CandidateVJobPositionRecom(name, null);
     }

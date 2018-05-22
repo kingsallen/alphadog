@@ -8,6 +8,7 @@ import com.moseeker.baseorm.constant.EmployeeActivedState;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileDownloadService;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.dictdb.tables.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
@@ -26,18 +27,19 @@ import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.*;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-import org.jooq.*;
 import org.jooq.Condition;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -1158,6 +1160,22 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         logger.debug("getResourceByApplication:=============={}:{}", "allUser耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
+        //所有的user_user
+        List<Map<String, Object>> allApplierEmployee = new ArrayList<>();
+        if (!filterTable(filter, "user_employee") && applierIds.size() > 0) {
+            allApplierEmployee = create
+                    .select()
+                    .from(UserEmployee.USER_EMPLOYEE)
+                    .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.in(applierIds))
+                    .and(USER_EMPLOYEE.DISABLE.eq((byte) 0))
+                    .and(USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
+                    .and(USER_EMPLOYEE.STATUS.eq(0))
+                    .fetchMaps();
+        }
+
+        logger.debug("getResourceByApplication:=============={}:{}", "allApplierEmployee耗时", System.currentTimeMillis() - startTime);
+        startTime = System.currentTimeMillis();
+
         //所有的user_thirdparty_user
         List<Map<String, Object>> allThirdPartyUser = new ArrayList<>();
         if (!filterTable(filter, "user_thirdparty_user") && applierIds.size() > 0) {
@@ -1166,6 +1184,24 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .from(UserThirdpartyUser.USER_THIRDPARTY_USER)
                     .where(UserThirdpartyUser.USER_THIRDPARTY_USER.USER_ID.in(applierIds))
                     .fetchMaps();
+        }
+
+        logger.debug("getResourceByApplication:=============={}:{}", "allThirdPartyUser耗时", System.currentTimeMillis() - startTime);
+        startTime = System.currentTimeMillis();
+
+        //所有的候选人推荐记录
+        Map<Integer, List<CandidateRecomRecordDO>> allCandidateRecomRecord = new HashMap<>();
+        if (!filterTable(filter, "candidate_recom_record") && applicationIds.size() > 0) {
+            List<CandidateRecomRecordDO> tempRecomRecords = create
+                    .select()
+                    .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.in(applicationIds))
+                    .fetchInto(CandidateRecomRecordDO.class);
+
+            if(!StringUtils.isEmptyList(tempRecomRecords)){
+                allCandidateRecomRecord = tempRecomRecords.stream().collect(Collectors.groupingBy(r->r.getAppId()));
+            }
+
         }
 
         logger.debug("getResourceByApplication:=============={}:{}", "allThirdPartyUser耗时", System.currentTimeMillis() - startTime);
@@ -1442,9 +1478,9 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         startTime = System.currentTimeMillis();
 
         //recommender employee
-        List<Map<String, Object>> allEmployee = new ArrayList<>();
+        List<Map<String, Object>> allRecommenderEmployee = new ArrayList<>();
         if (!filterTable(filter, "recommender") && recommenderIds.size() > 0) {
-            allEmployee = create
+            allRecommenderEmployee = create
                     .select()
                     .from(USER_EMPLOYEE)
                     .where(USER_EMPLOYEE.SYSUSER_ID.in(recommenderIds))
@@ -1549,6 +1585,18 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 }
             }
 
+            //all from userdb.user_employee
+            if (!filterTable(filter, "user_employee")) {
+                buildMap(filter, map, "user_employee", new HashMap<>());
+                for (Map<String, Object> mp : allApplierEmployee) {
+                    Integer sysuser_id = (Integer) mp.get("sysuser_id");
+                    if (sysuser_id != null && sysuser_id.intValue() > 0 && sysuser_id.intValue() == applierId.intValue()) {
+                        buildMap(filter, map, "user_employee", mp);
+                        break;
+                    }
+                }
+            }
+
 
             //all from profiledb.user_thirdparty_user # ATS login
             if (!filterTable(filter, "user_thirdparty_user")) {
@@ -1594,12 +1642,12 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     for (Map<String, Object> mp : allRecommenderUser) {
                         Integer user_id = (Integer) mp.get("id");
                         if (user_id != null && user_id.intValue() > 0 && user_id.intValue() == recommenderId.intValue()) {
-                            recommenderMap = mp;
+                            recommenderMap.putAll(mp);
                             break;
                         }
                     }
 
-                    for (Map<String, Object> mp : allEmployee) {
+                    for (Map<String, Object> mp : allRecommenderEmployee) {
                         Integer sysUserId = (Integer) mp.get("sysuser_id");
                         if (sysUserId != null && sysUserId > 0 && sysUserId == recommenderId.intValue()) {
                             recommenderMap.put("employeeid", mp.get("employeeid"));
@@ -1607,6 +1655,25 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             recommenderMap.put("custom_field_values", mp.get("custom_field_values"));
                             recommenderMap.put("auth_method", mp.get("auth_method"));
                             recommenderMap.put("employee_email", mp.get("email"));
+                            recommenderMap.put("is_first_post_user", false);
+
+                            if(allCandidateRecomRecord.containsKey(applicationId)){
+                                CandidateRecomRecordDO recomRecord = allCandidateRecomRecord.get(applicationId).get(0);
+
+                                // 因为申请里的推荐人只会保存分享链路的第一个分享者，所以可能发生：张三(员工)-->李四-->王五-->申请人
+                                // 此时申请的推荐人是张三，但是已经不是张三直接分享给他的，所以不算一度人脉
+                                // 只有当：张三(员工)-->申请人，的时候，才是一度人脉
+                                // 所以depth必须小于1，且申请人是员工
+
+                                // 1）逻辑走到这里的时候就代表推荐人是员工了
+                                // 2）所以只要确定是推荐者直接分享给申请人就行
+                                // 用申请ID查到对应的candidate_recom_record，申请中的推荐人ID就是candidate_recom_record的post_user_id
+                                // 如果对应的candidate_recom_record.depth（即分享链路深度），小于1，那就代表是，申请人看到的职位是推荐人直接分享给他的
+                                if (recomRecord.getDepth() <= 1  && recommenderId ==  recomRecord.getPostUserId()){
+                                    recommenderMap.put("is_first_post_user", true);
+                                }
+                            }
+
                             break;
                         }
                     }

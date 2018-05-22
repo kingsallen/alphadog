@@ -151,6 +151,7 @@ public class UserCompanyVisitReq extends TableImpl<UserCompanyVisitReqRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserCompanyVisitReq rename(String name) {
         return new UserCompanyVisitReq(name, null);
     }

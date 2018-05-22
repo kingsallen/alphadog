@@ -44,6 +44,7 @@ import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
+import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -210,7 +211,7 @@ public class WholeProfileService {
             logger.debug("WholeProfileService getResource before  constantDao.getCitiesByParentCodes : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<DictConstantRecord> constantRecords = constantDao
-                    .getCitiesByParentCodes(Arrays.asList(3109, 3105, 3102, 2105, 3120, 3115, 3114, 3119, 3120));
+                    .getCitiesByParentCodes(Arrays.asList(3109, 3105, 3102, 2105, 3120, 3115, 3114, 3119, 3120, 1102, 1103));
 
             logger.debug("WholeProfileService getResource after constantDao.getCitiesByParentCodes : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
@@ -220,7 +221,7 @@ public class WholeProfileService {
             logger.debug("WholeProfileService getResource after buildProfile : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             Future<Map<String, Object>> basicFuture = pool.startTast(() -> buildBasic(profileRecord, getProfileQuery(profileRecord.getId()), constantRecords));
-            Future<List<Map<String, Object>>> workexpsFuture = pool.startTast(() -> buildWorkexps(profileRecord, getProfileQuery(profileRecord.getId())));
+            Future<List<Map<String, Object>>> workexpsFuture = pool.startTast(() -> buildWorkexps(profileRecord, getProfileQuery(profileRecord.getId()), constantRecords));
             Future<List<Map<String, Object>>> educationsFuture = pool.startTast(() -> buildEducations(profileRecord, getProfileQuery(profileRecord.getId())));
             Future<List<Map<String, Object>>> projectexpsFuture = pool.startTast(() -> buildProjectexps(profileRecord, getProfileQuery(profileRecord.getId())));
             Future<List<Map<String, Object>>> buildLanguageFuture = pool.startTast(() -> buildLanguage(profileRecord, getProfileQuery(profileRecord.getId())));
@@ -619,6 +620,7 @@ public class WholeProfileService {
             profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
             profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
             profileEntity.improveWorks(profilePojo.getWorksRecords(), profileId);
+//            profileEntity.getCompleteness(0, null, profileId);
             profileEntity.reCalculateProfileCompleteness(profileId);
 
             try {
@@ -932,7 +934,7 @@ public class WholeProfileService {
         return list;
     }
 
-    private List<Map<String, Object>> buildWorkexps(ProfileProfileRecord profileRecord, Query query) {
+    private List<Map<String, Object>> buildWorkexps(ProfileProfileRecord profileRecord, Query query, List<DictConstantRecord> constantRecords) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         try {
             // 按照结束时间倒序
@@ -954,6 +956,23 @@ public class WholeProfileService {
                                 map.put("company_name", company.getName());
                                 map.put("company_logo", company.getLogo());
                                 map.put("company_id", company.getId().intValue());
+
+                                map.put("company_scale", company.getScale().intValue());
+                                map.put("company_property", company.getProperty().intValue());
+                                map.put("company_scale_name", "");
+                                map.put("company_property_name", "");
+                                for (DictConstantRecord constantRecord : constantRecords) {
+                                    if (constantRecord.getParentCode().intValue() == 1102
+                                            && constantRecord.getCode().intValue() == company.getScale().intValue()) {
+                                        map.put("company_scale_name", constantRecord.getName());
+                                        break;
+                                    }
+                                    if (constantRecord.getParentCode().intValue() == 1103
+                                            && constantRecord.getCode().intValue() == company.getProperty().intValue()) {
+                                        map.put("company_property_name", constantRecord.getName());
+                                        break;
+                                    }
+                                }
                                 break;
                             }
                         }
@@ -1025,6 +1044,7 @@ public class WholeProfileService {
             map.put("mobile", userRecord.getMobile());
             map.put("email", userRecord.getEmail());
             map.put("name", userRecord.getName());
+            map.put("nickname",userRecord.getNickname());
         }
         if (lastWorkExp != null) {
             if (company != null) {
@@ -1063,6 +1083,8 @@ public class WholeProfileService {
             map.put("motto", basicRecord.getMotto());
             if (basicRecord.getBirth() != null) {
                 map.put("birth", DateUtils.dateToNormalDate(basicRecord.getBirth()));
+                String constellation = ConstellationUtil.getConstellation(basicRecord.getBirth());
+                map.put("constellation",constellation);
             }
             map.put("self_introduction", basicRecord.getSelfIntroduction());
 
