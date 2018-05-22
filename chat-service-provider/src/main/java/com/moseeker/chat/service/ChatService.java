@@ -595,7 +595,6 @@ public class ChatService {
 
             //请求微信服务器下载
             Response response = UpDownLoadUtil.downloadMediaFileFromWechat(accessToken, serverId);
-
             //根据reponse响应码处理业务
             int status = response.getStatus();
             if (status == RespnoseUtil.PROGRAM_EXCEPTION.getStatus()) {
@@ -614,10 +613,7 @@ public class ChatService {
             String voiceLocalUrl = downloadMediaFile.getString("fileLocalUrl");
             String fileAddress = downloadMediaFile.getString("file_address");
             String fileName = downloadMediaFile.getString("file_name");
-            // 执行ffmpeg转换语音格式 webroot为转码工具绝对路径
-            //voiceLocalUrl = VoiceFormConvertUtil.amrToMp3("123", voiceLocalUrl);
-
-            //jave api 执行语音格式转换, 此方式会报异常，但可以转换成功
+            // 执行ffmpeg转换语音格式
             voiceLocalUrl = VoiceFormConvertUtil.amrToMp3(voiceLocalUrl, fileAddress, fileName);
 
             if (StringUtils.isNullOrEmpty(voiceLocalUrl)) {
