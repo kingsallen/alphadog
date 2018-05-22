@@ -76,6 +76,11 @@ public class CrawlerController {
 			vu.addIntTypeValidate("项目编号", form.getAppid(), null, null, 0, 100);
 			if (form.getType() == 4) {
 				vu.addRequiredStringValidate("token", form.getToken(), null, null);
+			} else if(form.getType() == 10) {
+				vu.addRequiredStringValidate("token", form.getToken(), null, null);
+				vu.addRequiredStringValidate("version", form.getVersion(), null, null);
+				vu.addRequiredStringValidate("maimai_appid", form.getMaimai_appid(), null, null);
+				vu.addRequiredStringValidate("unionid", form.getUnionid(), null, null);
 			} else {
 				vu.addRequiredStringValidate("账号", form.getUsername(), null, null);
 				vu.addRequiredStringValidate("密码", form.getPassword(), null, null);
