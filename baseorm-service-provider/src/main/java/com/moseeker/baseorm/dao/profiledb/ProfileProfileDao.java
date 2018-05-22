@@ -1160,6 +1160,22 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         logger.debug("getResourceByApplication:=============={}:{}", "allUser耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
+        //所有的user_user
+        List<Map<String, Object>> allApplierEmployee = new ArrayList<>();
+        if (!filterTable(filter, "user_employee") && applierIds.size() > 0) {
+            allApplierEmployee = create
+                    .select()
+                    .from(UserEmployee.USER_EMPLOYEE)
+                    .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.in(applierIds))
+                    .and(USER_EMPLOYEE.DISABLE.eq((byte) 0))
+                    .and(USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
+                    .and(USER_EMPLOYEE.STATUS.eq(0))
+                    .fetchMaps();
+        }
+
+        logger.debug("getResourceByApplication:=============={}:{}", "allApplierEmployee耗时", System.currentTimeMillis() - startTime);
+        startTime = System.currentTimeMillis();
+
         //所有的user_thirdparty_user
         List<Map<String, Object>> allThirdPartyUser = new ArrayList<>();
         if (!filterTable(filter, "user_thirdparty_user") && applierIds.size() > 0) {
@@ -1462,9 +1478,9 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         startTime = System.currentTimeMillis();
 
         //recommender employee
-        List<Map<String, Object>> allEmployee = new ArrayList<>();
+        List<Map<String, Object>> allRecommenderEmployee = new ArrayList<>();
         if (!filterTable(filter, "recommender") && recommenderIds.size() > 0) {
-            allEmployee = create
+            allRecommenderEmployee = create
                     .select()
                     .from(USER_EMPLOYEE)
                     .where(USER_EMPLOYEE.SYSUSER_ID.in(recommenderIds))
@@ -1569,6 +1585,18 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 }
             }
 
+            //all from userdb.user_employee
+            if (!filterTable(filter, "user_employee")) {
+                buildMap(filter, map, "user_employee", new HashMap<>());
+                for (Map<String, Object> mp : allApplierEmployee) {
+                    Integer sysuser_id = (Integer) mp.get("sysuser_id");
+                    if (sysuser_id != null && sysuser_id.intValue() > 0 && sysuser_id.intValue() == applierId.intValue()) {
+                        buildMap(filter, map, "user_employee", mp);
+                        break;
+                    }
+                }
+            }
+
 
             //all from profiledb.user_thirdparty_user # ATS login
             if (!filterTable(filter, "user_thirdparty_user")) {
@@ -1619,7 +1647,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         }
                     }
 
-                    for (Map<String, Object> mp : allEmployee) {
+                    for (Map<String, Object> mp : allRecommenderEmployee) {
                         Integer sysUserId = (Integer) mp.get("sysuser_id");
                         if (sysUserId != null && sysUserId > 0 && sysUserId == recommenderId.intValue()) {
                             recommenderMap.put("employeeid", mp.get("employeeid"));
