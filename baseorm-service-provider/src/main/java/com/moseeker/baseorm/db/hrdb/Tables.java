@@ -4,66 +4,7 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.HrAiConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
-import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
-import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
-import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
-import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
-import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
-import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
-import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
-import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
-import com.moseeker.baseorm.db.hrdb.tables.HrNps;
-import com.moseeker.baseorm.db.hrdb.tables.HrNpsRecommend;
-import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
-import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrResource;
-import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
-import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
-import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeam_20180118Chendi;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
-import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxModule;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxNewsReply;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat_20180127chendi;
+import com.moseeker.baseorm.db.hrdb.tables.*;
 
 import javax.annotation.Generated;
 
@@ -380,4 +321,8 @@ public class Tables {
      * 微信消息通知同步状态
      */
     public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
+    /**
+     * The table <code>hrdb.hr_wx_hr_chat_voice</code>.
+     */
+    public static final HrWxHrChatVoice HR_WX_HR_CHAT_VOICE = HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE;
 }

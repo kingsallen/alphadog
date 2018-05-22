@@ -41,6 +41,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -659,9 +660,9 @@ public class ChatDao {
                 ChatVO chatVO = new ChatVO();
                 chatVO.setId(hrWxHrChatDO.getId());
                 chatVO.setRoomId(hrWxHrChatDO.getChatlistId());
-                chatVO.setCreate_time(hrWxHrChatDO.getCreateTime());
+                chatVO.setCreateTime(hrWxHrChatDO.getCreateTime());
                 chatVO.setOrigin(hrWxHrChatDO.getOrigin());
-                chatVO.setPicUrl(hrWxHrChatDO.getPicUrl());
+                chatVO.setAssetUrl(hrWxHrChatDO.getPicUrl());
                 chatVO.setBtnContent(hrWxHrChatDO.getBtnContent());
                 chatVO.setContent(hrWxHrChatDO.getContent());
                 chatVO.setMsgType(hrWxHrChatDO.getMsgType());
@@ -753,5 +754,15 @@ public class ChatDao {
 
     public void updateChatRoom(HrWxHrChatListRecord hrWxHrChatListRecord) {
         hrWxHrChatListDao.updateRecord(hrWxHrChatListRecord);
+    }
+    /**
+     * @param
+     * @return
+     * @description 通过roomid获取公司id
+     * @author cjm
+     * @date 2018/5/12
+     */
+    public Result getCompanyIdAndTokenByRoomId(int roomId) {
+        return hrWxHrChatListDao.getCompanyIdAndTokenByRoomId(roomId);
     }
 }

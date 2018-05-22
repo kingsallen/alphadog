@@ -10,6 +10,7 @@ import com.moseeker.thrift.gen.chat.service.ChatService.Iface;
 import com.moseeker.thrift.gen.chat.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
+import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -190,5 +191,41 @@ public class ChatThriftService implements Iface {
     @Override
     public void roleLeaveChatRoom(int roleId, byte speaker) throws TException {
         chatService.roleLeaveChatRoom(roleId, speaker);
+    }
+
+    @Override
+    public Response pullVoiceFile(String serverId, int roomId, int userId, int hrId) throws BIZException, TException {
+        try {
+            return chatService.pullVoiceFile(serverId, roomId, userId, hrId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response clearVoiceLimitFrequency(int companyId) throws BIZException, TException {
+        try {
+            return chatService.clearVoiceLimitFrequency(companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response queryVoiceLimitFrequency(int companyId) throws BIZException, TException {
+        try {
+            return chatService.queryVoiceLimitFrequency(companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response sendWarnEmail(int hrId) throws BIZException, TException {
+        try {
+            return chatService.sendWarnEmail(hrId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 }
