@@ -39,7 +39,9 @@ public class VoiceFormConvertUtil {
             if (file.exists()) {
                 logger.info("fileAddress is exists!");
             }
-            Process p = run.exec("/usr/bin/ffmpeg -i " + fileName + " " + targetFileName, null, new File(fileAddress));
+//            Process p = run.exec("/usr/bin/ffmpeg -i " + fileName + " " + targetFileName, null, new File(fileAddress));
+            Process p = run.exec("/usr/bin/ffmpeg -i " + sourcePath + " " + fileAddress + File.separator + targetFileName);
+            logger.info("==============/usr/bin/ffmpeg -i " + sourcePath + " " + fileAddress + "/" + targetFileName);
             logger.info("===================转换结束====================");
             //释放进程
             p.getOutputStream().close();
@@ -51,7 +53,7 @@ public class VoiceFormConvertUtil {
             if (file1.exists()) {
                 logger.info("file exist! file_name:{}", file.getAbsoluteFile());
             }
-            File sourceFile = new File(fileAddress + fileName);
+            File sourceFile = new File(fileAddress + File.separator + fileName);
             if(sourceFile.exists()){
                 sourceFile.delete();
                 logger.info("==============文件已删除==============");
