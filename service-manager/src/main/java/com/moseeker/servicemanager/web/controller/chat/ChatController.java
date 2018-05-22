@@ -396,7 +396,7 @@ public class ChatController {
             int hrId = params.getInt("hrId");
             int userId = params.getInt("userId");
             int roomId = params.getInt("roomId");
-
+            logger.info("=========serverId:{},hrId:{},userId:{},roomId:{}===============================", serverId, hrId, userId, roomId);
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addRequiredValidate("素材id", serverId, null, null);
             validateUtil.addStringLengthValidate("素材id", serverId, null, null, 1, 256);
@@ -405,13 +405,15 @@ public class ChatController {
             validateUtil.addIntTypeValidate("hrid", hrId, null, null, 1, Integer.MAX_VALUE);
 
             String message = validateUtil.validate();
-
+            logger.info("=========message:{}===============================", message);
             if (StringUtils.isBlank(message)) {
                 Response urlResponse = chatService.pullVoiceFile(serverId, roomId, userId, hrId);
+                logger.info("=================" + urlResponse.getData() + ">>>" + urlResponse.getStatus());
                 Integer status = urlResponse.getStatus();
                 String voiceLocalUrl = null;
                 if (0 == status) {
                     voiceLocalUrl = JSONObject.parseObject(urlResponse.getData()).getString("voiceLocalUrl");
+                    logger.info("=========voiceLocalUrl:{}===============================", voiceLocalUrl);
                     File file = new File(voiceLocalUrl);
                     FileInputStream in = new FileInputStream(file);
                     long fileLength = file.length();
@@ -431,6 +433,7 @@ public class ChatController {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("fileBytes", returnByte);
                     jsonObject.put("fileLength", fileLength);
+                    logger.info("=========jsonObject:{}===============================", jsonObject);
                     return ResponseLogNotification.successJson(request, jsonObject);
                 }
                 return ResponseLogNotification.fail(request, urlResponse);
@@ -439,6 +442,7 @@ public class ChatController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("================拉取出错==================");
             return ResponseLogNotification.failJson(request, e);
         }
     }
