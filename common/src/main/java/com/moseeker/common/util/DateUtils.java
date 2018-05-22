@@ -352,4 +352,21 @@ public class DateUtils {
         nomalDateToDate(date);
         return date;
     }
+
+    /**
+     * 截取一定长度的日期格式，年月日之间用.隔开
+     * @param date
+     * @param length
+     * @return
+     * @throws ParseException
+     */
+    public static String dateFormat(String date, int length){
+        if (StringUtils.isNullOrEmpty(date)) {
+            return "";
+        }
+        date = date.substring(0,length);
+        date = date.replace("-",".");
+        return date;
+    }
+
 }

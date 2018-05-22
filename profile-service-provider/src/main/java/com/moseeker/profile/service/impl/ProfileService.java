@@ -48,6 +48,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.entity.pojo.profile.*;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
@@ -56,6 +57,7 @@ import com.moseeker.profile.utils.DictCode;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
@@ -153,6 +155,9 @@ public class ProfileService {
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
             .getService(JobApplicationServices.Iface.class);
 
@@ -192,6 +197,8 @@ public class ProfileService {
         ProfileProfileRecord record = BeanUtils.structToDB(struct, ProfileProfileRecord.class);
         record = dao.addRecord(record);
 
+        profileCompanyTagService.handlerCompanyTag(record.getId(),struct.getUser_id());
+
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
@@ -228,6 +235,25 @@ public class ProfileService {
         }
     }
 
+    public Response getProfileTokenDecrypt(String token) throws TException {
+        try {
+            String info = CommonUtils.stringDecrypt(token);
+            Map<String, String> params = new HashMap<>();
+            String[] tokenInfo = info.split("&");
+            for (int i =0; i<tokenInfo.length ; i++){
+                String str = tokenInfo[i];
+                String[] strSplit = str.split("=");
+                if(strSplit!=null && strSplit.length==2){
+                    params.put(strSplit[0],strSplit[1]);
+                }
+            }
+            return  ResponseUtils.success(params);
+        } catch (Exception e) {
+            logger.error("简历详情token解析失败：token：{}；e.getMessage:{}", token, e.getMessage());
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+    }
+
     public Response getPagination(Query query) throws TException {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
@@ -238,7 +264,9 @@ public class ProfileService {
     @Transactional
     public Response postResources(List<Profile> structs) throws TException {
         List<ProfileProfileRecord> records = dao.addAllRecord(BeanUtils.structToDB(structs, ProfileProfileRecord.class));
-
+        for(Profile profile:structs){
+            profileCompanyTagService.handlerCompanyTag(profile.getId(),profile.getUser_id());
+        }
         return ResponseUtils.success("1");
     }
 
@@ -246,6 +274,9 @@ public class ProfileService {
     public Response putResources(List<Profile> structs) throws TException {
         int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileProfileRecord.class));
         if (ArrayUtils.contains(result, 1)) {
+            for(Profile profile:structs){
+                profileCompanyTagService.handlerCompanyTag(profile.getId(),profile.getUser_id());
+            }
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -255,6 +286,9 @@ public class ProfileService {
     public Response delResources(List<Profile> structs) throws TException {
         int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileProfileRecord.class));
         if (ArrayUtils.contains(result, 1)) {
+            for(Profile profile:structs){
+                profileCompanyTagService.handlerCompanyTag(profile.getId(),profile.getUser_id());
+            }
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
@@ -264,6 +298,7 @@ public class ProfileService {
     public Response putResource(Profile struct) throws TException {
         int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileProfileRecord.class));
         if (result > 0) {
+            profileCompanyTagService.handlerCompanyTag(struct.getId(),struct.getUser_id());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -273,6 +308,7 @@ public class ProfileService {
     public Response delResource(Profile struct) throws TException {
         int result = dao.deleteRecord(BeanUtils.structToDB(struct, ProfileProfileRecord.class));
         if (result > 0) {
+            profileCompanyTagService.handlerCompanyTag(struct.getId(),struct.getUser_id());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);

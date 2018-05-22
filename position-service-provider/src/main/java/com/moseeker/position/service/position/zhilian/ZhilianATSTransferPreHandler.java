@@ -44,6 +44,11 @@ public class ZhilianATSTransferPreHandler extends AbstractTransferPreHandler<Pos
      */
     @Override
     public void handle(PositionZhilianForm positionZhilianForm, JobPositionDO moseekerPosition) {
+        if(StringUtils.isNullOrEmpty(positionZhilianForm.getAddressName())
+                || !StringUtils.isEmptyList(positionZhilianForm.getAddress())){
+            return;
+        }
+
         List<JobPositionCityDO> dictCity = positionCityDao.getPositionCitysByPid(moseekerPosition.getId());
 
         if (StringUtils.isEmptyList(dictCity)) {

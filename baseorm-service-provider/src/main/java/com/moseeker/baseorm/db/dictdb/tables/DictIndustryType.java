@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictIndustryType extends TableImpl<DictIndustryTypeRecord> {
 
-    private static final long serialVersionUID = -1499614312;
+    private static final long serialVersionUID = -1109793680;
 
     /**
      * The reference instance of <code>dictdb.dict_industry_type</code>
@@ -58,6 +58,26 @@ public class DictIndustryType extends TableImpl<DictIndustryTypeRecord> {
      * The column <code>dictdb.dict_industry_type.name</code>. 字典name
      */
     public final TableField<DictIndustryTypeRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "字典name");
+
+    /**
+     * The column <code>dictdb.dict_industry_type.company_img</code>. 行业背景图，公司背景
+     */
+    public final TableField<DictIndustryTypeRecord, String> COMPANY_IMG = createField("company_img", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "行业背景图，公司背景");
+
+    /**
+     * The column <code>dictdb.dict_industry_type.job_img</code>. 行业背景图，职位背景
+     */
+    public final TableField<DictIndustryTypeRecord, String> JOB_IMG = createField("job_img", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "行业背景图，职位背景");
+
+    /**
+     * The column <code>dictdb.dict_industry_type.team_img</code>. 行业背景图，团队背景
+     */
+    public final TableField<DictIndustryTypeRecord, String> TEAM_IMG = createField("team_img", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "行业背景图，团队背景");
+
+    /**
+     * The column <code>dictdb.dict_industry_type.pc_img</code>. 行业背景图，pc背景
+     */
+    public final TableField<DictIndustryTypeRecord, String> PC_IMG = createField("pc_img", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "行业背景图，pc背景");
 
     /**
      * Create a <code>dictdb.dict_industry_type</code> table reference

@@ -9,7 +9,6 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.ApplyTypeAwardFrom;
 import com.moseeker.servicemanager.web.controller.util.Params;
-import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
@@ -23,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * Created by eddie on 2017/3/7.
@@ -144,6 +142,45 @@ public class UserEmployeeController {
         try {
             service.addEmployeeAward(form.getApplicationIds(), form.getEventType());
             return ResponseLogNotification.successJson(request,"success");
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+     获取
+     */
+    @RequestMapping(value="/api/talentpool/forward/employee", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEmailValidate(HttpServletRequest request,HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId=Integer.parseInt((String)params.get("company_id"));
+            String email=(String)params.get("email");
+            String page=(String)params.get("page_num");
+            String pageSize=(String)params.get("page_size");
+            if(StringUtils.isNullOrEmpty(page)){
+                page="1";
+            }
+            if(StringUtils.isNullOrEmpty(pageSize)){
+                pageSize="10";
+            }
+            Response res=service.getValidateUserEmployee(companyId,email,Integer.parseInt(page),Integer.parseInt(pageSize));
+            return ResponseLogNotification.success(request,res);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+    获取最近转发人员
+     */
+    @RequestMapping(value="/api/talentpool/forward/employee/history", method = RequestMethod.GET)
+    @ResponseBody
+    public String getUserEmployeePast(HttpServletRequest request,  HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int hrId=Integer.parseInt((String)params.get("hr_id"));
+            Response res=service.getPastUserEmployee(hrId);
+            return ResponseLogNotification.success(request,res);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }

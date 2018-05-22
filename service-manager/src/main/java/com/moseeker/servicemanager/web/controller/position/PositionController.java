@@ -1041,4 +1041,20 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/api/position", method = RequestMethod.POST)
+    @ResponseBody
+    public String addPosition( HttpServletRequest request, HttpServletResponse response){
+        try{
+            Position position = ParamUtils.initModelForm(request, Position.class);
+            if(position==null){
+                return ResponseLogNotification.fail(request, "职位数据不能为空");
+            }
+            Response result=null;
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

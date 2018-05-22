@@ -2,18 +2,32 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.UserWxEntity;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
 import com.moseeker.useraccounts.domain.AwardEntity;
 import com.moseeker.useraccounts.infrastructure.AwardRepository;
 import com.moseeker.useraccounts.service.aggregate.ApplicationsAggregateId;
@@ -25,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +61,14 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     AwardRepository awardRepository;
+
+    @Autowired
+    private UserWxEntity userWxEntity;
+
+
+
+    @Resource(name = "cacheClient")
+    private RedisClient client;
 
     public Response getUserEmployee(CommonQuery query) throws TException {
         return getResource(query);
@@ -217,4 +240,25 @@ public class UserEmployeeServiceImpl {
         AwardEntity awardEntity = awardRepository.loadAwardEntity(applicationsAggregateId);
         awardEntity.addAward();
     }
+    /*
+     获取经过认证的员工信息
+     */
+    public UserEmployeeVOPageVO  getUserEmployeeEmailValidate(int companyId, String email, int pageNum, int pageSize){
+        UserEmployeeVOPageVO VO=userWxEntity.getFordEmployeeData(companyId,email,pageNum,pageSize);
+        return VO;
+    }
+
+
+    /*
+     获取最近转发过的员工
+     */
+    public List<Map<String,Object>> getPastUserEmployeeEmail(int companyId){
+        String result=client.get(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),String.valueOf(companyId));
+        if(StringUtils.isNotNullOrEmpty(result)){
+            List<Map<String,Object>> list=(List<Map<String,Object>>)JSON.parse(result);
+            return list;
+        }
+        return new ArrayList<>();
+    }
+
 }

@@ -79,9 +79,16 @@ public final class ConstantErrorCodeMessage {
     public static final String COMPANY_STATUS_NOT_AUTHORITY = "{'status':34001,'message':'免费公司没有权限'}";
     public static final String COMPANY_CONF_TALENTPOOL_NOT = "{'status':34002,'message':'该公司还没有开启智能人才库'}";
     public static final String HR_NOT_IN_COMPANY = "{'status':34003,'message':'该hr不属于该company_id'}";
-    public static final String TALENT_POOL_ACCOUNT_STATUS = "{'status':34002,'message':'子账号没有操作权限'}";
-
+    public static final String TALENT_POOL_ACCOUNT_STATUS = "{'status':34005,'message':'子账号没有操作权限'}";
+    public static final String COMPANY_NOT_MU = "{'status':34006,'message':'company_id不为母公司编号'}";
     public static final String COMPANY_SUPER_REPEART_NAME = "{'status':33001, 'message':'和超级账号重名'}";
+    public static final String TALENTPOOL_EMAIL_BALANCE = "{'status':34007, 'message':'邮件的额度不足'}";
+    public static final String TALENTPOOL_EMAIL_NOUSEREMPLOYEE = "{'status':34008, 'message':'没有选中收件的员工'}";
+    public static final String TALENTPOOL_EMAIL_NOCONFIGEMAIL = "{'status':34009, 'message':'该企业没有配置邮件'}";
+    public static final String TALENTPOOL_EMAIL_NOUSERPROFILE = "{'status':34010, 'message':'没有符合条件的简历'}";
+    public static final String EMAIL_SWITCH_FAILED = "{'status':34011,'message':'手动触发，开关不能关闭!'}";
+    public static final String EMAIL_CONTEXT_FAILED = "{'status':34012,'message':'正文内容含有敏感词或超过1000个字!'}";
+    public static final String EMAIL_INSCRIBE_FAILED = "{'status':34012,'message':'落款含有敏感词或超过50个字!'}";
 
     // 申请服务ERRCODE说明定义 4字头
     public static final String APPLICATION_VALIDATE_COUNT_CHECK = "{'status':41001,'message':'本月您已达到投递次数上限!'}";
@@ -145,6 +152,12 @@ public final class ConstantErrorCodeMessage {
     public static final String REQUEST_SCRAPER_CONNECTION_ERROR="{'status':52001,'message':'访问scraper连接错误！'}";
     public static final String REQUEST_SCRAPER_URL_NOT_EXIST="{'status':52002,'message':'scraper服务URL不存在！'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
+
+    public static final String POSITION_TITLE_NOT_EMPTY="{'status':52003,'message':'职位标题不能为空!'}";
+    public static final String POSITION_ACCOUNTABILITIES_NOT_EMPTY="{'status':52004,'message':'职位描述不能为空!'}";
+    public static final String POSITION_REQUIREMENT_NOT_EMPTY="{'status':52005,'message':'任职条件不能为空!'}";
+    public static final String POSITION_CITY_NOT_EMPTY="{'status':52006,'message':'工作地点不能为空!'}";
+
 
     //职位同步
     public static final String POSITION_SYNC_VERIFY_TIMEOUT = "{'status':61001,'message':'验证已超时，职位同步失败'}";
