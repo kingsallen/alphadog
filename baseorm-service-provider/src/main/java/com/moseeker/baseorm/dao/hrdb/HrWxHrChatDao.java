@@ -7,6 +7,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.chat.struct.ChatVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
+import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
@@ -48,10 +49,7 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
         }
     }
 
-    public List<ChatVO> listMessage(int roomId, int chatId, int pageSize) {
-
-        List<ChatVO> chatVOList = new ArrayList<>();
-
+    public Result listMessage(int roomId, int chatId, int pageSize) {
         Result chatRecordResult = null;
         if (chatId > 0) {
             chatRecordResult = create.select(HrWxHrChat.HR_WX_HR_CHAT.ORIGIN, HrWxHrChat.HR_WX_HR_CHAT.SPEAKER, HrWxHrChat.HR_WX_HR_CHAT.PIC_URL,
@@ -75,11 +73,10 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
                     .limit(pageSize)
                     .fetch();
         }
-        if (chatRecordResult != null && chatRecordResult.size() > 0) {
-            chatVOList = BeanUtils.DBToStruct(ChatVO.class, chatRecordResult);
-        }
-
-        return chatVOList;
+//        if (chatRecordResult != null && chatRecordResult.size() > 0) {
+//            chatVOList = BeanUtils.DBToStruct(ChatVO.class, chatRecordResult);
+//        }
+        return chatRecordResult;
     }
 
     /**
