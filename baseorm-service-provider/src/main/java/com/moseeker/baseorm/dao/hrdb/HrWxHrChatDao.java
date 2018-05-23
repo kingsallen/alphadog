@@ -2,6 +2,7 @@ package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.chat.struct.ChatVO;
@@ -102,5 +103,29 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
         return create.selectFrom(HrWxHrChat.HR_WX_HR_CHAT)
                 .where(HrWxHrChat.HR_WX_HR_CHAT.ID.eq(chatId))
                 .fetchOne();
+    }
+
+    /**
+     * 分页查找聊天室下的聊天记录
+     *
+     * @param roomId     聊天室id
+     * @param startIndex 分页开始下标
+     * @param pageSize   每页大小
+     * @return Result
+     * @author cjm
+     * @date 2018/5/17
+     */
+    public Result listChat(int roomId, int startIndex, int pageSize) {
+        return create.select(HrWxHrChat.HR_WX_HR_CHAT.ID, HrWxHrChat.HR_WX_HR_CHAT.CONTENT, HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME,
+                HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE, HrWxHrChat.HR_WX_HR_CHAT.PIC_URL, HrWxHrChat.HR_WX_HR_CHAT.BTN_CONTENT,
+                HrWxHrChat.HR_WX_HR_CHAT.SPEAKER, HrWxHrChat.HR_WX_HR_CHAT.ORIGIN, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.SERVER_ID,
+                HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.DURATION, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.LOCAL_URL)
+                .from(HrWxHrChat.HR_WX_HR_CHAT)
+                .leftJoin(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE)
+                .on(HrWxHrChat.HR_WX_HR_CHAT.ID.eq(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.CHAT_ID))
+                .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
+                .orderBy(HrWxHrChat.HR_WX_HR_CHAT.ID.desc(), HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME.desc())
+                .limit(startIndex, pageSize)
+                .fetch();
     }
 }

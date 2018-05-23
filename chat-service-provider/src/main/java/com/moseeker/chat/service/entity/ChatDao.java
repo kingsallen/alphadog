@@ -787,4 +787,18 @@ public class ChatDao {
         chatRoom = hrWxHrChatListDao.getData(queryUtil);
         return chatRoom;
     }
+
+
+    /**
+     * 分页查找聊天室下的聊天记录
+     *
+     * @param roomId   聊天室编号  @return 聊天内容集合
+     * @param pageNo   页码
+     * @param pageSize 分页信息
+     * @author cjm
+     */
+    public Result listChatMsg(int roomId, int pageNo, int pageSize) {
+        int startIndex = (pageNo - 1) * pageSize;
+        return hrWxHrChatDao.listChat(roomId, startIndex, pageSize);
+    }
 }

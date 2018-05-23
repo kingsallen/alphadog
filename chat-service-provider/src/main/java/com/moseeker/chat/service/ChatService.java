@@ -414,7 +414,7 @@ public class ChatService {
 
         int count = 0;
         Future<Integer> countFuture = pool.startTast(() -> chaoDao.countChatLog(roomId));
-        Future chatFuture = pool.startTast(() -> chaoDao.listChat(roomId, pageNo, pageSize));
+        Future chatFuture = pool.startTast(() -> chaoDao.listChatMsg(roomId, pageNo, pageSize));
         try {
             count = countFuture.get();
         } catch (InterruptedException | ExecutionException e) {
