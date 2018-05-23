@@ -74,7 +74,7 @@ public class VoiceFormConvertUtil {
             //run调用lame解码器最后释放内存
             run.freeMemory();
         }
-        return targetFileName;
+        return fileAddress + targetFileName;
     }
 //    /**
 //     * jave api 转换
