@@ -52,18 +52,24 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
 
         List<ChatVO> chatVOList = new ArrayList<>();
 
-        Result<HrWxHrChatRecord> chatRecordResult = null;
+        Result chatRecordResult = null;
         if (chatId > 0) {
-            chatRecordResult = create
-                    .selectFrom(HrWxHrChat.HR_WX_HR_CHAT)
+            chatRecordResult = create.select(HrWxHrChat.HR_WX_HR_CHAT.ORIGIN, HrWxHrChat.HR_WX_HR_CHAT.SPEAKER, HrWxHrChat.HR_WX_HR_CHAT.PIC_URL,
+                            HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE, HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME, HrWxHrChat.HR_WX_HR_CHAT.ID,
+                            HrWxHrChat.HR_WX_HR_CHAT.CONTENT,HrWxHrChat.HR_WX_HR_CHAT.BTN_CONTENT,HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID,
+                            HrWxHrChat.HR_WX_HR_CHAT.PID, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.SERVER_ID, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.DURATION)
+                    .from(HrWxHrChat.HR_WX_HR_CHAT).leftJoin(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE).on(HrWxHrChat.HR_WX_HR_CHAT.ID.eq(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.CHAT_ID))
                     .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
                     .and(HrWxHrChat.HR_WX_HR_CHAT.ID.lt(chatId))
                     .orderBy(HrWxHrChat.HR_WX_HR_CHAT.ID.desc())
                     .limit(pageSize)
                     .fetch();
         } else {
-            chatRecordResult = create
-                    .selectFrom(HrWxHrChat.HR_WX_HR_CHAT)
+            chatRecordResult = create.select(HrWxHrChat.HR_WX_HR_CHAT.ORIGIN, HrWxHrChat.HR_WX_HR_CHAT.SPEAKER, HrWxHrChat.HR_WX_HR_CHAT.PIC_URL,
+                            HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE, HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME, HrWxHrChat.HR_WX_HR_CHAT.ID,
+                            HrWxHrChat.HR_WX_HR_CHAT.CONTENT,HrWxHrChat.HR_WX_HR_CHAT.BTN_CONTENT,HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID,
+                            HrWxHrChat.HR_WX_HR_CHAT.PID, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.SERVER_ID, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.DURATION)
+                    .from(HrWxHrChat.HR_WX_HR_CHAT).leftJoin(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE).on(HrWxHrChat.HR_WX_HR_CHAT.ID.eq(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.CHAT_ID))
                     .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
                     .orderBy(HrWxHrChat.HR_WX_HR_CHAT.ID.desc())
                     .limit(pageSize)

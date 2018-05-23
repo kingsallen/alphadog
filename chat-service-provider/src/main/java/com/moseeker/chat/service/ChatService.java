@@ -561,8 +561,8 @@ public class ChatService {
                 hrWxHrChatVoiceDO.setUpdateTime(date);
                 hrChatVoiceDao.addData(hrWxHrChatVoiceDO);
                 //下载语音文件并更新数据库信息
-//                pool.startTast(() -> downloadVoiceFile(chat, chatId));
-                downloadVoiceFile(chat, chatId);
+                pool.startTast(() -> downloadVoiceFile(chat, chatId));
+//                downloadVoiceFile(chat, chatId);
             }
 
             logger.info("saveChat after saveChat chatDO:{}", chatDO);
@@ -911,7 +911,7 @@ public class ChatService {
                 });
             }
             chatHistory.setChatList(chatVOList);
-            if (count > chatVOList.size()) {
+            if (chatVOList != null && count > chatVOList.size()) {
                 chatHistory.setHasMore(true);
             } else {
                 chatHistory.setHasMore(false);
