@@ -190,6 +190,8 @@ public final class ConstantErrorCodeMessage {
     public static final String CANT_SET_LEAVE_TO_MOBOT = "{'status':91002,'message':'尚未采购该功能，详情请联系您的客户成功顾问。'}";
     public static final String NO_AUTH_SET_LEAVE_TO_MOBOT = "{'status':91002,'message':'子账号没有权限设置该功能。'}";
 
+    public static final String FILE_TOO_BIG = "{'status':91004,'message':'文件长度过大。'}";
+
     //APPBS错误代码61000
 
 
