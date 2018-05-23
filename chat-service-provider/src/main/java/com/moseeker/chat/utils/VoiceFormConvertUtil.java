@@ -3,7 +3,9 @@ package com.moseeker.chat.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * 语音格式转换工具
@@ -41,6 +43,13 @@ public class VoiceFormConvertUtil {
             }
 //            Process p = run.exec("/usr/bin/ffmpeg -i " + fileName + " " + targetFileName, null, new File(fileAddress));
             Process p = run.exec("/usr/bin/ffmpeg -i " + sourcePath + " " + fileAddress + File.separator + targetFileName);
+            int ptr;
+            InputStream in = new BufferedInputStream(p.getInputStream());
+            StringBuffer buffer = new StringBuffer();
+            while( (ptr = in.read()) != -1 ) {
+                buffer.append((char)ptr);
+            }
+            logger.info("runtime exec result:{}", buffer.toString());
             logger.info("==============/usr/bin/ffmpeg -i " + sourcePath + " " + fileAddress + "/" + targetFileName);
             logger.info("===================转换结束====================");
             //释放进程
