@@ -1174,14 +1174,16 @@ public class ChatService {
 
             // 向微信服务器请求下载次数清零
             JSONObject response = clearVoiceLimitFromWechat(accessToken, appId);
-            logger.info("=================response===================", response);
+
             if (null == response) {
-                logger.info("===============当前公众号语音下载次数清零失败,companyId:{}=================", companyId);
+                logger.info("===============当前公众号语音下载次数清零失败,companyId:{}, respose为null=================", companyId);
                 return ResponseUtils.fail(VoiceErrorEnum.VOICE_DOWNLOAD_LIMIT_CLEAR_FAILED.getCode(), VoiceErrorEnum.VOICE_DOWNLOAD_LIMIT_CLEAR_FAILED.getMsg());
             } else if (!"0".equals(response.get("errcode").toString())) {
                 logger.info("===============当前公众号语音下载次数清零失败,companyId:{}=================", companyId);
+                logger.info("=====================errmsg:{}=======================", response.get("errmsg"));
                 return ResponseUtils.fail(VoiceErrorEnum.VOICE_DOWNLOAD_LIMIT_CLEAR_FAILED.getCode(), String.valueOf(response.get("errmsg")));
             }
+            logger.info("==========================errcode:{}=================================", response.get("errcode"));
             // 微信清零完成后修改redis中数据状态
             String clearObjectJson = redisClient.get(Constant.APPID_ALPHADOG, VOICE_CLEAR_TIMES, String.valueOf(companyId));
             JSONObject clearObject = null;
