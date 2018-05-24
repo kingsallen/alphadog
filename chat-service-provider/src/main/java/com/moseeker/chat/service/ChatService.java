@@ -1197,6 +1197,10 @@ public class ChatService {
                 clearObject.put("clear_times", 1);
                 clearObject.put("warn_email_send_state", 0);
             }
+            String frequency = redisClient.get(Constant.APPID_ALPHADOG, VOICE_DOWNLOAD_FREQUENCY, String.valueOf(companyId));
+            if(StringUtils.isNotNullOrEmpty(frequency)){
+                redisClient.set(Constant.APPID_ALPHADOG, VOICE_DOWNLOAD_FREQUENCY, String.valueOf(companyId), "0");
+            }
             redisClient.set(Constant.APPID_ALPHADOG, VOICE_CLEAR_TIMES, String.valueOf(companyId), JSONObject.toJSONString(clearObject));
             clearObject.remove("warn_email_send_state");
             return ResponseUtils.success(clearObject);
