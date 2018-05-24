@@ -10,6 +10,7 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.ApplyTypeAwardFrom;
 import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
@@ -221,7 +222,11 @@ public class UserEmployeeController {
                 }
                 return ResponseLogNotification.successJson(request, result.employeeId);
             }
+        } catch (BIZException e){
+            return ResponseLogNotification.failJson(request,e);
         } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -246,7 +251,11 @@ public class UserEmployeeController {
                 return ResponseLogNotification.fail(request, result.getMessage());
             }
             return ResponseLogNotification.successJson(request, result.employeeId);
+        } catch (BIZException e){
+            return ResponseLogNotification.failJson(request,e);
         } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
