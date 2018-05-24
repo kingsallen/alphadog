@@ -240,7 +240,9 @@ public class UserEmployeeController {
         try {
             Params<String, Object> param = ParamUtils.parseRequestParam(request);
 
-            logger.info("user employee bind params:{}",param);
+            // 处理一下type，必须是int类型
+            int type = param.getInt("type");
+            param.put("type",type);
 
             BindingParams bindingParams = new JSONObject(){{
                 putAll(param);
