@@ -1174,14 +1174,12 @@ public class ChatService {
 
             // 向微信服务器请求下载次数清零
             JSONObject response = clearVoiceLimitFromWechat(accessToken, appId);
-//            JSONObject response = new JSONObject();
-//            response.put("errcode", 0);
-//            response.put("errmsg", "ok");
+            logger.info("=================response===================", response);
             if (null == response) {
-                logger.error("===============当前公众号语音下载次数清零失败,companyId:{}=================", companyId);
+                logger.info("===============当前公众号语音下载次数清零失败,companyId:{}=================", companyId);
                 return ResponseUtils.fail(VoiceErrorEnum.VOICE_DOWNLOAD_LIMIT_CLEAR_FAILED.getCode(), VoiceErrorEnum.VOICE_DOWNLOAD_LIMIT_CLEAR_FAILED.getMsg());
             } else if (!"0".equals(response.get("errcode").toString())) {
-                logger.error("===============当前公众号语音下载次数清零失败,companyId:{}=================", companyId);
+                logger.info("===============当前公众号语音下载次数清零失败,companyId:{}=================", companyId);
                 return ResponseUtils.fail(VoiceErrorEnum.VOICE_DOWNLOAD_LIMIT_CLEAR_FAILED.getCode(), String.valueOf(response.get("errmsg")));
             }
             // 微信清零完成后修改redis中数据状态

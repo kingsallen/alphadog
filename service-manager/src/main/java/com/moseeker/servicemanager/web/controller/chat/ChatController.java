@@ -398,7 +398,7 @@ public class ChatController {
             int hrId = params.getInt("hrId");
             int userId = params.getInt("userId");
             int roomId = params.getInt("roomId");
-            logger.info("=========serverId:{},hrId:{},userId:{},roomId:{}===============================", serverId, hrId, userId, roomId);
+            logger.info("=========serverId:{},hrId:{},userId:{},roomId:{}===============", serverId, hrId, userId, roomId);
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addRequiredValidate("素材id", serverId, null, null);
             validateUtil.addStringLengthValidate("素材id", serverId, null, null, 1, 256);
@@ -407,15 +407,14 @@ public class ChatController {
             validateUtil.addIntTypeValidate("hrid", hrId, null, null, 0, Integer.MAX_VALUE);
 
             String message = validateUtil.validate();
-            logger.info("=========message:{}===============================", message);
+            logger.info("=========message:{}=============", message);
             if (StringUtils.isBlank(message)) {
                 Response urlResponse = chatService.pullVoiceFile(serverId, roomId, userId, hrId);
-                logger.info("=================" + urlResponse.getData() + ">>>" + urlResponse.getStatus());
                 Integer status = urlResponse.getStatus();
                 String voiceLocalUrl = null;
                 if (0 == status) {
                     voiceLocalUrl = JSONObject.parseObject(urlResponse.getData()).getString("voiceLocalUrl");
-                    logger.info("=========voiceLocalUrl:{}===============================", voiceLocalUrl);
+                    logger.info("=========voiceLocalUrl:{}================", voiceLocalUrl);
                     File file = new File(voiceLocalUrl);
                     if(!file.exists()){
                         return ResponseLogNotification.failJson(request, "文件不存在");
