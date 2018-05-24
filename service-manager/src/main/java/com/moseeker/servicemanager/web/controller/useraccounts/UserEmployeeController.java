@@ -235,6 +235,8 @@ public class UserEmployeeController {
         try {
             Params<String, Object> param = ParamUtils.parseRequestParam(request);
 
+            logger.info("user employee bind params:{}",param);
+
             BindingParams bindingParams = new JSONObject(){{
                 putAll(param);
             }}.toJavaObject(BindingParams.class);
