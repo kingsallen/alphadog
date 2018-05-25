@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -389,13 +390,15 @@ public class ChatController {
     @RequestMapping(value = "/chat/voice/pullVoiceFile", method = RequestMethod.GET)
     @ResponseBody
     public String pullVoiceFile(HttpServletRequest request, HttpServletResponse response) {
+        ByteArrayOutputStream bos = null;
+        FileInputStream in = null;
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             String serverId = params.getString("serverId");
             int hrId = params.getInt("hrId");
             int userId = params.getInt("userId");
             int roomId = params.getInt("roomId");
-            logger.info("=========serverId:{},hrId:{},userId:{},roomId:{}===============================", serverId, hrId, userId, roomId);
+            logger.info("=========serverId:{},hrId:{},userId:{},roomId:{}===============", serverId, hrId, userId, roomId);
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addRequiredValidate("素材id", serverId, null, null);
             validateUtil.addStringLengthValidate("素材id", serverId, null, null, 1, 256);
@@ -404,33 +407,30 @@ public class ChatController {
             validateUtil.addIntTypeValidate("hrid", hrId, null, null, 0, Integer.MAX_VALUE);
 
             String message = validateUtil.validate();
-            logger.info("=========message:{}===============================", message);
+            logger.info("=========message:{}=============", message);
             if (StringUtils.isBlank(message)) {
                 Response urlResponse = chatService.pullVoiceFile(serverId, roomId, userId, hrId);
-                logger.info("=================" + urlResponse.getData() + ">>>" + urlResponse.getStatus());
                 Integer status = urlResponse.getStatus();
                 String voiceLocalUrl = null;
                 if (0 == status) {
                     voiceLocalUrl = JSONObject.parseObject(urlResponse.getData()).getString("voiceLocalUrl");
-                    logger.info("=========voiceLocalUrl:{}===============================", voiceLocalUrl);
+                    logger.info("=========voiceLocalUrl:{}================", voiceLocalUrl);
                     File file = new File(voiceLocalUrl);
                     if(!file.exists()){
                         return ResponseLogNotification.failJson(request, "文件不存在");
                     }
-                    FileInputStream in = new FileInputStream(file);
+                    in = new FileInputStream(file);
                     long fileLength = file.length();
                     if (fileLength > Integer.MAX_VALUE) {
                         return ResponseLogNotification.failJson(request, "文件过大");
                     }
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream((int) file.length());
+                    bos = new ByteArrayOutputStream((int) file.length());
                     byte[] bytes = new byte[8192];
                     int len = 0;
                     while ((len = in.read(bytes)) != -1) {
                         bos.write(bytes, 0, len);
                     }
                     bos.flush();
-                    bos.close();
-                    in.close();
                     byte[] returnByte = bos.toByteArray();
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("fileBytes", returnByte);
@@ -446,6 +446,21 @@ public class ChatController {
             e.printStackTrace();
             logger.error("================拉取出错==================");
             return ResponseLogNotification.failJson(request, e);
+        } finally {
+            if(null != bos){
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(null != in){
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

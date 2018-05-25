@@ -7,6 +7,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.chat.struct.ChatVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
+import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
@@ -48,32 +49,34 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
         }
     }
 
-    public List<ChatVO> listMessage(int roomId, int chatId, int pageSize) {
-
-        List<ChatVO> chatVOList = new ArrayList<>();
-
-        Result<HrWxHrChatRecord> chatRecordResult = null;
+    public Result listMessage(int roomId, int chatId, int pageSize) {
+        Result chatRecordResult = null;
         if (chatId > 0) {
-            chatRecordResult = create
-                    .selectFrom(HrWxHrChat.HR_WX_HR_CHAT)
+            chatRecordResult = create.select(HrWxHrChat.HR_WX_HR_CHAT.ORIGIN, HrWxHrChat.HR_WX_HR_CHAT.SPEAKER, HrWxHrChat.HR_WX_HR_CHAT.PIC_URL,
+                            HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE, HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME, HrWxHrChat.HR_WX_HR_CHAT.ID,
+                            HrWxHrChat.HR_WX_HR_CHAT.CONTENT,HrWxHrChat.HR_WX_HR_CHAT.BTN_CONTENT,HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID,
+                            HrWxHrChat.HR_WX_HR_CHAT.PID, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.SERVER_ID, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.DURATION)
+                    .from(HrWxHrChat.HR_WX_HR_CHAT).leftJoin(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE).on(HrWxHrChat.HR_WX_HR_CHAT.ID.eq(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.CHAT_ID))
                     .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
                     .and(HrWxHrChat.HR_WX_HR_CHAT.ID.lt(chatId))
                     .orderBy(HrWxHrChat.HR_WX_HR_CHAT.ID.desc())
                     .limit(pageSize)
                     .fetch();
         } else {
-            chatRecordResult = create
-                    .selectFrom(HrWxHrChat.HR_WX_HR_CHAT)
+            chatRecordResult = create.select(HrWxHrChat.HR_WX_HR_CHAT.ORIGIN, HrWxHrChat.HR_WX_HR_CHAT.SPEAKER, HrWxHrChat.HR_WX_HR_CHAT.PIC_URL,
+                            HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE, HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME, HrWxHrChat.HR_WX_HR_CHAT.ID,
+                            HrWxHrChat.HR_WX_HR_CHAT.CONTENT,HrWxHrChat.HR_WX_HR_CHAT.BTN_CONTENT,HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID,
+                            HrWxHrChat.HR_WX_HR_CHAT.PID, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.SERVER_ID, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.DURATION)
+                    .from(HrWxHrChat.HR_WX_HR_CHAT).leftJoin(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE).on(HrWxHrChat.HR_WX_HR_CHAT.ID.eq(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.CHAT_ID))
                     .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
                     .orderBy(HrWxHrChat.HR_WX_HR_CHAT.ID.desc())
                     .limit(pageSize)
                     .fetch();
         }
-        if (chatRecordResult != null && chatRecordResult.size() > 0) {
-            chatVOList = BeanUtils.DBToStruct(ChatVO.class, chatRecordResult);
-        }
-
-        return chatVOList;
+//        if (chatRecordResult != null && chatRecordResult.size() > 0) {
+//            chatVOList = BeanUtils.DBToStruct(ChatVO.class, chatRecordResult);
+//        }
+        return chatRecordResult;
     }
 
     /**
