@@ -1,10 +1,10 @@
 package com.moseeker.profile.service.impl.retriveprofile.flow.common;
 
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.service.impl.retriveprofile.ExecutorParam;
 import com.moseeker.profile.service.impl.retriveprofile.executor.CouplerParamUtil;
-import com.moseeker.entity.biz.ProfileParseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +15,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommonProfileTaskParamUtil implements CouplerParamUtil<ProfilePojo, Integer, Integer> {
 
+    @Autowired
+    ProfileParseUtil profileParseUtil;
+
     @Override
     public ProfilePojo parseExecutorParam(Integer tmpParam, ExecutorParam globalParam) throws CommonException {
-        ProfilePojo profilePojo = ProfilePojo.parseProfile(globalParam.getProfile());
+        ProfilePojo profilePojo = ProfilePojo.parseProfile(globalParam.getProfile(), profileParseUtil.initParseProfileParam());
         return profilePojo;
     }
 

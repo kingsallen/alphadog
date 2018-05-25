@@ -3,7 +3,6 @@ package com.moseeker.entity;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.ParserConfig;
-import com.moseeker.baseorm.dao.dictdb.DictCountryDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -20,7 +19,6 @@ import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.resume.ResumeObj;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.sql.Timestamp;
@@ -60,6 +58,9 @@ public class ProfileEntity {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    ProfileParseUtil profileParseUtil;
+
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
      * @param profileParameter 简历信息
@@ -67,7 +68,7 @@ public class ProfileEntity {
      */
     public ProfilePojo parseProfile(String profileParameter) {
         Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8(profileParameter)));
-        return ProfilePojo.parseProfile(paramMap);
+        return ProfilePojo.parseProfile(paramMap, profileParseUtil.initParseProfileParam());
     }
 
     /**

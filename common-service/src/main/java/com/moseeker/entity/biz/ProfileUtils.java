@@ -6,7 +6,6 @@ import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
-import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.records.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
@@ -22,7 +21,6 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -30,10 +28,6 @@ import java.util.*;
 @Component
 public class ProfileUtils {
 	protected Logger logger = LoggerFactory.getLogger(ProfileUtils.class);
-
-	@Autowired
-	private ProfileParseUtil profileParseUtil;
-
 
 	private final static int DEFAULT_FLAG=0;
 
@@ -670,16 +664,13 @@ public class ProfileUtils {
 		}
 	}
 
-	public ProfileBasicRecord  mapToBasicRecord(Map<String, Object> basic) {
+	public ProfileBasicRecord  mapToBasicRecord(Map<String, Object> basic, ProfileExtParam extParam) {
 		ProfileBasicRecord record = null;
 		if (basic != null) {
 			record = BeanUtils.MapToRecord(basic, ProfileBasicRecord.class);
 
-			ProfileExtParam extParam = profileParseUtil.initParseProfileParam();
-
 			// 脉脉传过来当前行业为文字，需要转code
-			if (record.getCurrentIndustry() == null
-					|| record.getNationalityCode() == 0
+			if ((record.getCurrentIndustry() == null || record.getCurrentIndustry() == 0)
 					&& basic.get("current_industry") != null && extParam.getDictIndustryTypeDOList() != null){
 				List<DictIndustryTypeRecord> industryRecordList = extParam.getDictIndustryTypeDOList();
 
@@ -693,9 +684,8 @@ public class ProfileUtils {
 			}
 
 			// 领英传过来的国籍是iso_code，需要转换成对应id
-			if (record.getNationalityCode() == null ||
-					record.getNationalityCode() == 0 &&
-					(basic.get("iso_code_2") != null || basic.get("iso_code_3") != null) && extParam.getCountryDOList() != null) {
+			if ( (record.getNationalityCode() == null || record.getNationalityCode() == 0)
+					&& (basic.get("iso_code_2") != null || basic.get("iso_code_3") != null) && extParam.getCountryDOList() != null) {
 
 				List<DictCountryDO> countryDOList = extParam.getCountryDOList();
 

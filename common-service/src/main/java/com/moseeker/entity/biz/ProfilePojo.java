@@ -45,7 +45,7 @@ public class ProfilePojo {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static ProfilePojo parseProfile(Map<String, Object> resume) {
+	public static ProfilePojo parseProfile(Map<String, Object> resume, ProfileExtParam extParam) {
 		logger.info("------parseProfile-------");
 
 		ProfilePojo pojo = new ProfilePojo();
@@ -86,7 +86,7 @@ public class ProfilePojo {
 		//解析基本信息
 		ProfileBasicRecord basicRecord = null;
 		try {
-			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), extParam);
 			pojo.setBasicRecord(basicRecord);
 		} catch (Exception e1) {
 			logger.error(e1.getMessage(), e1);
@@ -218,10 +218,11 @@ public class ProfilePojo {
 	 * 解析profile生成ProfilePojo类
 	 * @param resume
 	 * @param userRecord
+	 * @param extParam
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static ProfilePojo parseProfile(Map<String, Object> resume, UserUserRecord userRecord) {
+	public static ProfilePojo parseProfile(Map<String, Object> resume, UserUserRecord userRecord, ProfileExtParam extParam) {
 		logger.info("------parseProfile-------");
 		ProfilePojo pojo = new ProfilePojo();
 		ProfileUtils profileUtils = new ProfileUtils();
@@ -269,7 +270,7 @@ public class ProfilePojo {
 		//解析基本信息
 		ProfileBasicRecord basicRecord = null;
 		try {
-			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), extParam);
 			pojo.setBasicRecord(basicRecord);
 		} catch (Exception e1) {
 			logger.error(e1.getMessage(), e1);
