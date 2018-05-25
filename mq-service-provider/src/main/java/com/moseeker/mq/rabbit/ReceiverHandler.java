@@ -9,6 +9,7 @@ import com.moseeker.common.log.ReqParams;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
+import com.moseeker.entity.pojo.mq.AIRecomParams;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -25,6 +26,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 /**
@@ -94,44 +96,20 @@ public class ReceiverHandler {
         try{
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            log.info("rabitmq的参数是========"+jsonObject.toJSONString());
-            int userId=jsonObject.getIntValue("user_id");
-            int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");
-            int templateId;
             this.addPropertyLogVO(logVo,jsonObject);
+            this.handlerTempLateLog(logVo,type);
             if(type!=0){
-                switch (type) {
-                    case 1: templateId = Constant.FANS_PROFILE_COMPLETION;logVo.setEvent("FANS_PROFILE_COMPLETION"); break;
-                    case 2: templateId = Constant.FANS_RECOM_POSITION;logVo.setEvent("FANS_RECOM_POSITION"); break;
-                    case 3: templateId = Constant.EMPLOYEE_RECOM_POSITION;logVo.setEvent("EMPLOYEE_RECOM_POSITION"); break;
-                    case 4: templateId = Constant.EMPLOYEE_PROFILE_COMPLETION;logVo.setEvent("EMPLOYEE_PROFILE_COMPLETION"); break;
-                    default: templateId = 0;
-                }
-                String url=jsonObject.getString("url");
-                if(StringUtils.isEmpty(url)){
-                    url=handlerUrl(type);
-                }
-                String enable_qx_retry=jsonObject.getString("enable_qx_retry");
-                MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url);
+                AIRecomParams params=this.initRecomParams(message);
+                MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(params);
                 log.info("messageTemplate========"+JSONObject.toJSONString(messageTemplate));
                 if(messageTemplate!=null){
-                    if(StringUtils.isNotEmpty(enable_qx_retry)){
-                        messageTemplate.setEnable_qx_retry(Byte.parseByte(enable_qx_retry));
-                    }
                     templateMsgProducer.messageTemplateNotice(messageTemplate);
-                    if(type==2){
-                        personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,0,1,20);
-                    }
-                    if(type==3){
-                        personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,1,20);
-                    }
-
+                    this.handlerPosition(params);
                     logVo.setStatus_code(0);
                 }else{
                     this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
                     logVo.setStatus_code(1);
-
                 }
             }else{
                 logVo.setStatus_code(2);
@@ -144,6 +122,58 @@ public class ReceiverHandler {
             long endTime=new Date().getTime();
             logVo.setOpt_time(endTime-startTime);
             ELKLog.ELK_LOG.log(logVo);
+        }
+    }
+    private void handlerPosition(AIRecomParams params){
+        if(params.getType()==2){
+            personaRecomEntity.updateIsSendPersonaRecom(params.getUserId(),params.getCompanyId(),0,1,20);
+        }
+        if(params.getType()==3){
+            personaRecomEntity.updateIsSendPersonaRecom(params.getUserId(),params.getCompanyId(),1,1,20);
+        }
+    }
+    /*
+     初始化参数
+     */
+    private AIRecomParams initRecomParams(Message message) throws Exception {
+        String msgBody = new String(message.getBody(), "UTF-8");
+        JSONObject jsonObject = JSONObject.parseObject(msgBody);
+        int userId=jsonObject.getIntValue("user_id");
+        int companyId=jsonObject.getIntValue("company_id");
+        int type=jsonObject.getIntValue("type");
+        String positionIds=jsonObject.getString("position_ids");
+        int templateId=this.getTemplateId(type);
+        String enableQxRetry=jsonObject.getString("enable_qx_retry");
+        String url=jsonObject.getString("url");
+        if(StringUtils.isEmpty(url)){
+            url=handlerUrl(type);
+        }
+        AIRecomParams recomParams=new AIRecomParams(userId,companyId,type,positionIds,enableQxRetry,url,templateId);
+        return recomParams;
+    }
+
+
+    private int getTemplateId(int type){
+        int templateId=0;
+        switch (type) {
+            case 1: templateId = Constant.FANS_PROFILE_COMPLETION; break;
+            case 2: templateId = Constant.FANS_RECOM_POSITION; break;
+            case 3: templateId = Constant.EMPLOYEE_RECOM_POSITION;; break;
+            case 4: templateId = Constant.EMPLOYEE_PROFILE_COMPLETION; break;
+            default: templateId = 0;
+        }
+        return templateId;
+    }
+
+    private void handlerTempLateLog(LogVO logVO,int type){
+        if(type==1){
+            logVO.setEvent("FANS_PROFILE_COMPLETION");
+        }else if(type==2){
+            logVO.setEvent("FANS_RECOM_POSITION");
+        }else if(type==3){
+            logVO.setEvent("EMPLOYEE_RECOM_POSITION");
+        }else if(type==4){
+            logVO.setEvent("EMPLOYEE_PROFILE_COMPLETION");
         }
     }
     /*
@@ -172,6 +202,7 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
         }
     }
+
     /*
       处理异常消息的队列
      */
@@ -202,10 +233,11 @@ public class ReceiverHandler {
             url=env.getProperty("message.template.delivery.applier.url");
         }
         return url;
-
     }
 
-
+    /*
+      初始化log日志
+     */
     private LogVO handlerLogVO(){
         LogVO log=new LogVO();
         log.setAppid(4);
@@ -224,11 +256,6 @@ public class ReceiverHandler {
         logVo.setUser_id(jsonObject.getIntValue("user_id"));
         logVo.setRecom_params(params);
     }
-    /*
-     处理简历的企业标签
-     */
-    public void handlerProfileCompanyTag(){
 
-    }
 
 }

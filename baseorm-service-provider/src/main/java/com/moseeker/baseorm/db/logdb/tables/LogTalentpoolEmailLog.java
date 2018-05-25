@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogTalentpoolEmailLog extends TableImpl<LogTalentpoolEmailLogRecord> {
 
-    private static final long serialVersionUID = -2140685111;
+    private static final long serialVersionUID = -14847576;
 
     /**
      * The reference instance of <code>logdb.log_talentpool_email_log</code>
@@ -65,7 +65,7 @@ public class LogTalentpoolEmailLog extends TableImpl<LogTalentpoolEmailLogRecord
      * The column <code>logdb.log_talentpool_email_log.type</code>. 邮件类别 1:投递成功邮件 2：不匹配通知邮件 3：生日祝福邮件 4：邀请投递邮件
 5：转发求职者简历邮件 0充值
      */
-    public final TableField<LogTalentpoolEmailLogRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "邮件类别 1:投递成功邮件 2：不匹配通知邮件 3：生日祝福邮件 4：邀请投递邮件\r\n5：转发求职者简历邮件 0充值");
+    public final TableField<LogTalentpoolEmailLogRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "邮件类别 1:投递成功邮件 2：不匹配通知邮件 3：生日祝福邮件 4：邀请投递邮件\n5：转发求职者简历邮件 0充值");
 
     /**
      * The column <code>logdb.log_talentpool_email_log.hr_id</code>. hr_id
@@ -73,9 +73,9 @@ public class LogTalentpoolEmailLog extends TableImpl<LogTalentpoolEmailLogRecord
     public final TableField<LogTalentpoolEmailLogRecord, Integer> HR_ID = createField("hr_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_id");
 
     /**
-     * The column <code>logdb.log_talentpool_email_log.balance</code>. 余额点数
+     * The column <code>logdb.log_talentpool_email_log.balance</code>. 操作之后邮件剩余额度
      */
-    public final TableField<LogTalentpoolEmailLogRecord, Integer> BALANCE = createField("balance", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "余额点数");
+    public final TableField<LogTalentpoolEmailLogRecord, Integer> BALANCE = createField("balance", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "操作之后邮件剩余额度");
 
     /**
      * The column <code>logdb.log_talentpool_email_log.lost</code>. 本次使用点数或者充值点数
