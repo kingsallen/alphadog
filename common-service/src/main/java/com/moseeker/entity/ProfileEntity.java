@@ -3,6 +3,7 @@ package com.moseeker.entity;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.ParserConfig;
+import com.moseeker.baseorm.dao.dictdb.DictCountryDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -10,7 +11,6 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
@@ -19,6 +19,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.resume.ResumeObj;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.sql.Timestamp;
@@ -58,6 +59,9 @@ public class ProfileEntity {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private DictCountryDao countryDao;
+
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
      * @param profileParameter 简历信息
@@ -65,7 +69,8 @@ public class ProfileEntity {
      */
     public ProfilePojo parseProfile(String profileParameter) {
         Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8(profileParameter)));
-        return ProfilePojo.parseProfile(paramMap);
+        List<DictCountryDO> countryDOList = countryDao.getDatas(new Query.QueryBuilder().buildQuery());
+        return ProfilePojo.parseProfile(paramMap, countryDOList);
     }
 
     /**

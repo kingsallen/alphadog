@@ -11,7 +11,6 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.baseorm.db.profiledb.tables.ProfileAwards;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -21,6 +20,8 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ProfileAttributeLengthLimit;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -667,10 +668,34 @@ public class ProfileUtils {
 		}
 	}
 
-	public ProfileBasicRecord mapToBasicRecord(Map<String, Object> basic) {
+	public ProfileBasicRecord mapToBasicRecord(Map<String, Object> basic, List<DictCountryDO> countryDOList) {
 		ProfileBasicRecord record = null;
 		if (basic != null) {
 			record = BeanUtils.MapToRecord(basic, ProfileBasicRecord.class);
+			if (record.getNationalityCode() == null ||
+					record.getNationalityCode() == 0 &&
+					(basic.get("iso_code_2") != null || basic.get("iso_code_3") != null) && countryDOList != null) {
+				if (basic.get("iso_code_2") != null) {
+					Optional<DictCountryDO> optional = countryDOList
+							.stream()
+							.filter(dictCountryDO -> dictCountryDO.getIsoCode2().equals(basic.get("iso_code_2")))
+							.findAny();
+					if (optional.isPresent()) {
+						record.setNationalityCode(optional.get().getId());
+						record.setNationalityName(optional.get().getName());
+					}
+				}
+				if (basic.get("iso_code_3") != null) {
+					Optional<DictCountryDO> optional = countryDOList
+							.stream()
+							.filter(dictCountryDO -> dictCountryDO.getIsoCode2().equals(basic.get("iso_code_3")))
+							.findAny();
+					if (optional.isPresent()) {
+						record.setNationalityCode(optional.get().getId());
+						record.setNationalityName(optional.get().getName());
+					}
+				}
+			}
 			ValidationMessage<ProfileBasicRecord> validationMessage = ProfileValidation.verifyBasic(record);
 			if (!validationMessage.isPass()) {
                 record.setBirth(null);

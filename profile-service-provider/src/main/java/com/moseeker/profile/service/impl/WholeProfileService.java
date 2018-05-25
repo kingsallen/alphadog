@@ -45,10 +45,11 @@ import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.*;
@@ -64,7 +65,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -365,7 +365,8 @@ public class WholeProfileService {
             }
             ProfileBasicRecord basicRecord = null;
             try {
-                basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+                List<DictCountryDO> countryDOList = countryDao.getDatas(new Query.QueryBuilder().buildQuery());
+                basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), countryDOList);
             } catch (Exception e1) {
                 logger.error(e1.getMessage(), e1);
             }
@@ -502,7 +503,8 @@ public class WholeProfileService {
         } else {
             profileRecord.setUuid(UUID.randomUUID().toString());
         }
-        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+        List<DictCountryDO> countryDOList = countryDao.getDatas(new Query.QueryBuilder().buildQuery());
+        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, countryDOList);
 
         int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
@@ -560,7 +562,8 @@ public class WholeProfileService {
         if (userRecord == null) {
             return -1;
         }
-        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+        List<DictCountryDO> countryDOList = countryDao.getDatas(new Query.QueryBuilder().buildQuery());
+        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, countryDOList);
 
         int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
@@ -603,7 +606,8 @@ public class WholeProfileService {
 
         if (profileDB != null) {
             ((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
-            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+            List<DictCountryDO> countryDOList = countryDao.getDatas(new Query.QueryBuilder().buildQuery());
+            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, countryDOList);
             int profileId = profileDB.getId().intValue();
             profileEntity.improveUser(userRecord);
             profileEntity.improveProfile(profilePojo.getProfileRecord(), profileDB);
@@ -1370,7 +1374,8 @@ public class WholeProfileService {
             String origin1=(String)resume.get("origin");
             String origin=profileDB.getOrigin();
             String originResult=convertToChannelString(origin,origin1);
-            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+            List<DictCountryDO> countryDOList = countryDao.getDatas(new Query.QueryBuilder().buildQuery());
+            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, countryDOList);
             /*
              合并profile_profile.origin
              */
