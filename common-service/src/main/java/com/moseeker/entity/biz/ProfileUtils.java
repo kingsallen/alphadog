@@ -6,10 +6,8 @@ import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
-import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
-import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
-import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
+import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
+import com.moseeker.baseorm.db.dictdb.tables.records.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
@@ -680,6 +678,19 @@ public class ProfileUtils {
 			ProfileExtParam extParam = profileParseUtil.initParseProfileParam();
 
 			// 脉脉传过来当前行业为文字，需要转code
+			if (record.getCurrentIndustry() == null
+					|| record.getNationalityCode() == 0
+					&& basic.get("current_industry") != null && extParam.getDictIndustryTypeDOList() != null){
+				List<DictIndustryTypeRecord> industryRecordList = extParam.getDictIndustryTypeDOList();
+
+				Optional<DictIndustryTypeRecord> optional = industryRecordList
+						.stream()
+						.filter(industryType -> industryType.getName().equals(basic.get("current_industry")))
+						.findAny();
+				if(optional.isPresent()){
+					record.setCurrentIndustry(optional.get().getCode());
+				}
+			}
 
 			// 领英传过来的国籍是iso_code，需要转换成对应id
 			if (record.getNationalityCode() == null ||
