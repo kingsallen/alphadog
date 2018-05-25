@@ -89,6 +89,9 @@ public class MessageTemplateEntity {
         HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(params.getCompanyId());
         String wxSignture=DO.getSignature();
         String MDString= MD5Util.md5(params.getUserId()+params.getCompanyId()+""+new Date().getTime());
+        if(MDString.length()>7){
+            MDString=MDString.substring(0,8);
+        }
         String url=params.getUrl().replace("{}",wxSignture).replace("{recom_code}",MDString);
         if(params.getType()==2){
             //校验推送职位是否下架
