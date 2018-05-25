@@ -86,6 +86,8 @@ public class CrawlerUtils {
                 break;
             case LINKEDIN:
                 param.put("token", token);
+                param.put("username", userName);
+                param.put("password", password);
                 result = fetchResume(JSON.toJSONString(param), propertiesUtils.get("CRAWLER_LINEKEDIN", String.class));
                 //result = "{\"status\": 0, \"resumes\":[{\"other\": {},\"workexps\": [{\"company\": {\"company_name\": \"IBM China\",\"company_introduction\": \"\"},\"end_until_now\": 1,\"description\": \"doing is better than perfect.\",\"end_date\": \"\",\"job\": \"Software Engineer\",\"start_date\": \"2007-07-01\"}],\"credentials\": [],\"import\": {\"resume_id\": \"PjrMx2C9nE\",\"source\": \"4\",\"username\": \"\",\"account_id\": \"\"},\"educations\": [],\"skills\": [],\"basic\": {\"birth\": \" \",\"name\": \"Wang Yaofeng\",\"nationality_name\": \"China\",\"city_name\": \"Shanghai City\",\"gender\": \"0\"},\"user\": {\"name\": \"Wang Yaofeng\",\"mobile\": \"\"},\"works\": [],\"languages\": [],\"awards\": [],\"attachments\": [],\"intentions\": [],\"projectexps\": []}]}";
                 break;

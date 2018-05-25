@@ -76,10 +76,10 @@ public class CrawlerController {
 			vu.addIntTypeValidate("项目编号", form.getAppid(), null, null, 0, 100);
 			if (form.getType() == 4) {
 				vu.addRequiredStringValidate("token", form.getToken(), null, null);
-			} else {
-				vu.addRequiredStringValidate("账号", form.getUsername(), null, null);
-				vu.addRequiredStringValidate("密码", form.getPassword(), null, null);
 			}
+			vu.addRequiredStringValidate("账号", form.getUsername(), null, null);
+			vu.addRequiredStringValidate("密码", form.getPassword(), null, null);
+
 			String result = vu.validate();
 			if (StringUtils.isNullOrEmpty(result)) {
 				logger.info("/crawler");

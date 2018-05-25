@@ -20,19 +20,23 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ProfileAttributeLengthLimit;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
 public class ProfileUtils {
-
 	protected Logger logger = LoggerFactory.getLogger(ProfileUtils.class);
+
+	@Autowired
+	private ProfileParseUtil profileParseUtil;
+
+
 	private final static int DEFAULT_FLAG=0;
 
 	public List<ProfileWorksRecord> mapToWorksRecords(List<Map<String, Object>> works) {
@@ -668,17 +672,26 @@ public class ProfileUtils {
 		}
 	}
 
-	public ProfileBasicRecord mapToBasicRecord(Map<String, Object> basic, List<DictCountryDO> countryDOList) {
+	public ProfileBasicRecord  mapToBasicRecord(Map<String, Object> basic) {
 		ProfileBasicRecord record = null;
 		if (basic != null) {
 			record = BeanUtils.MapToRecord(basic, ProfileBasicRecord.class);
+
+			ProfileExtParam extParam = profileParseUtil.initParseProfileParam();
+
+			// 脉脉传过来当前行业为文字，需要转code
+
+			// 领英传过来的国籍是iso_code，需要转换成对应id
 			if (record.getNationalityCode() == null ||
 					record.getNationalityCode() == 0 &&
-					(basic.get("iso_code_2") != null || basic.get("iso_code_3") != null) && countryDOList != null) {
+					(basic.get("iso_code_2") != null || basic.get("iso_code_3") != null) && extParam.getCountryDOList() != null) {
+
+				List<DictCountryDO> countryDOList = extParam.getCountryDOList();
+
 				if (basic.get("iso_code_2") != null) {
 					Optional<DictCountryDO> optional = countryDOList
 							.stream()
-							.filter(dictCountryDO -> dictCountryDO.getIsoCode2().equals(basic.get("iso_code_2")))
+							.filter(dictCountryDO -> dictCountryDO.getIsoCode2().equals(String.valueOf(basic.get("iso_code_2")).toUpperCase()))
 							.findAny();
 					if (optional.isPresent()) {
 						record.setNationalityCode(optional.get().getId());
@@ -688,7 +701,7 @@ public class ProfileUtils {
 				if (basic.get("iso_code_3") != null) {
 					Optional<DictCountryDO> optional = countryDOList
 							.stream()
-							.filter(dictCountryDO -> dictCountryDO.getIsoCode2().equals(basic.get("iso_code_3")))
+							.filter(dictCountryDO -> dictCountryDO.getIsoCode2().equals(String.valueOf(basic.get("iso_code_3")).toUpperCase()))
 							.findAny();
 					if (optional.isPresent()) {
 						record.setNationalityCode(optional.get().getId());
