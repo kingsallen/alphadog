@@ -157,7 +157,7 @@ public class ProfilePojo {
 		//解析其他
 		ProfileOtherRecord otherRecord = null;
 		try {
-			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"), extParam);
 			pojo.setOtherRecord(otherRecord);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -343,7 +343,7 @@ public class ProfilePojo {
 		//解析其他
 		ProfileOtherRecord otherRecord = null;
 		try {
-			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"), extParam);
 			pojo.setOtherRecord(otherRecord);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

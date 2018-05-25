@@ -40,6 +40,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.UserAccountEntity;
+import com.moseeker.entity.biz.ProfileExtParam;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
@@ -325,6 +326,8 @@ public class WholeProfileService {
         if (!StringUtils.isNullOrEmpty(profile)) {
             Map<String, Object> resume = JSON.parseObject(profile);
 
+            ProfileExtParam extParam = profileParseUtil.initParseProfileParam();
+
             ProfileProfileRecord profileRecord = profileUtils
                     .mapToProfileRecord((Map<String, Object>) resume.get("profile"));
             UserUserRecord userRecord = userDao.getUserById(userId);
@@ -367,7 +370,7 @@ public class WholeProfileService {
             }
             ProfileBasicRecord basicRecord = null;
             try {
-                basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), profileParseUtil.initParseProfileParam());
+                basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), extParam);
             } catch (Exception e1) {
                 logger.error(e1.getMessage(), e1);
             }
@@ -423,7 +426,7 @@ public class WholeProfileService {
             }
             ProfileOtherRecord otherRecord = null;
             try {
-                otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+                otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"), extParam);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }

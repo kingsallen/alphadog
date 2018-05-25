@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 
-    private static final long serialVersionUID = -853442075;
+    private static final long serialVersionUID = -1310131874;
 
     /**
      * The reference instance of <code>profiledb.profile_basic</code>
@@ -120,11 +120,6 @@ public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
      * The column <code>profiledb.profile_basic.update_time</code>. 更新时间
      */
     public final TableField<ProfileBasicRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
-
-    /**
-     * The column <code>profiledb.profile_basic.current_industry</code>. 当前行业，对应一级行业dict_industry_type
-     */
-    public final TableField<ProfileBasicRecord, Integer> CURRENT_INDUSTRY = createField("current_industry", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "当前行业，对应一级行业dict_industry_type");
 
     /**
      * Create a <code>profiledb.profile_basic</code> table reference
