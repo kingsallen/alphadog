@@ -600,12 +600,13 @@ public class ChatService {
             Result result = chaoDao.getCompanyIdAndTokenByRoomId(chat.getRoomId());
             int companyId = (int) result.getValue(0, HrWxWechat.HR_WX_WECHAT.COMPANY_ID);
             String accessToken = String.valueOf(result.getValue(0, HrWxWechat.HR_WX_WECHAT.ACCESS_TOKEN));
-
+            logger.info("==================serverId:{}, token:{}=======================", serverId, accessToken);
             //请求微信服务器下载
             Response response = UpDownLoadUtil.downloadMediaFileFromWechat(accessToken, serverId);
             //根据reponse响应码处理业务
             int status = response.getStatus();
             if (status == RespnoseUtil.PROGRAM_EXCEPTION.getStatus()) {
+                logger.info("================下载语音时后台异常===============");
                 return "failed";
             } else if (status == VoiceErrorEnum.VOICE_SEND_WARN_EMAIL.getCode()) {
                 // 如果是此返回码，代表微信语音下载失败，解析微信返回错误码，发送报警邮件
