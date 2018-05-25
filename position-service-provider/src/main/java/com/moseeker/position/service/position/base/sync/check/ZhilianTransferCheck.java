@@ -44,6 +44,7 @@ public class ZhilianTransferCheck extends AbstractTransferCheck<PositionZhilianF
                 continue;
             }
 
+            // 把每一个非ASCII0-256的字符(包括中文)都替换成'**'，然后计算长度，就可以实现中文是两个字符
             if(address.getAddress().replaceAll("[^\\x00-\\xff]", "**").length()>100){
                 errorMsg.add(ADDRESS_ADDRESS_LENGTH_LIMIT);
             }
