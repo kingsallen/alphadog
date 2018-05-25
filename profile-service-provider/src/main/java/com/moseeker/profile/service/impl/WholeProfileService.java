@@ -179,6 +179,9 @@ public class WholeProfileService {
     @Autowired
     RetriveProfile retriveProfile;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
     UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
 
     TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
@@ -463,6 +466,7 @@ public class WholeProfileService {
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
+                profileCompanyTagService.handlerCompanyTag(0,userId);
 
                 return ResponseUtils.success(String.valueOf(id));
             }
@@ -518,6 +522,7 @@ public class WholeProfileService {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
+            profileCompanyTagService.handlerCompanyTag(id,userId);
             return ResponseUtils.success(id);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
@@ -546,6 +551,7 @@ public class WholeProfileService {
         }else if(id==0){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
         }else{
+            profileCompanyTagService.handlerCompanyTag(id,userRecord.getId());
             return ResponseUtils.success(id);
         }
     }
@@ -624,6 +630,7 @@ public class WholeProfileService {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
+            profileCompanyTagService.handlerCompanyTag(profileId,userRecord.getId());
             return ResponseUtils.success(null);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
@@ -688,7 +695,10 @@ public class WholeProfileService {
                 profileEntity.improveWorks(destWorks, originProfileId);
                 profileEntity.improveWorkexp(destWorkxps, originProfileId);
                 profileEntity.getCompleteness(0, null, originProfile.getId().intValue());
+
             }
+            profileCompanyTagService.handlerCompanyTag(0,destUserId);
+            profileCompanyTagService.handlerCompanyTag(0,originUserId);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

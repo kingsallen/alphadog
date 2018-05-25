@@ -13,6 +13,8 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.CompanyPcService;
 import com.moseeker.entity.CompanyConfigEntity;
+import com.moseeker.entity.TalentPoolEmailEntity;
+import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.company.struct.*;
@@ -498,6 +500,19 @@ public class CompanyServicesImpl implements Iface {
     public Response getWechatBySignature(String signature, int companyId) throws BIZException, TException {
         HrWxWechatDO wechatDO = companyPcService.getHrWxWechatDOBySignature(signature, companyId);
         return ResponseUtils.success(wechatDO);
+    }
+
+    @Override
+    public Response updateHrCompanyConfStatus(int status, int companyId) throws BIZException, TException {
+        try {
+            Response result= companyPcService.updateComapnyConfStatus(status, companyId);
+            return result;
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
 

@@ -73,6 +73,13 @@ public class HrCompanyEmailInfoDao extends DAOImpl<HrCompanyEmailInfoRecord, com
     }
 
     /**
+     * Fetch a unique record that has <code>company_id = value</code>
+     */
+    public com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo fetchOneByCompanyId(Integer value) {
+        return fetchOne(HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO.COMPANY_ID, value);
+    }
+
+    /**
      * Fetch records that have <code>total IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo> fetchByTotal(Integer... values) {

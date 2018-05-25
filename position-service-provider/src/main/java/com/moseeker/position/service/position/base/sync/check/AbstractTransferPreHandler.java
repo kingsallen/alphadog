@@ -1,9 +1,13 @@
 package com.moseeker.position.service.position.base.sync.check;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.iface.IChannelType;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * 职位同步预处理抽象类
@@ -36,6 +40,15 @@ public abstract class AbstractTransferPreHandler<F> implements IChannelType{
      * @param moseekerPosition
      */
     public void handle(JSONObject f, JobPositionDO moseekerPosition){
-        handle(f.toJavaObject(getFormClass()),moseekerPosition);
+        F temp =f.toJavaObject(getFormClass());
+
+        handle(temp,moseekerPosition);
+
+        // 对temp的修改要同时对应到对f的修改
+        Iterator<Map.Entry<String, Object>> it = JSON.parseObject(JSON.toJSONString(temp)).entrySet().iterator();
+        while (it.hasNext()){
+            Map.Entry<String,Object> entry = it.next();
+            f.put(entry.getKey(),entry.getValue());
+        }
     }
 }

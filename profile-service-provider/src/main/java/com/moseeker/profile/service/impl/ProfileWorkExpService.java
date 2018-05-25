@@ -66,6 +66,9 @@ public class ProfileWorkExpService {
     @Autowired
     private ProfileEntity profileEntity;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
 
     public Response getResources(Query query) throws TException {
         // 按照结束时间倒序
@@ -233,6 +236,8 @@ public class ProfileWorkExpService {
             profileDao.updateUpdateTime(profileIds);
                 /* 计算用户基本信息的简历完整度 */
             profileEntity.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+            profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
+
             return ResponseUtils.success(String.valueOf(record.getId()));
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
@@ -307,6 +312,9 @@ public class ProfileWorkExpService {
                 updateUpdateTime(descProfileWorkexpRecord);
                 /* 计算用户基本信息的简历完整度 */
                 profileEntity.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+
+                profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
+
                 return ResponseUtils.success("1");
             }
         }
@@ -332,6 +340,7 @@ public class ProfileWorkExpService {
                     profileIds.add(struct.getProfile_id());
                 /* 计算用户基本信息的简历完整度 */
                     profileEntity.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+                    profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
                 }
                 profileDao.updateUpdateTime(profileIds);
                 return ResponseUtils.success("1");
@@ -366,10 +375,14 @@ public class ProfileWorkExpService {
                     }
                 }
             }
-            dao.updateRecords(descProfileWorkExpRecordList);
-            descProfileWorkExpRecordList.forEach(profileWorkexpRecord
-                    -> profileEntity.reCalculateProfileWorkExpUseWorkExpId(profileWorkexpRecord.getId()));
-            return ResponseUtils.success("1");
+            if(!StringUtils.isEmptyList(descProfileWorkExpRecordList)){
+                dao.updateRecords(descProfileWorkExpRecordList);
+                for(ProfileWorkexpRecord profileWorkexpRecord: descProfileWorkExpRecordList){
+                    profileEntity.reCalculateProfileWorkExpUseWorkExpId(profileWorkexpRecord.getId());
+                    profileCompanyTagService.handlerCompanyTag(profileWorkexpRecord.getProfileId());
+                }
+                return ResponseUtils.success("1");
+            }
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
@@ -402,6 +415,7 @@ public class ProfileWorkExpService {
                     updateUpdateTime(structs);
                 /* 计算用户基本信息的简历完整度 */
                     profileEntity.reCalculateProfileWorkExp(profileId, 0);
+                    profileCompanyTagService.handlerCompanyTag(profileId);
                 });
                 return ResponseUtils.success("1");
             }
@@ -416,6 +430,7 @@ public class ProfileWorkExpService {
             updateUpdateTime(struct);
             /* 计算用户基本信息的简历完整度 */
             profileEntity.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+            profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);

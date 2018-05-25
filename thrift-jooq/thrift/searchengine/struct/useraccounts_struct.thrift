@@ -1,6 +1,6 @@
 # file: useraccounts.struct
 
-namespace java com.moseeker.thrift.gen.useraccounts.struct
+namespace java com.moseeker.thrift.gen.searchengine.struct
 
 typedef string Timestamp;
 
@@ -15,5 +15,10 @@ struct userloginreq {
     1: optional string unionid,
     2: optional string mobile,
     3: optional string password
+}
+
+struct FilterResp {
+    1: optional i32 talent_count,
+    2: optional list<i32> user_ids
 }
 

@@ -7,6 +7,7 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.JsonToMap;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileMiniService;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.profile.service.impl.WholeProfileService;
@@ -39,6 +40,8 @@ public class WholeProfileServicesImpl implements Iface {
     @Autowired
     private ProfileMiniService profileMiniService;
 
+
+
     @Override
     public Response getResource(int userId, int profileId, String uuid) throws TException {
         try {
@@ -53,7 +56,9 @@ public class WholeProfileServicesImpl implements Iface {
     @Override
     public Response postResource(String profile, int userId) throws TException {
         try {
-            return service.postResource(profile, userId);
+            Response res= service.postResource(profile, userId);
+
+            return res;
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -64,7 +69,9 @@ public class WholeProfileServicesImpl implements Iface {
     @Override
     public Response importCV(String profile, int userId) throws TException {
         try {
-            return service.importCV(profile, userId);
+            Response res= service.importCV(profile, userId);
+
+            return res;
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -86,7 +93,9 @@ public class WholeProfileServicesImpl implements Iface {
     @Override
     public Response createProfile(String profile) throws TException {
         try {
-            return service.createProfile(profile);
+            Response res= service.createProfile(profile);
+
+            return res;
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
