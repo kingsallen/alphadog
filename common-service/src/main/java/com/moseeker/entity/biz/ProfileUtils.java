@@ -351,20 +351,6 @@ public class ProfileUtils {
 	public ProfileOtherRecord mapToOtherRecord(Map<String, Object> other, ProfileExtParam extParam) {
 		ProfileOtherRecord otherRecord = null;
 		if (other != null) {
-
-			// 脉脉传过来当前行业为文字，需要转code
-			if (other.get("current_industry") != null && extParam.getDictIndustryTypeDOList() != null){
-				List<DictIndustryTypeRecord> industryRecordList = extParam.getDictIndustryTypeDOList();
-
-				Optional<DictIndustryTypeRecord> optional = industryRecordList
-						.stream()
-						.filter(industryType -> industryType.getName().equals(other.get("current_industry")))
-						.findAny();
-				if(optional.isPresent()){
-					other.put("current_industry",optional.get().getCode());
-				}
-			}
-
 			otherRecord = new ProfileOtherRecord();
 			otherRecord.setOther(JSON.toJSONString(other));
 			ValidationMessage<ProfileOtherRecord> vm = ProfileValidation.verifyCustomizeResume(otherRecord);
