@@ -1314,11 +1314,11 @@ public class ChatService {
             String br = "</br>";
             StringBuilder emailContent = new StringBuilder();
             StringBuilder emailSubject = new StringBuilder();
-            emailContent.append("公司:" + companyName).append(br);
-            emailContent.append("本月可用清零次数:" + 10).append(br);
-            emailContent.append("本月已使用清零次数:" + clearTimes).append(br);
-            emailContent.append("剩余可用清零次数:" + (10 - clearTimes)).append(br);
-            emailSubject.append("公司:" + companyName + "语音上传次数已达上限，请尽快处理。");
+            emailContent.append("公司 : " + companyName).append(br).append(br);
+            emailContent.append("本月可用清零次数 : " + 10).append(br).append(br);
+            emailContent.append("本月已使用清零次数 : " + clearTimes).append(br).append(br);
+            emailContent.append("剩余可用清零次数 : " + (10 - clearTimes)).append(br);
+            emailSubject.append(companyName + "语音上传次数已达上限，请尽快处理。");
             String[] emails = ChatVoiceConstant.WARN_EMAIL_ADDRESS_CS;
             for (String email : emails) {
                 EmailSendUtil.sendWarnEmail(email, emailContent.toString(), emailSubject.toString());
