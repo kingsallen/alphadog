@@ -29,4 +29,17 @@ public class HrWxWechatDao extends JooqCrudImpl<HrWxWechatDO, HrWxWechatRecord> 
         }
         return null;
     }
+    /**
+     * 获取公众号accessToken
+     * @param
+     * @author  cjm
+     * @date  2018/5/14
+     * @return
+     */
+    public Result getAccessTokenAndAppId(int companyId) {
+        return create.select(HrWxWechat.HR_WX_WECHAT.ACCESS_TOKEN, HrWxWechat.HR_WX_WECHAT.APPID)
+                .from(HrWxWechat.HR_WX_WECHAT)
+                .where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.eq(companyId))
+                .fetch();
+    }
 }

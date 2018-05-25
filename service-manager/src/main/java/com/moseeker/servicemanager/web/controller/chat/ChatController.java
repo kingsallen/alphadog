@@ -1,20 +1,29 @@
 package com.moseeker.servicemanager.web.controller.chat;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ChatMsgType;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.common.validation.rules.DateType;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.chat.service.ChatService;
 import com.moseeker.thrift.gen.chat.struct.*;
+import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +36,8 @@ import java.util.List;
 public class ChatController {
 
     ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
+
+    private Logger logger = LoggerFactory.getLogger(ChatController.class);
 
     @RequestMapping(value = "/chat-rooms/{id}", method = RequestMethod.GET)
     @ResponseBody
@@ -101,7 +112,7 @@ public class ChatController {
 
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             List<String> roomIdStrList = new ArrayList<>();
-            if (params.get("room_ids") instanceof  String) {
+            if (params.get("room_ids") instanceof String) {
                 roomIdStrList.add(params.getString("room_ids"));
             } else {
                 roomIdStrList = (List<String>) params.get("room_ids");
@@ -133,7 +144,9 @@ public class ChatController {
     public String getRoomLastMessages(HttpServletRequest request, @PathVariable int id) {
         try {
             if (id > 0) {
-                List<ChatVO> chatVOList = chatService.listLastMessage(new ArrayList<Integer>(){{this.add(id);}});
+                List<ChatVO> chatVOList = chatService.listLastMessage(new ArrayList<Integer>() {{
+                    this.add(id);
+                }});
                 ChatVO chatVO = null;
                 if (chatVOList != null && chatVOList.size() > 0) {
                     chatVO = chatVOList.get(0);
@@ -256,22 +269,24 @@ public class ChatController {
     @ResponseBody
     public String postChatMessage(HttpServletRequest request, @PathVariable int id) {
         try {
-
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
 
             String content = params.getString("content");
-            int roomId = params.getInt("room_id");
+            int roomId = params.getInt("roomId");
             Integer speaker = params.getInt("speaker");
             Integer origin = params.getInt("origin");
-            String msgType = params.getString("msg_type");
-            String picURL = params.getString("pic_url");
-            String btnContent = params.getString("btn_content");
-            Integer positionId = params.getInt("position_id");
-            String createTime = params.getString("create_time");
+            String msgType = params.getString("msgType");
+            String picURL = params.getString("assetUrl");
+            String btnContent = params.getString("btnContent");
+            Integer positionId = params.getInt("positionId");
+            Integer duration = params.getInt("duration");
+            String serverId = params.getString("serverId");
+
+            logger.info("params:{}", params);
 
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addIntTypeValidate("聊天室", id, null, null, 1, Integer.MAX_VALUE);
-            validateUtil.addRequiredStringValidate("聊天内容", content,null, null);
+            validateUtil.addRequiredStringValidate("聊天内容", content, null, null);
             validateUtil.addStringLengthValidate("聊天内容", content, null, null, 1, 1000);
             validateUtil.addRequiredValidate("聊天者角色", speaker, null, null);
             validateUtil.addRequiredValidate("来源", origin, null, null);
@@ -279,12 +294,12 @@ public class ChatController {
             validateUtil.addStringLengthValidate("消息类型", msgType, null, null, 0, 50);
             validateUtil.addStringLengthValidate("图片URL", picURL, null, null, 0, 256);
             validateUtil.addStringLengthValidate("空间类信息", btnContent, null, null, 0, 1000);
-            validateUtil.addDateValidate("创建时间", createTime, DateType.longDate, null, null);
-
+            validateUtil.addIntTypeValidate("音频时长", duration, null, null, 0, 60);
+            validateUtil.addStringLengthValidate("语音文件", serverId, null, null, 0, 256);
+            validateUtil.addIntTypeValidate("职位id", positionId, null, null, 1, Integer.MAX_VALUE);
             String message = validateUtil.validate();
 
             if (StringUtils.isBlank(message)) {
-
                 ChatVO chatVO = new ChatVO();
                 chatVO.setOrigin(origin.byteValue());
                 chatVO.setRoomId(roomId);
@@ -295,18 +310,22 @@ public class ChatController {
                 }
                 if (msgType != null) {
                     chatVO.setMsgType(msgType);
+                    if (msgType.equals(ChatMsgType.VOICE.value())) {
+                        if (StringUtils.isBlank(serverId)) {
+                            return ResponseLogNotification.failJson(request, "语音信息为空");
+                        }
+                        chatVO.setDuration(duration.byteValue());
+                        chatVO.setServerId(serverId);
+                    }
                 }
                 if (picURL != null) {
-                    chatVO.setPicUrl(picURL);
+                    chatVO.setAssetUrl(picURL);
                 }
                 if (btnContent != null) {
                     chatVO.setBtnContent(btnContent);
                 }
-                if (createTime != null) {
-                    chatVO.setCreate_time(createTime);
-                }
-                int chatId = chatService.saveChat(chatVO);
-                return ResponseLogNotification.successJson(request, chatId);
+                logger.info("chatVo:{}", chatVO);
+                return ResponseLogNotification.successJson(request, chatService.saveChat(chatVO));
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
@@ -359,6 +378,147 @@ public class ChatController {
             if (StringUtils.isBlank(message)) {
                 chatService.leaveChatRoom(id, speaker.byteValue());
                 return ResponseLogNotification.successJson(request, "success");
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    @RequestMapping(value = "/chat/voice/pullVoiceFile", method = RequestMethod.GET)
+    @ResponseBody
+    public String pullVoiceFile(HttpServletRequest request, HttpServletResponse response) {
+        ByteArrayOutputStream bos = null;
+        FileInputStream in = null;
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String serverId = params.getString("serverId");
+            int hrId = params.getInt("hrId");
+            int userId = params.getInt("userId");
+            int roomId = params.getInt("roomId");
+            logger.info("=========serverId:{},hrId:{},userId:{},roomId:{}===============", serverId, hrId, userId, roomId);
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredValidate("素材id", serverId, null, null);
+            validateUtil.addStringLengthValidate("素材id", serverId, null, null, 1, 256);
+            validateUtil.addIntTypeValidate("聊天室id", roomId, null, null, 1, Integer.MAX_VALUE);
+            validateUtil.addIntTypeValidate("用户id", userId, null, null, 0, Integer.MAX_VALUE);
+            validateUtil.addIntTypeValidate("hrid", hrId, null, null, 0, Integer.MAX_VALUE);
+
+            String message = validateUtil.validate();
+            logger.info("=========message:{}=============", message);
+            if (StringUtils.isBlank(message)) {
+                Response urlResponse = chatService.pullVoiceFile(serverId, roomId, userId, hrId);
+                Integer status = urlResponse.getStatus();
+                String voiceLocalUrl = null;
+                if (0 == status) {
+                    voiceLocalUrl = JSONObject.parseObject(urlResponse.getData()).getString("voiceLocalUrl");
+                    logger.info("=========voiceLocalUrl:{}================", voiceLocalUrl);
+                    File file = new File(voiceLocalUrl);
+                    if(!file.exists()){
+                        return ResponseLogNotification.failJson(request, "文件不存在");
+                    }
+                    in = new FileInputStream(file);
+                    long fileLength = file.length();
+                    if (fileLength > Integer.MAX_VALUE) {
+                        return ResponseLogNotification.failJson(request, "文件过大");
+                    }
+                    bos = new ByteArrayOutputStream((int) file.length());
+                    byte[] bytes = new byte[8192];
+                    int len = 0;
+                    while ((len = in.read(bytes)) != -1) {
+                        bos.write(bytes, 0, len);
+                    }
+                    bos.flush();
+                    byte[] returnByte = bos.toByteArray();
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("fileBytes", returnByte);
+                    jsonObject.put("fileLength", fileLength);
+                    logger.info("=========jsonObject:{}===============================", jsonObject);
+                    return ResponseLogNotification.successJson(request, jsonObject);
+                }
+                return ResponseLogNotification.failJson(request, urlResponse.getMessage());
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("================拉取出错==================");
+            return ResponseLogNotification.failJson(request, e);
+        } finally {
+            if(null != bos){
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(null != in){
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @RequestMapping(value = "/chat/voice/clearVoiceLimitFrequency", method = RequestMethod.POST)
+    @ResponseBody
+    public String clearVoiceLimitFrequency(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer companyId = params.getInt("companyId");
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredValidate("公司id", companyId, null, null);
+            validateUtil.addIntTypeValidate("公司id", companyId, null, null, 1, Integer.MAX_VALUE);
+            String message = validateUtil.validate();
+
+            if (StringUtils.isBlank(message)) {
+                return ResponseLogNotification.success(request, chatService.clearVoiceLimitFrequency(companyId));
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    @RequestMapping(value = "/chat/voice/queryVoiceLimitFrequency", method = RequestMethod.GET)
+    @ResponseBody
+    public String queryVoiceLimitFrequency(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer companyId = params.getInt("companyId");
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredValidate("公司id", companyId, null, null);
+            validateUtil.addIntTypeValidate("公司id", companyId, null, null, 1, Integer.MAX_VALUE);
+            String message = validateUtil.validate();
+            if (StringUtils.isBlank(message)) {
+                return ResponseLogNotification.success(request, chatService.queryVoiceLimitFrequency(companyId));
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    @RequestMapping(value = "/chat/voice/sendWarnEmail", method = RequestMethod.GET)
+    @ResponseBody
+    public String sendWarnEmail(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer hrId = params.getInt("hrId");
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredValidate("hrId", hrId, null, null);
+            validateUtil.addIntTypeValidate("hrId", hrId, null, null, 1, Integer.MAX_VALUE);
+            String message = validateUtil.validate();
+            if (StringUtils.isBlank(message)) {
+                return ResponseLogNotification.success(request, chatService.sendWarnEmail(hrId));
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
