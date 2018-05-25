@@ -74,12 +74,16 @@ public class CrawlerController {
 			vu.addIntTypeValidate("导入方式", form.getType(), null, null, 1, 7);
 			vu.addIntTypeValidate("用户编号", form.getUser_id(), null, null, 1, Integer.MAX_VALUE);
 			vu.addIntTypeValidate("项目编号", form.getAppid(), null, null, 0, 100);
-			if (form.getType() == 4) {
+			 if(form.getType() == ChannelType.MAIMAI.getValue()) {
 				vu.addRequiredStringValidate("token", form.getToken(), null, null);
+				vu.addRequiredStringValidate("version", form.getVersion(), null, null);
+				vu.addRequiredStringValidate("maimai_appid", form.getMaimai_appid(), null, null);
+				vu.addRequiredStringValidate("unionid", form.getUnionid(), null, null);
 			} else {
 				vu.addRequiredStringValidate("账号", form.getUsername(), null, null);
 				vu.addRequiredStringValidate("密码", form.getPassword(), null, null);
 			}
+
 			String result = vu.validate();
 			if (StringUtils.isNullOrEmpty(result)) {
 				logger.info("/crawler");

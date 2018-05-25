@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.dictdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryPojo;
 import java.util.ArrayList;
@@ -72,5 +73,9 @@ public class DictCountryDao extends JooqCrudImpl<DictCountryDO, DictCountryRecor
             }
         }
         return record;
+    }
+
+    public List<DictCountryDO> getAll(){
+        return getDatas(new Query.QueryBuilder().buildQuery());
     }
 }

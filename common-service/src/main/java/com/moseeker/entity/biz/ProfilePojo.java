@@ -9,8 +9,6 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +19,7 @@ import java.util.UUID;
 /**
  * 简历工具类
  */
-public class
-ProfilePojo {
+public class ProfilePojo {
     
     private static final Logger logger = LoggerFactory.getLogger(ProfilePojo.class);
 	private UserUserRecord userRecord;
@@ -44,11 +41,11 @@ ProfilePojo {
 	/**
 	 * 解析profile生成ProfilePojo类
 	 * @param resume
-	 * @param countryDOList
+	 * @param extParam
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static ProfilePojo parseProfile(Map<String, Object> resume, List<DictCountryDO> countryDOList) {
+	public static ProfilePojo parseProfile(Map<String, Object> resume, ProfileExtParam extParam) {
 		logger.info("------parseProfile-------");
 
 		ProfilePojo pojo = new ProfilePojo();
@@ -89,7 +86,7 @@ ProfilePojo {
 		//解析基本信息
 		ProfileBasicRecord basicRecord = null;
 		try {
-			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), countryDOList);
+			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), extParam);
 			pojo.setBasicRecord(basicRecord);
 		} catch (Exception e1) {
 			logger.error(e1.getMessage(), e1);
@@ -160,7 +157,7 @@ ProfilePojo {
 		//解析其他
 		ProfileOtherRecord otherRecord = null;
 		try {
-			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"), extParam);
 			pojo.setOtherRecord(otherRecord);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -221,10 +218,11 @@ ProfilePojo {
 	 * 解析profile生成ProfilePojo类
 	 * @param resume
 	 * @param userRecord
+	 * @param extParam
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static ProfilePojo parseProfile(Map<String, Object> resume, UserUserRecord userRecord, List<DictCountryDO> countryDOList) {
+	public static ProfilePojo parseProfile(Map<String, Object> resume, UserUserRecord userRecord, ProfileExtParam extParam) {
 		logger.info("------parseProfile-------");
 		ProfilePojo pojo = new ProfilePojo();
 		ProfileUtils profileUtils = new ProfileUtils();
@@ -272,7 +270,7 @@ ProfilePojo {
 		//解析基本信息
 		ProfileBasicRecord basicRecord = null;
 		try {
-			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), countryDOList);
+			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), extParam);
 			pojo.setBasicRecord(basicRecord);
 		} catch (Exception e1) {
 			logger.error(e1.getMessage(), e1);
@@ -345,7 +343,7 @@ ProfilePojo {
 		//解析其他
 		ProfileOtherRecord otherRecord = null;
 		try {
-			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"), extParam);
 			pojo.setOtherRecord(otherRecord);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
