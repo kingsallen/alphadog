@@ -18,12 +18,7 @@ public class ChatVoiceConstant {
     /**
      * 语音下载路径
      */
-    public static final String VOICE_DOWNLOAD_URL = "https://api.weixin.qq.com/cgi-bin/media/get/jssdk?access_token=ACCESS_TOKEN&media_id=MEDIA_ID";
-
-    /**
-     * 语音上传路径
-     */
-    public static final String VOICE_UPLOAD_URL = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE";
+    public static final String VOICE_DOWNLOAD_URL = "https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID";
 
     /**
      * redis中存储路径标识
