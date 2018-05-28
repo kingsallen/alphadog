@@ -213,6 +213,17 @@ public enum ChannelType {
             }
             return result;
         }
+    }, UPLOADGRADUATES(28, "uploadGraduates", "应届生（上传）", "talent_upload") {
+        @Override
+        public String getOrigin(String origin) {
+            String result;
+            if (StringUtils.isNullOrEmpty(origin)) {
+                result = "1000000000000000000000000000";
+            } else {
+                result = getResult(origin, 28);
+            }
+            return result;
+        }
     };
 
     ChannelType(int value, String name, String alias, String retriveName) {
