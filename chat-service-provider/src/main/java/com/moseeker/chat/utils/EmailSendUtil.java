@@ -14,9 +14,11 @@ public class EmailSendUtil {
 
     private static Logger logger = LoggerFactory.getLogger(EmailSendUtil.class);
     /**
-     * @param
-     * @return
-     * @description 发送报警邮件
+     * 发送报警邮件
+     * @param emailAddress 邮箱地址
+     * @param emailContent 邮件内容
+     * @param emailSubject 邮件标题
+     * @return 发送结果
      * @author cjm
      * @date 2018/5/13
      */
