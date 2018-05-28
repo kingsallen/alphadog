@@ -181,6 +181,7 @@ public class ProfileProcessBS {
 //        try {
             List<ApplicationAts> list = getJobApplication(params);
             if (list == null || list.size() == 0) {
+                logger.info("application id not exist!");
                 return ResponseUtils
                         .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             }
@@ -202,6 +203,7 @@ public class ProfileProcessBS {
     private List<ApplicationAts> getJobApplication(String params)
             throws Exception {      
         List<Integer> appIds = this.convertList(params);
+        logger.info("getJobApplication appIds: {}", appIds);
         List<ApplicationAts> list=jobApplicationDao.getApplicationByLApId(appIds);
         return list;
     }
@@ -218,7 +220,8 @@ public class ProfileProcessBS {
     @UpdateEs(tableName = "job_application", argsIndex = 2, argsName = "application_id")
     @CounterIface
     public Response processProfile(int companyId, int progressStatus, List<Integer> appIds, int accountId) throws Exception {
-        logger.info("ProfileProcessBS processProfile companyId:{}, progressStatus:{}, appIds:{}, accountId:{}", companyId, progressStatus, appIds, accountId);
+        logger.info("ProfileProcessBS processProfile companyId:{}, progressStatus:{}, appIds:{}, accountId:{}",
+                companyId, progressStatus, appIds, accountId);
         try {
             if (appIds == null || appIds.size() == 0) {
                 return ResponseUtils
