@@ -545,7 +545,11 @@ public class ChatService {
             chatDO.setChatlistId(chat.getRoomId());
             chatDO.setOrigin(chat.getOrigin());
             chatDO.setMsgType(chat.getMsgType());
-            chatDO.setContent(chat.getContent());
+            if(StringUtils.isNotNullOrEmpty(chat.getContent())){
+                chatDO.setContent(chat.getContent());
+            }else{
+                chatDO.setContent("");
+            }
             chatDO.setPicUrl(chat.getAssetUrl());
             chatDO.setBtnContent(JSON.toJSONString(chat.getBtnContent()));
 
