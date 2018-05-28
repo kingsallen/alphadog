@@ -20,7 +20,8 @@ import java.util.UUID;
 /**
  * 简历工具类
  */
-public class ProfilePojo {
+public class
+ProfilePojo {
     
     private static final Logger logger = LoggerFactory.getLogger(ProfilePojo.class);
 	private UserUserRecord userRecord;
