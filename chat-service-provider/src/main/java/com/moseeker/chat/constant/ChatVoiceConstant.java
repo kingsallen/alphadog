@@ -56,5 +56,5 @@ public class ChatVoiceConstant {
     /**
      * 语音下载次数达上限报警邮箱
      */
-    public static final String[] WARN_EMAIL_ADDRESS_CS = {"cuijiaming@moseeker.com"};
+    public static final String[] WARN_EMAIL_ADDRESS_CS = {"clientsuccess@moseeker.com"};
 }
