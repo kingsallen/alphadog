@@ -615,6 +615,7 @@ public class ChatService {
             } else if (status == VoiceErrorEnum.VOICE_SEND_WARN_EMAIL.getCode()) {
                 // 如果是此返回码，代表微信语音下载失败，解析微信返回错误码，发送报警邮件
                 JSONObject jsonObject = JSONObject.parseObject(response.getData());
+                logger.info("================下载语音时微信返回异常, errmsg:{}===============", jsonObject.get("errmsg"));
                 String emailSubject = "公司id" + companyId + "微信语音下载失败";
                 String emailContent = "errcode:" + jsonObject.get("errcode") + "</br>"
                         + "errmsg:" + jsonObject.get("errmsg") + "</br>"
