@@ -74,7 +74,9 @@ public class CrawlerController {
 			vu.addIntTypeValidate("导入方式", form.getType(), null, null, 1, 20);
 			vu.addIntTypeValidate("用户编号", form.getUser_id(), null, null, 1, Integer.MAX_VALUE);
 			vu.addIntTypeValidate("项目编号", form.getAppid(), null, null, 0, 100);
-			 if(form.getType() == ChannelType.MAIMAI.getValue()) {
+			if (form.getType() == ChannelType.LINKEDIN.getValue()) {
+				vu.addRequiredStringValidate("token", form.getToken(), null, null);
+			} else if(form.getType() == ChannelType.MAIMAI.getValue()) {
 				vu.addRequiredStringValidate("token", form.getToken(), null, null);
 				vu.addRequiredStringValidate("version", form.getVersion(), null, null);
 				vu.addRequiredStringValidate("maimai_appid", form.getMaimai_appid(), null, null);
