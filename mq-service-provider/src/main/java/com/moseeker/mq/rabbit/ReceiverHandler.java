@@ -94,6 +94,7 @@ public class ReceiverHandler {
         try{
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("rabitmq的参数是========"+jsonObject.toJSONString());
             int userId=jsonObject.getIntValue("user_id");
             int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");

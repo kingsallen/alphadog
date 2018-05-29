@@ -141,6 +141,7 @@ public class UserAliUser extends TableImpl<UserAliUserRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserAliUser rename(String name) {
         return new UserAliUser(name, null);
     }

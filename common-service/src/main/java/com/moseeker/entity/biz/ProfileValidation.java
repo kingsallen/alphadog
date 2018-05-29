@@ -137,6 +137,7 @@ public class ProfileValidation {
 				|| education.getEndUntilNow() != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("时间", "开始时间大于结束时间");
 		}
+        logger.info("profile resume education ：{}，islowerNow：{}", education.getStart(),lowerNow(education.getStart()));
 
 		if (education.getStart()!= null && !lowerNow(education.getStart().getTime())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
@@ -194,7 +195,8 @@ public class ProfileValidation {
 	}
 	
 	public static ValidationMessage<ProfileProjectexpRecord> verifyProjectExp(ProfileProjectexpRecord projectExp) {
-		ValidationMessage<ProfileProjectexpRecord> vm = new ValidationMessage<>();
+        logger.info("profile resume project:{}",projectExp.getStart()+":"+projectExp.getEnd());
+	    ValidationMessage<ProfileProjectexpRecord> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(projectExp.getName())) {
 			vm.addFailedElement("项目名称", "未填写项目名称!");
 		}
@@ -216,6 +218,7 @@ public class ProfileValidation {
 		if (projectExp.getEnd() != null && !lowerNow(projectExp.getEnd())) {
 			vm.addFailedElement("结束时间", "时间限制在1900-01-01~至今之间");
 		}
+        logger.info("profile resume project vm:{}",vm.isPass()+":"+vm.getResult());
 		return vm;
 	}
 	
@@ -253,6 +256,10 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(workExp.getStart_date())) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
+		if (StringUtils.isNullOrEmpty(workExp.getEnd_date())
+				&& workExp.getEnd_until_now()  != UntitlNow.UntilNow.getStatus()) {
+			vm.addFailedElement("结束时间", "未填写结束时间");
+		}
 		if (org.apache.commons.lang.StringUtils.isNotBlank(workExp.getStart_date())
 				&& org.apache.commons.lang.StringUtils.isNotBlank(workExp.getEnd_date())
 				&& DateTime.parse(workExp.getStart_date()).getMillis()
@@ -264,13 +271,14 @@ public class ProfileValidation {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
 		}
 		if (org.apache.commons.lang.StringUtils.isNotBlank(workExp.getEnd_date())
-				&& !legalDate(workExp.getEnd_date())) {
-			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
+				&& !lowerNow(workExp.getEnd_date())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~至今之间");
 		}
 		return vm;
 	}
 	
 	public static ValidationMessage<ProfileWorkexpEntity> verifyWorkExp(ProfileWorkexpEntity workExp) {
+        logger.info("profile resume works:{}",workExp.getStart()+":"+workExp.getEnd());
 		ValidationMessage<ProfileWorkexpEntity> vm = new ValidationMessage<>();
 		if(workExp.getCompany() == null || StringUtils.isNullOrEmpty(workExp.getCompany().getName())) {
 			vm.addFailedElement("就职公司", "未填写就职公司");
@@ -284,18 +292,24 @@ public class ProfileValidation {
 		if(workExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
+		if (workExp.getEnd() == null && (workExp.getEndUntilNow() == null || workExp.getEndUntilNow() != UntitlNow.UntilNow.getStatus())) {
+			vm.addFailedElement("结束时间", "未填写结束时间");
+		}
 		if (workExp.getStart() != null && workExp.getEnd() != null
 				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
 				&& (workExp.getEndUntilNow() == null
 				|| workExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
+
 		if (workExp.getStart() != null && !lowerNow(workExp.getStart().getTime())) {
+
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
 		}
 		if (workExp.getEnd() != null && !lowerNow(workExp.getEnd())) {
 			vm.addFailedElement("结束时间", "时间限制在1900-01-01~至今之间");
 		}
+        logger.info("profile resume works vm:{}",vm.isPass()+":"+vm.getResult());
 		return vm;
 	}
 
@@ -323,6 +337,7 @@ public class ProfileValidation {
 				|| workExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
+
 		if (workExp.getStart() != null && !lowerNow(workExp.getStart().getTime())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
 		}
@@ -344,12 +359,14 @@ public class ProfileValidation {
 	}
 
 	public static ValidationMessage<ProfileBasicRecord> verifyBasic(ProfileBasicRecord basicRecord) {
+        logger.info("prfile resume birth:{}",basicRecord.getBirth());
 		ValidationMessage<ProfileBasicRecord> vm = new ValidationMessage<>();
 		if (basicRecord != null && basicRecord.getBirth() != null) {
-            if (!lowerNow(basicRecord.getBirth().getTime())) {
+            if (!lowerNow(basicRecord.getBirth())) {
                 vm.addFailedElement("开始时间", "时间限制在1900-01-01~至今之间");
             }
 		}
+        logger.info("prfile resume birth vm:{}",vm.isPass()+":"+vm.getResult());
 		return vm;
 	}
 
@@ -430,6 +447,7 @@ public class ProfileValidation {
 		}
 		return false;
 	}
+
 
 	public static boolean lowerNow(String date) {
 		if (date == null) {

@@ -162,6 +162,10 @@ public class UserHrAccountServiceImpl implements Iface {
         }
     }
 
+    public HrThirdPartyAccountDO syncThirdPartyAccount(int hrId, int id, boolean sync) throws BIZException, TException {
+        return null;
+    }
+
     @Override
     public HrThirdPartyAccountDO bindConfirm(int hrId, int id, boolean confirm) throws BIZException, TException {
         try {

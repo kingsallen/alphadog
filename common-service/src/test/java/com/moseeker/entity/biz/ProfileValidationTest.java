@@ -166,7 +166,7 @@ public class ProfileValidationTest {
     public void verifyWorkExp() throws Exception {
         WorkExp workExp = new WorkExp();
         workExp.setStart_date("2017-09-01");
-        workExp.setEnd_date("2021-07-01");
+        workExp.setEnd_date("2018-02-01");
         workExp.setCompany_name("公司名称");
         workExp.setJob("职位");
         ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(workExp);

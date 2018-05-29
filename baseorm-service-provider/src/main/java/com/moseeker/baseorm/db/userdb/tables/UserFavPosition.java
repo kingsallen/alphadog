@@ -166,6 +166,7 @@ public class UserFavPosition extends TableImpl<UserFavPositionRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserFavPosition rename(String name) {
         return new UserFavPosition(name, null);
     }

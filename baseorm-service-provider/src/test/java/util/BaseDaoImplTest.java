@@ -2,13 +2,10 @@ package util;
 
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import org.jooq.Field;
-import org.junit.Test;
-import org.junit.Before;
 import org.junit.After;
+import org.junit.Before;
 
 import java.sql.Timestamp;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * BaseDaoImpl Tester.

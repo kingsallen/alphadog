@@ -156,6 +156,7 @@ public class UserCompanyFollow extends TableImpl<UserCompanyFollowRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserCompanyFollow rename(String name) {
         return new UserCompanyFollow(name, null);
     }

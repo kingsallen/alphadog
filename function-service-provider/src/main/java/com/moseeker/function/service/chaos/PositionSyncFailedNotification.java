@@ -216,7 +216,7 @@ public class PositionSyncFailedNotification {
     public void sendHandlerFailureMail(String message, Exception handlerException) {
         List<String> mails=devMails;
         if (mails == null || mails.size() == 0) {
-            logger.error("没有配置同步邮箱地址!");
+            logger.warn("没有配置同步邮箱地址!");
             return;
         }
 

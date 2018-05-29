@@ -17,6 +17,7 @@ public class PositionMiniInfo {
     private UserHrAccount account;
     private int status;
     private int publisher;
+
     private String cities;
 
     public int getId() {

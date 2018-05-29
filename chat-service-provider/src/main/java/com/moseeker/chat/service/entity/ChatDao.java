@@ -1,9 +1,6 @@
 package com.moseeker.chat.service.entity;
 
-import com.moseeker.baseorm.dao.hrdb.HrChatUnreadCountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxHrChatDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxHrChatListDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -24,27 +21,25 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.chat.struct.ChatVO;
-import com.moseeker.thrift.gen.chat.struct.HrVO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-
+import org.jooq.Record;
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+
+import static com.moseeker.common.constants.Constant.HR_HEADIMG;
 
 /**
  * Created by jack on 09/03/2017.
@@ -77,6 +72,9 @@ public class ChatDao {
 
     @Autowired
     JobPositionDao jobPositionDao;
+
+    @Autowired
+    HrCompanyAccountDao hrCompanyAccountDao;
 
     ThreadPool threadPool = ThreadPool.Instance;
 
@@ -182,19 +180,25 @@ public class ChatDao {
                         .addSelectAttribute(UserWxUser.USER_WX_USER.SYSUSER_ID.getName());
                 findHeadImg.addEqualFilter("sysuser_id", wxUserIdStr);
                 List<UserWxUserDO> wxUserDOList = userWxUserDao.getDatas(findHeadImg);
+                logger.info("listUsers wxUserDOList:{}", wxUserDOList);
                 if(wxUserDOList != null && wxUserDOList.size() > 0) {
 
                     userUserDOList.stream().filter(userUserDO -> StringUtils.isNullOrEmpty(userUserDO.getHeadimg())).forEach(userUserDO -> {
-                        wxUserDOList.forEach(userWxUserDO -> {
-                            if(userUserDO.getId() == userWxUserDO.getSysuserId()) {
-                                userUserDO.setHeadimg(userWxUserDO.getHeadimgurl());
-                            }
-                        });
+                        Optional<UserWxUserDO> userWxUserDOOptional = wxUserDOList
+                                .stream().filter(userWxUserDO1 -> userWxUserDO1.getSysuserId() == userUserDO.getId())
+                                .findAny();
+                        if (userWxUserDOOptional.isPresent()) {
+                            logger.info("listUsers userWxUserDOOptional exist");
+                            userUserDO.setHeadimg(userWxUserDOOptional.get().getHeadimgurl());
+                        } else {
+                            logger.info("listUsers userWxUserDOOptional not exist");
+                        }
                     });
                 }
             }
 
         }
+        logger.info("listUsers wxUserDOList:{}", userUserDOList);
         return userUserDOList;
     }
 
@@ -203,26 +207,20 @@ public class ChatDao {
      * @param hrIdArray hr编号
      * @return 公司信息集合
      */
-    public List<HrCompanyDO> listCompany(int[] hrIdArray) {
-        List<HrCompanyDO> companyDOList = null;
-
-        String idStr = StringUtils.converFromArrayToStr(hrIdArray);
-        QueryUtil queryUtil = new QueryUtil();
-        queryUtil.addSelectAttribute("company_id");
-        queryUtil.addEqualFilter("id", idStr);
-        List<UserHrAccountDO> userHrAccountDOList = null;
-        userHrAccountDOList = userHrAccountDao.getDatas(queryUtil);
-        if(userHrAccountDOList != null && userHrAccountDOList.size() > 0) {
-            int[] companyIds = userHrAccountDOList.stream().filter(hr -> hr.getCompanyId() > 0).mapToInt(hr -> hr.getCompanyId()).toArray();
-
-            String hrId = StringUtils.converFromArrayToStr(companyIds);
-            QueryUtil findCompanyInfo = new QueryUtil();
-            findCompanyInfo.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("abbreviation")
-                    .addSelectAttribute("logo");
-            findCompanyInfo.addEqualFilter("id", hrId);
-            companyDOList = hrCompanyDao.getDatas(findCompanyInfo);
+    public Map<Integer, HrCompanyDO> listCompany(int[] hrIdArray) {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where(new Condition("account_id", Arrays.stream(hrIdArray).map(Integer::valueOf).collect(ArrayList::new, List::add, List::addAll), ValueOp.IN));
+        List<HrCompanyAccountDO> hrCompanyAccountDOList = hrCompanyAccountDao.getDatas(query.buildQuery());
+        if(hrCompanyAccountDOList != null && hrCompanyAccountDOList.size() > 0) {
+            Map<Integer, Object> hrCompanyMap = hrCompanyAccountDOList.stream().collect(Collectors.toMap(k -> k.getAccountId(), v -> v.getCompanyId(), (n, o) -> n));
+            query.clear();
+            query.select("id").select("name").select("abbreviation").select("logo");
+            query.where(new Condition("id", new ArrayList<>(hrCompanyMap.values()), ValueOp.IN));
+            List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(query.buildQuery());
+            Map<Integer, HrCompanyDO> companyMap = companyDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
+            return hrCompanyMap.keySet().stream().collect(Collectors.toMap(k -> k, v -> companyMap.getOrDefault(hrCompanyMap.get(v), new HrCompanyDO())));
         }
-        return companyDOList;
+        return null;
     }
 
     /**
@@ -278,13 +276,18 @@ public class ChatDao {
                             try {
                                 List<UserWxUserDO> wxUserDOList = (List<UserWxUserDO>) wxUserFuture.get();
                                 if(wxUserDOList != null && wxUserDOList.size() > 0) {
-                                    wxUserDOList.forEach(wxUserDO -> {
-                                        if(userHrAccountDO.getWxuserId() == wxUserDO.getId()) {
-                                            userHrAccountDO.setHeadimgurl(wxUserDO.getHeadimgurl());
-                                        }
-                                    });
+                                    Optional<UserWxUserDO> userWxUserDOOptional = wxUserDOList.stream()
+                                            .filter(userWxUserDO
+                                                    -> userHrAccountDO.getWxuserId() == userHrAccountDO.getWxuserId())
+                                            .findAny();
+                                    if (userWxUserDOOptional.isPresent()) {
+                                        userHrAccountDO.setHeadimgurl(userWxUserDOOptional.get().getHeadimgurl());
+                                    } else {
+                                        userHrAccountDO.setHeadimgurl(HR_HEADIMG);
+                                    }
                                 }
                             } catch (InterruptedException | ExecutionException e) {
+                                userHrAccountDO.setHeadimgurl(HR_HEADIMG);
                                 logger.error(e.getMessage(), e);
                             }
                         });
@@ -376,13 +379,16 @@ public class ChatDao {
 
     /**
      * 根据HR查找HR所属公司的信息
-     * @param companyId 公司编号
+     * @param publisherId 发布人账号
      * @return 公司信息
      */
-    public HrCompanyDO getCompany(int companyId) {
-        QueryUtil findCompany = new QueryUtil();
-        findCompany.addEqualFilter("id", companyId);
-        return hrCompanyDao.getData(findCompany);
+    public HrCompanyDO getCompany(int publisherId) {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("account_id", publisherId);
+        HrCompanyAccountDO hrCompanyAccountDO = hrCompanyAccountDao.getData(query.buildQuery());
+        query.clear();
+        query.where("id", hrCompanyAccountDO.getCompanyId());
+        return hrCompanyDao.getData(query.buildQuery());
     }
 
     /**
@@ -436,10 +442,13 @@ public class ChatDao {
             }
             /** 查找公司的logo */
             if(userHrAccountDO.getCompanyId() > 0) {
-                QueryUtil findCompany = new QueryUtil();
-                findCompany.addSelectAttribute("id").addSelectAttribute("logo");
-                findCompany.addEqualFilter("id", userHrAccountDO.getCompanyId());
-                companyFuture = threadPool.startTast(() -> hrCompanyDao.getData(findCompany));
+                Query.QueryBuilder query = new Query.QueryBuilder();
+                query.where("account_id", userHrAccountDO.getId());
+                HrCompanyAccountDO hrCompanyAccountDO = hrCompanyAccountDao.getData(query.buildQuery());
+                query.clear();
+                query.where("id", hrCompanyAccountDO.getCompanyId());
+                query.select("id").select("logo");
+                companyFuture = threadPool.startTast(() -> hrCompanyDao.getData(query.buildQuery()));
             }
 
             if(wxUserFuture != null) {
@@ -659,9 +668,9 @@ public class ChatDao {
                 ChatVO chatVO = new ChatVO();
                 chatVO.setId(hrWxHrChatDO.getId());
                 chatVO.setRoomId(hrWxHrChatDO.getChatlistId());
-                chatVO.setCreate_time(hrWxHrChatDO.getCreateTime());
+                chatVO.setCreateTime(hrWxHrChatDO.getCreateTime());
                 chatVO.setOrigin(hrWxHrChatDO.getOrigin());
-                chatVO.setPicUrl(hrWxHrChatDO.getPicUrl());
+                chatVO.setAssetUrl(hrWxHrChatDO.getPicUrl());
                 chatVO.setBtnContent(hrWxHrChatDO.getBtnContent());
                 chatVO.setContent(hrWxHrChatDO.getContent());
                 chatVO.setMsgType(hrWxHrChatDO.getMsgType());
@@ -674,7 +683,7 @@ public class ChatDao {
         }
     }
 
-    public List<ChatVO> listMessage(int roomId, int chatId, int pageSize) {
+    public Result listMessage(int roomId, int chatId, int pageSize) {
         return hrWxHrChatDao.listMessage(roomId, chatId, pageSize);
     }
 
@@ -753,5 +762,44 @@ public class ChatDao {
 
     public void updateChatRoom(HrWxHrChatListRecord hrWxHrChatListRecord) {
         hrWxHrChatListDao.updateRecord(hrWxHrChatListRecord);
+    }
+
+    /**
+     * @param
+     * @return
+     * @description 通过roomid获取公司id
+     * @author cjm
+     * @date 2018/5/12
+     */
+    public Result getCompanyIdAndTokenByRoomId(int roomId) {
+        return hrWxHrChatListDao.getCompanyIdAndTokenByRoomId(roomId);
+    }
+
+    /**
+     * 查找聊天室
+     * @author cjm
+     * @param roomId 聊天室id
+     * @return HrWxHrChatListDO
+     */
+    public HrWxHrChatListDO getChatRoomByRoomId(int roomId) {
+        HrWxHrChatListDO chatRoom = null;
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("id", roomId);
+        chatRoom = hrWxHrChatListDao.getData(queryUtil);
+        return chatRoom;
+    }
+
+
+    /**
+     * 分页查找聊天室下的聊天记录
+     *
+     * @param roomId   聊天室编号  @return 聊天内容集合
+     * @param pageNo   页码
+     * @param pageSize 分页信息
+     * @author cjm
+     */
+    public Result listChatMsg(int roomId, int pageNo, int pageSize) {
+        int startIndex = (pageNo - 1) * pageSize;
+        return hrWxHrChatDao.listChat(roomId, startIndex, pageSize);
     }
 }

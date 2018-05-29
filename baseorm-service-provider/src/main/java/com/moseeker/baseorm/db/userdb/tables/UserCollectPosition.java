@@ -146,6 +146,7 @@ public class UserCollectPosition extends TableImpl<UserCollectPositionRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserCollectPosition rename(String name) {
         return new UserCollectPosition(name, null);
     }

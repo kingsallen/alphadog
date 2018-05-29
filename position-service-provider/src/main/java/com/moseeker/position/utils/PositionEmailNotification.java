@@ -70,7 +70,7 @@ public class PositionEmailNotification {
     public void sendSyncFailureMail(ThirdPartyPositionForm form, IChannelType channel, Exception syncException) {
         List<String> mails=devMails;
         if (mails == null || mails.size() == 0) {
-            logger.error("没有配置同步邮箱地址!");
+            logger.warn("没有配置同步邮箱地址!");
             return;
         }
 
@@ -130,7 +130,7 @@ public class PositionEmailNotification {
     public void sendVerifyFailureMail(String data, IChannelType channel, Exception verifyException) {
         List<String> mails=devMails;
         if (mails == null || mails.size() == 0) {
-            logger.error("没有配置同步邮箱地址!");
+            logger.warn("没有配置同步邮箱地址!");
             return;
         }
 
@@ -205,7 +205,7 @@ public class PositionEmailNotification {
     public <T> void sendUnMatchMail(String notInNewData, String notInOldData, ChannelType channelType,String title) {
         List<String> mails=devMails;
         if (mails == null || mails.size() == 0) {
-            logger.error("没有配置同步邮箱地址!");
+            logger.warn("没有配置同步邮箱地址!");
             return;
         }
 
@@ -265,7 +265,7 @@ public class PositionEmailNotification {
     public void sendRefreshFailureMail(String message, IChannelType channel,Exception refreshException) {
         List<String> mails=devMails;
         if (mails == null || mails.size() == 0) {
-            logger.error("没有配置同步邮箱地址!");
+            logger.warn("没有配置同步邮箱地址!");
             return;
         }
 

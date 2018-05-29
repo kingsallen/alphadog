@@ -1,0 +1,17 @@
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(":common")
+    testCompile deps['spring-test']
+}
+
+project.description = '''
+    suport us start DDD
+'''

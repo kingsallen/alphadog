@@ -18,7 +18,7 @@ public class ChatDaoTest {
     @Autowired
     ChatDao chatDao;
 
-    @Test
+//    @Test
     public void listHr(){
 //        int hrIds[] = {94000, 92763, 85692, 86253, 89704, 85893, 93000, 85244, 90226, 84312};
         int hrIds[] = {88961, 85474, 91135, 94868, 87289, 61425, 60264, 16989, 94663, 93681};

@@ -131,7 +131,7 @@ public class DeliveryEmailProducer {
                     educations = constantDO.getName();
             }
             List<Map<String, String>> eduList = new ArrayList<>();
-            for(int i = 0 ; i< educationDOList.size()-1; i++){
+            for(int i = 0 ; i< educationDOList.size(); i++){
                 if(i>1){break;}
                 ProfileEducationDO education = educationDOList.get(i);
                 Map<String, String> educationMap = new HashMap<>();
@@ -180,7 +180,7 @@ public class DeliveryEmailProducer {
         //获取工作经验
         if(workexpDOList!= null && workexpDOList.size()>0){
             List<Map<String, String>> workList = new ArrayList<>();
-            for(int i = 0 ; i< workexpDOList.size()-1; i++) {
+            for(int i = 0 ; i< workexpDOList.size(); i++) {
                 if(i>2){break;}
                 ProfileWorkexpDO workexpDO = workexpDOList.get(i);
                 Map<String, String> workMap = new HashMap<>();

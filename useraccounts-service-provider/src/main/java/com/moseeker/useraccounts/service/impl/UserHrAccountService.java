@@ -616,6 +616,7 @@ public class UserHrAccountService {
      */
     public Response postSearchCondition(SearchCondition searchCondition) {
         try {
+            boolean positionStatusFlag=searchCondition.isSetPosition_status();
             Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("hr_account_id", String.valueOf(searchCondition.getHr_account_id())).and("type", String.valueOf(searchCondition.getType()));
             int row = hrSearchConditionDao.getCount(query.buildQuery());
@@ -631,6 +632,7 @@ public class UserHrAccountService {
                 logger.warn("保存常用筛选失败，筛选项名称={}，已存在", searchCondition.getName());
                 return ResponseUtils.fail("{'status':42004,'message':'保存失败，该筛选项名称已存在'}");
             }
+
             HrSearchConditionRecord record=BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class);
 
             if(record.getIsPublic()==0){
@@ -639,6 +641,11 @@ public class UserHrAccountService {
             if(record.getIsRecommend()==0){
                 record.setIsRecommend(null);
             }
+
+            if(!positionStatusFlag){
+                record.setPositionStatus(-1);
+            }
+
 
             int primaryKey = hrSearchConditionDao.addRecord(record).getId();
             if (primaryKey > 0) {
@@ -1076,11 +1083,13 @@ public class UserHrAccountService {
             }
 
         }
+
         // 查询总条数
         int counts = userEmployeeDao.getCount(queryBuilder.buildQuery());
         if (counts == 0) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
+
         // 分页数据
         if (pageNumber > 0 && pageSize > 0) {
             // 取的数据超过了分页数，取最最后一页数据
@@ -1093,9 +1102,9 @@ public class UserHrAccountService {
                 }
                 queryBuilder.setPageNum(pageNumber);
             } else {
-                queryBuilder.setPageNum(pageNumber);
-                queryBuilder.setPageSize(pageSize);
-            }
+            queryBuilder.setPageNum(pageNumber);
+            queryBuilder.setPageSize(pageSize);
+        }
         }
 
         // 不管ES中有没有数据，员工的分页数据用于一样
@@ -1124,10 +1133,12 @@ public class UserHrAccountService {
         // ES取到数据
         if (response != null && response.getStatus() == 0) {
             logger.info("ES date:{}", response.getData());
-             EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
+            EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
             List<EmployeeRank> employeeRankList = rankObj.getData();
             if (employeeRankList != null && employeeRankList.size() > 0) {
-                logger.info("ES ThirdPartyInfoData Size:{}", employeeRankList.size());
+                logger.info("ES Data Size:{}", employeeRankList.size());
+                // 根据totalHits 条件命中条数重新设置分页信息
+                userEmployeeVOPageVO.setTotalRow(rankObj.getTotal());
                 // 封装查询条件
                 LinkedHashMap<Integer, Integer> employeeMap = new LinkedHashMap();
                 List<Integer> employeeIds = new ArrayList<>();
@@ -1714,6 +1725,15 @@ public class UserHrAccountService {
     }
 
 
+    public UserHrAccountDO requiresNotNullAccount(int hrId){
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
+        if (hrAccountDO == null) {
+            throw HRException.USER_NOT_EXISTS;
+        }
+        return hrAccountDO;
+    }
+
+
     /**
      * 获取HR账号信息以及公司信息
      * @param wechat_id 微信公众号编号
@@ -1828,12 +1848,4 @@ public class UserHrAccountService {
         return requiresNotNullAccount(accountId);
     }
 
-
-    public UserHrAccountDO requiresNotNullAccount(int hrId){
-        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
-        if (hrAccountDO == null) {
-            throw HRException.USER_NOT_EXISTS;
-        }
-        return hrAccountDO;
-    }
 }

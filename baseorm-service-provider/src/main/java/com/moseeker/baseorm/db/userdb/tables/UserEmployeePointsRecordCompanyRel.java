@@ -141,6 +141,7 @@ public class UserEmployeePointsRecordCompanyRel extends TableImpl<UserEmployeePo
     /**
      * Rename this table
      */
+    @Override
     public UserEmployeePointsRecordCompanyRel rename(String name) {
         return new UserEmployeePointsRecordCompanyRel(name, null);
     }

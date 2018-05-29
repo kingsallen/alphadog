@@ -327,14 +327,14 @@ public class TalentpoolProfileFilterRecord extends UpdatableRecordImpl<Talentpoo
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_profile_filter.disable</code>. 1有效，0删除，2关闭
+     * Setter for <code>talentpooldb.talentpool_profile_filter.disable</code>. 1有效，0无效，2关闭
      */
     public void setDisable(Integer value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_profile_filter.disable</code>. 1有效，0删除，2关闭
+     * Getter for <code>talentpooldb.talentpool_profile_filter.disable</code>. 1有效，0无效，2关闭
      */
     public Integer getDisable() {
         return (Integer) get(21);
@@ -966,7 +966,7 @@ public class TalentpoolProfileFilterRecord extends UpdatableRecordImpl<Talentpoo
     /**
      * Create a detached, initialised TalentpoolProfileFilterRecord
      */
-    public TalentpoolProfileFilterRecord(Integer id, Integer companyId, String name, String origins, String workYears, String cityName, String cityCode, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, String intentionCityCode, String intentionSalaryCode, Integer sex, Integer isRecommend, String companyName, Integer inLastJobSearchCompany, Timestamp createTime, Timestamp updateTime, Integer disable) {
+    public TalentpoolProfileFilterRecord(Integer id, Integer companyId, String name, String origins, String workYears, String submitTime, String cityName, String cityCode, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, String intentionCityCode, String intentionSalaryCode, Integer sex, Integer isRecommend, String companyName, Integer inLastJobSearchCompany, Timestamp createTime, Timestamp updateTime, Integer disable) {
         super(TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER);
 
         set(0, id);

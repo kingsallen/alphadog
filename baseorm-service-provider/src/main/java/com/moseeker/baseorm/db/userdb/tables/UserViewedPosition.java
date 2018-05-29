@@ -136,6 +136,7 @@ public class UserViewedPosition extends TableImpl<UserViewedPositionRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserViewedPosition rename(String name) {
         return new UserViewedPosition(name, null);
     }

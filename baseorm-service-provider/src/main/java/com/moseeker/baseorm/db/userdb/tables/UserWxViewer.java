@@ -135,6 +135,7 @@ public class UserWxViewer extends TableImpl<UserWxViewerRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserWxViewer rename(String name) {
         return new UserWxViewer(name, null);
     }

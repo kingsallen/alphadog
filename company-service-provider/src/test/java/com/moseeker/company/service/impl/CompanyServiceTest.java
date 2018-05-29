@@ -6,6 +6,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.HrCompanyFeatureDO;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import org.apache.thrift.TException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lucky8987 on 17/5/10.
@@ -60,7 +63,7 @@ public class CompanyServiceTest {
         System.out.println(response);
     }
 
-    @Test
+//    @Test
     public void getBannerTest() throws Exception{
     	int page=1;
     	int pagesize=10;
@@ -68,7 +71,7 @@ public class CompanyServiceTest {
     	System.out.println(res);
     }
 
-    @Test
+//    @Test
     public void testGetTalentPooleStatus(){
         int hrId=91372;
         int companyId=242645;
@@ -76,17 +79,17 @@ public class CompanyServiceTest {
         System.out.println(result);
     }
 
-    @Test
+//    @Test
     public void testGetFeature(){
         int companyId=39978;
         System.out.println(JSON.toJSONString(service.getCompanyFeatureByCompanyId(companyId)));
     }
-    @Test
+//    @Test
     public void testGetFeatureById(){
         int id=19;
         System.out.println(JSON.toJSONString(service.getCompanyFeatureById(id)));
     }
-    @Test
+//    @Test
     public void testAddFeature(){
         HrCompanyFeatureDO DO=new HrCompanyFeatureDO();
         DO.setCompany_id(1);
@@ -94,7 +97,7 @@ public class CompanyServiceTest {
         DO.setFeature("1111111");
         System.out.println(JSON.toJSONString(service.addCompanyFeature(DO)));
     }
-    @Test
+//    @Test
     public void testAddFeatureList(){
         List<HrCompanyFeatureDO> list=new ArrayList<>();
         HrCompanyFeatureDO DO=new HrCompanyFeatureDO();
@@ -107,7 +110,7 @@ public class CompanyServiceTest {
         list.add(DO1);
         System.out.println(JSON.toJSONString(service.addCompanyFeatureList(list)));
     }
-    @Test
+//    @Test
     public void testUpdateFeatureList(){
         List<HrCompanyFeatureDO> list=new ArrayList<>();
         HrCompanyFeatureDO DO=new HrCompanyFeatureDO();
@@ -123,6 +126,15 @@ public class CompanyServiceTest {
         DO1.setFeature("ssssss");
         list.add(DO1);
         System.out.println(JSON.toJSONString(service.updateCompanyFeatureList(list)));
+    }
+    @Test
+    public void getCompany() throws TException {
+        CommonQuery query=new CommonQuery();
+        Map<String,String> map=new HashMap<>();
+        map.put("id","39978");
+        query.setEqualFilter(map);
+        Response res=service.getResources(query);
+        System.out.println(JSON.toJSONString(res));
     }
 
 
