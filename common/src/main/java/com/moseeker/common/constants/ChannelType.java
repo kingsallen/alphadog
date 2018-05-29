@@ -120,6 +120,11 @@ public enum ChannelType {
         public String getOrigin(String origin) {
             return null;
         }
+    }, MAIMAI(10,"maimai","脉脉","common_retrieval_flow"){
+        @Override
+        public String getOrigin(String origin) {
+            return null;
+        }
     }, UPLOAD51(20, "upload51", "51上传", "talent_upload") {
         @Override
         public String getOrigin(String origin) {
@@ -205,6 +210,17 @@ public enum ChannelType {
                 result = "100000000000000000000000000";
             } else {
                 result = getResult(origin, 27);
+            }
+            return result;
+        }
+    }, UPLOADGRADUATES(28, "uploadGraduates", "应届生（上传）", "talent_upload") {
+        @Override
+        public String getOrigin(String origin) {
+            String result;
+            if (StringUtils.isNullOrEmpty(origin)) {
+                result = "1000000000000000000000000000";
+            } else {
+                result = getResult(origin, 28);
             }
             return result;
         }

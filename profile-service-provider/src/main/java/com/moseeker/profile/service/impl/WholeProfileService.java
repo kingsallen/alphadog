@@ -40,13 +40,14 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.UserAccountEntity;
+import com.moseeker.entity.biz.ProfileExtParam;
+import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.profile.utils.ConstellationUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
@@ -65,7 +66,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -179,6 +179,9 @@ public class WholeProfileService {
 
     @Autowired
     RetriveProfile retriveProfile;
+
+    @Autowired
+    ProfileParseUtil profileParseUtil;
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
@@ -324,6 +327,8 @@ public class WholeProfileService {
         if (!StringUtils.isNullOrEmpty(profile)) {
             Map<String, Object> resume = JSON.parseObject(profile);
 
+            ProfileExtParam extParam = profileParseUtil.initParseProfileParam();
+
             ProfileProfileRecord profileRecord = profileUtils
                     .mapToProfileRecord((Map<String, Object>) resume.get("profile"));
             UserUserRecord userRecord = userDao.getUserById(userId);
@@ -366,7 +371,7 @@ public class WholeProfileService {
             }
             ProfileBasicRecord basicRecord = null;
             try {
-                basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+                basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), extParam);
             } catch (Exception e1) {
                 logger.error(e1.getMessage(), e1);
             }
@@ -422,7 +427,7 @@ public class WholeProfileService {
             }
             ProfileOtherRecord otherRecord = null;
             try {
-                otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+                otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"), extParam);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -503,7 +508,7 @@ public class WholeProfileService {
         } else {
             profileRecord.setUuid(UUID.randomUUID().toString());
         }
-        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
 
         int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
@@ -561,7 +566,7 @@ public class WholeProfileService {
         if (userRecord == null) {
             return -1;
         }
-        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
 
         int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
@@ -604,7 +609,7 @@ public class WholeProfileService {
 
         if (profileDB != null) {
             ((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
-            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
             int profileId = profileDB.getId().intValue();
             profileEntity.improveUser(userRecord);
             profileEntity.improveProfile(profilePojo.getProfileRecord(), profileDB);
@@ -1392,7 +1397,7 @@ public class WholeProfileService {
             String origin1=(String)resume.get("origin");
             String origin=profileDB.getOrigin();
             String originResult=convertToChannelString(origin,origin1);
-            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
             /*
              合并profile_profile.origin
              */
@@ -1449,6 +1454,8 @@ public class WholeProfileService {
             type=24;
         }else if(origin1.length()==25){
             type=25;
+        }else if(origin1.length()==28){
+            type=28;
         }
         if(type==0){
             return origin;
@@ -1882,4 +1889,6 @@ public class WholeProfileService {
 
         return workExp;
     }
+
+
 }

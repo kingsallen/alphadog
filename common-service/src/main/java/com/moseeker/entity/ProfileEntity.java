@@ -10,13 +10,13 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
+import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
@@ -58,6 +58,9 @@ public class ProfileEntity {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    ProfileParseUtil profileParseUtil;
+
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
      * @param profileParameter 简历信息
@@ -65,7 +68,7 @@ public class ProfileEntity {
      */
     public ProfilePojo parseProfile(String profileParameter) {
         Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8(profileParameter)));
-        return ProfilePojo.parseProfile(paramMap);
+        return ProfilePojo.parseProfile(paramMap, profileParseUtil.initParseProfileParam());
     }
 
     /**

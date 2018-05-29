@@ -1,7 +1,6 @@
 package com.moseeker.entity.biz;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.profiledb.IntentionRecord;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
@@ -20,8 +19,7 @@ import java.util.UUID;
 /**
  * 简历工具类
  */
-public class
-ProfilePojo {
+public class ProfilePojo {
     
     private static final Logger logger = LoggerFactory.getLogger(ProfilePojo.class);
 	private UserUserRecord userRecord;
@@ -43,10 +41,11 @@ ProfilePojo {
 	/**
 	 * 解析profile生成ProfilePojo类
 	 * @param resume
+	 * @param extParam
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static ProfilePojo parseProfile(Map<String, Object> resume) {
+	public static ProfilePojo parseProfile(Map<String, Object> resume, ProfileExtParam extParam) {
 		logger.info("------parseProfile-------");
 
 		ProfilePojo pojo = new ProfilePojo();
@@ -87,7 +86,7 @@ ProfilePojo {
 		//解析基本信息
 		ProfileBasicRecord basicRecord = null;
 		try {
-			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), extParam);
 			pojo.setBasicRecord(basicRecord);
 		} catch (Exception e1) {
 			logger.error(e1.getMessage(), e1);
@@ -158,7 +157,7 @@ ProfilePojo {
 		//解析其他
 		ProfileOtherRecord otherRecord = null;
 		try {
-			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"), extParam);
 			pojo.setOtherRecord(otherRecord);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -219,10 +218,11 @@ ProfilePojo {
 	 * 解析profile生成ProfilePojo类
 	 * @param resume
 	 * @param userRecord
+	 * @param extParam
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static ProfilePojo parseProfile(Map<String, Object> resume, UserUserRecord userRecord) {
+	public static ProfilePojo parseProfile(Map<String, Object> resume, UserUserRecord userRecord, ProfileExtParam extParam) {
 		logger.info("------parseProfile-------");
 		ProfilePojo pojo = new ProfilePojo();
 		ProfileUtils profileUtils = new ProfileUtils();
@@ -270,7 +270,7 @@ ProfilePojo {
 		//解析基本信息
 		ProfileBasicRecord basicRecord = null;
 		try {
-			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), extParam);
 			pojo.setBasicRecord(basicRecord);
 		} catch (Exception e1) {
 			logger.error(e1.getMessage(), e1);
@@ -343,7 +343,7 @@ ProfilePojo {
 		//解析其他
 		ProfileOtherRecord otherRecord = null;
 		try {
-			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"), extParam);
 			pojo.setOtherRecord(otherRecord);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
