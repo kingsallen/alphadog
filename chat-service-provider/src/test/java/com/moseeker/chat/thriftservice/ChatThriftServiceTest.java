@@ -35,7 +35,7 @@ public class ChatThriftServiceTest {
         }
     }
 
-    @Test
+//    @Test
     public void listUserChatRoom() throws Exception {
         UserChatRoomsVO roomsVO = chatService.listUserChatRoom(1, 1, 10);
         System.out.println("pageNo : "+roomsVO.getPageNo());
@@ -70,7 +70,7 @@ public class ChatThriftServiceTest {
             chatVOList.forEach(chatVO -> {
                 System.out.println("id:"+chatVO.getId());
                 System.out.println("content:"+chatVO.getContent());
-                System.out.println("createTime:"+chatVO.getCreate_time());
+                System.out.println("createTime:"+chatVO.getCreateTime());
                 System.out.println("speaker:"+chatVO.getSpeaker());
             });
         }
