@@ -1432,6 +1432,8 @@ public class WholeProfileService {
             type=24;
         }else if(origin1.length()==25){
             type=25;
+        }else if(origin1.length()==28){
+            type=28;
         }
         if(type==0){
             return origin;
