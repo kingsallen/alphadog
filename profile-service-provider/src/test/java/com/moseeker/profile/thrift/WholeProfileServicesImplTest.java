@@ -1,8 +1,14 @@
 package com.moseeker.profile.thrift;
 
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
+import com.moseeker.entity.biz.ProfileParseUtil;
+import com.moseeker.entity.biz.ProfileUtils;
 import com.moseeker.profile.config.AppConfig;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,4 +30,24 @@ public class WholeProfileServicesImplTest {
        int userId = 5228495;
         profileServices.importCV(profile, userId);
     }
+
+    @Autowired
+    ProfileParseUtil profileParseUtil;
+
+    @Test
+    public void mapToBasicRecord() throws Exception {
+        Map<String,Object> map = new HashMap<>();
+        map.put("iso_code_2","AF");
+        ProfileBasicRecord result = new ProfileUtils().mapToBasicRecord(map, profileParseUtil.initParseProfileParam());
+        assert result.getNationalityCode() != null && result.getNationalityCode() != 0;
+    }
+
+    @Test
+    public void mapToOtherRecord() throws Exception {
+        Map<String,Object> map = new HashMap<>();
+        map.put("current_industry","计算机");
+        ProfileOtherRecord result = new ProfileUtils().mapToOtherRecord(map, profileParseUtil.initParseProfileParam());
+        assert result.getOther() != null && "{\"current_industry\":1100}".equals(result.getOther());
+    }
+
 }
