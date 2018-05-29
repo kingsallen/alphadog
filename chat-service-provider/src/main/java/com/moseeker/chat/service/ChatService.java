@@ -1312,9 +1312,7 @@ public class ChatService {
                     return ResponseUtils.fail(VoiceErrorEnum.VOICE_EMAIL_SEND_ALREADY.getCode(), VoiceErrorEnum.VOICE_EMAIL_SEND_ALREADY.getMsg());
                 }
             }
-            warnEmailSendState = 1;
             clearTimes = (int) jsonObject.get("clear_times");
-            jsonObject.put("warn_email_send_state", warnEmailSendState);
             // 发送报警邮件
             String br = "</br>";
             StringBuilder emailContent = new StringBuilder();
@@ -1328,6 +1326,8 @@ public class ChatService {
             for (String email : emails) {
                 EmailSendUtil.sendWarnEmail(email, emailContent.toString(), emailSubject.toString());
             }
+            warnEmailSendState = 1;
+            jsonObject.put("warn_email_send_state", warnEmailSendState);
             // 将邮件发送状态更新至redis
             redisClient.set(Constant.APPID_ALPHADOG, VOICE_CLEAR_TIMES, String.valueOf(companyId), JSONObject.toJSONString(jsonObject));
             return RespnoseUtil.SUCCESS.toResponse();
