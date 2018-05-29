@@ -409,6 +409,7 @@ public class SearchengineService {
        } else {
            responseBuilder.addSort("_score", SortOrder.DESC);
        }
+       responseBuilder.addSort("id",SortOrder.DESC);
    }
 
    /*
@@ -423,6 +424,7 @@ public class SearchengineService {
         } else {
             responseBuilder.addSort("update_time", SortOrder.DESC);
         }
+        responseBuilder.addSort("id",SortOrder.DESC);
     }
     /*
         继续对排序进行细分3,按照城市或者得分排序
@@ -435,6 +437,7 @@ public class SearchengineService {
         } else {
             responseBuilder.addSort("_score", SortOrder.DESC);
         }
+        responseBuilder.addSort("id",SortOrder.DESC);
     }
     /*
    继续对排序进行细分4,按照城市或者排序
@@ -450,6 +453,7 @@ public class SearchengineService {
         } else {
             responseBuilder.addSort("update_time", SortOrder.DESC);
         }
+        responseBuilder.addSort("id",SortOrder.DESC);
     }
     /*
       按照被命中的城市是否是全国。来重新处理顺序问题，只有全国的，或者是全国命中的沉底
