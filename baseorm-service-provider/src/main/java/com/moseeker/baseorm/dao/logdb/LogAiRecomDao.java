@@ -5,12 +5,12 @@ import com.moseeker.baseorm.db.logdb.tables.pojos.LogAiRecom;
 import com.moseeker.baseorm.db.logdb.tables.records.LogAiRecomRecord;
 import static com.moseeker.baseorm.db.logdb.tables.LogAiRecom.LOG_AI_RECOM;
 import org.jooq.impl.TableImpl;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by zztaiwll on 18/5/22.
  */
-@Component
+@Service
 public class LogAiRecomDao extends JooqCrudImpl<LogAiRecom, LogAiRecomRecord> {
 
     public LogAiRecomDao() {
