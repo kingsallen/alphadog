@@ -201,6 +201,11 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
         form.setSalaryTop(thirdPartyPosition.getSalaryTop());
         form.setSalaryBottom(thirdPartyPosition.getSalaryBottom());
 
+        form.setCareerLevel(extPosition.getCareerLevel());
+        form.setEducationLevel(extPosition.getEducationLevel());
+        form.setSalaryType(extPosition.getSalaryType());
+        form.setKeyword(extPosition.getKeyword());
+
         JSONObject result= JSON.parseObject(JSON.toJSONString(form));
 
         result.putAll(JSON.parseObject(JSON.toJSONString(thirdPartyPosition)));
