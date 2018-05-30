@@ -35,7 +35,7 @@ public class ChatThriftServiceTest {
         }
     }
 
-    @Test
+//    @Test
     public void listUserChatRoom() throws Exception {
         UserChatRoomsVO roomsVO = chatService.listUserChatRoom(1, 1, 10);
         System.out.println("pageNo : "+roomsVO.getPageNo());
@@ -58,23 +58,23 @@ public class ChatThriftServiceTest {
         }
     }
 
-//    ////@Test
-//    public void listChatLogs() throws Exception {
-//        ChatsVO chatsVO = chatService.listChatLogs(28559, 1, 10);
-//        System.out.println("pageNo : "+chatsVO.getPageNo());
-//        System.out.println("pageSize : " + chatsVO.getPageSize());
-//        System.out.println("totalRow : " + chatsVO.getTotalRow());
-//        System.out.println("totalPage : " + chatsVO.getTotalPage());
-//        List<ChatVO> chatVOList = chatsVO.getChatLogs();
-//        if(chatVOList != null) {
-//            chatVOList.forEach(chatVO -> {
-//                System.out.println("id:"+chatVO.getId());
-//                System.out.println("content:"+chatVO.getContent());
-//                System.out.println("createTime:"+chatVO.getCreate_time());
-//                System.out.println("speaker:"+chatVO.getSpeaker());
-//            });
-//        }
-//    }
+    ////@Test
+    public void listChatLogs() throws Exception {
+        ChatsVO chatsVO = chatService.listChatLogs(28559, 1, 10);
+        System.out.println("pageNo : "+chatsVO.getPageNo());
+        System.out.println("pageSize : " + chatsVO.getPageSize());
+        System.out.println("totalRow : " + chatsVO.getTotalRow());
+        System.out.println("totalPage : " + chatsVO.getTotalPage());
+        List<ChatVO> chatVOList = chatsVO.getChatLogs();
+        if(chatVOList != null) {
+            chatVOList.forEach(chatVO -> {
+                System.out.println("id:"+chatVO.getId());
+                System.out.println("content:"+chatVO.getContent());
+                System.out.println("createTime:"+chatVO.getCreateTime());
+                System.out.println("speaker:"+chatVO.getSpeaker());
+            });
+        }
+    }
 
     ////@Test
     public void saveChat() throws Exception {

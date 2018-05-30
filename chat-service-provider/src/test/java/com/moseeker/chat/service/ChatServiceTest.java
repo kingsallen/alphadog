@@ -47,18 +47,18 @@ public class ChatServiceTest {
     @Autowired
     private ChatThriftService chatService;
 
-    @Test
+//    @Test
     public void listChatLog() throws TException {
         System.out.println(JSON.toJSONString(chatService.listChatLogs(33 ,1, 10)));
     }
 
-    @Test
+//    @Test
     public void enterChatRoom() throws TException {
 
         chatService.enterRoom(2191525,87759, 0,0, false);
     }
 
-    @Test
+//    @Test
     public void saveChat() throws Exception {
         /*ChatVO chatVO=new ChatVO();
         chatVO.setId(0); // optional
@@ -149,7 +149,7 @@ public class ChatServiceTest {
         System.out.println(JSON.toJSONString(chatsVO));
     }
 
-    @Test
+//    @Test
     public void listUserChatRoom() throws TException {
         System.out.println(JSON.toJSONString(chatService.listUserChatRoom(4,1,200)));
     }
