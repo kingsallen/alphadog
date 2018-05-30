@@ -38,6 +38,8 @@ import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -85,6 +87,8 @@ public class MessageTemplateEntity {
     private PersonaRecomEntity personaRecomEntity;
     @Autowired
     private LogAiRecomDao logAiRecomDao;
+    @CounterIface
+    @Transactional
     public MessageTemplateNoticeStruct handlerTemplate(AIRecomParams params)throws Exception{
         HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(params.getCompanyId());
         String wxSignture=DO.getSignature();
