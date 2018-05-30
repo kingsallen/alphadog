@@ -172,10 +172,18 @@ public class TalentpoolSearchengine {
             builder.addAggregation(this.handleAllApplicationCountAgg(params))
                     .addAggregation(this.handleAllcountAgg(params))
                     .addAggregation(this.handleEntryCountAgg(params))
-                    .addAggregation(this.handleFirstTrialOkCountAgg(params))
-                    .addAggregation(this.handleInterviewOkCountAgg(params))
-                    .addAggregation(this.handleIsViewedCountAgg(params))
-                    .addAggregation(this.handleNotViewedCountAgg(params));
+                    .addAggregation(this.handleAggInfo(params,"entry_count",12,0))
+                    .addAggregation(this.handleAggInfo(params,"entry_count_app",12,1))
+                    .addAggregation(this.handleAggInfo(params,"interview_ok_count",10,0))
+                    .addAggregation(this.handleAggInfo(params,"interview_ok_count_app",10,1))
+                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count",7,0))
+                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count_app",7,1))
+                    .addAggregation(this.handleAggInfo(params,"is_viewed_count",4,0))
+                    .addAggregation(this.handleAggInfo(params,"is_viewed_count_app",4,1))
+                    .addAggregation(this.handleAggInfo(params,"is_not_suitable",13,0))
+                    .addAggregation(this.handleAggInfo(params,"is_not_suitable_app",13,1))
+                    .addAggregation(this.handleAggInfo(params,"not_viewed_count",3,1))
+                    .addAggregation(this.handleAggInfo(params,"not_viewed_count_app",3,1));
             builder.setSize(0);
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
@@ -1731,6 +1739,19 @@ public class TalentpoolSearchengine {
         MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("interview_ok_count")
                 .initScript(new Script(getAggInitScript()))
                 .mapScript(new Script(this.getAggMapScript(params,"10",0)))
+                .reduceScript(new Script(this.getAggReduceScript()))
+                .combineScript(new Script(this.getAggCombineScript()));
+        return build;
+    }
+    private void ss(Map<String,String> params,String name,int progressStatus,int type){
+
+
+    }
+
+    private AbstractAggregationBuilder handleAggInfo(Map<String,String> params,String name,int progressStatus,int type){
+        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric(name)
+                .initScript(new Script(getAggInitScript()))
+                .mapScript(new Script(this.getAggMapScript(params,progressStatus+"",type)))
                 .reduceScript(new Script(this.getAggReduceScript()))
                 .combineScript(new Script(this.getAggCombineScript()));
         return build;
