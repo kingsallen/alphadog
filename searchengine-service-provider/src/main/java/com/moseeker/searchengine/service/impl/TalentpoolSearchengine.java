@@ -171,7 +171,6 @@ public class TalentpoolSearchengine {
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_INDEX).setQuery(query);
             builder.addAggregation(this.handleAllApplicationCountAgg(params))
                     .addAggregation(this.handleAllcountAgg(params))
-                    .addAggregation(this.handleEntryCountAgg(params))
                     .addAggregation(this.handleAggInfo(params,"entry_count",12,0))
                     .addAggregation(this.handleAggInfo(params,"entry_count_app",12,1))
                     .addAggregation(this.handleAggInfo(params,"interview_ok_count",10,0))
@@ -791,36 +790,7 @@ public class TalentpoolSearchengine {
         }
         return true;
     }
-    /*
-     处理统计
-     */
-    private void handlerAggs(Map<String,String> params,SearchRequestBuilder builder,TransportClient client, Map<String,Object> aggInfo){
-        String tagIds=params.get("tag_ids");
-        String favoriteHrs=params.get("favorite_hrs");
-        String isPublic=params.get("is_public");
-        String progressStatus = params.get("progress_status");
-        //如果是按建立进度查询。那么不走着一段，会另外走一段逻辑
-        if(StringUtils.isNullOrEmpty(progressStatus)) {
-            //如果是涉及人才库的查询，那么就不走聚合函数
-            if (StringUtils.isNullOrEmpty(tagIds) && StringUtils.isNullOrEmpty(favoriteHrs) && StringUtils.isNullOrEmpty(isPublic)) {
-                if (this.valididateSearchAggIndex(params)) {
-                    aggInfo = this.getUserAnalysisIndex(params, client);
-                }
-                if (aggInfo == null || aggInfo.isEmpty()) {
-                    String returnParams = params.get("return_params");
-                    if (!this.isExecAgg(returnParams)) {
-                        builder.addAggregation(this.handleAllApplicationCountAgg(params))
-                                .addAggregation(this.handleAllcountAgg(params))
-                                .addAggregation(this.handleEntryCountAgg(params))
-                                .addAggregation(this.handleFirstTrialOkCountAgg(params))
-                                .addAggregation(this.handleInterviewOkCountAgg(params))
-                                .addAggregation(this.handleIsViewedCountAgg(params))
-                                .addAggregation(this.handleNotViewedCountAgg(params));
-                    }
-                }
-            }
-        }
-    }
+
 
     /*
      处理分页
@@ -1699,54 +1669,6 @@ public class TalentpoolSearchengine {
                 .combineScript(new Script(this.getAggCombineScript()));
         return build;
     }
-    /*
-       简历被查看的统计
-     */
-    private AbstractAggregationBuilder handleIsViewedCountAgg(Map<String,String> params){
-        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("is_viewed_count")
-                .initScript(new Script(getAggInitScript()))
-                .mapScript(new Script(this.getAggMapScript(params,"4",0)))
-                .reduceScript(new Script(this.getAggReduceScript()))
-                .combineScript(new Script(this.getAggCombineScript()));
-        return build;
-    }
-    /*
-       初试通过的统计
-     */
-    private AbstractAggregationBuilder handleFirstTrialOkCountAgg(Map<String,String> params){
-        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("first_trial_ok_count")
-                .initScript(new Script(getAggInitScript()))
-                .mapScript(new Script(this.getAggMapScript(params,"7",0)))
-                .reduceScript(new Script(this.getAggReduceScript()))
-                .combineScript(new Script(this.getAggCombineScript()));
-        return build;
-    }
-    /*
-      入职的统计
-     */
-    private AbstractAggregationBuilder handleEntryCountAgg(Map<String,String> params){
-        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("entry_count")
-                .initScript(new Script(getAggInitScript()))
-                .mapScript(new Script(this.getAggMapScript(params,"12",0)))
-                .reduceScript(new Script(this.getAggReduceScript()))
-                .combineScript(new Script(this.getAggCombineScript()));
-        return build;
-    }
-    /*
-      面试通过的统计
-     */
-    private AbstractAggregationBuilder handleInterviewOkCountAgg(Map<String,String> params){
-        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("interview_ok_count")
-                .initScript(new Script(getAggInitScript()))
-                .mapScript(new Script(this.getAggMapScript(params,"10",0)))
-                .reduceScript(new Script(this.getAggReduceScript()))
-                .combineScript(new Script(this.getAggCombineScript()));
-        return build;
-    }
-    private void ss(Map<String,String> params,String name,int progressStatus,int type){
-
-
-    }
 
     private AbstractAggregationBuilder handleAggInfo(Map<String,String> params,String name,int progressStatus,int type){
         MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric(name)
@@ -1768,17 +1690,7 @@ public class TalentpoolSearchengine {
                 .combineScript(new Script(this.getAggCombineScript()));
         return build;
     }
-    /*
-      未查看简历数量的统计
-     */
-    private AbstractAggregationBuilder handleNotViewedCountAgg(Map<String,String> params){
-        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("not_viewed_count")
-                .initScript(new Script(getAggInitScript()))
-                .mapScript(new Script(this.getAggMapScript(params,"3",0)))
-                .reduceScript(new Script(this.getAggReduceScript()))
-                .combineScript(new Script(this.getAggCombineScript()));
-        return build;
-    }
+
     /*
      根据不同的条件组装聚合语句
      */
