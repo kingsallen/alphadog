@@ -141,6 +141,17 @@ public class BusinessUtil {
 			result.setReward(0);
 			result.setStatus(0);
 		}
+		if(preRecruitOrder==3 && recruitOrder==7){
+			result.setStatus(0);
+			result.setReward(recruitOrderCVPassedReward);
+			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CVPASSED);
+		}
+
+		if(preRecruitOrder==7 && recruitOrder==12){
+			result.setStatus(0);
+			result.setReward(recruitOrderHiredReward);
+			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_HIRED);
+		}
 		return result;
 	}
 }
