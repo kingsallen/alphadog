@@ -112,7 +112,7 @@ public class SearchMethodUtil {
      */
     private void handlerSort(Map<String,String> params,SearchRequestBuilder responseBuilder){
         String flag=params.get("flag");
-        if("-1".equals(flag)){
+        if(StringUtils.isBlank(flag)){
             SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(), "number");
             builder.order(SortOrder.DESC);
             responseBuilder.addSort(builder);
@@ -148,16 +148,14 @@ public class SearchMethodUtil {
         String publisherCompanyId=params.get("did");
         searchUtil.handleTerms(companyIds,query,"company_id");
         String flag=params.get("flag");
-        if(StringUtils.isBlank(flag)){
-            flag="0";
-        }
+
         if(StringUtils.isNotBlank(publisherCompanyId)){
             searchUtil.handleTerms(publisherCompanyId,query,"publisher_company_id");
         }
-        if(Integer.parseInt(flag)==0){
-            searchUtil.handleMatch(0,query,"status");
-        }else if(Integer.parseInt(flag)==-1){
+        if(StringUtils.isBlank(flag)){
 
+        }else if(StringUtils.isNotBlank(flag)&&Integer.parseInt(flag)==0){
+            searchUtil.handleMatch(0,query,"status");
         }else{
             this.handlerStatusQuery(query);
         }
