@@ -253,6 +253,8 @@ public class PositionServicesImpl implements Iface {
                     syncFailMessPojolistList.add(new SyncFailMessPojo(result.getPosition_id(), result.getChannel(), result.getSync_fail_reason()));
                 }
             }
+        } catch (BIZException e) {
+            syncFailMessPojolistList.add(new SyncFailMessPojo(-1, -1, e.getMessage()));
         } catch (Exception e) {
             logger.info("save and sync error exception:",e);
         }

@@ -84,7 +84,7 @@ public class ThirdPartyPositionParamRefresh {
         AbstractRabbitMQParamRefresher refresher=null;
         try {
             json=new String(message.getBody(), "UTF-8");
-            logger.info("receive json" );
+            logger.info("receive json : {}",json );
 
             JSONObject obj=JSONObject.parseObject(json);
             Integer status=obj.getInteger("status");

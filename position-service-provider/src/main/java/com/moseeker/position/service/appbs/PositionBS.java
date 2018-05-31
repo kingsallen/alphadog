@@ -111,14 +111,14 @@ public class PositionBS {
         List<JobPositionDO> moseekerJobPositions=positionSyncHandler.getMoSeekerPositions(positionIds);
         Map<Integer,JobPositionDO> moseekerJobPositionMap=moseekerJobPositions.stream().collect(Collectors.toMap(p->p.getId(),p->p));
         if(moseekerJobPositionMap==null || moseekerJobPositionMap.isEmpty()){
-            return new ArrayList<>();
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.NO_SYNC_QX_POSITION);
         }
 
         //批量获取第三方账号，转换成Map<hrAccountId,List<HrThirdPartyAccountDO>>方便查询
         List<Integer> publishers=moseekerJobPositions.stream().map(p->p.getPublisher()).collect(Collectors.toList());
         Map<Integer,List<HrThirdPartyAccountDO>> thirdAccountOfHr=positionSyncHandler.getValidThirdPartAccounts(publishers);
         if(thirdAccountOfHr == null || thirdAccountOfHr.isEmpty()){
-            return new ArrayList<>();
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.NO_SYNC_THIRD_PARTY_ACCOUNT);
         }
 
         List<PositionSyncResultPojo> results=new ArrayList<>();

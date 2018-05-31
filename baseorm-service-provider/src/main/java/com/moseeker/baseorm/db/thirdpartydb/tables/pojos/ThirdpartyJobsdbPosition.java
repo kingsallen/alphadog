@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ThirdpartyJobsdbPosition implements Serializable {
 
-    private static final long serialVersionUID = 1953444130;
+    private static final long serialVersionUID = 1937966153;
 
     private Integer   id;
     private Integer   pid;
@@ -37,6 +37,11 @@ public class ThirdpartyJobsdbPosition implements Serializable {
     private Timestamp createTime;
     private Timestamp updateTime;
     private Short     status;
+    private Integer   careerLevel;
+    private Integer   educationLevel;
+    private Integer   experience;
+    private String    keyword;
+    private Integer   salaryType;
 
     public ThirdpartyJobsdbPosition() {}
 
@@ -53,6 +58,11 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
         this.status = value.status;
+        this.careerLevel = value.careerLevel;
+        this.educationLevel = value.educationLevel;
+        this.experience = value.experience;
+        this.keyword = value.keyword;
+        this.salaryType = value.salaryType;
     }
 
     public ThirdpartyJobsdbPosition(
@@ -67,7 +77,12 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         String    childAddressName,
         Timestamp createTime,
         Timestamp updateTime,
-        Short     status
+        Short     status,
+        Integer   careerLevel,
+        Integer   educationLevel,
+        Integer   experience,
+        String    keyword,
+        Integer   salaryType
     ) {
         this.id = id;
         this.pid = pid;
@@ -81,6 +96,11 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.status = status;
+        this.careerLevel = careerLevel;
+        this.educationLevel = educationLevel;
+        this.experience = experience;
+        this.keyword = keyword;
+        this.salaryType = salaryType;
     }
 
     public Integer getId() {
@@ -179,6 +199,46 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         this.status = status;
     }
 
+    public Integer getCareerLevel() {
+        return this.careerLevel;
+    }
+
+    public void setCareerLevel(Integer careerLevel) {
+        this.careerLevel = careerLevel;
+    }
+
+    public Integer getEducationLevel() {
+        return this.educationLevel;
+    }
+
+    public void setEducationLevel(Integer educationLevel) {
+        this.educationLevel = educationLevel;
+    }
+
+    public Integer getExperience() {
+        return this.experience;
+    }
+
+    public void setExperience(Integer experience) {
+        this.experience = experience;
+    }
+
+    public String getKeyword() {
+        return this.keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public Integer getSalaryType() {
+        return this.salaryType;
+    }
+
+    public void setSalaryType(Integer salaryType) {
+        this.salaryType = salaryType;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ThirdpartyJobsdbPosition (");
@@ -195,6 +255,11 @@ public class ThirdpartyJobsdbPosition implements Serializable {
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
         sb.append(", ").append(status);
+        sb.append(", ").append(careerLevel);
+        sb.append(", ").append(educationLevel);
+        sb.append(", ").append(experience);
+        sb.append(", ").append(keyword);
+        sb.append(", ").append(salaryType);
 
         sb.append(")");
         return sb.toString();
