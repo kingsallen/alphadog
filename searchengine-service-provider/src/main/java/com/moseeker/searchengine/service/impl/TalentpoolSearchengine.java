@@ -1060,7 +1060,7 @@ public class TalentpoolSearchengine {
         suggetParams.put("company_id",params.get("company_id"));
         suggetParams.put("publisher",params.get("publisher"));
         suggetParams.put("page_from","1");
-        suggetParams.put("page_size",Integer.MAX_VALUE+"");
+        suggetParams.put("page_size","1000000");
         suggetParams.put("return_params","title,id");
         String status=params.get("position_status");
         if(StringUtils.isNotNullOrEmpty(status)&&!"-1".equals(status)){
