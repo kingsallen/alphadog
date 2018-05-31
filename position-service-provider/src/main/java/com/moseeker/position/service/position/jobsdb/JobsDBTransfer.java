@@ -77,7 +77,7 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
         String experience = positionDB.getExperience();
         positionInfo.setExperience(StringUtils.isNullOrEmpty(experience) ? 0:Integer.valueOf(experience));
         positionInfo.setSalary_type(positionForm.getSalaryType());
-        positionInfo.setKeyword(positionForm.getKeyword());
+        positionInfo.setKeyword(StringUtils.isNullOrEmpty(positionForm.getKeyword()) ? "":positionForm.getKeyword());
 
         return positionInfo;
     }
