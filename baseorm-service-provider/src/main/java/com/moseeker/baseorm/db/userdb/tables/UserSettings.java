@@ -135,6 +135,7 @@ public class UserSettings extends TableImpl<UserSettingsRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserSettings rename(String name) {
         return new UserSettings(name, null);
     }

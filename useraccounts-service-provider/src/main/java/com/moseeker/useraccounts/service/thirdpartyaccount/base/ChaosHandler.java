@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.thirdpartyaccount.base;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.BindThirdPart;
 import com.moseeker.common.constants.BindingStatus;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class ChaosHandler {
+public class ChaosHandler implements IBindRequest{
     Logger logger= LoggerFactory.getLogger(ChaosHandler.class);
 
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
@@ -126,5 +127,10 @@ public class ChaosHandler {
         }
         hrThirdPartyAccount.setErrorMessage(message);
         return hrThirdPartyAccount;
+    }
+
+    @Override
+    public ChannelType getChannelType() {
+        return ChannelType.NONE;
     }
 }

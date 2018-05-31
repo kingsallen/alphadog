@@ -1,22 +1,22 @@
 package com.moseeker.profile.config;
 
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by zztaiwll on 18/4/23.
  */
-@Component
+@Service
 public class Sender {
     @Autowired
     private RabbitTemplate amqpTemplate;
-
+    @Autowired
+    private AmqpTemplate amqpTemplate1;
     public void  send(String message) {
         MessageProperties msp = new MessageProperties();
         msp.setDelay(5000); // 延迟5s发送

@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = 1873655251;
+    private static final long serialVersionUID = 907059185;
 
     /**
      * Setter for <code>userdb.user_employee.id</code>.
@@ -437,14 +437,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.activation</code>. 员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证
+     * Setter for <code>userdb.user_employee.activation</code>. '员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
      */
     public void setActivation(Byte value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.activation</code>. 员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证
+     * Getter for <code>userdb.user_employee.activation</code>. '员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
      */
     public Byte getActivation() {
         return (Byte) get(29);
@@ -745,56 +745,56 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.team_id</code>.
+     * Setter for <code>userdb.user_employee.team_id</code>. 团队id
      */
     public void setTeamId(Integer value) {
         set(51, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.team_id</code>.
+     * Getter for <code>userdb.user_employee.team_id</code>. 团队id
      */
     public Integer getTeamId() {
         return (Integer) get(51);
     }
 
     /**
-     * Setter for <code>userdb.user_employee.job_grade</code>.
+     * Setter for <code>userdb.user_employee.job_grade</code>. 职级
      */
     public void setJobGrade(Byte value) {
         set(52, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.job_grade</code>.
+     * Getter for <code>userdb.user_employee.job_grade</code>. 职级
      */
     public Byte getJobGrade() {
         return (Byte) get(52);
     }
 
     /**
-     * Setter for <code>userdb.user_employee.city_code</code>.
+     * Setter for <code>userdb.user_employee.city_code</code>. 城市code
      */
     public void setCityCode(Integer value) {
         set(53, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.city_code</code>.
+     * Getter for <code>userdb.user_employee.city_code</code>. 城市code
      */
     public Integer getCityCode() {
         return (Integer) get(53);
     }
 
     /**
-     * Setter for <code>userdb.user_employee.degree</code>.
+     * Setter for <code>userdb.user_employee.degree</code>. 学历
      */
     public void setDegree(Byte value) {
         set(54, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.degree</code>.
+     * Getter for <code>userdb.user_employee.degree</code>. 学历
      */
     public Byte getDegree() {
         return (Byte) get(54);

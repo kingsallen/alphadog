@@ -375,6 +375,7 @@ public class ResumeDeliveryService {
                 emailStruct.put("templateName", Constant.DELIVERY_SUCCESS);
                 Map<String, Object> params = new HashMap<>();
                 params.put("send_time", DateUtils.dateToNormalDate(new Date()));
+
                 String comapny_logo  = CommonUtils.appendUrl(companyDO.getLogo(),env.getProperty("http.cdn.url"));
                 params.put("company_logo", comapny_logo);
                 String username = "";
@@ -385,6 +386,7 @@ public class ResumeDeliveryService {
                 }
                 params.put("employee_name", username);
                 String context = CommonUtils.replaceUtil(email.getContext(), companyDO.getAbbreviation(),positionDO.getTitle(),username, accountDO.getUsername(), hrWxWechatDO.getName());
+                logger.info("context :{}",context);
                 params.put("custom_text", context);
                 String inscribe  = CommonUtils.replaceUtil(email.getInscribe(), companyDO.getAbbreviation(),positionDO.getTitle(),username, accountDO.getUsername(), hrWxWechatDO.getName());
                 params.put("company_sign", inscribe);

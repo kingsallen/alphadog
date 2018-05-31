@@ -15,7 +15,7 @@ service ChatService {
     //列出聊天记录
     chat_struct.ChatsVO listChatLogs(1: i32 roomId, 2: i32 pageNo, 3: i32 pageSize) throws (1: common_struct.CURDException e)
     //保存聊天记录
-    i32 saveChat(1: chat_struct.ChatVO chat) throws (1: common_struct.CURDException e)
+    i32 saveChat(1: chat_struct.ChatVO chat) throws (1: common_struct.BIZException e)
     //获取聊天记录
     chat_struct.ChatVO getChat(1: i32 roomId, 2: i8 speaker) throws (1: common_struct.CURDException e)
     //获取聊天室最后一条聊天内容
@@ -30,5 +30,13 @@ service ChatService {
     chat_struct.HrVO getHrInfo(1: i32 roomId) throws (1: common_struct.BIZException e)
     //更新投递状态
     void updateApplyStatus(1: i32 userId, 2: i32 positionId) throws (1: common_struct.BIZException e)
+    //查询语音限制次数
+    common_struct.Response pullVoiceFile(1: string serverId, 2: i32 roomId, 3: i32 userId, 4: i32 hrId) throws (1: common_struct.BIZException e)
+    //清零语音限制次数
+    common_struct.Response clearVoiceLimitFrequency(1: i32 companyId) throws (1: common_struct.BIZException e)
+    //拉取语音文件路径
+    common_struct.Response queryVoiceLimitFrequency(1: i32 companyId) throws (1: common_struct.BIZException e)
+    //发送报警邮件
+    common_struct.Response sendWarnEmail(1: i32 hrId) throws (1: common_struct.BIZException e)
 }
 

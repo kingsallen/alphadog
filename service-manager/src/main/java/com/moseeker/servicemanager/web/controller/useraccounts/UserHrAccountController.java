@@ -242,13 +242,16 @@ public class UserHrAccountController {
             HrThirdPartyAccountDO struct = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
             logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
             struct = userHrAccountService.bindThirdPartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", true));
+            logger.info("bind third party account struct {}",struct);
             if (struct.getBinding() == 100) {
                 struct.setBinding(Integer.valueOf(0).shortValue());
                 Map<String, Object> result = thirdpartyAccountToMap(struct);
                 result.put("mobile", struct.getErrorMessage());
                 return ResponseLogNotification.failJson(request, 100, "需要验证手机号", result);
             } else {
-                return ResponseLogNotification.successJson(request, thirdpartyAccountToMap(struct));
+                String result=ResponseLogNotification.successJson(request, thirdpartyAccountToMap(struct));
+                logger.info("bind third party account result {}",result);
+                return result;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1075,7 +1078,6 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
 
     /**
      * 获取自定义申请导出字段

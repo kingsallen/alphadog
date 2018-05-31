@@ -146,6 +146,7 @@ public class UserPositionEmail extends TableImpl<UserPositionEmailRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserPositionEmail rename(String name) {
         return new UserPositionEmail(name, null);
     }

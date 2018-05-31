@@ -1,9 +1,12 @@
 package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatListRecord;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
+import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -37,5 +40,22 @@ public class HrWxHrChatListDao extends JooqCrudImpl<HrWxHrChatListDO, HrWxHrChat
                 .fetchOne()
                 .value1()
                 .intValue();
+    }
+    /**
+     * 查出公司id和accessToken
+     * @param roomId 聊天室id
+     * @author  cjm
+     * @date  2018/5/14
+     * @return Result
+     */
+    public Result getCompanyIdAndTokenByRoomId(int roomId) {
+        return create.select(HrWxWechat.HR_WX_WECHAT.COMPANY_ID, HrWxWechat.HR_WX_WECHAT.ACCESS_TOKEN)
+                .from(HrWxHrChatList.HR_WX_HR_CHAT_LIST)
+                .join(HrCompanyAccount.HR_COMPANY_ACCOUNT)
+                .on(HrWxHrChatList.HR_WX_HR_CHAT_LIST.HRACCOUNT_ID.eq(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID))
+                .join(HrWxWechat.HR_WX_WECHAT)
+                .on(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.eq(HrCompanyAccount.HR_COMPANY_ACCOUNT.COMPANY_ID))
+                .where(HrWxHrChatList.HR_WX_HR_CHAT_LIST.ID.eq(roomId))
+                .fetch();
     }
 }

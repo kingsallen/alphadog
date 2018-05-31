@@ -1,21 +1,12 @@
 package com.moseeker.baseorm.dao.dictdb;
 
-import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.base.AbstractDictOccupationDao;
 import com.moseeker.baseorm.base.DefaultDictOccupationDao;
-import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.records.Dict_51jobOccupationRecord;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-
-import java.util.*;
 
 @Repository
 public class Dict51OccupationDao extends DefaultDictOccupationDao<Dict51jobOccupationDO, Dict_51jobOccupationRecord> {
