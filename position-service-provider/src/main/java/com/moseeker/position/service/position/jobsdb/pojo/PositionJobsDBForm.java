@@ -12,6 +12,11 @@ public class PositionJobsDBForm {
     private int salaryTop;
     private int salaryBottom;
     private int channel;
+    private int careerLevel;
+    private int educationLevel;
+    private String keyword;
+    private int salaryType;
+
 
 
     public PositionJobsDBForm(){
@@ -24,6 +29,38 @@ public class PositionJobsDBForm {
         occupation.add(new ArrayList<>());
         occupation.add(new ArrayList<>());
         occupation.add(new ArrayList<>());
+    }
+
+    public int getCareerLevel() {
+        return careerLevel;
+    }
+
+    public void setCareerLevel(int careerLevel) {
+        this.careerLevel = careerLevel;
+    }
+
+    public int getEducationLevel() {
+        return educationLevel;
+    }
+
+    public void setEducationLevel(int educationLevel) {
+        this.educationLevel = educationLevel;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public int getSalaryType() {
+        return salaryType;
+    }
+
+    public void setSalaryType(int salaryType) {
+        this.salaryType = salaryType;
     }
 
     public String getSummery1(){

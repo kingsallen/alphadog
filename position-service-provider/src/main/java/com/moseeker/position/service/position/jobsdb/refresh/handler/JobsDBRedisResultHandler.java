@@ -19,13 +19,11 @@ import java.util.List;
 public class JobsDBRedisResultHandler extends AbstractRedisResultHandler implements JobsDBResultHandlerAdapter {
     Logger logger= LoggerFactory.getLogger(JobsDBRedisResultHandler.class);
 
-    private static final String EMPLOYEE_TYPE="employee_type";
-    private static final String SALARY="salary";
     public static final String WORK_LOCATION="work_location";
 
     @Override
     protected String[] param() {
-        return new String[]{"salary","work_location","employee_type"};
+        return new String[]{"monthly_salary",WORK_LOCATION,"employee_type","education_levels","career_levels","hourly_salary"};
     }
 
     private static SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
@@ -37,10 +35,7 @@ public class JobsDBRedisResultHandler extends AbstractRedisResultHandler impleme
 
     @Override
     protected String handleCacheValue(JSONObject obj) {
-        JSONObject result=new JSONObject();
-
-        result.put(SALARY,obj.get(SALARY));
-        result.put(EMPLOYEE_TYPE,obj.get(EMPLOYEE_TYPE));
+        JSONObject result = JSON.parseObject(super.handleCacheValue(obj));
 
         TypeReference<List<ChaosWorkLocation>> typeRef = new TypeReference<List<ChaosWorkLocation>>(){};
 
