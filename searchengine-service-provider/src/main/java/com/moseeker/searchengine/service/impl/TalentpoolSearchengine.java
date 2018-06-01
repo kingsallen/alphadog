@@ -169,20 +169,22 @@ public class TalentpoolSearchengine {
             client=searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_INDEX).setQuery(query);
-            builder.addAggregation(this.handleAllApplicationCountAgg(params))
-                    .addAggregation(this.handleAllcountAgg(params))
-                    .addAggregation(this.handleAggInfo(params,"entry_count",12,0))
-                    .addAggregation(this.handleAggInfo(params,"entry_count_app",12,1))
-                    .addAggregation(this.handleAggInfo(params,"interview_ok_count",10,0))
-                    .addAggregation(this.handleAggInfo(params,"interview_ok_count_app",10,1))
-                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count",7,0))
-                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count_app",7,1))
-                    .addAggregation(this.handleAggInfo(params,"is_viewed_count",4,0))
-                    .addAggregation(this.handleAggInfo(params,"is_viewed_count_app",4,1))
-                    .addAggregation(this.handleAggInfo(params,"is_not_suitable",13,0))
-                    .addAggregation(this.handleAggInfo(params,"is_not_suitable_app",13,1))
-                    .addAggregation(this.handleAggInfo(params,"not_viewed_count",3,1))
-                    .addAggregation(this.handleAggInfo(params,"not_viewed_count_app",3,1));
+            builder.addAggregation(this.handleAllApplicationCountAgg(params))        //当前状态下的申请数量数量
+//                   .addAggregation(this.handleAllcountAgg(params))
+                    .addAggregation(this.handleAggInfo(params,"all_count_app","",1))//所有申请的数量
+                    .addAggregation(this.handleAggInfo(params,"all_count","",0))//所有申请的人数
+                    .addAggregation(this.handleAggInfo(params,"entry_count",12+"",0))//入职的人数
+                    .addAggregation(this.handleAggInfo(params,"entry_count_app",12+"",1))//入职的申请书
+                    .addAggregation(this.handleAggInfo(params,"interview_ok_count",10+"",0))//面试通过的人数
+                    .addAggregation(this.handleAggInfo(params,"interview_ok_count_app",10+"",1))//面试通过的申请数
+                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count",7+"",0))//初审通过的人数
+                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count_app",7+"",1))//初审通过的申请数
+                    .addAggregation(this.handleAggInfo(params,"is_viewed_count",4+"",0))
+                    .addAggregation(this.handleAggInfo(params,"is_viewed_count_app",4+"",1))
+                    .addAggregation(this.handleAggInfo(params,"is_not_suitable",13+"",0))
+                    .addAggregation(this.handleAggInfo(params,"is_not_suitable_app",13+"",1))
+                    .addAggregation(this.handleAggInfo(params,"not_viewed_count",3+"",0))
+                    .addAggregation(this.handleAggInfo(params,"not_viewed_count_app",3+"",1));
             builder.setSize(0);
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
@@ -1667,7 +1669,7 @@ public class TalentpoolSearchengine {
         return build;
     }
 
-    private AbstractAggregationBuilder handleAggInfo(Map<String,String> params,String name,int progressStatus,int type){
+    private AbstractAggregationBuilder handleAggInfo(Map<String,String> params,String name,String progressStatus,int type){
         MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric(name)
                 .initScript(new Script(getAggInitScript()))
                 .mapScript(new Script(this.getAggMapScript(params,progressStatus+"",type)))
