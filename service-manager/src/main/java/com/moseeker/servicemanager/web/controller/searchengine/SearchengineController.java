@@ -167,7 +167,6 @@ public class SearchengineController {
             	for(String position_id : position_id_list){
             		String position=this.getJobPosition(Integer.parseInt(position_id),company);
             		if(StringUtils.isNotNullOrEmpty(position)){
-
             			searchengineServices.updateposition(position,Integer.parseInt(position_id));	
             		}
             		Thread.currentThread().sleep(600);
@@ -341,9 +340,6 @@ public class SearchengineController {
             for(String key:reqParams.keySet()){
                 params.put(key,String.valueOf(reqParams.get(key)));
             }
-//            logger.info("+++++++++++++++++++");
-//            logger.info(JSON.toJSONString(params));
-//            logger.info("+++++++++++++++++++");
             Response res=searchengineServices.userQuery(params);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
@@ -392,7 +388,7 @@ public class SearchengineController {
         }
     }
 
-    @RequestMapping(value = "/api/profile/pastposition", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/profile/pastposition", method = RequestMethod.GET)
     @ResponseBody
     public String searchProfilePosition(HttpServletRequest request, HttpServletResponse response){
         try{
@@ -412,7 +408,7 @@ public class SearchengineController {
         }
     }
 
-    @RequestMapping(value = "/api/profile/pastcompany", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/profile/pastcompany", method = RequestMethod.GET)
     @ResponseBody
     public String searchProfileCompany(HttpServletRequest request, HttpServletResponse response){
         try{
