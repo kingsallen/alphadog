@@ -378,7 +378,12 @@ public class SearchengineController {
                 return ResponseLogNotification.fail(request, "参数不能为空");
             }
             for(String key:reqParams.keySet()){
-                params.put(key,StringUtils.filterStringForSearch(String.valueOf(reqParams.get(key))));
+                if("flag".equals(key)){
+                    params.put(key,String.valueOf(reqParams.get(key)));
+                }else{
+                    params.put(key,StringUtils.filterStringForSearch(String.valueOf(reqParams.get(key))));
+                }
+
             }
             Response res=searchengineServices.searchPositionSuggest(params);
             return ResponseLogNotification.success(request,res);
