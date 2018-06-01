@@ -153,7 +153,7 @@ public class SearchMethodUtil {
         }
         if(StringUtils.isBlank(flag)){
             searchUtil.handleMatch(0,query,"status");
-        }else if(Integer.parseInt(flag)==1){
+        }else if(Integer.parseInt(flag)==-1){
 
         }else{
             this.handlerStatusQuery(query);
