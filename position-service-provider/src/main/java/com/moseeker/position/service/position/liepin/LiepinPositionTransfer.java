@@ -95,6 +95,8 @@ public class LiepinPositionTransfer extends AbstractPositionTransfer<ThirdPartyP
 
         positionLiepin.setWelfare(getFeature(positionDB));
 
+        positionLiepin.setNumber((int) positionDB.getCount());
+
         return positionLiepin;
     }
 

@@ -107,6 +107,7 @@ public class UserIntention extends TableImpl<UserIntentionRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserIntention rename(String name) {
         return new UserIntention(name, null);
     }

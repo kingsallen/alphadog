@@ -30,6 +30,15 @@ public class PositionLiepin implements Serializable {
     private String practice_salary_unit;
     private String practice_per_week;
     private List<String> welfare;
+    private int number;
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
     public List<String> getWelfare() {
         return welfare;

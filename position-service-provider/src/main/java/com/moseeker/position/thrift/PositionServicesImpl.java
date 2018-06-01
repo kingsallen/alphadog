@@ -256,7 +256,7 @@ public class PositionServicesImpl implements Iface {
         } catch (BIZException e) {
             syncFailMessPojolistList.add(new SyncFailMessPojo(-1, -1, e.getMessage()));
         } catch (Exception e) {
-            logger.error("save and sync error exception:",e);
+            logger.info("save and sync error exception:",e);
         }
 
         response.setSyncFailMessPojolist(syncFailMessPojolistList);
@@ -414,6 +414,7 @@ public class PositionServicesImpl implements Iface {
         try {
             return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount,extData);
         } catch (Exception e) {
+            e.printStackTrace();
             throw ExceptionUtils.convertException(e);
         }
     }
@@ -584,34 +585,6 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public Response getMiniPositionDetail(int positionId) throws TException {
-        try {
-            Map<String,Object>  result=positionPcService.getMiniPositionDetails(positionId);
-            if(result==null){
-                return  ResponseUtils.success(new HashMap<>());
-            }
-            return  ResponseUtils.success(result);
-        }catch (Exception e){
-            logger.info(e.getMessage(),e);
-            throw ExceptionUtils.convertException(e);
-        }
-    }
-
-    @Override
-    public Response getMiniPositionShare(int positionId) throws TException {
-        try {
-            Map<String,Object>  result= positionMiniService.getPositionShareInfo(positionId);
-            if(result==null){
-                return  ResponseUtils.success(new HashMap<>());
-            }
-            return  ResponseUtils.success(result);
-        }catch (Exception e){
-            logger.info(e.getMessage(),e);
-            throw ExceptionUtils.convertException(e);
-        }
-    }
-
-    @Override
     public Response getFeatureByPId(int pid) throws TException {
         try {
             List<HrCompanyFeature> result=positionQxService.getPositionFeature(pid);
@@ -663,8 +636,36 @@ public class PositionServicesImpl implements Iface {
     public Response getPositionFeatureBetch(List<Integer> pidList) throws TException {
         try {
             List<PositionFeaturePojo> list=positionQxService.getPositionFeatureBatch(pidList);
-            String res=JSON.toJSONString(list,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+            String res=JSON.toJSONString(list, serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
             return  ResponseUtils.successWithoutStringify(res);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getMiniPositionDetail(int positionId) throws TException {
+        try {
+            Map<String,Object>  result=positionPcService.getMiniPositionDetails(positionId);
+            if(result==null){
+                return  ResponseUtils.success(new HashMap<>());
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getMiniPositionShare(int positionId) throws TException {
+        try {
+            Map<String,Object>  result= positionMiniService.getPositionShareInfo(positionId);
+            if(result==null){
+                return  ResponseUtils.success(new HashMap<>());
+            }
+            return  ResponseUtils.success(result);
         }catch (Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);

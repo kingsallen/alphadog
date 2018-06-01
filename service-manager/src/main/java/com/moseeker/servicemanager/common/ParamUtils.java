@@ -72,6 +72,7 @@ public class ParamUtils {
      */
     public static Params<String, Object> parseRequestParam(HttpServletRequest request) throws Exception {
         Params<String, Object> data = new Params<>();
+        logger.info("=====resuest========");
         data.putAll(initParamFromRequestParameter(request));
         data.putAll(initParamFromRequestBody(request));
 

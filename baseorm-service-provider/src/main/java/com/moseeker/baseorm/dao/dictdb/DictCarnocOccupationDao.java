@@ -1,18 +1,12 @@
 package com.moseeker.baseorm.dao.dictdb;
 
-import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.base.AbstractDictOccupationDao;
 import com.moseeker.baseorm.base.DefaultDictOccupationDao;
 import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCarnocOccupationRecord;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.util.query.Condition;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCarnocOccupationDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Repository
 public class DictCarnocOccupationDao extends DefaultDictOccupationDao<DictCarnocOccupationDO,DictCarnocOccupationRecord> {

@@ -16,6 +16,33 @@ public class ImportCVForm {
 	private String uuid;
 	private int ua;
 	private Integer company_id;
+	private String unionid;
+	private String version;
+	private String maimai_appid;
+
+	public String getUnionid() {
+		return unionid;
+	}
+
+	public void setUnionid(String unionid) {
+		this.unionid = unionid;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getMaimai_appid() {
+		return maimai_appid;
+	}
+
+	public void setMaimai_appid(String maimai_appid) {
+		this.maimai_appid = maimai_appid;
+	}
 
 	public Integer getCompany_id() {
 		return company_id;

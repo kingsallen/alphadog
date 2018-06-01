@@ -19,6 +19,7 @@ public enum DegreeSource {
     JUNIORCOLLEGE(4, "大专"),
     UNDERGRADUATE(5, "本科"),
     MASTER(6, "硕士"),
+    MASTER2(6, "研究生"),
     DOCTOR(7, "博士"),
     POSTDOCTOR(8, "博士以上"),
     OTHER(9, "其他");

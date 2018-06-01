@@ -13,6 +13,9 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.tools.json.JSONArray;
@@ -44,13 +47,18 @@ public class ChatServiceTest {
     @Autowired
     private ChatThriftService chatService;
 
-    @Test
+//    @Test
     public void listChatLog() throws TException {
         System.out.println(JSON.toJSONString(chatService.listChatLogs(33 ,1, 10)));
     }
 
+//    @Test
+    public void enterChatRoom() throws TException {
 
-    @Test
+        chatService.enterRoom(2191525,87759, 0,0, false);
+    }
+
+//    @Test
     public void saveChat() throws Exception {
         /*ChatVO chatVO=new ChatVO();
         chatVO.setId(0); // optional
@@ -141,7 +149,7 @@ public class ChatServiceTest {
         System.out.println(JSON.toJSONString(chatsVO));
     }
 
-    @Test
+//    @Test
     public void listUserChatRoom() throws TException {
         System.out.println(JSON.toJSONString(chatService.listUserChatRoom(4,1,200)));
     }
@@ -357,6 +365,8 @@ public class ChatServiceTest {
         companyDO3.setHraccountId(3);
         companyDOList.add(companyDO3);
 
+        Map<Integer, HrCompanyDO> companyDOMap = companyDOList.stream().collect(Collectors.toMap(k -> k.getHraccountId(), v -> v));
+
 
         int[] roomId = {6,8,9};
         Mockito.when(chatDao.listChatRoom(roomId)).thenReturn(rooms);
@@ -371,7 +381,7 @@ public class ChatServiceTest {
         Mockito.when(chatDao.listHr(hrUser1)).thenReturn(hrAccountDOList);
 
         int[] companyIdUser1 = {1,2,3};
-        Mockito.when(chatDao.listCompany(companyIdUser1)).thenReturn(companyDOList);
+        Mockito.when(chatDao.listCompany(companyIdUser1)).thenReturn(companyDOMap);
 
         List<HrWxHrChatDO> chatListRoom1 = new ArrayList<>();
         HrWxHrChatDO chatDO1 = new HrWxHrChatDO();

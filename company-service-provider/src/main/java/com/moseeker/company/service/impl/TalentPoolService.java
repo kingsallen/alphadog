@@ -1261,10 +1261,10 @@ public class TalentPoolService {
         }
         int result = talentPoolEntity.deleteCompanyTags(companyId, company_tag_ids);
         try {
-        tp.startTast(() -> {
+            tp.startTast(() -> {
                 tagService.handlerCompanyTag(company_tag_ids, 2, null);
-            return 0;
-        });
+                return 0;
+            });
         }catch(Exception e){
             logger.error(e.getMessage(),e);
         }
@@ -1377,11 +1377,11 @@ public class TalentPoolService {
                 idList.add(id);
                 //ES更新
                 try {
-                tp.startTast(() -> {
+                    tp.startTast(() -> {
                         Map<String, Object> tag = handlerCompanyData(id, companyTagDO);
                         tagService.handlerCompanyTag(idList, 1, tag);
-                    return 0;
-                });
+                        return 0;
+                    });
                 }catch(Exception e){
                     logger.error(e.getMessage(),e);
                 }
@@ -1580,9 +1580,10 @@ public class TalentPoolService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.TALENT_POOL_ACCOUNT_STATUS);
         }
         try {
+            logger.info("addProfileFilter filter:{}", filterDO);
             String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName());
-            logger.info("addProfileFilter redis info:{}", info);
-            if (!StringUtils.isNotNullOrEmpty(info)) {
+            logger.info("addProfileFilter info:{}", info);
+            if (StringUtils.isNullOrEmpty(info)) {
                 redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_PROFILE_FILTER_ADD.toString(), companyDO.getId() + "", filterDO.getName(), "true");
                 logger.info("addProfileFilter redis info:{}", info);
                 String result = talentPoolEntity.validateCompanyTalentPoolV3ByFilterName(filterDO.getName(), filterDO.getCompany_id(), filterDO.getId());

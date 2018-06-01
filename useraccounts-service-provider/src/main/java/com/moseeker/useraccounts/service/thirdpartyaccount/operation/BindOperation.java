@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -29,6 +30,9 @@ public class BindOperation {
 
     @Autowired
     ThirdPartyAccountContext context;
+
+    @Autowired
+    List<IBindRequest> bindRequest;
 
     @Autowired
     ChaosHandler chaosHandler;
@@ -47,7 +51,7 @@ public class BindOperation {
 
         Map<String, String> extras = bindUtil.getBindExtra(hrAccount, thirdPartyAccount);
 
-        return chaosHandler.bind(thirdPartyAccount, extras);
+        return sendBindRequest(thirdPartyAccount, extras);
     }
 
     public boolean isAlreadyBindOtherAccount(int userId,int channel){
@@ -69,5 +73,13 @@ public class BindOperation {
         return thirdPartyAccount;
     }
 
-
+    private HrThirdPartyAccountDO sendBindRequest(HrThirdPartyAccountDO thirdPartyAccount,Map<String, String> extras) throws Exception {
+        for(IBindRequest b:bindRequest){
+            if(b.getChannelType().getValue() == thirdPartyAccount.getChannel()){
+                return b.bind(thirdPartyAccount,extras);
+            }
+        }
+        // 默认把请求发送给爬虫
+        return chaosHandler.bind(thirdPartyAccount,extras);
+    }
 }

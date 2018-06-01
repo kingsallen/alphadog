@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = 1359894783;
+    private static final long serialVersionUID = -1577649899;
 
     /**
      * Setter for <code>userdb.user_user.id</code>. 主key
@@ -324,14 +324,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     }
 
     /**
-     * Setter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)
+     * Setter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)，102简历上传
      */
     public void setSource(Short value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)
+     * Getter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)，102简历上传
      */
     public Short getSource() {
         return (Short) get(21);
@@ -394,14 +394,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     }
 
     /**
-     * Setter for <code>userdb.user_user.email_verified</code>. 邮箱是认证 2:老数据 1:已认证 0:未认证
+     * Setter for <code>userdb.user_user.email_verified</code>. 邮箱是否认证 2:老数据 1:已认证 0:未认证
      */
     public void setEmailVerified(Byte value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.email_verified</code>. 邮箱是认证 2:老数据 1:已认证 0:未认证
+     * Getter for <code>userdb.user_user.email_verified</code>. 邮箱是否认证 2:老数据 1:已认证 0:未认证
      */
     public Byte getEmailVerified() {
         return (Byte) get(26);

@@ -328,7 +328,7 @@ public class PositionBS {
         int channel = param.getChannel();
 
         if(!ChannelType.containsChannelType(channel)){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_CHANNEL_NOT_EXIST);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.WRONG_SYNC_CHANNEL);
         }
 
         int positionId = param.getPositionId();
