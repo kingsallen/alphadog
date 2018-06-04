@@ -207,6 +207,21 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, Integer> POSITION_STATUS = createField("position_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("-1", org.jooq.impl.SQLDataType.INTEGER)), this, "职位状态 0;有效，1下架 2删除");
 
     /**
+     * The column <code>hrdb.hr_search_condition.position_key_word</code>.
+     */
+    public final TableField<HrSearchConditionRecord, String> POSITION_KEY_WORD = createField("position_key_word", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.past_position_key_word</code>.
+     */
+    public final TableField<HrSearchConditionRecord, String> PAST_POSITION_KEY_WORD = createField("past_position_key_word", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.past_company_key_word</code>.
+     */
+    public final TableField<HrSearchConditionRecord, String> PAST_COMPANY_KEY_WORD = createField("past_company_key_word", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
      * Create a <code>hrdb.hr_search_condition</code> table reference
      */
     public HrSearchCondition() {
