@@ -79,7 +79,7 @@ public class CrawlerController {
 				vu.addRequiredStringValidate("version", form.getVersion(), null, null);
 				vu.addRequiredStringValidate("maimai_appid", form.getMaimai_appid(), null, null);
 				vu.addRequiredStringValidate("unionid", form.getUnionid(), null, null);
-			} else {
+			} else if(form.getType() != ChannelType.LINKEDIN.getValue()){
 				vu.addRequiredStringValidate("账号", form.getUsername(), null, null);
 				vu.addRequiredStringValidate("密码", form.getPassword(), null, null);
 			}
