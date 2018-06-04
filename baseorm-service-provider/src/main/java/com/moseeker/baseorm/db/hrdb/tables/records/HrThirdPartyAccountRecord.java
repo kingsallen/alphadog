@@ -391,7 +391,7 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
      */
     @Override
     public Field<Byte> field15() {
-        return HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYN​C_REQUIRE_DEPARTMENT;
+        return HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYNC_REQUIRE_DEPARTMENT;
     }
 
     /**

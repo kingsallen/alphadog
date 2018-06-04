@@ -147,6 +147,9 @@ public class ProfileEntity {
     }
     @Transactional
     public void upsertProfileProfile(ProfileProfileRecord profileRecord, int  profileId) {
+        if(profileRecord==null){
+            profileRecord=new ProfileProfileRecord();
+        }
         if (profileRecord != null) {
             profileRecord.setId(profileId);
             profileRecord.setUpdateTime(new Timestamp(System.currentTimeMillis()));
@@ -269,12 +272,14 @@ public class ProfileEntity {
         if (workexpRecords != null && workexpRecords.size() > 0) {
             workExpDao.delWorkExpsByProfileId(profileId);
             List<ProfileWorkexpEntity> records = new ArrayList<>();
-
             workexpRecords.forEach(skill -> {
                 skill.setId(null);
                 skill.setProfileId((int) (profileId));
                 records.add(skill);
             });
+            logger.info("+++++++++++++++++++++++++++");
+            logger.info(records.toString());
+            logger.info("+++++++++++++++++++++++++++");
             workExpDao.postWordExps(records);
         }
     }
@@ -483,12 +488,12 @@ public class ProfileEntity {
         completenessImpl.reCalculateProfileWorkExp(profileId, workExpId);
     }
 
-    public void reCalculateProfileCompleteness(int profileId){
-        completenessImpl.reCalculateProfileCompleteness(profileId);
-    }
-
     public void reCalculateProfileWorkExpUseWorkExpId(int id) {
         completenessImpl.reCalculateProfileWorkExp(id);
+    }
+
+    public void reCalculateProfileCompleteness(int profileId){
+        completenessImpl.reCalculateProfileCompleteness(profileId);
     }
 
     @Autowired
@@ -556,7 +561,7 @@ public class ProfileEntity {
         improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
         improveWorks(profilePojo.getWorksRecords(), profileId);
         //先前只是根据表的记录简单叠加完整度，这在修改是不准确，需要重新计算，所以改成这样，
-//        getCompleteness(0, null, profileId);
+        //getCompleteness(0, null, profileId);
         reCalculateProfileCompleteness(profileId);
     }
 

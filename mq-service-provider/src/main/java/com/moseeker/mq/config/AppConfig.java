@@ -127,13 +127,24 @@ public class AppConfig {
         TopicExchange topicExchange = new TopicExchange("person_recom_exchange", true, false);
         return topicExchange;
     }
+    @Bean
+    public Queue profileCompanyTagQue() {
+        Queue queue = new Queue("profile_company_tag_recom_que", true, false, false);
+        return queue;
+    }
 
+    @Bean
+    public TopicExchange profileCompanyTagRecomExchange() {
+        TopicExchange topicExchange = new TopicExchange("profile_company_tag_recom_exchange", true, false);
+        return topicExchange;
+    }
     @Bean
     public List<Binding> binding() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(addAwardQue()).to(topicExchange()).with("sharejd.#"));
             add(BindingBuilder.bind(sendTemplateQue()).to(templateExchange()).with("messagetemplate.#"));
             add(BindingBuilder.bind(personaRecomQue()).to(personaRecomExchange()).with("personarecom.#"));
+            add(BindingBuilder.bind(profileCompanyTagQue()).to(profileCompanyTagRecomExchange()).with("profilecompanytagrecom.#"));
         }};
     }
 }

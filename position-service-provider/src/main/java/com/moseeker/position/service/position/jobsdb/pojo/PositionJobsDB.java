@@ -26,6 +26,56 @@ public class PositionJobsDB {
 
     private List<String> benefits;
 
+    private int career_level;
+
+    private int education_level;
+
+    private int experience;
+
+    private String keyword;
+
+    private int salary_type;
+
+    public int getCareer_level() {
+        return career_level;
+    }
+
+    public void setCareer_level(int career_level) {
+        this.career_level = career_level;
+    }
+
+    public int getEducation_level() {
+        return education_level;
+    }
+
+    public void setEducation_level(int education_level) {
+        this.education_level = education_level;
+    }
+
+    public int getExperience() {
+        return experience;
+    }
+
+    public void setExperience(int experience) {
+        this.experience = experience;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public int getSalary_type() {
+        return salary_type;
+    }
+
+    public void setSalary_type(int salary_type) {
+        this.salary_type = salary_type;
+    }
+
     public String getJob_title() {
         return job_title;
     }

@@ -23,4 +23,5 @@ public class ProfileWorkexpEntity extends ProfileWorkexpRecord {
 	public void setCompany(HrCompanyRecord company) {
 		this.company = company;
 	}
+
 }

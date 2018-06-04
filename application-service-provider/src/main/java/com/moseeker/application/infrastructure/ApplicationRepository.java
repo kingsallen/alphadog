@@ -223,12 +223,19 @@ public class ApplicationRepository {
                         .collect(Collectors.toList()));
 
         //如果当前的申请状态是拒绝的状态，那么需要查找拒绝之前是什么状态
+        logger.info("ApplicationRepository fetchApplicationEntity applicationList:{}", applicationList
+                .stream()
+                .filter(jobApplication -> jobApplication.getAppTplId() != null
+                        && jobApplication.getAppTplId() == ApplicationRefuseState.Refuse.getState())
+                .map(jobApplication -> jobApplication.getId())
+                .collect(Collectors.toList()));
         Map<Integer, Integer> stateMap = hrOperationJOOQDao.fetchStatesByAppIds(applicationList
                 .stream()
                 .filter(jobApplication -> jobApplication.getAppTplId() != null
                         && jobApplication.getAppTplId() == ApplicationRefuseState.Refuse.getState())
                 .map(jobApplication -> jobApplication.getId())
                 .collect(Collectors.toList()));
+        logger.info("ApplicationRepository fetchApplicationEntity stateMap:{}", stateMap);
 
         //组合申请数据
         List<ApplicationEntity> applications = packageApplication(applicationList, positionList, superAccountList, stateMap);
@@ -302,10 +309,19 @@ public class ApplicationRepository {
         /** 申请的浏览次数加一 */
         List<ApplicationEntity> addViewList = applicationList
                 .stream()
-                .filter(applicationEntity ->
-                        applicationEntity.getViewNumber() != applicationEntity.getInitViewNumber()
+                .filter(applicationEntity -> {
+                    try {
+                        boolean flag = applicationEntity.getViewNumber() != applicationEntity.getInitViewNumber()
                                 && applicationEntity.getState().getStatus()
-                                .equals(applicationEntity.getInitState().getStatus()))
+                                .equals(applicationEntity.getInitState().getStatus());
+
+                        return flag;
+                    } catch (Exception e) {
+                        logger.error("updateApplications id:{}, state:{}, initState:{}", applicationEntity.getId(), applicationEntity.getState(), applicationEntity.getInitState());
+                        logger.error(e.getMessage(), e);
+                        throw e;
+                    }
+                })
                 .collect(Collectors.toList());
         jobApplicationDao.updateViewNumber(addViewList);
 
@@ -354,7 +370,12 @@ public class ApplicationRepository {
         int state = 0;
 
         if (application.getAppTplId() == ApplicationRefuseState.Refuse.getState()) {
-            state = stateMap.get(application.getId());
+            try {
+                state = stateMap.get(application.getId());
+            } catch (Exception e) {
+                logger.error("application.id:{}", application.getId());
+                logger.error(e.getMessage(),e);
+            }
         } else {
             state = application.getAppTplId();
         }

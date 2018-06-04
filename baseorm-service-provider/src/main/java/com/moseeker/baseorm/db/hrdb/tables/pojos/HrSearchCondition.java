@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
 
-    private static final long serialVersionUID = -1970755905;
+    private static final long serialVersionUID = 1799497044;
 
     private Integer   id;
     private String    name;
@@ -55,6 +55,7 @@ public class HrSearchCondition implements Serializable {
     private String    favoriteHrs;
     private String    cityCode;
     private String    intentionCityCode;
+    private Integer   positionStatus;
 
     public HrSearchCondition() {}
 
@@ -89,6 +90,7 @@ public class HrSearchCondition implements Serializable {
         this.favoriteHrs = value.favoriteHrs;
         this.cityCode = value.cityCode;
         this.intentionCityCode = value.intentionCityCode;
+        this.positionStatus = value.positionStatus;
     }
 
     public HrSearchCondition(
@@ -121,7 +123,8 @@ public class HrSearchCondition implements Serializable {
         String    tagIds,
         String    favoriteHrs,
         String    cityCode,
-        String    intentionCityCode
+        String    intentionCityCode,
+        Integer   positionStatus
     ) {
         this.id = id;
         this.name = name;
@@ -153,6 +156,7 @@ public class HrSearchCondition implements Serializable {
         this.favoriteHrs = favoriteHrs;
         this.cityCode = cityCode;
         this.intentionCityCode = intentionCityCode;
+        this.positionStatus = positionStatus;
     }
 
     public Integer getId() {
@@ -395,6 +399,14 @@ public class HrSearchCondition implements Serializable {
         this.intentionCityCode = intentionCityCode;
     }
 
+    public Integer getPositionStatus() {
+        return this.positionStatus;
+    }
+
+    public void setPositionStatus(Integer positionStatus) {
+        this.positionStatus = positionStatus;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrSearchCondition (");
@@ -429,6 +441,7 @@ public class HrSearchCondition implements Serializable {
         sb.append(", ").append(favoriteHrs);
         sb.append(", ").append(cityCode);
         sb.append(", ").append(intentionCityCode);
+        sb.append(", ").append(positionStatus);
 
         sb.append(")");
         return sb.toString();

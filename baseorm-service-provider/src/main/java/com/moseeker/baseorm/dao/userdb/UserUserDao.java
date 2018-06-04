@@ -67,6 +67,21 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
         return record;
     }
 
+    public UserUserRecord getUserByIdAndSource(int id,int source) {
+        UserUserRecord record = null;
+        try {
+            Result<UserUserRecord> result = create.selectFrom(UserUser.USER_USER)
+                    .where(UserUser.USER_USER.ID.equal(id))
+                    .and(UserUser.USER_USER.IS_DISABLE.equal((byte) source)).fetch();
+            if (result != null && result.size() > 0) {
+                record = result.get(0);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return record;
+    }
+
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void combineAccount(int orig, int dest) throws Exception {
         /*create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)

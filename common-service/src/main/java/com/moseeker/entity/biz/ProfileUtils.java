@@ -1,6 +1,7 @@
 package com.moseeker.entity.biz;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
@@ -89,9 +90,11 @@ public class ProfileUtils {
 	}
 
 	public List<ProfileWorkexpEntity> mapToWorkexpRecords(List<Map<String, Object>> workexps, int source) {
+        logger.info("profile resume works:{}",workexps);
 		List<ProfileWorkexpEntity> workexpRecords = new ArrayList<>();
 		if (workexps != null && workexps.size() > 0) {
 			workexps.forEach(workexp -> {
+                logger.info("profile resume work:{}",workexp);
 				ProfileWorkexpEntity record = BeanUtils.MapToRecord(workexp, ProfileWorkexpEntity.class);
 				if (record != null) {
 					if (workexp.get("start_date") != null) {
@@ -262,9 +265,11 @@ public class ProfileUtils {
 	}
 
 	public List<ProfileProjectexpRecord> mapToProjectExpsRecords(List<Map<String, Object>> projectexps) {
+	    logger.info("profile resume projects:{}",projectexps);
 		List<ProfileProjectexpRecord> projectExpRecords = new ArrayList<>();
 		if (projectexps != null && projectexps.size() > 0) {
 			projectexps.forEach(projectexp -> {
+                logger.info("profile resume project:{}",projectexp);
 				ProfileProjectexpRecord record = BeanUtils.MapToRecord(projectexp, ProfileProjectexpRecord.class);
 				if (record != null) {
 
@@ -496,9 +501,11 @@ public class ProfileUtils {
 	}
 
 	public List<ProfileEducationRecord> mapToEducationRecords(List<Map<String, Object>> educations) {
+	    logger.info("prfile resume educations:{}",educations);
 		List<ProfileEducationRecord> educationRecords = new ArrayList<>();
 		if (educations != null && educations.size() > 0) {
 			educations.forEach(education -> {
+                logger.info("prfile resume education:{}",education);
 				ProfileEducationRecord record = BeanUtils.MapToRecord(education, ProfileEducationRecord.class);
 				if (record != null) {
 //					if(StringUtils.isNotBlank(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
@@ -520,6 +527,7 @@ public class ProfileUtils {
 					}
 
 					ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(record);
+                    logger.info("prfile resume education vm:{}",vm.isPass()+":"+vm.getResult());
 					if(vm.isPass()) {
 						this.EducationMaxLimit(record);
 						educationRecords.add(record);
@@ -716,7 +724,8 @@ public class ProfileUtils {
         处理basic中的超长字段
       */
 	private void basicMaxLimit(ProfileBasicRecord record){
-	    if(record != null) {
+	    logger.info("record :{}",record);
+	    if(record != null ) {
             if (StringUtils.isNotBlank(record.getName()) && record.getName().length() > ProfileAttributeLengthLimit.BasicName.getLengthLimit()) {
                 record.setName(this.handlerOutLimitString(record.getName(), ProfileAttributeLengthLimit.BasicName.getLengthLimit(), DEFAULT_FLAG));
             }
@@ -888,6 +897,7 @@ public class ProfileUtils {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("id", record.getId().intValue());
 					map.put("worktype", record.getWorktype().intValue());
+					map.put("worktype_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
 						if (constantRecord.getParentCode().intValue() == 3105
 								&& constantRecord.getCode().intValue() == record.getWorktype().intValue()) {
@@ -896,6 +906,7 @@ public class ProfileUtils {
 						}
 					}
 					map.put("workstate", record.getWorkstate().intValue());
+					map.put("workstate_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
 						if (constantRecord.getParentCode().intValue() == 3102
 								&& constantRecord.getCode().intValue() == record.getWorkstate().intValue()) {
@@ -904,6 +915,7 @@ public class ProfileUtils {
 						}
 					}
 					map.put("salary_code", record.getSalaryCode().intValue());
+					map.put("salary_code_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
 						if (constantRecord.getParentCode().intValue() == 3114
 								&& constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
@@ -914,6 +926,7 @@ public class ProfileUtils {
 					map.put("tag", record.getTag());
 					map.put("consider_venture_company_opportunities",
 							record.getConsiderVentureCompanyOpportunities().intValue());
+					map.put("consider_venture_company_opportunities_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
 						if (constantRecord.getParentCode().intValue() == 3120
 								&& constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
@@ -1046,5 +1059,12 @@ public class ProfileUtils {
 		pagination.setTotalRow(totalRow);
 		pagination.setResults(list);
 		return pagination;
+	}
+
+	public static void main(String[] args) {
+		JSONObject other = new JSONObject();
+		other.put("height", 1);
+		String str = JSON.toJSONString(other);
+		System.out.println(str);
 	}
 }

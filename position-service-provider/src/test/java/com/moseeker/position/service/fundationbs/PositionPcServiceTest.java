@@ -1,18 +1,18 @@
 package com.moseeker.position.service.fundationbs;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.entity.PersonaRecomEntity;
-import com.moseeker.position.config.AppConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
 import org.apache.thrift.TException;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
+import org.junit.runner.RunWith;
+import com.alibaba.fastjson.JSON;
+import com.moseeker.position.config.AppConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +90,6 @@ public class PositionPcServiceTest {
 		 List<Map<String,Object>> list=service.getRecommendPosition(124597,1,10);
 		 System.out.println(list);
 	  }
-
 //	  @Test
 //	  public void testGetAll(){
 //		List list=dao.getAll();

@@ -32,7 +32,7 @@ public class EsClientInstance {
             ConfigPropertiesUtil property = ConfigPropertiesUtil.getInstance();
             property.loadResource("common.properties");
             SLEEP_TIME=property.get("sleep_time",Integer.class);
-            CONNECTION_NUM=property.get("connection_num",Integer.class);;
+            CONNECTION_NUM=property.get("connection_num",Integer.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

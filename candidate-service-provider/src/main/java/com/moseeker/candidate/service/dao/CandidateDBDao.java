@@ -153,7 +153,7 @@ public class CandidateDBDao {
     }
 
     public void saveCandidatePosition(CandidatePositionDO cp) throws TException {
-        candidatePositionDao.addData(cp);
+        candidatePositionDao.addDataIgnoreDuplicate(cp);
     }
 
     public Optional<CandidatePositionDO> getCandidatePosition(int positionID, int userID) {

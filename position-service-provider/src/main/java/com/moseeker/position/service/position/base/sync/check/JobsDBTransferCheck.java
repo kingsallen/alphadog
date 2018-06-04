@@ -28,6 +28,8 @@ public class JobsDBTransferCheck extends AbstractTransferCheck<PositionJobsDBFor
 
     private static String ACCOUNTABILITIES_REQUIRED_NO_EMAIL = "任职条件不能包含邮箱!";
 
+    private static String KEYWORD_LENGTH_5000 = "Keyword不能超过5000个字符!";
+
     private static String REGEX_EMAIL = "([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z]{2,6})";
 
     @Override
@@ -68,6 +70,11 @@ public class JobsDBTransferCheck extends AbstractTransferCheck<PositionJobsDBFor
 
         if(p.matcher(moseekerPosition.getRequirement()).find()){
             errorMsg.add(REQUIREMENT_REQUIRED_NO_EMAIL);
+        }
+
+        if(StringUtils.isNotNullOrEmpty(positionJobsDBForm.getKeyword())
+                && positionJobsDBForm.getKeyword().length()>5000){
+            errorMsg.add(KEYWORD_LENGTH_5000);
         }
 
         return errorMsg;

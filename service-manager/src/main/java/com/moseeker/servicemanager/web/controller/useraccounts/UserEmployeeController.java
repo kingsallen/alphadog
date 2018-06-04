@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -9,8 +10,14 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.ApplyTypeAwardFrom;
 import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.employee.service.EmployeeService;
+import com.moseeker.thrift.gen.employee.struct.BindType;
+import com.moseeker.thrift.gen.employee.struct.BindingParams;
+import com.moseeker.thrift.gen.employee.struct.EmployeeResponse;
+import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
@@ -31,6 +38,8 @@ import java.util.Map;
 public class UserEmployeeController {
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     UserEmployeeService.Iface service = ServiceManager.SERVICEMANAGER.getService(UserEmployeeService.Iface.class);
+
+    EmployeeService.Iface employeeService =  ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
 
     @RequestMapping(value = "/user/employee", method = RequestMethod.DELETE)
     @ResponseBody
@@ -185,4 +194,72 @@ public class UserEmployeeController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /*
+    解绑员工
+     */
+    @RequestMapping(value="/user/employee/unbind", method = RequestMethod.POST)
+    @ResponseBody
+    public String unbind(HttpServletRequest request,  HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int companyId = params.getInt("company_id", 0);
+            if (companyId == 0) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else if (userId == 0) {
+                return ResponseLogNotification.fail(request, "员工Id不能为空");
+            } else {
+                EmployeeResponse employee = employeeService.getEmployee(userId,companyId);
+
+                if(employee.employee ==null || employee.employee.id <=0){
+                    return ResponseLogNotification.fail(request, "员工不存在");
+                }
+
+                Result result = employeeService.unbind(employee.employee.id,userId, companyId);
+                if(!result.success){
+                    return ResponseLogNotification.fail(request, result.getMessage());
+                }
+                return ResponseLogNotification.successJson(request, result.employeeId);
+            }
+        } catch (BIZException e){
+            return ResponseLogNotification.failJson(request,e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+    解绑员工
+     */
+    @RequestMapping(value="/user/employee/bind", method = RequestMethod.POST)
+    @ResponseBody
+    public String bind(HttpServletRequest request,  HttpServletResponse response) {
+        try {
+            Params<String, Object> param = ParamUtils.parseRequestParam(request);
+
+            // 处理一下type，必须是int类型
+            int type = param.getInt("type");
+            param.put("type",type);
+
+            BindingParams bindingParams = new JSONObject(){{
+                putAll(param);
+            }}.toJavaObject(BindingParams.class);
+
+            Result result = employeeService.bind(bindingParams);
+            if(!result.success){
+                return ResponseLogNotification.fail(request, result.getMessage());
+            }
+            return ResponseLogNotification.successJson(request, result.employeeId);
+        } catch (BIZException e){
+            return ResponseLogNotification.failJson(request,e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 }
