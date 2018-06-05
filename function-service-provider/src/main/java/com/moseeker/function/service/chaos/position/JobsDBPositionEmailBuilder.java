@@ -50,14 +50,24 @@ public class JobsDBPositionEmailBuilder extends AbstractPositionEmailBuilder<Thi
         emailMessgeBuilder.name("【Work location】").value(thirdPartyPosition.getAddressName());
         emailMessgeBuilder.name("【Sub work location】").value(position.getChildAddressName());
         emailMessgeBuilder.name("【Employment type】").value(WorkType.instanceFromInt((int)moseekerPosition.getEmploymentType()).getName());
-        emailMessgeBuilder.name("【Salary details (Monthly)】：").value(getSalary(thirdPartyPosition.getSalaryBottom(),thirdPartyPosition.getSalaryTop()));
+        emailMessgeBuilder.name("【Salary details (Monthly)】：").value(getSalary(thirdPartyPosition.getSalaryBottom(),thirdPartyPosition.getSalaryTop(),"monthly_salary"));
+        emailMessgeBuilder.name("【Salary details (Hourly)】：").value(getSalary(thirdPartyPosition.getSalaryBottom(),thirdPartyPosition.getSalaryTop(),"hourly_salary"));
+
+        emailMessgeBuilder.name("【career_level】：").value(getCareerLevels(position.getCareerLevel()));
+
+        emailMessgeBuilder.name("【education_level】：").value(getEducationLevels(position.getEducationLevel()));
+
+        emailMessgeBuilder.name("【experience】：").value(moseekerPosition.getExperience());
+
+        emailMessgeBuilder.name("【keyword】：").value(position.getKeyword());
+
 
         emailMessgeBuilder.line(email(moseekerPosition));
 
         return emailMessgeBuilder.toString();
     }
 
-    public String getDetail(JobPositionDO moseekerPosition){
+    private String getDetail(JobPositionDO moseekerPosition){
         String accounTabilities = moseekerPosition.getAccountabilities();
         String requirement = moseekerPosition.getRequirement();
 
@@ -72,14 +82,14 @@ public class JobsDBPositionEmailBuilder extends AbstractPositionEmailBuilder<Thi
         return descript.toString();
     }
 
-    public String getSalary(int bottom,int top){
+    private String getSalary(int bottom,int top,String key){
         String json = redisClient.get(RefreshConstant.APP_ID, KeyIdentifier.THIRD_PARTY_ENVIRON_PARAM.toString(),String.valueOf(getChannelType().getValue()));
 
         JSONObject obj = JSON.parseObject(json);
 
         TypeReference<List<Salary>> typeRef = new TypeReference<List<Salary>>(){};
 
-        List<Salary> array = JSON.parseObject(obj.getString("salary"),typeRef);
+        List<Salary> array = JSON.parseObject(obj.getString(key),typeRef);
 
         for(Salary salary:array){
             if(salary.getSalary_bottom().code.equals(String.valueOf(bottom))){
@@ -88,6 +98,36 @@ public class JobsDBPositionEmailBuilder extends AbstractPositionEmailBuilder<Thi
                         return salary.getSalary_bottom().getText() + "-" + salaryTop.getText();
                     }
                 }
+            }
+        }
+        return "";
+    }
+
+    private String getCareerLevels(int code){
+        String json = redisClient.get(RefreshConstant.APP_ID, KeyIdentifier.THIRD_PARTY_ENVIRON_PARAM.toString(),String.valueOf(getChannelType().getValue()));
+
+        JSONObject obj = JSON.parseObject(json);
+
+        JSONArray array = obj.getJSONArray("career_levels");
+
+        for(int i=0;i<array.size();i++){
+            if(array.getJSONObject(i).getIntValue("code") == code){
+                return  array.getJSONObject(i).getString("text");
+            }
+        }
+        return "";
+    }
+
+    private String getEducationLevels(int code){
+        String json = redisClient.get(RefreshConstant.APP_ID, KeyIdentifier.THIRD_PARTY_ENVIRON_PARAM.toString(),String.valueOf(getChannelType().getValue()));
+
+        JSONObject obj = JSON.parseObject(json);
+
+        JSONArray array = obj.getJSONArray("education_levels");
+
+        for(int i=0;i<array.size();i++){
+            if(array.getJSONObject(i).getIntValue("code") == code){
+                return  array.getJSONObject(i).getString("text");
             }
         }
         return "";

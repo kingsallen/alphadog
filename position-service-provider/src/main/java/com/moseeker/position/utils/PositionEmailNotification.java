@@ -29,6 +29,8 @@ public class PositionEmailNotification {
 
     static String br = "<br/>";
 
+    static String emailLevel = getConfigString("chaos.email.level");
+
     static {
         devMails = getEmails("position_sync.email.dev");
     }
@@ -79,7 +81,7 @@ public class PositionEmailNotification {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append("【职位同步失败】");
+            titleBuilder.append("【").append(emailLevel).append("】").append("【职位同步失败】");
 
             if(channel!=null) {
                 ChannelType channelType = channel.getChannelType();
@@ -139,7 +141,7 @@ public class PositionEmailNotification {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append("【职位同步验证失败】");
+            titleBuilder.append("【").append(emailLevel).append("】").append("【职位同步验证失败】");
 
             if(channel!=null) {
                 ChannelType channelType = channel.getChannelType();
@@ -214,7 +216,7 @@ public class PositionEmailNotification {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append(title);
+            titleBuilder.append("【").append(emailLevel).append("】").append(title);
 
             if(channelType!=null) {
                 titleBuilder.append(":【").append(channelType.getAlias()).append("】");
@@ -274,7 +276,7 @@ public class PositionEmailNotification {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append("【第三方渠道信息刷新失败】");
+            titleBuilder.append("【").append(emailLevel).append("】").append("【第三方渠道信息刷新失败】");
 
             if(channel!=null) {
                 ChannelType channelType = channel.getChannelType();
