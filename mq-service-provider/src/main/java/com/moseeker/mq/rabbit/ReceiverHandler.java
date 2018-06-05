@@ -97,6 +97,7 @@ public class ReceiverHandler {
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
             int type=jsonObject.getIntValue("type");
+            log.info("type========================:{}",type);
             this.addPropertyLogVO(logVo,jsonObject);
             this.handlerTempLateLog(logVo,type);
             if(type!=0){
