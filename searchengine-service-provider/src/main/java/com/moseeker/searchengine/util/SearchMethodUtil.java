@@ -161,6 +161,7 @@ public class SearchMethodUtil {
         }else{
             this.handlerStatusQuery(query);
         }
+
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleTerms(publisher,query,"publisher");
         }
