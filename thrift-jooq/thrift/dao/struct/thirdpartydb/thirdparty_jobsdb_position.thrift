@@ -13,7 +13,11 @@ struct ThirdpartyJobsDBPositionDO {
 	7: optional string occupationExt2,	//额外的职能2
 	8: optional string childAddressId,  //第二层地址ID
 	9: optional string childAddressName,    //第二层地址名称
-	14: optional i8 status,	//只能状态 0 是有效 1是无效
-	15: optional string createTime,	//创建时间
-
+	10: optional i8 status,	//只能状态 0 是有效 1是无效
+	11: optional string createTime,	//创建时间
+	12: optional i32 careerLevel,
+    13: optional i32 educationLevel,
+    14: optional string keyword,
+    15: optional i32 salaryType,
+    16: optional i32 experience
 }

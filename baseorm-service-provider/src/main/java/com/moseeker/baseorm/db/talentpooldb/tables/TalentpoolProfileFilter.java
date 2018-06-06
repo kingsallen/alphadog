@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRecord> {
 
-    private static final long serialVersionUID = -444461073;
+    private static final long serialVersionUID = -952986655;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_filter</code>

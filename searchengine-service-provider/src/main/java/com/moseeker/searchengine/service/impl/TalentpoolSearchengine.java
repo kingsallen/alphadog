@@ -53,6 +53,7 @@ public class TalentpoolSearchengine {
         TransportClient client=null;
         try {
             client = searchUtil.getEsClient();
+//            client = searchUtil.getEsClient1();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             this.handlerSortOrder(params, builder);
@@ -132,12 +133,19 @@ public class TalentpoolSearchengine {
         try {
             client = searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
+            logger.info("=========================================");
+            logger.info(query.toString());
+            logger.info("=========================================");
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             builder.setSize(0);
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleData(response, "users");
+            logger.info("=========================================");
+            logger.info(JSON.toJSONString(result));
+            logger.info("=========================================");
             int total=(int)((long)result.get("totalNum"));
+            logger.info(JSON.toJSONString(result));
             return total;
         } catch (Exception e) {
             logger.info(e.getMessage(),e);
@@ -1152,6 +1160,9 @@ public class TalentpoolSearchengine {
         }
         if(StringUtils.isNotNullOrEmpty(companyId)){
             sb.append("val.company_id=="+companyId+"&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(positionStatus)){
+            sb.append("val.status=="+positionStatus+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
             sb.append("val.candidate_source=="+candidateSource+"&&");

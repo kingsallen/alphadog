@@ -7,6 +7,8 @@ import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxNoticeMessage;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechat;
 import com.moseeker.baseorm.redis.RedisClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,7 @@ import org.slf4j.LoggerFactory;
  * Created by jack on 23/01/2018.
  */
 public class WXTamplateMsgEntity {
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private List<Integer> applicationIdList;
@@ -71,7 +74,10 @@ public class WXTamplateMsgEntity {
 
         Map<Integer, Integer> applierIdMap = applicationRepository.getAppliers(applicationIdList);
 
+        logger.info("WXTamplateMsgEntity initData applicationIdList:{}", applicationIdList);
+
         List<CVCheckedWXMsgPojo> msgPojoList = applicationIdList.stream().map(appId -> {
+            logger.info("WXTamplateMsgEntity initData appId:{}", appId);
             CVCheckedWXMsgPojo pojo = new CVCheckedWXMsgPojo();
             pojo.setApplicationId(appId);
             pojo.setPositionName(positionNames.get(appId));

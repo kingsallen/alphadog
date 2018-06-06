@@ -217,20 +217,22 @@ public class SearchengineService {
             page_size = 20;
         }
         boolean haskey = false;
-        if (!StringUtils.isEmpty(keywords)){
-            haskey =true;
+
+        if (!StringUtils.isEmpty(keywords)&&!"".equals(keywords.trim())) {
+            haskey = true;
         }
-        if(!StringUtils.isEmpty(industries)){
-            haskey =true;
+
+        if (!StringUtils.isEmpty(industries)) {
+            haskey = true;
         }
-        QueryBuilder query=this.getPositionQueryBuilder(keywords,cities,industries,occupations, scale,
-                employment_type, candidate_source, experience, degree,  salary, company_name,
+        QueryBuilder query = this.getPositionQueryBuilder(keywords, cities, industries, occupations, scale,
+                employment_type, candidate_source, experience, degree, salary, company_name,
                 child_company_name, department, custom);
         QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
         ((BoolQueryBuilder) query).must(status_filter);
         SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query);
-        this.positionIndexOrder(responseBuilder,order_by_priority,haskey,cities);
+        this.positionIndexOrder(responseBuilder, order_by_priority, haskey, cities);
         responseBuilder.setFrom(page_from).setSize(page_size);
         responseBuilder.setTrackScores(true);
         logger.info(responseBuilder.toString());
@@ -407,6 +409,7 @@ public class SearchengineService {
        } else {
            responseBuilder.addSort("_score", SortOrder.DESC);
        }
+       responseBuilder.addSort("id",SortOrder.DESC);
    }
 
    /*
@@ -421,6 +424,7 @@ public class SearchengineService {
         } else {
             responseBuilder.addSort("update_time", SortOrder.DESC);
         }
+        responseBuilder.addSort("id",SortOrder.DESC);
     }
     /*
         继续对排序进行细分3,按照城市或者得分排序
@@ -433,6 +437,7 @@ public class SearchengineService {
         } else {
             responseBuilder.addSort("_score", SortOrder.DESC);
         }
+        responseBuilder.addSort("id",SortOrder.DESC);
     }
     /*
    继续对排序进行细分4,按照城市或者排序
@@ -448,6 +453,7 @@ public class SearchengineService {
         } else {
             responseBuilder.addSort("update_time", SortOrder.DESC);
         }
+        responseBuilder.addSort("id",SortOrder.DESC);
     }
     /*
       按照被命中的城市是否是全国。来重新处理顺序问题，只有全国的，或者是全国命中的沉底

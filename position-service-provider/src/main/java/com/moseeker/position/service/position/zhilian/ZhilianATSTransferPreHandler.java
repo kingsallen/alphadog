@@ -9,6 +9,8 @@ import com.moseeker.position.service.position.zhilian.pojo.PositionZhilianForm;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyZhilianPositionAddressDO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Component
 public class ZhilianATSTransferPreHandler extends AbstractTransferPreHandler<PositionZhilianForm> {
+    Logger logger = LoggerFactory.getLogger(ZhilianATSTransferPreHandler.class);
+
     @Autowired
     JobPositionCityDao positionCityDao;
 
@@ -44,6 +48,12 @@ public class ZhilianATSTransferPreHandler extends AbstractTransferPreHandler<Pos
      */
     @Override
     public void handle(PositionZhilianForm positionZhilianForm, JobPositionDO moseekerPosition) {
+        logger.info("pre handle zhilian position transfer start form:{},pid:{}",positionZhilianForm,moseekerPosition.getId());
+        if(StringUtils.isNullOrEmpty(positionZhilianForm.getAddressName())
+                || !StringUtils.isEmptyList(positionZhilianForm.getAddress())){
+            return;
+        }
+
         List<JobPositionCityDO> dictCity = positionCityDao.getPositionCitysByPid(moseekerPosition.getId());
 
         if (StringUtils.isEmptyList(dictCity)) {

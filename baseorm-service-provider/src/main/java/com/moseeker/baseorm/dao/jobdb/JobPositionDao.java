@@ -21,6 +21,7 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -192,8 +193,13 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             }
             per_page = page_size > 0 ? page_size : per_page;
             record.limit((page - 1) * per_page, per_page);
-            positionDetails = record.fetchInto(PositionDetails.class);
+            List<Record> positionDetailsList = record.fetch();
+            logger.info("positionDetailsList.get(0) salaryTop:{}, salaryBottom", positionDetailsList.get(0).get("salaryTop"), positionDetailsList.get(0).get("salaryBottom"));
 
+            logger.info("hotPositionDetailsList positionDetails sql:{}", record.getSQL());
+            positionDetails = record.fetchInto(PositionDetails.class);
+            logger.info("positionDetails.get(0) salaryTop:{}, salaryBottom", positionDetails.get(0).getSalaryTop(), positionDetails.get(0).getSalaryBottom());
+            logger.info("hotPositionDetailsList positionDetails:{}", positionDetails);
             if (positionDetails != null && positionDetails.size() > 0) {
                 // 查询职位图片信息
                 SelectOnConditionStep<Record4<String, Integer, Integer, Integer>> recordRes =
@@ -619,6 +625,26 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 .and(new com.moseeker.common.util.query.Condition(JobPosition.JOB_POSITION.STATUS.getName(), PositionStatus.DELETED.getValue(),ValueOp.NEQ))
                 .buildQuery();
         return getRecord(queryUtil);
+    }
+
+    /**
+     * 查询职位，用来查询唯一职位,忽略职位是否已经逻辑删除
+     * @param companyId 公司ID
+     * @param source    来源
+     * @param sourceId  来源ID
+     * @param jobnumber 职位编号
+     * @return 查询到的职位
+     */
+    public JobPositionRecord getUniquePositionIgnoreDelete(int companyId, int source, int sourceId, String jobnumber) {
+        return create.selectFrom(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq((short)source))
+                .and(JobPosition.JOB_POSITION.SOURCE_ID.eq(sourceId))
+                .and(JobPosition.JOB_POSITION.JOBNUMBER.eq(jobnumber))
+                .and(JobPosition.JOB_POSITION.STATUS.ne((byte)PositionStatus.DELETED.getValue()))
+                .orderBy(JobPosition.JOB_POSITION.STATUS.asc(),JobPosition.JOB_POSITION.UPDATE_TIME.desc())
+                .limit(1)
+                .fetchOne();
     }
 
     /**

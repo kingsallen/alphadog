@@ -111,14 +111,14 @@ public class PositionBS {
         List<JobPositionDO> moseekerJobPositions=positionSyncHandler.getMoSeekerPositions(positionIds);
         Map<Integer,JobPositionDO> moseekerJobPositionMap=moseekerJobPositions.stream().collect(Collectors.toMap(p->p.getId(),p->p));
         if(moseekerJobPositionMap==null || moseekerJobPositionMap.isEmpty()){
-            return new ArrayList<>();
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.NO_SYNC_QX_POSITION);
         }
 
         //批量获取第三方账号，转换成Map<hrAccountId,List<HrThirdPartyAccountDO>>方便查询
         List<Integer> publishers=moseekerJobPositions.stream().map(p->p.getPublisher()).collect(Collectors.toList());
         Map<Integer,List<HrThirdPartyAccountDO>> thirdAccountOfHr=positionSyncHandler.getValidThirdPartAccounts(publishers);
         if(thirdAccountOfHr == null || thirdAccountOfHr.isEmpty()){
-            return new ArrayList<>();
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.NO_SYNC_THIRD_PARTY_ACCOUNT);
         }
 
         List<PositionSyncResultPojo> results=new ArrayList<>();
@@ -211,6 +211,9 @@ public class PositionBS {
                 results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_SYNCING_IN_DATABASE.getMessage()));
                 continue;
             }
+
+            //对同步职位参数进行预处理
+            transferPreHandleUtil.handleBeforeTransfer(requestType,channelType,p,moseekerJobPosition);
 
             //验证同步数据中的参数
             List<String> checkMsg= transferPreHandleUtil.checkBeforeTransfer(requestType,channelType,p,moseekerJobPosition);
@@ -325,7 +328,7 @@ public class PositionBS {
         int channel = param.getChannel();
 
         if(!ChannelType.containsChannelType(channel)){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_CHANNEL_NOT_EXIST);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.WRONG_SYNC_CHANNEL);
         }
 
         int positionId = param.getPositionId();

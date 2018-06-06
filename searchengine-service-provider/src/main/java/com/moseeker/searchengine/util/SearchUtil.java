@@ -251,7 +251,7 @@ public class SearchUtil {
     	if(StringUtils.isNotEmpty(keywords)&&!"".equals(keywords.trim())){
     		hasKey=true;
             keywords=keywords.trim();
-    		String words[]=keywords.split(",");
+            String words[]=keywords.split(",");
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		StringBuffer sb=new StringBuffer();
     		for(int i=0;i<words.length;i++){
@@ -754,5 +754,6 @@ public class SearchUtil {
             ((BoolQueryBuilder) builder).must(query2);
         }
     }
+
 
 }

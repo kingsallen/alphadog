@@ -167,7 +167,7 @@ public class SearchengineController {
             	for(String position_id : position_id_list){
             		String position=this.getJobPosition(Integer.parseInt(position_id),company);
             		if(StringUtils.isNotNullOrEmpty(position)){
-            			searchengineServices.updateposition(position,Integer.parseInt(position_id));	
+            			searchengineServices.updateposition(position,Integer.parseInt(position_id));
             		}
             		Thread.currentThread().sleep(600);
             	} 	

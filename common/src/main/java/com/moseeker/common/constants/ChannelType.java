@@ -97,15 +97,6 @@ public enum ChannelType {
                 result = String.valueOf("1000000000000000000");
             } else {
                 result = getResult(origin, 19);
-//				if(origin.length() >= 19) {
-//					if(origin.charAt(origin.length()-19) == '0') {
-//						result = String.valueOf(Long.valueOf(origin)+1000000000000000000l);
-//					} else {
-//						result = origin;
-//					}
-//				} else {
-//					result = String.valueOf(Long.valueOf(origin)+1000000000000000000l);
-//				}
             }
             return result;
         }
@@ -125,6 +116,11 @@ public enum ChannelType {
             return null;
         }
     }, CARNOC(9, "carnoc", "民航招聘", "common_retrieval_flow") {
+        @Override
+        public String getOrigin(String origin) {
+            return null;
+        }
+    }, MAIMAI(10,"maimai","脉脉","common_retrieval_flow"){
         @Override
         public String getOrigin(String origin) {
             return null;
@@ -214,6 +210,17 @@ public enum ChannelType {
                 result = "100000000000000000000000000";
             } else {
                 result = getResult(origin, 27);
+            }
+            return result;
+        }
+    }, UPLOADGRADUATES(28, "uploadGraduates", "应届生（上传）", "talent_upload") {
+        @Override
+        public String getOrigin(String origin) {
+            String result;
+            if (StringUtils.isNullOrEmpty(origin)) {
+                result = "1000000000000000000000000000";
+            } else {
+                result = getResult(origin, 28);
             }
             return result;
         }

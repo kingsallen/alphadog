@@ -4,6 +4,8 @@ import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.common.exception.CommonException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
  * Created by jack on 17/01/2018.
  */
 public class ApplicationBatchEntity {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private volatile List<ApplicationEntity> applicationList;     //申请编号集合
     private ApplicationRepository applicationRepository;    //DAO操作
@@ -38,6 +42,10 @@ public class ApplicationBatchEntity {
 
         for (ApplicationEntity applicationEntity : applicationList) {
             applicationEntity.view(hrEntity);
+        }
+
+        for (ApplicationEntity applicationEntity : applicationList) {
+            logger.info("ApplicationBatchEntity viewed application_id:{} state:{}, initSate:{}", applicationEntity.getId(), applicationEntity.getState(), applicationEntity.getInitState());
         }
 
         List<ApplicationEntity> result = applicationRepository.updateApplications(applicationList);

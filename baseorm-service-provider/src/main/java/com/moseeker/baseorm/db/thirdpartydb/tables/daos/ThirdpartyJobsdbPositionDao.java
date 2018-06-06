@@ -141,4 +141,39 @@ public class ThirdpartyJobsdbPositionDao extends DAOImpl<ThirdpartyJobsdbPositio
     public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchByStatus(Short... values) {
         return fetch(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.STATUS, values);
     }
+
+    /**
+     * Fetch records that have <code>career_level IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchByCareerLevel(Integer... values) {
+        return fetch(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.CAREER_LEVEL, values);
+    }
+
+    /**
+     * Fetch records that have <code>education_level IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchByEducationLevel(Integer... values) {
+        return fetch(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.EDUCATION_LEVEL, values);
+    }
+
+    /**
+     * Fetch records that have <code>experience IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchByExperience(Integer... values) {
+        return fetch(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.EXPERIENCE, values);
+    }
+
+    /**
+     * Fetch records that have <code>keyword IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchByKeyword(String... values) {
+        return fetch(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.KEYWORD, values);
+    }
+
+    /**
+     * Fetch records that have <code>salary_type IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyJobsdbPosition> fetchBySalaryType(Integer... values) {
+        return fetch(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.SALARY_TYPE, values);
+    }
 }

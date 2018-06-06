@@ -72,6 +72,12 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
         positionInfo.setSalary_top(positionForm.getSalaryTop());
         positionInfo.setBenefits(getFeature(positionDB));
 
+        positionInfo.setCareer_level(positionForm.getCareerLevel());
+        positionInfo.setEducation_level(positionForm.getEducationLevel());
+        String experience = positionDB.getExperience();
+        positionInfo.setExperience(StringUtils.isNullOrEmpty(experience) ? 0:Integer.valueOf(experience));
+        positionInfo.setSalary_type(positionForm.getSalaryType());
+        positionInfo.setKeyword(StringUtils.isNullOrEmpty(positionForm.getKeyword()) ? "":positionForm.getKeyword());
 
         return positionInfo;
     }
@@ -151,6 +157,12 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
         jobsDB.setStatus((byte) 0);
         jobsDB.setCreateTime(sdf.format(new Date()));
 
+        jobsDB.setCareerLevel(form.getCareerLevel());
+        jobsDB.setEducationLevel(form.getEducationLevel());
+        jobsDB.setExperience(positionJobsDBWithAccount.getPosition_info().getExperience());
+        jobsDB.setSalaryType(form.getSalaryType());
+        jobsDB.setKeyword(form.getKeyword());
+
         return jobsDB;
     }
 
@@ -188,6 +200,11 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
 
         form.setSalaryTop(thirdPartyPosition.getSalaryTop());
         form.setSalaryBottom(thirdPartyPosition.getSalaryBottom());
+
+        form.setCareerLevel(extPosition.getCareerLevel());
+        form.setEducationLevel(extPosition.getEducationLevel());
+        form.setSalaryType(extPosition.getSalaryType());
+        form.setKeyword(extPosition.getKeyword());
 
         JSONObject result= JSON.parseObject(JSON.toJSONString(form));
 
