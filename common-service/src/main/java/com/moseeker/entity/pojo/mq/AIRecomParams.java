@@ -11,8 +11,10 @@ public class AIRecomParams {
     private String enableQxRetry;
     private String url;
     private int templateId;
+    private String algorithmName;
 
-    public AIRecomParams(int userId, int companyId, int type, String positionIds, String enableQxRetry, String url, int templateId){
+
+    public AIRecomParams(int userId, int companyId, int type, String positionIds, String enableQxRetry, String url, int templateId,String algorithmName){
         this.userId=userId;
         this.companyId=companyId;
         this.type=type;
@@ -20,6 +22,7 @@ public class AIRecomParams {
         this.enableQxRetry=enableQxRetry;
         this.url=url;
         this.templateId=templateId;
+        this.algorithmName=algorithmName;
     }
     public int getUserId() {
         return userId;
@@ -75,5 +78,13 @@ public class AIRecomParams {
 
     public void setTemplateId(int templateId) {
         this.templateId = templateId;
+    }
+
+    public String getAlgorithmName() {
+        return algorithmName;
+    }
+
+    public void setAlgorithmName(String algorithmName) {
+        this.algorithmName = algorithmName;
     }
 }

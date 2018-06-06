@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogAiRecom implements Serializable {
 
-    private static final long serialVersionUID = 909801337;
+    private static final long serialVersionUID = -2067010597;
 
     private Integer   id;
     private Integer   userId;
@@ -32,6 +32,7 @@ public class LogAiRecom implements Serializable {
     private Byte      type;
     private Timestamp sendTime;
     private String    mdCode;
+    private String    algorithmName;
 
     public LogAiRecom() {}
 
@@ -43,6 +44,7 @@ public class LogAiRecom implements Serializable {
         this.type = value.type;
         this.sendTime = value.sendTime;
         this.mdCode = value.mdCode;
+        this.algorithmName = value.algorithmName;
     }
 
     public LogAiRecom(
@@ -52,7 +54,8 @@ public class LogAiRecom implements Serializable {
         String    action,
         Byte      type,
         Timestamp sendTime,
-        String    mdCode
+        String    mdCode,
+        String    algorithmName
     ) {
         this.id = id;
         this.userId = userId;
@@ -61,6 +64,7 @@ public class LogAiRecom implements Serializable {
         this.type = type;
         this.sendTime = sendTime;
         this.mdCode = mdCode;
+        this.algorithmName = algorithmName;
     }
 
     public Integer getId() {
@@ -119,6 +123,14 @@ public class LogAiRecom implements Serializable {
         this.mdCode = mdCode;
     }
 
+    public String getAlgorithmName() {
+        return this.algorithmName;
+    }
+
+    public void setAlgorithmName(String algorithmName) {
+        this.algorithmName = algorithmName;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("LogAiRecom (");
@@ -130,6 +142,7 @@ public class LogAiRecom implements Serializable {
         sb.append(", ").append(type);
         sb.append(", ").append(sendTime);
         sb.append(", ").append(mdCode);
+        sb.append(", ").append(algorithmName);
 
         sb.append(")");
         return sb.toString();

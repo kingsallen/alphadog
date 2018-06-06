@@ -148,7 +148,8 @@ public class ReceiverHandler {
         if(StringUtils.isEmpty(url)){
             url=handlerUrl(type);
         }
-        AIRecomParams recomParams=new AIRecomParams(userId,companyId,type,positionIds,enableQxRetry,url,templateId);
+        String algorithmName=jsonObject.getString("algorithm_name");
+        AIRecomParams recomParams=new AIRecomParams(userId,companyId,type,positionIds,enableQxRetry,url,templateId,algorithmName);
         return recomParams;
     }
 
