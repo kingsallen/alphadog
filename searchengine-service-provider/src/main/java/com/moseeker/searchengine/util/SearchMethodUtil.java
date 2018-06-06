@@ -1,5 +1,6 @@
 package com.moseeker.searchengine.util;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -28,6 +29,7 @@ public class SearchMethodUtil {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private SearchUtil searchUtil;
+    @CounterIface
     public Map<String,Object> suggestPosition(Map<String,String> params){
         String keyWord=params.get("keyWord");
         String companyIds=params.get("company_id");
