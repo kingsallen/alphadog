@@ -87,7 +87,7 @@ public class CompanyTagService {
             params.put(key, String.valueOf(map.get(key)));
         }
         params.put("page_number",page+"");
-        params.put("pageSize",pageSize+"");
+        params.put("page_size",pageSize+"");
         List<Integer> userIdList = service.queryCompanyTagUserIdList(params);
         logger.info("=========================");
         logger.info(JSON.toJSONString(userIdList));
