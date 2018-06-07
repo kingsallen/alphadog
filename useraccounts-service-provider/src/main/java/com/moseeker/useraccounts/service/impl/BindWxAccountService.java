@@ -63,6 +63,7 @@ public class BindWxAccountService extends BindOnAccountService{
 			}
 			userUnionid.setUnionid("");
 			if (userdao.updateRecord(userUnionid) > 0) {
+				wxUserDao.combineWxUser(userMobile.getId(), userUnionid.getId());
 				consummateUserAccount(userMobile, userUnionid);
 			}
 			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());
