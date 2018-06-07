@@ -203,16 +203,7 @@ public class TalentpoolSearchengine {
     public List<Integer> getUserListByCompanyTag(Map<String,String> params){
         List<Integer> list=new ArrayList<>();
         try{
-            TransportClient client=searchUtil.getEsClient();
-            QueryBuilder query = this.getQueryByTag(params);
-            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
-            String[] returnParams={"user.profiles.profile.user_id"};
-            builder.setFetchSource(returnParams,null);
-            builder.setSize(100000);
-            logger.info("============================================");
-            logger.info(builder.toString());
-            logger.info("============================================");
-            SearchResponse response = builder.execute().actionGet();
+            SearchResponse response=this.handlerSearch(params);
             Map<String,Object> result = searchUtil.handleData(response,"userIdList");
             logger.info("============================================");
             logger.info(JSON.toJSONString(result));
@@ -232,6 +223,48 @@ public class TalentpoolSearchengine {
         return list;
     }
 
+    /*
+     获取tag_id的标签的条数
+     */
+    @CounterIface
+    public int getUserListByCompanyTagCount(Map<String,String> params){
+        List<Integer> list=new ArrayList<>();
+        try{
+            SearchResponse response=this.handlerSearch(params);
+            Map<String,Object> result = searchUtil.handleData(response,"userIdList");
+            logger.info("============================================");
+            logger.info(JSON.toJSONString(result));
+            logger.info("============================================");
+            if(result!=null&&!result.isEmpty()){
+                long totalNum=(long)result.get("totalNum");
+                return (int)totalNum;
+            }
+        }catch(Exception e){
+            logger.info(e.getMessage()+"=================");
+        }
+        logger.info("==========================");
+        logger.info(JSON.toJSONString(list));
+        logger.info("==========================");
+        return 0;
+    }
+
+    private SearchResponse handlerSearch(Map<String,String> params){
+        TransportClient client=searchUtil.getEsClient();
+        QueryBuilder query = this.getQueryByTag(params);
+        SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+        String[] returnParams={"user.profiles.profile.user_id"};
+        builder.setFetchSource(returnParams,null);
+        if(StringUtils.isNotNullOrEmpty(params.get("size"))){
+            builder.setSize(0);
+        }else{
+            this.handlerPage(params,builder);
+        }
+        logger.info("============================================");
+        logger.info(builder.toString());
+        logger.info("============================================");
+        SearchResponse response = builder.execute().actionGet();
+        return response;
+    }
     /*
      根据筛选规则获取符合该规则的人才id
      */
