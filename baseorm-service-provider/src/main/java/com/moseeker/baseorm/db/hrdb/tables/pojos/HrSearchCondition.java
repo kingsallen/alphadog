@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
 
-    private static final long serialVersionUID = 1799497044;
+    private static final long serialVersionUID = -1970755905;
 
     private Integer   id;
     private String    name;

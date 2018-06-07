@@ -240,7 +240,18 @@ public class SearchengineServiceImpl implements Iface {
 			throw ExceptionUtils.convertException(e);		}
 	}
 
-    @Override
+	@Override
+	public int queryCompanyTagUserIdListCount(Map<String, String> params) throws BIZException, TException {
+		try{
+			int result=talentpoolSearchengine.getUserListByCompanyTagCount(params);
+			return result;
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
     public Response queryProfileFilterUserIdList(List<Map<String, String>> filterMapList, int page_number, int page_size) throws BIZException,TException {
 
         try{
