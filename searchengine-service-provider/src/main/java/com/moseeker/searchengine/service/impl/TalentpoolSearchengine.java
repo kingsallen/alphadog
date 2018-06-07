@@ -230,7 +230,6 @@ public class TalentpoolSearchengine {
      */
     @CounterIface
     public int getUserListByCompanyTagCount(Map<String,String> params){
-        List<Integer> list=new ArrayList<>();
         try{
             SearchResponse response=this.handlerSearch(params);
             Map<String,Object> result = searchUtil.handleData(response,"userIdList");
@@ -244,9 +243,6 @@ public class TalentpoolSearchengine {
         }catch(Exception e){
             logger.info(e.getMessage()+"=================");
         }
-        logger.info("==========================");
-        logger.info(JSON.toJSONString(list));
-        logger.info("==========================");
         return 0;
     }
 

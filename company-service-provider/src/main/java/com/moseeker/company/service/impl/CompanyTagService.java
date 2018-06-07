@@ -61,7 +61,7 @@ public class CompanyTagService {
                 //Map<String, Object> map = JSON.parseObject(JSON.toJSONString(DO));//talentpoolCompanyTagDao.getTagById(tagIdList.get(0));
                 if (map != null && !map.isEmpty()) {
                     Map<String,String> params=new HashMap<>();
-                    for(String key:params.keySet()){
+                    for(String key:map.keySet()){
                         params.put(key,String.valueOf(map.get(key)));
                     }
                     params.put("size","0");
