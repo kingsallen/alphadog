@@ -61,12 +61,15 @@ public class CompanyTagService {
                 //Map<String, Object> map = JSON.parseObject(JSON.toJSONString(DO));//talentpoolCompanyTagDao.getTagById(tagIdList.get(0));
                 if (map != null && !map.isEmpty()) {
                     Map<String,String> params=new HashMap<>();
-                    for(String key:params.keySet()){
+                    for(String key:map.keySet()){
                         params.put(key,String.valueOf(map.get(key)));
                     }
                     params.put("size","0");
                     int total=service.queryCompanyTagUserIdListCount(params);
                     int totalPage=(int)Math.ceil((double)total/1000.0);
+                    if(type == 1){
+                        talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
+                    }
                     for(int i=1;i<=totalPage;i++){
                         this.handlerUserIdList(tagIdList,type,map,i,1000);
                     }
@@ -101,7 +104,6 @@ public class CompanyTagService {
                 talentpoolCompanyTagUserDao.batchAddTagAndUser(list);
             }
         } else if (type == 1) {//修改标签需要把表中原有的数据全部删除，
-            talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
             if (!StringUtils.isEmptyList(userIdList)) {
                 List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
                 for (Integer userId : userIdList) {
