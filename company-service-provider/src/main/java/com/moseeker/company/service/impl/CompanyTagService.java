@@ -66,12 +66,13 @@ public class CompanyTagService {
                     }
                     params.put("size","0");
                     int total=service.queryCompanyTagUserIdListCount(params);
-                    int totalPage=(int)Math.ceil((double)total/1000.0);
+                    //测试时为100，注意线上为1000
+                    int totalPage=(int)Math.ceil((double)total/100.0);
                     if(type == 1){
                         talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
                     }
                     for(int i=1;i<=totalPage;i++){
-                        this.handlerUserIdList(tagIdList,type,map,i,1000);
+                        this.handlerUserIdList(tagIdList,type,map,i,100);
                     }
                 }
             }
