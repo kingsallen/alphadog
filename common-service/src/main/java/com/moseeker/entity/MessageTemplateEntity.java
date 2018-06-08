@@ -100,12 +100,12 @@ public class MessageTemplateEntity {
         if(params.getType()==2){
             //校验推送职位是否下架
             personaRecomEntity.handlePersonaRecomData(params.getUserId(),params.getPositionIds(),params.getCompanyId(),0);
-            url=url.replace("{algorithm_name}",params.getAlgorithmName()).replace("ai_recom",MDString);
+            url=url.replace("{algorithm_name}",params.getAlgorithmName()).replace("recom_code",MDString);
         }else if(params.getType()==3){
             //校验推送职位是否下架,以及将数据加入推送的表中
             personaRecomEntity.handlePersonaRecomData(params.getUserId(),params.getPositionIds(),params.getCompanyId(),1);
             int recomId=this.addCampaignRecomPositionlist(params.getCompanyId(),params.getPositionIds());
-            url=url.replace("{recomPushId}",recomId+"").replace("ai_recom",MDString);
+            url=url.replace("{recomPushId}",recomId+"").replace("recom_code",MDString);
         }
         Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getType(),params.getCompanyId(),DO.getId());
         if(colMap==null||colMap.isEmpty()){
