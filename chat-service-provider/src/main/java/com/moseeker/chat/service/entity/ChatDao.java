@@ -276,15 +276,11 @@ public class ChatDao {
                             try {
                                 List<UserWxUserDO> wxUserDOList = (List<UserWxUserDO>) wxUserFuture.get();
                                 if(wxUserDOList != null && wxUserDOList.size() > 0) {
-                                    Optional<UserWxUserDO> userWxUserDOOptional = wxUserDOList.stream()
-                                            .filter(userWxUserDO
-                                                    -> userHrAccountDO.getWxuserId() == userHrAccountDO.getWxuserId())
-                                            .findAny();
-                                    if (userWxUserDOOptional.isPresent()) {
-                                        userHrAccountDO.setHeadimgurl(userWxUserDOOptional.get().getHeadimgurl());
-                                    } else {
-                                        userHrAccountDO.setHeadimgurl(HR_HEADIMG);
-                                    }
+                                    wxUserDOList.forEach(wxUserDO -> {
+                                        if(userHrAccountDO.getWxuserId() == wxUserDO.getId()) {
+                                            userHrAccountDO.setHeadimgurl(wxUserDO.getHeadimgurl());
+                                        }
+                                    });
                                 }
                             } catch (InterruptedException | ExecutionException e) {
                                 userHrAccountDO.setHeadimgurl(HR_HEADIMG);
