@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogAiRecom extends TableImpl<LogAiRecomRecord> {
 
-    private static final long serialVersionUID = -1653371801;
+    private static final long serialVersionUID = -1865316711;
 
     /**
      * The reference instance of <code>logdb.log_ai_recom</code>
@@ -88,6 +88,11 @@ type=4员工简历完善
      * The column <code>logdb.log_ai_recom.md_code</code>.
      */
     public final TableField<LogAiRecomRecord, String> MD_CODE = createField("md_code", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>logdb.log_ai_recom.algorithm_name</code>.
+     */
+    public final TableField<LogAiRecomRecord, String> ALGORITHM_NAME = createField("algorithm_name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>logdb.log_ai_recom</code> table reference

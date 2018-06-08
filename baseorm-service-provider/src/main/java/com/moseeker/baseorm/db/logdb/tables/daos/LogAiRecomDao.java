@@ -106,4 +106,11 @@ public class LogAiRecomDao extends DAOImpl<LogAiRecomRecord, com.moseeker.baseor
     public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogAiRecom> fetchByMdCode(String... values) {
         return fetch(LogAiRecom.LOG_AI_RECOM.MD_CODE, values);
     }
+
+    /**
+     * Fetch records that have <code>algorithm_name IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogAiRecom> fetchByAlgorithmName(String... values) {
+        return fetch(LogAiRecom.LOG_AI_RECOM.ALGORITHM_NAME, values);
+    }
 }

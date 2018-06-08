@@ -100,6 +100,7 @@ public class MessageTemplateEntity {
         if(params.getType()==2){
             //校验推送职位是否下架
             personaRecomEntity.handlePersonaRecomData(params.getUserId(),params.getPositionIds(),params.getCompanyId(),0);
+            url=url.replace("{algorithm_name}",params.getAlgorithmName());
         }else if(params.getType()==3){
             //校验推送职位是否下架,以及将数据加入推送的表中
             personaRecomEntity.handlePersonaRecomData(params.getUserId(),params.getPositionIds(),params.getCompanyId(),1);
@@ -126,6 +127,9 @@ public class MessageTemplateEntity {
         }
         recomRecord.setMdCode(mdString);
         recomRecord.setType((byte)params.getType());
+        if(StringUtils.isNotNullOrEmpty(params.getAlgorithmName())){
+            recomRecord.setAlgorithmName(params.getAlgorithmName());
+        }
         logAiRecomDao.addRecord(recomRecord);
     }
     /*
