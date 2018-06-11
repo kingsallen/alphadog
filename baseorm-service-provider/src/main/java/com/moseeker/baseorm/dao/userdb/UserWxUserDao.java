@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import static com.moseeker.baseorm.db.userdb.tables.UserWxUser.USER_WX_USER;
 /**
 * @author xxx
 * UserWxUserDao 实现类 （groovy 生成）
@@ -38,5 +39,18 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
                 .where(UserWxUser.USER_WX_USER.ID.getName(),id)
                 .buildQuery();
         return getData(query);
+    }
+
+    /**
+     * 合并两个C端账号时，把废弃的账号的微信用户的sysuser_id全指向有效的账号
+     * @param vaildUserId   有效的C端账号ID
+     * @param beDelUserId   废弃的C端账号ID
+     * @return
+     */
+    public int combineWxUser(int vaildUserId, int beDelUserId){
+        return create.update(USER_WX_USER)
+                .set(USER_WX_USER.SYSUSER_ID,vaildUserId)
+                .where(USER_WX_USER.SYSUSER_ID.eq(beDelUserId))
+                .execute();
     }
 }
