@@ -77,7 +77,7 @@ public class LiepinSocialTransferTesst {
 
     @Test
     public void testSendSyncRequest() throws Exception {
-        Integer positionId = 19493538;
+        Integer positionId = 19493556;
         AbstractPositionTransfer.TransferResult<LiePinPositionVO, LiePinPositionVO> result = new AbstractPositionTransfer.TransferResult<LiePinPositionVO, LiePinPositionVO>();
         LiePinPositionVO liePinPositionVO = testChangeToThirdPartyPosition(positionId);
         HrThirdPartyPositionDO hrThirdPartyPositionDO = testToThirdPartyPosition(positionId);

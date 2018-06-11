@@ -1,6 +1,9 @@
 package com.moseeker.position.utils;
 
 import com.moseeker.common.util.MD5Util;
+import com.moseeker.common.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -14,6 +17,8 @@ public class Md5Utils {
 
     private static String SECRET_KEY = "EA36911A20A58DB1C41D0631094DE514";
 
+    private static Logger logger = LoggerFactory.getLogger(Md5Utils.class);
+
     /**
      * 用于猎聘对接时的md5加密字符串
      * @param
@@ -25,12 +30,14 @@ public class Md5Utils {
         StringBuilder paras = new StringBuilder();
         Collections.sort(list);
         for(String paraName : list) {
-            if(null == map.get(paraName)){
+            String paramValue = String.valueOf(map.get(paraName));
+            if(StringUtils.isNullOrEmpty(paramValue) || "null".equals(paramValue)){
                 continue;
             }
-            paras.append(map.get(paraName));
+            paras.append(paramValue);
         }
         paras.append(SECRET_KEY);
+        logger.info("==============paras:{}=============", paras.toString());
         return MD5Util.md5(paras.toString()).toLowerCase();
     }
 

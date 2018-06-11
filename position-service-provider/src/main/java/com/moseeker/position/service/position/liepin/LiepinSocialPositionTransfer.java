@@ -123,7 +123,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         }
         liePinPositionVO.setDetail_dept(departmentName);
         // 每个亮点八个字，最多十六个
-        String feature = getValidFeature(moseekerJobPosition);
+        String feature = getValidFeature(positionForm);
         liePinPositionVO.setDetail_tags(feature);
 
         // 映射语言要求
@@ -184,18 +184,20 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     /**
      * 将职位亮点格式化为猎聘api的格式
      *
-     * @param moseekerJobPosition JobPositionDO
+     * @param positionForm JobPositionDO
      * @return String
      * @author cjm
      * @date 2018/6/7
      */
-    private String getValidFeature(JobPositionDO moseekerJobPosition) {
-        String feature = moseekerJobPosition.getFeature();
+    private String getValidFeature(ThirdPartyPosition positionForm) {
+        List<String> features = positionForm.getFeature();
         StringBuilder tags = new StringBuilder();
         int index = 0;
-        if (StringUtils.isNotNullOrEmpty(feature)) {
-            String[] features = feature.split("#");
+        if (features != null && features.size() > 0) {
             for (String str : features) {
+                if(StringUtils.isNullOrEmpty(str)){
+                    continue;
+                }
                 // 8个字的不参与
                 if (str.length() > 8) {
                     continue;
@@ -353,8 +355,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 String t = DateUtils.dateToPattern(new Date(), "yyyyMMdd");
                 liePinJsonObject.put("t", t);
                 String sign = Md5Utils.getMD5SortKey(Md5Utils.mapToList(liePinJsonObject), liePinJsonObject);
+                logger.info("===========sign:{}===========", sign);
                 liePinJsonObject.put("sign", sign);
-
+                logger.info("=============liePinJsonObject:{}=============", liePinJsonObject);
                 //设置请求头
                 Map<String, String> headers = new HashMap<>();
                 headers.put("channel", "qianxun");
