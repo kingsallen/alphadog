@@ -61,7 +61,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
                 String usereId = result.getString("usere_id");
                 String liePinToken = result.getString("token");
                 hrThirdPartyAccount.setExt(liePinToken);
-//                hrThirdPartyAccount.setExt2(usereId);
+                hrThirdPartyAccount.setExt2(usereId);
                 hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
                 logger.info("==================请求绑定成功，hrThirdPartyAccount:{}==================", hrThirdPartyAccount);
             }else{

@@ -5,16 +5,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
+import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.position.service.fundationbs.PositionQxService;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -23,9 +26,11 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +43,8 @@ public abstract class AbstractPositionTransfer<Form, R, Info, ExtP> {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
     protected FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
+
+    ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
     @Autowired
     private JobPositionCityDao jobPositionCityDao;
@@ -53,6 +60,9 @@ public abstract class AbstractPositionTransfer<Form, R, Info, ExtP> {
 
     @Autowired
     private PositionQxService positionQxService;
+
+    @Autowired
+    private HRThirdPartyPositionDao thirdPartyPositionDao;
 
     /**
      * 将仟寻职位转成第卅方职位
@@ -113,6 +123,30 @@ public abstract class AbstractPositionTransfer<Form, R, Info, ExtP> {
         return Arrays.asList(JSON.toJSONString(r));
     }
 
+    /**
+     * 额外判断是否使用当前转换策略
+     * @param positionDB
+     * @return
+     */
+    public boolean extTransferCheck (JobPositionDO positionDB){
+        return true;
+    }
+
+    /**
+     * 发送请求，并处理结果，默认是发送给爬虫端
+     * @param result
+     */
+    public void sendSyncRequest(TransferResult<R,Info> result) throws TException {
+        String syncData = JSON.toJSONString(result.getPositionWithAccount());
+        // 提交到chaos处理
+        logger.info("chaosService.synchronizePosition:{}", syncData);
+        chaosService.synchronizePosition(Arrays.asList(syncData));
+
+        // 回写数据到第三方职位表表
+        TwoParam fullThirdPartyPosition = new TwoParam(result.getThirdPartyPositionDO(),result.getExtPosition());
+        logger.info("write back to thirdpartyposition:{}", JSON.toJSONString(fullThirdPartyPosition));
+        thirdPartyPositionDao.upsertThirdPartyPositions(Arrays.asList(fullThirdPartyPosition));
+    }
 
     /**
      * ========================抽象方法，让每个渠道去实现自己的逻辑========================

@@ -310,6 +310,22 @@ public class HRThirdPartyPositionDao  {
         return thirdPartyPositionDao.update(update.buildUpdate());
     }
 
+
+
+    /**
+     * 通过职位id获取职位发布时的第三方表单数据
+     * @param
+     * @author  cjm
+     * @date  2018/6/4
+     * @return
+     */
+    public HrThirdPartyPositionDO getThirdPartyPositionById(int positionId, int positionChannel) {
+        Query query = new Query.QueryBuilder().where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(), positionId)
+                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), positionChannel)
+                .buildQuery();
+        return getSimpleData(query);
+    }
+
     /**
      * 隐藏的内部第三方职位dao，
      * 因为第三方职位分成主表和附表(坑爹的附表还有可能是多个)

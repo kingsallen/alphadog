@@ -226,21 +226,16 @@ public class PositionBS {
             AbstractPositionTransfer.TransferResult result= positionChangeUtil.changeToThirdPartyPosition(p, moseekerJobPosition,avaliableAccount);
 
             positionsForSynchronizations.addAll(positionChangeUtil.toChaosJson(channel,result.getPositionWithAccount()));
+
             writeBackThirdPartyPositionList.add(new TwoParam(result.getThirdPartyPositionDO(),result.getExtPosition()));
 
             results.add(positionSyncHandler.createNormalResult(moseekerJobPosition.getId(),channel,json));
 
             //完成转换操作，可以绑定
             channelTypeSet.add(channelType);
+
+            positionChangeUtil.sendRequest(channel,result);
         }
-
-        // 提交到chaos处理
-        logger.info("chaosService.synchronizePosition:{}", positionsForSynchronizations);
-        chaosService.synchronizePosition(positionsForSynchronizations);
-
-        // 回写数据到第三方职位表表
-        logger.info("write back to thirdpartyposition:{}", JSON.toJSONString(writeBackThirdPartyPositionList));
-        thirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
 
         positionSyncHandler.removeRedis(moseekerJobPosition.getId());
         return results;

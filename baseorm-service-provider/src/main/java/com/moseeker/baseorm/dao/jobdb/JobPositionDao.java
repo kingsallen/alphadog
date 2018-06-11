@@ -665,4 +665,11 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
         return null;
     }
+
+    public JobPositionDO getJobPositionById(int positionId) {
+        Query query = new Query.QueryBuilder()
+                .where(JobPosition.JOB_POSITION.ID.getName(), positionId)
+                .buildQuery();
+        return getData(query);
+    }
 }

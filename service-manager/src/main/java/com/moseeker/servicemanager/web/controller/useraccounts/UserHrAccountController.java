@@ -1133,4 +1133,35 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/hraccount/getThirdPartyAccountDO", method = RequestMethod.POST)
+    @ResponseBody
+    public String getThirdPartyAccountDO(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int channel = params.getInt("channel");
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredValidate("hr账号的指定渠道", channel, null, null);
+            validateUtil.addIntTypeValidate("hr账号的指定渠道", channel, null, null, 1, Integer.MAX_VALUE);
+
+            String message = validateUtil.validate();
+
+            if (StringUtils.isNullOrEmpty(message)) {
+//                Response response = userHrAccountService.getThirdPartyAccountDO(channel);
+                Response response = null;
+                if(null != response){
+                    return ResponseLogNotification.success(request, response);
+                }
+            } else {
+                logger.info("==================message:{}================", message);
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (BIZException e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseLogNotification.failJson(request, "后台异常");
+    }
 }

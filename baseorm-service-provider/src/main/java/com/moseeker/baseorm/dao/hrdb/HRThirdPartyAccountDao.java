@@ -5,6 +5,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountHrRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -16,6 +17,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
+import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -232,6 +234,42 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         return hrThirdPartyAccountDOS == null ? new ArrayList<>() : hrThirdPartyAccountDOS;
     }
 
-
+    /**
+     * 通过hrid获取猎聘的第三方账号token和账号id
+     * @param
+     * @author  cjm
+     * @date  2018/6/1
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public Result getThirdPartyAccountTokenByHrId(int hrId, int channel){
+        return create.select(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT,HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID)
+                .from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                .join(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
+                .on(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID))
+                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(hrId))
+                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short)channel))
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte)1))
+                .fetch();
+    }
     private FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
+
+    /**
+     * 通过职位id获取猎聘token
+     * @param
+     * @author  cjm
+     * @date  2018/6/4
+     * @return
+     */
+    public Result getThirdPartyAccountTokenByPid(int positionId, int positionChannel) {
+        return create.select(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2)
+                .from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                .join(JobPosition.JOB_POSITION)
+                .on(JobPosition.JOB_POSITION.PUBLISHER.eq(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID))
+                .join(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
+                .on(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID))
+                .where(JobPosition.JOB_POSITION.ID.eq(positionId))
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.CHANNEL.eq((short)positionChannel))
+                .fetch();
+    }
 }
