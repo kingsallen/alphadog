@@ -138,12 +138,16 @@ public class UserPositionEmailService {
 			salaryCodeList.add(salaryMap);
 		}
 		String salaryCode= JSONObject.toJSONString(salaryCodeList);
+		String canidateSource=(String) map.get("candidateSource");
+		if(StringUtils.isBlank(canidateSource)){
+			canidateSource="-1";
+		}
 		Calendar lastDate = Calendar.getInstance();
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss" );
 		lastDate.roll(Calendar.DATE, -7);//日期回滚7天
 		String startTime=format.format(lastDate.getTime());
 		Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, page, pageSize,
-				null, null,0,0,0,1,0);
+				null, null,0,0,0,1,0,canidateSource);
 		if(res.getStatus()==0&&!Strings.isNullOrEmpty(res.getData())){
 			String data=res.getData();
 			Map<String,Object> result=JSON.parseObject(data);

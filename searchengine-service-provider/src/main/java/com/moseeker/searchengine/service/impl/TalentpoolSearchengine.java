@@ -1118,10 +1118,8 @@ public class TalentpoolSearchengine {
         suggetParams.put("page_size","1000000");
         suggetParams.put("return_params","title,id");
         String status=params.get("position_status");
-        if(StringUtils.isNotNullOrEmpty(status)&&!"-1".equals(status)){
-            suggetParams.put("flag","0");
-        }else{
-            suggetParams.put("flag","1");
+        if(StringUtils.isNotNullOrEmpty(status)){
+            suggetParams.put("flag",status);
         }
         return suggetParams;
     }
