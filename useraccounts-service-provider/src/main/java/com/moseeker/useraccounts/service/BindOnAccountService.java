@@ -71,9 +71,9 @@ public abstract class BindOnAccountService {
 				// post, 都为空的情况, 需要事先调用 user_
 				return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
 			} else if (userUnionid != null && userMobile != null
-					&& userUnionid.getId().intValue() == userMobile.getId().intValue()) {
+					&& userUnionid.getId().intValue() == userMobile.getId().intValue()) {	//unionid用户和mobile用户是同一个用户
 				return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
-			} else if (userUnionid != null && userMobile == null) {
+			} else if (userUnionid != null && userMobile == null) {	//只有unionid用户，没有mobile用户
 				userUnionid.setMobile(Long.valueOf(mobile));
 				userUnionid.setUsername(mobile);
 				userUnionid.setCountryCode(countryCode);
@@ -84,7 +84,7 @@ public abstract class BindOnAccountService {
 				} else {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 				}
-			} else if (userUnionid == null && userMobile != null) {
+			} else if (userUnionid == null && userMobile != null) { //只有mobile用户，没有unionid用户
 				if(volidationBind(userMobile, userUnionid)) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
 				}
@@ -93,7 +93,7 @@ public abstract class BindOnAccountService {
 				resultFull(userMobile, map);
 				return ResponseUtils.success(map);
 			} else if (userUnionid != null && userMobile != null
-					&& userUnionid.getId().intValue() != userMobile.getId().intValue()) {
+					&& userUnionid.getId().intValue() != userMobile.getId().intValue()) { //同时有mobile用户和unionid用户，但不是同一个，需要绑定
 				// 2 accounts, one unoinid, one mobile, need to merge.
 				if (volidationBind(userMobile, userUnionid)) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
