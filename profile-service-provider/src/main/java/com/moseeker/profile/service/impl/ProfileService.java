@@ -699,7 +699,7 @@ public class ProfileService {
                     }
                     company.setCompanyScale(String.valueOf(DictCode.companyScale(companyScaleMaxValue)));
                     workexps.setCompany(company);
-                    workexps.setDescription(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_content(),jobExpObj.getJob_cpy_desc()));
+                    workexps.setDescription(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_desc(),jobExpObj.getJob_content()));
                     try {
                         workexps.setStartDate(DateUtils.dateRepair(jobExpObj.getStart_date(), "\\."));
                         if (jobExpObj.getEnd_date() != null && jobExpObj.getEnd_date().equals("至今")) {
@@ -1313,9 +1313,7 @@ public class ProfileService {
     public Response talentpoolUploadParse(String fileName,String fileData,int companyId) throws TException, IOException {
         Map<String, Object> result = new HashMap<>();
         ResumeObj resumeObj = profileEntity.profileParser(fileName, fileData);
-        logger.info("==============**********************");
         logger.info(JSON.toJSONString(resumeObj));
-        logger.info("==============**********************");
         result.put("resumeObj", resumeObj);
         if (resumeObj.getStatus().getCode() == 200) {
             String phone = resumeObj.getResult().getPhone();
@@ -1328,9 +1326,7 @@ public class ProfileService {
 
             }
             ProfileObj profileObj = handlerParseData(resumeObj, userId, fileName);
-            logger.info("==============**********************");
             logger.info(JSON.toJSONString(profileObj));
-            logger.info("==============**********************");
             result.put("profile", profileObj);
         } else {
             ResponseUtils.fail(1, "解析失败");

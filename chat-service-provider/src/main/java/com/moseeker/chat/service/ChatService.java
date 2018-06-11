@@ -583,7 +583,7 @@ public class ChatService {
             pool.startTast(() -> chaoDao.addUnreadCount(chat.getRoomId(), chat.getSpeaker(), date));
             return chatId;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.info(e.getMessage(), e);
             throw new BIZException(VoiceErrorEnum.CHAT_INFO_ADD_FAILED.getCode(), VoiceErrorEnum.CHAT_INFO_ADD_FAILED.getMsg());
         }
     }

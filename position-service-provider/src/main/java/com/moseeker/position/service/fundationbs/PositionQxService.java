@@ -152,13 +152,11 @@ public class PositionQxService {
             positionDetailsListVO.setStatus(CommonMessage.EXCEPTION.getStatus());
             logger.error(e.getMessage(), e);
         }
-        logger.info("companyHotPositionDetailsList positionDetailsListVO:{}", positionDetailsListVO);
         if (positionDetailsListVO.getData() != null && positionDetailsListVO.getData().size() > 0) {
             positionDetailsListVO.getData().forEach(positionDetails -> {
                 positionDetails.setSalaryBottom(positionDetails.getSalaryBottom());
                 positionDetails.setSalaryTop(positionDetails.getSalaryTop());
             });
-            logger.info("companyHotPositionDetailsList salaryTop:{}, salaryBottom:{}", positionDetailsListVO.getData().get(0).getSalaryTop(), positionDetailsListVO.getData().get(0).getSalaryBottom());
         }
 
         return positionDetailsListVO;
