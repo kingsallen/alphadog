@@ -744,18 +744,27 @@ public class TalentpoolSearchengine {
      */
     private void orderByTalent(List<Integer> publisherIdList,String hrId,String companyId,SearchRequestBuilder builder){
         if (publisherIdList.size() > 1) {
-            builder.addSort("user.field_talent_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+            String sortName="user.field_talent_order.hr_all_"+hrId+"_order";
+            if(this.getIsExistField(sortName)){
+                builder.addSort(sortName, SortOrder.DESC);
+            }
+
         }else{
             if(this.isMianHr(Integer.parseInt(hrId))){
                 logger.info("==============================");
-                builder.addSort("user.field_talent_order.hr_all_" + hrId + "_order", SortOrder.DESC);
+                String sortName="user.field_talent_order.hr_all_"+hrId+"_order";
+                if(this.getIsExistField(sortName)){
+                    builder.addSort(sortName, SortOrder.DESC);
+                }
+
             }else{
                 UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
                 logger.info("++++++++++++++++++++++++++++++++");
-                builder.addSort("user.field_talent_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+                String sortName="user.field_talent_order.hr_all_"+record.getId() +"_order";
+                if(this.getIsExistField(sortName)){
+                    builder.addSort(sortName, SortOrder.DESC);
+                }
 //                builder.addSort("user.field_talent_order.hr_" + hrId + "_order", SortOrder.DESC);
-
-
             }
         }
     }
@@ -765,16 +774,25 @@ public class TalentpoolSearchengine {
     private void orderByApp(List<Integer> publisherIdList,String hrId,String companyId,SearchRequestBuilder builder){
 
         if (publisherIdList.size() > 1) {
-            builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+            String sortName="user.field_order.hr_all_"+hrId+"_order";
+            if(this.getIsExistField(sortName)){
+                builder.addSort(sortName, SortOrder.DESC);
+            }
         }else{
             if(this.isMianHr(Integer.parseInt(hrId))){
                 logger.info("==============================");
-                builder.addSort("user.field_order.hr_all_" + hrId + "_order", SortOrder.DESC);
+                String sortName="user.field_order.hr_all_"+hrId+"_order";
+                if(this.getIsExistField(sortName)){
+                    builder.addSort(sortName, SortOrder.DESC);
+                }
             }else{
 //                UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
                 logger.info("++++++++++++++++++++++++++++++++");
 //                builder.addSort("user.field_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
-                builder.addSort("user.field_order.hr_" + hrId + "_order", SortOrder.DESC);
+                String sortName="user.field_order.hr_"+hrId+"_order";
+                if(this.getIsExistField(sortName)){
+                    builder.addSort(sortName, SortOrder.DESC);
+                }
             }
         }
     }
@@ -1826,8 +1844,30 @@ public class TalentpoolSearchengine {
         return record;
     }
 
-
-
+    /*
+     判断某一字段是否存在的查询
+     */
+    private boolean getIsExistField(String name){
+        TransportClient client = searchUtil.getEsClient();
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        QueryBuilder cityfilter = QueryBuilders.existsQuery(name);
+        ((BoolQueryBuilder) query).must(cityfilter);
+        SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+        builder.setSize(0);
+        SearchResponse response = builder.execute().actionGet();
+        Map<String,Object> result = searchUtil.handleData(response, "isExists");
+        if(StringUtils.isEmptyMap(result)){
+            return false;
+        }else{
+            long count=(long)result.get("totalNum");
+            if(count>0){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
 }
 
 
