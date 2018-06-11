@@ -68,6 +68,9 @@ public class CompanyTagService {
                     int total=service.queryCompanyTagUserIdListCount(params);
                     //测试时为100，注意线上为1000
                     int totalPage=(int)Math.ceil((double)total/500.0);
+                    /*
+                     type==1是更新状态，需要把库中的关心先删除，然后把新的标签和人才关系入库
+                     */
                     if(type == 1){
                         talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
                     }
@@ -145,12 +148,9 @@ public class CompanyTagService {
 
         }
     }
-
-
-
-
-
-
+    /*
+     根据user_user.id列表和公司id处理公司的标签
+     */
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws Exception {
         try {
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
@@ -182,6 +182,9 @@ public class CompanyTagService {
                 }
             }
             talentpoolCompanyTagUserDao.deleteByUserIdAndTagId(deleList);
+            /*
+
+             */
             if (!StringUtils.isEmptyList(list)) {
                 talentpoolCompanyTagUserDao.addAllRecord(list);
                 for (Integer userId : idList) {
