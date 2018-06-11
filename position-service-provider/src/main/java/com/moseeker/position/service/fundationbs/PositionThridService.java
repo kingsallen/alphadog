@@ -234,7 +234,32 @@ public class PositionThridService {
         }
         Query query=new Query.QueryBuilder().where(new Condition("pid",pidList.toArray(),ValueOp.IN)).buildQuery();
         List<JobPositionCityDO> list=jobPositionCityDao.getDatas(query);
+        list=this.handlepecialCityCode(list);
         return list;
+    }
+    //处理直辖市的特殊情况的数据
+    private List<JobPositionCityDO> handlepecialCityCode(List<JobPositionCityDO> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<JobPositionCityDO> result=new ArrayList<>();
+        for(JobPositionCityDO DO:list){
+            int code=DO.getCode();
+            if(code==310000){
+                DO.setCode(310100);
+            }
+            if(code==110000){
+                DO.setCode(110100);
+            }
+            if(code==120000){
+                DO.setCode(120100);
+            }
+            if(code==500000){
+                DO.setCode(500100);
+            }
+            result.add(DO);
+        }
+        return result;
     }
     //组装数据，仅仅获取<pid,code>的格式
     private Map<Integer,Integer> handleJobPositionCityData(List<JobPositionCityDO> list,List<Integer> pidList){

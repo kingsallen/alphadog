@@ -188,7 +188,6 @@ public class ChatDao {
                                 .stream().filter(userWxUserDO1 -> userWxUserDO1.getSysuserId() == userUserDO.getId())
                                 .findAny();
                         if (userWxUserDOOptional.isPresent()) {
-                            logger.info("listUsers userWxUserDOOptional exist");
                             userUserDO.setHeadimg(userWxUserDOOptional.get().getHeadimgurl());
                         } else {
                             logger.info("listUsers userWxUserDOOptional not exist");
