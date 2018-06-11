@@ -278,6 +278,7 @@ public class SearchengineController {
              String teamId=(String)reqParams.get("teamId");
              String motherCompanyId=(String)reqParams.get("motherCompanyId");
              String moduleId=(String)reqParams.get("moduleId");
+             String candidateSource=(String)reqParams.get("candidateSource");
              if(companyId==null){
                  companyId="0";
              }
@@ -315,11 +316,16 @@ public class SearchengineController {
              if(salary!=null){
                  salaryCode=JSON.toJSONString(salary);
              }
+             if(StringUtils.isNullOrEmpty(candidateSource)){
+                 candidateSource="-1";
+             }
              logger.info(keyWord, citys, industry, scale, page,
                      pageSize,companyId,teamId,salaryCode,"=============");
              Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, Integer.parseInt(page),
                      Integer.parseInt(pageSize), startTime, endTime,Integer.parseInt(companyId),
-                     Integer.parseInt(teamId),Integer.parseInt(motherCompanyId),Integer.parseInt(order),Integer.parseInt(moduleId));
+                     Integer.parseInt(teamId),Integer.parseInt(motherCompanyId),Integer.parseInt(order),Integer.parseInt(moduleId),
+                     candidateSource
+             );
              return ResponseLogNotification.success(request,res);
     	 }catch(Exception e){
     		 logger.info(e.getMessage(),e);
