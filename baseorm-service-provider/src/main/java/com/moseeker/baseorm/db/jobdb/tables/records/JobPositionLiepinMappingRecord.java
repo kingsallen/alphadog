@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPositionLiepinMappingRecord> implements Record9<Integer, Integer, Integer, Integer, String, String, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 806603183;
+    private static final long serialVersionUID = -698056543;
 
     /**
      * Setter for <code>jobdb.job_position_liepin_mapping.id</code>. job_position.id
@@ -89,14 +89,14 @@ public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPosit
     }
 
     /**
-     * Setter for <code>jobdb.job_position_liepin_mapping.job_title</code>. 职位名称
+     * Setter for <code>jobdb.job_position_liepin_mapping.job_title</code>.
      */
     public void setJobTitle(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position_liepin_mapping.job_title</code>. 职位名称
+     * Getter for <code>jobdb.job_position_liepin_mapping.job_title</code>.
      */
     public String getJobTitle() {
         return (String) get(4);
@@ -117,14 +117,14 @@ public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPosit
     }
 
     /**
-     * Setter for <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常 
+     * Setter for <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常  
      */
     public void setState(Byte value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常 
+     * Getter for <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常  
      */
     public Byte getState() {
         return (Byte) get(6);

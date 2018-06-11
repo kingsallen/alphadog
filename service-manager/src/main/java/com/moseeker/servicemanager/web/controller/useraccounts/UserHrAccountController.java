@@ -1147,8 +1147,7 @@ public class UserHrAccountController {
             String message = validateUtil.validate();
 
             if (StringUtils.isNullOrEmpty(message)) {
-//                Response response = userHrAccountService.getThirdPartyAccountDO(channel);
-                Response response = null;
+                Response response = userHrAccountService.getThirdPartyAccountDO(channel);
                 if(null != response){
                     return ResponseLogNotification.success(request, response);
                 }

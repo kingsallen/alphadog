@@ -674,7 +674,7 @@ public class UserHrAccountServiceImpl implements Iface {
 
     }
 
-//    @Override
+    @Override
     public Response getThirdPartyAccountDO(int channel) throws BIZException, TException {
         try {
             return thirdPartyAccountService.getThirdPartyAccountDO(channel);

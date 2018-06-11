@@ -256,6 +256,10 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         String citys = liePinPositionVO.getEjob_dq();
         String[] cityCodesArr = citys.split("[,，]");
         List<String> errCityCodeList = new ArrayList<>();
+
+        // 当出现token失效导致发布失败时，认为该职位在猎聘尚未发布，不在jobliepinmapping表中保存数据，默认鉴权成功
+        boolean flag = true;
+
         if (cityCodesArr.length >= 1) {
 
             // 获取猎聘的token
@@ -263,7 +267,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             Result dbResult = thirdPartyAccountDao.getThirdPartyAccountTokenByHrId(publisher, 2);
             HrThirdPartyPositionDO hrThirdPartyPositionDO = result.getThirdPartyPositionDO();
             if (null == dbResult || dbResult.size() == 0) {
-                logger.info("===============token查询为空================");
+                logger.info("===============猎聘token查询为空================");
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_TOKEN_NONEXISTS);
             }
             String liePinToken = String.valueOf(dbResult.getValue(0, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2));
@@ -376,14 +380,24 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     successSyncNum++;
                     logger.info("==============hrThirdPartyPositionDO:{}================", hrThirdPartyPositionDO);
                 } else if (null != httpResult) {
+                    if(httpResult.getIntValue("code") == 1001){
+                        // 鉴权失败
+                        flag = false;
+                    }
                     errorMsg = httpResult.getString("message");
                 } else {
                     errorMsg = "http请求失败";
                     errCityCodeList.add(cityCode);
                 }
+                // 如果鉴权失败，将mapping记录删除
                 int id = jobPositionLiepinMappingDO.getId();
-                // 更改数据库mapping的状态
-                liepinMappingDao.updateJobInfoById(id, StringUtils.isNullOrEmpty(thirdPositionId) ? null : Integer.parseInt(thirdPositionId), state, errorMsg);
+                if(!flag){
+                    liepinMappingDao.deleteData(jobPositionLiepinMappingDO);
+                }else{
+                    // 更改数据库mapping的状态
+                    liepinMappingDao.updateJobInfoById(id, StringUtils.isNullOrEmpty(thirdPositionId) ? null : Integer.parseInt(thirdPositionId), state, errorMsg);
+                }
+
             }
 
 

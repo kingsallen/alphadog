@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionLiepinMapping extends TableImpl<JobPositionLiepinMappingRecord> {
 
-    private static final long serialVersionUID = -468520168;
+    private static final long serialVersionUID = -168351832;
 
     /**
      * The reference instance of <code>jobdb.job_position_liepin_mapping</code>
@@ -72,9 +72,9 @@ public class JobPositionLiepinMapping extends TableImpl<JobPositionLiepinMapping
     public final TableField<JobPositionLiepinMappingRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "dict_city.code");
 
     /**
-     * The column <code>jobdb.job_position_liepin_mapping.job_title</code>. 职位名称
+     * The column <code>jobdb.job_position_liepin_mapping.job_title</code>.
      */
-    public final TableField<JobPositionLiepinMappingRecord, String> JOB_TITLE = createField("job_title", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "职位名称");
+    public final TableField<JobPositionLiepinMappingRecord, String> JOB_TITLE = createField("job_title", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
 
     /**
      * The column <code>jobdb.job_position_liepin_mapping.err_msg</code>. 如果同步失败，记录失败信息
@@ -82,9 +82,9 @@ public class JobPositionLiepinMapping extends TableImpl<JobPositionLiepinMapping
     public final TableField<JobPositionLiepinMappingRecord, String> ERR_MSG = createField("err_msg", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "如果同步失败，记录失败信息");
 
     /**
-     * The column <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常 
+     * The column <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常  
      */
-    public final TableField<JobPositionLiepinMappingRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "猎聘职位状态 0 下架 1 正常 ");
+    public final TableField<JobPositionLiepinMappingRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "猎聘职位状态 0 下架 1 正常  ");
 
     /**
      * The column <code>jobdb.job_position_liepin_mapping.create_time</code>.
