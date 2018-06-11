@@ -272,4 +272,20 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
                 .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.CHANNEL.eq((short)positionChannel))
                 .fetch();
     }
+    /**
+     * 获取同一渠道的第三方账号信息
+     * @param
+     * @author  cjm
+     * @date  2018/6/1
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<HrThirdPartyAccountDO> getThirdPartyAccountByChannel(int channel){
+        Query query = new Query.QueryBuilder()
+                .where(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.getName(), (short)channel))
+                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), BindingStatus.BOUND.getValue()))
+                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2.getName(), "", ValueOp.NEQ))
+                .buildQuery();
+        return getDatas(query);
+    }
 }

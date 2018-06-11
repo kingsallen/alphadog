@@ -10,6 +10,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
@@ -388,5 +389,20 @@ public class ThirdPartyAccountService {
             accountInfo.getHrs().add(hrInfo);
         }
         return accountInfo;
+    }
+
+    /**
+     * 获取hr第三方账号信息
+     * @param
+     * @author  cjm
+     * @date  2018/5/30
+     * @return
+     */
+    public Response getThirdPartyAccountDO(int channel) throws Exception{
+        List<HrThirdPartyAccountDO> hrThirdPartyAccountDOList = thirdPartyAccountDao.getThirdPartyAccountByChannel(channel);
+        if(hrThirdPartyAccountDOList == null || hrThirdPartyAccountDOList.size() == 0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
+        }
+        return ResponseUtils.success(hrThirdPartyAccountDOList);
     }
 }

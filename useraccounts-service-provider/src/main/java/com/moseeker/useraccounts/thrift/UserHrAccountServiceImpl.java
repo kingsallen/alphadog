@@ -673,4 +673,16 @@ public class UserHrAccountServiceImpl implements Iface {
         }
 
     }
+
+//    @Override
+    public Response getThirdPartyAccountDO(int channel) throws BIZException, TException {
+        try {
+            return thirdPartyAccountService.getThirdPartyAccountDO(channel);
+        } catch (BIZException e){
+            throw e;
+        } catch (Exception e){
+            logger.error("================getThirdPartyAccountDO error:{},hrId:{},channel:{}=============", e, channel);
+            throw new SysBIZException();
+        }
+    }
 }
