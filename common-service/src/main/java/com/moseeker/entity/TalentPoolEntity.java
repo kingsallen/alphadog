@@ -42,6 +42,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.moseeker.common.util.query.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -553,7 +554,9 @@ public class TalentPoolEntity {
      */
     @Transactional
     public int updateCompanyTag(TalentpoolCompanyTagDO companyTagDO){
+        logger.info("TalentpoolCompanyTagDO info :{}", companyTagDO);
         TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecordAll(companyTagDO);
+        logger.info("TalentpoolCompanyTagRecord info :{}", tagRecord);
         talentpoolCompanyTagDao.updateRecord(tagRecord);
         return tagRecord.getId();
     }
@@ -1287,6 +1290,34 @@ public class TalentPoolEntity {
         Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("public_num",1,ValueOp.GE)).buildQuery();
         int count=talentpoolTalentDao.getCount(query);
         return count;
+    }
+
+    /*
+      获取公司下所有公开的人才
+     */
+    public int getPublicTalentCount(Set<Integer> hrIdSet){
+//        Query query=new Query.QueryBuilder().select(new Select("user_id",SelectOp.DISTINCT)).where(new Condition("hr_id",hrIdSet.toArray(),ValueOp.IN)).and("public",1).buildQuery();
+//        List<Map<String,Object>> list=talentpoolHrTalentDao.getMaps(query);
+//        if(StringUtils.isEmptyList(list)){
+//            return 0;
+//        }
+        return talentpoolHrTalentDao.getPublicCount(hrIdSet);
+    }
+    /*
+     根据hr列表获取所有人才
+     */
+    /*
+      获取公司下所有的人才,一般是主账号在使用
+     */
+    public int getAllHrTalentCount(Set<Integer> hrIdSet){
+        return talentpoolHrTalentDao.getAllTalentCount(hrIdSet);
+    }
+
+    /*
+      获取公司下所有公开的人才
+     */
+    public int getAllHrPubTalentCount(Set<Integer> hrIdSet){
+        return talentpoolHrTalentDao.getPublicCount(hrIdSet);
     }
     /*
      获取人才是否在这家公司下公开

@@ -160,6 +160,7 @@ public class TemlateMsgHttp {
             applierTemplate.put("topcolor", template.getTopcolor());
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
             Map<String, Object> params = JSON.parseObject(result);
+            logger.info("向推荐者发送模板消息结果："+params.get("errcode")+";提示信息："+params.get("errcmsg"));
             insertLogWxMessageRecord(hrWxWechatDO, template, openId, link, colMap ,params);
             if(params!= null && "0".equals(params.get("errcode"))){
                 return ResponseUtils.success("success");
@@ -229,10 +230,12 @@ public class TemlateMsgHttp {
             Map<String, String> miniprogram = new HashMap<>();
             miniprogram.put("appid", appid);
             miniprogram.put("pagepath", Constant.WX_APP_PROFILE_INFO_URL.replace("{}", user.getId()+""));
+            logger.info("minprogram 参数 ：{}", miniprogram);
             applierTemplate.put("miniprogram", miniprogram);
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
             Map<String, Object> params = JSON.parseObject(result);
             insertLogWxMessageRecord(hrWxWechatDO, template, openId, "", colMap ,params);
+            logger.info("向HR发送模板消息结果："+params.get("errcode")+";提示信息："+params.get("errcmsg"));
             if(params!= null && "0".equals(params.get("errcode"))){
                 return ResponseUtils.success("success");
             }

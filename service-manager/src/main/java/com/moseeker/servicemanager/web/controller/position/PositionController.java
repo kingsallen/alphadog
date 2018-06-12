@@ -6,6 +6,7 @@ import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -407,6 +408,7 @@ public class PositionController {
 
     /**
      * 根据 pids (List<Integer>) 获取职位的红包附加信息
+     * 根据 pids (List<Integer>)
      *
      * @param request  request
      * @param response response
@@ -441,8 +443,10 @@ public class PositionController {
         try {
             BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseBatchHandlerJobPostionParam(request);
             Response res = positonServices.batchHandlerJobPostion(batchHandlerJobPostion);
+            logger.info("batchhandler result:{}",JSON.toJSONString(res));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
+            logger.info("batchhandler error result:{}",e);
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
@@ -534,7 +538,11 @@ public class PositionController {
             Integer companyId = params.getInt("company_id");
             Integer page = params.getInt("page");
             Integer per_age = params.getInt("per_age");
-            return positonServices.companyHotPositionDetailsList(companyId, page, per_age);
+            PositionDetailsListVO positionDetailsListVO = positonServices.companyHotPositionDetailsList(companyId, page, per_age);
+            if (positionDetailsListVO.getData() != null && positionDetailsListVO.getData().size() > 0) {
+                logger.info("companyHotPositionDetailsList 1.salaryTop:{}, 1.salaryBottom:{}", positionDetailsListVO.getData().get(0).getSalaryTop(), positionDetailsListVO.getData().get(0).getSalaryBottom());
+            }
+            return positionDetailsListVO;
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
@@ -1057,4 +1065,18 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/position/exception", method = RequestMethod.POST)
+    @ResponseBody
+    public String positionException( HttpServletRequest request, HttpServletResponse response){
+        try{
+            ParamUtils.initModelForm(request,HrThirdPartyPositionDO.class);
+            throw new NullPointerException();
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
 }

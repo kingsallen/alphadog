@@ -11,7 +11,6 @@ import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyFollow;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeeCopy;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
@@ -77,11 +76,6 @@ public class Tables {
      * The table <code>userdb.user_employee</code>.
      */
     public static final UserEmployee USER_EMPLOYEE = com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
-
-    /**
-     * The table <code>userdb.user_employee_copy</code>.
-     */
-    public static final UserEmployeeCopy USER_EMPLOYEE_COPY = com.moseeker.baseorm.db.userdb.tables.UserEmployeeCopy.USER_EMPLOYEE_COPY;
 
     /**
      * 员工积分记录表

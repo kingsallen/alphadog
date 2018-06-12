@@ -94,7 +94,7 @@ public abstract class EmployeeBinder {
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
             response = doneBind(userEmployee);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
             response.setSuccess(false);
             response.setMessage(e.getMessage());
         }

@@ -55,6 +55,10 @@ public class HrSearchCondition implements Serializable {
     private String    favoriteHrs;
     private String    cityCode;
     private String    intentionCityCode;
+    private Integer   positionStatus;
+    private String    positionKeyWord;
+    private String    pastPositionKeyWord;
+    private String    pastCompanyKeyWord;
 
     public HrSearchCondition() {}
 
@@ -89,6 +93,10 @@ public class HrSearchCondition implements Serializable {
         this.favoriteHrs = value.favoriteHrs;
         this.cityCode = value.cityCode;
         this.intentionCityCode = value.intentionCityCode;
+        this.positionStatus = value.positionStatus;
+        this.positionKeyWord = value.positionKeyWord;
+        this.pastPositionKeyWord = value.pastPositionKeyWord;
+        this.pastCompanyKeyWord = value.pastCompanyKeyWord;
     }
 
     public HrSearchCondition(
@@ -121,7 +129,11 @@ public class HrSearchCondition implements Serializable {
         String    tagIds,
         String    favoriteHrs,
         String    cityCode,
-        String    intentionCityCode
+        String    intentionCityCode,
+        Integer   positionStatus,
+        String    positionKeyWord,
+        String    pastPositionKeyWord,
+        String    pastCompanyKeyWord
     ) {
         this.id = id;
         this.name = name;
@@ -153,6 +165,10 @@ public class HrSearchCondition implements Serializable {
         this.favoriteHrs = favoriteHrs;
         this.cityCode = cityCode;
         this.intentionCityCode = intentionCityCode;
+        this.positionStatus = positionStatus;
+        this.positionKeyWord = positionKeyWord;
+        this.pastPositionKeyWord = pastPositionKeyWord;
+        this.pastCompanyKeyWord = pastCompanyKeyWord;
     }
 
     public Integer getId() {
@@ -395,6 +411,38 @@ public class HrSearchCondition implements Serializable {
         this.intentionCityCode = intentionCityCode;
     }
 
+    public Integer getPositionStatus() {
+        return this.positionStatus;
+    }
+
+    public void setPositionStatus(Integer positionStatus) {
+        this.positionStatus = positionStatus;
+    }
+
+    public String getPositionKeyWord() {
+        return this.positionKeyWord;
+    }
+
+    public void setPositionKeyWord(String positionKeyWord) {
+        this.positionKeyWord = positionKeyWord;
+    }
+
+    public String getPastPositionKeyWord() {
+        return this.pastPositionKeyWord;
+    }
+
+    public void setPastPositionKeyWord(String pastPositionKeyWord) {
+        this.pastPositionKeyWord = pastPositionKeyWord;
+    }
+
+    public String getPastCompanyKeyWord() {
+        return this.pastCompanyKeyWord;
+    }
+
+    public void setPastCompanyKeyWord(String pastCompanyKeyWord) {
+        this.pastCompanyKeyWord = pastCompanyKeyWord;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrSearchCondition (");
@@ -429,6 +477,10 @@ public class HrSearchCondition implements Serializable {
         sb.append(", ").append(favoriteHrs);
         sb.append(", ").append(cityCode);
         sb.append(", ").append(intentionCityCode);
+        sb.append(", ").append(positionStatus);
+        sb.append(", ").append(positionKeyWord);
+        sb.append(", ").append(pastPositionKeyWord);
+        sb.append(", ").append(pastCompanyKeyWord);
 
         sb.append(")");
         return sb.toString();

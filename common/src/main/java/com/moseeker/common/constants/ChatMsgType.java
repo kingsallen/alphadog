@@ -13,13 +13,13 @@ public enum ChatMsgType {
     QRCODE("qrcode") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getPicUrl());
+            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getAssetUrl());
         }
     },
     IMAGE("image") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getPicUrl());
+            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getAssetUrl());
         }
     },
     BUTTON_RADIO("button_radio") {
@@ -27,7 +27,14 @@ public enum ChatMsgType {
         public boolean vaildChat(ChatVO chatVO) {
             return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getBtnContent());
         }
-    };
+    },
+    VOICE("voice") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getMsgType()) && "voice".equals(chatVO.getMsgType());
+        }
+    }
+    ;
 
     ChatMsgType(String value) {
         this.value = value;

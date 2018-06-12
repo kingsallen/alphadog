@@ -1,11 +1,20 @@
 package com.moseeker.searchengine.thrift;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.searchengine.domain.PastPOJO;
+import com.moseeker.searchengine.domain.SearchPast;
 import com.moseeker.searchengine.service.impl.CompanySearchengine;
 import com.moseeker.searchengine.service.impl.PositionSearchEngine;
 import com.moseeker.searchengine.service.impl.SearchengineService;
 import com.moseeker.searchengine.service.impl.TalentpoolSearchengine;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
 
@@ -33,21 +42,38 @@ public class SearchengineServiceImpl implements Iface {
 	@Autowired
 	private TalentpoolSearchengine talentpoolSearchengine;
 
+	private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+	public SearchengineServiceImpl(){
+		serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+	}
+
 	@Override
 	public Response query(String keywords, String cities, String industries, String occupations, String scale,
 						  String employment_type, String candidate_source, String experience, String degree, String salary,
-						  String company_name, int page_from, int page_size,String child_company_name,String department,boolean order_by_priority,String custom) throws TException {
-		return service.query(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size, child_company_name, department, order_by_priority, custom);
+						  String company_name, int page_from, int page_size,String child_company_name,String department,boolean order_by_priority,String custom) throws BIZException,TException {
+		try {
+			return service.query(keywords, cities, industries, occupations, scale, employment_type, candidate_source,
+					experience, degree, salary, company_name, page_from, page_size, child_company_name, department, order_by_priority, custom);
+		}catch (Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
 	}
 
 	@Override
-	public Response updateposition(String position,int  id) throws TException {
-		return service.updateposition(position, id);
+	public Response updateposition(String position,int  id) throws BIZException,TException {
+		try {
+			return service.updateposition(position, id);
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
 	}
 
 
 	@Override
-	public Response companyQuery(String keyWords, String citys, String industry, String scale, int page, int pageSize){
+	public Response companyQuery(String keyWords, String citys, String industry, String scale, int page, int pageSize)throws BIZException,TException{
 		// TODO Auto-generated method stub
 		try{
 			Map<String,Object> res=companySearchengine.query(keyWords, citys, industry, scale, page, pageSize);
@@ -56,15 +82,15 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
 		}
 
 	}
 
 	@Override
 	public Response positionQuery(String keyWords, String citys, String industry, String salaryCode, int page,
-								  int pageSize, String startTime, String endTime,int companyId,int teamId,int motherCompanyId,int order,int moduleId) throws TException {
+								  int pageSize, String startTime, String endTime,int companyId,int teamId,int motherCompanyId,int order,int moduleId) throws BIZException,TException {
 		// TODO Auto-generated method stub
 		try{
 			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime,companyId,teamId,motherCompanyId,order,moduleId);
@@ -73,34 +99,54 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
 		}
 	}
 
 
     @Override
-    public Response queryAwardRanking(List<Integer> employeeIds, String timespan, int pageSize, int pageNum, String keyword, int filter) throws TException {
-        return service.queryAwardRanking(employeeIds, timespan, pageSize, pageNum, keyword, filter);
+    public Response queryAwardRanking(List<Integer> employeeIds, String timespan, int pageSize, int pageNum, String keyword, int filter) throws BIZException,TException {
+		try {
+			return service.queryAwardRanking(employeeIds, timespan, pageSize, pageNum, keyword, filter);
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
     }
 
     @Override
-    public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, int employeeId) throws TException {
-        return service.queryAwardRankingInWx(companyIds, timespan, employeeId);
+    public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, int employeeId) throws BIZException,TException {
+		try {
+			return service.queryAwardRankingInWx(companyIds, timespan, employeeId);
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
     }
 
     @Override
-    public Response updateEmployeeAwards(List<Integer> employeeIds) throws TException {
-        return service.updateEmployeeAwards(employeeIds);
+    public Response updateEmployeeAwards(List<Integer> employeeIds) throws BIZException,TException {
+		try {
+			return service.updateEmployeeAwards(employeeIds);
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
     }
 
     @Override
-    public Response deleteEmployeeDO(List<Integer> employeeIds) throws TException {
-        return service.deleteEmployeeDO(employeeIds);
+    public Response deleteEmployeeDO(List<Integer> employeeIds) throws BIZException,TException {
+		try {
+			return service.deleteEmployeeDO(employeeIds);
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
     }
 
 	@Override
-	public Response searchPositionSuggest(Map<String, String> params) throws TException {
+	public Response searchPositionSuggest(Map<String, String> params) throws BIZException,TException {
 		try{
 			Map<String,Object> res=service.getPositionSuggest(params);
 			if(res==null||res.isEmpty()){
@@ -108,13 +154,13 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
 		}
 	}
 
     @Override
-    public Response searchProfileSuggest(Map<String, String> params) throws TException {
+    public Response searchProfileSuggest(Map<String, String> params) throws BIZException,TException {
         try{
             Map<String,Object> res=service.getProfileSuggest(params);
             if(res==null||res.isEmpty()){
@@ -122,17 +168,14 @@ public class SearchengineServiceImpl implements Iface {
             }
             return ResponseUtils.success(res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
         }
     }
 
     @Override
-	public Response userQuery(Map<String, String> params) throws TException {
+	public Response userQuery(Map<String, String> params) throws BIZException,TException {
 		try{
-//			logger.info("+++++++++++++++++++");
-//			logger.info(JSON.toJSONString(params));
-//			logger.info("+++++++++++++++++++");
 			Map<String,Object> res=talentpoolSearchengine.talentSearch(params);
 			if(res==null||res.isEmpty()){
 
@@ -140,13 +183,13 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
 		}
 	}
 
 	@Override
-	public Response userAggInfo(Map<String, String> params) throws TException {
+	public Response userAggInfo(Map<String, String> params) throws BIZException,TException {
 		try{
 			Map<String,Object> res=talentpoolSearchengine.getAggInfo(params);
 			if(res==null||res.isEmpty()){
@@ -154,18 +197,24 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
 		}
 	}
 
 	@Override
-	public Response queryPositionIndex(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, String department, boolean order_by_priority, String custom) throws TException {
-		return service.queryPositionIndex(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size, child_company_name, department, order_by_priority, custom);
+	public Response queryPositionIndex(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, String department, boolean order_by_priority, String custom) throws BIZException,TException {
+		try {
+			return service.queryPositionIndex(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience,
+					degree, salary, company_name, page_from, page_size, child_company_name, department, order_by_priority, custom);
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
 	}
 
 	@Override
-	public Response queryPositionMini(Map<String, String> params) throws TException {
+	public Response queryPositionMini(Map<String, String> params) throws BIZException,TException {
 		try{
 			Map<String,Object> res=service.searchPositionMini(params);
 			if(res==null||res.isEmpty()){
@@ -173,13 +222,13 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
 		}
 	}
 
 	@Override
-	public List<Integer> queryCompanyTagUserIdList(Map<String, String> params) throws TException {
+	public List<Integer> queryCompanyTagUserIdList(Map<String, String> params) throws BIZException,TException {
 		try{
 			List<Integer> res=talentpoolSearchengine.getUserListByCompanyTag(params);
 			if(res==null){
@@ -187,13 +236,12 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return res;
 		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-		}
-		return new ArrayList<>();
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);		}
 	}
 
     @Override
-    public Response queryProfileFilterUserIdList(List<Map<String, String>> filterMapList, int page_number, int page_size) throws TException {
+    public Response queryProfileFilterUserIdList(List<Map<String, String>> filterMapList, int page_number, int page_size) throws BIZException,TException {
 
         try{
             Map<String,Object> res=talentpoolSearchengine.getUserListByFilterIds(filterMapList, page_number, page_size);
@@ -202,23 +250,60 @@ public class SearchengineServiceImpl implements Iface {
             }
             return ResponseUtils.success(res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
         }
-        return ResponseUtils.fail(1,"查询失败");
     }
 
 	@Override
-	public List<Integer> getTalentUserIdList(Map<String, String> params) throws TException {
+	public List<Integer> getTalentUserIdList(Map<String, String> params) throws BIZException,TException {
 		try{
 			return talentpoolSearchengine.getTalentUserList(params);
 		}catch(Exception e){
-			logger.info(e.getMessage(),e);
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
 		}
-		return new ArrayList<>();
 	}
 
 	@Override
-	public Response userQueryById(List<Integer> userIdlist) throws TException {
+	public Response searchpastPosition(Map<String, String> params) throws BIZException, TException {
+		try{
+			SearchPast searchPast=this.convertParams(params);
+			PastPOJO result=talentpoolSearchengine.searchPastPosition(searchPast);
+			String res= JSON.toJSONString(result,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+			Response respose=ResponseUtils.successWithoutStringify(res);
+			return respose;
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+	/*
+	 转换参数
+	 */
+	private SearchPast convertParams(Map<String, String> params){
+		String response= JSON.toJSONString(StringUtils.convertUnderKeyToCamel(params));
+		logger.info(response);
+		SearchPast paramsPOJO=JSON.parseObject(response,SearchPast.class);
+		return paramsPOJO;
+	}
+
+	@Override
+	public Response searchpastCompany(Map<String, String> params) throws BIZException, TException {
+		try{
+			SearchPast searchPast=this.convertParams(params);
+			PastPOJO result=talentpoolSearchengine.searchPastCompany(searchPast);
+			String res= JSON.toJSONString(result,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+			Response respose=ResponseUtils.successWithoutStringify(res);
+			return respose;
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public Response userQueryById(List<Integer> userIdlist) throws BIZException,TException {
 		try{
 			Map<String,Object> res=talentpoolSearchengine.getEsDataByUserIds(userIdlist);
 			if(res==null||res.isEmpty()){
@@ -226,20 +311,20 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
 		}
 	}
 
 	@Override
-	public int talentSearchNum(Map<String, String> params) throws TException {
+	public int talentSearchNum(Map<String, String> params) throws BIZException,TException {
 		try{
 			int res=talentpoolSearchengine.talentSearchNum(params);
 			return res;
 		}catch(Exception e){
-			logger.info(e.getMessage(),e);
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
 		}
-		return 0;
 	}
 
 

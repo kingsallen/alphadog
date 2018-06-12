@@ -130,6 +130,7 @@ public class UserSysAuthGroup extends TableImpl<UserSysAuthGroupRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserSysAuthGroup rename(String name) {
         return new UserSysAuthGroup(name, null);
     }

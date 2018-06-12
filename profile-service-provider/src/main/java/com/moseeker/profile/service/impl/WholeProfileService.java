@@ -40,12 +40,14 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.UserAccountEntity;
+import com.moseeker.entity.biz.ProfileExtParam;
+import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.profile.utils.ConstellationUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
@@ -64,7 +66,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -180,6 +181,9 @@ public class WholeProfileService {
     RetriveProfile retriveProfile;
 
     @Autowired
+    ProfileParseUtil profileParseUtil;
+
+    @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
 
     UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
@@ -210,7 +214,7 @@ public class WholeProfileService {
             logger.debug("WholeProfileService getResource before  constantDao.getCitiesByParentCodes : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<DictConstantRecord> constantRecords = constantDao
-                    .getCitiesByParentCodes(Arrays.asList(3109, 3105, 3102, 2105, 3120, 3115, 3114, 3119, 3120));
+                    .getCitiesByParentCodes(Arrays.asList(3109, 3105, 3102, 2105, 3120, 3115, 3114, 3119, 3120, 1102, 1103));
 
             logger.debug("WholeProfileService getResource after constantDao.getCitiesByParentCodes : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
@@ -220,7 +224,7 @@ public class WholeProfileService {
             logger.debug("WholeProfileService getResource after buildProfile : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             Future<Map<String, Object>> basicFuture = pool.startTast(() -> buildBasic(profileRecord, getProfileQuery(profileRecord.getId()), constantRecords));
-            Future<List<Map<String, Object>>> workexpsFuture = pool.startTast(() -> buildWorkexps(profileRecord, getProfileQuery(profileRecord.getId())));
+            Future<List<Map<String, Object>>> workexpsFuture = pool.startTast(() -> buildWorkexps(profileRecord, getProfileQuery(profileRecord.getId()), constantRecords));
             Future<List<Map<String, Object>>> educationsFuture = pool.startTast(() -> buildEducations(profileRecord, getProfileQuery(profileRecord.getId())));
             Future<List<Map<String, Object>>> projectexpsFuture = pool.startTast(() -> buildProjectexps(profileRecord, getProfileQuery(profileRecord.getId())));
             Future<List<Map<String, Object>>> buildLanguageFuture = pool.startTast(() -> buildLanguage(profileRecord, getProfileQuery(profileRecord.getId())));
@@ -323,6 +327,8 @@ public class WholeProfileService {
         if (!StringUtils.isNullOrEmpty(profile)) {
             Map<String, Object> resume = JSON.parseObject(profile);
 
+            ProfileExtParam extParam = profileParseUtil.initParseProfileParam();
+
             ProfileProfileRecord profileRecord = profileUtils
                     .mapToProfileRecord((Map<String, Object>) resume.get("profile"));
             UserUserRecord userRecord = userDao.getUserById(userId);
@@ -365,7 +371,7 @@ public class WholeProfileService {
             }
             ProfileBasicRecord basicRecord = null;
             try {
-                basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+                basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"), extParam);
             } catch (Exception e1) {
                 logger.error(e1.getMessage(), e1);
             }
@@ -421,7 +427,7 @@ public class WholeProfileService {
             }
             ProfileOtherRecord otherRecord = null;
             try {
-                otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+                otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"), extParam);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -502,7 +508,7 @@ public class WholeProfileService {
         } else {
             profileRecord.setUuid(UUID.randomUUID().toString());
         }
-        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
 
         int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
@@ -560,7 +566,7 @@ public class WholeProfileService {
         if (userRecord == null) {
             return -1;
         }
-        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+        ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
 
         int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
@@ -603,7 +609,7 @@ public class WholeProfileService {
 
         if (profileDB != null) {
             ((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
-            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
             int profileId = profileDB.getId().intValue();
             profileEntity.improveUser(userRecord);
             profileEntity.improveProfile(profilePojo.getProfileRecord(), profileDB);
@@ -619,6 +625,7 @@ public class WholeProfileService {
             profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
             profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
             profileEntity.improveWorks(profilePojo.getWorksRecords(), profileId);
+//            profileEntity.getCompleteness(0, null, profileId);
             profileEntity.reCalculateProfileCompleteness(profileId);
 
             try {
@@ -932,7 +939,7 @@ public class WholeProfileService {
         return list;
     }
 
-    private List<Map<String, Object>> buildWorkexps(ProfileProfileRecord profileRecord, Query query) {
+    private List<Map<String, Object>> buildWorkexps(ProfileProfileRecord profileRecord, Query query, List<DictConstantRecord> constantRecords) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         try {
             // 按照结束时间倒序
@@ -954,6 +961,23 @@ public class WholeProfileService {
                                 map.put("company_name", company.getName());
                                 map.put("company_logo", company.getLogo());
                                 map.put("company_id", company.getId().intValue());
+
+                                map.put("company_scale", company.getScale().intValue());
+                                map.put("company_property", company.getProperty().intValue());
+                                map.put("company_scale_name", "");
+                                map.put("company_property_name", "");
+                                for (DictConstantRecord constantRecord : constantRecords) {
+                                    if (constantRecord.getParentCode().intValue() == 1102
+                                            && constantRecord.getCode().intValue() == company.getScale().intValue()) {
+                                        map.put("company_scale_name", constantRecord.getName());
+                                        break;
+                                    }
+                                    if (constantRecord.getParentCode().intValue() == 1103
+                                            && constantRecord.getCode().intValue() == company.getProperty().intValue()) {
+                                        map.put("company_property_name", constantRecord.getName());
+                                        break;
+                                    }
+                                }
                                 break;
                             }
                         }
@@ -1025,6 +1049,7 @@ public class WholeProfileService {
             map.put("mobile", userRecord.getMobile());
             map.put("email", userRecord.getEmail());
             map.put("name", userRecord.getName());
+            map.put("nickname",userRecord.getNickname());
         }
         if (lastWorkExp != null) {
             if (company != null) {
@@ -1063,6 +1088,8 @@ public class WholeProfileService {
             map.put("motto", basicRecord.getMotto());
             if (basicRecord.getBirth() != null) {
                 map.put("birth", DateUtils.dateToNormalDate(basicRecord.getBirth()));
+                String constellation = ConstellationUtil.getConstellation(basicRecord.getBirth());
+                map.put("constellation",constellation);
             }
             map.put("self_introduction", basicRecord.getSelfIntroduction());
 
@@ -1370,7 +1397,7 @@ public class WholeProfileService {
             String origin1=(String)resume.get("origin");
             String origin=profileDB.getOrigin();
             String originResult=convertToChannelString(origin,origin1);
-            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+            ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
             /*
              合并profile_profile.origin
              */
@@ -1427,6 +1454,8 @@ public class WholeProfileService {
             type=24;
         }else if(origin1.length()==25){
             type=25;
+        }else if(origin1.length()==28){
+            type=28;
         }
         if(type==0){
             return origin;
@@ -1860,4 +1889,6 @@ public class WholeProfileService {
 
         return workExp;
     }
+
+
 }

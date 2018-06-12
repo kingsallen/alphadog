@@ -167,6 +167,16 @@ public class MessageTemplateEntity {
         }
         return jobName;
     }
+    public String getJobNameRecom(List<Integer> pid){
+        Query query=new Query.QueryBuilder().where(new Condition("id",pid.toArray(),ValueOp.IN)).and("status",0).buildQuery();
+        List<JobPositionDO> jobPositionDO=jobPositionDao.getDatas(query);
+        if(StringUtils.isEmptyList(jobPositionDO)){
+            return null;
+        }else{
+            String jobName=jobPositionDO.get(0).getTitle();
+            return jobName;
+        }
+    }
     //获取公司的名称
     private String getCompanyName(int companyId) {
         String companyName = null;

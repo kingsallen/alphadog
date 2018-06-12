@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
- * 人才库人HR与备注的关系
+ * 人才库人HR与标签的关系
  */
 @Generated(
     value = {
@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolCommentRecord extends UpdatableRecordImpl<TalentpoolCommentRecord> implements Record7<Integer, String, Integer, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1945785401;
+    private static final long serialVersionUID = 39938769;
 
     /**
      * Setter for <code>talentpooldb.talentpool_comment.id</code>. 主 key

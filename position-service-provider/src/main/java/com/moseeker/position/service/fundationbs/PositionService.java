@@ -28,6 +28,7 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategory
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
+import com.moseeker.baseorm.db.hrdb.tables.daos.*;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
@@ -39,6 +40,7 @@ import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.pojo.SearchData;
 import com.moseeker.baseorm.pojo.TwoParam;
+import com.moseeker.baseorm.pojo.SearchData;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -1255,6 +1257,7 @@ public class PositionService {
      * @return
      */
     private List<JobPositionCityRecord> cityCode(List<City> citys, Integer pid) {
+        logger.info("cityCode : {}, pid:{}", citys, pid);
         List<JobPositionCityRecord> jobPositionCityRecordList = new ArrayList<>();
         try {
             // 将已经查询的到的cityCode放到map中，避免多次查询
@@ -1277,8 +1280,8 @@ public class PositionService {
                     Query.QueryBuilder cityQuery = new Query.QueryBuilder();
                     JobPositionCityRecord jobPositionCityRecord = new JobPositionCityRecord();
                     jobPositionCityRecord.setPid(pid);
-                    logger.info("城市类型：" + city.getType().toLowerCase());
-                    logger.info("VAlUE：" + city.getValue());
+                    logger.info("城市类型：:{}, pid:{}", city.getType().toLowerCase(), pid);
+                    logger.info("VAlUE：{}, pid:{}",city.getValue(), pid);
                     // 城市名字，转换成cityCode，传入的是城市的时候查询dict_city
                     if (city.getType().toLowerCase().equals("text")) {
                         // 判断是不是特殊城市中的
@@ -1300,11 +1303,14 @@ public class PositionService {
                             cityQuery.where("ename", city.getValue());
                         }
                         try {
+                            logger.info("cityCode value : {}, pid:{}", city.getValue(), pid);
                             DictCityDO dictCityDO = (DictCityDO) cityMap.get(city.getValue());
+                            logger.info("cityCode dictCityDO : {}, pid:{}", dictCityDO, pid);
                             if (dictCityDO != null) {
                                 jobPositionCityRecord.setCode(dictCityDO.getCode());
                             } else {
                                 dictCityDO = dictCityDao.getData(cityQuery.buildQuery());
+                                logger.info("cityCode dictCityDO : {}, pid:{}", dictCityDO, pid);
                                 if (dictCityDO != null && dictCityDO.getCode() != 0) {
                                     jobPositionCityRecord.setCode(dictCityDO.getCode());
                                     cityMap.put(city.getValue(), dictCityDO);
@@ -1494,6 +1500,7 @@ public class PositionService {
      * @param query 查询条件
      * @return 微信端职位列表信息
      */
+    @CounterIface
     public List<WechatPositionListData> getPositionList(WechatPositionListQuery query) {
 
         List<WechatPositionListData> dataList = new ArrayList<>();
@@ -1763,8 +1770,8 @@ public class PositionService {
                     e.setCity_ename(jr.getCityEname());
                     e.setPriority(jr.getPriority());
                     e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
-                    e.setCandidate_source(jr.getCandidateSource());
                     e.setAccountabilities(jr.getAccountabilities());
+                    e.setCandidate_source(jr.getCandidateSource());
                     e.setRequirement(jr.getRequirement());
                     dataList.add(e);
                     break;
@@ -2075,7 +2082,6 @@ public class PositionService {
         positionForAlipaycampusPojo.setSource_id(positionRecord.getId().toString());
         positionForAlipaycampusPojo.setJob_name(positionRecord.getTitle());
         positionForAlipaycampusPojo.setJob_desc(PositionUtil.convertDescription(positionRecord.getAccountabilities(), positionRecord.getRequirement()));
-
 
         // 职业分类
         List<DictAlipaycampusJobcategoryRecord> allDictAlipaycampusJobcategory = this.getAllDictAlipaycampusJobcategory();

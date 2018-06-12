@@ -10,13 +10,13 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
+import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
@@ -58,6 +58,9 @@ public class ProfileEntity {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    ProfileParseUtil profileParseUtil;
+
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
      * @param profileParameter 简历信息
@@ -65,7 +68,7 @@ public class ProfileEntity {
      */
     public ProfilePojo parseProfile(String profileParameter) {
         Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8(profileParameter)));
-        return ProfilePojo.parseProfile(paramMap);
+        return ProfilePojo.parseProfile(paramMap, profileParseUtil.initParseProfileParam());
     }
 
     /**
@@ -144,6 +147,9 @@ public class ProfileEntity {
     }
     @Transactional
     public void upsertProfileProfile(ProfileProfileRecord profileRecord, int  profileId) {
+        if(profileRecord==null){
+            profileRecord=new ProfileProfileRecord();
+        }
         if (profileRecord != null) {
             profileRecord.setId(profileId);
             profileRecord.setUpdateTime(new Timestamp(System.currentTimeMillis()));
@@ -266,12 +272,14 @@ public class ProfileEntity {
         if (workexpRecords != null && workexpRecords.size() > 0) {
             workExpDao.delWorkExpsByProfileId(profileId);
             List<ProfileWorkexpEntity> records = new ArrayList<>();
-
             workexpRecords.forEach(skill -> {
                 skill.setId(null);
                 skill.setProfileId((int) (profileId));
                 records.add(skill);
             });
+            logger.info("+++++++++++++++++++++++++++");
+            logger.info(records.toString());
+            logger.info("+++++++++++++++++++++++++++");
             workExpDao.postWordExps(records);
         }
     }
@@ -480,12 +488,12 @@ public class ProfileEntity {
         completenessImpl.reCalculateProfileWorkExp(profileId, workExpId);
     }
 
-    public void reCalculateProfileCompleteness(int profileId){
-        completenessImpl.reCalculateProfileCompleteness(profileId);
-    }
-
     public void reCalculateProfileWorkExpUseWorkExpId(int id) {
         completenessImpl.reCalculateProfileWorkExp(id);
+    }
+
+    public void reCalculateProfileCompleteness(int profileId){
+        completenessImpl.reCalculateProfileCompleteness(profileId);
     }
 
     @Autowired
@@ -553,7 +561,7 @@ public class ProfileEntity {
         improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
         improveWorks(profilePojo.getWorksRecords(), profileId);
         //先前只是根据表的记录简单叠加完整度，这在修改是不准确，需要重新计算，所以改成这样，
-//        getCompleteness(0, null, profileId);
+        //getCompleteness(0, null, profileId);
         reCalculateProfileCompleteness(profileId);
     }
 

@@ -143,9 +143,9 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     }
 
 
-/*
- 注意这里的companyId是hrId,积重难返
- */
+    /*
+     注意这里的companyId是hrId,积重难返
+     */
     @Override
     public Response getPastUserEmployee(int company_id) throws BIZException, TException {
         try{

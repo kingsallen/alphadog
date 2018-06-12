@@ -23,7 +23,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
@@ -103,6 +102,9 @@ public class ProfileService {
 
 
     @Autowired
+    protected UserHrAccountDao userHrAccountDao;
+
+    @Autowired
     protected ProfileProfileDao dao;
 
     @Autowired
@@ -146,11 +148,9 @@ public class ProfileService {
 
     @Autowired
     private ConfigSysCvTplDao configSysCvTplDao;
-    @Autowired
-    private TalentPoolEntity talentPoolEntity;
 
     @Autowired
-    private UserHrAccountDao userHrAccountDao;
+    private TalentPoolEntity talentPoolEntity;
 
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
@@ -507,6 +507,7 @@ public class ProfileService {
         return dao.handleResponse(datas);
     }
 
+
     /**
      * 解析简历
      *
@@ -517,6 +518,46 @@ public class ProfileService {
      * @throws TException
      */
     public Response profileParser(int uid, String fileName, String file) throws TException {
+        String uuid = UUID.randomUUID().toString();
+        ProfileObj profileObj = parseByResumeSDK(fileName, file, uuid, uid);
+        // 查询
+        UserUserRecord userUser = userDao.getUserById(uid);
+        if (userUser != null) {
+            User user = new User();
+            user.setEmail(userUser.getEmail());
+            user.setMobile(String.valueOf(userUser.getMobile()));
+            user.setUid(String.valueOf(uid));
+            user.setName(userUser.getName());
+            profileObj.setUser(user);
+        }
+        logger.info("profileParser getUser:{}", JSON.toJSONString(profileObj.getUser()));
+        logger.info("profileParser:{}", JSON.toJSONString(profileObj));
+        return ResponseUtils.success(profileObj);
+    }
+
+    /**
+     * 解析简历
+     *
+     * @param fileName
+     * @param file
+     * @return
+     * @throws TException
+     */
+    public Response profileParser(String fileName, String file) throws TException {
+        String uuid = UUID.randomUUID().toString();
+        ProfileObj profileObj = parseByResumeSDK(fileName, file, uuid, 0);
+        logger.info("profileParser:{}", JSON.toJSONString(profileObj));
+        return ResponseUtils.success(profileObj);
+    }
+    /**
+     * 通过resumeSDK服务商解析文本文件成一个我们可识别的简历数据
+     * @param fileName 文件名称
+     * @param file 文件
+     * @param uuid profile uuid
+     * @param uid 用户编号
+     * @return 简历数据
+     */
+    private ProfileObj parseByResumeSDK(String fileName, String file, String uuid, int uid) {
         ProfileObj profileObj = new ProfileObj();
         try {
             // 调用SDK得到结果
@@ -528,7 +569,7 @@ public class ProfileService {
             logger.error(e.getMessage(), e);
         }
         logger.info("profileParser:{}", JSON.toJSONString(profileObj));
-        return ResponseUtils.success(profileObj);
+        return profileObj;
     }
 
 
@@ -658,7 +699,7 @@ public class ProfileService {
                     }
                     company.setCompanyScale(String.valueOf(DictCode.companyScale(companyScaleMaxValue)));
                     workexps.setCompany(company);
-                    workexps.setDescription(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_desc(), jobExpObj.getJob_content()));
+                    workexps.setDescription(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_content(),jobExpObj.getJob_cpy_desc()));
                     try {
                         workexps.setStartDate(DateUtils.dateRepair(jobExpObj.getStart_date(), "\\."));
                         if (jobExpObj.getEnd_date() != null && jobExpObj.getEnd_date().equals("至今")) {
@@ -1196,6 +1237,7 @@ public class ProfileService {
 
     private String viewApplications(int accountId, List<Integer> updateList){
         try {
+            logger.info("查看简历 viewApplications accountId:{}; updateList:{}", accountId, updateList);
             applicationService.viewApplications(accountId, updateList);
         } catch (Exception e) {
             logger.info("申请查看状态更新以及发送模板消息出错");
@@ -1269,26 +1311,29 @@ public class ProfileService {
      人才库简历上传
      */
     public Response talentpoolUploadParse(String fileName,String fileData,int companyId) throws TException, IOException {
-        Map<String,Object> result=new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         ResumeObj resumeObj = profileEntity.profileParser(fileName, fileData);
-        result.put("resumeObj",resumeObj);
-        if(resumeObj.getStatus().getCode() == 200){
-            String phone=resumeObj.getResult().getPhone();
-            int userId=0;
-            if(StringUtils.isNotNullOrEmpty(phone)){
-                UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(phone,companyId);
-                if(userRecord!=null){
-                    userId=userRecord.getId();
+        logger.info("==============**********************");
+        logger.info(JSON.toJSONString(resumeObj));
+        logger.info("==============**********************");
+        result.put("resumeObj", resumeObj);
+        if (resumeObj.getStatus().getCode() == 200) {
+            String phone = resumeObj.getResult().getPhone();
+            int userId = 0;
+            if (StringUtils.isNotNullOrEmpty(phone)) {
+                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId);
+                if (userRecord != null) {
+                    userId = userRecord.getId();
                 }
 
             }
-            ProfileObj profileObj=handlerParseData(resumeObj,userId,fileName);
+            ProfileObj profileObj = handlerParseData(resumeObj, userId, fileName);
             logger.info("==============**********************");
             logger.info(JSON.toJSONString(profileObj));
             logger.info("==============**********************");
-            result.put("profile",profileObj);
-        }else{
-            ResponseUtils.fail(1,"解析失败");
+            result.put("profile", profileObj);
+        } else {
+            ResponseUtils.fail(1, "解析失败");
         }
         return ResponseUtils.success(result);
     }

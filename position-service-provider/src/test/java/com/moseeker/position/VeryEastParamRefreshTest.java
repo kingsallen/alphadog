@@ -20,7 +20,7 @@ import java.io.IOException;
 public class VeryEastParamRefreshTest{
 
     @Autowired
-    ZhilianParamRefresher refresh;
+    JobsDBParamRefresher refresh;
 
     String file="/Users/pyb/Desktop/environ.response.json";
 

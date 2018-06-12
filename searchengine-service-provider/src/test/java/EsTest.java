@@ -1,3 +1,4 @@
+
 //import com.moseeker.rpccenter.client.ServiceManager;
 //import com.moseeker.thrift.gen.common.struct.Response;
 //import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
@@ -30,3 +31,4 @@
 //        service.updateEmployeeAwards(Arrays.asList(69826));
 //    }
 //}
+

@@ -167,8 +167,7 @@ public class SearchengineController {
             	for(String position_id : position_id_list){
             		String position=this.getJobPosition(Integer.parseInt(position_id),company);
             		if(StringUtils.isNotNullOrEmpty(position)){
-
-            			searchengineServices.updateposition(position,Integer.parseInt(position_id));	
+            			searchengineServices.updateposition(position,Integer.parseInt(position_id));
             		}
             		Thread.currentThread().sleep(600);
             	} 	
@@ -341,9 +340,6 @@ public class SearchengineController {
             for(String key:reqParams.keySet()){
                 params.put(key,String.valueOf(reqParams.get(key)));
             }
-//            logger.info("+++++++++++++++++++");
-//            logger.info(JSON.toJSONString(params));
-//            logger.info("+++++++++++++++++++");
             Response res=searchengineServices.userQuery(params);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
@@ -362,7 +358,7 @@ public class SearchengineController {
                 return ResponseLogNotification.fail(request, "参数不能为空");
             }
             for(String key:reqParams.keySet()){
-                params.put(key,StringUtils.filterStringForSearch(String.valueOf(reqParams.get(key))));
+                params.put(key,String.valueOf(reqParams.get(key)));
             }
             Response res=searchengineServices.userAggInfo(params);
             return ResponseLogNotification.success(request,res);
@@ -371,7 +367,7 @@ public class SearchengineController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-    //pc端企业搜索的es
+    //微信端职位index查询
     @RequestMapping(value = "/api/position/suggest", method = RequestMethod.POST)
     @ResponseBody
     public String searchPositionSuggest(HttpServletRequest request, HttpServletResponse response){
@@ -382,7 +378,12 @@ public class SearchengineController {
                 return ResponseLogNotification.fail(request, "参数不能为空");
             }
             for(String key:reqParams.keySet()){
-                params.put(key,StringUtils.filterStringForSearch(String.valueOf(reqParams.get(key))));
+                if("flag".equals(key)){
+                    params.put(key,String.valueOf(reqParams.get(key)));
+                }else{
+                    params.put(key,StringUtils.filterStringForSearch(String.valueOf(reqParams.get(key))));
+                }
+
             }
             Response res=searchengineServices.searchPositionSuggest(params);
             return ResponseLogNotification.success(request,res);
@@ -392,6 +393,44 @@ public class SearchengineController {
         }
     }
 
+    @RequestMapping(value = "/api/profile/pastposition", method = RequestMethod.GET)
+    @ResponseBody
+    public String searchProfilePosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String,String> params=new HashMap<>();
+            if(reqParams==null||reqParams.isEmpty()){
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }
+            for(String key:reqParams.keySet()){
+                params.put(key,StringUtils.filterStringForSearch((String)reqParams.get(key)));
+            }
+            Response res=searchengineServices.searchpastPosition(params);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
+    @RequestMapping(value = "/api/profile/pastcompany", method = RequestMethod.GET)
+    @ResponseBody
+    public String searchProfileCompany(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String,String> params=new HashMap<>();
+            if(reqParams==null||reqParams.isEmpty()){
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }
+            for(String key:reqParams.keySet()){
+                params.put(key,StringUtils.filterStringForSearch((String)reqParams.get(key)));
+            }
+            Response res=searchengineServices.searchpastCompany(params);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
 }

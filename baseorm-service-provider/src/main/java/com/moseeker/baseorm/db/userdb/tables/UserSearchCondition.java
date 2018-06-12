@@ -176,6 +176,7 @@ public class UserSearchCondition extends TableImpl<UserSearchConditionRecord> {
     /**
      * Rename this table
      */
+    @Override
     public UserSearchCondition rename(String name) {
         return new UserSearchCondition(name, null);
     }

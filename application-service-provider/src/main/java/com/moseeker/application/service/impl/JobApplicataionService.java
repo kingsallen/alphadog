@@ -58,6 +58,11 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.jooq.impl.DSL;
 import org.slf4j.Logger;
@@ -181,8 +186,8 @@ public class JobApplicataionService {
             );
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-
     }
+
     @Transactional
     public int postApplication(JobApplication jobApplication, JobPositionRecord jobPositionRecord) throws TException {
         try {
@@ -215,7 +220,7 @@ public class JobApplicataionService {
         }
     }
 
-    private void sendMessageAndEmailThread (MessageEmailStruct messageEmailStruct){
+    private void sendMessageAndEmailThread (MessageEmailStruct messageEmailStruct) {
         logger.info("sendMessageAndEmailThread messageEmailStruct{}", messageEmailStruct);
         tp.startTast(() -> {
             filterService.handerApplicationFilter(messageEmailStruct);
@@ -223,12 +228,15 @@ public class JobApplicataionService {
         });
         //发送模板消息，短信，邮件
         tp.startTast(() -> {
-            Response resppnse = mqServer.sendMessageAndEmailToDelivery(messageEmailStruct);
-            logger.info("JobApplicataionService response {}", JSON.toJSONString(resppnse));
-            return resppnse;
+            try {
+                Response resppnse = mqServer.sendMessageAndEmailToDelivery(messageEmailStruct);
+                logger.info("JobApplicataionService response {}", JSON.toJSONString(resppnse));
+                return resppnse;
+            }catch (TException e){
+                return ResponseUtils.fail(e.getMessage());
+            }
         });
     }
-
     /**
      * 合并申请来源
      * @param jobApplication
@@ -246,6 +254,26 @@ public class JobApplicataionService {
             jobApplicationDao.updateRecord(record);
         }
     }
+
+    private void appIDToSource(JobApplication jobApplication) {
+        if (jobApplication.getOrigin() == 0) {
+            switch (jobApplication.getAppid()) {
+                case 1:
+                    jobApplication.setOrigin(1);
+                    break;
+                case 5:
+                case 2:
+                    jobApplication.setOrigin(4);
+                    break;
+                case 6:
+                case 3:
+                    jobApplication.setOrigin(2);
+                    break;
+                default:
+            }
+        }
+    }
+
     /**
      * 更新申请数据
      *
@@ -280,24 +308,6 @@ public class JobApplicataionService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
-    private void appIDToSource(JobApplication jobApplication) {
-        if (jobApplication.getOrigin() == 0) {
-            switch (jobApplication.getAppid()) {
-                case 1:
-                    jobApplication.setOrigin(1);
-                    break;
-                case 5:
-                case 2:
-                    jobApplication.setOrigin(4);
-                    break;
-                case 6:
-                case 3:
-                    jobApplication.setOrigin(2);
-                    break;
-                default:
-            }
-        }
-    }
 
 
     /**
@@ -637,7 +647,7 @@ public class JobApplicataionService {
         }
         // ats_status初始化 ats_status初始化:1 是ats职位申请  ats_status初始化:0 仟寻职位申请
         // TODO 职位表的source_id > 0 只能识别出是ats职位/ 不能识别出该ats是否可用
-        if (jobPositionRecord != null && jobPositionRecord.getSourceId() > 0) {
+        if (jobPositionRecord != null && jobPositionRecord.getSourceId() > 0 && jobApplication.getOrigin() != 64) {
             jobApplication.setAts_status(IS_ATS_APPLICATION);
         } else {
             // 默认仟寻投递
@@ -672,8 +682,9 @@ public class JobApplicataionService {
                     String.valueOf(userId), String.valueOf(companyId));
 
             UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
-
+            logger.info("userApplyCount使用校招参数：{};社招参数:{}", userApplyCount.getSchoolApplyCount(), userApplyCount.getSocialApplyCount());
             UserApplyCount conf = getApplicationCountLimit((int) companyId);
+            logger.info("userApplyCount参数校招参数：{};社招参数:{}", userApplyCount.getSchoolApplyCount(), userApplyCount.getSocialApplyCount());
             if (candidateSource == 0) {
                 if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_SOCIAL_COUNT_CHECK);
@@ -974,11 +985,11 @@ public class JobApplicataionService {
         return hrOperationRecordRecord;
     }
 
-    public Response getHrApplicationNum(int user_id){
+    public Response getHrApplicationNum(int user_id) {
         int num = 0;
         Query accountQuery = new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), user_id).buildQuery();
         UserHrAccountDO accountDO = userHrAccountDao.getData(accountQuery);
-        if(accountDO == null)
+        if (accountDO == null)
             return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
         Query companyQuery = null;
         Query positionQuery = null;
@@ -991,7 +1002,7 @@ public class JobApplicataionService {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             companyQuery = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.PARENT_ID.getName(), companyAccountDO.getCompanyId()).or("id", companyAccountDO.getCompanyId()).buildQuery();
             List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(companyQuery);
-            if(companyDOList!= null && companyDOList.size()>0){
+            if (companyDOList != null && companyDOList.size() > 0) {
                 List<Integer> companyIdList = companyDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
                 Query companyAccountQuery1 = new Query.QueryBuilder().where(new Condition(HrCompanyAccount.HR_COMPANY_ACCOUNT.COMPANY_ID.getName(), companyIdList.toArray(), ValueOp.IN)).buildQuery();
                 List<HrCompanyAccountDO> companyAccountList = hrCompanyAccountDao.getDatas(companyAccountQuery1);
@@ -1017,7 +1028,7 @@ public class JobApplicataionService {
             isViewCountList = jobApplicationDao.getDatas(applicationQuery);
 
         }
-        if(isViewCountList!=null)
+        if (isViewCountList != null)
             num = isViewCountList.size();
         logger.info("HR账号未读申请数量：{}", num);
         return ResponseUtils.success(num);
