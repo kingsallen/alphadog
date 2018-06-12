@@ -19,8 +19,8 @@ import java.util.List;
  * @author cjm
  * @date 2018-05-28 16:16
  **/
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class LPUserAccountBindTest {
 
     @Autowired
@@ -35,9 +35,14 @@ public class LPUserAccountBindTest {
         user = handler.bind(user, null);
     }
 
-//    @Test
+    @Test
     public void testGet() throws Exception {
 
-        List<HrThirdPartyAccountDO>  list = dao.getThirdPartyAccountByChannel(2);
+        List<HrThirdPartyAccountDO>  list = dao.getBoundThirdPartyAccountDO(2);
+    }
+
+    @Test
+    public void test1(){
+
     }
 }

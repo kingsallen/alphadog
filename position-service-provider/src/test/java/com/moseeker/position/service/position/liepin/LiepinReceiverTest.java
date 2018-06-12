@@ -1,6 +1,7 @@
 package com.moseeker.position.service.position.liepin;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
 import com.moseeker.position.config.AppConfig;
 import com.moseeker.position.service.appbs.PositionBS;
 import com.moseeker.position.service.position.liepin.LiePinReceiverHandler;
@@ -19,8 +20,8 @@ import java.util.List;
  * @author cjm
  * @date 2018-06-06 17:23
  **/
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class LiepinReceiverTest {
 
 
@@ -30,7 +31,10 @@ public class LiepinReceiverTest {
     @Autowired
     PositionBS positionBS;
 
-    @Test
+    @Autowired
+    JobPositionLiepinMappingDao mappingDao;
+
+//    @Test
     public void testEdit() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
         liePinJsonObject.put("id", "19493560");
@@ -39,12 +43,12 @@ public class LiepinReceiverTest {
         receiverHandler.handlerPositionLiepinEditOperation(requestMsg, null);
     }
 
-    @Test
+//    @Test
     public void testDel() {
 
     }
 
-    @Test
+//    @Test
     public void testDownShelf() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
         liePinJsonObject.put("id", "19493560");
@@ -53,7 +57,7 @@ public class LiepinReceiverTest {
         receiverHandler.handlerPositionLiepinDownShelfOperation(requestMsg, null);
     }
 
-    @Test
+//    @Test
     public void testRePublish() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
         liePinJsonObject.put("id", "19493518");
@@ -62,18 +66,23 @@ public class LiepinReceiverTest {
         receiverHandler.handlerPositionLiepinReSyncOperation(requestMsg, null);
     }
 
-    @Test
+//    @Test
     public void testGetPosition() throws Exception {
         Integer positionId = 19493560;
         Integer id = 986122455;
         String info = receiverHandler.getLpPositionInfo(positionId, id);
     }
 
-    @Test
+//    @Test
     public void getLiepinPositionIds() {
 
         Integer userId = 1616589;
         List<JobPositionLiepinMappingDO> list= positionBS.getLiepinPositionIds(userId);
 
+    }
+
+//    @Test
+    public void test1(){
+        List<JobPositionLiepinMappingDO> list = mappingDao.getMappingDataByUserId(123);
     }
 }

@@ -392,15 +392,31 @@ public class ThirdPartyAccountService {
     }
 
     /**
-     * 获取hr第三方账号信息
+     * 获取已经在猎聘绑定的hr第三方账号信息，主要是为了提供猎聘token
      * @param
      * @author  cjm
      * @date  2018/5/30
      * @return
      */
-    public Response getThirdPartyAccountDO(int channel) throws Exception{
-        List<HrThirdPartyAccountDO> hrThirdPartyAccountDOList = thirdPartyAccountDao.getThirdPartyAccountByChannel(channel);
+    public Response getBoundThirdPartyAccountDO(int channel) throws Exception{
+        List<HrThirdPartyAccountDO> hrThirdPartyAccountDOList = thirdPartyAccountDao.getBoundThirdPartyAccountDO(channel);
         if(hrThirdPartyAccountDOList == null || hrThirdPartyAccountDOList.size() == 0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
+        }
+        return ResponseUtils.success(hrThirdPartyAccountDOList);
+    }
+
+
+    /**
+     * 获取已经在仟寻绑定，但是未在猎聘绑定的第三方信息
+     * @param
+     * @author  cjm
+     * @date  2018/5/30
+     * @return
+     */
+    public Response getUnBindThirdPartyAccountDO(int channel) throws Exception{
+        List<HrThirdPartyAccountDO> hrThirdPartyAccountDOList = thirdPartyAccountDao.getUnBindThirdPartyAccountDO(channel);
+        if(hrThirdPartyAccountDOList == null){
             return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
         }
         return ResponseUtils.success(hrThirdPartyAccountDOList);

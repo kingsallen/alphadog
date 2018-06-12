@@ -1080,7 +1080,7 @@ public class PositionController {
     }
 
 
-    @RequestMapping(value = "/api/position/liepin/getPositionId", method = RequestMethod.POST)
+    @RequestMapping(value = "/position/liepin/getPositionId", method = RequestMethod.POST)
     @ResponseBody
     public String getLiepinPositionIds( HttpServletRequest request, HttpServletResponse response){
         try{

@@ -51,7 +51,7 @@ public class LiepinSocialTransferTesst {
         return hrThirdPartyPositionDO;
     }
 
-    @Test
+//    @Test
     public void testSendSyncRequest() throws Exception {
         Integer positionId = 19493596;
         ThirdPartyPosition positionForm = new ThirdPartyPosition();

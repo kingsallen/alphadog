@@ -280,11 +280,22 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<HrThirdPartyAccountDO> getThirdPartyAccountByChannel(int channel){
+    public List<HrThirdPartyAccountDO> getBoundThirdPartyAccountDO(int channel){
         Query query = new Query.QueryBuilder()
                 .where(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.getName(), (short)channel))
                 .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), BindingStatus.BOUND.getValue()))
                 .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2.getName(), "", ValueOp.NEQ))
+                .buildQuery();
+        return getDatas(query);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public List<HrThirdPartyAccountDO> getUnBindThirdPartyAccountDO(int channel){
+        Query query = new Query.QueryBuilder()
+                .where(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.getName(), (short)channel))
+                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), BindingStatus.BOUND.getValue()))
+                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2.getName(), "", ValueOp.EQ))
                 .buildQuery();
         return getDatas(query);
     }
