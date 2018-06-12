@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogTalentpoolEmailLogRecord extends UpdatableRecordImpl<LogTalentpoolEmailLogRecord> implements Record7<Integer, Integer, Integer, Integer, Integer, Integer, Timestamp> {
 
-    private static final long serialVersionUID = 1715761513;
+    private static final long serialVersionUID = -523785657;
 
     /**
      * Setter for <code>logdb.log_talentpool_email_log.id</code>.
@@ -91,14 +91,14 @@ public class LogTalentpoolEmailLogRecord extends UpdatableRecordImpl<LogTalentpo
     }
 
     /**
-     * Setter for <code>logdb.log_talentpool_email_log.balance</code>. 余额点数
+     * Setter for <code>logdb.log_talentpool_email_log.balance</code>. 操作之后邮件剩余额度
      */
     public void setBalance(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>logdb.log_talentpool_email_log.balance</code>. 余额点数
+     * Getter for <code>logdb.log_talentpool_email_log.balance</code>. 操作之后邮件剩余额度
      */
     public Integer getBalance() {
         return (Integer) get(4);
