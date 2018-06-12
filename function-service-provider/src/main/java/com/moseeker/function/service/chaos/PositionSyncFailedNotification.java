@@ -76,11 +76,16 @@ public class PositionSyncFailedNotification {
 
     static List<String> csMails = new ArrayList<>();
 
+    static List<String> dev = new ArrayList<>();
+
+    static String emailLevel = getConfigString("chaos.email.level");
+
     String divider = "<br/>";
 
     static {
         csMails = getEmails("position_sync.email");//发给cs处理的邮件地址
         devMails = getEmails("position_sync.email.dev");//发给dev知晓的邮件地址
+        dev = getEmails("position_sync.dev");
     }
 
     private static String getConfigString(String key) {
@@ -146,7 +151,7 @@ public class PositionSyncFailedNotification {
 
         StringBuilder emailMessgeBuilder = new StringBuilder();
 
-        emailTitle.append("【第三方职位同步失败】");
+        emailTitle.append("【").append(emailLevel).append("】").append("【第三方职位同步失败】");
         HrCompanyDO companyDO = companyDao.getCompanyById(moseekerPosition.getCompanyId());
         if (companyDO != null) {
             emailTitle.append("【").append(companyDO.getName()).append("】");
@@ -214,7 +219,7 @@ public class PositionSyncFailedNotification {
     }
 
     public void sendHandlerFailureMail(String message, Exception handlerException) {
-        List<String> mails=devMails;
+        List<String> mails= dev;
         if (mails == null || mails.size() == 0) {
             logger.warn("没有配置同步邮箱地址!");
             return;
@@ -225,7 +230,7 @@ public class PositionSyncFailedNotification {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append("【第三方职位同步结果处理失败】");
+            titleBuilder.append("【").append(emailLevel).append("】").append("【第三方职位同步结果处理失败】");
 
             StringBuilder messageBuilder = new StringBuilder();
             messageBuilder.append("【爬虫端传送的json】：").append(message).append(divider);
