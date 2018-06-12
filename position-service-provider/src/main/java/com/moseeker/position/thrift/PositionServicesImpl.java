@@ -673,6 +673,7 @@ public class PositionServicesImpl implements Iface {
         }
     }
 
+    @Override
     public List<JobPositionLiepinMappingDO> getLiepinPositionIds(int userId) throws TException {
         try {
             List<JobPositionLiepinMappingDO> list = positionBS.getLiepinPositionIds(userId);

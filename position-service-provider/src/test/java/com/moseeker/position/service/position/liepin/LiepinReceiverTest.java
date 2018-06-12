@@ -2,7 +2,9 @@ package com.moseeker.position.service.position.liepin;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.position.config.AppConfig;
+import com.moseeker.position.service.appbs.PositionBS;
 import com.moseeker.position.service.position.liepin.LiePinReceiverHandler;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Message;
@@ -11,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * @author cjm
@@ -24,6 +27,9 @@ public class LiepinReceiverTest {
     @Autowired
     LiePinReceiverHandler receiverHandler;
 
+    @Autowired
+    PositionBS positionBS;
+
     @Test
     public void testEdit() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
@@ -34,7 +40,7 @@ public class LiepinReceiverTest {
     }
 
     @Test
-    public void testDel(){
+    public void testDel() {
 
     }
 
@@ -63,4 +69,11 @@ public class LiepinReceiverTest {
         String info = receiverHandler.getLpPositionInfo(positionId, id);
     }
 
+    @Test
+    public void getLiepinPositionIds() {
+
+        Integer userId = 1616589;
+        List<JobPositionLiepinMappingDO> list= positionBS.getLiepinPositionIds(userId);
+
+    }
 }

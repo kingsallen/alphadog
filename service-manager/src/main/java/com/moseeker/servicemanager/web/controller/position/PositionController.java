@@ -1091,8 +1091,8 @@ public class PositionController {
             }
             Integer userId = Integer.parseInt(liepinUserId);
             List<JobPositionLiepinMappingDO> liepinPositionIds = positonServices.getLiepinPositionIds(userId);
-            Response result=null;
-            return ResponseLogNotification.success(request, result);
+
+            return ResponseLogNotification.successJson(request, JSONObject.toJSON(liepinPositionIds));
         }catch(Exception e){
             logger.error(e.getMessage());
             return ResponseLogNotification.fail(request, e.getMessage());

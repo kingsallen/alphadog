@@ -116,6 +116,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_JOB_ID)
                 .from(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), userId)
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE.getName(), 1)
                 .fetchInto(JobPositionLiepinMappingDO.class);
     }
 }
