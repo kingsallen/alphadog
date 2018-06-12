@@ -1673,7 +1673,7 @@ public class PositionService {
       通过user_id 获取 CampaignPersonaRecomPojo 的list集合
      */
     private  List<CampaignPersonaRecomRecord> getPersonaRecomPositionList(int userId,int companyId,int type, int pageNum, int pageSize){
-        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).orderBy("create_time", Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).orderBy("id", Order.ASC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         return list;
     }
