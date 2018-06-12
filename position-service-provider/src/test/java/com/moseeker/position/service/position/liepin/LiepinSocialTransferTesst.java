@@ -38,7 +38,22 @@ public class LiepinSocialTransferTesst {
     @Autowired
     HRThirdPartyPositionDao dao;
 
-    public LiePinPositionVO testChangeToThirdPartyPosition(Integer positionId) throws Exception {
+    public LiePinPositionVO testChangeToThirdPartyPosition(ThirdPartyPosition positionForm, JobPositionDO moseekerJobPosition) throws Exception {
+        LiePinPositionVO liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(positionForm, moseekerJobPosition, null);
+        System.out.println(liePinPositionVO);
+        return liePinPositionVO;
+    }
+
+
+    public HrThirdPartyPositionDO testToThirdPartyPosition(ThirdPartyPosition positionForm, LiePinPositionVO liePinPositionVO) throws Exception {
+        HrThirdPartyPositionDO hrThirdPartyPositionDO = liepinSocialPositionTransfer.toThirdPartyPosition(positionForm, liePinPositionVO);
+        System.out.println(hrThirdPartyPositionDO);
+        return hrThirdPartyPositionDO;
+    }
+
+    @Test
+    public void testSendSyncRequest() throws Exception {
+        Integer positionId = 19493596;
         ThirdPartyPosition positionForm = new ThirdPartyPosition();
         //软件/互联网开发/系统集成
         List<String> list = new ArrayList<>();
@@ -48,39 +63,18 @@ public class LiepinSocialTransferTesst {
         positionForm.setSalaryBottom(4000);
         positionForm.setSalaryTop(12000);
         positionForm.setSalaryMonth(12);
-
+        List<String> featureList = new ArrayList<>();
+        featureList.add("五险一金");
+        featureList.add("sadl;sdkas;kdk;addd;a");
+        featureList.add("领导好");
+        featureList.add("15薪");
+        positionForm.setFeature(featureList);
         Query query = new Query.QueryBuilder().where(JobPosition.JOB_POSITION.ID.getName(), positionId).buildQuery();
         JobPositionDO moseekerJobPosition = jobPositionDao.getData(query);
 
-        LiePinPositionVO liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(positionForm, moseekerJobPosition, null);
-        System.out.println(liePinPositionVO);
-        return liePinPositionVO;
-    }
-
-
-    public HrThirdPartyPositionDO testToThirdPartyPosition(Integer positionId) throws Exception {
-        ThirdPartyPosition positionForm = new ThirdPartyPosition();
-//        LiePinPositionVO liePinPositionVO = testChangeToThirdPartyPosition();
-        List<String> list = new ArrayList<>();
-        list.add("020125");
-        positionForm.setOccupation(list);
-        positionForm.setSalaryDiscuss(true);
-        positionForm.setSalaryBottom(4000);
-        positionForm.setSalaryTop(12000);
-        positionForm.setSalaryMonth(12);
-        HrThirdPartyPositionDO hrThirdPartyPositionDO = new HrThirdPartyPositionDO();
-        BeanUtils.copyProperties(positionForm, hrThirdPartyPositionDO);
-
-        System.out.println(hrThirdPartyPositionDO);
-        return hrThirdPartyPositionDO;
-    }
-
-    @Test
-    public void testSendSyncRequest() throws Exception {
-        Integer positionId = 19493556;
         AbstractPositionTransfer.TransferResult<LiePinPositionVO, LiePinPositionVO> result = new AbstractPositionTransfer.TransferResult<LiePinPositionVO, LiePinPositionVO>();
-        LiePinPositionVO liePinPositionVO = testChangeToThirdPartyPosition(positionId);
-        HrThirdPartyPositionDO hrThirdPartyPositionDO = testToThirdPartyPosition(positionId);
+        LiePinPositionVO liePinPositionVO = testChangeToThirdPartyPosition(positionForm, moseekerJobPosition);
+        HrThirdPartyPositionDO hrThirdPartyPositionDO = testToThirdPartyPosition(positionForm, liePinPositionVO);
         result.setPositionWithAccount(liePinPositionVO);
         result.setThirdPartyPositionDO(hrThirdPartyPositionDO);
         liepinSocialPositionTransfer.sendSyncRequest(result);

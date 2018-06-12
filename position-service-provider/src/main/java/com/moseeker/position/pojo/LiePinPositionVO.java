@@ -41,6 +41,15 @@ public class LiePinPositionVO {
     private Integer positionId;//向猎聘请求的id
     private Integer count;//招聘人数，0为不限
     private Integer ejob_id;//猎聘企业职位id
+    private Integer companyId;// 公司id
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
 
     public Integer getEjob_id() {
         return ejob_id;

@@ -48,6 +48,7 @@ import com.moseeker.common.constants.*;
 import com.moseeker.common.constants.Position.PositionSource;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -63,6 +64,7 @@ import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.service.position.*;
+import com.moseeker.position.service.position.liepin.LiePinReceiverHandler;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.common.constants.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
@@ -89,6 +91,7 @@ import static java.lang.Math.toIntExact;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -97,6 +100,7 @@ import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -169,6 +173,10 @@ public class PositionService {
     private HrCompanyFeatureDao hrCompanyFeatureDao;
     @Autowired
     PositionATSService positionATSService;
+    @Autowired
+    LiePinReceiverHandler receiverHandler;
+
+    private ThreadPool pool = ThreadPool.Instance;
 
     private static List<DictAlipaycampusJobcategoryRecord> alipaycampusJobcategory;
 
@@ -701,6 +709,9 @@ public class PositionService {
                 deleteCounts = dbOnlineList.size();
                 // 更新jobposition数据，由于做逻辑删除，所以不删除jobpositionExt和jobpositionCity数据
                 jobPositionDao.updateRecords(dbOnlineList);
+
+                // 猎聘api对接下架职位
+                pool.startTast(() ->  receiverHandler.batchHandlerLiepinDownShelfOperation(jobPositionIds));
             }
         }
         // 判断哪些数据不需要更新的
@@ -1071,6 +1082,10 @@ public class PositionService {
                 featureData.setData(needBindFeatureData);
                 positionATSService.updatePositionFeature(featureData);
             }
+            // 批量请求猎聘编辑职位信息
+            List<Integer> updatePositionIds = jobPositionUpdateRecordList.stream().map(updateRecord -> updateRecord.getId()).collect(Collectors.toList());
+            pool.startTast(() -> receiverHandler.batchHandleLiepinEditOperation(updatePositionIds));
+
         } catch (Exception e) {
             logger.error("更新和插入数据发生异常,异常信息为：" + e.getMessage());
             e.printStackTrace();

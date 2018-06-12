@@ -32,6 +32,7 @@ import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import com.moseeker.thrift.gen.position.struct.*;
 import java.util.ArrayList;
@@ -671,4 +672,19 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    public List<JobPositionLiepinMappingDO> getLiepinPositionIds(int userId) throws TException {
+        try {
+            List<JobPositionLiepinMappingDO> list = positionBS.getLiepinPositionIds(userId);
+            if(list==null || list.size() < 1){
+                logger.info("==============猎聘职位id查询为空==============");
+                return new ArrayList<>();
+            }
+            return  list;
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
 }

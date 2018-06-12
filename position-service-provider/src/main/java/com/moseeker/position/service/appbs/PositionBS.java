@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -32,6 +33,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
@@ -81,7 +83,8 @@ public class PositionBS {
     private MobileVeifyHandler mobileVeifyHandler;
     @Autowired
     private HRThirdPartyAccountDao thirdPartyAccountDao;
-
+    @Autowired
+    private JobPositionLiepinMappingDao mappingDao;
 
     /**
      * 单一处理职位同步
@@ -234,7 +237,7 @@ public class PositionBS {
             //完成转换操作，可以绑定
             channelTypeSet.add(channelType);
 
-            positionChangeUtil.sendRequest(channel,result);
+            positionChangeUtil.sendRequest(channel,result,moseekerJobPosition);
         }
 
         positionSyncHandler.removeRedis(moseekerJobPosition.getId());
@@ -416,4 +419,7 @@ public class PositionBS {
         jobPositionDao.updateData(positionDO);
     }
 
+    public List<JobPositionLiepinMappingDO> getLiepinPositionIds(int userId) {
+        return mappingDao.getMappingDataByUserId(userId);
+    }
 }

@@ -25,8 +25,12 @@ public class LiepinReceiverTest {
     LiePinReceiverHandler receiverHandler;
 
     @Test
-    public void testEdit(){
-
+    public void testEdit() throws UnsupportedEncodingException {
+        JSONObject liePinJsonObject = new JSONObject();
+        liePinJsonObject.put("id", "19493560");
+        String requestStr = JSONObject.toJSONString(liePinJsonObject);
+        Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
+        receiverHandler.handlerPositionLiepinEditOperation(requestMsg, null);
     }
 
     @Test
@@ -37,7 +41,7 @@ public class LiepinReceiverTest {
     @Test
     public void testDownShelf() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
-        liePinJsonObject.put("id", "77875");
+        liePinJsonObject.put("id", "19493560");
         String requestStr = JSONObject.toJSONString(liePinJsonObject);
         Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
         receiverHandler.handlerPositionLiepinDownShelfOperation(requestMsg, null);
@@ -46,10 +50,17 @@ public class LiepinReceiverTest {
     @Test
     public void testRePublish() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
-        liePinJsonObject.put("id", "77875");
+        liePinJsonObject.put("id", "19493518");
         String requestStr = JSONObject.toJSONString(liePinJsonObject);
         Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
         receiverHandler.handlerPositionLiepinReSyncOperation(requestMsg, null);
+    }
+
+    @Test
+    public void testGetPosition() throws Exception {
+        Integer positionId = 19493560;
+        Integer id = 986122455;
+        String info = receiverHandler.getLpPositionInfo(positionId, id);
     }
 
 }

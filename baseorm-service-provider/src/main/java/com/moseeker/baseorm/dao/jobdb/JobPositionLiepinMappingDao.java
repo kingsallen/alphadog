@@ -7,12 +7,15 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionLiepinMappingReco
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
+import org.joda.time.DateTime;
 import org.jooq.Condition;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,13 +42,6 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
         return getDatas(query);
     }
 
-//    public List<JobPositionLiepinMappingDO> getMappingDataByPid(int pid) {
-//        Query query = new Query.QueryBuilder()
-//                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.getName(), pid)
-//                .buildQuery();
-//        return getDatas(query);
-//    }
-
     public List<JobPositionLiepinMappingDO> getMappingDataByPid(int pid) {
        return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(pid))
@@ -53,10 +49,10 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
     }
 
 
-    public List<JobPositionLiepinMappingDO> getMappingDataByTitle(String jobTitle) {
+    public List<JobPositionLiepinMappingDO> getMappingDataByTitleAndUserId(String jobTitle, Integer liepinUserId) {
         Query query = new Query.QueryBuilder()
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_TITLE.getName(), jobTitle)
-//                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE.getName(), 1)
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), liepinUserId)
                 .buildQuery();
         return getDatas(query);
     }
@@ -64,6 +60,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
     public void updateErrMsg(int id, String message) {
         create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ERR_MSG, message)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.eq(id))
                 .execute();
     }
@@ -72,6 +69,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
         Condition condition = JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.in(ids);
         create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE, state)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(condition)
                 .execute();
     }
@@ -79,6 +77,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
     public void updateErrMsgBatch(int positionId, String message) {
         create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ERR_MSG, message)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(positionId))
                 .execute();
     }
@@ -88,6 +87,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ERR_MSG, errorMsg)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE, state)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_JOB_ID, thirdPositionId)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.eq(id))
                 .execute();
     }
@@ -107,6 +107,15 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
         return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(positionId))
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.in(rePublishCityCodes))
+                .fetchInto(JobPositionLiepinMappingDO.class);
+    }
+
+    public List<JobPositionLiepinMappingDO> getMappingDataByUserId(int userId) {
+        return create.select(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID,
+                JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID,
+                JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_JOB_ID)
+                .from(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), userId)
                 .fetchInto(JobPositionLiepinMappingDO.class);
     }
 }

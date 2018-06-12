@@ -3,21 +3,20 @@ package com.moseeker.position.service.position.liepin;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityLiePinDao;
+import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
-import com.moseeker.baseorm.db.dictdb.tables.DictCityLiepin;
-import com.moseeker.baseorm.db.dictdb.tables.records.DictCityLiepinRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.position.constants.position.LiePinPositionDegree;
 import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.position.utils.HttpClientUtil;
@@ -26,6 +25,7 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityLiePinDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
@@ -34,11 +34,12 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.Result;
-import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinPositionVO, LiePinPositionVO> {
@@ -59,10 +60,16 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     private JobPositionCityDao jobPositionCityDao;
 
     @Autowired
+    private DictLiepinOccupationDao liepinOccupationDao;
+
+    @Autowired
     private DictCityDao dictCityDao;
 
     @Autowired
     private LiePinReceiverHandler receiverHandler;
+
+    @Autowired
+    private HrCompanyFeatureDao featureDao;
 
     public static final String LP_USER_SYNC_JOB = "https://apidev1.liepin.com/e/job/createEJob.json";
     private static final String LP_USER_REPUB_JOB = "https://apidev1.liepin.com/e/job/rePublishEjob.json";
@@ -75,69 +82,84 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         liePinPositionVO.setCount((int)moseekerJobPosition.getCount());
         liePinPositionVO.setPublisher(moseekerJobPosition.getPublisher());
         liePinPositionVO.setEjob_title(moseekerJobPosition.getTitle());
+        liePinPositionVO.setCompanyId(moseekerJobPosition.getCompanyId());
+        // 设置职能
         List<String> occupationList = positionForm.getOccupation();
-        String occupationStr = "";
-
-        // 猎聘api职能个数不超过3个
-        if (occupationList != null && occupationList.size() > 3) {
-            occupationStr = occupationList.get(0) + "," + occupationList.get(1) + "," + occupationList.get(2);
-        } else if (occupationList != null) {
-            for (String str : occupationList) {
-                occupationStr = occupationStr + str + ",";
-            }
-            occupationStr = occupationStr.substring(0, occupationStr.length() - 1);
-        }
-
-        liePinPositionVO.setEjob_jobtitle(occupationStr);
-
-
+        liePinPositionVO.setEjob_jobtitle(requireValidOccupation(occupationList));
         // 获取城市code，多个城市用逗号隔开
         int positionId = moseekerJobPosition.getId();
         liePinPositionVO.setPositionId(positionId);
         // 映射城市code
-        mappingCityCode(positionId, liePinPositionVO);
-
+        liePinPositionVO.setEjob_dq(mappingCityCode(positionId));
         liePinPositionVO.setEjob_privacyreq(null);
         liePinPositionVO.setEjob_salarydiscuss(positionForm.isSalaryDiscuss() ? "0" : "1");
-        // 单位 : 年/万
+        // 单位 : 万/年
         liePinPositionVO.setEjob_salarylow((float) positionForm.getSalaryBottom() * positionForm.getSalaryMonth() / 10000);
         liePinPositionVO.setEjob_salaryhigh((float) positionForm.getSalaryTop() * positionForm.getSalaryMonth() / 10000);
         liePinPositionVO.setDetail_workyears(moseekerJobPosition.getExperience());
         liePinPositionVO.setDetail_sex(moseekerJobPosition.getGender() == 0 ? "女" : moseekerJobPosition.getGender() == 1 ? "男" : null);
         liePinPositionVO.setDetail_agelow(moseekerJobPosition.getAge() == 0 ? 20 : (int) moseekerJobPosition.getAge());
         liePinPositionVO.setDetail_agehigh(65);
-
+        // 映射学位
         int degree = (int) moseekerJobPosition.getDegree();
         liePinPositionVO.setDetail_edulevel(LiePinPositionDegree.getPositionDegree(degree).getLiePinDegreeNo());
-
         liePinPositionVO.setDetail_edulevel_tz(null);
         liePinPositionVO.setDetail_report2(null);
         liePinPositionVO.setDetail_subordinate(moseekerJobPosition.getUnderlings() == 0 ? 0 : (int) moseekerJobPosition.getUnderlings());
         liePinPositionVO.setDetail_duty(moseekerJobPosition.getAccountabilities());
         liePinPositionVO.setDetail_require(moseekerJobPosition.getRequirement());
+        // 映射部门名称
+        liePinPositionVO.setDetail_dept(getDepartmentName(positionForm, moseekerJobPosition));
+        // 每个亮点八个字，最多十六个
+        positionForm.setCompanyId(moseekerJobPosition.getCompanyId());
+        String feature = getValidFeature(positionForm);
+        liePinPositionVO.setDetail_tags(feature);
+        // 映射语言要求
+        mappingLanguageRequire(liePinPositionVO, moseekerJobPosition);
+        liePinPositionVO.setDetail_special(moseekerJobPosition.getMajorRequired());
+//        if (moseekerJobPosition.getProfile_cc_mail_enabled() == 1) {
+//            liePinPositionVO.setEmail_list_array(moseekerJobPosition.getHrEmail());
+//        }
+        liePinPositionVO.setEmail_list_array(null);
+        liePinPositionVO.setEjob_level(null);
+        return liePinPositionVO;
+    }
+
+    private String requireValidOccupation(List<String> occupationList) throws BIZException {
+        StringBuilder occupation = new StringBuilder();
+        List<DictLiepinOccupationDO> allSocialOccupation = liepinOccupationDao.getAllSocialOccupation();
+        List<Integer> allSocialCode = allSocialOccupation.stream().map(socialOccupation -> socialOccupation.getCode()).collect(Collectors.toList());
+        int index = 0;
+        for(String moseekerCode : occupationList){
+            if(allSocialCode.contains(Integer.parseInt(moseekerCode)) && index < 3 && moseekerCode.length() > 3){
+                occupation.append(moseekerCode).append(",");
+                index++;
+            }
+        }
+        if(occupation.length() > 0){
+            return occupation.substring(0, occupation.length() - 1);
+        }
+        throw ExceptionUtils.getBizException("传入职能中没有有效的职能code");
+    }
+
+    /**
+     * 映射部门名字，本是由第三方页面手动填入，若为空，使用仟寻职位部门
+     * @param
+     * @author  cjm
+     * @date  2018/6/11
+     * @return
+     */
+    private String getDepartmentName(ThirdPartyPosition positionForm, JobPositionDO moseekerJobPosition) {
         String departmentName = null;
         if(StringUtils.isNotNullOrEmpty(positionForm.getDepartmentName())){
             departmentName = positionForm.getDepartmentName();
         }else{
             departmentName = moseekerJobPosition.getDepartment();
         }
-        liePinPositionVO.setDetail_dept(departmentName);
-        // 每个亮点八个字，最多十六个
-        String feature = getValidFeature(positionForm);
-        liePinPositionVO.setDetail_tags(feature);
-
-        // 映射语言要求
-        mappingLanguageRequire(liePinPositionVO, moseekerJobPosition);
-
-        liePinPositionVO.setDetail_special(moseekerJobPosition.getMajorRequired());
-        if (moseekerJobPosition.getProfile_cc_mail_enabled() == 1) {
-            liePinPositionVO.setEmail_list_array(moseekerJobPosition.getHrEmail());
-        }
-        liePinPositionVO.setEjob_level(null);
-        return liePinPositionVO;
+        return departmentName;
     }
 
-    private void mappingCityCode(int positionId, LiePinPositionVO liePinPositionVO) {
+    private String mappingCityCode(int positionId) {
         List<JobPositionCityDO> dicCityList = jobPositionCityDao.getPositionCitysByPid(positionId);
         StringBuilder citysCode = new StringBuilder();
         if (!dicCityList.isEmpty()) {
@@ -147,7 +169,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         } else {
             throw new RuntimeException("该职位查不到发布地区");
         }
-        liePinPositionVO.setEjob_dq(citysCode.substring(0, citysCode.length() - 1));
+        return citysCode.substring(0, citysCode.length() - 1);
     }
 
     private void mappingLanguageRequire(LiePinPositionVO liePinPositionVO, JobPositionDO moseekerJobPosition) {
@@ -192,23 +214,25 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     private String getValidFeature(ThirdPartyPosition positionForm) {
         List<String> features = positionForm.getFeature();
         StringBuilder tags = new StringBuilder();
+
+        if (features == null || features.size() < 1) {
+            List<HrCompanyFeature> hrCompanyFeatureList = featureDao.getFeatureListByCompanyId(positionForm.getCompanyId());
+            features = hrCompanyFeatureList.stream().map(hrCompanyFeature -> hrCompanyFeature.getFeature()).collect(Collectors.toList());
+        }
         int index = 0;
-        if (features != null && features.size() > 0) {
-            for (String str : features) {
-                if(StringUtils.isNullOrEmpty(str)){
-                    continue;
-                }
-                // 8个字的不参与
-                if (str.length() > 8) {
-                    continue;
-                }
-                tags.append(str).append(",");
-                if (++index >= 16) {
-                    break;
-                }
+
+        for (String str : features) {
+            if(StringUtils.isNullOrEmpty(str)){
+                continue;
             }
-        }else{
-            return null;
+            // 8个字的不参与
+            if (str.length() > 8) {
+                continue;
+            }
+            tags.append(str).append(",");
+            if (++index >= 16) {
+                break;
+            }
         }
         return tags.substring(0, tags.length() - 1);
     }
@@ -234,13 +258,14 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         data.setPracticeSalary(thirdPartyPosition.getPracticeSalary());
         data.setPracticePerWeek(thirdPartyPosition.getPracticePerWeek());
         data.setPracticeSalaryUnit(thirdPartyPosition.getPracticeSalaryUnit());
-        data.setCompanyId(thirdPartyPosition.getCompanyId());
+        data.setCompanyId(pwa.getCompanyId());
         data.setCompanyName(thirdPartyPosition.getCompanyName());
         data.setAddressId(thirdPartyPosition.getAddressId());
         data.setAddressName(thirdPartyPosition.getAddressName());
         data.setDepartmentId(thirdPartyPosition.getDepartmentId());
         data.setDepartmentName(thirdPartyPosition.getDepartmentName());
         data.setCount(pwa.getCount());
+        data.setFeature(pwa.getDetail_tags());
 
         logger.info("回写到第三方职位对象:{}", data);
         return data;
@@ -266,13 +291,16 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
             // 获取猎聘的token
             Integer publisher = liePinPositionVO.getPublisher();
-            Result dbResult = thirdPartyAccountDao.getThirdPartyAccountTokenByHrId(publisher, 2);
             HrThirdPartyPositionDO hrThirdPartyPositionDO = result.getThirdPartyPositionDO();
+
+            Result dbResult = thirdPartyAccountDao.getThirdPartyAccountTokenByHrId(publisher, 2);
             if (null == dbResult || dbResult.size() == 0) {
                 logger.info("===============猎聘token查询为空================");
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_TOKEN_NONEXISTS);
             }
             String liePinToken = String.valueOf(dbResult.getValue(0, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2));
+            String liePinUserIdStr = String.valueOf(dbResult.getValue(0, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT));
+            Integer liePinUserId = Integer.parseInt(liePinUserIdStr);
             int thirdPartAccountId = (int) dbResult.getValue(0, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID);
             hrThirdPartyPositionDO.setThirdPartyAccountId(thirdPartAccountId);
 
@@ -283,10 +311,14 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             Integer positionId = liePinPositionVO.getPositionId();
             List<String> cityCodesList = Arrays.asList(cityCodesArr);
 
-            // 查出该所有职位名称
-            List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByTitle(liePinPositionVO.getEjob_title());
+            // 根据职位名称查出所有职位jobpostionmapping表数据
+            List<JobPositionLiepinMappingDO> liepinMappingDOList =
+                    liepinMappingDao.getMappingDataByTitleAndUserId(liePinPositionVO.getEjob_title(), liePinUserId);
+
             List<String> cityCodesListDb = new ArrayList<>();
+
             Map<String, Object> cityIdCodeMap = new HashMap<>();
+
             // 数据库中状态不为1的城市
             List<String> republishCity = new ArrayList<>();
             for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
@@ -322,6 +354,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     DictCityDO dictCityDO = new DictCityDO();
                     dictCityDO.setCode(Integer.parseInt(cityCode));
                     List<DictCityDO> dictCityDOS = dictCityDao.getMoseekerLevels(dictCityDO);
+
                     if (dictCityDOS != null && dictCityDOS.size() > 1) {
                         for (int i = 1; i < dictCityDOS.size() && dictCityLiePinDO == null; i++) {
                             dictCityLiePinDO = dictCityLiePinDao.getLiepinDictCodeByCode(String.valueOf(dictCityDOS.get(i).getCode()));
@@ -345,11 +378,13 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     jobPositionLiepinMappingDO.setJobId(positionId);
                     jobPositionLiepinMappingDO.setCityCode(Integer.parseInt(cityCode));
                     jobPositionLiepinMappingDO.setJobTitle(liePinPositionVO.getEjob_title());
+                    jobPositionLiepinMappingDO.setLiepinUserId(liePinUserId);
                     jobPositionLiepinMappingDO = liepinMappingDao.addData(jobPositionLiepinMappingDO);
                 }
 
                 liePinPositionVO.setEjob_extRefid(jobPositionLiepinMappingDO.getId() + "");
                 liePinPositionVO.setEjob_dq(liepinCityCode);
+
                 // 构造请求数据
                 JSONObject liePinJsonObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
                 String t = DateUtils.dateToPattern(new Date(), "yyyyMMdd");
@@ -383,8 +418,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     successSyncNum++;
                     logger.info("==============hrThirdPartyPositionDO:{}================", hrThirdPartyPositionDO);
                 } else if (null != httpResult) {
-                    if(httpResult.getIntValue("code") == 1001){
-                        // 鉴权失败
+                    if(httpResult.getIntValue("code") == 1001 || httpResult.getIntValue("code") == 1007){
+                        // 鉴权失败||token失效
                         flag = false;
                     }
                     errorMsg = httpResult.getString("message");
@@ -396,6 +431,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 int id = jobPositionLiepinMappingDO.getId();
                 if(!flag){
                     liepinMappingDao.deleteData(jobPositionLiepinMappingDO);
+                    logger.info("===============猎聘鉴权失败或token失效==================");
+                    throw ExceptionUtils.getBizException("猎聘鉴权失败或token失效");
                 }else{
                     // 更改数据库mapping的状态
                     liepinMappingDao.updateJobInfoById(id, StringUtils.isNullOrEmpty(thirdPositionId) ? null : Integer.parseInt(thirdPositionId), state, errorMsg);
@@ -403,18 +440,12 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
             }
 
-
             try{
-                // 更新重新发布后的状态
+                // 更新上架后的状态
                 if(republishIds.length() > 0){
-                    JSONObject liePinJsonObject = new JSONObject();
-                    liePinJsonObject.put("ejob_extRefids", republishIds.substring(0, republishIds.length() - 1));
-                    String httpResultJson = receiverHandler.sendRequest2LiePin(liePinJsonObject, liePinToken, LP_USER_REPUB_JOB);
-                    receiverHandler.requireValidResult(httpResultJson);
-                    List<Integer> republishIdList = getRepublishList(republishIds.toString());
+                    // 上架后返回此次上架职位的数量
+                    List<Integer> republishIdList = upshelfJobPosition(republishIds, liePinToken);
                     successRePublishNum = republishIdList.size();
-                    byte state = 1;
-                    liepinMappingDao.updateState(republishIdList, state);
                 }
             }catch (Exception e){
                 logger.info("=================发布职位时，向猎聘发送重新上架失败:message{}================", e.getMessage());
@@ -424,6 +455,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             logger.info("============cityNum:{},successSyncNum:{}==============", cityNum, successSyncNum);
             if (successSyncNum + successRePublishNum == cityNum) {
                 hrThirdPartyPositionDO.setIsSynchronization(1);
+                hrThirdPartyPositionDO.setSyncTime(new SimpleDateFormat("yyyy-MM-ss HH:mm:ss").format(new Date()));
             } else {
                 if (StringUtils.isNullOrEmpty(errorMsg)) {
                     hrThirdPartyPositionDO.setIsSynchronization(4);
@@ -433,10 +465,25 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     hrThirdPartyPositionDO.setSyncFailReason("猎聘:" + errorMsg);
                 }
             }
+            hrThirdPartyPositionDO.setPositionId(positionId);
+            hrThirdPartyPositionDO.setOccupation(liePinPositionVO.getEjob_jobtitle());
+            hrThirdPartyPositionDO.setChannel(2);
             TwoParam<HrThirdPartyPositionDO, HrThirdPartyPositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, null);
             thirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
         }
     }
+
+    private List<Integer> upshelfJobPosition(StringBuilder republishIds, String liePinToken) {
+        byte state = 1;
+        JSONObject liePinJsonObject = new JSONObject();
+        liePinJsonObject.put("ejob_extRefids", republishIds.substring(0, republishIds.length() - 1));
+        String httpResultJson = receiverHandler.sendRequest2LiePin(liePinJsonObject, liePinToken, LP_USER_REPUB_JOB);
+        receiverHandler.requireValidResult(httpResultJson);
+        List<Integer> republishIdList = getRepublishList(republishIds.toString());
+        liepinMappingDao.updateState(republishIdList, state);
+        return republishIdList;
+    }
+
 
     private List<Integer> getRepublishList(String republishIds) {
         String[] ids = republishIds.split(",");

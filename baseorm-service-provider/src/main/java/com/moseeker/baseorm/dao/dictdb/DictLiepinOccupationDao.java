@@ -69,4 +69,10 @@ public class DictLiepinOccupationDao extends AbstractDictOccupationDao<DictLiepi
     public ChannelType getChannelType() {
         return ChannelType.LIEPIN;
     }
+
+    public List<DictLiepinOccupationDO> getAllSocialOccupation() {
+        Query query = new Query.QueryBuilder().where(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CANDIDATE_SOURCE.getName(), 0)
+                .buildQuery();
+        return getDatas(query);
+    }
 }

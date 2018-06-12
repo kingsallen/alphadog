@@ -8,6 +8,7 @@ include "../../dao/struct/jobdb/job_position_struct.thrift"
 include "../struct/third_position_struct.thrift"
 include "../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
 include "../../dao/struct/jobdb/job_pc_reported_struct.thrift"
+include "../../dao/struct/jobdb/job_position_liepin_mapping.thrift"
 
 namespace java com.moseeker.thrift.gen.position.service
 /*
@@ -71,6 +72,8 @@ service PositionServices {
 
     i32 updateThirdPartyPositionWithAccount(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition,2:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount,3:map<string,string> extData) throws (1: common_struct.BIZException e);
 
+    list<job_position_liepin_mapping.JobPositionLiepinMappingDO> getLiepinPositionIds(1:i32 userId);
+
     //获取pc端职位推荐
     common_struct.Response getPcRecommand(1:i32 page,2:i32 pageSize);
 
@@ -120,6 +123,7 @@ service PositionServices {
      common_struct.Response updatePositionFeatureBatch(1: list<position_struct.JobPositionHrCompanyFeatureDO> featureList);
 
      common_struct.Response getPositionFeatureBetch(1:list<i32> pidList);
+
 
 }
 /*

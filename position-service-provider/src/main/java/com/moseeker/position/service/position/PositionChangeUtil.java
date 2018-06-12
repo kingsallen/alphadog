@@ -96,10 +96,10 @@ public class PositionChangeUtil {
         }
     }
 
-    public void sendRequest(int channel,AbstractPositionTransfer.TransferResult transferResult) throws TException {
+    public void sendRequest(int channel, AbstractPositionTransfer.TransferResult transferResult, JobPositionDO moseekerJobPosition) throws TException {
         ChannelType channelType = ChannelType.instaceFromInteger(channel);
 
-        AbstractPositionTransfer transfer=transferSimpleFactory(channelType);
+        AbstractPositionTransfer transfer=transferSimpleFactory(channelType,moseekerJobPosition);
 
         transfer.sendSyncRequest(transferResult);
     }

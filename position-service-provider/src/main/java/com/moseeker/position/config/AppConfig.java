@@ -142,8 +142,8 @@ public class AppConfig {
 
     // 猎聘api对接的交换机
     @Bean
-    public DirectExchange positionSyncLiePinExchange(){
-        return new DirectExchange(PositionSyncVerify.POSITION_OPERATE_LIEPIN_EXCHANGE,true,false);
+    public TopicExchange positionSyncLiePinExchange(){
+        return new TopicExchange(PositionSyncVerify.POSITION_OPERATE_LIEPIN_EXCHANGE,true,false);
     }
 
     @Bean

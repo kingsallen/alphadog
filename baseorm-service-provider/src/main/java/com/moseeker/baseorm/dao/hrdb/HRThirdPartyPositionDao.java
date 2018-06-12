@@ -327,6 +327,22 @@ public class HRThirdPartyPositionDao  {
     }
 
     /**
+     * 修改绑定状态为未绑定，要不然无法复用positionbs
+     * @param
+     * @author  cjm
+     * @date  2018/6/11
+     * @return
+     */
+    public void updateBindState(int positionId, int channel) {
+        Update.UpdateBuilder update=new Update.UpdateBuilder()
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0)
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
+                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
+                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
+        thirdPartyPositionDao.update(update.buildUpdate());
+    }
+
+    /**
      * 隐藏的内部第三方职位dao，
      * 因为第三方职位分成主表和附表(坑爹的附表还有可能是多个)
      * 插入和更新涉及多个dao，所以封装一下
