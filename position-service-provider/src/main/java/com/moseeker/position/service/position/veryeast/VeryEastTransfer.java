@@ -68,7 +68,8 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         positionInfo.setRegion(getCities(positionDB));
         positionInfo.setQuantity(getQuantity(positionForm.getCount(),(int)positionDB.getCount()));
         positionInfo.setIndate(positionForm.getIndate());
-        positionInfo.setSalary(transferSalary((int)positionDB.getSalaryTop()));
+        positionInfo.setSalary_top(positionForm.getSalaryTop());
+        positionInfo.setSalary_bottom(positionForm.getSalaryBottom());
         positionInfo.setOccupation(positionForm.getOccupation());
         positionInfo.setAccommodation(positionForm.getAccommodation()+"");
         positionInfo.setDegree(VeryEastTransferStrategy.VeryEastDegree.moseekerToOther((int)positionDB.getDegree()));
@@ -183,7 +184,8 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         data.setThirdPartyAccountId(Integer.parseInt(pwa.getAccount_id()));
         data.setChannel(getChannel().getValue());
         data.setIsSynchronization((byte) PositionSync.binding.getValue());
-
+        data.setSalaryTop(position.getSalaryTop());
+        data.setSalaryBottom(position.getSalaryBottom());
 
 
         //将最后一个职能的Code存到数据库
