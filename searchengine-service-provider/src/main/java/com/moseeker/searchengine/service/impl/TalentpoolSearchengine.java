@@ -127,6 +127,7 @@ public class TalentpoolSearchengine {
     /*
      查询企业标签的人才数量
      */
+    @CounterIface
     public int talentSearchNum(Map<String, String> params) {
         Map<String, Object> result=new HashMap<>();
         TransportClient client=null;
@@ -145,7 +146,6 @@ public class TalentpoolSearchengine {
             logger.info(JSON.toJSONString(result));
             logger.info("=========================================");
             int total=(int)((long)result.get("totalNum"));
-            logger.info(JSON.toJSONString(result));
             return total;
         } catch (Exception e) {
             logger.info(e.getMessage(),e);

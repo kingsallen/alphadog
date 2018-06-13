@@ -229,7 +229,6 @@ public class SearchengineServiceImpl implements Iface {
 	}
 
 	@Override
-	@CounterIface
 	public List<Integer> queryCompanyTagUserIdList(Map<String, String> params) throws BIZException,TException {
 		try{
 			List<Integer> res=talentpoolSearchengine.getUserListByCompanyTag(params);
