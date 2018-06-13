@@ -188,6 +188,9 @@ public class LiePinReceiverHandler {
 
                     // 数据库中该仟寻职位id对应的titlelist
                     List<String> titleDbList = liepinMappingDOList.stream().map(mappingDo -> mappingDo.getJobTitle()).collect(Collectors.toList());
+
+                    // 将titlelist去重复
+                    titleDbList = removeDuplicateTitle(titleDbList);
                     log.info("===============数据库中该仟寻职位id对应的titlelist:{}====================",titleDbList);
 
                     // 先判断title是否存在，不存在的话发布新职位
@@ -227,7 +230,6 @@ public class LiePinReceiverHandler {
                                     // 如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布
                                     log.info("================如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布================");
                                     flag = false;
-                                    break;
                                 }
                             }
 
@@ -258,6 +260,14 @@ public class LiePinReceiverHandler {
             this.handleTemplateLogDeadLetter(message, msgBody, e.getMessage());
             log.error(e.getMessage(), e);
         }
+    }
+
+    private List<String> removeDuplicateTitle(List<String> titleDbList) {
+        LinkedHashSet<String> set = new LinkedHashSet<>(titleDbList.size());
+        set.addAll(titleDbList);
+        titleDbList.clear();
+        titleDbList.addAll(set);
+        return titleDbList;
     }
 
     /**
