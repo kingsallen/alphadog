@@ -558,7 +558,7 @@ public class ChatService {
             chatDO = chaoDao.saveChat(chatDO);
 
             if (chatDO == null) {
-                throw new Exception();
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
             }
             // 新增聊天记录的id
             int chatId = chatDO.getId();
@@ -582,6 +582,8 @@ public class ChatService {
             // 修改未读消息数量
             pool.startTast(() -> chaoDao.addUnreadCount(chat.getRoomId(), chat.getSpeaker(), date));
             return chatId;
+        } catch (BIZException e){
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new BIZException(VoiceErrorEnum.CHAT_INFO_ADD_FAILED.getCode(), VoiceErrorEnum.CHAT_INFO_ADD_FAILED.getMsg());
@@ -663,7 +665,7 @@ public class ChatService {
      * @param is_gamma   是否从聚合号进入
      * @return ResultOfSaveRoomVO
      */
-    public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId, final boolean is_gamma) {
+    public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId, final boolean is_gamma) throws BIZException {
         logger.info("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}, is_gamma:{}", userId, hrId, positionId, roomId, is_gamma);
         final ResultOfSaveRoomVO resultOfSaveRoomVO;
 
@@ -689,7 +691,7 @@ public class ChatService {
         if (chatRoom != null) {
             resultOfSaveRoomVO = searchResult(chatRoom, positionId);
             if (chatDebut) {
-                pool.startTast(() -> createChat(resultOfSaveRoomVO, is_gamma));
+                createChat(resultOfSaveRoomVO, is_gamma);
                 resultOfSaveRoomVO.setChatDebut(chatDebut);
                 HrChatUnreadCountDO unreadCountDO = new HrChatUnreadCountDO();
                 unreadCountDO.setHrId(hrId);
