@@ -13,8 +13,8 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -31,9 +31,6 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -52,11 +49,11 @@ public class ChatServiceTest {
         System.out.println(JSON.toJSONString(chatService.listChatLogs(33 ,1, 10)));
     }
 
-//    @Test
+    @Test
     public void enterChatRoom() throws TException {
-
-        chatService.enterRoom(2191525,87759, 0,0, false);
+        chatService.enterRoom(4185827,60264, 1976568,0, false);
     }
+
 
 //    @Test
     public void saveChat() throws Exception {
