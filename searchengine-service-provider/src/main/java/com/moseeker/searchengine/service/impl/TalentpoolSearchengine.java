@@ -244,6 +244,7 @@ public class TalentpoolSearchengine {
         SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
         String[] returnParams={"user.profiles.profile.user_id"};
         builder.setFetchSource(returnParams,null);
+        builder.addSort("user.profiles.profile.user_id",SortOrder.DESC);
         if(StringUtils.isNotNullOrEmpty(params.get("size"))){
             builder.setSize(0);
         }else{
