@@ -51,7 +51,7 @@ public class ChatServiceTest {
 
     @Test
     public void enterChatRoom() throws TException {
-        chatService.enterRoom(4185827,60264, 1976568,0, false);
+        chatService.enterRoom(50,87813, 0,0, false);
     }
 
 

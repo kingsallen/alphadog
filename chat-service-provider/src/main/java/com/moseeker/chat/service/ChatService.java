@@ -580,7 +580,7 @@ public class ChatService {
             chaoDao.addChatTOChatRoom(chatDO);
 
             // 修改未读消息数量
-            pool.startTast(() -> chaoDao.addUnreadCount(chat.getRoomId(), chat.getSpeaker(), date));
+            chaoDao.addUnreadCount(chat.getRoomId(), chat.getSpeaker(), date);
             return chatId;
         } catch (BIZException e){
             throw e;
@@ -691,15 +691,16 @@ public class ChatService {
         if (chatRoom != null) {
             resultOfSaveRoomVO = searchResult(chatRoom, positionId);
             if (chatDebut) {
-                createChat(resultOfSaveRoomVO, is_gamma);
-                resultOfSaveRoomVO.setChatDebut(chatDebut);
                 HrChatUnreadCountDO unreadCountDO = new HrChatUnreadCountDO();
                 unreadCountDO.setHrId(hrId);
                 unreadCountDO.setUserId(userId);
                 unreadCountDO.setHrHaveUnreadMsg((byte) 0);
                 unreadCountDO.setUserHaveUnreadMsg((byte) 1);
                 unreadCountDO.setRoomId(chatRoom.getId());
-                pool.startTast(() -> chaoDao.saveUnreadCount(unreadCountDO));
+                chaoDao.saveUnreadCount(unreadCountDO);
+
+                createChat(resultOfSaveRoomVO, is_gamma);
+                resultOfSaveRoomVO.setChatDebut(chatDebut);
             } else {
                 //默认清空C端账号的未读消息
                 int chatRoomId = chatRoom.getId();
@@ -739,6 +740,7 @@ public class ChatService {
             positionFuture = pool.startTast(() -> chaoDao.getPositionById(positionId));
         }
         Future hrFuture = pool.startTast(() -> chaoDao.getHr(chatRoom.getHraccountId()));
+        Future hrCompanyFuture = pool.startTast(() -> chaoDao.getCompany(chatRoom.getHraccountId()));
         Future userFuture = pool.startTast(() -> chaoDao.getUser(chatRoom.getSysuserId()));
 
         /** 设置职位信息 */
@@ -797,11 +799,18 @@ public class ChatService {
         /** 设置HR信息 */
         try {
             UserHrAccountDO hrAccountDO = (UserHrAccountDO) hrFuture.get();
+            HrCompanyDO hrCompanyDO = (HrCompanyDO) hrCompanyFuture.get();
             if (hrAccountDO != null) {
                 HrVO hrVO = new HrVO();
                 hrVO.setHrId(hrAccountDO.getId());
                 hrVO.setHrName(hrAccountDO.getUsername());
                 hrVO.setHrHeadImg(hrAccountDO.getHeadimgurl());
+                if (StringUtils.isNotNullOrEmpty(hrCompanyDO.getAbbreviation())) {
+                    hrVO.setCompanyName(hrCompanyDO.getAbbreviation());
+                } else {
+                    hrVO.setCompanyName(hrCompanyDO.getName());
+                }
+
                 resultOfSaveRoomVO.setHr(hrVO);
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -833,14 +842,21 @@ public class ChatService {
         if (is_gamma) {
             content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
         } else {
+            String companyName;
+            if ( resultOfSaveRoomVO.getPosition() != null){
+                companyName = resultOfSaveRoomVO.getPosition().getCompanyName();
+            } else{
+                companyName = resultOfSaveRoomVO.getHr().getCompanyName();
+            }
+
             if (resultOfSaveRoomVO.getHr() != null
                     && StringUtils.isNotNullOrEmpty(resultOfSaveRoomVO.getHr().getHrName())
                     && resultOfSaveRoomVO.getPosition() != null) {
                 content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
-                        .getHrName()).replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+                        .getHrName()).replace("{companyName}", companyName);
             } else {
                 content = AUTO_CONTENT_WITH_HR_NOTEXIST
-                        .replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+                        .replace("{companyName}", companyName);
             }
         }
         chatDO.setContent(content);
