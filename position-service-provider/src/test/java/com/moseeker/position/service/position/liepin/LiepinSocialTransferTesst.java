@@ -26,8 +26,8 @@ import java.util.List;
  * @author cjm
  * @date 2018-06-05 14:26
  **/
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class LiepinSocialTransferTesst {
     @Autowired
     LiepinSocialPositionTransfer liepinSocialPositionTransfer;
@@ -51,9 +51,9 @@ public class LiepinSocialTransferTesst {
         return hrThirdPartyPositionDO;
     }
 
-//    @Test
+    @Test
     public void testSendSyncRequest() throws Exception {
-        Integer positionId = 19493682;
+        Integer positionId = 19493736;
         ThirdPartyPosition positionForm = new ThirdPartyPosition();
         //软件/互联网开发/系统集成
         List<String> list = new ArrayList<>();

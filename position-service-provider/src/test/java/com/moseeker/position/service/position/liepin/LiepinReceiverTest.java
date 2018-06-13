@@ -26,8 +26,8 @@ import java.util.Map;
  * @author cjm
  * @date 2018-06-06 17:23
  **/
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class LiepinReceiverTest {
 
 
@@ -40,10 +40,10 @@ public class LiepinReceiverTest {
     @Autowired
     JobPositionLiepinMappingDao mappingDao;
 
-//    @Test
+    @Test
     public void testEdit() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
-        liePinJsonObject.put("id", "19493560");
+        liePinJsonObject.put("id", "(19493736)");
         String requestStr = JSONObject.toJSONString(liePinJsonObject);
         Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
         receiverHandler.handlerPositionLiepinEditOperation(requestMsg, null);
@@ -54,16 +54,16 @@ public class LiepinReceiverTest {
 
     }
 
-//    @Test
+    @Test
     public void testDownShelf() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
-        liePinJsonObject.put("id", "19493560");
+        liePinJsonObject.put("id", "(19493736)");
         String requestStr = JSONObject.toJSONString(liePinJsonObject);
         Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
         receiverHandler.handlerPositionLiepinDownShelfOperation(requestMsg, null);
     }
     private static final String LP_USER_STOP_JOB = "https://apidev1.liepin.com/e/job/endEJob.json";
-//    @Test
+    @Test
     public void testSingleDownShelf() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
         String liePinToken = "a8676f15dd8ce0687373eee1d373d5f91288522acbf267ff3486777f15b952b0b4497b0ada0bb2e86fea2dfbc5c787b5381b754b2b2e55f5e7ce4c509fc2f548";
@@ -71,19 +71,19 @@ public class LiepinReceiverTest {
         String httpResultJson = sendRequest2LiePin(liePinJsonObject, liePinToken, LP_USER_STOP_JOB);
     }
 
-//    @Test
+    @Test
     public void testRePublish() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
-        liePinJsonObject.put("id", "19493566");
+        liePinJsonObject.put("id", "(19493736)");
         String requestStr = JSONObject.toJSONString(liePinJsonObject);
         Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
         receiverHandler.handlerPositionLiepinReSyncOperation(requestMsg, null);
     }
 
-//    @Test
+    @Test
     public void testGetPosition() throws Exception {
-        Integer positionId = 19493560;
-        Integer id = 986122455;
+        Integer positionId = 19493736;
+        Integer id = 986122475;
         String info = receiverHandler.getLpPositionInfo(positionId, id);
     }
 

@@ -74,7 +74,15 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 .execute();
     }
 
-    public void updateErrMsgBatch(int positionId, String message) {
+    public void updateErrMsgBatch(List<Integer> ids, String message) {
+        create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ERR_MSG, message)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.in(ids))
+                .execute();
+    }
+
+    public void updateErrMsgBatch(Integer positionId, String message) {
         create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ERR_MSG, message)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
@@ -117,6 +125,31 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 .from(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.eq(userId))
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE.eq((byte)1))
+                .fetchInto(JobPositionLiepinMappingDO.class);
+    }
+
+    public List<JobPositionLiepinMappingDO> getMappingDatasByPidsAndState(int state, List<Integer> positionIds) {
+        return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.getName(), positionIds, ValueOp.IN)
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE.getName(), state)
+                .fetchInto(JobPositionLiepinMappingDO.class);
+    }
+
+    public List<JobPositionLiepinMappingDO> getValidMappingDataByPidAndCode(int positionId, List<Integer> cityCodes, byte state) {
+        if(cityCodes.isEmpty()){
+            return new ArrayList<>();
+        }
+        return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(positionId))
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.in(cityCodes))
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE.eq(state))
+                .fetchInto(JobPositionLiepinMappingDO.class);
+    }
+
+    public List<JobPositionLiepinMappingDO> getValidMappingDataByPid(int id, byte state) {
+        return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.getName(), id)
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE.getName(), state)
                 .fetchInto(JobPositionLiepinMappingDO.class);
     }
 }

@@ -122,6 +122,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 //        }
         liePinPositionVO.setEmail_list_array(null);
         liePinPositionVO.setEjob_level(null);
+        liePinPositionVO.setCount((int)moseekerJobPosition.getCount());
         return liePinPositionVO;
     }
 
@@ -264,8 +265,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         data.setAddressName(thirdPartyPosition.getAddressName());
         data.setDepartmentId(thirdPartyPosition.getDepartmentId());
         data.setDepartmentName(thirdPartyPosition.getDepartmentName());
-        data.setCount(pwa.getCount());
         data.setFeature(pwa.getDetail_tags());
+        data.setCount(pwa.getCount());
 
         logger.info("回写到第三方职位对象:{}", data);
         return data;
