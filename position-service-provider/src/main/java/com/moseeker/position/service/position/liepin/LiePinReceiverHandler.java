@@ -122,7 +122,7 @@ public class LiePinReceiverHandler {
         try {
 
             msgBody = new String(message.getBody(), "UTF-8");
-
+            log.info("===============msgBody:{}===============", msgBody);
             List<Integer> ids = requireValidMessage(msgBody);
 
             if (ids == null || ids.size() == 0) {
@@ -144,7 +144,7 @@ public class LiePinReceiverHandler {
             }
 
             String liePinToken = String.valueOf(result.getValue(0, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2));
-
+            log.info("==============liePinToken:{}===============", liePinToken);
             for (int id : ids) {
 
                 positionId = id;
@@ -166,7 +166,7 @@ public class LiePinReceiverHandler {
 
                 // 将数据组装为向猎聘请求的格式，此数据也是用户编辑后的数据
                 LiePinPositionVO liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(thirdPartyPosition, jobPositionDO, null);
-
+                log.info("================liePinPositionVO:{}=============", liePinPositionVO);
                 // 用于查询所修改的职位之前是否发布过
                 List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByPid(positionId);
 
@@ -175,21 +175,24 @@ public class LiePinReceiverHandler {
 
                 // 编辑职位中的城市list
                 List<JobPositionCityDO> positionCityList = jobPositionCityDao.getPositionCitysByPid(positionId);
-
+                log.info("==============编辑城市positionCityList:{}============", positionCityList);
                 // 编辑职位中的城市codelist
                 List<String> cityCodesList = positionCityList.stream().map(positionCityDO -> String.valueOf(positionCityDO.getCode())).collect(Collectors.toList());
-
+                log.info("==============编辑城市cityCodesList:{}============", cityCodesList);
                 // 如果数据库不存在编辑的职位，则发布新职位
                 if (null != liepinMappingDOList && liepinMappingDOList.size() > 0) {
 
-                    // 数据库中该仟寻职位id对应的城市codeslist
+                    // 数据库中该仟寻职位id对应的城市codes list
                     List<String> cityDbList = liepinMappingDOList.stream().map(mappingDo -> String.valueOf(mappingDo.getCityCode())).collect(Collectors.toList());
+                    log.info("===============数据库中该仟寻职位id对应的城市cityDbList:{}====================",cityDbList);
+
                     // 数据库中该仟寻职位id对应的titlelist
                     List<String> titleDbList = liepinMappingDOList.stream().map(mappingDo -> mappingDo.getJobTitle()).collect(Collectors.toList());
+                    log.info("===============数据库中该仟寻职位id对应的titlelist:{}====================",titleDbList);
 
                     // 先判断title是否存在，不存在的话发布新职位
                     if (titleDbList.contains(jobPositionDO.getTitle())) {
-
+                        log.info("=================title存在=====================");
                         for (String cityCode : cityCodesList) {
 
                             for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
@@ -201,13 +204,13 @@ public class LiePinReceiverHandler {
 
                                 // 存在城市，并且状态正常
                                 if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1) {
-
+                                    log.info("===============存在城市，并且状态正常，修改================");
                                     // 修改
                                     editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
                                     break;
 
                                 } else if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 0) {
-
+                                    log.info("============存在城市，但是状态为下架，先上架，后修改============");
                                     // 存在城市，但是状态为下架，先上架，后修改
                                     upShelfOldSinglePosition(mappingDO, liePinToken);
 
@@ -216,12 +219,13 @@ public class LiePinReceiverHandler {
                                     break;
 
                                 } else if (!cityCodesList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1) {
-
+                                    log.info("============如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架============");
                                     // 如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架
                                     downShelfOldSinglePosition(mappingDO, liePinToken);
 
                                 } else if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode)) {
                                     // 如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布
+                                    log.info("================如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布================");
                                     flag = false;
                                     break;
                                 }
@@ -515,7 +519,7 @@ public class LiePinReceiverHandler {
     }
 
     /**
-     * 编辑单个职位信息，并没有编辑多个职位的接口
+     * 编辑单个职位信息
      *
      * @param liePinToken 猎聘生成的hr账号token
      * @return
@@ -525,6 +529,7 @@ public class LiePinReceiverHandler {
     private void editSinglePosition(LiePinPositionVO liePinPositionVO, String liePinToken, JobPositionLiepinMappingDO mappingDO) {
         JSONObject liePinObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
         String httpResultJson = sendRequest2LiePin(liePinObject, liePinToken, LP_POSITION_EDIT);
+        log.info("============httpResultJson:{}===========", httpResultJson);
         try {
             requireValidResult(httpResultJson);
         } catch (Exception e) {

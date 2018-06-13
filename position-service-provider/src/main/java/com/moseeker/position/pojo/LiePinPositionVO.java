@@ -366,6 +366,10 @@ public class LiePinPositionVO {
                 ", email_list_array='" + email_list_array + '\'' +
                 ", ejob_level='" + ejob_level + '\'' +
                 ", publisher=" + publisher +
+                ", positionId=" + positionId +
+                ", count=" + count +
+                ", ejob_id=" + ejob_id +
+                ", companyId=" + companyId +
                 '}';
     }
 }
