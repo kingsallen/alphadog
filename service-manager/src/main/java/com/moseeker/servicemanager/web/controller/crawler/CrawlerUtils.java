@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.net.ConnectException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -199,6 +200,7 @@ public class CrawlerUtils {
          * 			-3		32006
          * 			-5		32007
          * 			5		32010
+         * 		    6
          * 			-2		其他
          * */
         if (messagBean.get("status") != null && (Integer) messagBean.get("status") == 0) {
