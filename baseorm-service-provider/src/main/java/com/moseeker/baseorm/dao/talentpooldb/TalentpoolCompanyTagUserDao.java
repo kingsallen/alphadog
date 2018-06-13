@@ -1,18 +1,13 @@
 package com.moseeker.baseorm.dao.talentpooldb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagUserRecord;
-
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import com.moseeker.common.util.StringUtils;
-import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
