@@ -105,7 +105,7 @@ public class CompanyTagService {
                     record.setUserId(userId);
                     list.add(record);
                 }
-                talentpoolCompanyTagUserDao.batchAddTagAndUser(list);
+                talentpoolCompanyTagUserDao.addTagAndUser(list);
             }
         } else if (type == 1) {//修改标签需要把表中原有的数据全部删除，
             if (!StringUtils.isEmptyList(userIdList)) {
@@ -116,7 +116,7 @@ public class CompanyTagService {
                     record.setUserId(userId);
                     list.add(record);
                 }
-                talentpoolCompanyTagUserDao.batchAddTagAndUser(list);
+                talentpoolCompanyTagUserDao.addTagAndUser(list);
             }
 
         }

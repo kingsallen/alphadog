@@ -65,7 +65,7 @@ public class TalentpoolSearchengine {
             result = searchUtil.handleData(response, "users");
             return result;
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
             if (e.getMessage().contains("all shards")) {
                 return result;
             }
@@ -117,7 +117,7 @@ public class TalentpoolSearchengine {
             result = searchUtil.handleData(response, "users");
             return result;
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
             if (e.getMessage().contains("all shards")) {
                 return result;
             }
@@ -189,7 +189,7 @@ public class TalentpoolSearchengine {
             result = searchUtil.handleAggData(response);
             return result;
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
             if (e.getMessage().contains("all shards")) {
                 return result;
             }
@@ -215,7 +215,7 @@ public class TalentpoolSearchengine {
                 }
             }
         }catch(Exception e){
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
         }
         logger.info("==========================");
         logger.info(JSON.toJSONString(list));
@@ -240,7 +240,7 @@ public class TalentpoolSearchengine {
                 return (int)totalNum;
             }
         }catch(Exception e){
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
         }
         logger.info("==========================");
         logger.info(JSON.toJSONString(list));
