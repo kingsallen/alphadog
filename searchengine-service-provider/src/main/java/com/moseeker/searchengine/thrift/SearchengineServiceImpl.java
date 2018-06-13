@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -228,6 +229,7 @@ public class SearchengineServiceImpl implements Iface {
 	}
 
 	@Override
+	@CounterIface
 	public List<Integer> queryCompanyTagUserIdList(Map<String, String> params) throws BIZException,TException {
 		try{
 			List<Integer> res=talentpoolSearchengine.getUserListByCompanyTag(params);

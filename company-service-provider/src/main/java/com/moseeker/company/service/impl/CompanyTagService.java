@@ -66,8 +66,10 @@ public class CompanyTagService {
                     }
                     params.put("size","0");
                     int total=service.queryCompanyTagUserIdListCount(params);
+                    logger.info("总条数为"+total+"=============================");
                     //测试时为100，注意线上为1000
                     int totalPage=(int)Math.ceil((double)total/500.0);
+                    logger.info("总页数为"+totalPage+"=============================");
                     /*
                      type==1是更新状态，需要把库中的关心先删除，然后把新的标签和人才关系入库
                      */
@@ -75,6 +77,7 @@ public class CompanyTagService {
                         talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
                     }
                     for(int i=1;i<=totalPage;i++){
+                        logger.info("执行第"+i+"页");
                         this.handlerUserIdList(tagIdList,type,map,i,500);
                     }
                 }

@@ -205,9 +205,6 @@ public class TalentpoolSearchengine {
         try{
             SearchResponse response=this.handlerSearch(params);
             Map<String,Object> result = searchUtil.handleData(response,"userIdList");
-            logger.info("============================================");
-            logger.info(JSON.toJSONString(result));
-            logger.info("============================================");
             if(result!=null&&!result.isEmpty()){
                 long totalNum=(long)result.get("totalNum");
                 if(totalNum>0){
@@ -217,9 +214,6 @@ public class TalentpoolSearchengine {
         }catch(Exception e){
             logger.info(e.getMessage()+"=================",e);
         }
-        logger.info("==========================");
-        logger.info(JSON.toJSONString(list));
-        logger.info("==========================");
         return list;
     }
 
@@ -228,7 +222,6 @@ public class TalentpoolSearchengine {
      */
     @CounterIface
     public int getUserListByCompanyTagCount(Map<String,String> params){
-        List<Integer> list=new ArrayList<>();
         try{
             SearchResponse response=this.handlerSearch(params);
             Map<String,Object> result = searchUtil.handleData(response,"userIdList");
@@ -242,9 +235,6 @@ public class TalentpoolSearchengine {
         }catch(Exception e){
             logger.info(e.getMessage()+"=================",e);
         }
-        logger.info("==========================");
-        logger.info(JSON.toJSONString(list));
-        logger.info("==========================");
         return 0;
     }
 
@@ -526,21 +516,16 @@ public class TalentpoolSearchengine {
     private void handlerResult(Map<String,Object> result,List<Integer> userIdList){
         List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
         for(Map<String,Object> map:dataList){
-            logger.info("============================================userIdList");
             if(map!=null&&!map.isEmpty()){
                 Map<String,Object> userMap=(Map<String,Object>)map.get("user");
-                logger.info("============================================user");
                 if(userMap!=null&&!userMap.isEmpty()){
                     Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
-                    logger.info("============================================profiles");
                     logger.info(JSON.toJSONString(profiles));
                     if(profiles!=null&&!profiles.isEmpty()){
                         Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
-                        logger.info("============================================profile");
                         logger.info(JSON.toJSONString(profile));
                         if(profile!=null&&!profile.isEmpty()){
                             int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
-                            logger.info("============================================user_id"+userId);
                             userIdList.add(userId);
                         }
                     }
