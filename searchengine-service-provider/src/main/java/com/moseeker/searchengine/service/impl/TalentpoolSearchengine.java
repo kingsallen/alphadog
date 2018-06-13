@@ -1195,7 +1195,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(companyId)){
             sb.append("val.company_id=="+companyId+"&&");
         }
-        if(StringUtils.isNotNullOrEmpty(positionStatus)){
+        if(StringUtils.isNotNullOrEmpty(positionStatus)&& StringUtils.isNullOrEmpty(tagIds)){
             sb.append("val.status=="+positionStatus+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
