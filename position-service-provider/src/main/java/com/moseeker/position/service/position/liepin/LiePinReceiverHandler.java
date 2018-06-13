@@ -141,19 +141,11 @@ public class LiePinReceiverHandler {
             String[] occupationsArr = occupations.split(",");
             thirdPartyPosition.setOccupation(Arrays.asList(occupationsArr));
 
-            // 将数据组装为向猎聘请求的格式
+            // 将数据组装为向猎聘请求的格式，此数据也是用户编辑后的数据
             LiePinPositionVO liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(thirdPartyPosition, jobPositionDO, null);
 
             // 用于查询所修改的职位之前是否发布过
             List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByPid(positionId);
-
-            // 数据库中的城市list
-            List<String> cityDbList = new ArrayList<>();
-            if (null != liepinMappingDOList && liepinMappingDOList.size() > 0) {
-                for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
-                    cityDbList.add(String.valueOf(mappingDO.getCityCode()));
-                }
-            }
 
             // 判断编辑的城市中是否有未发布过的城市，如果有，就走一遍发布流程，职位发布中会判断如果是发布过的职位，不会重新发布
             boolean flag = true;
@@ -166,8 +158,14 @@ public class LiePinReceiverHandler {
 
             // 如果数据库不存在编辑的职位，则发布新职位
             if (null != liepinMappingDOList && liepinMappingDOList.size() > 0) {
+
+                // 数据库中该仟寻职位id对应的城市codeslist
+                List<String> cityDbList = liepinMappingDOList.stream().map(mappingDo -> String.valueOf(mappingDo.getCityCode())).collect(Collectors.toList());
+                // 数据库中该仟寻职位id对应的titlelist
+                List<String> titleDbList = liepinMappingDOList.stream().map(mappingDo -> mappingDo.getJobTitle()).collect(Collectors.toList());
+
                 // 先判断title是否存在，不存在的话发布新职位
-                if (liepinMappingDOList.get(0).getJobTitle().equals(jobPositionDO.getTitle())) {
+                if (titleDbList.contains(jobPositionDO.getTitle())) {
 
                     for (String cityCode : cityCodesList) {
 

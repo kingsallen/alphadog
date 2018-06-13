@@ -686,13 +686,26 @@ public class UserHrAccountServiceImpl implements Iface {
         }
     }
 
-    public Response getUnBindThirdPartyAccountDO(int channel) throws BIZException, TException {
+    @Override
+    public List<HrThirdPartyAccountDO>  getUnBindThirdPartyAccountDO(int channel) throws BIZException, TException {
         try {
             return thirdPartyAccountService.getUnBindThirdPartyAccountDO(channel);
         } catch (BIZException e){
             throw e;
         } catch (Exception e){
             logger.error("================getThirdPartyAccountDO error:{},hrId:{},channel:{}=============", e, channel);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public String bindLiepinUserAccount(String username, String password) throws BIZException, TException {
+        try {
+            return thirdPartyAccountService.bindLiepinUserAccount(username, password);
+        } catch (BIZException e){
+            throw e;
+        } catch (Exception e){
+            logger.error("================bindLiepinUserAccount username:{},password:{},errmsg:{}=============", username,password,e);
             throw new SysBIZException();
         }
     }

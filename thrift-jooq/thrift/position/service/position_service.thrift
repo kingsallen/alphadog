@@ -72,6 +72,7 @@ service PositionServices {
 
     i32 updateThirdPartyPositionWithAccount(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition,2:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount,3:map<string,string> extData) throws (1: common_struct.BIZException e);
 
+    // 通过hr在猎聘的用户id获取hr在猎聘发布的职位id
     list<job_position_liepin_mapping.JobPositionLiepinMappingDO> getLiepinPositionIds(1:i32 userId);
 
     //获取pc端职位推荐

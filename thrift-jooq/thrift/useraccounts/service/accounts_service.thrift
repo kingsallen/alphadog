@@ -180,6 +180,15 @@ service UserHrAccountService {
 
     //设置HR聊天是否托管给智能招聘助手
     user_hr_account_struct.UserHrAccountDO switchChatLeaveToMobot(1:i32 accountId,2:i8 leaveToMobot) throws (1: common_struct.BIZException e);
+
+    //获取已经在猎聘绑定的hr第三方账号信息，主要是为了提供猎聘token
+    common_struct.Response getThirdPartyAccountDO(1:i32 channel) throws (1: common_struct.BIZException e);
+
+    //获取已经在猎聘绑定的hr第三方账号信息，主要是为了提供猎聘token
+    list<hr_third_party_account_struct.HrThirdPartyAccountDO> getUnBindThirdPartyAccountDO(1:i32 channel) throws (1: common_struct.BIZException e);
+
+    string bindLiepinUserAccount(1:string username, 2:string password) throws (1: common_struct.BIZException e);
+
 }
 
 

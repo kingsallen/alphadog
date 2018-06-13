@@ -19,29 +19,29 @@ import java.util.List;
  * @author cjm
  * @date 2018-05-28 16:16
  **/
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class LPUserAccountBindTest {
 
     @Autowired
     HRThirdPartyAccountDao dao;
 
-    @Test
+//    @Test
     public void testBind() throws Exception {
         HrThirdPartyAccountDO user = new HrThirdPartyAccountDO();
         user.setUsername("mayflower");
-        user.setPassword("20180530");
+        user.setPassword("20180612");
         LiePinUserAccountBindHandler handler = new LiePinUserAccountBindHandler();
         user = handler.bind(user, null);
     }
 
-    @Test
+//    @Test
     public void testGet() throws Exception {
 
         List<HrThirdPartyAccountDO>  list = dao.getBoundThirdPartyAccountDO(2);
     }
 
-    @Test
+//    @Test
     public void test1(){
 
     }

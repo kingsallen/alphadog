@@ -29,50 +29,47 @@ import java.util.Map;
  **/
 @Component
 public class LiePinUserAccountBindHandler implements IBindRequest{
+
     private Logger logger = LoggerFactory.getLogger(LiePinUserAccountBindHandler.class);
+
     @Override
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         try{
-            // 构造请求数据
-            Map<String, String> requestMap = new HashMap<>();
-            requestMap.put("usere_login", hrThirdPartyAccount.getUsername());
-            requestMap.put("password", hrThirdPartyAccount.getPassword());
-            String t = new SimpleDateFormat("yyyyMMdd").format(new Date());
-            requestMap.put("t", t);
+            String username = hrThirdPartyAccount.getUsername();
+            String password = hrThirdPartyAccount.getPassword();
 
-            //生成签名
-            String sign = Md5Utils.getMD5SortKey(Md5Utils.mapToList(requestMap), requestMap);
-            requestMap.put("sign", sign);
+            String resultJson = sendRequest2Liepin(username, password);
 
-            //设置请求头
-            Map<String, String> headers = new HashMap<>();
-            headers.put("channel", "qianxun");
-
-            //发送请求
-            String resultJson = HttpClientUtil.sentHttpPostRequest(UserAccountConstant.LP_USER_BIND_URL, headers, requestMap);
             logger.info("==============LiePinBindResultJson:{}================", resultJson);
+
             if(StringUtils.isNullOrEmpty(resultJson)){
                 logger.info("================用户绑定时http请求结果为空=================");
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "用户绑定时http请求结果为空");
             }
             JSONObject result = JSONObject.parseObject(resultJson);
+
             // 请求结果处理
             if("0".equals(String.valueOf(result.get("code")))){
-                String usereId = result.getString("usere_id");
-                String liePinToken = result.getString("token");
-                hrThirdPartyAccount.setExt(liePinToken);
-                hrThirdPartyAccount.setExt2(usereId);
+                JSONObject userInfo = JSONObject.parseObject(result.getString("data"));
+                String userId = userInfo.getString("usere_id");
+                String token = userInfo.getString("token");
+                hrThirdPartyAccount.setExt(token);
+                hrThirdPartyAccount.setExt2(userId);
                 hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
+
                 logger.info("==================请求绑定成功，hrThirdPartyAccount:{}==================", hrThirdPartyAccount);
             }else{
+
                 throw new BIZException(Integer.parseInt(String.valueOf(result.get("code"))), String.valueOf(result.get("message")));
             }
         }catch (BIZException e){
+
             logger.info("=================errormsg:{}===================", e.getMessage());
             e.printStackTrace();
             hrThirdPartyAccount.setBinding((short) BindingStatus.ERROR.getValue());
             hrThirdPartyAccount.setErrorMessage(e.getMessage());
         }catch (Exception e){
+
             logger.info("=================猎聘对接用户绑定时后台异常===================");
             e.printStackTrace();
             hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
@@ -80,6 +77,28 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
         }
         return hrThirdPartyAccount;
     }
+
+    public String sendRequest2Liepin(String username, String password) throws Exception {
+
+        // 构造请求数据
+        Map<String, String> requestMap = new HashMap<>();
+        requestMap.put("usere_login", username);
+        requestMap.put("password", password);
+        String t = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        requestMap.put("t", t);
+
+        //生成签名
+        String sign = Md5Utils.getMD5SortKey(Md5Utils.mapToList(requestMap), requestMap);
+        requestMap.put("sign", sign);
+
+        //设置请求头
+        Map<String, String> headers = new HashMap<>();
+        headers.put("channel", "qianxun");
+
+        //发送请求
+        return HttpClientUtil.sentHttpPostRequest(UserAccountConstant.LP_USER_BIND_URL, headers, requestMap);
+    }
+
 
     @Override
     public ChannelType getChannelType() {

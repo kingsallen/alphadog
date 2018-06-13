@@ -26,12 +26,14 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -60,7 +62,7 @@ public class UserHrAccountController {
 
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
-    public UserHrAccountController(){
+    public UserHrAccountController() {
         serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
     }
 
@@ -242,15 +244,15 @@ public class UserHrAccountController {
             HrThirdPartyAccountDO struct = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
             logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
             struct = userHrAccountService.bindThirdPartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", true));
-            logger.info("bind third party account struct {}",struct);
+            logger.info("bind third party account struct {}", struct);
             if (struct.getBinding() == 100) {
                 struct.setBinding(Integer.valueOf(0).shortValue());
                 Map<String, Object> result = thirdpartyAccountToMap(struct);
                 result.put("mobile", struct.getErrorMessage());
                 return ResponseLogNotification.failJson(request, 100, "需要验证手机号", result);
             } else {
-                String result=ResponseLogNotification.successJson(request, thirdpartyAccountToMap(struct));
-                logger.info("bind third party account result {}",result);
+                String result = ResponseLogNotification.successJson(request, thirdpartyAccountToMap(struct));
+                logger.info("bind third party account result {}", result);
                 return result;
             }
         } catch (Exception e) {
@@ -374,7 +376,7 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "user_id不能为空");
             }
 
-            userHrAccountService.deleteThirdPartyAccount(accountId,userId);
+            userHrAccountService.deleteThirdPartyAccount(accountId, userId);
 
             return ResponseLogNotification.successJson(request, 1);
         } catch (Exception e) {
@@ -393,7 +395,7 @@ public class UserHrAccountController {
             }
 
             List<Integer> hrIds = (List<Integer>) params.get("hr_ids");
-            logger.info("dispath account_id : {},hr_ids : {}",accountId,hrIds);
+            logger.info("dispath account_id : {},hr_ids : {}", accountId, hrIds);
 
             if (hrIds == null) {
                 return ResponseLogNotification.fail(request, "hr_ids不能为空");
@@ -401,7 +403,7 @@ public class UserHrAccountController {
 
             ThirdPartyAccountInfo accountInfo = userHrAccountService.dispatchThirdPartyAccount(accountId, hrIds);
 
-            logger.info("dispatch result : {}",accountInfo);
+            logger.info("dispatch result : {}", accountInfo);
 
             return ResponseLogNotification.successJson(request, accountInfo);
         } catch (Exception e) {
@@ -882,7 +884,7 @@ public class UserHrAccountController {
             String email_isvalid = params.getString("email_isvalid", "");
             int pageNumber = params.getInt("pageNumber", 0);
             int pageSize = params.getInt("pageSize", 0);
-            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize, timeSpan,email_isvalid);
+            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize, timeSpan, email_isvalid);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -1091,10 +1093,10 @@ public class UserHrAccountController {
         try {
             ValidateUtil vu = new ValidateUtil();
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int account_id = params.getInt("accountId",0);
+            int account_id = params.getInt("accountId", 0);
             int wechat_id = params.getInt("wechatId", 41);
             String unionId = params.getString("unionId");
-            Response res = userHrAccountService.getHrCompanyInfo(wechat_id,unionId,account_id);
+            Response res = userHrAccountService.getHrCompanyInfo(wechat_id, unionId, account_id);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -1118,10 +1120,10 @@ public class UserHrAccountController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int account_id = params.getInt("account_id");
             byte leave_to_mobot = params.getByte("leave_to_mobot");
-            UserHrAccountDO res = userHrAccountService.switchChatLeaveToMobot(account_id,leave_to_mobot);
+            UserHrAccountDO res = userHrAccountService.switchChatLeaveToMobot(account_id, leave_to_mobot);
 
             //驼峰转下划线
-            UserHrAccount underLineResult = JSON.parseObject(JSON.toJSONString(res, serializeConfig, SerializerFeature.DisableCircularReferenceDetect),UserHrAccount.class);
+            UserHrAccount underLineResult = JSON.parseObject(JSON.toJSONString(res, serializeConfig, SerializerFeature.DisableCircularReferenceDetect), UserHrAccount.class);
             //转换json的时候去掉thrift结构体中的set方法
             JSONObject jsonResult = JSON.parseObject(BeanUtils.convertStructToJSON(underLineResult));
 
@@ -1148,7 +1150,7 @@ public class UserHrAccountController {
 
             if (StringUtils.isNullOrEmpty(message)) {
                 Response response = userHrAccountService.getThirdPartyAccountDO(channel);
-                if(null != response){
+                if (null != response) {
                     return ResponseLogNotification.success(request, response);
                 }
             } else {
@@ -1164,65 +1166,75 @@ public class UserHrAccountController {
         return ResponseLogNotification.failJson(request, "后台异常");
     }
 
-//    @RequestMapping(value = "/hraccount/getUnBindThirdPartyAccountDO", method = RequestMethod.POST)
-//    @ResponseBody
-//    public String getUnBindThirdPartyAccountDO(HttpServletRequest request) {
-//        try {
-//            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-//            int channel = params.getInt("channel");
-//            ValidateUtil validateUtil = new ValidateUtil();
-//            validateUtil.addRequiredValidate("hr账号的指定渠道", channel, null, null);
-//            validateUtil.addIntTypeValidate("hr账号的指定渠道", channel, null, null, 1, Integer.MAX_VALUE);
-//
-//            String message = validateUtil.validate();
-//
-//            if (StringUtils.isNullOrEmpty(message)) {
-//                Response response = userHrAccountService.getUnBindThirdPartyAccountDO(channel);
-//                if(null != response){
-//                    return ResponseLogNotification.success(request, response);
-//                }
-//            } else {
-//                logger.info("==================message:{}================", message);
-//                return ResponseLogNotification.fail(request, message);
-//            }
-//        } catch (BIZException e) {
-//            e.printStackTrace();
-//            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return ResponseLogNotification.failJson(request, "后台异常");
-//    }
-//
-//    @RequestMapping(value = "/hraccount/getUnBindThirdPartyAccountDO", method = RequestMethod.POST)
-//    @ResponseBody
-//    public String bindLiepinAccount(HttpServletRequest request) {
-//        try {
-//            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-//            int channel = params.getInt("channel");
-//            String username = params.getString("username");
-//
-//            ValidateUtil validateUtil = new ValidateUtil();
-//            validateUtil.addRequiredValidate("hr账号的指定渠道", channel, null, null);
-//            validateUtil.addIntTypeValidate("hr账号的指定渠道", channel, null, null, 1, Integer.MAX_VALUE);
-//
-//            String message = validateUtil.validate();
-//
-//            if (StringUtils.isNullOrEmpty(message)) {
-//                Response response = userHrAccountService.bindLiepinAccount(channel);
-//                if(null != response){
-//                    return ResponseLogNotification.success(request, response);
-//                }
-//            } else {
-//                logger.info("==================message:{}================", message);
-//                return ResponseLogNotification.fail(request, message);
-//            }
-//        } catch (BIZException e) {
-//            e.printStackTrace();
-//            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return ResponseLogNotification.failJson(request, "后台异常");
-//    }
+    @RequestMapping(value = "/hraccount/getUnBindThirdPartyAccountDO", method = RequestMethod.POST)
+    @ResponseBody
+    public String getUnBindThirdPartyAccountDO(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int channel = params.getInt("channel");
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredValidate("hr账号的指定渠道", channel, null, null);
+            validateUtil.addIntTypeValidate("hr账号的指定渠道", channel, null, null, 1, Integer.MAX_VALUE);
+
+            String message = validateUtil.validate();
+
+            if (StringUtils.isNullOrEmpty(message)) {
+                List<HrThirdPartyAccountDO> hrAccountList = userHrAccountService.getUnBindThirdPartyAccountDO(channel);
+                if (null != hrAccountList) {
+                    return ResponseLogNotification.successJson(request, hrAccountList);
+                }
+            } else {
+                logger.info("==================message:{}================", message);
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (BIZException e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseLogNotification.failJson(request, "后台异常");
+    }
+
+    @RequestMapping(value = "/hraccount/bindLiepinAccount", method = RequestMethod.POST)
+    @ResponseBody
+    public String bindLiepinAccount(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String username = params.getString("username");
+            String password = params.getString("password");
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredValidate("hr第三方账号用户名", username, null, null);
+            validateUtil.addStringLengthValidate("hr第三方账号用户名", username, null, null, 1, 255);
+            validateUtil.addRequiredValidate("hr第三方账号密码", password, null, null);
+            validateUtil.addIntTypeValidate("hr第三方账号密码", password, null, null, 1, 255);
+
+            String message = validateUtil.validate();
+
+            if (StringUtils.isNullOrEmpty(message)) {
+                String response = userHrAccountService.bindLiepinUserAccount(username, password);
+                if (StringUtils.isNotNullOrEmpty(response)) {
+                    JSONObject jsonObject = JSONObject.parseObject(response);
+                    String code = jsonObject.getString("code");
+                    if ("0".equals(code)) {
+                        return ResponseLogNotification.successJson(request, jsonObject.getString("data"));
+                    } else {
+                        return ResponseLogNotification.failJson(request, jsonObject.getString("message"));
+                    }
+                } else {
+                    return ResponseLogNotification.failJson(request, "http请求猎聘绑定失败");
+                }
+
+            } else {
+                logger.info("==================message:{}================", message);
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (BIZException e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseLogNotification.failJson(request, "后台异常");
+    }
 }

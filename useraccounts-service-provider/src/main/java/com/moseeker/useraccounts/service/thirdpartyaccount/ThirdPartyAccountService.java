@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
@@ -11,10 +12,12 @@ import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.useraccounts.service.impl.LiePinUserAccountBindHandler;
 import com.moseeker.useraccounts.service.thirdpartyaccount.info.ThirdPartyAcountEntity;
 import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -81,6 +84,9 @@ public class ThirdPartyAccountService {
 
     @Autowired
     BindCheck bindCheck;
+
+    @Autowired
+    LiePinUserAccountBindHandler bindHandler;
 
     /**
      * 第三方账号绑定
@@ -414,11 +420,15 @@ public class ThirdPartyAccountService {
      * @date  2018/5/30
      * @return
      */
-    public Response getUnBindThirdPartyAccountDO(int channel) throws Exception{
+    public List<HrThirdPartyAccountDO> getUnBindThirdPartyAccountDO(int channel) throws Exception{
         List<HrThirdPartyAccountDO> hrThirdPartyAccountDOList = thirdPartyAccountDao.getUnBindThirdPartyAccountDO(channel);
         if(hrThirdPartyAccountDOList == null){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
+            return new ArrayList<>();
         }
-        return ResponseUtils.success(hrThirdPartyAccountDOList);
+        return hrThirdPartyAccountDOList;
+    }
+
+    public String bindLiepinUserAccount(String username, String password) throws Exception {
+        return bindHandler.sendRequest2Liepin(username, password);
     }
 }
