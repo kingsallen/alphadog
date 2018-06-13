@@ -86,6 +86,7 @@ struct HrVO {
     2:  optional string hrName,             //HR名称
     3:  optional string hrHeadImg           //HR头像
     4:  optional bool isDelete              //HR是否存在
+    5:  optional string companyName         //HR对应的公司名称
 }
 
 struct UserVO {
