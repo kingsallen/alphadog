@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position.liepin;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
@@ -96,7 +97,7 @@ public class LiePinReceiverHandler {
         try {
             JSONObject liePinJsonObject = new JSONObject();
 
-            liePinJsonObject.put("id", ids.toString());
+            liePinJsonObject.put("id", ids);
 
             String requestStr = JSONObject.toJSONString(liePinJsonObject);
 
@@ -267,7 +268,7 @@ public class LiePinReceiverHandler {
         try {
             JSONObject liePinJsonObject = new JSONObject();
 
-            liePinJsonObject.put("id", ids.toString());
+            liePinJsonObject.put("id", ids);
 
             String requestStr = JSONObject.toJSONString(liePinJsonObject);
 
@@ -312,6 +313,8 @@ public class LiePinReceiverHandler {
 
                 List<Integer> requestIds = liepinMappingDOS.stream().map(liepinMappingDO -> liepinMappingDO.getId()).collect(Collectors.toList());
 
+                List<String> requestIdsStr = liepinMappingDOS.stream().map(liepinMappingDO -> String.valueOf(liepinMappingDO.getId())).collect(Collectors.toList());
+
                 if (requestIds.size() < 1) {
                     log.info("==============没有需要下架的猎聘职位==============");
                     return;
@@ -320,9 +323,9 @@ public class LiePinReceiverHandler {
                 // 构造请求数据
                 JSONObject liePinJsonObject = new JSONObject();
 
-                String requestIdsStr = requestIds.toString();
+                String requestStr = String.join(",", requestIdsStr);
 
-                liePinJsonObject.put("ejob_extRefids", requestIdsStr.substring(1, requestIdsStr.length() - 1));
+                liePinJsonObject.put("ejob_extRefids", requestStr);
 
                 String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LP_USER_STOP_JOB);
 
@@ -360,14 +363,14 @@ public class LiePinReceiverHandler {
 
         log.info("职位操作的rabitmq的参数是========" + jsonObject.toJSONString());
 
-        String positionIds = jsonObject.getString("id");
+        JSONArray positionIds = jsonObject.getJSONArray("id");
 
-        if (StringUtils.isBlank(positionIds)) {
+        if (positionIds == null || positionIds.isEmpty()) {
             log.info("===============传入id为空=================");
             return new ArrayList<>();
         }
 
-        List<String> idStrs = Arrays.asList(positionIds.substring(1, positionIds.length() - 1).split("[,，]"));
+        List<String> idStrs = positionIds.toJavaList(String.class);
 
         List<Integer> ids = new ArrayList<>();
 
@@ -464,15 +467,17 @@ public class LiePinReceiverHandler {
                 if (liepinMappingDOList.size() > 0) {
 
                     // 将需要重新发布的城市的主键id取出，用于向猎聘请求
-                    List<Integer> idsList = liepinMappingDOList.stream().map(liepinMappingDO -> liepinMappingDO.getId()).collect(Collectors.toList());
+                    List<String> idsList = liepinMappingDOList.stream().map(liepinMappingDO -> String.valueOf(liepinMappingDO.getId())).collect(Collectors.toList());
 
-                    String requestIds = idsList.toString();
+                    List<Integer> idsListDb = liepinMappingDOList.stream().map(liepinMappingDO -> liepinMappingDO.getId()).collect(Collectors.toList());
+
+                    String requestIds = String.join(",", idsList);
 
                     if (StringUtils.isNotBlank(requestIds)) {
 
                         JSONObject liePinJsonObject = new JSONObject();
 
-                        liePinJsonObject.put("ejob_extRefids", requestIds.substring(1, requestIds.length() - 1));
+                        liePinJsonObject.put("ejob_extRefids", requestIds);
 
                         String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LP_USER_REPUB_JOB);
 
@@ -481,7 +486,7 @@ public class LiePinReceiverHandler {
                         try {
                             requireValidResult(httpResultJson);
 
-                            liepinMappingDao.updateState(idsList, (byte) 1);
+                            liepinMappingDao.updateState(idsListDb, (byte) 1);
 
                         } catch (Exception e) {
 
@@ -572,25 +577,27 @@ public class LiePinReceiverHandler {
      * @date 2018/6/11
      */
     public void downShelfOldPositions(List<JobPositionLiepinMappingDO> liepinMappingDOList, String liepinToken) {
-        List<Integer> downShelfPositonList = new ArrayList<>();
+        List<String> downShelfPositonList = new ArrayList<>();
+        List<Integer> downShelfPositonListDb = new ArrayList<>();
         for (JobPositionLiepinMappingDO liepinMappingDO : liepinMappingDOList) {
             int state = liepinMappingDO.getState();
             if (state == 1) {
-                downShelfPositonList.add(liepinMappingDO.getId());
+                downShelfPositonList.add(String.valueOf(liepinMappingDO.getId()));
+                downShelfPositonListDb.add(liepinMappingDO.getId());
             }
         }
         if (downShelfPositonList.size() > 0) {
             // 将所有状态为1的职位下架
             JSONObject liePinJsonObject = new JSONObject();
-            String ids = downShelfPositonList.toString();
-            liePinJsonObject.put("ejob_extRefids", ids.substring(1, ids.length() - 1));
+            String ids = String.join(",", downShelfPositonList);
+            liePinJsonObject.put("ejob_extRefids", ids);
 
             try {
                 log.info("==================title变化，将之前所有的下架获取所有的hashid，新的发布=====================");
                 // 下架
                 String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LP_USER_STOP_JOB);
                 requireValidResult(httpResultJson);
-                liepinMappingDao.updateState(downShelfPositonList, (byte) 0);
+                liepinMappingDao.updateState(downShelfPositonListDb, (byte) 0);
             } catch (Exception e) {
                 e.printStackTrace();
             }

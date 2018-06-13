@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position.liepin;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
 import com.moseeker.common.util.DateUtils;
@@ -57,7 +58,9 @@ public class LiepinReceiverTest {
     @Test
     public void testDownShelf() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
-        liePinJsonObject.put("id", "(19493736)");
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(19493756);
+        liePinJsonObject.put("id", jsonArray);
         String requestStr = JSONObject.toJSONString(liePinJsonObject);
         Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
         receiverHandler.handlerPositionLiepinDownShelfOperation(requestMsg, null);
@@ -74,7 +77,9 @@ public class LiepinReceiverTest {
     @Test
     public void testRePublish() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
-        liePinJsonObject.put("id", "(19493736)");
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(19493756);
+        liePinJsonObject.put("id", jsonArray);
         String requestStr = JSONObject.toJSONString(liePinJsonObject);
         Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
         receiverHandler.handlerPositionLiepinReSyncOperation(requestMsg, null);
@@ -82,8 +87,8 @@ public class LiepinReceiverTest {
 
     @Test
     public void testGetPosition() throws Exception {
-        Integer positionId = 19493736;
-        Integer id = 986122475;
+        Integer positionId = 19493745;
+        Integer id = 986122478;
         String info = receiverHandler.getLpPositionInfo(positionId, id);
     }
 
