@@ -23,13 +23,12 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysCvTpl implements Serializable {
 
-    private static final long serialVersionUID = 1756055235;
+    private static final long serialVersionUID = -421982664;
 
     private Integer   id;
     private String    fieldName;
     private String    fieldTitle;
     private Integer   fieldType;
-    private String    fieldValue;
     private Integer   priority;
     private Integer   isBasic;
     private Timestamp createTime;
@@ -39,9 +38,11 @@ public class ConfigSysCvTpl implements Serializable {
     private Integer   required;
     private String    fieldDescription;
     private String    map;
+    private Integer   constantParentCode;
     private Integer   parentId;
     private String    validateRe;
-    private Integer   constantParentCode;
+    private String    errorMsg;
+    private String    fieldValue;
 
     public ConfigSysCvTpl() {}
 
@@ -50,7 +51,6 @@ public class ConfigSysCvTpl implements Serializable {
         this.fieldName = value.fieldName;
         this.fieldTitle = value.fieldTitle;
         this.fieldType = value.fieldType;
-        this.fieldValue = value.fieldValue;
         this.priority = value.priority;
         this.isBasic = value.isBasic;
         this.createTime = value.createTime;
@@ -60,9 +60,11 @@ public class ConfigSysCvTpl implements Serializable {
         this.required = value.required;
         this.fieldDescription = value.fieldDescription;
         this.map = value.map;
+        this.constantParentCode = value.constantParentCode;
         this.parentId = value.parentId;
         this.validateRe = value.validateRe;
-        this.constantParentCode = value.constantParentCode;
+        this.errorMsg = value.errorMsg;
+        this.fieldValue = value.fieldValue;
     }
 
     public ConfigSysCvTpl(
@@ -70,7 +72,6 @@ public class ConfigSysCvTpl implements Serializable {
         String    fieldName,
         String    fieldTitle,
         Integer   fieldType,
-        String    fieldValue,
         Integer   priority,
         Integer   isBasic,
         Timestamp createTime,
@@ -80,15 +81,16 @@ public class ConfigSysCvTpl implements Serializable {
         Integer   required,
         String    fieldDescription,
         String    map,
+        Integer   constantParentCode,
         Integer   parentId,
         String    validateRe,
-        Integer   constantParentCode
+        String    errorMsg,
+        String    fieldValue
     ) {
         this.id = id;
         this.fieldName = fieldName;
         this.fieldTitle = fieldTitle;
         this.fieldType = fieldType;
-        this.fieldValue = fieldValue;
         this.priority = priority;
         this.isBasic = isBasic;
         this.createTime = createTime;
@@ -98,9 +100,11 @@ public class ConfigSysCvTpl implements Serializable {
         this.required = required;
         this.fieldDescription = fieldDescription;
         this.map = map;
+        this.constantParentCode = constantParentCode;
         this.parentId = parentId;
         this.validateRe = validateRe;
-        this.constantParentCode = constantParentCode;
+        this.errorMsg = errorMsg;
+        this.fieldValue = fieldValue;
     }
 
     public Integer getId() {
@@ -133,14 +137,6 @@ public class ConfigSysCvTpl implements Serializable {
 
     public void setFieldType(Integer fieldType) {
         this.fieldType = fieldType;
-    }
-
-    public String getFieldValue() {
-        return this.fieldValue;
-    }
-
-    public void setFieldValue(String fieldValue) {
-        this.fieldValue = fieldValue;
     }
 
     public Integer getPriority() {
@@ -215,6 +211,14 @@ public class ConfigSysCvTpl implements Serializable {
         this.map = map;
     }
 
+    public Integer getConstantParentCode() {
+        return this.constantParentCode;
+    }
+
+    public void setConstantParentCode(Integer constantParentCode) {
+        this.constantParentCode = constantParentCode;
+    }
+
     public Integer getParentId() {
         return this.parentId;
     }
@@ -231,12 +235,20 @@ public class ConfigSysCvTpl implements Serializable {
         this.validateRe = validateRe;
     }
 
-    public Integer getConstantParentCode() {
-        return this.constantParentCode;
+    public String getErrorMsg() {
+        return this.errorMsg;
     }
 
-    public void setConstantParentCode(Integer constantParentCode) {
-        this.constantParentCode = constantParentCode;
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    public String getFieldValue() {
+        return this.fieldValue;
+    }
+
+    public void setFieldValue(String fieldValue) {
+        this.fieldValue = fieldValue;
     }
 
     @Override
@@ -247,7 +259,6 @@ public class ConfigSysCvTpl implements Serializable {
         sb.append(", ").append(fieldName);
         sb.append(", ").append(fieldTitle);
         sb.append(", ").append(fieldType);
-        sb.append(", ").append(fieldValue);
         sb.append(", ").append(priority);
         sb.append(", ").append(isBasic);
         sb.append(", ").append(createTime);
@@ -257,9 +268,11 @@ public class ConfigSysCvTpl implements Serializable {
         sb.append(", ").append(required);
         sb.append(", ").append(fieldDescription);
         sb.append(", ").append(map);
+        sb.append(", ").append(constantParentCode);
         sb.append(", ").append(parentId);
         sb.append(", ").append(validateRe);
-        sb.append(", ").append(constantParentCode);
+        sb.append(", ").append(errorMsg);
+        sb.append(", ").append(fieldValue);
 
         sb.append(")");
         return sb.toString();
