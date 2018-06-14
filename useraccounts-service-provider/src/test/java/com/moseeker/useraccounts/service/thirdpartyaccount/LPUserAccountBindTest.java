@@ -19,14 +19,14 @@ import java.util.List;
  * @author cjm
  * @date 2018-05-28 16:16
  **/
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class LPUserAccountBindTest {
 
     @Autowired
     HRThirdPartyAccountDao dao;
 
-//    @Test
+    @Test
     public void testBind() throws Exception {
         HrThirdPartyAccountDO user = new HrThirdPartyAccountDO();
         user.setUsername("mayflower");

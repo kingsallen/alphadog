@@ -675,7 +675,7 @@ public class LiePinReceiverHandler {
                 liepinMappingDao.updateState(downShelfPositonListDb, (byte) 0);
 
             } catch (Exception e) {
-
+                // todo 加log，kibana看不到
                 e.printStackTrace();
 
             }

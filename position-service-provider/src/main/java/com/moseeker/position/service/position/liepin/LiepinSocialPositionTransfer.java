@@ -16,6 +16,7 @@ import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.position.LiePinPositionDegree;
 import com.moseeker.position.pojo.LiePinPositionVO;
@@ -110,8 +111,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         liePinPositionVO.setDetail_edulevel_tz(null);
         liePinPositionVO.setDetail_report2(null);
         liePinPositionVO.setDetail_subordinate(moseekerJobPosition.getUnderlings() == 0 ? 0 : (int) moseekerJobPosition.getUnderlings());
-        liePinPositionVO.setDetail_duty(moseekerJobPosition.getAccountabilities());
-        liePinPositionVO.setDetail_require(moseekerJobPosition.getRequirement());
+        liePinPositionVO.setDetail_duty(moseekerJobPosition.getAccountabilities().replaceAll("□", ""));
+        liePinPositionVO.setDetail_require(moseekerJobPosition.getRequirement().replaceAll("□", ""));
         // 映射部门名称
         liePinPositionVO.setDetail_dept(getDepartmentName(positionForm, moseekerJobPosition));
         // 每个亮点八个字，最多十六个
