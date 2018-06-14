@@ -58,6 +58,8 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
     }
 
     public void updateState(List<Integer> ids, byte state) {
+
+        // todo
         Condition condition = JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.in(ids);
         create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE, state)
@@ -125,5 +127,13 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(id))
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE.eq(state))
                 .fetchInto(JobPositionLiepinMappingDO.class);
+    }
+
+    public int updateStateAndJobId(List<Integer> republishIdList, byte state, Integer positionId) {
+        return create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID, positionId)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE, state)
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.in(republishIdList))
+                .execute();
     }
 }

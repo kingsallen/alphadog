@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position.liepin;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityLiePinDao;
@@ -75,6 +76,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     public static final String LP_USER_SYNC_JOB = "https://apidev1.liepin.com/e/job/createEJob.json";
     private static final String LP_USER_REPUB_JOB = "https://apidev1.liepin.com/e/job/rePublishEjob.json";
+    private static final String LP_POSITION_EDIT = "https://apidev1.liepin.com/e/job/updateEJob.json";
 
     @Override
     public LiePinPositionVO changeToThirdPartyPosition(ThirdPartyPosition positionForm, JobPositionDO moseekerJobPosition, HrThirdPartyAccountDO account) throws Exception {
@@ -96,8 +98,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         liePinPositionVO.setEjob_privacyreq(null);
         liePinPositionVO.setEjob_salarydiscuss(positionForm.isSalaryDiscuss() ? "0" : "1");
         // 单位 : 万/年
-        liePinPositionVO.setEjob_salarylow((float) positionForm.getSalaryBottom() * positionForm.getSalaryMonth() / 10000);
-        liePinPositionVO.setEjob_salaryhigh((float) positionForm.getSalaryTop() * positionForm.getSalaryMonth() / 10000);
+        liePinPositionVO.setEjob_salarylow((float) positionForm.getSalaryBottom() * positionForm.getSalaryMonth() / 10);
+        liePinPositionVO.setEjob_salaryhigh((float) positionForm.getSalaryTop() * positionForm.getSalaryMonth() / 10);
         liePinPositionVO.setDetail_workyears(moseekerJobPosition.getExperience());
         liePinPositionVO.setDetail_sex(moseekerJobPosition.getGender() == 0 ? "女" : moseekerJobPosition.getGender() == 1 ? "男" : null);
         liePinPositionVO.setDetail_agelow(moseekerJobPosition.getAge() == 0 ? 20 : (int) moseekerJobPosition.getAge());
@@ -463,8 +465,22 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             try{
                 // 更新上架后的状态
                 if(republishIds.length() > 0){
+
                     // 上架后返回此次上架职位的数量
-                    List<Integer> republishIdList = upshelfJobPosition(republishIds, liePinToken);
+                    List<Integer> republishIdList = upshelfJobPosition(republishIds, liePinToken, positionId);
+                    logger.info("===========上架后返回此次上架职位的数量republishIdList:{}============", republishIdList);
+                    // 上架后向猎聘发送修改职位
+                    for(Integer republishId : republishIdList){
+                        logger.info("===========上架后向猎聘发送修改职位republishId:{}============", republishId);
+                        liePinPositionVO.setEjob_extRefid(String.valueOf(republishId));
+
+                        String editResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(liePinPositionVO), liePinToken, LP_POSITION_EDIT);
+                        logger.info("==================editResponse==================", editResponse);
+
+                        receiverHandler.requireValidResult(editResponse);
+
+                    }
+
                     successRePublishNum = republishIdList.size();
                 }
             }catch (Exception e){
@@ -493,14 +509,20 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         }
     }
 
-    private List<Integer> upshelfJobPosition(StringBuilder republishIds, String liePinToken) {
+
+    private List<Integer> upshelfJobPosition(StringBuilder republishIds, String liePinToken, Integer positionId) {
         byte state = 1;
         JSONObject liePinJsonObject = new JSONObject();
+        // 去掉末尾的逗号
         liePinJsonObject.put("ejob_extRefids", republishIds.substring(0, republishIds.length() - 1));
         String httpResultJson = receiverHandler.sendRequest2LiePin(liePinJsonObject, liePinToken, LP_USER_REPUB_JOB);
+
         receiverHandler.requireValidResult(httpResultJson);
+
         List<Integer> republishIdList = getRepublishList(republishIds.toString());
-        liepinMappingDao.updateState(republishIdList, state);
+
+        liepinMappingDao.updateStateAndJobId(republishIdList, state, positionId);
+
         return republishIdList;
     }
 

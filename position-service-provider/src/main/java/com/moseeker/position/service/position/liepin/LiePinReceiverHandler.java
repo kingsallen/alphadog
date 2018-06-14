@@ -38,6 +38,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -51,6 +52,7 @@ import java.util.stream.Collectors;
  **/
 @Component
 @PropertySource("classpath:common.properties")
+@Transactional(rollbackFor = Exception.class)
 public class LiePinReceiverHandler {
 
     private static Logger log = LoggerFactory.getLogger(LiePinReceiverHandler.class);
@@ -90,7 +92,7 @@ public class LiePinReceiverHandler {
 
     /**
      * 批量处理编辑职位操作
-     *
+     * 用于ats批量处理
      * @param
      * @return
      * @author cjm
@@ -273,7 +275,7 @@ public class LiePinReceiverHandler {
 
     /**
      * 批量处理职位下架
-     *
+     * ats批量下架
      * @param
      * @return
      * @author cjm

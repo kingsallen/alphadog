@@ -710,7 +710,7 @@ public class PositionService {
                 // 更新jobposition数据，由于做逻辑删除，所以不删除jobpositionExt和jobpositionCity数据
                 jobPositionDao.updateRecords(dbOnlineList);
 
-                // 猎聘api对接下架职位
+                // 猎聘api对接下架职位 todo 这行代码是新增
                 pool.startTast(() ->  receiverHandler.batchHandlerLiepinDownShelfOperation(jobPositionIds));
             }
         }
@@ -1082,7 +1082,7 @@ public class PositionService {
                 featureData.setData(needBindFeatureData);
                 positionATSService.updatePositionFeature(featureData);
             }
-            // 批量请求猎聘编辑职位信息
+            // 批量请求猎聘编辑职位信息 todo 这两行代码是新增
             List<Integer> updatePositionIds = jobPositionUpdateRecordList.stream().map(updateRecord -> updateRecord.getId()).collect(Collectors.toList());
             pool.startTast(() -> receiverHandler.batchHandleLiepinEditOperation(updatePositionIds));
 
@@ -1203,6 +1203,13 @@ public class PositionService {
             PositionService.UpdateES updataESThread = new PositionService.UpdateES(list);
             Thread thread = new Thread(updataESThread);
             thread.start();
+
+            // todo 删除时同时向猎聘下架职位
+            // 猎聘api对接下架职位 todo 这行代码是新增
+            List<Integer> jobPositionIds = new ArrayList<>();
+            jobPositionIds.add(id);
+            pool.startTast(() ->  receiverHandler.batchHandlerLiepinDownShelfOperation(jobPositionIds));
+
             return ResponseUtils.success(0);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);

@@ -140,7 +140,7 @@ public abstract class AbstractPositionTransfer<Form, R, Info, ExtP> {
         String syncData = JSON.toJSONString(result.getPositionWithAccount());
         // 提交到chaos处理
         logger.info("chaosService.synchronizePosition:{}", syncData);
-        chaosService.synchronizePosition(Arrays.asList(syncData));
+        chaosService.synchronizePosition(toChaosJson(result.getPositionWithAccount()));
 
         // 回写数据到第三方职位表表
         TwoParam fullThirdPartyPosition = new TwoParam(result.getThirdPartyPositionDO(),result.getExtPosition());

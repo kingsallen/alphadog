@@ -280,12 +280,11 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
      */
     @SuppressWarnings("unchecked")
     public List<HrThirdPartyAccountDO> getUnBindThirdPartyAccountDO(int channel){
-        Query query = new Query.QueryBuilder()
-                .where(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.getName(), (short)channel))
-                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), BindingStatus.BOUND.getValue()))
-                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2.getName(), "", ValueOp.EQ))
-                .buildQuery();
-        return getDatas(query);
+        return create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short)channel))
+                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.eq((short)BindingStatus.BOUND.getValue()))
+                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2.eq(""))
+                .fetchInto(HrThirdPartyAccountDO.class);
     }
 
     public int updateBindToken(String liepinToken, Integer liepinUserId, Integer hrThirdAccountId) {
