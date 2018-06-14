@@ -155,7 +155,9 @@ public class ReceiverHandler {
         return recomParams;
     }
 
-
+    /*
+     获取发布模板
+     */
     private int getTemplateId(int type){
         int templateId=0;
         switch (type) {
@@ -167,7 +169,9 @@ public class ReceiverHandler {
         }
         return templateId;
     }
+    /*
 
+     */
     private void handlerTempLateLog(LogVO logVO,int type){
         if(type==1){
             logVO.setEvent("FANS_PROFILE_COMPLETION");
