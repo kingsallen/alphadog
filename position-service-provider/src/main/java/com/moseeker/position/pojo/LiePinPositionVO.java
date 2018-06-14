@@ -31,7 +31,7 @@ public class LiePinPositionVO {
     private Integer detail_language_japanese;//语言要求-日语(有=1,无=0)默认:0
     private Integer detail_language_french;//语言要求-法语(有=1,无=0)默认:0
     private Integer detail_language_putong;//语言要求-普通话(有=1,无=0)默认:0
-    private Integer ddetail_language_yueyu;//语言要求-普通话(有=1,无=0)默认:0
+    private Integer detail_language_yueyu;//语言要求-普通话(有=1,无=0)默认:0
     private Integer detail_language_other;//语言要求-其它(有=1,无=0)默认:0
     private String detail_language_content;//语言要求-其它内容，最多80个字如果填写此字段，则detail_language_other要求为1
     private String detail_special;//专业要求,最多32个字
@@ -275,12 +275,12 @@ public class LiePinPositionVO {
         this.detail_language_putong = detail_language_putong;
     }
 
-    public Integer getDdetail_language_yueyu() {
-        return ddetail_language_yueyu;
+    public Integer getDetail_language_yueyu() {
+        return detail_language_yueyu;
     }
 
-    public void setDdetail_language_yueyu(Integer ddetail_language_yueyu) {
-        this.ddetail_language_yueyu = ddetail_language_yueyu;
+    public void setDetail_language_yueyu(Integer detail_language_yueyu) {
+        this.detail_language_yueyu = detail_language_yueyu;
     }
 
     public Integer getDetail_language_other() {
@@ -359,7 +359,7 @@ public class LiePinPositionVO {
                 ", detail_language_japanese=" + detail_language_japanese +
                 ", detail_language_french=" + detail_language_french +
                 ", detail_language_putong=" + detail_language_putong +
-                ", ddetail_language_yueyu=" + ddetail_language_yueyu +
+                ", detail_language_yueyu=" + detail_language_yueyu +
                 ", detail_language_other=" + detail_language_other +
                 ", detail_language_content='" + detail_language_content + '\'' +
                 ", detail_special='" + detail_special + '\'' +
