@@ -200,7 +200,8 @@ public class CrawlerUtils {
          * 			-3		32006
          * 			-5		32007
          * 			5		32010
-         * 		    6
+         * 		    6       32011
+         * 		    7       32012
          * 			-2		其他
          * */
         if (messagBean.get("status") != null && (Integer) messagBean.get("status") == 0) {
@@ -252,6 +253,14 @@ public class CrawlerUtils {
                 && (Integer) messagBean.get("status") == 5) {
             decre(user_id, channelType);
             return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_PROFILE_EMPTY);
+        } else if (messagBean.get("status") != null
+                && (Integer) messagBean.get("status") == 6) {
+            decre(user_id, channelType);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_NEED_VERIFY_CODE);
+        } else if (messagBean.get("status") != null
+                && (Integer) messagBean.get("status") == 7) {
+            decre(user_id, channelType);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_ACCOUNT_LIMIT);
         }
         decre(user_id, channelType);
         return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_PARAM_ILLEGAL);
