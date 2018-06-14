@@ -1607,7 +1607,7 @@ public class PositionService {
         if(StringUtils.isEmptyList(pids)){
             return null;
         }
-        List<WechatPositionListData> result=this.getWxPosition(pids);
+        List<WechatPositionListData> result=this.getRecomWxPosition(pids);
         //这段本来可以不加，可是涉及到分页，所以肯定要在这边加上修改是否推送的功能
         if(!StringUtils.isEmptyList(result)&&pageNum>1){
             this.updateIsSendStatus(list);
@@ -1621,7 +1621,7 @@ public class PositionService {
             return null;
         }
         int count=this.getCampaignRecomPositionlistByIdAndCompanyTypeCount(recomPushId,companyId,type);
-        List<WechatPositionListData> result=this.getWxPosition(pids);
+        List<WechatPositionListData> result=this.getRecomWxPosition(pids);
         if(!StringUtils.isEmptyList(result)){
             for(WechatPositionListData position:result){
                 position.setTotalNum(count);
@@ -1680,7 +1680,7 @@ public class PositionService {
       通过user_id 获取 CampaignPersonaRecomPojo 的list集合
      */
     private  List<CampaignPersonaRecomRecord> getPersonaRecomPositionList(int userId,int companyId,int type, int pageNum, int pageSize){
-        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).orderBy("create_time", Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).orderBy("id", Order.ASC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         return list;
     }
@@ -1717,18 +1717,30 @@ public class PositionService {
         }
     }
 
+    private List<WechatPositionListData> getRecomWxPosition(List<Integer> jdIdList){
+        logger.info("jdIdList: " + jdIdList);
+        Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
+        Query q = new Query.QueryBuilder().where(con).buildQuery();
+        List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
+        List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords);
+        return dataList;
+    }
+
     /*
      将通过position.id获取微信端职位列表的接口拆出来，单独成立私有方法，从而保证可共用性
      */
     private List<WechatPositionListData> getWxPosition(List<Integer> jdIdList){
         // 通过 pid 列表查询 position 信息
-        List<WechatPositionListData> dataList = new ArrayList<>();
         logger.info("jdIdList: " + jdIdList);
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(con).and("status",0).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
-        //List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
-        //Map<Integer, Set<String>> cityMap = commonPositionUtils.handlePositionCity(jdIdList);
+        List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords);
+        return dataList;
+    }
+
+    private List<WechatPositionListData> handerPositionWx(List<Integer> jdIdList,List<JobPositionRecordWithCityName> jobRecords){
+        List<WechatPositionListData> dataList = new ArrayList<>();
         for (int i = 0; i < jdIdList.size(); i++) {
             int positionId = jdIdList.get(i);
             for (JobPositionRecordWithCityName jr : jobRecords) {
@@ -1798,7 +1810,6 @@ public class PositionService {
             s.setCompany_name(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getName());
             return s;
         }).collect(Collectors.toList());
-
         return dataList;
     }
 

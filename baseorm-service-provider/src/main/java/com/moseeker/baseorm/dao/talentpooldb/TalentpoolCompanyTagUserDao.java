@@ -7,9 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import com.moseeker.common.util.StringUtils;
-import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -63,6 +61,19 @@ public class TalentpoolCompanyTagUserDao extends JooqCrudImpl<com.moseeker.baseo
             return 1;
         }
         return 0;
+    }
+
+    public void addTagAndUser(List<TalentpoolCompanyTagUserRecord> list){
+        if(!StringUtils.isEmptyList(list)){
+            for(TalentpoolCompanyTagUserRecord record:list){
+                create.insertInto(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER,TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID ,
+                        TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID)
+                        .values(record.getTagId(), record.getUserId())
+                        .onDuplicateKeyUpdate()
+                        .set(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID,record.getUserId())
+                        .execute();
+            }
+        }
     }
     //删除人才和标签的关系
     public int batchDeleteTagAndUser(List<TalentpoolCompanyTagUserRecord> list){

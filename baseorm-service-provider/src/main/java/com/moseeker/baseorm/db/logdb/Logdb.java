@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.logdb;
 
 
+import com.moseeker.baseorm.db.logdb.tables.LogAiRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
 import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
 import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
@@ -44,12 +45,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Logdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -2093185723;
+    private static final long serialVersionUID = -1229757035;
 
     /**
      * The reference instance of <code>logdb</code>
      */
     public static final Logdb LOGDB = new Logdb();
+
+    /**
+     * 智能画像日志表
+     */
+    public final LogAiRecom LOG_AI_RECOM = com.moseeker.baseorm.db.logdb.tables.LogAiRecom.LOG_AI_RECOM;
 
     /**
      * The table <code>logdb.log_cronjob</code>.
@@ -97,7 +103,7 @@ public class Logdb extends SchemaImpl {
     public final LogSmsSendrecord LOG_SMS_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord.LOG_SMS_SENDRECORD;
 
     /**
-     * 邮件额度每天消耗日志
+     * 邮件额度每天使用日志
      */
     public final LogTalentpoolEmailDailyLog LOG_TALENTPOOL_EMAIL_DAILY_LOG = com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG;
 
@@ -151,6 +157,7 @@ public class Logdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            LogAiRecom.LOG_AI_RECOM,
             LogCronjob.LOG_CRONJOB,
             LogDeadLetter.LOG_DEAD_LETTER,
             LogEmailSendrecord.LOG_EMAIL_SENDRECORD,
