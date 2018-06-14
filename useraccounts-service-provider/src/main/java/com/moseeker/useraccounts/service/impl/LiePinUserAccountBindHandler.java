@@ -35,7 +35,9 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
     @Override
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         try{
+
             String username = hrThirdPartyAccount.getUsername();
+
             String password = hrThirdPartyAccount.getPassword();
 
             String resultJson = sendRequest2Liepin(username, password);

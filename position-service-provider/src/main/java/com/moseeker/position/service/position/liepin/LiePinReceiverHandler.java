@@ -2,8 +2,8 @@ package com.moseeker.position.service.position.liepin;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -18,7 +18,8 @@ import com.moseeker.position.utils.HttpClientUtil;
 import com.moseeker.position.utils.Md5Utils;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -65,6 +66,9 @@ public class LiePinReceiverHandler {
 
     @Autowired
     private HRThirdPartyAccountDao thirdPartyAccountDao;
+
+    @Autowired
+    private HRThirdPartyAccountHrDao hrThirdPartyDao;
 
     @Autowired
     private LiepinSocialPositionTransfer liepinSocialPositionTransfer;
@@ -122,7 +126,9 @@ public class LiePinReceiverHandler {
         try {
 
             msgBody = new String(message.getBody(), "UTF-8");
+
             log.info("===============msgBody:{}===============", msgBody);
+
             List<Integer> ids = requireValidMessage(msgBody);
 
             if (ids == null || ids.size() == 0) {
@@ -133,17 +139,15 @@ public class LiePinReceiverHandler {
 
             int positionId = ids.get(0);
 
-            JobPositionDO jobPositionDO = jobPositionDao.getJobPositionById(positionId);
+            String liePinToken = getLiepinToken(positionId);
 
-            int publisher = jobPositionDO.getPublisher();
-
-            Result result = thirdPartyAccountDao.getThirdPartyAccountTokenByHrId(publisher, positionChannel);
-
-            if (result == null || result.size() < 1) {
+            if(StringUtils.isBlank(liePinToken)){
+                log.info("============token为空=============");
                 return;
             }
 
-            String liePinToken = String.valueOf(result.getValue(0, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2));
+            JobPositionDO jobPositionDO = null;
+
             log.info("==============liePinToken:{}===============", liePinToken);
             for (int id : ids) {
 
@@ -154,6 +158,11 @@ public class LiePinReceiverHandler {
 
                 // 获取在仟寻填写的猎聘职位信息
                 HrThirdPartyPositionDO hrThirdPartyPositionDO = hrThirdPartyPositionDao.getThirdPartyPositionById(positionId, positionChannel);
+
+                if(hrThirdPartyPositionDO == null){
+                    log.info("==============positionId:{}填写的第三方职位信息查不到=============", positionId);
+                    continue;
+                }
 
                 ThirdPartyPosition thirdPartyPosition = new ThirdPartyPosition();
 
@@ -260,14 +269,6 @@ public class LiePinReceiverHandler {
             this.handleTemplateLogDeadLetter(message, msgBody, e.getMessage());
             log.error(e.getMessage(), e);
         }
-    }
-
-    private List<String> removeDuplicateTitle(List<String> titleDbList) {
-        LinkedHashSet<String> set = new LinkedHashSet<>(titleDbList.size());
-        set.addAll(titleDbList);
-        titleDbList.clear();
-        titleDbList.addAll(set);
-        return titleDbList;
     }
 
     /**
@@ -402,19 +403,43 @@ public class LiePinReceiverHandler {
         return ids;
     }
 
+    /**
+     * 通过职位id获取token
+     * @param
+     * @author  cjm
+     * @date  2018/6/13
+     * @return
+     */
     private String getLiepinToken(int positionId) throws Exception {
 
+        int channel = 2;
+
+        // 获取发布人hrid
         JobPositionDO jobPositionDO = jobPositionDao.getJobPositionById(positionId);
-        if (jobPositionDO == null) {
-            throw new Exception("职位不存在");
+
+        if(jobPositionDO == null){
+            return null;
         }
-        int positionChannel = 2;
+
         int publisher = jobPositionDO.getPublisher();
-        Result result = thirdPartyAccountDao.getThirdPartyAccountTokenByHrId(publisher, positionChannel);
-        if (result != null && result.size() > 0) {
-            return String.valueOf(result.getValue(0, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2));
+
+        // 获取第三方账号和hr账号关联表数据
+        HrThirdPartyAccountHrDO hrThirdDO = hrThirdPartyDao.getHrAccountInfo(publisher, channel);
+
+        if(hrThirdDO == null){
+            return null;
         }
-        throw new Exception("无可用的token");
+
+        int thirdAccountId = hrThirdDO.getThirdPartyAccountId();
+
+        // 获取第三方账号token
+        HrThirdPartyAccountDO thirdPartyAccountDO = thirdPartyAccountDao.getAccountById(thirdAccountId);
+
+        if(thirdPartyAccountDO == null){
+            return null;
+        }
+
+        return  thirdPartyAccountDO.getExt2();
     }
 
     /**
@@ -537,11 +562,17 @@ public class LiePinReceiverHandler {
      * @date 2018/6/10
      */
     private void editSinglePosition(LiePinPositionVO liePinPositionVO, String liePinToken, JobPositionLiepinMappingDO mappingDO) {
+
         JSONObject liePinObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
+
         String httpResultJson = sendRequest2LiePin(liePinObject, liePinToken, LP_POSITION_EDIT);
+
         log.info("============httpResultJson:{}===========", httpResultJson);
+
         try {
+
             requireValidResult(httpResultJson);
+
         } catch (Exception e) {
             liepinMappingDao.updateErrMsg(mappingDO.getId(), e.getMessage());
         }
@@ -556,16 +587,27 @@ public class LiePinReceiverHandler {
      * @date 2018/6/10
      */
     private void upShelfOldSinglePosition(JobPositionLiepinMappingDO mappingDO, String liepinToken) {
+
         JSONObject liePinJsonObject = new JSONObject();
+
         liePinJsonObject.put("ejob_extRefids", mappingDO.getId());
+
         try {
+
             String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LP_USER_REPUB_JOB);
+
             requireValidResult(httpResultJson);
+
             List<Integer> ids = new ArrayList<>();
+
             ids.add(mappingDO.getId());
+
             liepinMappingDao.updateState(ids, (byte) 1);
+
         } catch (Exception e) {
+
             liepinMappingDao.updateErrMsg(mappingDO.getId(), e.getMessage());
+
         }
     }
 
@@ -578,8 +620,11 @@ public class LiePinReceiverHandler {
      * @date 2018/6/11
      */
     private void downShelfOldSinglePosition(JobPositionLiepinMappingDO jobPositionMapping, String liepinToken) {
+
         List<JobPositionLiepinMappingDO> list = new ArrayList<>();
+
         list.add(jobPositionMapping);
+
         downShelfOldPositions(list, liepinToken);
     }
 
@@ -592,60 +637,92 @@ public class LiePinReceiverHandler {
      * @date 2018/6/11
      */
     public void downShelfOldPositions(List<JobPositionLiepinMappingDO> liepinMappingDOList, String liepinToken) {
+
         List<String> downShelfPositonList = new ArrayList<>();
+
         List<Integer> downShelfPositonListDb = new ArrayList<>();
+
         for (JobPositionLiepinMappingDO liepinMappingDO : liepinMappingDOList) {
+
             int state = liepinMappingDO.getState();
+
             if (state == 1) {
+
                 downShelfPositonList.add(String.valueOf(liepinMappingDO.getId()));
+
                 downShelfPositonListDb.add(liepinMappingDO.getId());
             }
         }
         if (downShelfPositonList.size() > 0) {
+
             // 将所有状态为1的职位下架
             JSONObject liePinJsonObject = new JSONObject();
+
             String ids = String.join(",", downShelfPositonList);
+
             liePinJsonObject.put("ejob_extRefids", ids);
 
             try {
                 log.info("==================title变化，将之前所有的下架获取所有的hashid，新的发布=====================");
+
                 // 下架
                 String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LP_USER_STOP_JOB);
+
                 requireValidResult(httpResultJson);
+
                 liepinMappingDao.updateState(downShelfPositonListDb, (byte) 0);
+
             } catch (Exception e) {
+
                 e.printStackTrace();
+
             }
         }
     }
 
     public JSONObject requireValidResult(String httpResultJson) {
+
         if (StringUtils.isBlank(httpResultJson)) {
             throw new RuntimeException("猎聘请求结果为空");
         }
+
         JSONObject httpResult = JSONObject.parseObject(httpResultJson);
+
         if (null == httpResult) {
+
             throw new RuntimeException("向猎聘发送请求失败");
+
         } else if (httpResult.getIntValue("code") != 0) {
+
             log.info("==============httpResult:{}================", httpResult);
+
             throw new RuntimeException("猎聘职位请求失败," + httpResult.getString("message"));
         }
         return httpResult;
     }
 
     public String sendRequest2LiePin(JSONObject liePinJsonObject, String liePinToken, String url) {
+
         String t = DateUtils.dateToPattern(new Date(), "yyyyMMdd");
+
         liePinJsonObject.put("t", t);
+
         String sign = Md5Utils.getMD5SortKey(Md5Utils.mapToList(liePinJsonObject), liePinJsonObject);
+
         liePinJsonObject.put("sign", sign);
 
         //设置请求头
         Map<String, String> headers = new HashMap<>();
+
         headers.put("channel", "qianxun");
+
         headers.put("token", liePinToken);
+
         String httpResultJson = null;
+
         try {
             httpResultJson = HttpClientUtil.sentHttpPostRequest(url, headers, liePinJsonObject);
+
         } catch (Exception e) {
             e.printStackTrace();
             log.info("============职位同步时http请求异常============");
@@ -653,15 +730,27 @@ public class LiePinReceiverHandler {
         return httpResultJson;
     }
 
+    private List<String> removeDuplicateTitle(List<String> titleDbList) {
+        LinkedHashSet<String> set = new LinkedHashSet<>(titleDbList.size());
+        set.addAll(titleDbList);
+        titleDbList.clear();
+        titleDbList.addAll(set);
+        return titleDbList;
+    }
+
     private void sendSyncPosition(int positionId, ThirdPartyPosition thirdPartyPosition) throws Exception {
+
         ThirdPartyPositionForm positionForm = new ThirdPartyPositionForm();
+
         positionForm.setAppid(0);
         positionForm.setPositionId(positionId);
         positionForm.setRequestType(1);
         List<String> list = new ArrayList<>();
         list.add(JSONObject.toJSONString(thirdPartyPosition));
         positionForm.setChannels(list);
+
         hrThirdPartyPositionDao.updateBindState(positionId, 2);
+
         positionBS.syncPositionToThirdParty(positionForm);
     }
 

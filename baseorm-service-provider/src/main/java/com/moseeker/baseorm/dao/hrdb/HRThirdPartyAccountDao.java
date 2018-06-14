@@ -235,7 +235,7 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
     }
 
     /**
-     * 通过hrid获取猎聘的第三方账号token和账号id
+     * 通过hrid获取猎聘的第三方账号token和账号id, 该方法目前只有一个获取猎聘职位信息接口用到
      * @param
      * @author  cjm
      * @date  2018/6/1
@@ -255,24 +255,6 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
     private FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
 
     /**
-     * 通过职位id获取猎聘token
-     * @param
-     * @author  cjm
-     * @date  2018/6/4
-     * @return
-     */
-    public Result getThirdPartyAccountTokenByPid(int positionId, int positionChannel) {
-        return create.select(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2)
-                .from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-                .join(JobPosition.JOB_POSITION)
-                .on(JobPosition.JOB_POSITION.PUBLISHER.eq(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID))
-                .join(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
-                .on(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID))
-                .where(JobPosition.JOB_POSITION.ID.eq(positionId))
-                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.CHANNEL.eq((short)positionChannel))
-                .fetch();
-    }
-    /**
      * 获取同一渠道的第三方账号信息
      * @param
      * @author  cjm
@@ -289,7 +271,13 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         return getDatas(query);
     }
 
-
+    /**
+     * 获取同一渠道的为绑定的第三方账号信息
+     * @param
+     * @author  cjm
+     * @date  2018/6/1
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public List<HrThirdPartyAccountDO> getUnBindThirdPartyAccountDO(int channel){
         Query query = new Query.QueryBuilder()
@@ -298,5 +286,14 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
                 .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2.getName(), "", ValueOp.EQ))
                 .buildQuery();
         return getDatas(query);
+    }
+
+    public int updateBindToken(String liepinToken, Integer liepinUserId, Integer hrThirdAccountId) {
+        return create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                .set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT, String.valueOf(liepinUserId))
+                .set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2, liepinToken)
+                .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(hrThirdAccountId))
+                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short)2))
+                .execute();
     }
 }

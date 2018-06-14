@@ -5,14 +5,13 @@ import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityLiePinDao;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.pojo.TwoParam;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.DateUtils;
@@ -27,13 +26,13 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityLiePinDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
-import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +45,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     @Autowired
     private HRThirdPartyAccountDao thirdPartyAccountDao;
+
+    @Autowired
+    private HRThirdPartyAccountHrDao hrThirdPartyDao;
 
     @Autowired
     private HRThirdPartyPositionDao thirdPartyPositionDao;
@@ -117,9 +119,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         // 映射语言要求
         mappingLanguageRequire(liePinPositionVO, moseekerJobPosition);
         liePinPositionVO.setDetail_special(moseekerJobPosition.getMajorRequired());
-//        if (moseekerJobPosition.getProfile_cc_mail_enabled() == 1) {
-//            liePinPositionVO.setEmail_list_array(moseekerJobPosition.getHrEmail());
-//        }
         liePinPositionVO.setEmail_list_array(null);
         liePinPositionVO.setEjob_level(null);
         liePinPositionVO.setCount((int)moseekerJobPosition.getCount());
@@ -290,19 +289,40 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
         if (cityCodesArr.length >= 1) {
 
+            Integer channel = 2;
+
             // 获取猎聘的token
             Integer publisher = liePinPositionVO.getPublisher();
-            HrThirdPartyPositionDO hrThirdPartyPositionDO = result.getThirdPartyPositionDO();
 
-            Result dbResult = thirdPartyAccountDao.getThirdPartyAccountTokenByHrId(publisher, 2);
-            if (null == dbResult || dbResult.size() == 0) {
-                logger.info("===============猎聘token查询为空================");
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_TOKEN_NONEXISTS);
+            // 获取第三方账号和hr账号关联表数据
+            HrThirdPartyAccountHrDO hrThirdDO = hrThirdPartyDao.getHrAccountInfo(publisher, channel);
+
+            if(hrThirdDO == null){
+                throw ExceptionUtils.getBizException("无第三方hr账号关联数据");
             }
-            String liePinToken = String.valueOf(dbResult.getValue(0, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2));
-            String liePinUserIdStr = String.valueOf(dbResult.getValue(0, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT));
+
+            int thirdAccountId = hrThirdDO.getThirdPartyAccountId();
+
+            // 获取第三方账号token
+            HrThirdPartyAccountDO thirdPartyAccountDO = thirdPartyAccountDao.getAccountById(thirdAccountId);
+
+            if(thirdPartyAccountDO == null){
+                throw ExceptionUtils.getBizException("无第三方hr账号数据");
+            }
+
+            String liePinToken = thirdPartyAccountDO.getExt2();
+
+            String liePinUserIdStr = thirdPartyAccountDO.getExt();
+
+            if(StringUtils.isNullOrEmpty(liePinToken) || StringUtils.isNullOrEmpty(liePinUserIdStr)){
+                throw ExceptionUtils.getBizException("账号未绑定猎聘");
+            }
+
             Integer liePinUserId = Integer.parseInt(liePinUserIdStr);
-            int thirdPartAccountId = (int) dbResult.getValue(0, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID);
+
+            int thirdPartAccountId = thirdPartyAccountDO.getId();
+
+            HrThirdPartyPositionDO hrThirdPartyPositionDO = result.getThirdPartyPositionDO();
             hrThirdPartyPositionDO.setThirdPartyAccountId(thirdPartAccountId);
 
             // 当发布职位时多个城市时，如果每个新的城市都发布成功，才视为仟寻职位同步成功，否则视为同步失败
@@ -313,8 +333,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             List<String> cityCodesList = Arrays.asList(cityCodesArr);
 
             // 根据职位名称查出所有职位jobpostionmapping表数据
-            List<JobPositionLiepinMappingDO> liepinMappingDOList =
-                    liepinMappingDao.getMappingDataByTitleAndUserId(liePinPositionVO.getEjob_title(), liePinUserId);
+            List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByTitleAndUserId(liePinPositionVO.getEjob_title(), liePinUserId);
 
             List<String> cityCodesListDb = new ArrayList<>();
 

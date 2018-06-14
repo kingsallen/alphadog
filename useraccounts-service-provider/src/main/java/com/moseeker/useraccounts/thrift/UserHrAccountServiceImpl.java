@@ -699,13 +699,13 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public String bindLiepinUserAccount(String username, String password) throws BIZException, TException {
+    public String bindLiepinUserAccount(String liepinToken, int liepinUserId, int hrThirdAccountId) throws BIZException, TException {
         try {
-            return thirdPartyAccountService.bindLiepinUserAccount(username, password);
+            return thirdPartyAccountService.bindLiepinUserAccount(liepinToken, liepinUserId, hrThirdAccountId);
         } catch (BIZException e){
             throw e;
         } catch (Exception e){
-            logger.error("================bindLiepinUserAccount username:{},password:{},errmsg:{}=============", username,password,e);
+            logger.error("==========bindLiepinUserAccount liepinToken:{},liepinUserId:{},hrThirdAccountId:{}=========", liepinToken,liepinUserId,hrThirdAccountId,e);
             throw new SysBIZException();
         }
     }

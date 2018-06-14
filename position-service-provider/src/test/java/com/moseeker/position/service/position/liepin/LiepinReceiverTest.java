@@ -44,7 +44,7 @@ public class LiepinReceiverTest {
     @Test
     public void testEdit() throws UnsupportedEncodingException {
         JSONObject liePinJsonObject = new JSONObject();
-        liePinJsonObject.put("id", "(19493736)");
+        liePinJsonObject.put("id", "[19493736]");
         String requestStr = JSONObject.toJSONString(liePinJsonObject);
         Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
         receiverHandler.handlerPositionLiepinEditOperation(requestMsg, null);

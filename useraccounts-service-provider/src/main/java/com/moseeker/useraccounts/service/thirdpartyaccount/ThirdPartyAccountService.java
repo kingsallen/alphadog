@@ -428,7 +428,18 @@ public class ThirdPartyAccountService {
         return hrThirdPartyAccountDOList;
     }
 
-    public String bindLiepinUserAccount(String username, String password) throws Exception {
-        return bindHandler.sendRequest2Liepin(username, password);
+    public String bindLiepinUserAccount(String liepinToken, Integer liepinUserId, Integer hrThirdAccountId) throws Exception {
+        HrThirdPartyAccountDO hrThirdPartyAccountDO = thirdPartyAccountDao.getAccountById(hrThirdAccountId);
+        if(hrThirdPartyAccountDO == null){
+            return "failed";
+        }
+        if(hrThirdPartyAccountDO.getChannel() != 2){
+            return "failed";
+        }
+        int row = thirdPartyAccountDao.updateBindToken(liepinToken, liepinUserId, hrThirdAccountId);
+        if(row != 1){
+            return "failed";
+        }
+        return "success";
     }
 }

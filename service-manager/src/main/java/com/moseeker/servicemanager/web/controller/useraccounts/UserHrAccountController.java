@@ -1196,33 +1196,35 @@ public class UserHrAccountController {
         return ResponseLogNotification.failJson(request, "后台异常");
     }
 
-    @RequestMapping(value = "/hraccount/bindLiepinAccount", method = RequestMethod.POST)
+    @RequestMapping(value = "/hraccount/saveLiepinAccount", method = RequestMethod.POST)
     @ResponseBody
     public String bindLiepinAccount(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            String username = params.getString("username");
-            String password = params.getString("password");
+            Integer hrThirdAccountId = params.getInt("hr_third_account_id");
+            String liepinToken = params.getString("liepin_token");
+            Integer liepinUserId = params.getInt("liepin_user_id");
             ValidateUtil validateUtil = new ValidateUtil();
-            validateUtil.addRequiredValidate("hr第三方账号用户名", username, null, null);
-            validateUtil.addStringLengthValidate("hr第三方账号用户名", username, null, null, 1, 255);
-            validateUtil.addRequiredValidate("hr第三方账号密码", password, null, null);
-            validateUtil.addIntTypeValidate("hr第三方账号密码", password, null, null, 1, 255);
+            validateUtil.addRequiredValidate("hr第三方账号id", hrThirdAccountId, null, null);
+            validateUtil.addIntTypeValidate("hr第三方账号id", hrThirdAccountId, null, null, 1, Integer.MAX_VALUE);
+            validateUtil.addRequiredValidate("hr第三方账号绑定返回的token", liepinToken, null, null);
+            validateUtil.addStringLengthValidate("hr第三方账号绑定返回的token", liepinToken, null, null, 1, 255);
+            validateUtil.addRequiredValidate("hr第三方账号绑定返回的猎聘用户id", liepinUserId, null, null);
+            validateUtil.addIntTypeValidate("hr第三方账号绑定返回的猎聘用户id", liepinUserId, null, null, 1, Integer.MAX_VALUE);
 
             String message = validateUtil.validate();
 
             if (StringUtils.isNullOrEmpty(message)) {
-                String response = userHrAccountService.bindLiepinUserAccount(username, password);
-                if (StringUtils.isNotNullOrEmpty(response)) {
-                    JSONObject jsonObject = JSONObject.parseObject(response);
-                    String code = jsonObject.getString("code");
-                    if ("0".equals(code)) {
-                        return ResponseLogNotification.successJson(request, jsonObject.getString("data"));
+                String result = userHrAccountService.bindLiepinUserAccount(liepinToken, liepinUserId, hrThirdAccountId);
+                if (StringUtils.isNotNullOrEmpty(result)) {
+                    if ("success".equals(result)) {
+                        return ResponseLogNotification.successJson(request, result);
                     } else {
-                        return ResponseLogNotification.failJson(request, jsonObject.getString("message"));
+                        return ResponseLogNotification.failJson(request, result);
                     }
+
                 } else {
-                    return ResponseLogNotification.failJson(request, "http请求猎聘绑定失败");
+                    return ResponseLogNotification.failJson(request, "保存猎聘账号信息失败");
                 }
 
             } else {

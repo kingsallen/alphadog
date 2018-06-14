@@ -184,10 +184,11 @@ service UserHrAccountService {
     //获取已经在猎聘绑定的hr第三方账号信息，主要是为了提供猎聘token
     common_struct.Response getThirdPartyAccountDO(1:i32 channel) throws (1: common_struct.BIZException e);
 
-    //获取已经在猎聘绑定的hr第三方账号信息，主要是为了提供猎聘token
+    //在仟寻绑定hr第三方账号信息，未在猎聘通过api绑定账号，获取此类账号信息
     list<hr_third_party_account_struct.HrThirdPartyAccountDO> getUnBindThirdPartyAccountDO(1:i32 channel) throws (1: common_struct.BIZException e);
 
-    string bindLiepinUserAccount(1:string username, 2:string password) throws (1: common_struct.BIZException e);
+    //将第三方账号绑定返回的信息入库
+    string bindLiepinUserAccount(1:string liepinToken, 2:i32 liepinUserId, 3:i32 hrThirdAccountId) throws (1: common_struct.BIZException e);
 
 }
 
