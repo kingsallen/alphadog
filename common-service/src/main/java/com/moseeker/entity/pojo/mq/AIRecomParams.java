@@ -5,6 +5,7 @@ package com.moseeker.entity.pojo.mq;
  */
 public class AIRecomParams {
     private int userId;
+    private int wxId;
     private int companyId;
     private int type;
     private String positionIds;
@@ -14,8 +15,9 @@ public class AIRecomParams {
     private String algorithmName;
 
 
-    public AIRecomParams(int userId, int companyId, int type, String positionIds, String enableQxRetry, String url, int templateId,String algorithmName){
+    public AIRecomParams(int userId,int wxId, int companyId, int type, String positionIds, String enableQxRetry, String url, int templateId,String algorithmName){
         this.userId=userId;
+        this.wxId=wxId;
         this.companyId=companyId;
         this.type=type;
         this.positionIds=positionIds;
@@ -86,5 +88,13 @@ public class AIRecomParams {
 
     public void setAlgorithmName(String algorithmName) {
         this.algorithmName = algorithmName;
+    }
+
+    public int getWxId() {
+        return wxId;
+    }
+
+    public void setWxId(int wxId) {
+        this.wxId = wxId;
     }
 }

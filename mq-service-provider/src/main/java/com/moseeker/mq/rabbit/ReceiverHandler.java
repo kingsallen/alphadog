@@ -140,6 +140,7 @@ public class ReceiverHandler {
         String msgBody = new String(message.getBody(), "UTF-8");
         JSONObject jsonObject = JSONObject.parseObject(msgBody);
         int userId=jsonObject.getIntValue("user_id");
+        int wxId=jsonObject.getIntValue("wx_id");
         int companyId=jsonObject.getIntValue("company_id");
         int type=jsonObject.getIntValue("type");
         String positionIds=jsonObject.getString("position_ids");
@@ -150,7 +151,7 @@ public class ReceiverHandler {
             url=handlerUrl(type);
         }
         String algorithmName=jsonObject.getString("algorithm_name");
-        AIRecomParams recomParams=new AIRecomParams(userId,companyId,type,positionIds,enableQxRetry,url,templateId,algorithmName);
+        AIRecomParams recomParams=new AIRecomParams(userId,wxId,companyId,type,positionIds,enableQxRetry,url,templateId,algorithmName);
         return recomParams;
     }
 
@@ -198,13 +199,11 @@ public class ReceiverHandler {
             if(userId!=0&&StringUtils.isNotEmpty(positionIds)){
                 int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds,companyId,type);
             }
-
         }catch(Exception e){
             this.handleTemplateLogDeadLetter(message,msgBody,"插入推荐职位数据失败");
             log.error(e.getMessage(), e);
         }
     }
-
     /*
       处理异常消息的队列
      */
@@ -258,6 +257,4 @@ public class ReceiverHandler {
         logVo.setUser_id(jsonObject.getIntValue("user_id"));
         logVo.setRecom_params(params);
     }
-
-
 }
