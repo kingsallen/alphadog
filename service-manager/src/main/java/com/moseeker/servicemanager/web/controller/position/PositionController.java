@@ -8,6 +8,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.tags.Param;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1098,5 +1100,21 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+
+//    @RequestMapping(value = "/test1", method = RequestMethod.POST)
+//    @ResponseBody
+//    public String test1(HttpServletRequest request, HttpServletResponse response) {
+//        try {
+//            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+//            String duty = params.getString("detail_duty");
+////            duty = duty.replaceAll("□", "");
+//            duty = EmojiFilter.filterEmoji1(duty);
+//            return ResponseLogNotification.successJson(request, duty);
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//            return ResponseLogNotification.fail(request, e.getMessage());
+//        }
+//    }
 
 }
