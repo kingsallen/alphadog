@@ -261,6 +261,10 @@ public class CrawlerUtils {
                 && (Integer) messagBean.get("status") == 7) {
             decre(user_id, channelType);
             return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_ACCOUNT_LIMIT);
+        } else if (messagBean.get("status") != null
+                && (Integer) messagBean.get("status") == 8) {
+            decre(user_id, channelType);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_VERIFY_CODE_WRONG);
         }
         decre(user_id, channelType);
         return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_PARAM_ILLEGAL);
