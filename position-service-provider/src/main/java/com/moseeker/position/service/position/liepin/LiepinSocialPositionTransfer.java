@@ -96,7 +96,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         // 映射城市code
         liePinPositionVO.setEjob_dq(mappingCityCode(positionId));
         liePinPositionVO.setEjob_privacyreq(null);
-        liePinPositionVO.setEjob_salarydiscuss(positionForm.isSalaryDiscuss() ? "0" : "1");
+        liePinPositionVO.setEjob_salarydiscuss(positionForm.isSalaryDiscuss() ? "1" : "0");
         // 单位 : 万/年
         liePinPositionVO.setEjob_salarylow((float) positionForm.getSalaryBottom() * positionForm.getSalaryMonth() / 10);
         liePinPositionVO.setEjob_salaryhigh((float) positionForm.getSalaryTop() * positionForm.getSalaryMonth() / 10);
@@ -200,7 +200,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         if (language.contains("粤语") || language.toLowerCase().contains("yueyu") || language.contains("广东话")) {
             yueyu = 1;
         }
-        liePinPositionVO.setDdetail_language_yueyu(yueyu);
+        liePinPositionVO.setDetail_language_yueyu(yueyu);
         liePinPositionVO.setDetail_language_other(1);
         liePinPositionVO.setDetail_language_content(language);
     }
