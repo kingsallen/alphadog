@@ -24,6 +24,7 @@ import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import com.moseeker.thrift.gen.position.service.PositionATSServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
@@ -1078,5 +1079,24 @@ public class PositionController {
         }
     }
 
+
+    @RequestMapping(value = "/position/liepin/getPositionId", method = RequestMethod.POST)
+    @ResponseBody
+    public String getLiepinPositionIds( HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            String liepinUserId = String.valueOf(params.get("liepin_user_id"));
+            if(StringUtils.isNullOrEmpty(liepinUserId)){
+                return ResponseLogNotification.fail(request, "猎聘用户id不能为空");
+            }
+            Integer userId = Integer.parseInt(liepinUserId);
+            List<JobPositionLiepinMappingDO> liepinPositionIds = positonServices.getLiepinPositionIds(userId);
+
+            return ResponseLogNotification.successJson(request, JSONObject.toJSON(liepinPositionIds));
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
 }

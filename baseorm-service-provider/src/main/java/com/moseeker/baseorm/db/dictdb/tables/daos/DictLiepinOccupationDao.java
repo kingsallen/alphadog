@@ -68,14 +68,14 @@ public class DictLiepinOccupationDao extends DAOImpl<DictLiepinOccupationRecord,
     /**
      * Fetch records that have <code>code IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByCode(Integer... values) {
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByCode(String... values) {
         return fetch(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE, values);
     }
 
     /**
      * Fetch records that have <code>parent_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByParentId(Integer... values) {
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByParentId(String... values) {
         return fetch(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.PARENT_ID, values);
     }
 
@@ -119,5 +119,12 @@ public class DictLiepinOccupationDao extends DAOImpl<DictLiepinOccupationRecord,
      */
     public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByName(String... values) {
         return fetch(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.NAME, values);
+    }
+
+    /**
+     * Fetch records that have <code>candidate_source IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByCandidateSource(Byte... values) {
+        return fetch(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CANDIDATE_SOURCE, values);
     }
 }
