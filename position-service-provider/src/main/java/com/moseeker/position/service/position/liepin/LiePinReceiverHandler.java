@@ -565,6 +565,10 @@ public class LiePinReceiverHandler {
      */
     private void editSinglePosition(LiePinPositionVO liePinPositionVO, String liePinToken, JobPositionLiepinMappingDO mappingDO) {
 
+        liePinPositionVO.setDetail_duty(liePinPositionVO.getDetail_duty().replaceAll("□", ""));
+
+        liePinPositionVO.setDetail_require(liePinPositionVO.getDetail_require().replaceAll("□", ""));
+
         JSONObject liePinObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
 
         String httpResultJson = sendRequest2LiePin(liePinObject, liePinToken, LP_POSITION_EDIT);
@@ -675,7 +679,7 @@ public class LiePinReceiverHandler {
                 liepinMappingDao.updateState(downShelfPositonListDb, (byte) 0);
 
             } catch (Exception e) {
-
+                // todo 加log，kibana看不到
                 e.printStackTrace();
 
             }

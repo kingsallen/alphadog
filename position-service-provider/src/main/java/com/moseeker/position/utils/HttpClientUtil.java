@@ -51,6 +51,7 @@ public class HttpClientUtil {
             }
             return buffer.toString();
         }catch (Exception e){
+            // todo 发邮件
             e.printStackTrace();
         }finally {
             if(in != null){
