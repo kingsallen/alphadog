@@ -746,12 +746,21 @@ public class TalentpoolSearchengine {
                 this.orderByTalent(publisherIdList,hrId,companyId,builder);
             }else {
                 if (publisherIdList.size() > 1) {
-                    builder.addSort("user.hr_all_" + hrId + "_last_submit_time", SortOrder.DESC);
+                    String sortName="user.hr_all_" + hrId + "_last_submit_time";
+                    if(this.getIsExistField(sortName)) {
+                        builder.addSort(sortName, SortOrder.DESC);
+                    }
                 } else {
                     if (this.isMianHr(Integer.parseInt(hrId))) {
-                        builder.addSort("user.hr_" + publisherIdList.get(0) + "_last_submit_time", SortOrder.DESC);
+                        String sortName="user.hr_" + publisherIdList.get(0) + "_last_submit_time";
+                        if(this.getIsExistField(sortName)) {
+                            builder.addSort(sortName, SortOrder.DESC);
+                        }
                     } else {
-                        builder.addSort("user.hr_" + hrId + "_last_submit_time", SortOrder.DESC);
+                        String sortName="user.hr_" + hrId + "_last_submit_time";
+                        if(this.getIsExistField(sortName)) {
+                            builder.addSort(sortName, SortOrder.DESC);
+                        }
                     }
                 }
             }
@@ -1883,6 +1892,9 @@ public class TalentpoolSearchengine {
         ((BoolQueryBuilder) query).must(cityfilter);
         SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
         builder.setSize(0);
+        logger.info("=========查询排序字段是否存在==================");
+        logger.info(builder.toString());
+        logger.info("============================================");
         SearchResponse response = builder.execute().actionGet();
         Map<String,Object> result = searchUtil.handleData(response, "isExists");
         if(StringUtils.isEmptyMap(result)){
