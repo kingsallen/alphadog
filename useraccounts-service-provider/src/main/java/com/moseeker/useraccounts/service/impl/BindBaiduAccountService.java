@@ -72,6 +72,7 @@ public class BindBaiduAccountService extends BindOnAccountService{
 			// unnionid置为子账号
 			userUnionid.setParentid(userMobile.getId());
 			if (userdao.updateRecord(userUnionid) > 0) {
+				wxUserDao.combineWxUser(userMobile.getId(), userUnionid.getId());
 				consummateUserAccount(userMobile, userUnionid);
 			}
 			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());

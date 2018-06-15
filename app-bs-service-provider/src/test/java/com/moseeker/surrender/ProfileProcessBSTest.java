@@ -29,11 +29,11 @@
 //	MqService.Iface mqService;
 //	@Mock
 //	CompanyServices.Iface companyService;
-//	@Rule 
+//	@Rule
 //	public MockitoRule mockitoRule = MockitoJUnit.rule();
 //	@Autowired
 //	private ProfileProcessBS profileProcessBS;
-//	
+//
 //	@Before
 //	public void init() throws Exception{
 //		HrWxWechatRecord record=new HrWxWechatRecord();
@@ -48,8 +48,8 @@
 //		profileProcessBS.setCompanyService(companyService);
 //		profileProcessBS.setMqService(mqService);
 //	}
-//	//@Test
-//	public void processProfileAtsTest(){
+//	@Test
+//	public void processProfileAtsTest() throws Exception {
 //		Response result=profileProcessBS.processProfileAts(10, "627216844");
 //		System.out.println(result);
 //	}

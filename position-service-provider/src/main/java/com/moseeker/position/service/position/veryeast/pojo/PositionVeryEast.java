@@ -11,7 +11,8 @@ public class PositionVeryEast {
     private List<List<String>> region;
     private int quantity;
     private int indate;
-    private int salary;
+    private int salary_top;
+    private int salary_bottom;
     private List<String> occupation;
     private String accommodation;
     private String degree;
@@ -35,6 +36,22 @@ public class PositionVeryEast {
                 language.add(temp);
             }
         }
+    }
+
+    public int getSalary_top() {
+        return salary_top;
+    }
+
+    public void setSalary_top(int salary_top) {
+        this.salary_top = salary_top;
+    }
+
+    public int getSalary_bottom() {
+        return salary_bottom;
+    }
+
+    public void setSalary_bottom(int salary_bottom) {
+        this.salary_bottom = salary_bottom;
     }
 
     public String getCompany() {
@@ -75,14 +92,6 @@ public class PositionVeryEast {
 
     public void setIndate(int indate) {
         this.indate = indate;
-    }
-
-    public int getSalary() {
-        return salary;
-    }
-
-    public void setSalary(int salary) {
-        this.salary = salary;
     }
 
     public List<String> getOccupation() {

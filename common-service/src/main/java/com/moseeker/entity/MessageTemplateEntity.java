@@ -5,35 +5,32 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.logdb.LogAiRecomDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
-import com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxTemplateMessageRecord;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.logdb.tables.records.LogAiRecomRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.entity.Constant.JobStatus;
+import com.moseeker.entity.pojo.mq.AIRecomParams;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -41,10 +38,10 @@ import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Created by zztaiwll on 17/10/20.
@@ -84,52 +81,69 @@ public class MessageTemplateEntity {
     private HrWxTemplateMessageDao hrWxTemplateMessageDao;
     @Autowired
     private HrWxNoticeMessageDao hrWxNoticeMessageDao;
-
     @Autowired
     private CampaignRecomPositionlistDao campaignRecomPositionlistDao;
-
-    public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url){
-
-        HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
-        int weChatId=DO.getId();
+    @Autowired
+    private PersonaRecomEntity personaRecomEntity;
+    @Autowired
+    private LogAiRecomDao logAiRecomDao;
+    @CounterIface
+    @Transactional
+    public MessageTemplateNoticeStruct handlerTemplate(AIRecomParams params)throws Exception{
+        HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(params.getCompanyId());
         String wxSignture=DO.getSignature();
-        List<Integer> pidList=new ArrayList<>();
-        if(type==1){
-            url=url.replace("{}",wxSignture);
-        }else if(type==2){
+        String MDString= MD5Util.md5(params.getUserId()+params.getCompanyId()+""+new Date().getTime());
+        MDString=MDString.substring(8,24);
+        String url=params.getUrl().replace("{}",wxSignture);
+        if(params.getType()==2){
             //校验推送职位是否下架
-            pidList=this.handleEmployeeRecomPosition(userId,companyId,0);
-            if(StringUtils.isEmptyList(pidList)){
-                return null;
-            }
-            url=url.replace("{}",wxSignture);
-        }else if(type==4){
-            url=url.replace("{}",wxSignture);
-        }else if(type==3){
+            personaRecomEntity.handlePersonaRecomData(params.getUserId(),params.getPositionIds(),params.getCompanyId(),0);
+            url=url.replace("{algorithm_name}",params.getAlgorithmName()).replace("recom_code",MDString);
+        }else if(params.getType()==3){
             //校验推送职位是否下架,以及将数据加入推送的表中
-            pidList=this.handleEmployeeRecomPosition(userId,companyId,1);
-           if(StringUtils.isEmptyList(pidList)){
-               return null;
-           }
-           String  positionIds=convertListToString(pidList);
-           /*
-            这么写感觉特别不好，没水平，添添补补，但是这是特殊的，因为这块的职位推荐要一直能看并且可传播
-            */
-           int recomId=this.addCampaignRecomPositionlist(companyId,positionIds);
-           url=url.replace("{recomPushId}",recomId+"").replace("{}",wxSignture);
-
+            personaRecomEntity.handlePersonaRecomData(params.getUserId(),params.getPositionIds(),params.getCompanyId(),1);
+            int recomId=this.addCampaignRecomPositionlist(params.getCompanyId(),params.getPositionIds());
+            url=url.replace("{recomPushId}",recomId+"").replace("recom_code",MDString);
         }
-        MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId,weChatId,pidList);
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getType(),params.getCompanyId(),DO.getId());
         if(colMap==null||colMap.isEmpty()){
             return null;
         }
-        messageTemplateNoticeStruct.setCompany_id(companyId);
+        MessageTemplateNoticeStruct messageTemplateNoticeStruct=this.convertMessageTemplate(params,colMap,url);
+        this.handlerRecomLog(params,MDString);
+        return messageTemplateNoticeStruct;
+    }
+    /*
+      添加日志
+     */
+    private void handlerRecomLog(AIRecomParams params,String mdString){
+        LogAiRecomRecord recomRecord=new LogAiRecomRecord();
+        recomRecord.setUserId(params.getUserId());
+        recomRecord.setCompanyId(params.getCompanyId());
+        if(StringUtils.isNotNullOrEmpty(params.getPositionIds())){
+            recomRecord.setAction(params.getPositionIds());
+        }
+        recomRecord.setMdCode(mdString);
+        recomRecord.setType((byte)params.getType());
+        if(StringUtils.isNotNullOrEmpty(params.getAlgorithmName())){
+            recomRecord.setAlgorithmName(params.getAlgorithmName());
+        }
+        logAiRecomDao.addRecord(recomRecord);
+    }
+    /*
+     组装模板
+     */
+    private MessageTemplateNoticeStruct convertMessageTemplate(AIRecomParams params,Map<String,MessageTplDataCol> colMap,String url){
+        MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
+        messageTemplateNoticeStruct.setCompany_id(params.getCompanyId());
         messageTemplateNoticeStruct.setData(colMap);
-        messageTemplateNoticeStruct.setUser_id(userId);
-        messageTemplateNoticeStruct.setSys_template_id(templateId);
+        messageTemplateNoticeStruct.setUser_id(params.getUserId());
+        messageTemplateNoticeStruct.setSys_template_id(params.getTemplateId());
         messageTemplateNoticeStruct.setUrl(url);
         messageTemplateNoticeStruct.setType((byte)0);
+        if(StringUtils.isNotNullOrEmpty(params.getEnableQxRetry())){
+            messageTemplateNoticeStruct.setEnable_qx_retry(Byte.parseByte(params.getEnableQxRetry()));
+        }
         return messageTemplateNoticeStruct;
     }
 
@@ -174,14 +188,14 @@ public class MessageTemplateEntity {
     /*
         处理发送完善简历消息模板
      */
-    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int type,int companyId,int weChatId,List<Integer> pidList){
+    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int type,int companyId,int weChatId){
 
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         if(type==1){
             colMap=this.handleDataForuestion(userId,weChatId);
         }else if(type==2||type==3){
 
-            colMap=this.handleDataRecommendTemplate(userId,companyId,type,weChatId,pidList);
+            colMap=this.handleDataRecommendTemplate(userId,companyId,type,weChatId);
         }else if(type==4){
             colMap=this.handleDataProfileTemplate(userId,companyId,weChatId);
         }
@@ -233,7 +247,7 @@ public class MessageTemplateEntity {
     /*
         推荐职位列表消息数据
      */
-    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId,int companyId,int type,int weChatId,List<Integer> pidList){
+    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId,int companyId,int type,int weChatId){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         String jobName="";
         String companyName=this.getCompanyName(companyId);
@@ -261,7 +275,7 @@ public class MessageTemplateEntity {
             colMap.put("remark",remark);
         }
         if(type==3){
-            jobName = this.getJobNameRecom(pidList);
+            jobName = this.getJobName(userId,companyId,1);
             MessageTplDataCol first=new MessageTplDataCol();
             first.setColor("#173177");
             HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.EMPLOYEE_RECOM_POSITION);
@@ -517,14 +531,15 @@ public class MessageTemplateEntity {
     /*
      处理获取推送的数据
      */
-    private List<Integer> handleEmployeeRecomPosition(int userId,int companyId,int type){
+    private String handleEmployeeRecomPosition(int userId,int companyId,int type){
         List<CampaignPersonaRecomRecord> list=this.getCampaignPersonaRecomRecordList(userId,companyId,type,0,20);
         List<Integer> pids=this.getPidListByCampaignPersonaRecomRecord(list);
         int count=this.getPositionCount(pids);
         if(count>0){
-            return pids;
+            String  positionIds=convertListToString(pids);
+            return positionIds;
         }
-        return null;
+        return "";
     }
 
     private int addCampaignRecomPositionlist(int companyId,String positionIds){

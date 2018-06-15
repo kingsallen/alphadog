@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 邮件额度每天消耗日志
+ * 邮件额度每天使用日志
  */
 @Generated(
     value = {
@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogTalentpoolEmailDailyLog implements Serializable {
 
-    private static final long serialVersionUID = 990228101;
+    private static final long serialVersionUID = -1209358593;
 
     private Integer id;
     private Integer companyId;

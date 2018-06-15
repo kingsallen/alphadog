@@ -39,6 +39,8 @@ service SearchengineServices {
 
     list<i32> queryCompanyTagUserIdList(1: map<string,string> params) throws (1: common_struct.BIZException e);
 
+    i32 queryCompanyTagUserIdListCount(1: map<string,string> params) throws (1: common_struct.BIZException e);
+
     i32 talentSearchNum(1: map<string,string> params) throws (1: common_struct.BIZException e);
 
     common_struct.Response queryProfileFilterUserIdList(1:list<map<string,string>> filterMapList, 2:i32 page_number, 3:i32 page_size) throws (1: common_struct.BIZException e);
