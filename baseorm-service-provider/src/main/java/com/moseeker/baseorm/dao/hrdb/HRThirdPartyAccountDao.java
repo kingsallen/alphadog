@@ -295,4 +295,18 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
                 .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short)2))
                 .execute();
     }
+
+    /**
+     * 获取需要刷新token的账号信息
+     * @param
+     * @author  cjm
+     * @date  2018/6/15
+     * @return
+     */
+    public List<HrThirdPartyAccountDO> getRefreshAccounts(int channel, int bindState) {
+        return create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short)channel))
+                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.eq((short)bindState))
+                .fetchInto(HrThirdPartyAccountDO.class);
+    }
 }

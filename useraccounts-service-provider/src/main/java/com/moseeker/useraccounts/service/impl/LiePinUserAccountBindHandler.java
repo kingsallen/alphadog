@@ -10,12 +10,15 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.useraccounts.constant.UserAccountConstant;
 import com.moseeker.useraccounts.service.thirdpartyaccount.base.IBindRequest;
+import com.moseeker.useraccounts.utils.AESUtils;
 import com.moseeker.useraccounts.utils.HttpClientUtil;
 import com.moseeker.useraccounts.utils.Md5Utils;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.Cipher;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,7 +41,9 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
 
             String username = hrThirdPartyAccount.getUsername();
 
-            String password = hrThirdPartyAccount.getPassword();
+            String passwordHex = hrThirdPartyAccount.getPassword();
+
+            String password = decryPwd(passwordHex);
 
             String resultJson = sendRequest2Liepin(username, password);
 
@@ -58,7 +63,6 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
                 hrThirdPartyAccount.setExt(token);
                 hrThirdPartyAccount.setExt2(userId);
                 hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
-
                 logger.info("==================请求绑定成功，hrThirdPartyAccount:{}==================", hrThirdPartyAccount);
             }else{
 
@@ -78,6 +82,18 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
             hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_TIMEOUT_MSG);
         }
         return hrThirdPartyAccount;
+    }
+
+    /**
+     * 将数据库中存的aes加密的密码解密
+     * @param   passwordHex aes加密后的十六位密码
+     * @author  cjm
+     * @date  2018/6/15
+     * @return
+     */
+    private String decryPwd(String passwordHex) throws Exception {
+        byte[] target = AESUtils.decrypt(passwordHex);
+        return new String(target, "UTF-8").trim();
     }
 
     public String sendRequest2Liepin(String username, String password) throws Exception {
@@ -100,7 +116,6 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
         //发送请求
         return HttpClientUtil.sentHttpPostRequest(UserAccountConstant.LP_USER_BIND_URL, headers, requestMap);
     }
-
 
     @Override
     public ChannelType getChannelType() {
