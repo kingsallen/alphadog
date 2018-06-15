@@ -2,6 +2,7 @@ package com.moseeker.position.service.position.liepin;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.config.AppConfig;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityLiePinDao;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
@@ -35,8 +36,12 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -111,8 +116,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         liePinPositionVO.setDetail_edulevel_tz(null);
         liePinPositionVO.setDetail_report2(null);
         liePinPositionVO.setDetail_subordinate(moseekerJobPosition.getUnderlings() == 0 ? 0 : (int) moseekerJobPosition.getUnderlings());
-        liePinPositionVO.setDetail_duty(moseekerJobPosition.getAccountabilities().replaceAll("□", ""));
-        liePinPositionVO.setDetail_require(moseekerJobPosition.getRequirement().replaceAll("□", ""));
+        liePinPositionVO.setDetail_duty(moseekerJobPosition.getAccountabilities());
+        liePinPositionVO.setDetail_require(moseekerJobPosition.getRequirement());
         // 映射部门名称
         liePinPositionVO.setDetail_dept(getDepartmentName(positionForm, moseekerJobPosition));
         // 每个亮点八个字，最多十六个
@@ -132,10 +137,20 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         StringBuilder occupation = new StringBuilder();
         List<DictLiepinOccupationDO> allSocialOccupation = liepinOccupationDao.getAllSocialOccupation();
         List<Integer> allSocialCode = allSocialOccupation.stream().map(socialOccupation -> socialOccupation.getCode()).collect(Collectors.toList());
+        List<String> moseekerCodeList = new ArrayList<>();
         int index = 0;
+
         for(String moseekerCode : occupationList){
-            if(allSocialCode.contains(Integer.parseInt(moseekerCode)) && index < 3 && moseekerCode.length() > 3){
-                occupation.append(moseekerCode).append(",");
+            if(StringUtils.isNullOrEmpty(moseekerCode)){
+                continue;
+            }
+            moseekerCodeList = Arrays.asList(moseekerCode.substring(1, moseekerCode.length() - 1).split("[,，]"));
+            if(moseekerCodeList.size() < 1){
+                continue;
+            }
+            String code = moseekerCodeList.get(1).trim();
+            if(allSocialCode.contains(Integer.parseInt(code)) && index < 3 && code.length() > 3){
+                occupation.append(code).append(",");
                 index++;
             }
         }
@@ -228,7 +243,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             if(StringUtils.isNullOrEmpty(str)){
                 continue;
             }
-            // 8个字的不参与
+            // 16个字符的不参与
             if (str.length() > 8) {
                 continue;
             }
@@ -255,9 +270,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         data.setIsSynchronization((byte) PositionSync.binding.getValue());
         data.setSalaryMonth(thirdPartyPosition.getSalaryMonth());
         data.setFeedbackPeriod(thirdPartyPosition.getFeedbackPeriod());
-        data.setSalaryDiscuss(thirdPartyPosition.isSalaryDiscuss() ? 0 : 1);
-        data.setSalaryBottom(thirdPartyPosition.getSalaryBottom());
-        data.setSalaryTop(thirdPartyPosition.getSalaryTop());
+        data.setSalaryDiscuss(thirdPartyPosition.isSalaryDiscuss() ? 1 : 0);
+        data.setSalaryBottom(thirdPartyPosition.getSalaryBottom() * 1000);
+        data.setSalaryTop(thirdPartyPosition.getSalaryTop() * 1000);
         data.setPracticeSalary(thirdPartyPosition.getPracticeSalary());
         data.setPracticePerWeek(thirdPartyPosition.getPracticePerWeek());
         data.setPracticeSalaryUnit(thirdPartyPosition.getPracticeSalaryUnit());
@@ -538,4 +553,5 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         }
         return list;
     }
+
 }

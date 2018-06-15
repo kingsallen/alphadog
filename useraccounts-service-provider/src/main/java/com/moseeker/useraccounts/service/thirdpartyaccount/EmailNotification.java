@@ -32,11 +32,14 @@ public class EmailNotification {
 
     static List<String> mails = new ArrayList<>();
 
+    static List<String> refreshMails = new ArrayList<>();
+
     static String br = "<br/>";
 
     static {
         mails = getEmails("account_sync.email");
         devMails = getEmails("account_sync.email.dev");
+        refreshMails = getEmails("account_bind.email");
     }
 
     private static String getConfig(String key) {
@@ -252,5 +255,12 @@ public class EmailNotification {
 
     public List<String> getMails() {
         return mails;
+    }
+    public List<String> getRefreshMails() {
+        return refreshMails;
+    }
+
+    public void setRefreshMails(List<String> refreshMails) {
+        EmailNotification.refreshMails = refreshMails;
     }
 }
