@@ -94,8 +94,8 @@ public class CrawlerUtils {
                 if(StringUtils.isNullOrEmpty(token)){
                     param.put("username", userName);
                     param.put("password", password);
-                    param.put("user_id", user_id+"");
-                    param.put("code", form.getCode());
+                    param.put("userid", user_id+"");
+                    param.put("verify_code", form.getCode());
                     result = fetchResume(JSON.toJSONString(param), propertiesUtils.get("CRAWLER_LINEKEDIN_SCRAPER", String.class));
                 }else {
                     param.put("token", token);
