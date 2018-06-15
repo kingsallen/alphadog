@@ -18,6 +18,8 @@ import com.moseeker.position.utils.HttpClientUtil;
 import com.moseeker.position.utils.Md5Utils;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityLiePinDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
@@ -171,6 +173,8 @@ public class LiePinReceiverHandler {
                 // 组装同步时需要的数据，相当于在第三方页面填写的表单数据，将不匹配字段手动映射
                 BeanUtils.copyProperties(hrThirdPartyPositionDO, thirdPartyPosition);
                 thirdPartyPosition.setSalaryDiscuss(hrThirdPartyPositionDO.getSalaryDiscuss() != 0);
+                thirdPartyPosition.setSalaryBottom(thirdPartyPosition.getSalaryBottom()/1000);
+                thirdPartyPosition.setSalaryTop(thirdPartyPosition.getSalaryTop()/1000);
                 String occupations = hrThirdPartyPositionDO.getOccupation();
                 String[] occupationsArr = occupations.split(",");
                 thirdPartyPosition.setOccupation(Arrays.asList(occupationsArr));
@@ -210,11 +214,6 @@ public class LiePinReceiverHandler {
                         for (String cityCode : cityCodesList) {
 
                             for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
-
-                                // 猎聘修改职位api必填字段
-                                liePinPositionVO.setEjob_extRefid(String.valueOf(mappingDO.getId()));
-                                liePinPositionVO.setEjob_id(mappingDO.getLiepinJobId());
-                                liePinPositionVO.setEjob_dq(mappingDO.getCityCode() + "");
 
                                 // 存在城市，并且状态正常
                                 if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1) {
@@ -563,11 +562,19 @@ public class LiePinReceiverHandler {
      * @author cjm
      * @date 2018/6/10
      */
-    private void editSinglePosition(LiePinPositionVO liePinPositionVO, String liePinToken, JobPositionLiepinMappingDO mappingDO) {
+    private void editSinglePosition(LiePinPositionVO liePinPositionVO, String liePinToken, JobPositionLiepinMappingDO mappingDO) throws BIZException {
+        // 猎聘修改职位api必填字段
+//        liePinPositionVO.setDetail_duty(liePinPositionVO.getDetail_duty());
+//
+//        liePinPositionVO.setDetail_require(liePinPositionVO.getDetail_require());
 
-        liePinPositionVO.setDetail_duty(liePinPositionVO.getDetail_duty().replaceAll("□", ""));
+        liePinPositionVO.setEjob_extRefid(String.valueOf(mappingDO.getId()));
 
-        liePinPositionVO.setDetail_require(liePinPositionVO.getDetail_require().replaceAll("□", ""));
+        liePinPositionVO.setEjob_id(mappingDO.getLiepinJobId());
+
+        DictCityLiePinDO cityLiePinDO = liepinSocialPositionTransfer.getValidLiepinDictCode(mappingDO.getCityCode() + "");
+
+        liePinPositionVO.setEjob_dq(cityLiePinDO.getCode());
 
         JSONObject liePinObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
 
