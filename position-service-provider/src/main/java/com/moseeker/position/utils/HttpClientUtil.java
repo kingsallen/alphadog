@@ -1,16 +1,26 @@
 package com.moseeker.position.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.position.config.AppConfig;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,7 +38,7 @@ public class HttpClientUtil {
         //设置请求超时时间
         BufferedReader in = null;
         //指定POST请求
-        try{
+        try {
             HttpPost request = new HttpPost(url);
             if (headers != null && !headers.isEmpty()) {
                 for (Map.Entry<String, String> entry : headers.entrySet()) {
@@ -50,14 +60,15 @@ public class HttpClientUtil {
                 buffer.append(line + NL);
             }
             return buffer.toString();
-        }catch (Exception e){
+        } catch (Exception e) {
             // todo 发邮件
             e.printStackTrace();
-        }finally {
-            if(in != null){
+        } finally {
+            if (in != null) {
                 in.close();
             }
         }
         return null;
     }
+
 }
