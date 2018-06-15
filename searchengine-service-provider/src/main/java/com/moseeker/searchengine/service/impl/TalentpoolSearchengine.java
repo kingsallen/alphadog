@@ -65,7 +65,7 @@ public class TalentpoolSearchengine {
             result = searchUtil.handleData(response, "users");
             return result;
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
             if (e.getMessage().contains("all shards")) {
                 return result;
             }
@@ -117,7 +117,7 @@ public class TalentpoolSearchengine {
             result = searchUtil.handleData(response, "users");
             return result;
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
             if (e.getMessage().contains("all shards")) {
                 return result;
             }
@@ -127,6 +127,7 @@ public class TalentpoolSearchengine {
     /*
      查询企业标签的人才数量
      */
+    @CounterIface
     public int talentSearchNum(Map<String, String> params) {
         Map<String, Object> result=new HashMap<>();
         TransportClient client=null;
@@ -145,7 +146,6 @@ public class TalentpoolSearchengine {
             logger.info(JSON.toJSONString(result));
             logger.info("=========================================");
             int total=(int)((long)result.get("totalNum"));
-            logger.info(JSON.toJSONString(result));
             return total;
         } catch (Exception e) {
             logger.info(e.getMessage(),e);
@@ -169,27 +169,29 @@ public class TalentpoolSearchengine {
             client=searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_INDEX).setQuery(query);
-            builder.addAggregation(this.handleAllApplicationCountAgg(params))
-                    .addAggregation(this.handleAllcountAgg(params))
-                    .addAggregation(this.handleAggInfo(params,"entry_count",12,0))
-                    .addAggregation(this.handleAggInfo(params,"entry_count_app",12,1))
-                    .addAggregation(this.handleAggInfo(params,"interview_ok_count",10,0))
-                    .addAggregation(this.handleAggInfo(params,"interview_ok_count_app",10,1))
-                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count",7,0))
-                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count_app",7,1))
-                    .addAggregation(this.handleAggInfo(params,"is_viewed_count",4,0))
-                    .addAggregation(this.handleAggInfo(params,"is_viewed_count_app",4,1))
-                    .addAggregation(this.handleAggInfo(params,"is_not_suitable",13,0))
-                    .addAggregation(this.handleAggInfo(params,"is_not_suitable_app",13,1))
-                    .addAggregation(this.handleAggInfo(params,"not_viewed_count",3,1))
-                    .addAggregation(this.handleAggInfo(params,"not_viewed_count_app",3,1));
+            builder.addAggregation(this.handleAllApplicationCountAgg(params))        //当前状态下的申请数量数量
+//                   .addAggregation(this.handleAllcountAgg(params))
+                    .addAggregation(this.handleAggInfo(params,"all_count_app","",1))//所有申请的数量
+                    .addAggregation(this.handleAggInfo(params,"all_count","",0))//所有申请的人数
+                    .addAggregation(this.handleAggInfo(params,"entry_count",12+"",0))//入职的人数
+                    .addAggregation(this.handleAggInfo(params,"entry_count_app",12+"",1))//入职的申请书
+                    .addAggregation(this.handleAggInfo(params,"interview_ok_count",10+"",0))//面试通过的人数
+                    .addAggregation(this.handleAggInfo(params,"interview_ok_count_app",10+"",1))//面试通过的申请数
+                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count",7+"",0))//初审通过的人数
+                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count_app",7+"",1))//初审通过的申请数
+                    .addAggregation(this.handleAggInfo(params,"is_viewed_count",4+"",0))
+                    .addAggregation(this.handleAggInfo(params,"is_viewed_count_app",4+"",1))
+                    .addAggregation(this.handleAggInfo(params,"is_not_suitable",13+"",0))
+                    .addAggregation(this.handleAggInfo(params,"is_not_suitable_app",13+"",1))
+                    .addAggregation(this.handleAggInfo(params,"not_viewed_count",3+"",0))
+                    .addAggregation(this.handleAggInfo(params,"not_viewed_count_app",3+"",1));
             builder.setSize(0);
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleAggData(response);
             return result;
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
             if (e.getMessage().contains("all shards")) {
                 return result;
             }
@@ -205,9 +207,6 @@ public class TalentpoolSearchengine {
         try{
             SearchResponse response=this.handlerSearch(params);
             Map<String,Object> result = searchUtil.handleData(response,"userIdList");
-            logger.info("============================================");
-            logger.info(JSON.toJSONString(result));
-            logger.info("============================================");
             if(result!=null&&!result.isEmpty()){
                 long totalNum=(long)result.get("totalNum");
                 if(totalNum>0){
@@ -215,11 +214,8 @@ public class TalentpoolSearchengine {
                 }
             }
         }catch(Exception e){
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
         }
-        logger.info("==========================");
-        logger.info(JSON.toJSONString(list));
-        logger.info("==========================");
         return list;
     }
 
@@ -228,7 +224,6 @@ public class TalentpoolSearchengine {
      */
     @CounterIface
     public int getUserListByCompanyTagCount(Map<String,String> params){
-        List<Integer> list=new ArrayList<>();
         try{
             SearchResponse response=this.handlerSearch(params);
             Map<String,Object> result = searchUtil.handleData(response,"userIdList");
@@ -240,11 +235,8 @@ public class TalentpoolSearchengine {
                 return (int)totalNum;
             }
         }catch(Exception e){
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
         }
-        logger.info("==========================");
-        logger.info(JSON.toJSONString(list));
-        logger.info("==========================");
         return 0;
     }
 
@@ -254,6 +246,7 @@ public class TalentpoolSearchengine {
         SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
         String[] returnParams={"user.profiles.profile.user_id"};
         builder.setFetchSource(returnParams,null);
+        builder.addSort("user.profiles.profile.user_id",SortOrder.DESC);
         if(StringUtils.isNotNullOrEmpty(params.get("size"))){
             builder.setSize(0);
         }else{
@@ -526,21 +519,16 @@ public class TalentpoolSearchengine {
     private void handlerResult(Map<String,Object> result,List<Integer> userIdList){
         List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
         for(Map<String,Object> map:dataList){
-            logger.info("============================================userIdList");
             if(map!=null&&!map.isEmpty()){
                 Map<String,Object> userMap=(Map<String,Object>)map.get("user");
-                logger.info("============================================user");
                 if(userMap!=null&&!userMap.isEmpty()){
                     Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
-                    logger.info("============================================profiles");
                     logger.info(JSON.toJSONString(profiles));
                     if(profiles!=null&&!profiles.isEmpty()){
                         Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
-                        logger.info("============================================profile");
                         logger.info(JSON.toJSONString(profile));
                         if(profile!=null&&!profile.isEmpty()){
                             int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
-                            logger.info("============================================user_id"+userId);
                             userIdList.add(userId);
                         }
                     }
@@ -1172,7 +1160,8 @@ public class TalentpoolSearchengine {
         String companyId=params.get("company_id");
         String positionStatus=params.get("position_status");
         if( StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
-                &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)&&StringUtils.isNullOrEmpty(positionStatus)){
+                &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)
+                &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))){
             return null;
         }
         StringBuffer sb=new StringBuffer();
@@ -1189,7 +1178,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
             sb.append("val.status=="+positionStatus+"&&");
         }
-        if(StringUtils.isNotNullOrEmpty(companyId)){
+        if(StringUtils.isNotNullOrEmpty(companyId)&& StringUtils.isNullOrEmpty(tagIds)){
             sb.append("val.company_id=="+companyId+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
@@ -1698,7 +1687,7 @@ public class TalentpoolSearchengine {
         return build;
     }
 
-    private AbstractAggregationBuilder handleAggInfo(Map<String,String> params,String name,int progressStatus,int type){
+    private AbstractAggregationBuilder handleAggInfo(Map<String,String> params,String name,String progressStatus,int type){
         MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric(name)
                 .initScript(new Script(getAggInitScript()))
                 .mapScript(new Script(this.getAggMapScript(params,progressStatus+"",type)))
