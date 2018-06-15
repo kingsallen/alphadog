@@ -144,11 +144,15 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             if(StringUtils.isNullOrEmpty(moseekerCode)){
                 continue;
             }
-            moseekerCodeList = Arrays.asList(moseekerCode.substring(1, moseekerCode.length() - 1).split("[,，]"));
-            if(moseekerCodeList.size() < 1){
-                continue;
+            String code = moseekerCode;
+            if(moseekerCode.contains("[")){
+                moseekerCodeList = Arrays.asList(moseekerCode.substring(1, moseekerCode.length() - 1).split("[,，]"));
+                if(moseekerCodeList.size() < 1){
+                    continue;
+                }
+                code = moseekerCodeList.get(1).trim();
             }
-            String code = moseekerCodeList.get(1).trim();
+
             if(allSocialCode.contains(Integer.parseInt(code)) && index < 3 && code.length() > 3){
                 occupation.append(code).append(",");
                 index++;
@@ -192,6 +196,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     private void mappingLanguageRequire(LiePinPositionVO liePinPositionVO, JobPositionDO moseekerJobPosition) {
         String language = moseekerJobPosition.getLanguage();
+        if(StringUtils.isNullOrEmpty(language)){
+            return;
+        }
         int english = 0;
         if (language.contains("英语") || language.toLowerCase().contains("english")) {
             english = 1;
@@ -386,22 +393,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     }
                 }
 
-                DictCityLiePinDO dictCityLiePinDO = dictCityLiePinDao.getLiepinDictCodeByCode(cityCode);
+                DictCityLiePinDO dictCityLiePinDO = getValidLiepinDictCode(cityCode);
 
-                if (dictCityLiePinDO == null) {
-                    DictCityDO dictCityDO = new DictCityDO();
-                    dictCityDO.setCode(Integer.parseInt(cityCode));
-                    List<DictCityDO> dictCityDOS = dictCityDao.getMoseekerLevels(dictCityDO);
-
-                    if (dictCityDOS != null && dictCityDOS.size() > 1) {
-                        for (int i = 1; i < dictCityDOS.size() && dictCityLiePinDO == null; i++) {
-                            dictCityLiePinDO = dictCityLiePinDao.getLiepinDictCodeByCode(String.valueOf(dictCityDOS.get(i).getCode()));
-                        }
-                    }else{
-                        logger.info("===============citycode:{}=============", cityCode);
-                        throw ExceptionUtils.getBizException("错误的仟寻citycode，查不到该code的所有城市level");
-                    }
-                }
                 String liepinCityCode = "";
                 if(dictCityLiePinDO != null){
                     liepinCityCode = dictCityLiePinDO.getCode();
@@ -523,6 +516,26 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             TwoParam<HrThirdPartyPositionDO, HrThirdPartyPositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, null);
             thirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
         }
+    }
+
+    public DictCityLiePinDO getValidLiepinDictCode(String cityCode) throws BIZException {
+        DictCityLiePinDO dictCityLiePinDO = dictCityLiePinDao.getLiepinDictCodeByCode(cityCode);
+
+        if (dictCityLiePinDO == null) {
+            DictCityDO dictCityDO = new DictCityDO();
+            dictCityDO.setCode(Integer.parseInt(cityCode));
+            List<DictCityDO> dictCityDOS = dictCityDao.getMoseekerLevels(dictCityDO);
+
+            if (dictCityDOS != null && dictCityDOS.size() > 1) {
+                for (int i = 1; i < dictCityDOS.size() && dictCityLiePinDO == null; i++) {
+                    dictCityLiePinDO = dictCityLiePinDao.getLiepinDictCodeByCode(String.valueOf(dictCityDOS.get(i).getCode()));
+                }
+            }else{
+                logger.info("===============citycode:{}=============", cityCode);
+                throw ExceptionUtils.getBizException("错误的仟寻citycode，查不到该code的所有城市level");
+            }
+        }
+        return dictCityLiePinDO;
     }
 
 
