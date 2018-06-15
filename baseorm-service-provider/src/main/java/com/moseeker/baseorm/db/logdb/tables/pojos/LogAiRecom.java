@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogAiRecom implements Serializable {
 
-    private static final long serialVersionUID = -2067010597;
+    private static final long serialVersionUID = -32873689;
 
     private Integer   id;
     private Integer   userId;
@@ -33,6 +33,7 @@ public class LogAiRecom implements Serializable {
     private Timestamp sendTime;
     private String    mdCode;
     private String    algorithmName;
+    private Integer   wxId;
 
     public LogAiRecom() {}
 
@@ -45,6 +46,7 @@ public class LogAiRecom implements Serializable {
         this.sendTime = value.sendTime;
         this.mdCode = value.mdCode;
         this.algorithmName = value.algorithmName;
+        this.wxId = value.wxId;
     }
 
     public LogAiRecom(
@@ -55,7 +57,8 @@ public class LogAiRecom implements Serializable {
         Byte      type,
         Timestamp sendTime,
         String    mdCode,
-        String    algorithmName
+        String    algorithmName,
+        Integer   wxId
     ) {
         this.id = id;
         this.userId = userId;
@@ -65,6 +68,7 @@ public class LogAiRecom implements Serializable {
         this.sendTime = sendTime;
         this.mdCode = mdCode;
         this.algorithmName = algorithmName;
+        this.wxId = wxId;
     }
 
     public Integer getId() {
@@ -131,6 +135,14 @@ public class LogAiRecom implements Serializable {
         this.algorithmName = algorithmName;
     }
 
+    public Integer getWxId() {
+        return this.wxId;
+    }
+
+    public void setWxId(Integer wxId) {
+        this.wxId = wxId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("LogAiRecom (");
@@ -143,6 +155,7 @@ public class LogAiRecom implements Serializable {
         sb.append(", ").append(sendTime);
         sb.append(", ").append(mdCode);
         sb.append(", ").append(algorithmName);
+        sb.append(", ").append(wxId);
 
         sb.append(")");
         return sb.toString();

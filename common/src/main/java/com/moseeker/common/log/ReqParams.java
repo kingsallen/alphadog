@@ -7,6 +7,7 @@ public class ReqParams {
     private int type;
     private int user_id;
     private int company_id;
+    private int wx_id;
 
     public int getType() {
         return type;
@@ -30,5 +31,13 @@ public class ReqParams {
 
     public void setCompany_id(int company_id) {
         this.company_id = company_id;
+    }
+
+    public int getWx_id() {
+        return wx_id;
+    }
+
+    public void setWx_id(int wx_id) {
+        this.wx_id = wx_id;
     }
 }

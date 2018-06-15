@@ -125,6 +125,7 @@ public class MessageTemplateEntity {
         }
         recomRecord.setMdCode(mdString);
         recomRecord.setType((byte)params.getType());
+        recomRecord.setWxId(params.getWxId());
         if(StringUtils.isNotNullOrEmpty(params.getAlgorithmName())){
             recomRecord.setAlgorithmName(params.getAlgorithmName());
         }
