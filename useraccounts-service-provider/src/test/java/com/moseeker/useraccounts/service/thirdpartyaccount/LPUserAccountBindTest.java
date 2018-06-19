@@ -8,6 +8,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.useraccounts.config.AppConfig;
+import com.moseeker.useraccounts.schedule.RefreshLiepinTokenSchedule;
 import com.moseeker.useraccounts.service.impl.LiePinUserAccountBindHandler;
 import org.jooq.Result;
 import org.junit.Test;
@@ -37,12 +38,14 @@ public class LPUserAccountBindTest {
     @Autowired
     DictLiepinOccupationDao liepinOccupationDao;
 
+    @Autowired
+    LiePinUserAccountBindHandler handler;
+
     @Test
     public void testBind() throws Exception {
         HrThirdPartyAccountDO user = new HrThirdPartyAccountDO();
         user.setUsername("mayflower");
-        user.setPassword("20180612");
-        LiePinUserAccountBindHandler handler = new LiePinUserAccountBindHandler();
+        user.setPassword("8df4af0fa39249523b0f7df09c20785d");
         user = handler.bind(user, null);
     }
 
@@ -86,5 +89,13 @@ private String requireValidOccupation(List<String> occupationList) throws BIZExc
         list.add("[100, 100060]");
         list.add("[100, 100060]");
         requireValidOccupation(list);
+    }
+
+    @Autowired
+    RefreshLiepinTokenSchedule schedule;
+
+    @Test
+    public void testFresh(){
+        schedule.refreshLiepinToken();
     }
 }

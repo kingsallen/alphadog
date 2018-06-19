@@ -42,7 +42,7 @@ public class EmailNotification {
         refreshMails = getEmails("account_bind.email");
     }
 
-    private static String getConfig(String key) {
+    public static String getConfig(String key) {
         try {
             ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
             configUtils.loadResource("setting.properties");
@@ -249,6 +249,33 @@ public class EmailNotification {
 
     }
 
+    public void sendCustomEmail(List<String> mails, String emailContent, String emailSubject) {
+        if (mails == null || mails.size() == 0) {
+            logger.warn("没有配置同步邮箱地址!");
+            return;
+        }
+        try {
+
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails);
+            emailBuilder.setContent(emailContent);
+            emailBuilder.setSubject(emailSubject);
+            Email email = emailBuilder.build();
+            email.send(3, new Email.EmailListener() {
+                @Override
+                public void success() {
+                    logger.info("email send messageDelivered");
+                }
+
+                @Override
+                public void failed(Exception e) {
+                    logger.error("报警邮件发送失败：{}", e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+            e.printStackTrace();
+        }
+    }
     public List<String> getDevMails() {
         return devMails;
     }

@@ -1101,20 +1101,4 @@ public class PositionController {
         }
     }
 
-
-    @RequestMapping(value = "/test1", method = RequestMethod.POST)
-    @ResponseBody
-    public String test1(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            String duty = params.getString("detail_duty");
-
-            duty = EmojiFilter.filterEmoji1(duty);
-            return ResponseLogNotification.successJson(request, duty);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
-
 }

@@ -64,14 +64,8 @@ public abstract class LiepinPositionTransfer<R,INFO> extends AbstractPositionTra
     public EmptyExtThirdPartyPosition toExtThirdPartyPosition(Map<String, String> data) {
         return EmptyExtThirdPartyPosition.EMPTY;
     }
-
     @Override
     public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
-//        JSONObject jsonObject = JSONObject.parseObject(JSON.toJSONString(thirdPartyPosition));
-//        String feature = jsonObject.getString("feature");
-//        if(StringUtils.isNotNullOrEmpty(feature)){
-//            jsonObject.put("feature", feature.split(","));
-//        }
-        return JSONObject.parseObject(JSON.toJSONString(thirdPartyPosition));
+            return JSONObject.parseObject(JSON.toJSONString(thirdPartyPosition));
     }
 }
