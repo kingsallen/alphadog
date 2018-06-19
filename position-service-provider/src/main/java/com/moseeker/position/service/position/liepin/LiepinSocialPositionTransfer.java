@@ -490,6 +490,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
      */
     private String requireValidOccupation(List<String> occupationList) throws BIZException {
         StringBuilder occupation = new StringBuilder();
+        // 获取所有猎聘社招职能
         List<DictLiepinOccupationDO> allSocialOccupation = liepinOccupationDao.getAllSocialOccupation();
         List<Integer> allSocialCode = allSocialOccupation.stream().map(socialOccupation -> socialOccupation.getCode()).collect(Collectors.toList());
         List<String> moseekerCodeList = new ArrayList<>();
@@ -500,7 +501,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 continue;
             }
             String code = moseekerCode;
-            // todo
+
             if(moseekerCode.startsWith("[")){
                 moseekerCodeList = JSONArray.parseArray(moseekerCode, String.class);
                 if(moseekerCodeList.size() < 1){
