@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
-import com.moseeker.baseorm.config.AppConfig;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityLiePinDao;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
@@ -20,7 +19,6 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.DateUtils;
-import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.position.LiePinPositionDegree;
 import com.moseeker.position.constants.position.LiepinPositionOperateUrl;
@@ -41,12 +39,8 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -489,6 +483,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
      * @return
      */
     private String requireValidOccupation(List<String> occupationList) throws BIZException {
+        logger.info("=================occupationList:{}=============", occupationList.toString());
         StringBuilder occupation = new StringBuilder();
         // 获取所有猎聘社招职能
         List<DictLiepinOccupationDO> allSocialOccupation = liepinOccupationDao.getAllSocialOccupation();
@@ -497,6 +492,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         int index = 0;
 
         for(String moseekerCode : occupationList){
+            logger.info("===========moseekerCode:{}==========", moseekerCode);
             if(StringUtils.isNullOrEmpty(moseekerCode)){
                 continue;
             }
