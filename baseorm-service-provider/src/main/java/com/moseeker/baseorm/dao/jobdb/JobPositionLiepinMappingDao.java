@@ -131,6 +131,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
         return create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID, positionId)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE, state)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.in(republishIdList))
                 .execute();
     }
