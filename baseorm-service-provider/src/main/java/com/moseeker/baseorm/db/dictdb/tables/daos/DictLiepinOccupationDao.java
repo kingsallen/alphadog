@@ -68,14 +68,14 @@ public class DictLiepinOccupationDao extends DAOImpl<DictLiepinOccupationRecord,
     /**
      * Fetch records that have <code>code IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByCode(String... values) {
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByCode(Integer... values) {
         return fetch(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE, values);
     }
 
     /**
      * Fetch records that have <code>parent_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByParentId(String... values) {
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByParentId(Integer... values) {
         return fetch(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.PARENT_ID, values);
     }
 

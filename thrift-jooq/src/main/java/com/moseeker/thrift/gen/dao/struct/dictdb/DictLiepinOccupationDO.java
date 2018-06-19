@@ -12,10 +12,10 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("DictLiepinOccupationDO");
 
   private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.I32, (short)1);
-  private static final org.apache.thrift.protocol.TField CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("code", org.apache.thrift.protocol.TType.STRING, (short)2);
-  private static final org.apache.thrift.protocol.TField PARENT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("parentId", org.apache.thrift.protocol.TType.STRING, (short)3);
+  private static final org.apache.thrift.protocol.TField CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("code", org.apache.thrift.protocol.TType.I32, (short)2);
+  private static final org.apache.thrift.protocol.TField PARENT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("parentId", org.apache.thrift.protocol.TType.I32, (short)3);
   private static final org.apache.thrift.protocol.TField OTHER_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("otherCode", org.apache.thrift.protocol.TType.STRING, (short)4);
-  private static final org.apache.thrift.protocol.TField LEVEL_FIELD_DESC = new org.apache.thrift.protocol.TField("level", org.apache.thrift.protocol.TType.BYTE, (short)5);
+  private static final org.apache.thrift.protocol.TField LEVEL_FIELD_DESC = new org.apache.thrift.protocol.TField("level", org.apache.thrift.protocol.TType.I32, (short)5);
   private static final org.apache.thrift.protocol.TField CREATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("createTime", org.apache.thrift.protocol.TType.STRING, (short)6);
   private static final org.apache.thrift.protocol.TField UPDATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("updateTime", org.apache.thrift.protocol.TType.STRING, (short)7);
   private static final org.apache.thrift.protocol.TField STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("status", org.apache.thrift.protocol.TType.I32, (short)8);
@@ -25,14 +25,14 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new DictLiepinOccupationDOTupleSchemeFactory();
 
   public int id; // optional
-  public java.lang.String code; // optional
-  public java.lang.String parentId; // optional
-  public java.lang.String otherCode; // optional
-  public byte level; // optional
-  public java.lang.String createTime; // optional
-  public java.lang.String updateTime; // optional
+  public int code; // optional
+  public int parentId; // optional
+  public String otherCode; // optional
+  public int level; // optional
+  public String createTime; // optional
+  public String updateTime; // optional
   public int status; // optional
-  public java.lang.String name; // optional
+  public String name; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -46,7 +46,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     STATUS((short)8, "status"),
     NAME((short)9, "name");
 
-    private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+    private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
     static {
       for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -88,21 +88,21 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
       return fields;
     }
 
     /**
      * Find the _Fields constant that matches name, or null if its not found.
      */
-    public static _Fields findByName(java.lang.String name) {
+    public static _Fields findByName(String name) {
       return byName.get(name);
     }
 
     private final short _thriftId;
-    private final java.lang.String _fieldName;
+    private final String _fieldName;
 
-    _Fields(short thriftId, java.lang.String fieldName) {
+    _Fields(short thriftId, String fieldName) {
       _thriftId = thriftId;
       _fieldName = fieldName;
     }
@@ -111,15 +111,17 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
       return _thriftId;
     }
 
-    public java.lang.String getFieldName() {
+    public String getFieldName() {
       return _fieldName;
     }
   }
 
   // isset id assignments
   private static final int __ID_ISSET_ID = 0;
-  private static final int __LEVEL_ISSET_ID = 1;
-  private static final int __STATUS_ISSET_ID = 2;
+  private static final int __CODE_ISSET_ID = 1;
+  private static final int __PARENTID_ISSET_ID = 2;
+  private static final int __LEVEL_ISSET_ID = 3;
+  private static final int __STATUS_ISSET_ID = 4;
   private byte __isset_bitfield = 0;
   private static final _Fields optionals[] = {_Fields.ID,_Fields.CODE,_Fields.PARENT_ID,_Fields.OTHER_CODE,_Fields.LEVEL,_Fields.CREATE_TIME,_Fields.UPDATE_TIME,_Fields.STATUS,_Fields.NAME};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
@@ -128,13 +130,13 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.CODE, new org.apache.thrift.meta_data.FieldMetaData("code", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.PARENT_ID, new org.apache.thrift.meta_data.FieldMetaData("parentId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.OTHER_CODE, new org.apache.thrift.meta_data.FieldMetaData("otherCode", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.LEVEL, new org.apache.thrift.meta_data.FieldMetaData("level", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.CREATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("createTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.UPDATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("updateTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
@@ -156,12 +158,8 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
   public DictLiepinOccupationDO(DictLiepinOccupationDO other) {
     __isset_bitfield = other.__isset_bitfield;
     this.id = other.id;
-    if (other.isSetCode()) {
-      this.code = other.code;
-    }
-    if (other.isSetParentId()) {
-      this.parentId = other.parentId;
-    }
+    this.code = other.code;
+    this.parentId = other.parentId;
     if (other.isSetOtherCode()) {
       this.otherCode = other.otherCode;
     }
@@ -186,8 +184,10 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
   public void clear() {
     setIdIsSet(false);
     this.id = 0;
-    this.code = null;
-    this.parentId = null;
+    setCodeIsSet(false);
+    this.code = 0;
+    setParentIdIsSet(false);
+    this.parentId = 0;
     this.otherCode = null;
     setLevelIsSet(false);
     this.level = 0;
@@ -221,59 +221,57 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ID_ISSET_ID, value);
   }
 
-  public java.lang.String getCode() {
+  public int getCode() {
     return this.code;
   }
 
-  public DictLiepinOccupationDO setCode(java.lang.String code) {
+  public DictLiepinOccupationDO setCode(int code) {
     this.code = code;
+    setCodeIsSet(true);
     return this;
   }
 
   public void unsetCode() {
-    this.code = null;
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __CODE_ISSET_ID);
   }
 
   /** Returns true if field code is set (has been assigned a value) and false otherwise */
   public boolean isSetCode() {
-    return this.code != null;
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __CODE_ISSET_ID);
   }
 
   public void setCodeIsSet(boolean value) {
-    if (!value) {
-      this.code = null;
-    }
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __CODE_ISSET_ID, value);
   }
 
-  public java.lang.String getParentId() {
+  public int getParentId() {
     return this.parentId;
   }
 
-  public DictLiepinOccupationDO setParentId(java.lang.String parentId) {
+  public DictLiepinOccupationDO setParentId(int parentId) {
     this.parentId = parentId;
+    setParentIdIsSet(true);
     return this;
   }
 
   public void unsetParentId() {
-    this.parentId = null;
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PARENTID_ISSET_ID);
   }
 
   /** Returns true if field parentId is set (has been assigned a value) and false otherwise */
   public boolean isSetParentId() {
-    return this.parentId != null;
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PARENTID_ISSET_ID);
   }
 
   public void setParentIdIsSet(boolean value) {
-    if (!value) {
-      this.parentId = null;
-    }
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PARENTID_ISSET_ID, value);
   }
 
-  public java.lang.String getOtherCode() {
+  public String getOtherCode() {
     return this.otherCode;
   }
 
-  public DictLiepinOccupationDO setOtherCode(java.lang.String otherCode) {
+  public DictLiepinOccupationDO setOtherCode(String otherCode) {
     this.otherCode = otherCode;
     return this;
   }
@@ -293,11 +291,11 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     }
   }
 
-  public byte getLevel() {
+  public int getLevel() {
     return this.level;
   }
 
-  public DictLiepinOccupationDO setLevel(byte level) {
+  public DictLiepinOccupationDO setLevel(int level) {
     this.level = level;
     setLevelIsSet(true);
     return this;
@@ -316,11 +314,11 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __LEVEL_ISSET_ID, value);
   }
 
-  public java.lang.String getCreateTime() {
+  public String getCreateTime() {
     return this.createTime;
   }
 
-  public DictLiepinOccupationDO setCreateTime(java.lang.String createTime) {
+  public DictLiepinOccupationDO setCreateTime(String createTime) {
     this.createTime = createTime;
     return this;
   }
@@ -340,11 +338,11 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     }
   }
 
-  public java.lang.String getUpdateTime() {
+  public String getUpdateTime() {
     return this.updateTime;
   }
 
-  public DictLiepinOccupationDO setUpdateTime(java.lang.String updateTime) {
+  public DictLiepinOccupationDO setUpdateTime(String updateTime) {
     this.updateTime = updateTime;
     return this;
   }
@@ -387,11 +385,11 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __STATUS_ISSET_ID, value);
   }
 
-  public java.lang.String getName() {
+  public String getName() {
     return this.name;
   }
 
-  public DictLiepinOccupationDO setName(java.lang.String name) {
+  public DictLiepinOccupationDO setName(String name) {
     this.name = name;
     return this;
   }
@@ -411,13 +409,13 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     }
   }
 
-  public void setFieldValue(_Fields field, java.lang.Object value) {
+  public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case ID:
       if (value == null) {
         unsetId();
       } else {
-        setId((java.lang.Integer)value);
+        setId((Integer)value);
       }
       break;
 
@@ -425,7 +423,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
       if (value == null) {
         unsetCode();
       } else {
-        setCode((java.lang.String)value);
+        setCode((Integer)value);
       }
       break;
 
@@ -433,7 +431,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
       if (value == null) {
         unsetParentId();
       } else {
-        setParentId((java.lang.String)value);
+        setParentId((Integer)value);
       }
       break;
 
@@ -441,7 +439,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
       if (value == null) {
         unsetOtherCode();
       } else {
-        setOtherCode((java.lang.String)value);
+        setOtherCode((String)value);
       }
       break;
 
@@ -449,7 +447,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
       if (value == null) {
         unsetLevel();
       } else {
-        setLevel((java.lang.Byte)value);
+        setLevel((Integer)value);
       }
       break;
 
@@ -457,7 +455,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
       if (value == null) {
         unsetCreateTime();
       } else {
-        setCreateTime((java.lang.String)value);
+        setCreateTime((String)value);
       }
       break;
 
@@ -465,7 +463,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
       if (value == null) {
         unsetUpdateTime();
       } else {
-        setUpdateTime((java.lang.String)value);
+        setUpdateTime((String)value);
       }
       break;
 
@@ -473,7 +471,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
       if (value == null) {
         unsetStatus();
       } else {
-        setStatus((java.lang.Integer)value);
+        setStatus((Integer)value);
       }
       break;
 
@@ -481,14 +479,14 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
       if (value == null) {
         unsetName();
       } else {
-        setName((java.lang.String)value);
+        setName((String)value);
       }
       break;
 
     }
   }
 
-  public java.lang.Object getFieldValue(_Fields field) {
+  public Object getFieldValue(_Fields field) {
     switch (field) {
     case ID:
       return getId();
@@ -518,13 +516,13 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
       return getName();
 
     }
-    throw new java.lang.IllegalStateException();
+    throw new IllegalStateException();
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
   public boolean isSet(_Fields field) {
     if (field == null) {
-      throw new java.lang.IllegalArgumentException();
+      throw new IllegalArgumentException();
     }
 
     switch (field) {
@@ -547,11 +545,11 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     case NAME:
       return isSetName();
     }
-    throw new java.lang.IllegalStateException();
+    throw new IllegalStateException();
   }
 
   @Override
-  public boolean equals(java.lang.Object that) {
+  public boolean equals(Object that) {
     if (that == null)
       return false;
     if (that instanceof DictLiepinOccupationDO)
@@ -579,7 +577,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     if (this_present_code || that_present_code) {
       if (!(this_present_code && that_present_code))
         return false;
-      if (!this.code.equals(that.code))
+      if (this.code != that.code)
         return false;
     }
 
@@ -588,7 +586,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     if (this_present_parentId || that_present_parentId) {
       if (!(this_present_parentId && that_present_parentId))
         return false;
-      if (!this.parentId.equals(that.parentId))
+      if (this.parentId != that.parentId)
         return false;
     }
 
@@ -659,11 +657,11 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
 
     hashCode = hashCode * 8191 + ((isSetCode()) ? 131071 : 524287);
     if (isSetCode())
-      hashCode = hashCode * 8191 + code.hashCode();
+      hashCode = hashCode * 8191 + code;
 
     hashCode = hashCode * 8191 + ((isSetParentId()) ? 131071 : 524287);
     if (isSetParentId())
-      hashCode = hashCode * 8191 + parentId.hashCode();
+      hashCode = hashCode * 8191 + parentId;
 
     hashCode = hashCode * 8191 + ((isSetOtherCode()) ? 131071 : 524287);
     if (isSetOtherCode())
@@ -671,7 +669,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
 
     hashCode = hashCode * 8191 + ((isSetLevel()) ? 131071 : 524287);
     if (isSetLevel())
-      hashCode = hashCode * 8191 + (int) (level);
+      hashCode = hashCode * 8191 + level;
 
     hashCode = hashCode * 8191 + ((isSetCreateTime()) ? 131071 : 524287);
     if (isSetCreateTime())
@@ -700,7 +698,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
 
     int lastComparison = 0;
 
-    lastComparison = java.lang.Boolean.valueOf(isSetId()).compareTo(other.isSetId());
+    lastComparison = Boolean.valueOf(isSetId()).compareTo(other.isSetId());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -710,7 +708,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
+    lastComparison = Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -720,7 +718,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetParentId()).compareTo(other.isSetParentId());
+    lastComparison = Boolean.valueOf(isSetParentId()).compareTo(other.isSetParentId());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -730,7 +728,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetOtherCode()).compareTo(other.isSetOtherCode());
+    lastComparison = Boolean.valueOf(isSetOtherCode()).compareTo(other.isSetOtherCode());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -740,7 +738,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetLevel()).compareTo(other.isSetLevel());
+    lastComparison = Boolean.valueOf(isSetLevel()).compareTo(other.isSetLevel());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -750,7 +748,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetCreateTime()).compareTo(other.isSetCreateTime());
+    lastComparison = Boolean.valueOf(isSetCreateTime()).compareTo(other.isSetCreateTime());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -760,7 +758,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetUpdateTime()).compareTo(other.isSetUpdateTime());
+    lastComparison = Boolean.valueOf(isSetUpdateTime()).compareTo(other.isSetUpdateTime());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -770,7 +768,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetStatus()).compareTo(other.isSetStatus());
+    lastComparison = Boolean.valueOf(isSetStatus()).compareTo(other.isSetStatus());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -780,7 +778,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetName()).compareTo(other.isSetName());
+    lastComparison = Boolean.valueOf(isSetName()).compareTo(other.isSetName());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -806,8 +804,8 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
   }
 
   @Override
-  public java.lang.String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder("DictLiepinOccupationDO(");
+  public String toString() {
+    StringBuilder sb = new StringBuilder("DictLiepinOccupationDO(");
     boolean first = true;
 
     if (isSetId()) {
@@ -818,21 +816,13 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     if (isSetCode()) {
       if (!first) sb.append(", ");
       sb.append("code:");
-      if (this.code == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.code);
-      }
+      sb.append(this.code);
       first = false;
     }
     if (isSetParentId()) {
       if (!first) sb.append(", ");
       sb.append("parentId:");
-      if (this.parentId == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.parentId);
-      }
+      sb.append(this.parentId);
       first = false;
     }
     if (isSetOtherCode()) {
@@ -904,7 +894,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
     }
   }
 
-  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     try {
       // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
       __isset_bitfield = 0;
@@ -941,16 +931,16 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
             }
             break;
           case 2: // CODE
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.code = iprot.readString();
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.code = iprot.readI32();
               struct.setCodeIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
           case 3: // PARENT_ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.parentId = iprot.readString();
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.parentId = iprot.readI32();
               struct.setParentIdIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -965,8 +955,8 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
             }
             break;
           case 5: // LEVEL
-            if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
-              struct.level = iprot.readByte();
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.level = iprot.readI32();
               struct.setLevelIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1024,19 +1014,15 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         oprot.writeI32(struct.id);
         oprot.writeFieldEnd();
       }
-      if (struct.code != null) {
-        if (struct.isSetCode()) {
-          oprot.writeFieldBegin(CODE_FIELD_DESC);
-          oprot.writeString(struct.code);
-          oprot.writeFieldEnd();
-        }
+      if (struct.isSetCode()) {
+        oprot.writeFieldBegin(CODE_FIELD_DESC);
+        oprot.writeI32(struct.code);
+        oprot.writeFieldEnd();
       }
-      if (struct.parentId != null) {
-        if (struct.isSetParentId()) {
-          oprot.writeFieldBegin(PARENT_ID_FIELD_DESC);
-          oprot.writeString(struct.parentId);
-          oprot.writeFieldEnd();
-        }
+      if (struct.isSetParentId()) {
+        oprot.writeFieldBegin(PARENT_ID_FIELD_DESC);
+        oprot.writeI32(struct.parentId);
+        oprot.writeFieldEnd();
       }
       if (struct.otherCode != null) {
         if (struct.isSetOtherCode()) {
@@ -1047,7 +1033,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
       }
       if (struct.isSetLevel()) {
         oprot.writeFieldBegin(LEVEL_FIELD_DESC);
-        oprot.writeByte(struct.level);
+        oprot.writeI32(struct.level);
         oprot.writeFieldEnd();
       }
       if (struct.createTime != null) {
@@ -1126,16 +1112,16 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         oprot.writeI32(struct.id);
       }
       if (struct.isSetCode()) {
-        oprot.writeString(struct.code);
+        oprot.writeI32(struct.code);
       }
       if (struct.isSetParentId()) {
-        oprot.writeString(struct.parentId);
+        oprot.writeI32(struct.parentId);
       }
       if (struct.isSetOtherCode()) {
         oprot.writeString(struct.otherCode);
       }
       if (struct.isSetLevel()) {
-        oprot.writeByte(struct.level);
+        oprot.writeI32(struct.level);
       }
       if (struct.isSetCreateTime()) {
         oprot.writeString(struct.createTime);
@@ -1160,11 +1146,11 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         struct.setIdIsSet(true);
       }
       if (incoming.get(1)) {
-        struct.code = iprot.readString();
+        struct.code = iprot.readI32();
         struct.setCodeIsSet(true);
       }
       if (incoming.get(2)) {
-        struct.parentId = iprot.readString();
+        struct.parentId = iprot.readI32();
         struct.setParentIdIsSet(true);
       }
       if (incoming.get(3)) {
@@ -1172,7 +1158,7 @@ public class DictLiepinOccupationDO implements org.apache.thrift.TBase<DictLiepi
         struct.setOtherCodeIsSet(true);
       }
       if (incoming.get(4)) {
-        struct.level = iprot.readByte();
+        struct.level = iprot.readI32();
         struct.setLevelIsSet(true);
       }
       if (incoming.get(5)) {
