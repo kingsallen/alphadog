@@ -151,6 +151,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
 
         String syncTime = (new DateTime()).toString("yyyy-MM-dd HH:mm:ss");
+        logger.info("================syncTime:{}===============", syncTime);
         data.setSyncTime(syncTime);
         data.setUpdateTime(syncTime);
         data.setOccupation(pwa.getEjob_jobtitle());
@@ -500,14 +501,13 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
             if(moseekerCode.startsWith("[")){
                 moseekerCodeList = JSONArray.parseArray(moseekerCode, String.class);
-                if(moseekerCodeList.size() < 1){
+                if(moseekerCodeList.size() < 2){
+                    logger.info("============单个职能数组长度小于2==============");
                     continue;
                 }
-                if("000".equals(moseekerCodeList.get(0))){
-                    code = "000";
-                }else{
-                    code = moseekerCodeList.get(1).trim();
-                }
+
+                code = moseekerCodeList.get(1).trim();
+
 
             }
 
