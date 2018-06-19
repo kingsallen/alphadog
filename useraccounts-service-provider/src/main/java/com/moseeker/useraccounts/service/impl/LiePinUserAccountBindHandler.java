@@ -39,6 +39,8 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
     @Autowired
     EmailNotification emailNotification;
 
+    private String bindEmailSubject = "用户绑定失败";
+
     @Override
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         try{
@@ -72,14 +74,15 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
                 throw new BIZException(Integer.parseInt(String.valueOf(result.get("code"))), String.valueOf(result.get("message")));
             }
         }catch (BIZException e){
-
-            emailNotification.sendCustomEmail(emailNotification.getRefreshMails(), "123123", "test");
+            emailNotification.sendCustomEmail(emailNotification.getRefreshMails(), e.getMessage() + "</br>用户账号:"
+                    + hrThirdPartyAccount.getUsername(), bindEmailSubject);
             logger.info("=================errormsg:{}===================", e.getMessage());
             e.printStackTrace();
             hrThirdPartyAccount.setBinding((short) BindingStatus.ERROR.getValue());
             hrThirdPartyAccount.setErrorMessage(e.getMessage());
         }catch (Exception e){
-
+            emailNotification.sendCustomEmail(emailNotification.getRefreshMails(), e.getMessage() + "</br>用户账号:"
+                    + hrThirdPartyAccount.getUsername(), bindEmailSubject);
             logger.info("=================猎聘对接用户绑定时后台异常===================");
             e.printStackTrace();
             hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
@@ -118,7 +121,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
         headers.put("channel", "qianxun");
 
         //发送请求
-        return HttpClientUtil.sentHttpPostRequest(UserAccountConstant.LP_USER_BIND_URL, headers, requestMap);
+        return HttpClientUtil.sentHttpPostRequest(UserAccountConstant.liepinUserBindUrl, headers, requestMap);
     }
 
     @Override

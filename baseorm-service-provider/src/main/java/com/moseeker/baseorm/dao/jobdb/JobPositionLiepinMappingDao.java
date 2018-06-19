@@ -58,8 +58,6 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
     }
 
     public void updateState(List<Integer> ids, byte state) {
-
-        // todo
         Condition condition = JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.in(ids);
         create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE, state)
