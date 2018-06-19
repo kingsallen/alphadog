@@ -46,7 +46,7 @@ public class DictLiepinOccupationDao extends AbstractDictOccupationDao<DictLiepi
 
     @Override
     protected boolean isTopOccupation(DictLiepinOccupationDO dictLiepinOccupationDO) {
-        return dictLiepinOccupationDO!=null && dictLiepinOccupationDO.getId()>0 && dictLiepinOccupationDO.getParentId()==0;
+        return dictLiepinOccupationDO!=null && dictLiepinOccupationDO.getId()>0 && "0".equals(dictLiepinOccupationDO.getParentId());
     }
 
     @Override
