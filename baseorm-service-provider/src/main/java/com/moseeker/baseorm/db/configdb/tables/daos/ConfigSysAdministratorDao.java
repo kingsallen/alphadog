@@ -120,4 +120,11 @@ public class ConfigSysAdministratorDao extends DAOImpl<ConfigSysAdministratorRec
     public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysAdministrator> fetchByCreateTime(Timestamp... values) {
         return fetch(ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR.CREATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>auth_group_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysAdministrator> fetchByAuthGroupId(Integer... values) {
+        return fetch(ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR.AUTH_GROUP_ID, values);
+    }
 }

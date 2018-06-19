@@ -184,8 +184,8 @@ public class VeryEastTransfer extends AbstractPositionTransfer<PositionVeryEastF
         data.setThirdPartyAccountId(Integer.parseInt(pwa.getAccount_id()));
         data.setChannel(getChannel().getValue());
         data.setIsSynchronization((byte) PositionSync.binding.getValue());
-        data.setSalaryTop(position.getSalaryTop());
-        data.setSalaryBottom(position.getSalaryBottom());
+        data.setSalaryTop(position.getSalaryTop()*1000);
+        data.setSalaryBottom(position.getSalaryBottom()*1000);
 
 
         //将最后一个职能的Code存到数据库
