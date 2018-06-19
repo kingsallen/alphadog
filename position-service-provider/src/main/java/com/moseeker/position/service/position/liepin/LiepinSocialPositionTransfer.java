@@ -505,10 +505,15 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 if(moseekerCodeList.size() < 1){
                     continue;
                 }
-                code = moseekerCodeList.get(1).trim();
+                if("0".equals(moseekerCodeList.get(0))){
+                    code = "000";
+                }else{
+                    code = moseekerCodeList.get(1).trim();
+                }
+
             }
 
-            if(allSocialCode.contains(code) && index < 3 && code.length() > 3){
+            if(allSocialCode.contains(code) && index < 3){
                 occupation.append(code).append(",");
                 index++;
             }
