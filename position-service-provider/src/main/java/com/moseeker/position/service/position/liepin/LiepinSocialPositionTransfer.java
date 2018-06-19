@@ -1,6 +1,7 @@
 package com.moseeker.position.service.position.liepin;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.config.AppConfig;
@@ -22,6 +23,7 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.position.LiePinPositionDegree;
+import com.moseeker.position.constants.position.LiepinPositionOperateUrl;
 import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.position.utils.EmailSendUtil;
 import com.moseeker.position.utils.HttpClientUtil;
@@ -83,9 +85,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     @Autowired
     private HrCompanyFeatureDao featureDao;
 
-    public static final String LP_USER_SYNC_JOB = "https://apidev1.liepin.com/e/job/createEJob.json";
-    private static final String LP_USER_REPUB_JOB = "https://apidev1.liepin.com/e/job/rePublishEjob.json";
-    private static final String LP_POSITION_EDIT = "https://apidev1.liepin.com/e/job/updateEJob.json";
+
 
     @Override
     public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
@@ -325,7 +325,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     headers.put("token", liePinToken);
                     String httpResultJson = null;
                     try {
-                        httpResultJson = HttpClientUtil.sentHttpPostRequest(LP_USER_SYNC_JOB, headers, liePinJsonObject);
+                        httpResultJson = HttpClientUtil.sentHttpPostRequest(LiepinPositionOperateUrl.liepinPositionSync, headers, liePinJsonObject);
                     } catch (Exception e) {
                         e.printStackTrace();
                         errCityCodeList.add(cityCode);
@@ -352,15 +352,16 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                         }
                         errorMsg = httpResult.getString("message");
                     } else {
+                        flag = false;
                         errorMsg = "http请求失败";
                         errCityCodeList.add(cityCode);
                     }
-                    // 如果鉴权失败，将mapping记录删除
+                    // 如果同步失败，将mapping记录删除
                     int id = jobPositionLiepinMappingDO.getId();
                     if(!flag){
                         liepinMappingDao.deleteData(jobPositionLiepinMappingDO);
-                        logger.info("===============猎聘鉴权失败或token失效==================");
-                        EmailSendUtil.sendWarnEmail("猎聘鉴权失败或token失效：jobPositionId:"
+                        logger.info("===============猎聘鉴权失败/token失效/http请求为空==================");
+                        EmailSendUtil.sendWarnEmail("猎聘鉴权失败/token失效/http请求为空：jobPositionId:"
                                 + positionId, "猎聘同步职位失败");
                         return;
                     }else{
@@ -383,7 +384,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                                 logger.info("===========上架后向猎聘发送修改职位republishId:{}============", republishId);
                                 liePinPositionVO.setEjob_extRefid(String.valueOf(republishId));
 
-                                String editResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(liePinPositionVO), liePinToken, LP_POSITION_EDIT);
+                                String editResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(liePinPositionVO), liePinToken, LiepinPositionOperateUrl.liepinPositionEdit);
                                 logger.info("==================editResponse==================", editResponse);
 
                                 receiverHandler.requireValidResult(editResponse);
@@ -457,7 +458,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         // 去掉末尾的逗号
         liePinJsonObject.put("ejob_extRefids", republishIds.substring(0, republishIds.length() - 1));
 
-        String httpResultJson = receiverHandler.sendRequest2LiePin(liePinJsonObject, liePinToken, LP_USER_REPUB_JOB);
+        String httpResultJson = receiverHandler.sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateUrl.liepinPositionRepub);
 
         receiverHandler.requireValidResult(httpResultJson);
 
@@ -480,8 +481,16 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         return list;
     }
 
+    /**
+     * 将前端传来的职能组合成以逗号隔开的格式
+     * @param
+     * @author  cjm
+     * @date  2018/6/19
+     * @return
+     */
     private String requireValidOccupation(List<String> occupationList) throws BIZException {
         StringBuilder occupation = new StringBuilder();
+        // 获取所有猎聘社招职能
         List<DictLiepinOccupationDO> allSocialOccupation = liepinOccupationDao.getAllSocialOccupation();
         List<Integer> allSocialCode = allSocialOccupation.stream().map(socialOccupation -> socialOccupation.getCode()).collect(Collectors.toList());
         List<String> moseekerCodeList = new ArrayList<>();
@@ -492,8 +501,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 continue;
             }
             String code = moseekerCode;
-            if(moseekerCode.contains("[")){
-                moseekerCodeList = Arrays.asList(moseekerCode.substring(1, moseekerCode.length() - 1).split("[,，]"));
+
+            if(moseekerCode.startsWith("[")){
+                moseekerCodeList = JSONArray.parseArray(moseekerCode, String.class);
                 if(moseekerCodeList.size() < 1){
                     continue;
                 }
