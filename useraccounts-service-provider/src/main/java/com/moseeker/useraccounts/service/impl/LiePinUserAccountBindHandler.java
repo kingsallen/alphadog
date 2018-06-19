@@ -52,7 +52,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
             String resultJson = sendRequest2Liepin(username, password);
 
             logger.info("==============LiePinBindResultJson:{}================", resultJson);
-            resultJson = "";
+
             if(StringUtils.isNullOrEmpty(resultJson)){
                 logger.info("================用户绑定时http请求结果为空=================");
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "用户绑定时http请求结果为空");
