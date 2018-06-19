@@ -12,7 +12,6 @@ import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSyncVerify;
-import com.moseeker.common.email.Email;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.position.pojo.LiePinPositionVO;
