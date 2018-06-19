@@ -729,6 +729,8 @@ public class LiePinReceiverHandler {
                 // 下架
                 String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LiepinPositionOperateUrl.liepinPositionEnd);
 
+                log.info("================httpResultJson:{}===============", httpResultJson);
+
                 requireValidResult(httpResultJson);
 
                 liepinMappingDao.updateState(downShelfPositonListDb, (byte) 0);
