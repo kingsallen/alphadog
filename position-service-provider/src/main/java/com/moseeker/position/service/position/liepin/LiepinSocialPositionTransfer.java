@@ -152,135 +152,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         return liePinPositionVO;
     }
 
-    private String requireValidOccupation(List<String> occupationList) throws BIZException {
-        StringBuilder occupation = new StringBuilder();
-        List<DictLiepinOccupationDO> allSocialOccupation = liepinOccupationDao.getAllSocialOccupation();
-        List<Integer> allSocialCode = allSocialOccupation.stream().map(socialOccupation -> socialOccupation.getCode()).collect(Collectors.toList());
-        List<String> moseekerCodeList = new ArrayList<>();
-        int index = 0;
-
-        for(String moseekerCode : occupationList){
-            if(StringUtils.isNullOrEmpty(moseekerCode)){
-                continue;
-            }
-            String code = moseekerCode;
-            if(moseekerCode.contains("[")){
-                moseekerCodeList = Arrays.asList(moseekerCode.substring(1, moseekerCode.length() - 1).split("[,，]"));
-                if(moseekerCodeList.size() < 1){
-                    continue;
-                }
-                code = moseekerCodeList.get(1).trim();
-            }
-
-            if(allSocialCode.contains(Integer.parseInt(code)) && index < 3 && code.length() > 3){
-                occupation.append(code).append(",");
-                index++;
-            }
-        }
-        if(occupation.length() > 0){
-            return occupation.substring(0, occupation.length() - 1);
-        }
-        throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_OCCUPATION_INVALID);
-    }
-
-    /**
-     * 映射部门名字，本是由第三方页面手动填入，若为空，使用仟寻职位部门
-     * @param
-     * @author  cjm
-     * @date  2018/6/11
-     * @return
-     */
-    private String getDepartmentName(ThirdPartyPosition positionForm, JobPositionDO moseekerJobPosition) {
-        String departmentName = null;
-        if(StringUtils.isNotNullOrEmpty(positionForm.getDepartmentName())){
-            departmentName = positionForm.getDepartmentName();
-        }else{
-            departmentName = moseekerJobPosition.getDepartment();
-        }
-        return departmentName;
-    }
-
-    private String mappingCityCode(int positionId) throws BIZException {
-        List<JobPositionCityDO> dicCityList = jobPositionCityDao.getPositionCitysByPid(positionId);
-        StringBuilder citysCode = new StringBuilder();
-        if (!dicCityList.isEmpty()) {
-            for (JobPositionCityDO dictCity : dicCityList) {
-                citysCode.append(dictCity.getCode()).append(",");
-            }
-        } else {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_PUBLISHCITY_INVALID);
-        }
-        return citysCode.substring(0, citysCode.length() - 1);
-    }
-
-    private void mappingLanguageRequire(LiePinPositionVO liePinPositionVO, JobPositionDO moseekerJobPosition) {
-        String language = moseekerJobPosition.getLanguage();
-        if(StringUtils.isNullOrEmpty(language)){
-            return;
-        }
-        int english = 0;
-        if (language.contains("英语") || language.toLowerCase().contains("english")) {
-            english = 1;
-        }
-        liePinPositionVO.setDetail_language_english(english);
-        int japanese = 0;
-        if (language.contains("日语") || language.toLowerCase().contains("japanese")) {
-            japanese = 1;
-        }
-        liePinPositionVO.setDetail_language_japanese(japanese);
-        int french = 0;
-        if (language.contains("法语") || language.toLowerCase().contains("french")) {
-            french = 1;
-        }
-        liePinPositionVO.setDetail_language_french(french);
-        int putong = 0;
-        if (language.contains("普通话") || language.toLowerCase().contains("putonghua")) {
-            putong = 1;
-        }
-        liePinPositionVO.setDetail_language_putong(putong);
-        int yueyu = 0;
-        if (language.contains("粤语") || language.toLowerCase().contains("yueyu") || language.contains("广东话")) {
-            yueyu = 1;
-        }
-        liePinPositionVO.setDetail_language_yueyu(yueyu);
-        liePinPositionVO.setDetail_language_other(1);
-        liePinPositionVO.setDetail_language_content(language);
-    }
-
-    /**
-     * 将职位亮点格式化为猎聘api的格式
-     *
-     * @param positionForm JobPositionDO
-     * @return String
-     * @author cjm
-     * @date 2018/6/7
-     */
-    private String getValidFeature(ThirdPartyPosition positionForm) {
-        List<String> features = positionForm.getFeature();
-        StringBuilder tags = new StringBuilder();
-
-        if (features == null || features.size() < 1) {
-            List<HrCompanyFeature> hrCompanyFeatureList = featureDao.getFeatureListByCompanyId(positionForm.getCompanyId());
-            features = hrCompanyFeatureList.stream().map(hrCompanyFeature -> hrCompanyFeature.getFeature()).collect(Collectors.toList());
-        }
-        int index = 0;
-
-        for (String str : features) {
-            if(StringUtils.isNullOrEmpty(str)){
-                continue;
-            }
-            // 16个字符的不参与
-            if (str.length() > 8) {
-                continue;
-            }
-            tags.append(str).append(",");
-            if (++index >= 16) {
-                break;
-            }
-        }
-        return tags.substring(0, tags.length() - 1);
-    }
-
     @Override
     public HrThirdPartyPositionDO toThirdPartyPosition(ThirdPartyPosition thirdPartyPosition, LiePinPositionVO pwa) {
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
@@ -609,6 +480,132 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         return list;
     }
 
+    private String requireValidOccupation(List<String> occupationList) throws BIZException {
+        StringBuilder occupation = new StringBuilder();
+        List<DictLiepinOccupationDO> allSocialOccupation = liepinOccupationDao.getAllSocialOccupation();
+        List<Integer> allSocialCode = allSocialOccupation.stream().map(socialOccupation -> socialOccupation.getCode()).collect(Collectors.toList());
+        List<String> moseekerCodeList = new ArrayList<>();
+        int index = 0;
 
+        for(String moseekerCode : occupationList){
+            if(StringUtils.isNullOrEmpty(moseekerCode)){
+                continue;
+            }
+            String code = moseekerCode;
+            if(moseekerCode.contains("[")){
+                moseekerCodeList = Arrays.asList(moseekerCode.substring(1, moseekerCode.length() - 1).split("[,，]"));
+                if(moseekerCodeList.size() < 1){
+                    continue;
+                }
+                code = moseekerCodeList.get(1).trim();
+            }
 
+            if(allSocialCode.contains(Integer.parseInt(code)) && index < 3 && code.length() > 3){
+                occupation.append(code).append(",");
+                index++;
+            }
+        }
+        if(occupation.length() > 0){
+            return occupation.substring(0, occupation.length() - 1);
+        }
+        throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_OCCUPATION_INVALID);
+    }
+
+    /**
+     * 映射部门名字，本是由第三方页面手动填入，若为空，使用仟寻职位部门
+     * @param
+     * @author  cjm
+     * @date  2018/6/11
+     * @return
+     */
+    private String getDepartmentName(ThirdPartyPosition positionForm, JobPositionDO moseekerJobPosition) {
+        String departmentName = null;
+        if(StringUtils.isNotNullOrEmpty(positionForm.getDepartmentName())){
+            departmentName = positionForm.getDepartmentName();
+        }else{
+            departmentName = moseekerJobPosition.getDepartment();
+        }
+        return departmentName;
+    }
+
+    private String mappingCityCode(int positionId) throws BIZException {
+        List<JobPositionCityDO> dicCityList = jobPositionCityDao.getPositionCitysByPid(positionId);
+        StringBuilder citysCode = new StringBuilder();
+        if (!dicCityList.isEmpty()) {
+            for (JobPositionCityDO dictCity : dicCityList) {
+                citysCode.append(dictCity.getCode()).append(",");
+            }
+        } else {
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_PUBLISHCITY_INVALID);
+        }
+        return citysCode.substring(0, citysCode.length() - 1);
+    }
+
+    private void mappingLanguageRequire(LiePinPositionVO liePinPositionVO, JobPositionDO moseekerJobPosition) {
+        String language = moseekerJobPosition.getLanguage();
+        if(StringUtils.isNullOrEmpty(language)){
+            return;
+        }
+        int english = 0;
+        if (language.contains("英语") || language.toLowerCase().contains("english")) {
+            english = 1;
+        }
+        liePinPositionVO.setDetail_language_english(english);
+        int japanese = 0;
+        if (language.contains("日语") || language.toLowerCase().contains("japanese")) {
+            japanese = 1;
+        }
+        liePinPositionVO.setDetail_language_japanese(japanese);
+        int french = 0;
+        if (language.contains("法语") || language.toLowerCase().contains("french")) {
+            french = 1;
+        }
+        liePinPositionVO.setDetail_language_french(french);
+        int putong = 0;
+        if (language.contains("普通话") || language.toLowerCase().contains("putonghua")) {
+            putong = 1;
+        }
+        liePinPositionVO.setDetail_language_putong(putong);
+        int yueyu = 0;
+        if (language.contains("粤语") || language.toLowerCase().contains("yueyu") || language.contains("广东话")) {
+            yueyu = 1;
+        }
+        liePinPositionVO.setDetail_language_yueyu(yueyu);
+        liePinPositionVO.setDetail_language_other(1);
+        liePinPositionVO.setDetail_language_content(language);
+    }
+
+    /**
+     * 将职位亮点格式化为猎聘api的格式
+     *
+     * @param positionForm JobPositionDO
+     * @return String
+     * @author cjm
+     * @date 2018/6/7
+     */
+    private String getValidFeature(ThirdPartyPosition positionForm) {
+        List<String> features = positionForm.getFeature();
+        StringBuilder tags = new StringBuilder();
+
+        if (features == null || features.size() < 1) {
+            List<HrCompanyFeature> hrCompanyFeatureList = featureDao.getFeatureListByCompanyId(positionForm.getCompanyId());
+            features = hrCompanyFeatureList.stream().map(hrCompanyFeature -> hrCompanyFeature.getFeature()).collect(Collectors.toList());
+        }
+        int index = 0;
+
+        for (String str : features) {
+            if(StringUtils.isNullOrEmpty(str)){
+                continue;
+            }
+            // 16个字符的不参与
+            if (str.length() > 8) {
+                continue;
+            }
+            tags.append(str).append(",");
+            if (++index >= 16) {
+                break;
+            }
+        }
+        return tags.substring(0, tags.length() - 1);
+    }
 }
