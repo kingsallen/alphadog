@@ -241,7 +241,8 @@ public class LiePinReceiverHandler {
                                     // 如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架
                                     downShelfOldSinglePosition(mappingDO, liePinToken);
 
-                                } else if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode)) {
+                                }
+                                if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode)) {
                                     // 如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布
                                     log.info("================如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布================");
                                     flag = false;
