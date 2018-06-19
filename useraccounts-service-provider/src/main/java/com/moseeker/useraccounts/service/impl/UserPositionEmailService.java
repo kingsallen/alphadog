@@ -130,6 +130,10 @@ public class UserPositionEmailService {
 		String keyWord=(String) map.get("keyWord");
 		String citys=(String) map.get("citys");
 		String industry=(String) map.get("industry");
+		String candidateSource=(String)map.get("candidateSource");
+		if(StringUtils.isBlank(candidateSource)){
+			candidateSource="-1";
+		}
 		int page=1;
 		int pageSize=10;
 		Map<String,Integer> salaryMap= (Map<String, Integer>) map.get("salaryCode");
@@ -138,10 +142,6 @@ public class UserPositionEmailService {
 			salaryCodeList.add(salaryMap);
 		}
 		String salaryCode= JSONObject.toJSONString(salaryCodeList);
-		String canidateSource=(String) map.get("candidateSource");
-		if(StringUtils.isBlank(canidateSource)){
-			canidateSource="-1";
-		}
 		Calendar lastDate = Calendar.getInstance();
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss" );
 		lastDate.roll(Calendar.DATE, -7);//日期回滚7天
