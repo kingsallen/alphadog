@@ -487,7 +487,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         StringBuilder occupation = new StringBuilder();
         // 获取所有猎聘社招职能
         List<DictLiepinOccupationDO> allSocialOccupation = liepinOccupationDao.getAllSocialOccupation();
-        List<Integer> allSocialCode = allSocialOccupation.stream().map(socialOccupation -> socialOccupation.getCode()).collect(Collectors.toList());
+        List<String> allSocialCode = allSocialOccupation.stream().map(socialOccupation -> String.valueOf(socialOccupation.getCode())).collect(Collectors.toList());
         List<String> moseekerCodeList = new ArrayList<>();
         int index = 0;
 
@@ -506,7 +506,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 code = moseekerCodeList.get(1).trim();
             }
 
-            if(allSocialCode.contains(Integer.parseInt(code)) && index < 3 && code.length() > 3){
+            if(allSocialCode.contains(code) && index < 3 && code.length() > 3){
                 occupation.append(code).append(",");
                 index++;
             }
