@@ -9,6 +9,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.useraccounts.constant.UserAccountConstant;
+import com.moseeker.useraccounts.service.thirdpartyaccount.EmailNotification;
 import com.moseeker.useraccounts.service.thirdpartyaccount.base.IBindRequest;
 import com.moseeker.useraccounts.utils.AESUtils;
 import com.moseeker.useraccounts.utils.HttpClientUtil;
@@ -16,6 +17,7 @@ import com.moseeker.useraccounts.utils.Md5Utils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
@@ -34,6 +36,8 @@ import java.util.Map;
 public class LiePinUserAccountBindHandler implements IBindRequest{
 
     private Logger logger = LoggerFactory.getLogger(LiePinUserAccountBindHandler.class);
+    @Autowired
+    EmailNotification emailNotification;
 
     @Override
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
@@ -48,7 +52,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
             String resultJson = sendRequest2Liepin(username, password);
 
             logger.info("==============LiePinBindResultJson:{}================", resultJson);
-
+            resultJson = "";
             if(StringUtils.isNullOrEmpty(resultJson)){
                 logger.info("================用户绑定时http请求结果为空=================");
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "用户绑定时http请求结果为空");
@@ -65,11 +69,11 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
                 hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
                 logger.info("==================请求绑定成功，hrThirdPartyAccount:{}==================", hrThirdPartyAccount);
             }else{
-
                 throw new BIZException(Integer.parseInt(String.valueOf(result.get("code"))), String.valueOf(result.get("message")));
             }
         }catch (BIZException e){
 
+            emailNotification.sendCustomEmail(emailNotification.getRefreshMails(), "123123", "test");
             logger.info("=================errormsg:{}===================", e.getMessage());
             e.printStackTrace();
             hrThirdPartyAccount.setBinding((short) BindingStatus.ERROR.getValue());

@@ -157,6 +157,9 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_ACCOUNTABILITIES_NOT_EMPTY="{'status':52004,'message':'职位描述不能为空!'}";
     public static final String POSITION_REQUIREMENT_NOT_EMPTY="{'status':52005,'message':'任职条件不能为空!'}";
     public static final String POSITION_CITY_NOT_EMPTY="{'status':52006,'message':'工作地点不能为空!'}";
+    public static final String POSITION_OCCUPATION_INVALID="{'status':52007,'message':'传入职能中没有有效的职能code!'}";
+    public static final String POSITION_PUBLISHCITY_INVALID="{'status':52008,'message':'该职位查不到发布地区!'}";
+    public static final String POSITION_CITYCODE_INVALID="{'status':52009,'message':'错误的仟寻citycode，查不到该code的所有城市level!'}";
 
 
     //职位同步
@@ -177,7 +180,7 @@ public final class ConstantErrorCodeMessage {
     public static final String NO_AUTH_IMPORT_VERYEAST_PROFILE = "{'status':61016,'message':'该公司没有导入最佳东方简历的权限！'}";
     public static final String NO_SYNC_QX_POSITION = "{'status':61017,'message':'查询不到要同步的职位！'}";
     public static final String NO_SYNC_THIRD_PARTY_ACCOUNT = "{'status':61018,'message':'查询不到可发布的第三方账号！'}";
-    public static final String LIEPIN_TOKEN_NONEXISTS = "{'status':61019,'message':'猎聘token标识不存在！'}";
+    public static final String LIEPIN_REQUEST_RESPONSE_NULL = "{'status':61019,'message':'请求猎聘失败，http请求为空！'}";
 
 
     //mq服务提示信息说明

@@ -80,4 +80,12 @@ public class LiepinSocialTransferTesst {
         liepinSocialPositionTransfer.sendSyncRequest(result);
     }
 
+
+    @Test
+    public void toThirdPartyPositionForm(){
+        HrThirdPartyPositionDO hrThirdPartyPositionDO = new HrThirdPartyPositionDO();
+        hrThirdPartyPositionDO.setFeature("福利特色,五险一金");
+        hrThirdPartyPositionDO.setOccupation("123,1231");
+        liepinSocialPositionTransfer.toThirdPartyPositionForm(hrThirdPartyPositionDO, null);
+    }
 }
