@@ -240,29 +240,35 @@ public class LiePinReceiverHandler {
                                     // 如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架
                                     downShelfOldSinglePosition(mappingDO, liePinToken);
 
-                                } else if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode)) {
+                                }
+                                if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode)) {
                                     // 如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布
                                     log.info("================如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布================");
                                     flag = false;
+                                    break;
                                 }
                             }
 
                         }
                     } else {
                         //  title变化，将之前所有的下架获取所有的jobMappingIds，新的发布
+                        log.info("============itle变化，将之前所有的下架获取所有的jobMappingIds，新的发布===============");
                         downShelfOldPositions(liepinMappingDOList, liePinToken);
 
                         // 发布新title对应的职位
+                        log.info("===========发布新title对应的职位===========");
                         sendSyncPosition(positionId, thirdPartyPosition);
                     }
 
                 } else {
                     // 不存在映射记录，发布职位
+                    log.info("==========不存在映射记录，发布职位==========");
                     sendSyncPosition(positionId, thirdPartyPosition);
                 }
 
                 if (!flag) {
                     // 说明编辑职位中存在没有发布的城市，需要新发布职位
+                    log.info("==============说明编辑职位中存在没有发布的城市，需要新发布职位============");
                     sendSyncPosition(positionId, thirdPartyPosition);
                 }
 
