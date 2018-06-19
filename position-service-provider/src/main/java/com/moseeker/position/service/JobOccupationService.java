@@ -48,7 +48,7 @@ public class JobOccupationService {
             HRCompanyConfData hrconf = getHRCompanyConf(company_id);
             Response result1 = customDao.getJobCustoms(query);
             List<? extends TBase> list1 = ConvertUtils.convert(JobOccupationCustom.class, result1);
-            Map<String, Object> map1 = ConvertUtils.convertToJSON(list1, hrconf.job_custom_title);
+            Map<String, Object> map1 = ConvertUtils.convertToJSON(list1, hrconf.getJob_custom_title());
             Response result2 = occuPationdao.getJobOccupations(query);
             List<? extends TBase> list2 = ConvertUtils.convert(JobOccupationCustom.class, result2);
             Map<String, Object> map2 = ConvertUtils.convertToJSON(list2, hrconf.getJob_occupation());
@@ -69,10 +69,11 @@ public class JobOccupationService {
             data = hrCompantDao.getData(query, HRCompanyConfData.class);
             if (data != null) {
                 if (StringUtils.isNullOrEmpty(data.getJob_custom_title())) {
-                    data.setJob_custom_title("自定义字段");
+                    //新需求要求的没有配置设置为空
+//                    data.setJob_custom_title("自定义字段");
                 }
                 if (StringUtils.isNullOrEmpty(data.getJob_occupation())) {
-                    data.setJob_occupation("定义职位职能");
+//                    data.setJob_occupation("定义职位职能");
                 }
                 return data;
             }
@@ -82,8 +83,8 @@ public class JobOccupationService {
         }
         if (data == null) {
             data = new HRCompanyConfData();
-            data.setJob_custom_title("自定义字段");
-            data.setJob_occupation("定义职位职能");
+//            data.setJob_custom_title("自定义字段");
+//            data.setJob_occupation("定义职位职能");
         }
         return data;
     }
