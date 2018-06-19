@@ -147,7 +147,7 @@ public class UserPositionEmailService {
 		lastDate.roll(Calendar.DATE, -7);//日期回滚7天
 		String startTime=format.format(lastDate.getTime());
 		Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, page, pageSize,
-				null, null,0,0,0,1,0,canidateSource);
+				null, null,0,0,0,1,0,candidateSource);
 		if(res.getStatus()==0&&!Strings.isNullOrEmpty(res.getData())){
 			String data=res.getData();
 			Map<String,Object> result=JSON.parseObject(data);
