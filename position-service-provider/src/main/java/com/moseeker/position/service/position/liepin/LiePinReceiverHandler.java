@@ -2,6 +2,7 @@ package com.moseeker.position.service.position.liepin;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
@@ -11,6 +12,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.email.Email;
@@ -42,7 +44,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -105,16 +106,23 @@ public class LiePinReceiverHandler {
      */
     public boolean batchHandleLiepinEditOperation(List<JobPositionRecord> list, Map<Integer, JobPositionRecord> oldJobMap) throws UnsupportedEncodingException {
 
-        List<Integer> remainIds = new ArrayList<>();
+        List<Integer> remainIds = list.stream().map(jobPositionRecord -> jobPositionRecord.getId()).collect(Collectors.toList());
 
         try {
             JSONObject liePinJsonObject = new JSONObject();
-
+            JobPositionDO jobPositionDO;
+            JobPositionDO oldJobPositionDO;
             for(JobPositionRecord record : list){
 
-                liePinJsonObject.put("id", record.getId());
-                liePinJsonObject.put("params", JSONObject.toJSONString(record));
-                liePinJsonObject.put("oldPosition", JSONObject.toJSONString(oldJobMap.get(record.getId())));
+                jobPositionDO = BeanUtils.DBToStruct(JobPositionDO.class, record);
+
+                JobPositionRecord oldRecord = oldJobMap.get(jobPositionDO.getId());
+
+                oldJobPositionDO = BeanUtils.DBToStruct(JobPositionDO.class, oldRecord);
+
+                liePinJsonObject.put("id", jobPositionDO.getId());
+                liePinJsonObject.put("params", JSONObject.toJSONString(jobPositionDO));
+                liePinJsonObject.put("oldPosition", JSONObject.toJSONString(oldJobPositionDO));
 
                 String requestStr = JSONObject.toJSONString(liePinJsonObject);
 
@@ -122,6 +130,7 @@ public class LiePinReceiverHandler {
 
                 handlerPositionLiepinEditOperation(requestMsg, null);
 
+                remainIds.remove(record.getId());
             }
 
             return true;
@@ -158,6 +167,10 @@ public class LiePinReceiverHandler {
             // 获取das端已修改后的职位数据
             JobPositionDO jobPositionDO = getOldJobPositionFromMq(msgBody);
 
+            if(updateJobPosition == null || jobPositionDO == null){
+                return;
+            }
+
             int positionChannel = 2;
 
             int positionId = id;
@@ -189,7 +202,7 @@ public class LiePinReceiverHandler {
             ThirdPartyPosition thirdPartyPosition = new ThirdPartyPosition();
 
             // 组装同步时需要的数据，相当于在第三方页面填写的表单数据，将不匹配字段手动映射
-            BeanUtils.copyProperties(hrThirdPartyPositionDO, thirdPartyPosition);
+            org.springframework.beans.BeanUtils.copyProperties(hrThirdPartyPositionDO, thirdPartyPosition);
             thirdPartyPosition.setSalaryDiscuss(hrThirdPartyPositionDO.getSalaryDiscuss() != 0);
             thirdPartyPosition.setSalaryBottom(thirdPartyPosition.getSalaryBottom() / 1000);
             thirdPartyPosition.setSalaryTop(thirdPartyPosition.getSalaryTop() / 1000);
@@ -262,7 +275,9 @@ public class LiePinReceiverHandler {
                                 downShelfOldSinglePosition(mappingDO, liePinToken);
 
                             }
-                            if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode) && !title.equals(mappingDO.getJobTitle())) {
+                            boolean a = cityCodesList.contains(String.valueOf(mappingDO.getCityCode()));
+                            boolean b = mappingDO.getState() == 1;
+                            if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode) && title.equals(mappingDO.getJobTitle())) {
                                 // 如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布
                                 log.info("================如果该职位数据库的发布城市中没有编辑职位中的当前城市，判定为新城市，需要发布================");
                                 flag = false;
@@ -303,13 +318,84 @@ public class LiePinReceiverHandler {
     private JobPositionDO getOldJobPositionFromMq(String msgBody) {
         try {
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            JobPositionDO jobPositionDO = JSONObject.parseObject(jsonObject.getString("oldPosition"), JobPositionDO.class);
+            JSONObject jobPositionJSON = JSONObject.parseObject(jsonObject.getString("oldPosition"));
+            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON);
             log.info("============jobPositionDO:{}=============", jobPositionDO);
             return jobPositionDO;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private JobPositionDO convertJSON2DO(JSONObject jobPositionJSON) {
+        JobPositionDO jobPositionDO = new JobPositionDO();
+        jobPositionDO.setId(jobPositionJSON.getIntValue("id"));
+        jobPositionDO.setJobnumber(jobPositionJSON.getString("jobnumber"));
+        jobPositionDO.setCompanyId(jobPositionJSON.getIntValue("company_id"));
+        jobPositionDO.setTitle(jobPositionJSON.getString("title"));
+        jobPositionDO.setProvince(jobPositionJSON.getString("province"));
+        jobPositionDO.setCity(jobPositionJSON.getString("city"));
+        jobPositionDO.setDepartment(jobPositionJSON.getString("department"));
+        jobPositionDO.setLJobid(jobPositionJSON.getIntValue("l_jobid"));
+        jobPositionDO.setPublishDate(jobPositionJSON.getString("publish_date"));
+        jobPositionDO.setStopDate(jobPositionJSON.getString("stop_date"));
+        jobPositionDO.setAccountabilities(jobPositionJSON.getString("accountabilities"));
+        jobPositionDO.setExperience(jobPositionJSON.getString("experience" ));
+        jobPositionDO.setRequirement(jobPositionJSON.getString("requirement" ));
+        jobPositionDO.setSalary(jobPositionJSON.getString("salary" ));
+        jobPositionDO.setLanguage(jobPositionJSON.getString("language" ));
+        jobPositionDO.setJobGrade(jobPositionJSON.getIntValue("job_grade" ));
+        jobPositionDO.setStatus(jobPositionJSON.getDouble("status" ));
+        jobPositionDO.setVisitnum(jobPositionJSON.getIntValue("visitnum" ));
+        jobPositionDO.setLastvisit(jobPositionJSON.getString("lastvisit" ));
+        jobPositionDO.setSourceId(jobPositionJSON.getIntValue("source_id" ));
+        jobPositionDO.setUpdateTime(jobPositionJSON.getString("update_time" ));
+        jobPositionDO.setBusinessGroup(jobPositionJSON.getString("business_group" ));
+        jobPositionDO.setEmploymentType(jobPositionJSON.getDouble("employment_type" ));
+        jobPositionDO.setHrEmail(jobPositionJSON.getString("hr_email" ));
+        jobPositionDO.setBenefits(jobPositionJSON.getString("benefits" ));
+        jobPositionDO.setDegree(jobPositionJSON.getDouble("degree" ));
+        jobPositionDO.setFeature(jobPositionJSON.getString("feature" ));
+        jobPositionDO.setEmailNotice("true".equals(jobPositionJSON.getString("email_notice")) ? (byte)1 : 0);
+        jobPositionDO.setCandidateSource(jobPositionJSON.getDouble("candidate_source" ));
+        jobPositionDO.setOccupation(jobPositionJSON.getString("occupation" ));
+        jobPositionDO.setIsRecom(jobPositionJSON.getIntValue("is_recom" ));
+        jobPositionDO.setIndustry(jobPositionJSON.getString("industry" ));
+        jobPositionDO.setHongbaoConfigAppId(jobPositionJSON.getIntValue("hongbao_config_app_id" ));
+        jobPositionDO.setHongbaoConfigId(jobPositionJSON.getIntValue("hongbao_config_id" ));
+        jobPositionDO.setHongbaoConfigRecomId(jobPositionJSON.getIntValue("hongbao_config_recom_id" ));
+        jobPositionDO.setEmailResumeConf(jobPositionJSON.getDouble("email_resume_conf" ) == null ? 0 : jobPositionJSON.getDouble("email_resume_conf" ));
+        jobPositionDO.setLPostingtargetid(jobPositionJSON.getDouble("l_PostingTargetId" ) == null ? 0 : jobPositionJSON.getDouble("l_PostingTargetId" ));
+        jobPositionDO.setPriority(jobPositionJSON.getDouble("priority" ));
+        jobPositionDO.setShareTplId(jobPositionJSON.getDouble("share_tpl_id" ));
+        jobPositionDO.setDistrict(jobPositionJSON.getString("district" ));
+        jobPositionDO.setCount(jobPositionJSON.getDouble("count" ));
+        jobPositionDO.setSalaryTop(jobPositionJSON.getDouble("salary_top" ));
+        jobPositionDO.setSalaryBottom(jobPositionJSON.getDouble("salary_bottom" ));
+        jobPositionDO.setExperienceAbove("true".equals(jobPositionJSON.getString("experience_above" )) ? (byte)1 : 0);
+        jobPositionDO.setDegreeAbove("true".equals(jobPositionJSON.getString("degree_above" )) ? (byte)1 : 0);
+        jobPositionDO.setManagementExperience(jobPositionJSON.getDouble("management_experience" ));
+        jobPositionDO.setGender(jobPositionJSON.getDouble("gender" ));
+        jobPositionDO.setPublisher(jobPositionJSON.getIntValue("publisher" ));
+        jobPositionDO.setAppCvConfigId(jobPositionJSON.getIntValue("app_cv_config_id"));
+        jobPositionDO.setSource(jobPositionJSON.getDouble("source" ));
+        jobPositionDO.setHbStatus(jobPositionJSON.getByte("hb_status" ));
+        jobPositionDO.setChildCompanyId(jobPositionJSON.getIntValue("child_company_id" ));
+        jobPositionDO.setAge(jobPositionJSON.getByte("age" ));
+        jobPositionDO.setMajorRequired(jobPositionJSON.getString("major_required" ));
+        jobPositionDO.setWorkAddress(jobPositionJSON.getString("work_address" ));
+        jobPositionDO.setKeyword(jobPositionJSON.getString("keyword" ));
+        jobPositionDO.setReportingTo(jobPositionJSON.getString("reporting_to" ));
+        jobPositionDO.setIsHiring("true".equals(jobPositionJSON.getString("is_hiring" )) ? (byte)1 : 0);
+        jobPositionDO.setUnderlings(jobPositionJSON.getByte("underlings" ));
+        jobPositionDO.setLanguageRequired("true".equals(jobPositionJSON.getString("language_required" )) ? (byte)1 : 0);
+        jobPositionDO.setTargetIndustry(jobPositionJSON.getByte("target_industry" ));
+        jobPositionDO.setCurrentStatus(jobPositionJSON.getByte("current_status" ));
+        jobPositionDO.setPositionCode(jobPositionJSON.getIntValue("position_code" ));
+        jobPositionDO.setTeamId(jobPositionJSON.getIntValue("team_id" ));
+        jobPositionDO.setProfile_cc_mail_enabled(jobPositionJSON.getByte("profile_cc_mail_enabled" ));
+        return jobPositionDO;
     }
 
     private boolean compareJobPosition(JobPositionDO jobPositionDO, JobPositionDO updateJobPosition) {
@@ -319,18 +405,42 @@ public class LiePinReceiverHandler {
     }
 
     private JobPositionDO filterBlank(JobPositionDO jobPositionDO) {
-        jobPositionDO.setTitle(jobPositionDO.getTitle().replaceAll("\\s", ""));
-        jobPositionDO.setDepartment(jobPositionDO.getDepartment().replaceAll("\\s", ""));
-        jobPositionDO.setAccountabilities(jobPositionDO.getAccountabilities().replaceAll("\\s", ""));
-        jobPositionDO.setRequirement(jobPositionDO.getRequirement().replaceAll("\\s", ""));
-        jobPositionDO.setLanguage(jobPositionDO.getLanguage().replaceAll("\\s", ""));
-        jobPositionDO.setHrEmail(jobPositionDO.getHrEmail().replaceAll("\\s", ""));
-        jobPositionDO.setBenefits(jobPositionDO.getBenefits().replaceAll("\\s", ""));
-        jobPositionDO.setFeature(jobPositionDO.getFeature().replaceAll("\\s", ""));
-        jobPositionDO.setOccupation(jobPositionDO.getOccupation().replaceAll("\\s", ""));
-        jobPositionDO.setMajorRequired(jobPositionDO.getMajorRequired().replaceAll("\\s", ""));
-        jobPositionDO.setWorkAddress(jobPositionDO.getWorkAddress().replaceAll("\\s", ""));
-        jobPositionDO.setKeyword(jobPositionDO.getKeyword().replaceAll("\\s", ""));
+        if(StringUtils.isNotBlank(jobPositionDO.getTitle())){
+            jobPositionDO.setTitle(jobPositionDO.getTitle().replaceAll("\\s", ""));
+        }
+        if(StringUtils.isNotBlank(jobPositionDO.getDepartment())){
+            jobPositionDO.setDepartment(jobPositionDO.getDepartment().replaceAll("\\s", ""));
+        }
+        if(StringUtils.isNotBlank(jobPositionDO.getAccountabilities())){
+            jobPositionDO.setAccountabilities(jobPositionDO.getAccountabilities().replaceAll("\\s", ""));
+        }
+        if(StringUtils.isNotBlank(jobPositionDO.getRequirement())){
+            jobPositionDO.setRequirement(jobPositionDO.getRequirement().replaceAll("\\s", ""));
+        }
+        if(StringUtils.isNotBlank(jobPositionDO.getLanguage())){
+            jobPositionDO.setLanguage(jobPositionDO.getLanguage().replaceAll("\\s", ""));
+        }
+        if(StringUtils.isNotBlank(jobPositionDO.getHrEmail())){
+            jobPositionDO.setHrEmail(jobPositionDO.getHrEmail().replaceAll("\\s", ""));
+        }
+        if(StringUtils.isNotBlank(jobPositionDO.getBenefits())){
+            jobPositionDO.setBenefits(jobPositionDO.getBenefits().replaceAll("\\s", ""));
+        }
+        if(StringUtils.isNotBlank(jobPositionDO.getFeature())){
+            jobPositionDO.setFeature(jobPositionDO.getFeature().replaceAll("\\s", ""));
+        }
+        if(StringUtils.isNotBlank(jobPositionDO.getOccupation())){
+            jobPositionDO.setOccupation(jobPositionDO.getOccupation().replaceAll("\\s", ""));
+        }
+        if(StringUtils.isNotBlank(jobPositionDO.getMajorRequired())){
+            jobPositionDO.setMajorRequired(jobPositionDO.getMajorRequired().replaceAll("\\s", ""));
+        }
+        if(StringUtils.isNotBlank(jobPositionDO.getWorkAddress())){
+            jobPositionDO.setWorkAddress(jobPositionDO.getWorkAddress().replaceAll("\\s", ""));
+        }
+        if(StringUtils.isNotBlank(jobPositionDO.getKeyword())){
+            jobPositionDO.setKeyword(jobPositionDO.getKeyword().replaceAll("\\s", ""));
+        }
         return jobPositionDO;
     }
 
@@ -607,7 +717,7 @@ public class LiePinReceiverHandler {
         int channel = 2;
 
         // 获取发布人hrid
-        JobPositionDO jobPositionDO = jobPositionDao.getJobPositionById(positionId);
+        JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(positionId);
 
         if (jobPositionDO == null) {
             return null;
@@ -824,8 +934,8 @@ public class LiePinReceiverHandler {
                 liepinMappingDao.updateErrMsgBatch(downShelfPositonListDb, e.getMessage());
                 EmailSendUtil.sendWarnEmail("downShelfOldPositions批量下架猎聘职位失败：mappingIds为" + ids, emailSubject);
             } catch (Exception e1) {
-                EmailSendUtil.sendWarnEmail("上架猎聘职位失败：mappingIds为" + ids, emailSubject);
-                liepinMappingDao.updateErrMsgBatch(downShelfPositonListDb, e1.getMessage());
+                EmailSendUtil.sendWarnEmail("下架猎聘职位失败：mappingIds为" + ids, emailSubject);
+                liepinMappingDao.updateErrMsgBatch(downShelfPositonListDb, "后台异常");
                 log.error("===============向猎聘请求下架失败，mapping表主键ids:{}===============", ids);
             }
         }
