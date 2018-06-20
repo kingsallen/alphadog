@@ -293,15 +293,15 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     }
 
                     // 生成职位发布到猎聘时需要的id 先查一遍是否有重复数据，如果没有，插入一条mapping数据
-                    JobPositionLiepinMappingDO jobPositionLiepinMappingDO = liepinMappingDao.getDataByPidAndCityCode(positionId, cityCode);
-                    if(jobPositionLiepinMappingDO == null){
-                        jobPositionLiepinMappingDO = new JobPositionLiepinMappingDO();
+//                    JobPositionLiepinMappingDO jobPositionLiepinMappingDO = liepinMappingDao.getDataByPidAndCityCode(positionId, cityCode);
+//                    if(jobPositionLiepinMappingDO == null){
+                    JobPositionLiepinMappingDO jobPositionLiepinMappingDO = new JobPositionLiepinMappingDO();
                         jobPositionLiepinMappingDO.setJobId(positionId);
                         jobPositionLiepinMappingDO.setCityCode(Integer.parseInt(cityCode));
                         jobPositionLiepinMappingDO.setJobTitle(liePinPositionVO.getEjob_title());
                         jobPositionLiepinMappingDO.setLiepinUserId(liePinUserId);
                         jobPositionLiepinMappingDO = liepinMappingDao.addData(jobPositionLiepinMappingDO);
-                    }
+//                    }
 
                     liePinPositionVO.setEjob_extRefid(jobPositionLiepinMappingDO.getId() + "");
                     liePinPositionVO.setEjob_dq(liepinCityCode);
