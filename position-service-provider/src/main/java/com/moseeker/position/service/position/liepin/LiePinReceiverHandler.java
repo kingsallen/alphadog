@@ -220,7 +220,7 @@ public class LiePinReceiverHandler {
             boolean flag = true;
 
             // 编辑职位中的城市list
-            List<JobPositionCityDO> positionCityList = jobPositionCityDao.getPositionCitysByPid(positionId);
+            List<JobPositionCityDO> positionCityList = jobPositionCityDao.getPositionCityBypid(positionId);
             log.info("==============编辑城市positionCityList:{}============", positionCityList);
             // 编辑职位中的城市codelist
             List<String> cityCodesList = positionCityList.stream().map(positionCityDO -> String.valueOf(positionCityDO.getCode())).collect(Collectors.toList());
