@@ -573,14 +573,9 @@ public class TalentpoolEmailService {
             try {
                 List<InviteToDelivyUserInfo> userInfo = this.talentEmailInviteInfoSearch(params,i,300);
                 EmailInviteBean emailDate = this.handlerData(positionIdList, companyId,context , userInfo, record, hrId,0);
-                logger.info("=============EmailInviteBean===========");
-                logger.info(JSON.toJSONString(emailDate));
-                logger.info("================================================");
                 if(emailDate!=null) {
                     MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
-                    logger.info("=============MandrillEmailListStruct===========");
                     logger.info(JSON.toJSONString(struct));
-                    logger.info("================================================");
                     mqService.sendMandrilEmailList(struct);
                 }
             }catch(Exception e){
@@ -597,35 +592,23 @@ public class TalentpoolEmailService {
         }
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
         TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId,73);
-        logger.info("=============HrCompanyEmailInfoRecord===========");
         logger.info(hrCompanyEmailInfoRecord.toString());
-        logger.info("================================================");
-        logger.info("=============TalentpoolEmailRecord===========");
         logger.info(talentpoolEmailRecord.toString());
-        logger.info("================================================");
         boolean flag=this.validateSendEmail(hrCompanyEmailInfoRecord,talentpoolEmailRecord);
-        logger.info("校验邮件配置的结果========================{}",flag);
         if(flag){
             try {
                 List<UserEmployeeDO> employeeList = this.getUserEmployeeList(idList);
-                logger.info("=============List<UserEmployeeDO>===========");
                 logger.info(JSON.toJSONString(employeeList));
-                logger.info("================================================");
                 if (!StringUtils.isEmptyList(employeeList)) {
                     int lost = userIdList.size() * employeeList.size();
-                    logger.info("lost==================================={}=============",lost);
                     if (!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(), lost)) {
                         return TalentEmailEnum.NOBALANCE.getValue();
                     }
                     EmailResumeBean emailList = this.convertResumeEmailData(employeeList, userIdList, companyId, talentpoolEmailRecord.getContext(), hrId);
-                    logger.info("=============EmailResumeBean===========");
                     logger.info(JSON.toJSONString(emailList));
-                    logger.info("================================================");
                     updateEmailInfoBalance(companyId, lost,5);
                     List<MandrillEmailListStruct> struct = convertToEmailStruct(emailList);
-                    logger.info("=============MandrillEmailListStruct===========");
                     logger.info(JSON.toJSONString(struct));
-                    logger.info("================================================");
                     if(!StringUtils.isEmptyList(struct)){
                         for(MandrillEmailListStruct item:struct){
                             mqService.sendMandrilEmailList(item);
@@ -637,9 +620,7 @@ public class TalentpoolEmailService {
                 }
                 List<Map<String,Object>> employeeData=this.handlerEmployeeData(employeeList);
                 if(!StringUtils.isEmptyList(employeeData)){
-                    logger.info("=============employeeData===========");
                     logger.info(JSON.toJSONString(employeeData));
-                    logger.info("================================================");
                     this.handlerRedisEmployee(employeeData,hrId);
                 }
 
@@ -710,23 +691,15 @@ public class TalentpoolEmailService {
         params.put("company_id",companyId+"");
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
         TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId,73);
-        logger.info("=============HrCompanyEmailInfoRecord===========");
         logger.info(hrCompanyEmailInfoRecord.toString());
-        logger.info("================================================");
-        logger.info("=============TalentpoolEmailRecord===========");
         logger.info(talentpoolEmailRecord.toString());
-        logger.info("================================================");
         boolean flag=this.validateSendEmail(hrCompanyEmailInfoRecord,talentpoolEmailRecord);
-        logger.info("校验邮件配置的结果========================{}",flag);
         if(flag){
             try {
                 int talentNum = searchService.talentSearchNum(params);
-                logger.info("符合转发的人数========================{}",talentNum);
                 if(talentNum>0){
                     List<UserEmployeeDO> employeeList=this.getUserEmployeeList(idList);
-                    logger.info("=============List<UserEmployeeDO>===========");
                     logger.info(JSON.toJSONString(employeeList));
-                    logger.info("================================================");
                     if(!StringUtils.isEmptyList(employeeList)){
                         int lost=talentNum*employeeList.size();
                         if(!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(),lost)){
@@ -770,13 +743,9 @@ public class TalentpoolEmailService {
 
             try{
                 EmailResumeBean emailList=this.convertResumeEmailData(employeeList,params,companyId,context,hrId);
-                logger.info("=============EmailResumeBean===========");
                 logger.info(JSON.toJSONString(emailList));
-                logger.info("================================================");
                 List<MandrillEmailListStruct> structs = convertToEmailStruct(emailList);
-                logger.info("=============MandrillEmailListStruct===========");
                 logger.info(JSON.toJSONString(structs));
-                logger.info("================================================");
                 if(!StringUtils.isEmptyList(structs)){
                     for(MandrillEmailListStruct struct:structs){
                         mqService.sendMandrilEmailList(struct);
@@ -852,10 +821,8 @@ public class TalentpoolEmailService {
             result.setSubject(emailInviteBean.getSubject());
             result.setFrom_name(emailInviteBean.getFromName());
             result.setFrom_email(emailInviteBean.getFromEmail());
-            logger.info("=============mergeData=============");
             String merges = JSON.toJSONString(mergeData);
             logger.info(merges);
-            logger.info("===============================");
             result.setMergeVars(merges);
             result.setTo(toReceive);
             dataList.add(result);
@@ -870,15 +837,10 @@ public class TalentpoolEmailService {
     private List<InviteToDelivyUserInfo> talentEmailInviteInfoSearch(List<Integer>UserIdList){
         try{
             Response res=searchService.userQueryById(UserIdList);
-            logger.info("=======获取邀请投递邮件的人员的信息======查询es获得结果的Response===========");
-            logger.info(JSON.toJSONString(res));
-            logger.info("================================================");
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
-                logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
                 logger.info(JSON.toJSONString(result));
-                logger.info("================================================");
                 return result;
             }
         }catch(Exception e){
@@ -893,15 +855,10 @@ public class TalentpoolEmailService {
         try{
             params.put("return_params","user.profiles.profile.user_id,user.profiles.basic.name,user.profiles.basic.email");
             Response res=searchService.userQuery(params);
-            logger.info("=======获取邀请投递邮件的人员的信息======查询es获得结果的Response===========");
             logger.info(JSON.toJSONString(res));
-            logger.info("================================================");
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
-                logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
-                logger.info(JSON.toJSONString(result));
-                logger.info("================================================");
                 return result;
             }
         }catch(Exception e){
@@ -913,15 +870,9 @@ public class TalentpoolEmailService {
     private List<InviteToDelivyUserInfo>  talentEmailInviteInfoSearch(List<Map<String,String>> params,int page,int pageSize){
         try{
             Response res=searchService.queryProfileFilterUserIdList(params,page,pageSize);
-            logger.info("=======获取邀请投递邮件的人员的信息======查询es获得结果的Response===========");
-            logger.info(JSON.toJSONString(res));
-            logger.info("================================================");
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
-                logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
-                logger.info(JSON.toJSONString(result));
-                logger.info("================================================");
                 return result;
             }
         }catch(Exception e){
