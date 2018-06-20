@@ -391,21 +391,21 @@ public class LiePinReceiverHandler {
         jobPositionDO.setPublisher(jobPositionJSON.getIntValue("publisher" ));
         jobPositionDO.setAppCvConfigId(jobPositionJSON.getIntValue("app_cv_config_id"));
         jobPositionDO.setSource(jobPositionJSON.getDouble("source" ) == null ? 0 : jobPositionJSON.getDouble("source" ));
-        jobPositionDO.setHbStatus(jobPositionJSON.getByte("hb_status" ));
+        jobPositionDO.setHbStatus(jobPositionJSON.getByte("hb_status" ) == null ? 0 : jobPositionJSON.getByte("hb_status" ));
         jobPositionDO.setChildCompanyId(jobPositionJSON.getIntValue("child_company_id" ));
-        jobPositionDO.setAge(jobPositionJSON.getByte("age" ));
+        jobPositionDO.setAge(jobPositionJSON.getByte("age" ) == null ? 0 : jobPositionJSON.getByte("age" ));
         jobPositionDO.setMajorRequired(jobPositionJSON.getString("major_required" ));
         jobPositionDO.setWorkAddress(jobPositionJSON.getString("work_address" ));
         jobPositionDO.setKeyword(jobPositionJSON.getString("keyword" ));
         jobPositionDO.setReportingTo(jobPositionJSON.getString("reporting_to" ));
         jobPositionDO.setIsHiring("true".equals(jobPositionJSON.getString("is_hiring" )) ? (byte)1 : 0);
-        jobPositionDO.setUnderlings(jobPositionJSON.getByte("underlings" ));
+        jobPositionDO.setUnderlings(jobPositionJSON.getByte("underlings" ) == null ? 0 : jobPositionJSON.getByte("underlings" ));
         jobPositionDO.setLanguageRequired("true".equals(jobPositionJSON.getString("language_required" )) ? (byte)1 : 0);
-        jobPositionDO.setTargetIndustry(jobPositionJSON.getByte("target_industry" ));
-        jobPositionDO.setCurrentStatus(jobPositionJSON.getByte("current_status" ));
+        jobPositionDO.setTargetIndustry(jobPositionJSON.getByte("target_industry" ) == null ? 0 : jobPositionJSON.getByte("target_industry" ));
+        jobPositionDO.setCurrentStatus(jobPositionJSON.getByte("current_status" ) == null ? 0 : jobPositionJSON.getByte("current_status" ));
         jobPositionDO.setPositionCode(jobPositionJSON.getIntValue("position_code" ));
         jobPositionDO.setTeamId(jobPositionJSON.getIntValue("team_id" ));
-        jobPositionDO.setProfile_cc_mail_enabled(jobPositionJSON.getByte("profile_cc_mail_enabled" ));
+        jobPositionDO.setProfile_cc_mail_enabled(jobPositionJSON.getByte("profile_cc_mail_enabled" ) == null ? 0 : jobPositionJSON.getByte("profile_cc_mail_enabled" ));
         return jobPositionDO;
     }
 
