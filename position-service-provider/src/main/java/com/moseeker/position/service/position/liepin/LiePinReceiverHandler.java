@@ -327,7 +327,18 @@ public class LiePinReceiverHandler {
         }
         return null;
     }
-
+    private JobPositionDO getUpdateJobPositionFromMq(String msgBody) {
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            JSONObject jobPositionJSON = JSONObject.parseObject(jsonObject.getString("params"));
+            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON);
+            log.info("============jobPositionDO:{}=============", jobPositionDO);
+            return jobPositionDO;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     private JobPositionDO convertJSON2DO(JSONObject jobPositionJSON) {
         JobPositionDO jobPositionDO = new JobPositionDO();
         jobPositionDO.setId(jobPositionJSON.getIntValue("id"));
@@ -444,18 +455,7 @@ public class LiePinReceiverHandler {
         return jobPositionDO;
     }
 
-    private JobPositionDO getUpdateJobPositionFromMq(String msgBody) {
-        try {
-            JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            String jobStr = jsonObject.getString("params");
-            JobPositionDO jobPositionDO = JSONObject.parseObject(jobStr, JobPositionDO.class);
-            log.info("============jobPositionDO:{}=============", jobPositionDO);
-            return jobPositionDO;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+
 
     /**
      * 批量处理职位下架
