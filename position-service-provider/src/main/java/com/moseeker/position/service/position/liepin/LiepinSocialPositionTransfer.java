@@ -403,7 +403,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 logger.info("============cityNum:{},successSyncNum:{}==============", cityNum, successSyncNum);
                 if (successSyncNum + successRePublishNum == cityNum) {
                     hrThirdPartyPositionDO.setIsSynchronization(1);
-                    hrThirdPartyPositionDO.setSyncTime(new SimpleDateFormat("yyyy-MM-ss HH:mm:ss").format(new Date()));
+                    hrThirdPartyPositionDO.setSyncTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
                 } else {
                     if (StringUtils.isNullOrEmpty(errorMsg)) {
                         hrThirdPartyPositionDO.setIsSynchronization(4);
@@ -583,6 +583,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         }
         liePinPositionVO.setDetail_language_yueyu(yueyu);
         liePinPositionVO.setDetail_language_other(1);
+        if(language.length() > 80){
+            language = language.substring(0, 80);
+        }
         liePinPositionVO.setDetail_language_content(language);
     }
 
