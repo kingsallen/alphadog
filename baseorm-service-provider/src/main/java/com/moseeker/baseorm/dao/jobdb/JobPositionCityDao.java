@@ -87,4 +87,17 @@ public class JobPositionCityDao extends JooqCrudImpl<JobPositionCityDO, JobPosit
 
         return jobPositionCityDOS;
     }
+
+    /** 
+     *
+     * @param   
+     * @author  cjm
+     * @date  2018/6/20 
+     * @return   
+     */ 
+    public List<JobPositionCityDO> getPositionCityBypid(int id) {
+        return create.selectFrom(JobPositionCity.JOB_POSITION_CITY)
+                .where(JobPositionCity.JOB_POSITION_CITY.PID.eq(id))
+                .fetchInto(JobPositionCityDO.class);
+    }
 }
