@@ -211,7 +211,7 @@ public class LiePinReceiverHandler {
             thirdPartyPosition.setOccupation(Arrays.asList(occupationsArr));
 
             // 将数据组装为向猎聘请求的格式，此数据也是用户编辑后的数据
-            LiePinPositionVO liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(thirdPartyPosition, jobPositionDO, null);
+            LiePinPositionVO liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(thirdPartyPosition, updateJobPosition, null);
             log.info("================liePinPositionVO:{}=============", liePinPositionVO);
             // 用于查询所修改的职位之前是否发布过
             List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByPid(positionId);
@@ -239,7 +239,7 @@ public class LiePinReceiverHandler {
                 titleDbList = removeDuplicateTitle(titleDbList);
                 log.info("===============数据库中该仟寻职位id对应的titlelist:{}====================", titleDbList);
 
-                String title = jobPositionDO.getTitle();
+                String title = updateJobPosition.getTitle();
 
                 // 先判断title是否存在，不存在的话发布新职位
                 if (titleDbList.contains(title)) {
@@ -339,6 +339,7 @@ public class LiePinReceiverHandler {
         }
         return null;
     }
+
     private JobPositionDO convertJSON2DO(JSONObject jobPositionJSON) {
         JobPositionDO jobPositionDO = new JobPositionDO();
         jobPositionDO.setId(jobPositionJSON.getIntValue("id"));
