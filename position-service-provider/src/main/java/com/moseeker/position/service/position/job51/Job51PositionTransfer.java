@@ -33,10 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -260,7 +257,7 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<Position51Fo
         JSONObject positionForm = JSONObject.parseObject(JSON.toJSONString(thirdPartyPosition));
         String occupation = positionForm.getString("occupation");
         if(StringUtils.isNotNullOrEmpty(occupation)){
-            positionForm.put("occupation",occupation.split(","));
+            positionForm.put("occupation", Arrays.asList(occupation.split(",")));
         }
         return positionForm;
     }
