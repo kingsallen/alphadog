@@ -39,8 +39,10 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -186,6 +188,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void sendSyncRequest(TransferResult<LiePinPositionVO, LiePinPositionVO> result) throws TException {
         LiePinPositionVO liePinPositionVO = result.getPositionWithAccount();
         try {
@@ -323,7 +326,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                         errCityCodeList.add(cityCode);
                         EmailSendUtil.sendWarnEmail("职位同步时http请求异常：jobPositionId:"
                                 + positionId, "猎聘同步职位失败");
-                        logger.info("============职位同步时http请求异常============");
                         continue;
                     }
 

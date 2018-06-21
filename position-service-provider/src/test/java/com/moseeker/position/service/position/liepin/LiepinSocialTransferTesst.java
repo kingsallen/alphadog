@@ -54,7 +54,7 @@ public class LiepinSocialTransferTesst {
 
     @Test
     public void testSendSyncRequest() throws Exception {
-        Integer positionId = 19492153;
+        Integer positionId = 19494081;
         ThirdPartyPosition positionForm = new ThirdPartyPosition();
         //软件/互联网开发/系统集成
         List<String> list = new ArrayList<>();

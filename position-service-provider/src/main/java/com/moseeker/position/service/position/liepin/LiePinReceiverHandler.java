@@ -61,7 +61,6 @@ import java.util.stream.Collectors;
  **/
 @Component
 @PropertySource("classpath:common.properties")
-@Transactional(rollbackFor = Exception.class)
 public class LiePinReceiverHandler {
 
     private static Logger log = LoggerFactory.getLogger(LiePinReceiverHandler.class);
@@ -199,8 +198,8 @@ public class LiePinReceiverHandler {
             // city改变标志 true是city发生改变，false是未发生改变
             boolean cityChangeFlag = !jobPositionDO.getCity().equals(updateJobPosition.getCity());
 
-            // 如果是true，说明das操作修改时是下架状态，所以将数据库同步状态设置为1
-            if(positionFlag){
+            // 如果positionFlag是true，说明das操作修改时是下架状态，所以将数据库同步状态设置为1
+            if(!cityChangeFlag && positionFlag){
                 hrThirdPartyPositionDao.updateBindState(positionId, 2, 1);
             }
 
@@ -433,12 +432,15 @@ public class LiePinReceiverHandler {
                 return;
             }
 
-            int positionId = ids.get(0);
 
-            // 获取hr账号在猎聘token
-            String liepinToken = getLiepinToken(positionId);
 
             for (int id : ids) {
+
+                int positionId = id;
+
+                // 获取hr账号在猎聘token
+                String liepinToken = getLiepinToken(positionId);
+
                 List<Integer> idsList = new ArrayList<>();
                 try {
 
@@ -470,6 +472,10 @@ public class LiePinReceiverHandler {
                         // 将需要重新发布的城市的主键id取出，用于向猎聘请求
                         idsList = liepinMappingDOList.stream().map(liepinMappingDO -> liepinMappingDO.getId()).collect(Collectors.toList());
 
+                        Set<Integer> pidSet = liepinMappingDOList.stream().map(liepinMappingDO -> liepinMappingDO.getJobId()).collect(Collectors.toSet());
+
+                        List<Integer> pids = new ArrayList<>(pidSet);
+
                         List<String> requestIdsStr = liepinMappingDOList.stream().map(liepinMappingDO -> String.valueOf(liepinMappingDO.getId())).collect(Collectors.toList());
 
                         List<Integer> idsListDb = liepinMappingDOList.stream().map(liepinMappingDO -> liepinMappingDO.getId()).collect(Collectors.toList());
@@ -490,6 +496,7 @@ public class LiePinReceiverHandler {
 
                             liepinMappingDao.updateState(idsListDb, (byte) 1);
 
+                            hrThirdPartyPositionDao.updateBindState(pids, 2, 1);
                         }
                     }
                 } catch (BIZException e) {
@@ -527,16 +534,16 @@ public class LiePinReceiverHandler {
                 return;
             }
 
-            int positionId = ids.get(0);
-
-            // 获取hr账号在猎聘token
-            String liepinToken = getLiepinToken(positionId);
-
-            List<Integer> requestIds = null;
+            List<Integer> requestIds = new ArrayList<>();
 
             for (int id : ids) {
 
                 try {
+
+                    int positionId = id;
+
+                    // 获取hr账号在猎聘token
+                    String liepinToken = getLiepinToken(positionId);
 
                     JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(id);
 
@@ -580,7 +587,7 @@ public class LiePinReceiverHandler {
                     log.info("=============下架猎聘职位失败：requestIds:{},失败信息:msg:{}=================", requestIds.toString(), e.getMessage());
                     EmailSendUtil.sendWarnEmail("下架猎聘职位失败：" + requestIds.toString(), emailSubject);
                 } catch (Exception e1) {
-                    EmailSendUtil.sendWarnEmail("下架猎聘职位失败,职位id：" + positionId, emailSubject);
+                    EmailSendUtil.sendWarnEmail("下架猎聘职位失败,职位id：" + ids, emailSubject);
                     liepinMappingDao.updateErrMsgBatch(requestIds, e1.getMessage());
                 }
 
@@ -985,7 +992,7 @@ public class LiePinReceiverHandler {
         jobPositionDO.setSalaryBottom(jobPositionJSON.getDouble("salary_bottom"));
         jobPositionDO.setExperienceAbove("true".equals(jobPositionJSON.getString("experience_above")) ? (byte) 1 : 0);
         jobPositionDO.setDegreeAbove("true".equals(jobPositionJSON.getString("degree_above")) ? (byte) 1 : 0);
-        jobPositionDO.setManagementExperience(jobPositionJSON.getDouble("management_experience"));
+        jobPositionDO.setManagementExperience(jobPositionJSON.getDouble("management_experience") == null ? 1 : 0);
         jobPositionDO.setGender(jobPositionJSON.getDouble("gender") == null ? 2 : jobPositionJSON.getDouble("gender"));
         jobPositionDO.setPublisher(jobPositionJSON.getIntValue("publisher"));
         jobPositionDO.setAppCvConfigId(jobPositionJSON.getIntValue("app_cv_config_id"));
