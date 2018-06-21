@@ -247,7 +247,7 @@ public class LiePinReceiverHandler {
             // 如果数据库不存在编辑的职位，则发布新职位
 
             // 数据库中该仟寻职位id对应的城市codes list
-            List<String> mappingCityList = liepinMappingDOList.stream().map(mappingDo -> String.valueOf(mappingDo.getCityCode())).collect(Collectors.toList());
+            List<String> mappingCityList = liepinMappingDOList.stream().filter(mappingDo -> mappingDo.getState() == 1).map(mappingDo -> String.valueOf(mappingDo.getCityCode())).collect(Collectors.toList());
             log.info("===============数据库中该仟寻职位id对应的城市cityDbList:{}====================", mappingCityList);
 
             // 数据库中该仟寻职位id对应的titlelist
