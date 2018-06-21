@@ -97,4 +97,5 @@ public class JobPositionPojo {
 
     public SearchData search_data;
     public List<Map<String,Object>> position_feature;
+    public String city_ename;
 }

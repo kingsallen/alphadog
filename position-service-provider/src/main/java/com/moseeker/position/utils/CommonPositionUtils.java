@@ -91,22 +91,39 @@ public class CommonPositionUtils {
 	 /*
      * 处理城市数据
      */
-    public String handlerCity(int positionId){
-      String citys="";
+    public List<DictCityDO> handlerCity(int positionId){
       List<JobPositionCityDO> jobCityList=this.getJobPositionCityList(positionId);
       List<Integer> codeList=this.getCodeIdlist(jobCityList);
       List<DictCityDO> dictList=this.getDictCityList(codeList);
-      if(!StringUtils.isEmptyList(dictList)){
-        for(DictCityDO dict:dictList){
-          String name=dict.getName();
-          citys+=name+",";
-        }
-      }
-      if(StringUtils.isNotNullOrEmpty(citys)){
-        citys=citys.substring(0, citys.lastIndexOf(","));
-      }
-      return citys;
+      return dictList;
     }
+
+    public String getPositionCityName(List<DictCityDO> dictList){
+		String citys="";
+		if(!StringUtils.isEmptyList(dictList)){
+			for(DictCityDO dict:dictList){
+				String name=dict.getName();
+				citys+=name+",";
+			}
+		}
+		if(StringUtils.isNotNullOrEmpty(citys)){
+			citys=citys.substring(0, citys.lastIndexOf(","));
+		}
+		return citys;
+	}
+	public String getPositionCityEname(List<DictCityDO> dictList){
+		String citys="";
+		if(!StringUtils.isEmptyList(dictList)){
+			for(DictCityDO dict:dictList){
+				String name=dict.getEname();
+				citys+=name+",";
+			}
+		}
+		if(StringUtils.isNotNullOrEmpty(citys)){
+			citys=citys.substring(0, citys.lastIndexOf(","));
+		}
+		return citys;
+	}
     
     /*
      * 获取job_position_city的数据
