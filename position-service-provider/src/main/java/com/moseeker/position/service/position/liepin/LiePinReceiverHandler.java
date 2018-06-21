@@ -2,6 +2,7 @@ package com.moseeker.position.service.position.liepin;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
@@ -10,6 +11,8 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -40,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -70,9 +72,6 @@ public class LiePinReceiverHandler {
     private JobPositionDao jobPositionDao;
 
     @Autowired
-    private LogDeadLetterDao logDeadLetterDao;
-
-    @Autowired
     private HRThirdPartyAccountDao thirdPartyAccountDao;
 
     @Autowired
@@ -95,29 +94,50 @@ public class LiePinReceiverHandler {
     /**
      * 批量处理编辑职位操作
      * 用于ats批量处理
+     * todo
      *
      * @param
      * @return
      * @author cjm
      * @date 2018/6/11
      */
-    public boolean batchHandleLiepinEditOperation(List<Integer> ids) throws UnsupportedEncodingException {
+    public boolean batchHandleLiepinEditOperation(List<JobPositionRecord> list, Map<Integer, JobPositionRecord> oldJobMap) throws UnsupportedEncodingException {
+
+        List<Integer> remainIds = list.stream().map(jobPositionRecord -> jobPositionRecord.getId()).collect(Collectors.toList());
 
         try {
             JSONObject liePinJsonObject = new JSONObject();
+            JobPositionDO jobPositionDO;
+            JobPositionDO oldJobPositionDO;
+            for (JobPositionRecord record : list) {
 
-            liePinJsonObject.put("id", ids);
+                if(record.getCandidateSource() == 1){
+                    log.info("=========批量处理，当前职位为校招职位，无需猎聘api同步==========");
+                    continue;
+                }
+                jobPositionDO = BeanUtils.DBToStruct(JobPositionDO.class, record);
 
-            String requestStr = JSONObject.toJSONString(liePinJsonObject);
+                JobPositionRecord oldRecord = oldJobMap.get(jobPositionDO.getId());
 
-            Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
+                oldJobPositionDO = BeanUtils.DBToStruct(JobPositionDO.class, oldRecord);
 
-            handlerPositionLiepinEditOperation(requestMsg, null);
+                liePinJsonObject.put("id", jobPositionDO.getId());
+                liePinJsonObject.put("params", JSONObject.toJSONString(jobPositionDO));
+                liePinJsonObject.put("oldPosition", JSONObject.toJSONString(oldJobPositionDO));
+
+                String requestStr = JSONObject.toJSONString(liePinJsonObject);
+
+                Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
+
+                handlerPositionLiepinEditOperation(requestMsg, null);
+
+                remainIds.remove(record.getId());
+            }
 
             return true;
         } catch (Exception e) {
-            log.error("调用api批量修改职位信息时发生错误，职位ids:{}", ids);
-            EmailSendUtil.sendWarnEmail("调用api批量修改职位信息时发生错误，职位ids" + ids.toString(),
+            log.error("调用api批量修改职位信息时发生错误，职位ids:{}", remainIds);
+            EmailSendUtil.sendWarnEmail("调用api批量修改职位信息时发生错误，剩余职位ids" + remainIds.toString(),
                     emailSubject);
             e.printStackTrace();
         }
@@ -130,22 +150,38 @@ public class LiePinReceiverHandler {
     @RabbitHandler
     public void handlerPositionLiepinEditOperation(Message message, Channel channel) {
         String msgBody = "{}";
-        List<Integer> ids = null;
+        Integer id = null;
         try {
 
             msgBody = new String(message.getBody(), "UTF-8");
 
             log.info("===============msgBody:{}===============", msgBody);
 
-            ids = requireValidMessage(msgBody);
+            id = requireValidEditId(msgBody);
 
-            if (ids == null || ids.size() == 0) {
+            if (id == null) {
+                return;
+            }
+
+            JobPositionDO updateJobPosition = getUpdateJobPositionFromMq(msgBody);
+
+            // 获取das端已修改后的职位数据
+            JobPositionDO jobPositionDO = getOldJobPositionFromMq(msgBody);
+
+            boolean positionFlag = getPositionFlag(msgBody);
+
+            if (updateJobPosition == null || jobPositionDO == null) {
+                return;
+            }
+
+            if(jobPositionDO.getCandidateSource() == 1){
+                log.info("===========校招职位不用处理===========");
                 return;
             }
 
             int positionChannel = 2;
 
-            int positionId = ids.get(0);
+            int positionId = id;
 
             String liePinToken = getLiepinToken(positionId);
 
@@ -154,133 +190,198 @@ public class LiePinReceiverHandler {
                 return;
             }
 
-            JobPositionDO jobPositionDO = null;
-
             log.info("==============liePinToken:{}===============", liePinToken);
-            for (int id : ids) {
 
-                positionId = id;
+            // 是否需要编辑，返回true，两个职位相同，不需要edit
+            boolean noNeedEdit = compareJobPosition(jobPositionDO, updateJobPosition);
 
-                // 获取das端已修改后的职位数据
-                jobPositionDO = jobPositionDao.getJobPositionById(positionId);
+            // city改变标志 true是city发生改变，false是未发生改变
+            boolean cityChangeFlag = !jobPositionDO.getCity().equals(updateJobPosition.getCity());
 
-                // 获取在仟寻填写的猎聘职位信息
-                HrThirdPartyPositionDO hrThirdPartyPositionDO = hrThirdPartyPositionDao.getThirdPartyPositionById(positionId, positionChannel);
+            // 如果是true，说明das操作修改时是下架状态，所以将数据库同步状态设置为1
+            if(positionFlag){
+                hrThirdPartyPositionDao.updateBindState(positionId, 2, 1);
+            }
 
-                if (hrThirdPartyPositionDO == null) {
-                    log.info("==============positionId:{}填写的第三方职位信息查不到=============", positionId);
-                    continue;
-                }
+//            // 如果修改了city，将同步状态修改为未同步
+//            if(cityChangeFlag){
+//                hrThirdPartyPositionDao.updateBindState(positionId, 2, 0);
+//            }
 
-                ThirdPartyPosition thirdPartyPosition = new ThirdPartyPosition();
+            if (!positionFlag && noNeedEdit) {
+                log.info("=============没有修改猎聘所需字段，无需发布修改============");
+                return;
+            }
 
-                // 组装同步时需要的数据，相当于在第三方页面填写的表单数据，将不匹配字段手动映射
-                BeanUtils.copyProperties(hrThirdPartyPositionDO, thirdPartyPosition);
-                thirdPartyPosition.setSalaryDiscuss(hrThirdPartyPositionDO.getSalaryDiscuss() != 0);
-                thirdPartyPosition.setSalaryBottom(thirdPartyPosition.getSalaryBottom() / 1000);
-                thirdPartyPosition.setSalaryTop(thirdPartyPosition.getSalaryTop() / 1000);
-                String occupations = hrThirdPartyPositionDO.getOccupation();
-                String[] occupationsArr = occupations.split(",");
-                thirdPartyPosition.setOccupation(Arrays.asList(occupationsArr));
+            // 获取在仟寻填写的猎聘职位信息
+            HrThirdPartyPositionDO hrThirdPartyPositionDO = hrThirdPartyPositionDao.getThirdPartyPositionById(positionId, positionChannel);
 
-                // 将数据组装为向猎聘请求的格式，此数据也是用户编辑后的数据
-                LiePinPositionVO liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(thirdPartyPosition, jobPositionDO, null);
-                log.info("================liePinPositionVO:{}=============", liePinPositionVO);
-                // 用于查询所修改的职位之前是否发布过
-                List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByPid(positionId);
+            if (hrThirdPartyPositionDO == null) {
+                log.info("==============第三方职位信息为空，未填写，positionId:{}=============", positionId);
+                return;
+            }
 
-                // 判断编辑的城市中是否有未发布过的城市，如果有，就走一遍发布流程，职位发布中会判断如果是发布过的职位，不会重新发布
-                boolean flag = true;
+            ThirdPartyPosition thirdPartyPosition = new ThirdPartyPosition();
 
-                // 编辑职位中的城市list
-                List<JobPositionCityDO> positionCityList = jobPositionCityDao.getPositionCitysByPid(positionId);
-                log.info("==============编辑城市positionCityList:{}============", positionCityList);
-                // 编辑职位中的城市codelist
-                List<String> cityCodesList = positionCityList.stream().map(positionCityDO -> String.valueOf(positionCityDO.getCode())).collect(Collectors.toList());
-                log.info("==============编辑城市cityCodesList:{}============", cityCodesList);
-                // 如果数据库不存在编辑的职位，则发布新职位
-                if (null != liepinMappingDOList && liepinMappingDOList.size() > 0) {
+            // 组装同步时需要的数据，相当于在第三方页面填写的表单数据，将不匹配字段手动映射
+            org.springframework.beans.BeanUtils.copyProperties(hrThirdPartyPositionDO, thirdPartyPosition);
+            thirdPartyPosition.setSalaryDiscuss(hrThirdPartyPositionDO.getSalaryDiscuss() != 0);
+            thirdPartyPosition.setSalaryBottom(thirdPartyPosition.getSalaryBottom() / 1000);
+            thirdPartyPosition.setSalaryTop(thirdPartyPosition.getSalaryTop() / 1000);
+            String occupations = hrThirdPartyPositionDO.getOccupation();
+            String[] occupationsArr = occupations.split(",");
+            thirdPartyPosition.setOccupation(Arrays.asList(occupationsArr));
 
-                    // 数据库中该仟寻职位id对应的城市codes list
-                    List<String> cityDbList = liepinMappingDOList.stream().map(mappingDo -> String.valueOf(mappingDo.getCityCode())).collect(Collectors.toList());
-                    log.info("===============数据库中该仟寻职位id对应的城市cityDbList:{}====================", cityDbList);
+            // 将数据组装为向猎聘请求的格式，此数据也是用户编辑后的数据
+            LiePinPositionVO liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(thirdPartyPosition, updateJobPosition, null);
+            log.info("================liePinPositionVO:{}=============", liePinPositionVO);
+            // 用于查询所修改的职位之前是否发布过
+            List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByPid(positionId);
 
-                    // 数据库中该仟寻职位id对应的titlelist
-                    List<String> titleDbList = liepinMappingDOList.stream().map(mappingDo -> mappingDo.getJobTitle()).collect(Collectors.toList());
+            if (null == liepinMappingDOList || liepinMappingDOList.size() < 1) {
+                log.info("=================该职位未在猎聘发布过，编辑时无需到猎聘修改===============");
+                return;
+            }
 
-                    // 将titlelist去重复
-                    titleDbList = removeDuplicateTitle(titleDbList);
-                    log.info("===============数据库中该仟寻职位id对应的titlelist:{}====================", titleDbList);
+            // 判断编辑的城市中是否有未发布过的城市，如果有，就走一遍发布流程，职位发布中会判断如果是发布过的职位，不会重新发布
+//            boolean flag = true;
 
-                    // 先判断title是否存在，不存在的话发布新职位
-                    if (titleDbList.contains(jobPositionDO.getTitle())) {
-                        log.info("=================title存在=====================");
-                        for (String cityCode : cityCodesList) {
+            // 编辑职位中的城市list
+            List<JobPositionCityDO> positionCityList = jobPositionCityDao.getPositionCityBypid(positionId);
+            log.info("==============编辑城市positionCityList:{}============", positionCityList);
+            // 编辑职位中的城市codelist
+            List<String> cityCodesList = positionCityList.stream().map(positionCityDO -> String.valueOf(positionCityDO.getCode())).collect(Collectors.toList());
+            log.info("==============编辑城市cityCodesList:{}============", cityCodesList);
+            // 如果数据库不存在编辑的职位，则发布新职位
 
-                            for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
+            // 数据库中该仟寻职位id对应的城市codes list
+            List<String> cityDbList = liepinMappingDOList.stream().map(mappingDo -> String.valueOf(mappingDo.getCityCode())).collect(Collectors.toList());
+            log.info("===============数据库中该仟寻职位id对应的城市cityDbList:{}====================", cityDbList);
 
-                                // 存在城市，并且状态正常
-                                if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1) {
-                                    log.info("===============存在城市，并且状态正常，修改================");
-                                    // 修改
-                                    editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
-                                    break;
+            // 数据库中该仟寻职位id对应的titlelist
+            List<String> titleDbList = liepinMappingDOList.stream().map(mappingDo -> mappingDo.getJobTitle()).collect(Collectors.toList());
 
-                                } else if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 0) {
-                                    log.info("============存在城市，但是状态为下架，先上架，后修改============");
-                                    // 存在城市，但是状态为下架，先上架，后修改
-                                    upShelfOldSinglePosition(mappingDO, liePinToken);
+            // 将titlelist去重复
+            titleDbList = removeDuplicateTitle(titleDbList);
+            log.info("===============数据库中该仟寻职位id对应的titlelist:{}====================", titleDbList);
 
-                                    // 修改
-                                    editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
-                                    break;
+            String title = updateJobPosition.getTitle();
 
-                                } else if (!cityCodesList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1) {
-                                    log.info("============如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架============");
-                                    // 如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架
-                                    downShelfOldSinglePosition(mappingDO, liePinToken);
+            // 先判断title是否存在，不存在的话发布新职位
+            if (titleDbList.contains(title)) {
+                log.info("=================title存在=====================");
+                for (String cityCode : cityCodesList) {
 
-                                }
-                                if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode)) {
-                                    // 如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布
-                                    log.info("================如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布================");
-                                    flag = false;
-                                }
+                    for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
+                        log.info("==============当前citycode:{},当前数据库mapping citycode:{}=================", cityCode, mappingDO.getCityCode());
+                        // 存在城市，并且状态正常
+                        if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1 && title.equals(mappingDO.getJobTitle())) {
+
+                            if(!cityChangeFlag){
+                                log.info("===============存在城市，并且状态正常，修改================");
+                                // 修改
+                                editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
+                            }
+                            break;
+
+                        } else if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 0 && title.equals(mappingDO.getJobTitle())) {
+
+                            // 存在城市，但是状态为下架，先上架，后修改
+                            if(!cityChangeFlag){
+                                log.info("============存在城市，但是状态为下架，先上架，后修改============");
+                                upShelfOldSinglePosition(mappingDO, liePinToken);
+
+                                // 修改
+                                editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
                             }
 
-                        }
-                    } else {
-                        //  title变化，将之前所有的下架获取所有的jobMappingIds，新的发布
-                        log.info("============itle变化，将之前所有的下架获取所有的jobMappingIds，新的发布===============");
-                        downShelfOldPositions(liepinMappingDOList, liePinToken);
+                            break;
 
-                        // 发布新title对应的职位
-                        log.info("===========发布新title对应的职位===========");
-                        sendSyncPosition(positionId, thirdPartyPosition);
+                        } else if (cityCodesList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1 && !title.equals(mappingDO.getJobTitle())) {
+                            log.info("============如果编辑的城市中存在数据库中的该城市，但是title不相同，并且该城市之前出于上架状态，则将其下架============");
+                            // 如果编辑的城市中存在数据库中的该城市，但是title不相同，并且该城市之前出于上架状态，则将其下架
+                            downShelfOldSinglePosition(mappingDO, liePinToken);
+
+                        } else if (!cityCodesList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1) {
+                            log.info("============如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架============");
+                            // 如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架
+                            downShelfOldSinglePosition(mappingDO, liePinToken);
+
+                        }
+
+//                        if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode) && title.equals(mappingDO.getJobTitle())) {
+//                            // 如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布
+//                            log.info("================如果该职位数据库的发布城市中没有编辑职位中的当前城市，判定为新城市，需要发布================");
+//                            flag = false;
+//                        }
                     }
 
-                } else {
-                    // 不存在映射记录，发布职位
-                    log.info("==========不存在映射记录，发布职位==========");
-                    sendSyncPosition(positionId, thirdPartyPosition);
                 }
+            } else {
+                //  title变化，将之前所有的下架获取所有的jobMappingIds，新的发布
+                log.info("============title变化，将之前所有的下架获取所有的jobMappingIds，新的发布===============");
+                downShelfOldPositions(liepinMappingDOList, liePinToken);
 
-                if (!flag) {
-                    // 说明编辑职位中存在没有发布的城市，需要新发布职位
-                    log.info("==============说明编辑职位中存在没有发布的城市，需要新发布职位============");
-                    sendSyncPosition(positionId, thirdPartyPosition);
-                }
-
-
+                // 发布新title对应的职位 todo 不发送同步请求
+//                log.info("===========发布新title对应的职位===========");
+//                sendSyncPosition(positionId, thirdPartyPosition);
             }
 
 
+//            else {
+//                // 不存在映射记录，发布职位
+//                log.info("==========不存在映射记录，发布职位==========");
+//                sendSyncPosition(positionId, thirdPartyPosition);
+//            }
+
+//            if (!flag) {
+//                // 说明编辑职位中存在没有发布的城市，需要新发布职位
+//                log.info("==============说明编辑职位中存在没有发布的城市，需要新发布职位============");
+//                sendSyncPosition(positionId, thirdPartyPosition);
+//            }
+
+
         } catch (Exception e) {
-            this.handleTemplateLogDeadLetter(message, msgBody, e.getMessage());
-            EmailSendUtil.sendWarnEmail("调用api批量修改职位信息时发生错误，职位ids" + (ids == null ? msgBody : ids.toString()),
+            EmailSendUtil.sendWarnEmail("调用api批量修改职位信息时发生错误，职位信息如下:</br>" + msgBody,
                     emailSubject);
             log.error(e.getMessage(), e);
         }
+    }
+
+    private boolean getPositionFlag(String msgBody) {
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            return jsonObject.getBoolean("positionFlag");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private JobPositionDO getOldJobPositionFromMq(String msgBody) {
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            JSONObject jobPositionJSON = JSONObject.parseObject(jsonObject.getString("oldPosition"));
+            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON);
+            log.info("============jobPositionDO:{}=============", jobPositionDO);
+            return jobPositionDO;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private JobPositionDO getUpdateJobPositionFromMq(String msgBody) {
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            JSONObject jobPositionJSON = JSONObject.parseObject(jsonObject.getString("params"));
+            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON);
+            log.info("============jobPositionDO:{}=============", jobPositionDO);
+            return jobPositionDO;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -294,6 +395,10 @@ public class LiePinReceiverHandler {
      */
     public boolean batchHandlerLiepinDownShelfOperation(List<Integer> ids) throws UnsupportedEncodingException {
         try {
+            if(ids == null || ids.size() < 1){
+                log.info("==============没有需要处理的猎聘api下架职位==============");
+                return false;
+            }
             JSONObject liePinJsonObject = new JSONObject();
 
             liePinJsonObject.put("id", ids);
@@ -336,6 +441,12 @@ public class LiePinReceiverHandler {
                 List<Integer> idsList = new ArrayList<>();
                 try {
 
+                    JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(id);
+
+                    if(jobPositionDO == null || jobPositionDO.getCandidateSource() == 1){
+                        continue;
+                    }
+
                     // 通过职位id获取职位所在城市list
                     List<JobPositionCityDO> jobPositionCityList = jobPositionCityDao.getPositionCitysByPid(id);
 
@@ -345,7 +456,7 @@ public class LiePinReceiverHandler {
                     // 通过职位id和code获取JobPositionLiepinMapping表的信息，此表存的是仟寻请求猎聘生成的职位主键id等信息的映射
                     List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByPidAndCode(id, rePublishCityCodes);
 
-                    if(liepinMappingDOList == null || liepinMappingDOList.size() < 1){
+                    if (liepinMappingDOList == null || liepinMappingDOList.size() < 1) {
                         log.info("===============未在猎聘发布过，不需要重新发布================");
                         continue;
                     }
@@ -391,7 +502,6 @@ public class LiePinReceiverHandler {
             log.error(e.getMessage(), e);
             EmailSendUtil.sendWarnEmail("调用api批量修改职位信息时发生错误，职位ids" + (ids == null ? msgBody : ids.toString()),
                     emailSubject);
-            this.handleTemplateLogDeadLetter(message, msgBody, "职位操作通过api同步到猎聘失败");
         }
 
     }
@@ -427,9 +537,15 @@ public class LiePinReceiverHandler {
 
                 try {
 
+                    JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(id);
+
+                    if(jobPositionDO == null || jobPositionDO.getCandidateSource() == 1){
+                        continue;
+                    }
+
                     List<JobPositionLiepinMappingDO> liepinMappingDOS = liepinMappingDao.getValidMappingDataByPid(id, (byte) 1);
 
-                    if(liepinMappingDOS == null || liepinMappingDOS.size() < 1){
+                    if (liepinMappingDOS == null || liepinMappingDOS.size() < 1) {
                         log.info("==============该职位没有在猎聘发布过，不需要下架==============");
                         continue;
                     }
@@ -472,7 +588,6 @@ public class LiePinReceiverHandler {
         } catch (Exception e) {
             EmailSendUtil.sendWarnEmail("调用api批量修改职位信息时发生错误，职位ids" + (ids == null ? msgBody : ids.toString()),
                     emailSubject);
-            this.handleTemplateLogDeadLetter(message, msgBody, e.getMessage());
             log.error(e.getMessage(), e);
         }
     }
@@ -485,6 +600,22 @@ public class LiePinReceiverHandler {
      * @author cjm
      * @date 2018/6/13
      */
+    private Integer requireValidEditId(String msgBody) throws UnsupportedEncodingException {
+
+        JSONObject jsonObject = JSONObject.parseObject(msgBody);
+
+        log.info("职位操作的rabitmq的参数是========" + jsonObject.toJSONString());
+
+        Integer positionId = jsonObject.getInteger("id");
+
+        if (positionId == null) {
+            log.info("===============传入id为空=================");
+            return null;
+        }
+
+        return positionId;
+    }
+
     private List<Integer> requireValidMessage(String msgBody) throws UnsupportedEncodingException {
 
         JSONObject jsonObject = JSONObject.parseObject(msgBody);
@@ -529,7 +660,7 @@ public class LiePinReceiverHandler {
         int channel = 2;
 
         // 获取发布人hrid
-        JobPositionDO jobPositionDO = jobPositionDao.getJobPositionById(positionId);
+        JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(positionId);
 
         if (jobPositionDO == null) {
             return null;
@@ -584,12 +715,14 @@ public class LiePinReceiverHandler {
         }
         return null;
     }
+
     /**
      * 过滤不需要重新发布的职位，通过发布状态是否为1来确定
+     *
      * @param
-     * @author  cjm
-     * @date  2018/6/19
      * @return
+     * @author cjm
+     * @date 2018/6/19
      */
     private List<JobPositionLiepinMappingDO> filterUnneedRepublishCitys(List<JobPositionLiepinMappingDO> liepinMappingDOList) {
         List<JobPositionLiepinMappingDO> list = new ArrayList<>();
@@ -620,9 +753,9 @@ public class LiePinReceiverHandler {
 
         liePinPositionVO.setEjob_id(mappingDO.getLiepinJobId());
 
-        DictCityLiePinDO cityLiePinDO = liepinSocialPositionTransfer.getValidLiepinDictCode(mappingDO.getCityCode() + "");
+        String liepinCityCode = liepinSocialPositionTransfer.getValidLiepinDictCode(mappingDO.getCityCode() + "");
 
-        liePinPositionVO.setEjob_dq(cityLiePinDO.getCode());
+        liePinPositionVO.setEjob_dq(liepinCityCode);
 
         JSONObject liePinObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
         try {
@@ -744,8 +877,8 @@ public class LiePinReceiverHandler {
                 liepinMappingDao.updateErrMsgBatch(downShelfPositonListDb, e.getMessage());
                 EmailSendUtil.sendWarnEmail("downShelfOldPositions批量下架猎聘职位失败：mappingIds为" + ids, emailSubject);
             } catch (Exception e1) {
-                EmailSendUtil.sendWarnEmail("上架猎聘职位失败：mappingIds为" + ids, emailSubject);
-                liepinMappingDao.updateErrMsgBatch(downShelfPositonListDb, e1.getMessage());
+                EmailSendUtil.sendWarnEmail("下架猎聘职位失败：mappingIds为" + ids, emailSubject);
+                liepinMappingDao.updateErrMsgBatch(downShelfPositonListDb, "后台异常");
                 log.error("===============向猎聘请求下架失败，mapping表主键ids:{}===============", ids);
             }
         }
@@ -763,7 +896,11 @@ public class LiePinReceiverHandler {
 
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_RESPONSE_NULL);
 
-        } else if (httpResult.getIntValue("code") != 0) {
+        }else if (httpResult.getIntValue("code") == 1002) {
+
+            log.info("==============httpResult:{}================", httpResult);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_LIMIT);
+        }else if (httpResult.getIntValue("code") != 0) {
 
             log.info("==============httpResult:{}================", httpResult);
             throw ExceptionUtils.getBizException("{'status':-1,'message':'猎聘职位操作请求失败！" + httpResult.getString("message") + "'}");
@@ -799,6 +936,175 @@ public class LiePinReceiverHandler {
         return titleDbList;
     }
 
+
+    private JobPositionDO convertJSON2DO(JSONObject jobPositionJSON) {
+        JobPositionDO jobPositionDO = new JobPositionDO();
+        jobPositionDO.setId(jobPositionJSON.getIntValue("id"));
+        jobPositionDO.setJobnumber(jobPositionJSON.getString("jobnumber"));
+        jobPositionDO.setCompanyId(jobPositionJSON.getIntValue("company_id"));
+        jobPositionDO.setTitle(jobPositionJSON.getString("title"));
+        jobPositionDO.setProvince(jobPositionJSON.getString("province"));
+        jobPositionDO.setCity(jobPositionJSON.getString("city"));
+        jobPositionDO.setDepartment(jobPositionJSON.getString("department"));
+        jobPositionDO.setLJobid(jobPositionJSON.getIntValue("l_jobid"));
+        jobPositionDO.setPublishDate(jobPositionJSON.getString("publish_date"));
+        jobPositionDO.setStopDate(jobPositionJSON.getString("stop_date"));
+        jobPositionDO.setAccountabilities(jobPositionJSON.getString("accountabilities"));
+        jobPositionDO.setExperience(jobPositionJSON.getString("experience"));
+        jobPositionDO.setRequirement(jobPositionJSON.getString("requirement"));
+        jobPositionDO.setSalary(jobPositionJSON.getString("salary"));
+        jobPositionDO.setLanguage(jobPositionJSON.getString("language"));
+        jobPositionDO.setJobGrade(jobPositionJSON.getIntValue("job_grade"));
+        jobPositionDO.setStatus(jobPositionJSON.getDouble("status") == null ? 0 : jobPositionJSON.getDouble("status"));
+        jobPositionDO.setVisitnum(jobPositionJSON.getIntValue("visitnum"));
+        jobPositionDO.setLastvisit(jobPositionJSON.getString("lastvisit"));
+        jobPositionDO.setSourceId(jobPositionJSON.getIntValue("source_id"));
+        jobPositionDO.setUpdateTime(jobPositionJSON.getString("update_time"));
+        jobPositionDO.setBusinessGroup(jobPositionJSON.getString("business_group"));
+        jobPositionDO.setEmploymentType(jobPositionJSON.getDouble("employment_type") == null ? 0 : jobPositionJSON.getDouble("employment_type"));
+        jobPositionDO.setHrEmail(jobPositionJSON.getString("hr_email"));
+        jobPositionDO.setBenefits(jobPositionJSON.getString("benefits"));
+        jobPositionDO.setDegree(jobPositionJSON.getDouble("degree") == null ? 0 : jobPositionJSON.getDouble("degree"));
+        jobPositionDO.setFeature(jobPositionJSON.getString("feature"));
+        jobPositionDO.setEmailNotice("true".equals(jobPositionJSON.getString("email_notice")) ? (byte) 1 : 0);
+        jobPositionDO.setCandidateSource(jobPositionJSON.getDouble("candidate_source") == null ? 0 : jobPositionJSON.getDouble("candidate_source"));
+        jobPositionDO.setOccupation(jobPositionJSON.getString("occupation"));
+        jobPositionDO.setIsRecom(jobPositionJSON.getIntValue("is_recom"));
+        jobPositionDO.setIndustry(jobPositionJSON.getString("industry"));
+        jobPositionDO.setHongbaoConfigAppId(jobPositionJSON.getIntValue("hongbao_config_app_id"));
+        jobPositionDO.setHongbaoConfigId(jobPositionJSON.getIntValue("hongbao_config_id"));
+        jobPositionDO.setHongbaoConfigRecomId(jobPositionJSON.getIntValue("hongbao_config_recom_id"));
+        jobPositionDO.setEmailResumeConf(jobPositionJSON.getDouble("email_resume_conf") == null ? 0 : jobPositionJSON.getDouble("email_resume_conf"));
+        jobPositionDO.setLPostingtargetid(jobPositionJSON.getDouble("l_PostingTargetId") == null ? 0 : jobPositionJSON.getDouble("l_PostingTargetId"));
+        jobPositionDO.setPriority(jobPositionJSON.getDouble("priority") == null ? 10 : jobPositionJSON.getDouble("priority"));
+        jobPositionDO.setShareTplId(jobPositionJSON.getDouble("share_tpl_id") == null ? 0 : jobPositionJSON.getDouble("share_tpl_id"));
+        jobPositionDO.setDistrict(jobPositionJSON.getString("district"));
+        jobPositionDO.setCount(jobPositionJSON.getDouble("count") == null ? 0 : jobPositionJSON.getDouble("count"));
+        jobPositionDO.setSalaryTop(jobPositionJSON.getDouble("salary_top"));
+        jobPositionDO.setSalaryBottom(jobPositionJSON.getDouble("salary_bottom"));
+        jobPositionDO.setExperienceAbove("true".equals(jobPositionJSON.getString("experience_above")) ? (byte) 1 : 0);
+        jobPositionDO.setDegreeAbove("true".equals(jobPositionJSON.getString("degree_above")) ? (byte) 1 : 0);
+        jobPositionDO.setManagementExperience(jobPositionJSON.getDouble("management_experience"));
+        jobPositionDO.setGender(jobPositionJSON.getDouble("gender") == null ? 2 : jobPositionJSON.getDouble("gender"));
+        jobPositionDO.setPublisher(jobPositionJSON.getIntValue("publisher"));
+        jobPositionDO.setAppCvConfigId(jobPositionJSON.getIntValue("app_cv_config_id"));
+        jobPositionDO.setSource(jobPositionJSON.getDouble("source") == null ? 0 : jobPositionJSON.getDouble("source"));
+        jobPositionDO.setHbStatus(jobPositionJSON.getByte("hb_status") == null ? 0 : jobPositionJSON.getByte("hb_status"));
+        jobPositionDO.setChildCompanyId(jobPositionJSON.getIntValue("child_company_id"));
+        jobPositionDO.setAge(jobPositionJSON.getByte("age") == null ? 0 : jobPositionJSON.getByte("age"));
+        jobPositionDO.setMajorRequired(jobPositionJSON.getString("major_required"));
+        jobPositionDO.setWorkAddress(jobPositionJSON.getString("work_address"));
+        jobPositionDO.setKeyword(jobPositionJSON.getString("keyword"));
+        jobPositionDO.setReportingTo(jobPositionJSON.getString("reporting_to"));
+        jobPositionDO.setIsHiring("true".equals(jobPositionJSON.getString("is_hiring")) ? (byte) 1 : 0);
+        jobPositionDO.setUnderlings(jobPositionJSON.getByte("underlings") == null ? 0 : jobPositionJSON.getByte("underlings"));
+        jobPositionDO.setLanguageRequired("true".equals(jobPositionJSON.getString("language_required")) ? (byte) 1 : 0);
+        jobPositionDO.setTargetIndustry(jobPositionJSON.getByte("target_industry") == null ? 0 : jobPositionJSON.getByte("target_industry"));
+        jobPositionDO.setCurrentStatus(jobPositionJSON.getByte("current_status") == null ? 0 : jobPositionJSON.getByte("current_status"));
+        jobPositionDO.setPositionCode(jobPositionJSON.getIntValue("position_code"));
+        jobPositionDO.setTeamId(jobPositionJSON.getIntValue("team_id"));
+        jobPositionDO.setProfile_cc_mail_enabled(jobPositionJSON.getByte("profile_cc_mail_enabled") == null ? 0 : jobPositionJSON.getByte("profile_cc_mail_enabled"));
+        return jobPositionDO;
+    }
+
+    private boolean compareJobPosition(JobPositionDO jobPositionDO, JobPositionDO updateJobPosition) {
+        jobPositionDO = filterBlank(jobPositionDO);
+        updateJobPosition = filterBlank(updateJobPosition);
+        return strEquals(jobPositionDO.getTitle(), updateJobPosition.getTitle())
+                && strEquals(jobPositionDO.getCity(), updateJobPosition.getCity())
+                && strEquals(jobPositionDO.getAccountabilities(), updateJobPosition.getAccountabilities())
+                && strEquals(jobPositionDO.getRequirement(), updateJobPosition.getRequirement())
+                && strEquals(jobPositionDO.getExperience(), updateJobPosition.getExperience())
+                && strEquals(jobPositionDO.getSalary(), updateJobPosition.getSalary())
+                && strEquals(jobPositionDO.getLanguage(), updateJobPosition.getLanguage())
+                && doubleEquals(jobPositionDO.getDegree(), updateJobPosition.getDegree())
+                && strEquals(jobPositionDO.getFeature(), updateJobPosition.getFeature())
+                && doubleEquals(jobPositionDO.getCount(), updateJobPosition.getCount())
+                && doubleEquals(jobPositionDO.getSalaryBottom(), updateJobPosition.getSalaryBottom())
+                && doubleEquals(jobPositionDO.getSalaryTop(), updateJobPosition.getSalaryTop())
+                && doubleEquals(jobPositionDO.getGender(), updateJobPosition.getGender())
+                && byteEquals(jobPositionDO.getAge(), updateJobPosition.getAge())
+                && strEquals(jobPositionDO.getDepartment(), updateJobPosition.getDepartment());
+    }
+
+    private boolean strEquals(String s1, String s2){
+        if(StringUtils.isBlank(s1) && StringUtils.isBlank(s2)){
+            return true;
+        }
+        if(StringUtils.isNotBlank(s1) && StringUtils.isNotBlank(s2)){
+            return s1.equals(s2);
+        }
+        return false;
+    }
+
+    private boolean byteEquals(Byte s1, Byte s2){
+        if(null == s1 && null == s2){
+            return true;
+        }
+        if(null != s1 && null != s2){
+            return s1.equals(s2);
+        }
+        return false;
+    }
+    private boolean doubleEquals(Double s1, Double s2){
+        if(null == s1 && null == s2){
+            return true;
+        }
+        if(null != s1 && null != s2){
+            return s1.equals(s2);
+        }
+        return false;
+    }
+    private boolean intEquals(Integer s1, Integer s2){
+        if(null == s1 && null == s2){
+            return true;
+        }
+        if(null != s1 && null != s2){
+            return s1.equals(s2);
+        }
+        return false;
+    }
+
+    private JobPositionDO filterBlank(JobPositionDO jobPositionDO) {
+        if (StringUtils.isNotBlank(jobPositionDO.getTitle())) {
+            jobPositionDO.setTitle(jobPositionDO.getTitle().replaceAll("\\s", ""));
+        }
+        if (StringUtils.isNotBlank(jobPositionDO.getDepartment())) {
+            jobPositionDO.setDepartment(jobPositionDO.getDepartment().replaceAll("\\s", ""));
+        }
+        if (StringUtils.isNotBlank(jobPositionDO.getAccountabilities())) {
+            jobPositionDO.setAccountabilities(jobPositionDO.getAccountabilities().replaceAll("\\s", ""));
+        }
+        if (StringUtils.isNotBlank(jobPositionDO.getRequirement())) {
+            jobPositionDO.setRequirement(jobPositionDO.getRequirement().replaceAll("\\s", ""));
+        }
+        if (StringUtils.isNotBlank(jobPositionDO.getLanguage())) {
+            jobPositionDO.setLanguage(jobPositionDO.getLanguage().replaceAll("\\s", ""));
+        }
+        if (StringUtils.isNotBlank(jobPositionDO.getHrEmail())) {
+            jobPositionDO.setHrEmail(jobPositionDO.getHrEmail().replaceAll("\\s", ""));
+        }
+        if (StringUtils.isNotBlank(jobPositionDO.getBenefits())) {
+            jobPositionDO.setBenefits(jobPositionDO.getBenefits().replaceAll("\\s", ""));
+        }
+        if (StringUtils.isNotBlank(jobPositionDO.getFeature())) {
+            jobPositionDO.setFeature(jobPositionDO.getFeature().replaceAll("\\s", ""));
+        }
+        if (StringUtils.isNotBlank(jobPositionDO.getOccupation())) {
+            jobPositionDO.setOccupation(jobPositionDO.getOccupation().replaceAll("\\s", ""));
+        }
+        if (StringUtils.isNotBlank(jobPositionDO.getMajorRequired())) {
+            jobPositionDO.setMajorRequired(jobPositionDO.getMajorRequired().replaceAll("\\s", ""));
+        }
+        if (StringUtils.isNotBlank(jobPositionDO.getWorkAddress())) {
+            jobPositionDO.setWorkAddress(jobPositionDO.getWorkAddress().replaceAll("\\s", ""));
+        }
+        if (StringUtils.isNotBlank(jobPositionDO.getKeyword())) {
+            jobPositionDO.setKeyword(jobPositionDO.getKeyword().replaceAll("\\s", ""));
+        }
+        return jobPositionDO;
+    }
+
     private void sendSyncPosition(int positionId, ThirdPartyPosition thirdPartyPosition) throws Exception {
 
         ThirdPartyPositionForm positionForm = new ThirdPartyPositionForm();
@@ -810,21 +1116,9 @@ public class LiePinReceiverHandler {
         list.add(JSONObject.toJSONString(thirdPartyPosition));
         positionForm.setChannels(list);
 
-        hrThirdPartyPositionDao.updateBindState(positionId, 2);
+        hrThirdPartyPositionDao.updateBindState(positionId, 2, 0);
 
         positionBS.syncPositionToThirdParty(positionForm);
     }
-
-    private void handleTemplateLogDeadLetter(Message message, String msgBody, String errorMessage) {
-        LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
-        logDeadLetterDO.setAppid(NumberUtils.toInt(message.getMessageProperties().getAppId(), 0));
-        logDeadLetterDO.setErrorLog(errorMessage);
-        logDeadLetterDO.setMsg(msgBody);
-        logDeadLetterDO.setExchangeName(StringUtils.defaultIfBlank(message.getMessageProperties().getReceivedExchange(), ""));
-        logDeadLetterDO.setRoutingKey(StringUtils.defaultIfBlank(message.getMessageProperties().getReceivedRoutingKey(), ""));
-        logDeadLetterDO.setQueueName(StringUtils.defaultIfBlank(message.getMessageProperties().getConsumerQueue(), ""));
-        logDeadLetterDao.addData(logDeadLetterDO);
-    }
-
 
 }

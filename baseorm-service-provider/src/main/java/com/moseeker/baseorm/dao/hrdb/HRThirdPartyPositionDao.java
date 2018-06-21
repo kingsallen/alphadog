@@ -333,9 +333,9 @@ public class HRThirdPartyPositionDao  {
      * @date  2018/6/11
      * @return
      */
-    public void updateBindState(int positionId, int channel) {
+    public void updateBindState(int positionId, int channel, int state) {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0)
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
                 .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
