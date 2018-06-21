@@ -261,6 +261,7 @@ public class SearchengineService {
                 QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
                         .field("title", 20.0f)
                         .field("city", 10.0f)
+                        .field("city_ename",10.0f)
                         .field("team_name", 5.0f)
                         .field("custom", 4.0f)
                         .field("occupation", 3.0f);
@@ -274,7 +275,7 @@ public class SearchengineService {
             for (int i = 0; i < city_list.length; i++) {
                 String city = city_list[i];
                 System.out.println(city);
-                QueryBuilder cityfilter = QueryBuilders.matchPhraseQuery("city", city);
+                QueryBuilder cityfilter =this.handlerCommonCity(city);
                 QueryBuilder cityboosting = QueryBuilders.boostingQuery()
                         .positive(cityfilter)
                         .negative(QueryBuilders.matchPhraseQuery("title", city)).negativeBoost(0.5f);
@@ -381,7 +382,19 @@ public class SearchengineService {
         }
         return query;
     }
-
+    /*
+         处理城市数据
+         */
+    private QueryBuilder handlerCommonCity(String citys){
+        if(StringUtils.isNotBlank(citys)){
+            List<String> fieldList=new ArrayList<>();
+            fieldList.add("citys.name");
+            fieldList.add("citys.ename");
+            QueryBuilder keyand=searchUtil.shouldTermsQuery(fieldList,searchUtil.stringConvertList(citys));
+            return keyand;
+        }
+        return null;
+    }
     /*
      封装一下对排序的语句
      */

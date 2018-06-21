@@ -518,6 +518,24 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
     }
+    /*
+     should的terms的语句重载
+     */
+    public QueryBuilder shouldTermsQuery(List<String> fieldsList,List<String>dataIdList) {
+        if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String fields : fieldsList) {
+                for(String condition: dataIdList){
+                    QueryBuilder fullf = QueryBuilders.termsQuery(fields, condition);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            return keyand;
+        }
+        return null;
+    }
     public void shouldMatchQuery(Map<String, Object> map, QueryBuilder query){
         if (map != null && !map.isEmpty()) {
             QueryBuilder keyand = QueryBuilders.boolQuery();
