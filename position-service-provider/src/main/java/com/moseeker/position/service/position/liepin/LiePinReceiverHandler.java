@@ -12,9 +12,9 @@ import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSyncVerify;
-import com.moseeker.common.email.Email;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.position.constants.position.LiepinPositionOperateUrl;
 import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.position.service.appbs.PositionBS;
 import com.moseeker.position.utils.EmailSendUtil;
@@ -91,12 +91,6 @@ public class LiePinReceiverHandler {
     private JobPositionCityDao jobPositionCityDao;
 
     private String emailSubject = "猎聘api请求操作失败";
-
-    private static final String LP_POSITION_EDIT = "https://apidev1.liepin.com/e/job/updateEJob.json";
-    private static final String LP_USER_STOP_JOB = "https://apidev1.liepin.com/e/job/endEJob.json";
-    private static final String LP_USER_REPUB_JOB = "https://apidev1.liepin.com/e/job/rePublishEjob.json";
-    private static final String LP_USER_GETJOB = "https://apidev1.liepin.com/e/job/getEJobByUser.json";
-
 
     /**
      * 批量处理编辑职位操作
@@ -246,7 +240,8 @@ public class LiePinReceiverHandler {
                                     // 如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架
                                     downShelfOldSinglePosition(mappingDO, liePinToken);
 
-                                } else if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode)) {
+                                }
+                                if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode)) {
                                     // 如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布
                                     log.info("================如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布================");
                                     flag = false;
@@ -256,19 +251,23 @@ public class LiePinReceiverHandler {
                         }
                     } else {
                         //  title变化，将之前所有的下架获取所有的jobMappingIds，新的发布
+                        log.info("============itle变化，将之前所有的下架获取所有的jobMappingIds，新的发布===============");
                         downShelfOldPositions(liepinMappingDOList, liePinToken);
 
                         // 发布新title对应的职位
+                        log.info("===========发布新title对应的职位===========");
                         sendSyncPosition(positionId, thirdPartyPosition);
                     }
 
                 } else {
                     // 不存在映射记录，发布职位
+                    log.info("==========不存在映射记录，发布职位==========");
                     sendSyncPosition(positionId, thirdPartyPosition);
                 }
 
                 if (!flag) {
                     // 说明编辑职位中存在没有发布的城市，需要新发布职位
+                    log.info("==============说明编辑职位中存在没有发布的城市，需要新发布职位============");
                     sendSyncPosition(positionId, thirdPartyPosition);
                 }
 
@@ -314,6 +313,89 @@ public class LiePinReceiverHandler {
 
     }
 
+    @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_RESYNC, containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void handlerPositionLiepinReSyncOperation(Message message, Channel channel) {
+        String msgBody = "{}";
+        List<Integer> ids = null;
+        try {
+            msgBody = new String(message.getBody(), "UTF-8");
+
+            ids = requireValidMessage(msgBody);
+
+            if (ids == null || ids.size() == 0) {
+                return;
+            }
+
+            int positionId = ids.get(0);
+
+            // 获取hr账号在猎聘token
+            String liepinToken = getLiepinToken(positionId);
+
+            for (int id : ids) {
+                List<Integer> idsList = new ArrayList<>();
+                try {
+
+                    // 通过职位id获取职位所在城市list
+                    List<JobPositionCityDO> jobPositionCityList = jobPositionCityDao.getPositionCitysByPid(id);
+
+                    // 获取职位所在城市codeList
+                    List<Integer> rePublishCityCodes = jobPositionCityList.stream().map(jobPositionCityDO -> jobPositionCityDO.getCode()).collect(Collectors.toList());
+
+                    // 通过职位id和code获取JobPositionLiepinMapping表的信息，此表存的是仟寻请求猎聘生成的职位主键id等信息的映射
+                    List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByPidAndCode(id, rePublishCityCodes);
+
+                    if(liepinMappingDOList == null || liepinMappingDOList.size() < 1){
+                        log.info("===============未在猎聘发布过，不需要重新发布================");
+                        continue;
+                    }
+
+                    // 过滤重新发布城市中的state已经为1的城市
+                    liepinMappingDOList = filterUnneedRepublishCitys(liepinMappingDOList);
+
+                    if (liepinMappingDOList.size() > 0) {
+
+                        // 将需要重新发布的城市的主键id取出，用于向猎聘请求
+                        idsList = liepinMappingDOList.stream().map(liepinMappingDO -> liepinMappingDO.getId()).collect(Collectors.toList());
+
+                        List<String> requestIdsStr = liepinMappingDOList.stream().map(liepinMappingDO -> String.valueOf(liepinMappingDO.getId())).collect(Collectors.toList());
+
+                        List<Integer> idsListDb = liepinMappingDOList.stream().map(liepinMappingDO -> liepinMappingDO.getId()).collect(Collectors.toList());
+
+                        String requestIds = String.join(",", requestIdsStr);
+
+                        if (StringUtils.isNotBlank(requestIds)) {
+
+                            JSONObject liePinJsonObject = new JSONObject();
+
+                            liePinJsonObject.put("ejob_extRefids", requestIds);
+
+                            String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LiepinPositionOperateUrl.liepinPositionRepub);
+
+                            log.info("===================httpResultJson:{}=====================", httpResultJson);
+
+                            requireValidResult(httpResultJson);
+
+                            liepinMappingDao.updateState(idsListDb, (byte) 1);
+
+                        }
+                    }
+                } catch (BIZException e) {
+                    liepinMappingDao.updateErrMsgBatch(positionId, e.getMessage());
+                } catch (Exception e1) {
+                    EmailSendUtil.sendWarnEmail("下架猎聘职位失败：" + idsList.toString(), emailSubject);
+                    liepinMappingDao.updateErrMsgBatch(idsList, e1.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            EmailSendUtil.sendWarnEmail("调用api批量修改职位信息时发生错误，职位ids" + (ids == null ? msgBody : ids.toString()),
+                    emailSubject);
+            this.handleTemplateLogDeadLetter(message, msgBody, "职位操作通过api同步到猎聘失败");
+        }
+
+    }
+
     @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_DELETE, containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void handlerPositionLiepinDeleteOperation(Message message, Channel channel) {
@@ -347,13 +429,18 @@ public class LiePinReceiverHandler {
 
                     List<JobPositionLiepinMappingDO> liepinMappingDOS = liepinMappingDao.getValidMappingDataByPid(id, (byte) 1);
 
+                    if(liepinMappingDOS == null || liepinMappingDOS.size() < 1){
+                        log.info("==============该职位没有在猎聘发布过，不需要下架==============");
+                        continue;
+                    }
+
                     requestIds = liepinMappingDOS.stream().map(liepinMappingDO -> liepinMappingDO.getId()).collect(Collectors.toList());
 
                     List<String> requestIdsStr = liepinMappingDOS.stream().map(liepinMappingDO -> String.valueOf(liepinMappingDO.getId())).collect(Collectors.toList());
 
                     if (requestIds.size() < 1) {
                         log.info("==============没有需要下架的猎聘职位==============");
-                        return;
+                        continue;
                     }
 
                     // 构造请求数据
@@ -363,7 +450,7 @@ public class LiePinReceiverHandler {
 
                     liePinJsonObject.put("ejob_extRefids", requestStr);
 
-                    String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LP_USER_STOP_JOB);
+                    String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LiepinPositionOperateUrl.liepinPositionEnd);
 
                     log.info("===================httpResultJson:{}=====================", httpResultJson);
 
@@ -373,9 +460,10 @@ public class LiePinReceiverHandler {
 
                     liepinMappingDao.updateState(requestIds, (byte) 0);
                 } catch (BIZException e) {
+                    log.info("=============下架猎聘职位失败：requestIds:{},失败信息:msg:{}=================", requestIds.toString(), e.getMessage());
                     EmailSendUtil.sendWarnEmail("下架猎聘职位失败：" + requestIds.toString(), emailSubject);
                 } catch (Exception e1) {
-                    EmailSendUtil.sendWarnEmail("下架猎聘职位失败：" + requestIds.toString(), emailSubject);
+                    EmailSendUtil.sendWarnEmail("下架猎聘职位失败,职位id：" + positionId, emailSubject);
                     liepinMappingDao.updateErrMsgBatch(requestIds, e1.getMessage());
                 }
 
@@ -492,89 +580,17 @@ public class LiePinReceiverHandler {
             JSONObject liePinJsonObject = new JSONObject();
             liePinJsonObject.put("ejob_extRefids", id);
             liePinJsonObject.put("usere_id", liePinUserId);
-            return sendRequest2LiePin(liePinJsonObject, liePinToken, LP_USER_GETJOB);
+            return sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateUrl.liepinPositionGet);
         }
         return null;
     }
-
-    @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_RESYNC, containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
-    public void handlerPositionLiepinReSyncOperation(Message message, Channel channel) {
-        String msgBody = "{}";
-        List<Integer> ids = null;
-        try {
-            msgBody = new String(message.getBody(), "UTF-8");
-
-            ids = requireValidMessage(msgBody);
-
-            if (ids == null || ids.size() == 0) {
-                return;
-            }
-
-            int positionId = ids.get(0);
-
-            // 获取hr账号在猎聘token
-            String liepinToken = getLiepinToken(positionId);
-
-            for (int id : ids) {
-                List<Integer> idsList = new ArrayList<>();
-                try {
-
-                    // 通过职位id获取职位所在城市list
-                    List<JobPositionCityDO> jobPositionCityList = jobPositionCityDao.getPositionCitysByPid(id);
-
-                    // 获取职位所在城市codeList
-                    List<Integer> rePublishCityCodes = jobPositionCityList.stream().map(jobPositionCityDO -> jobPositionCityDO.getCode()).collect(Collectors.toList());
-
-                    // 通过职位id和code获取JobPositionLiepinMapping表的信息，此表存的是仟寻请求猎聘生成的职位主键id等信息的映射
-                    List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByPidAndCode(id, rePublishCityCodes);
-
-                    // 过滤重新发布城市中的state已经为1的城市
-                    liepinMappingDOList = filterUnneedRepublishCitys(liepinMappingDOList);
-
-                    if (liepinMappingDOList.size() > 0) {
-
-                        // 将需要重新发布的城市的主键id取出，用于向猎聘请求
-                        idsList = liepinMappingDOList.stream().map(liepinMappingDO -> liepinMappingDO.getId()).collect(Collectors.toList());
-
-                        List<String> requestIdsStr = liepinMappingDOList.stream().map(liepinMappingDO -> String.valueOf(liepinMappingDO.getId())).collect(Collectors.toList());
-
-                        List<Integer> idsListDb = liepinMappingDOList.stream().map(liepinMappingDO -> liepinMappingDO.getId()).collect(Collectors.toList());
-
-                        String requestIds = String.join(",", requestIdsStr);
-
-                        if (StringUtils.isNotBlank(requestIds)) {
-
-                            JSONObject liePinJsonObject = new JSONObject();
-
-                            liePinJsonObject.put("ejob_extRefids", requestIds);
-
-                            String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LP_USER_REPUB_JOB);
-
-                            log.info("===================httpResultJson:{}=====================", httpResultJson);
-
-                            requireValidResult(httpResultJson);
-
-                            liepinMappingDao.updateState(idsListDb, (byte) 1);
-
-                        }
-                    }
-                } catch (BIZException e) {
-                    liepinMappingDao.updateErrMsgBatch(positionId, e.getMessage());
-                } catch (Exception e1) {
-                    EmailSendUtil.sendWarnEmail("下架猎聘职位失败：" + idsList.toString(), emailSubject);
-                    liepinMappingDao.updateErrMsgBatch(idsList, e1.getMessage());
-                }
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            EmailSendUtil.sendWarnEmail("调用api批量修改职位信息时发生错误，职位ids" + (ids == null ? msgBody : ids.toString()),
-                    emailSubject);
-            this.handleTemplateLogDeadLetter(message, msgBody, "职位操作通过api同步到猎聘失败");
-        }
-
-    }
-
+    /**
+     * 过滤不需要重新发布的职位，通过发布状态是否为1来确定
+     * @param
+     * @author  cjm
+     * @date  2018/6/19
+     * @return
+     */
     private List<JobPositionLiepinMappingDO> filterUnneedRepublishCitys(List<JobPositionLiepinMappingDO> liepinMappingDOList) {
         List<JobPositionLiepinMappingDO> list = new ArrayList<>();
         for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
@@ -611,7 +627,7 @@ public class LiePinReceiverHandler {
         JSONObject liePinObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
         try {
 
-            String httpResultJson = sendRequest2LiePin(liePinObject, liePinToken, LP_POSITION_EDIT);
+            String httpResultJson = sendRequest2LiePin(liePinObject, liePinToken, LiepinPositionOperateUrl.liepinPositionEdit);
 
             log.info("============httpResultJson:{}===========", httpResultJson);
 
@@ -642,7 +658,7 @@ public class LiePinReceiverHandler {
 
         try {
 
-            String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LP_USER_REPUB_JOB);
+            String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LiepinPositionOperateUrl.liepinPositionRepub);
 
             requireValidResult(httpResultJson);
 
@@ -716,7 +732,9 @@ public class LiePinReceiverHandler {
                 log.info("==================title变化，将之前所有的下架获取所有的hashid，新的发布=====================");
 
                 // 下架
-                String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LP_USER_STOP_JOB);
+                String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LiepinPositionOperateUrl.liepinPositionEnd);
+
+                log.info("================httpResultJson:{}===============", httpResultJson);
 
                 requireValidResult(httpResultJson);
 
@@ -770,17 +788,7 @@ public class LiePinReceiverHandler {
 
         headers.put("token", liePinToken);
 
-        String httpResultJson = HttpClientUtil.sentHttpPostRequest(url, headers, liePinJsonObject);
-        ;
-
-//        try {
-//            httpResultJson = HttpClientUtil.sentHttpPostRequest(url, headers, liePinJsonObject);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            log.info("============职位同步时http请求异常============");
-//        }
-        return httpResultJson;
+        return HttpClientUtil.sentHttpPostRequest(url, headers, liePinJsonObject);
     }
 
     private List<String> removeDuplicateTitle(List<String> titleDbList) {

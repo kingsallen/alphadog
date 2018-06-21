@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position.liepin;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition;
@@ -53,17 +54,30 @@ public class LiepinSocialTransferTesst {
 
     @Test
     public void testSendSyncRequest() throws Exception {
-        Integer positionId = 19493756;
+        Integer positionId = 19492153;
         ThirdPartyPosition positionForm = new ThirdPartyPosition();
         //软件/互联网开发/系统集成
         List<String> list = new ArrayList<>();
-        list.add("020125");
-        positionForm.setOccupation(list);
+        list.add("030");
+        list.add("030070");
+        List<String> list1 = new ArrayList<>();
+        list1.add("050");
+        list1.add("050040");
+        List<String> list2 = new ArrayList<>();
+        list2.add("060");
+        list2.add("060070");
+        List<String> end = new ArrayList<>();
+        end.add(JSON.toJSONString(list));
+        end.add(JSON.toJSONString(list1));
+        end.add(JSON.toJSONString(list2));
+        System.out.println(end);
+        positionForm.setOccupation(end);
         positionForm.setSalaryDiscuss(true);
         positionForm.setSalaryBottom(4000);
         positionForm.setSalaryTop(12000);
         positionForm.setSalaryMonth(12);
         List<String> featureList = new ArrayList<>();
+        String features = "";
         featureList.add("五险一金");
         featureList.add("sadl;sdkas;kdk;addd;a");
         featureList.add("领导好");

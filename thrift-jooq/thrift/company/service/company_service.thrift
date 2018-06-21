@@ -57,6 +57,9 @@ service CompanyServices {
     common_struct.Response getCompanyFeatureIdList(1:list<i32> dataList) throws (1: common_struct.BIZException e)
     common_struct.Response getWechatBySignature(1:string signature, 2:i32 companyId) throws (1: common_struct.BIZException e)
     common_struct.Response updateHrCompanyConfStatus(1:i32 status, 2:i32 companyId) throws (1: common_struct.BIZException e)
+    common_struct.Response findSubAccountNum(1:i32 companyId) throws (1: common_struct.BIZException e)
+    common_struct.Response updateWechatThenm(1:i32 status, 2:i32 companyId) throws (1: common_struct.BIZException e)
+
 
 }
 
