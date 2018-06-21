@@ -209,7 +209,7 @@ public class LiePinReceiverHandler {
 //                hrThirdPartyPositionDao.updateBindState(positionId, 2, 0);
 //            }
 
-            if (noNeedEdit) {
+            if (!positionFlag && noNeedEdit) {
                 log.info("=============没有修改猎聘所需字段，无需发布修改============");
                 return;
             }
