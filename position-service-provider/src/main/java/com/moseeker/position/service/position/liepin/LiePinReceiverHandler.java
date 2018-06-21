@@ -204,12 +204,13 @@ public class LiePinReceiverHandler {
                 hrThirdPartyPositionDao.updateBindState(positionId, 2, 1);
             }
 
-            // 如果修改了city，将同步状态修改为未同步
-            if(cityChangeFlag){
-                hrThirdPartyPositionDao.updateBindState(positionId, 2, 0);
-            }
+//            // 如果修改了city，将同步状态修改为未同步
+//            if(cityChangeFlag){
+//                hrThirdPartyPositionDao.updateBindState(positionId, 2, 0);
+//            }
 
             if (noNeedEdit) {
+                log.info("=============没有修改猎聘所需字段，无需发布修改============");
                 return;
             }
 
@@ -276,17 +277,19 @@ public class LiePinReceiverHandler {
                         log.info("==============当前citycode:{},当前数据库mapping citycode:{}=================", cityCode, mappingDO.getCityCode());
                         // 存在城市，并且状态正常
                         if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1 && title.equals(mappingDO.getJobTitle())) {
-                            log.info("===============存在城市，并且状态正常，修改================");
+
                             if(!cityChangeFlag){
+                                log.info("===============存在城市，并且状态正常，修改================");
                                 // 修改
                                 editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
                             }
                             break;
 
                         } else if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 0 && title.equals(mappingDO.getJobTitle())) {
-                            log.info("============存在城市，但是状态为下架，先上架，后修改============");
+
                             // 存在城市，但是状态为下架，先上架，后修改
                             if(!cityChangeFlag){
+                                log.info("============存在城市，但是状态为下架，先上架，后修改============");
                                 upShelfOldSinglePosition(mappingDO, liePinToken);
 
                                 // 修改

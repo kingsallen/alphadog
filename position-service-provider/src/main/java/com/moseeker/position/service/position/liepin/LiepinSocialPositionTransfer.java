@@ -399,7 +399,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                                 liePinPositionVO.setEjob_extRefid(mappingId);
                                 liePinPositionVO.setEjob_dq(liepinCityCode);
                                 String editResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(liePinPositionVO), liePinToken, LiepinPositionOperateUrl.liepinPositionEdit);
-                                logger.info("==================editResponse==================", editResponse);
+                                logger.info("==================editResponse:{}==================", editResponse);
 
                                 receiverHandler.requireValidResult(editResponse);
                             } catch (BIZException e) {
@@ -420,7 +420,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                             + republishIds.toString(), "猎聘同步职位失败");
                 }
 
-                logger.info("============cityNum:{},successSyncNum:{}==============", cityNum, successSyncNum);
+                logger.info("============cityNum:{},successSyncNum:{},editNum:{}==============", cityNum, successSyncNum, editNum);
                 if (successSyncNum + successRePublishNum + editNum == cityNum) {
                     hrThirdPartyPositionDO.setIsSynchronization(1);
                     hrThirdPartyPositionDO.setSyncTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
