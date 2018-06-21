@@ -249,9 +249,10 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 int editNum = 0;
                 Integer positionId = liePinPositionVO.getPositionId();
                 List<String> cityCodesList = Arrays.asList(cityCodesArr);
+                List<Integer> cityCodesIntList = cityCodesList.stream().map(cityCode -> Integer.parseInt(cityCode)).collect(Collectors.toList());
 
                 // 根据职位名称查出所有职位jobpostionmapping表数据
-                List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByTitleAndUserId(liePinPositionVO.getEjob_title(), liePinUserId);
+                List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByTitleAndUserId(liePinPositionVO.getEjob_title(), liePinUserId, cityCodesIntList);
 
                 List<String> cityCodesListDb = new ArrayList<>();
 

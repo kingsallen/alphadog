@@ -40,6 +40,7 @@ import com.rabbitmq.client.Channel;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.jooq.Result;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -247,7 +248,8 @@ public class LiePinReceiverHandler {
             // 如果数据库不存在编辑的职位，则发布新职位
 
             // 数据库中该仟寻职位id对应的城市codes list
-            List<String> mappingCityList = liepinMappingDOList.stream().filter(mappingDo -> mappingDo.getState() == 1).map(mappingDo -> String.valueOf(mappingDo.getCityCode())).collect(Collectors.toList());
+            List<String> mappingCityList = liepinMappingDOList.stream().filter(mappingDo -> mappingDo.getState() == 1)
+                    .map(mappingDo -> String.valueOf(mappingDo.getCityCode())).distinct().collect(Collectors.toList());
             log.info("===============数据库中该仟寻职位id对应的城市cityDbList:{}====================", mappingCityList);
 
             // 数据库中该仟寻职位id对应的titlelist
@@ -385,19 +387,35 @@ public class LiePinReceiverHandler {
         }
     }
 
+
+    @Test
+    public void test(){
+        List<String> newCityList = new ArrayList<>();
+        List<String> mappingCityList = new ArrayList<>();
+
+        newCityList.add("230100");
+        newCityList.add("370100");
+
+        mappingCityList.add("370100");
+        mappingCityList.add("370100");
+        mappingCityList.add("370100");
+
+        System.out.println(compareCity(newCityList, mappingCityList));
+    }
+
     private boolean compareCity(List<String> newCityList, List<String> mappingCityList) {
         if(newCityList == null || mappingCityList == null){
             return false;
         }
         if(newCityList.size() != mappingCityList.size()){
-            return false;
+            return true;
         }
         for(String mappingCity : mappingCityList){
             if(!newCityList.contains(mappingCity)){
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private boolean getPositionFlag(String msgBody) {

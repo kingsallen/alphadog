@@ -41,10 +41,11 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
     }
 
 
-    public List<JobPositionLiepinMappingDO> getMappingDataByTitleAndUserId(String jobTitle, Integer liepinUserId) {
+    public List<JobPositionLiepinMappingDO> getMappingDataByTitleAndUserId(String jobTitle, Integer liepinUserId, List<Integer> cityCodesIntList) {
         Query query = new Query.QueryBuilder()
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_TITLE.getName(), jobTitle)
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), liepinUserId)
+                .and(new com.moseeker.common.util.query.Condition(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.getName(), cityCodesIntList, ValueOp.IN))
                 .buildQuery();
         return getDatas(query);
     }
