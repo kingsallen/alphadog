@@ -319,9 +319,10 @@ public class HRThirdPartyPositionDao  {
      * @date  2018/6/4
      * @return
      */
-    public HrThirdPartyPositionDO getThirdPartyPositionById(int positionId, int positionChannel) {
+    public HrThirdPartyPositionDO getThirdPartyPositionById(int positionId, int positionChannel, int accountId) {
         Query query = new Query.QueryBuilder().where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(), positionId)
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), positionChannel)
+                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                 .buildQuery();
         return getSimpleData(query);
     }
@@ -333,14 +334,16 @@ public class HRThirdPartyPositionDao  {
      * @date  2018/6/11
      * @return
      */
-    public void updateBindState(int positionId, int channel, int state) {
+    public void updateBindState(int positionId, int accountId, int channel, int state) {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
                 .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
+                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
         thirdPartyPositionDao.update(update.buildUpdate());
     }
+
     public void updateBindState(List<Integer> pids, int channel, int state) {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
