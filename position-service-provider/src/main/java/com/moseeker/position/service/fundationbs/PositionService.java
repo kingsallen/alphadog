@@ -669,6 +669,8 @@ public class PositionService {
         Map<String, HrCompanyFeature> featureMap = positionATSService.getCompanyFeatureGroupByName(companyId);
         List<JobPositionRecord> dbOnlineList = getDBOnlineList(dbListMap);
 
+        List<Integer> batchLiepinPositionDownShelf = new ArrayList<>();
+
         // 需要更新ES的jobpostionID
         List<Integer> jobPositionIds = new ArrayList<>();
         Integer deleteCounts = 0;
@@ -704,6 +706,10 @@ public class PositionService {
                         if (jobPositionRecord.getSourceId() == sourceId) {
                             jobPositionRecord.setStatus((byte) PositionStatus.BANNED.getValue());
                             jobPositionIds.add(jobPositionRecord.getId());
+                            // todo 猎聘api新增
+                            if(jobPositionRecord.getCandidateSource() == 0){
+                                batchLiepinPositionDownShelf.add(jobPositionRecord.getId());
+                            }
                         }
                     }
                 }
@@ -717,7 +723,7 @@ public class PositionService {
                 jobPositionDao.updateRecords(dbOnlineList);
 
                 // 猎聘api对接下架职位 todo 这行代码是新增
-                pool.startTast(() -> receiverHandler.batchHandlerLiepinDownShelfOperation(jobPositionIds));
+                pool.startTast(() -> receiverHandler.batchHandlerLiepinDownShelfOperation(batchLiepinPositionDownShelf));
             }
         }
         // 判断哪些数据不需要更新的

@@ -243,6 +243,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 int cityNum = cityCodesArr.length;
                 int successSyncNum = 0;
                 int successRePublishNum = 0;
+                int editNum = 0;
                 Integer positionId = liePinPositionVO.getPositionId();
                 List<String> cityCodesList = Arrays.asList(cityCodesArr);
 
@@ -251,18 +252,22 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
                 List<String> cityCodesListDb = new ArrayList<>();
 
-                Map<String, Object> cityIdCodeMap = new HashMap<>();
+                Map<String, Object> repubCityIdCodeMap = new HashMap<>();
+                Map<String, Object> editCityIdCodeMap = new HashMap<>();
 
                 // 数据库中状态不为1的城市
                 List<String> republishCity = new ArrayList<>();
+                List<String> editCity = new ArrayList<>();
                 for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
                     // 该title下的职位处于下架、删除状态，用于重新发布到猎聘
                     if (mappingDO.getState() != 1) {
                         republishCity.add(String.valueOf(mappingDO.getCityCode()));
-                        cityIdCodeMap.put(String.valueOf(mappingDO.getCityCode()), mappingDO.getId());
+                        repubCityIdCodeMap.put(String.valueOf(mappingDO.getCityCode()), mappingDO.getId());
                     } else if (mappingDO.getState() == 1 && cityCodesList.contains(String.valueOf(mappingDO.getCityCode()))) {
-                        // 如果本次发布中的城市之前已经发布过，将城市数量减一
-                        cityNum--;
+                        // 如果本次发布中的城市之前已经发布过，将发布城市数量减一
+                        editCity.add(String.valueOf(mappingDO.getCityCode()));
+                        editCityIdCodeMap.put(String.valueOf(mappingDO.getCityCode()), mappingDO.getId());
+//                        cityNum--;
                     }
                     cityCodesListDb.add(String.valueOf(mappingDO.getCityCode()));
                 }
@@ -276,20 +281,13 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                         if (cityCodesListDb.contains(cityCode)) {
                             // 状态不为1的城市中如果包括本次发布城市
                             if (republishCity.contains(cityCode)) {
-                                republishIds.append(cityIdCodeMap.get(cityCode)).append(",");
+                                republishIds.append(repubCityIdCodeMap.get(cityCode)).append(",");
                             }
                             continue;
                         }
                     }
 
-                    DictCityLiePinDO dictCityLiePinDO = getValidLiepinDictCode(cityCode);
-
-                    String liepinCityCode = "";
-                    if (dictCityLiePinDO != null) {
-                        liepinCityCode = dictCityLiePinDO.getCode();
-                    } else {
-                        throw ExceptionUtils.getBizException("错误的仟寻citycode，查不到该code的所有城市level");
-                    }
+                    String liepinCityCode = getValidLiepinDictCode(cityCode);
 
                     // 生成职位发布到猎聘时需要的id 先查一遍是否有重复数据，如果没有，插入一条mapping数据
 //                    JobPositionLiepinMappingDO jobPositionLiepinMappingDO = liepinMappingDao.getDataByPidAndCityCode(positionId, cityCode);
@@ -357,7 +355,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                         logger.info("===============猎聘鉴权失败/token失效/http请求为空==================");
                         EmailSendUtil.sendWarnEmail("猎聘鉴权失败/token失效/http请求为空：jobPositionId:"
                                 + positionId, "猎聘同步职位失败");
-                        return;
                     } else {
                         // 更改数据库mapping的状态
                         liepinMappingDao.updateJobInfoById(id, StringUtils.isNullOrEmpty(thirdPositionId) ? null : Integer.parseInt(thirdPositionId), state, errorMsg);
@@ -392,6 +389,30 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
                         successRePublishNum = republishIdList.size();
                     }
+                    // 编辑修改职位
+                    if (editCity.size() > 0) {
+
+                        for (String citycode : editCity) {
+                            String mappingId = String.valueOf(editCityIdCodeMap.get(citycode));
+                            try {
+                                String liepinCityCode = getValidLiepinDictCode(citycode);
+                                liePinPositionVO.setEjob_extRefid(mappingId);
+                                liePinPositionVO.setEjob_dq(liepinCityCode);
+                                String editResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(liePinPositionVO), liePinToken, LiepinPositionOperateUrl.liepinPositionEdit);
+                                logger.info("==================editResponse==================", editResponse);
+
+                                receiverHandler.requireValidResult(editResponse);
+                            } catch (BIZException e) {
+                                e.printStackTrace();
+                                logger.info("============同步已存在的城市，修改该城市的职位信息时未操作成功，message:{}===========", e.getMessage());
+                                EmailSendUtil.sendWarnEmail("同步已存在的城市，修改该城市的职位信息时未操作成功：mappingId:"
+                                        + mappingId, "猎聘同步职位失败");
+                            }
+                        }
+                        editNum = editCity.size();
+
+                    }
+
                 } catch (Exception e) {
                     logger.info("=================发布职位时，向猎聘发送重新上架失败:message{}================", e.getMessage());
                     errorMsg = e.getMessage();
@@ -400,7 +421,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 }
 
                 logger.info("============cityNum:{},successSyncNum:{}==============", cityNum, successSyncNum);
-                if (successSyncNum + successRePublishNum == cityNum) {
+                if (successSyncNum + successRePublishNum + editNum == cityNum) {
                     hrThirdPartyPositionDO.setIsSynchronization(1);
                     hrThirdPartyPositionDO.setSyncTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
                 } else {
@@ -425,7 +446,15 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     }
 
-    public DictCityLiePinDO getValidLiepinDictCode(String cityCode) throws BIZException {
+    /**
+     * 通过仟寻citycode获取猎聘citycode
+     *
+     * @param
+     * @return
+     * @author cjm
+     * @date 2018/6/21
+     */
+    public String getValidLiepinDictCode(String cityCode) throws BIZException {
         DictCityLiePinDO dictCityLiePinDO = dictCityLiePinDao.getLiepinDictCodeByCode(cityCode);
 
         if (dictCityLiePinDO == null) {
@@ -442,7 +471,14 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_CITYCODE_INVALID);
             }
         }
-        return dictCityLiePinDO;
+
+        if (dictCityLiePinDO != null) {
+
+            return dictCityLiePinDO.getCode();
+
+        } else {
+            throw ExceptionUtils.getBizException("错误的仟寻citycode，查不到该code的所有城市level");
+        }
     }
 
 
@@ -505,10 +541,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     logger.info("============单个职能数组长度小于2==============");
                     continue;
                 }
-
-                code = moseekerCodeList.get(1).trim();
-
-
+                code = moseekerCodeList.get(moseekerCodeList.size() - 1).trim();
             }
 
             if (allSocialCode.contains(code) && index < 3) {
