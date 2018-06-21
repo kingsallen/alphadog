@@ -327,11 +327,14 @@ public class PositionService {
             sb.deleteCharAt(sb.length() - 1);
             jobPositionPojo.province = sb.toString();
         }
-        String citynames = commonPositionUtils.handlerCity(positionId);
+        List<DictCityDO> dictList= commonPositionUtils.handlerCity(positionId);
+        String citynames=commonPositionUtils.getPositionCityName(dictList);
+        String cityEnames=commonPositionUtils.getPositionCityEname(dictList);
         logger.info("job_position_city的city信息是＝＝＝＝＝＝＝＝＝＝＝＝＝" + citynames);
         if (StringUtils.isNotNullOrEmpty(citynames)) {
             jobPositionPojo.city = citynames;
         }
+        jobPositionPojo.city_ename=cityEnames;
         if ("全国".equals(jobPositionPojo.city)) {
             jobPositionPojo.city_flag = 1;
         }
