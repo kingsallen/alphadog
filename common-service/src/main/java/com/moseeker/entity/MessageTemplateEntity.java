@@ -105,6 +105,7 @@ public class MessageTemplateEntity {
             int recomId=this.addCampaignRecomPositionlist(params.getCompanyId(),params.getPositionIds());
             url=url.replace("{recomPushId}",recomId+"").replace("recom_code",MDString);
         }
+        url = url+"&from_template_message="+params.getTemplateId();
         Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getType(),params.getCompanyId(),DO.getId());
         if(colMap==null||colMap.isEmpty()){
             return null;
@@ -113,6 +114,7 @@ public class MessageTemplateEntity {
         this.handlerRecomLog(params,MDString);
         return messageTemplateNoticeStruct;
     }
+
     /*
       添加日志
      */

@@ -40,7 +40,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
         this.remark = "点击查看求职进度详情";
         this.result = "您好，您的简历已被查阅";
         this.statusDesc = "已查阅简历";
-        this.url = "{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}";
+        this.url = "{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message={3}";
         this.color = "#173177";
 
         this.positionName = positionName;
@@ -86,7 +86,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
                 url,
                 ConfigPropertiesUtil.getInstance().get("platform.url",
                         String.class), signature,
-                String.valueOf(applicationId)));
+                String.valueOf(applicationId), String.valueOf(configId)));
 
     }
 
