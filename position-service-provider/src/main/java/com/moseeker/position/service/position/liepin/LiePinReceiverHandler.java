@@ -195,11 +195,12 @@ public class LiePinReceiverHandler {
             // 是否需要编辑，返回true，两个职位相同，不需要edit
             boolean noNeedEdit = compareJobPosition(jobPositionDO, updateJobPosition);
 
-            // city改变标志 true是city发生改变，false是未发生改变
+            // city改变标志 true是city发生改变，false是未发生改变   todo job_position_city
             boolean cityChangeFlag = !jobPositionDO.getCity().equals(updateJobPosition.getCity());
 
             // 如果positionFlag是true，说明das操作修改时是下架状态，所以将数据库同步状态设置为1
             if(!cityChangeFlag && positionFlag){
+                // todo 通过thridaccountid
                 hrThirdPartyPositionDao.updateBindState(positionId, 2, 1);
             }
 
@@ -213,7 +214,7 @@ public class LiePinReceiverHandler {
                 return;
             }
 
-            // 获取在仟寻填写的猎聘职位信息
+            // 获取在仟寻填写的猎聘职位信息// todo 通过thridaccountid
             HrThirdPartyPositionDO hrThirdPartyPositionDO = hrThirdPartyPositionDao.getThirdPartyPositionById(positionId, positionChannel);
 
             if (hrThirdPartyPositionDO == null) {
@@ -235,7 +236,7 @@ public class LiePinReceiverHandler {
             // 将数据组装为向猎聘请求的格式，此数据也是用户编辑后的数据
             LiePinPositionVO liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(thirdPartyPosition, updateJobPosition, null);
             log.info("================liePinPositionVO:{}=============", liePinPositionVO);
-            // 用于查询所修改的职位之前是否发布过
+            // 用于查询所修改的职位之前是否发布过 // todo city库中
             List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByPid(positionId);
 
             if (null == liepinMappingDOList || liepinMappingDOList.size() < 1) {
@@ -267,65 +268,97 @@ public class LiePinReceiverHandler {
 
             String title = updateJobPosition.getTitle();
 
-            // 先判断title是否存在，不存在的话发布新职位
-            if (titleDbList.contains(title)) {
-                log.info("=================title存在=====================");
-                for (String cityCode : cityCodesList) {
-
-                    for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
-                        log.info("==============当前citycode:{},当前数据库mapping citycode:{}=================", cityCode, mappingDO.getCityCode());
-                        // 存在城市，并且状态正常
-                        if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1 && title.equals(mappingDO.getJobTitle())) {
-
-                            if(!cityChangeFlag){
-                                log.info("===============存在城市，并且状态正常，修改================");
-                                // 修改
-                                editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
-                            }
-                            break;
-
-                        } else if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 0 && title.equals(mappingDO.getJobTitle())) {
-
-                            // 存在城市，但是状态为下架，先上架，后修改
-                            if(!cityChangeFlag){
-                                log.info("============存在城市，但是状态为下架，先上架，后修改============");
-                                upShelfOldSinglePosition(mappingDO, liePinToken);
-
-                                // 修改
-                                editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
-                            }
-
-                            break;
-
-                        } else if (cityCodesList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1 && !title.equals(mappingDO.getJobTitle())) {
-                            log.info("============如果编辑的城市中存在数据库中的该城市，但是title不相同，并且该城市之前出于上架状态，则将其下架============");
-                            // 如果编辑的城市中存在数据库中的该城市，但是title不相同，并且该城市之前出于上架状态，则将其下架
-                            downShelfOldSinglePosition(mappingDO, liePinToken);
-
-                        } else if (!cityCodesList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1) {
-                            log.info("============如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架============");
-                            // 如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架
-                            downShelfOldSinglePosition(mappingDO, liePinToken);
-
+            // 先判断title是否存在，不存在的话发布新职位 todo 基于前一个职位
+            // 如果title没变
+            if(jobPositionDO.getTitle().equals(updateJobPosition.getTitle())){
+                // 如果城市没变
+                if(!cityChangeFlag){
+                    for(JobPositionLiepinMappingDO mappingDO : liepinMappingDOList){
+                        // 修改
+                        if(mappingDO.getState() == 1){
+                            editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
                         }
 
-//                        if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode) && title.equals(mappingDO.getJobTitle())) {
-//                            // 如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布
-//                            log.info("================如果该职位数据库的发布城市中没有编辑职位中的当前城市，判定为新城市，需要发布================");
-//                            flag = false;
-//                        }
                     }
+                }else {
+                    // 数据库中存在，但是本次编辑中没有的城市，执行下架
+                    for(JobPositionLiepinMappingDO mappingDO : liepinMappingDOList){
 
+                        if(!cityCodesList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1){
+                            log.info("============本次下架mappingdo:{}===========", mappingDO);
+                            // 如果编辑的城市中存在数据库中的该城市，但是title不相同，并且该城市之前出于上架状态，则将其下架
+                            downShelfOldSinglePosition(mappingDO, liePinToken);
+                        }
+
+                    }
                 }
-            } else {
+
+            }else{
                 //  title变化，将之前所有的下架获取所有的jobMappingIds，新的发布
                 log.info("============title变化，将之前所有的下架获取所有的jobMappingIds，新的发布===============");
                 downShelfOldPositions(liepinMappingDOList, liePinToken);
-
-                // 发布新title对应的职位 todo 不发送同步请求
-//                log.info("===========发布新title对应的职位===========");
-//                sendSyncPosition(positionId, thirdPartyPosition);
             }
+
+//
+//
+//            if (titleDbList.contains(title)) {
+//                log.info("=================title存在=====================");
+//                for (String cityCode : cityCodesList) {
+//
+//                    for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
+//                        log.info("==============当前citycode:{},当前数据库mapping citycode:{}=================", cityCode, mappingDO.getCityCode());
+//                        // 存在城市，并且状态正常
+//                        if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1 && title.equals(mappingDO.getJobTitle())) {
+//
+//                            if(!cityChangeFlag){
+//                                log.info("===============存在城市，并且状态正常，修改================");
+//                                // 修改
+//                                editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
+//                            }
+//                            break;
+//
+//                        } else if (cityCode.equals(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 0 && title.equals(mappingDO.getJobTitle())) {
+//
+//                            // 存在城市，但是状态为下架，先上架，后修改
+//                            if(!cityChangeFlag){
+//                                log.info("============存在城市，但是状态为下架，先上架，后修改============");
+//                                upShelfOldSinglePosition(mappingDO, liePinToken);
+//
+//                                // 修改
+//                                editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
+//                            }
+//
+//                            break;
+//
+//                        } else if (cityCodesList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1 && !title.equals(mappingDO.getJobTitle())) {
+//                            log.info("============如果编辑的城市中存在数据库中的该城市，但是title不相同，并且该城市之前出于上架状态，则将其下架============");
+//                            // 如果编辑的城市中存在数据库中的该城市，但是title不相同，并且该城市之前出于上架状态，则将其下架
+//                            downShelfOldSinglePosition(mappingDO, liePinToken);
+//
+//                        } else if (!cityCodesList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1) {
+//                            log.info("============如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架============");
+//                            // 如果编辑的城市中没有数据库中的该城市，并且该城市之前出于上架状态，则将其下架
+//                            downShelfOldSinglePosition(mappingDO, liePinToken);
+//
+//                        }
+//
+////                        if (!cityDbList.isEmpty() && !cityDbList.contains(cityCode) && title.equals(mappingDO.getJobTitle())) {
+////                            // 如果该职位数据库的发布城市中没有编辑职位中的第i个城市，判定为新城市，需要发布
+////                            log.info("================如果该职位数据库的发布城市中没有编辑职位中的当前城市，判定为新城市，需要发布================");
+////                            flag = false;
+////                        }
+//                    }
+//
+//                }
+//            } else {
+//                //  title变化，将之前所有的下架获取所有的jobMappingIds，新的发布
+//                log.info("============title变化，将之前所有的下架获取所有的jobMappingIds，新的发布===============");
+//                downShelfOldPositions(liepinMappingDOList, liePinToken);
+//
+//                // 发布新title对应的职位 todo 不发送同步请求
+////                log.info("===========发布新title对应的职位===========");
+////                sendSyncPosition(positionId, thirdPartyPosition);
+//            }
 
 
 //            else {
