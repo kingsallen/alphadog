@@ -11,6 +11,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.StructSerializer;
+import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +28,13 @@ public class PositionEmailNotification {
 
     static List<String> devMails = new ArrayList<>();
 
+    static List<String> liepinDevmails = new ArrayList<>();
+
     static String br = "<br/>";
 
     static {
         devMails = getEmails("position_sync.email.dev");
+        liepinDevmails = getEmails("position_liepin_operation.email");
     }
 
     private static String getConfigString(String key) {
@@ -351,4 +355,61 @@ public class PositionEmailNotification {
     }
 
 
+    /**
+     * 发送猎聘同步失败邮件
+     * @param
+     * @author  cjm
+     * @date  2018/6/22
+     * @return
+     */
+    public void sendSyncLiepinFailEmail(LiePinPositionVO liePinPositionVO, Exception syncException, String ext){
+            List<String> mails = liepinDevmails;
+            if (mails == null || mails.size() == 0) {
+                logger.warn("没有配置同步邮箱地址!");
+                return;
+            }
+
+            try {
+
+                Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
+
+                StringBuilder titleBuilder = new StringBuilder();
+                titleBuilder.append("【职位同步失败】");
+
+                StringBuilder messageBuilder = new StringBuilder();
+                if(liePinPositionVO!=null) {
+                    messageBuilder.append("【传送的json】：").append(JSON.toJSONString(liePinPositionVO)).append(br);
+                }
+
+                if(syncException != null){
+                    messageBuilder.append("【失败信息】:").append(getExceptionAllinformation(syncException)).append(br);
+                }
+
+                if(StringUtils.isNotNullOrEmpty(ext)){
+                    messageBuilder.append("【其他信息】:").append(ext);
+                }
+
+                emailBuilder.setSubject(titleBuilder.toString());
+                emailBuilder.setContent(messageBuilder.toString());
+                if (mails.size() > 1) {
+                    emailBuilder.addCCList(mails.subList(1, mails.size()));
+                }
+                Email email = emailBuilder.build();
+                email.send(3, new Email.EmailListener() {
+                    @Override
+                    public void success() {
+                        logger.info("email send messageDelivered");
+                    }
+
+                    @Override
+                    public void failed(Exception e) {
+                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+                    }
+                });
+            } catch (Exception e) {
+                logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+                e.printStackTrace();
+                logger.error(e.getMessage(), e);
+            }
+    }
 }
