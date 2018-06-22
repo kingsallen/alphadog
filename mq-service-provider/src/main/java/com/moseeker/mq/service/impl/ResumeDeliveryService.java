@@ -328,6 +328,7 @@ public class ResumeDeliveryService {
                     .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.DISABLE.getName(),"0").buildQuery());
             if( qx_userWxDO != null) {
                 String link = handlerLink("applier").replace("{}", application_id + "");
+                link = link+"?wechat_signature="+ qxChatDO.getSignature();
                 response = msgHttp.handleApplierTemplate(positionDO, companyDO, qxChatDO, qx_userWxDO.getOpenid(), url, link, templateMessageDOQX);
             }
         }
