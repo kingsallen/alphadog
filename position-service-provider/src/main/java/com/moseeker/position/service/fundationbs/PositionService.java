@@ -731,7 +731,10 @@ public class PositionService {
 
                 // 猎聘api对接下架职位 todo 这行代码是新增
                 logger.info("==================batchLiepinPositionDownShelf:{}=================", batchLiepinPositionDownShelf);
-                pool.startTast(() -> receiverHandler.batchHandlerLiepinDownShelfOperation(batchLiepinPositionDownShelf));
+                pool.startTast(() -> {
+                    batchHandlerCountDown.await();
+                    return receiverHandler.batchHandlerLiepinDownShelfOperation(batchLiepinPositionDownShelf);
+                });
             }
         }
         // 判断哪些数据不需要更新的
@@ -1240,9 +1243,13 @@ public class PositionService {
 
             // todo 删除时同时向猎聘下架职位
             // 猎聘api对接下架职位 todo 这行代码是新增
-//            List<Integer> jobPositionIds = new ArrayList<>();
-//            jobPositionIds.add(id);
-//            pool.startTast(() -> receiverHandler.batchHandlerLiepinDownShelfOperation(jobPositionIds));
+            List<Integer> jobPositionIds = new ArrayList<>();
+            jobPositionIds.add(id);
+            logger.info("===============jobPositionIds:{}==================", jobPositionIds);
+            pool.startTast(() -> {
+                batchHandlerCountDown.await();
+                return receiverHandler.batchHandlerLiepinDownShelfOperation(jobPositionIds);
+            });
 
             return ResponseUtils.success(0);
         } else {
