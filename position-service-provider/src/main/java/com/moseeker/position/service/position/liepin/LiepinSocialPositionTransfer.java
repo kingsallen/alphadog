@@ -701,12 +701,13 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         if (StringUtils.isNullOrEmpty(str)) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
-        return str.replaceAll("[\\u25b3\\u25bd\\u25cb\\u25c7\\u25a1\\u2606\\u25b7\\u25c1\\u2664" +
-                "\\u2661\\u2662\\u2667\\u2663\\u2666\\u2665\\u2660\\u25c0\\u25b6\\u2605\\u25a0\\u25c6" +
-                "\\u25cf\\u25bc\\u25b2\\u263c\\u263d\\u2640\\u263a\\u25d0\\u2611\\u221a\\u2714\\u261c" +
-                "\\u261d\\u261e\\u33c2\\u33d8\\u261b\\u261f\\u261a\\u2718\\u0026\\u0023\\u0032\\u0031" +
-                "\\u0035\\u003b\\u2612\\u25d1\\u2639\\u2642\\u263e\\u2600\\u25aa\\u2022\\u2025\\u2026" +
-                "\\u2581\\u2582\\u2583\\u2584\\u2585\\u2586\\u2587\\u2588\\u2589\\u258a\\u258b\\u258c" +
-                "\\u258d\\u258e\\u258f\\u2593\\u2592\\u2591\\u203b\\u2237]", "");
+        return str;
+//        return str.replaceAll("[\\u25b3\\u25bd\\u25cb\\u25c7\\u25a1\\u2606\\u25b7\\u25c1\\u2664" +
+//                "\\u2661\\u2662\\u2667\\u2663\\u2666\\u2665\\u2660\\u25c0\\u25b6\\u2605\\u25a0\\u25c6" +
+//                "\\u25cf\\u25bc\\u25b2\\u263c\\u263d\\u2640\\u263a\\u25d0\\u2611\\u221a\\u2714\\u261c" +
+//                "\\u261d\\u261e\\u33c2\\u33d8\\u261b\\u261f\\u261a\\u2718\\u0026\\u0023\\u0032\\u0031" +
+//                "\\u0035\\u003b\\u2612\\u25d1\\u2639\\u2642\\u263e\\u2600\\u25aa\\u2022\\u2025\\u2026" +
+//                "\\u2581\\u2582\\u2583\\u2584\\u2585\\u2586\\u2587\\u2588\\u2589\\u258a\\u258b\\u258c" +
+//                "\\u258d\\u258e\\u258f\\u2593\\u2592\\u2591\\u203b\\u2237]", "");
     }
 }
