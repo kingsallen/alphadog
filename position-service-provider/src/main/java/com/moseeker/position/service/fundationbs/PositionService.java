@@ -636,6 +636,7 @@ public class PositionService {
      * @return
      * @throws BIZException
      */
+
     public JobPostionResponse batchHandlerJobPostionAdapter(BatchHandlerJobPostion batchHandlerJobPosition) throws TException {
         JobPostionResponse response = batchHandlerJobPostion(batchHandlerJobPosition);
         batchHandlerCountDown.countDown();
@@ -1205,11 +1206,17 @@ public class PositionService {
         form.setChannels(channels);
         syncData.add(form);
     }
-
+    private CountDownLatch batchDeleteHandlerCountDown = new CountDownLatch(1);
     /**
      * 删除职位
      */
     public Response deleteJobposition(Integer id, Integer companyId, String jobnumber, Integer sourceId) {
+        Response response = deleteJobPositionAdaptor(id, companyId, jobnumber, sourceId);
+        batchDeleteHandlerCountDown.countDown();
+        return response;
+    }
+
+    public Response deleteJobPositionAdaptor(Integer id, Integer companyId, String jobnumber, Integer sourceId){
         JobPositionRecord jobPositionRecord = null;
         if (id != null && id.intValue() != 0) {
             Query queryUtil = new Query.QueryBuilder().where("id", id).buildQuery();
@@ -1244,7 +1251,7 @@ public class PositionService {
             jobPositionIds.add(id);
             logger.info("===============jobPositionIds:{}==================", jobPositionIds);
             pool.startTast(() -> {
-                batchHandlerCountDown.await();
+                batchDeleteHandlerCountDown.await();
                 return receiverHandler.batchHandlerLiepinDownShelfOperation(jobPositionIds);
             });
 
@@ -1253,7 +1260,6 @@ public class PositionService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
         }
     }
-
 
     /**
      * 对JobPositionRecord 进行除了nohash字段之外的值进行MD5进行计算
