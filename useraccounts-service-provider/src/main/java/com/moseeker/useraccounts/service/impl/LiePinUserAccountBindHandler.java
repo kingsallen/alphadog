@@ -88,6 +88,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
             hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
             hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_TIMEOUT_MSG);
         }
+        logger.info("==================hrThirdPartyAccount:{}==================", hrThirdPartyAccount);
         return hrThirdPartyAccount;
     }
 

@@ -12,6 +12,8 @@ import com.moseeker.useraccounts.service.thirdpartyaccount.EmailNotification;
 import com.moseeker.useraccounts.utils.AESUtils;
 import com.rabbitmq.client.AMQP;
 import com.taobao.api.domain.BizResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,6 +34,8 @@ import java.util.List;
 @Component
 @EnableScheduling
 public class RefreshLiepinTokenSchedule {
+
+    static Logger logger = LoggerFactory.getLogger(RefreshLiepinTokenSchedule.class);
 
     @Autowired
     private HRThirdPartyAccountDao thirdPartyAccountDao;
@@ -68,6 +72,7 @@ public class RefreshLiepinTokenSchedule {
             for(HrThirdPartyAccountDO accountDO : accountDOS){
                 try{
                     accountDO = bindHandler.bind(accountDO, null);
+                    logger.info("========userId:{}, token:{}==============", accountDO.getExt(), accountDO.getExt2());
                     successRequest.add(accountDO);
                 }catch (BIZException e){
                     e.printStackTrace();
@@ -77,6 +82,7 @@ public class RefreshLiepinTokenSchedule {
 
             if(successRequest.size() > 0){
                 for(HrThirdPartyAccountDO accountDO : successRequest){
+
                     int row = thirdPartyAccountDao.updateBindToken(accountDO.getExt2(), Integer.parseInt(accountDO.getExt()), accountDO.getId());
                     if(row < 1){
                         failUpdate.add(accountDO);

@@ -271,9 +271,12 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
             List<JobPositionLiepinMappingDO> allLiepinMappingDOList = liepinMappingDao.getMappingDataByTitleAndUserId(liePinPositionVO.getEjob_title(), liePinUserId, positionId);
 
+            List<String> downShelfCity = new ArrayList<>();
+            Map<String, Object> downShelfCityIdCodeMap = new HashMap<>();
+
 //            for(JobPositionLiepinMappingDO mappingDO : allLiepinMappingDOList){
-//                if(){
-//
+//                if(!newCityCodeList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1){
+//                    downShelfCity.add(mappingDO.getId());
 //                }
 //            }
 
@@ -411,7 +414,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                         }
                     }
                     editNum = editCity.size();
-
                 }
 
             } catch (Exception e) {
@@ -482,6 +484,42 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         }
         return 0;
     }
+
+    /**
+     * 发布职位时如果是已经存在的职位，但是状态为0，则执行先上架后修改
+     * @param
+     * @author  cjm
+     * @date  2018/6/22
+     * @return
+     */
+//    private int downShelfExistPosition(StringBuilder republishIds, String liePinToken, Integer positionId) throws Exception {
+//        // 更新上架后的状态
+//        if (republishIds.length() > 0) {
+//
+//            // 上架后返回此次上架职位的数量
+//            List<Integer> republishIdList = upshelfJobPosition(republishIds, liePinToken, positionId);
+//            logger.info("===========上架后返回此次上架职位的数量republishIdList:{}============", republishIdList);
+//            // 上架后向猎聘发送修改职位
+//            for (Integer republishId : republishIdList) {
+//                String editResponse = "";
+//                try {
+//                    logger.info("===========上架后向猎聘发送修改职位republishId:{}============", republishId);
+//                    JSONObject jsonObject = new JSONObject();
+//                    jsonObject.put();
+//                    editResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(liePinPositionVO), liePinToken, LiepinPositionOperateUrl.liepinPositionEdit);
+//                    logger.info("==================editResponse:{}==================", editResponse);
+//
+//                    receiverHandler.requireValidResult(editResponse);
+//                } catch (BIZException e) {
+//                    e.printStackTrace();
+//                    logger.info("============同步已存在的城市，修改该城市的职位信息时未操作成功，message:{}===========", e.getMessage());
+//                    emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, editResponse);
+//                }
+//            }
+//            return republishIdList.size();
+//        }
+//        return 0;
+//    }
 
     private String sendSyncRequestToLiepin(LiePinPositionVO liePinPositionVO, String liePinToken) throws Exception {
         // 构造请求数据
