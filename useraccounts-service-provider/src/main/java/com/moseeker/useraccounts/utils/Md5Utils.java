@@ -32,6 +32,9 @@ public class Md5Utils {
             paras.append(map.get(paraName));
         }
         paras.append(SECRET_KEY);
+
+        System.out.println(paras.toString());
+
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(paras.toString().getBytes("UTF-8"));
         byte b[] = md.digest();

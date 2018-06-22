@@ -93,6 +93,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -627,6 +628,8 @@ public class PositionService {
         }
     }
 
+    private CountDownLatch batchHandlerCountDown = new CountDownLatch(1);
+
     /**
      * 批量ATS职位适配器，包装batchHandlerJobPostion方法，
      * 原来准备在执行完batchHandlerJobPostion后加上更新职位福利特色
@@ -638,6 +641,7 @@ public class PositionService {
      */
     public JobPostionResponse batchHandlerJobPostionAdapter(BatchHandlerJobPostion batchHandlerJobPosition) throws TException {
         JobPostionResponse response = batchHandlerJobPostion(batchHandlerJobPosition);
+        batchHandlerCountDown.countDown();
         return response;
     }
 
@@ -1099,14 +1103,17 @@ public class PositionService {
                 featureData.setData(needBindFeatureData);
                 positionATSService.updatePositionFeature(featureData);
             }
-            // 批量请求猎聘编辑职位信息 todo 这两行代码是新增
+            // 批量请求猎聘编辑职位信息 todo 代码是猎聘api新增
             Map<Integer, JobPositionRecord> oldJobMap = new HashMap<>();
-            for(JobPositionRecord jobPositionRecord : jobPositionUpdateRecordList){
+            for(JobPositionRecord jobPositionRecord : jobPositionOldRecordList){
                 if(jobPositionRecord != null){
                     oldJobMap.put(jobPositionRecord.getId(), jobPositionRecord);
                 }
             }
-            pool.startTast(() -> receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateRecordList, oldJobMap));
+            pool.startTast(() -> {
+                batchHandlerCountDown.await();
+                return receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateRecordList, oldJobMap);
+            });
 
         } catch (Exception e) {
             logger.error("更新和插入数据发生异常,异常信息为：" + e.getMessage());

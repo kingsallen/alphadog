@@ -41,10 +41,11 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
     }
 
 
-    public List<JobPositionLiepinMappingDO> getMappingDataByTitleAndUserId(String jobTitle, Integer liepinUserId) {
+    public List<JobPositionLiepinMappingDO> getMappingDataByTitleAndUserId(String jobTitle, Integer liepinUserId, List<Integer> cityCodesIntList) {
         Query query = new Query.QueryBuilder()
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_TITLE.getName(), jobTitle)
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), liepinUserId)
+                .and(new com.moseeker.common.util.query.Condition(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.getName(), cityCodesIntList, ValueOp.IN))
                 .buildQuery();
         return getDatas(query);
     }
@@ -90,14 +91,6 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.eq(id))
                 .execute();
-    }
-
-    public JobPositionLiepinMappingDO getDataByPidAndCityCode(Integer positionId, String cityCode) {
-        return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
-                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(positionId))
-                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.eq(Integer.parseInt(cityCode)))
-                .limit(1)
-                .fetchOneInto(JobPositionLiepinMappingDO.class);
     }
 
     public List<JobPositionLiepinMappingDO> getMappingDataByPidAndCode(int positionId, List<Integer> rePublishCityCodes) {
