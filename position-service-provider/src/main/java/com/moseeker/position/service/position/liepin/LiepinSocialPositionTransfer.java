@@ -264,8 +264,18 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             List<String> cityCodesList = Arrays.asList(cityCodesArr);
             List<Integer> cityCodesIntList = cityCodesList.stream().map(cityCode -> Integer.parseInt(cityCode)).collect(Collectors.toList());
 
-            // 根据职位名称查出所有职位jobpostionmapping表数据
-            List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByTitleAndUserId(liePinPositionVO.getEjob_title(), liePinUserId, cityCodesIntList);
+            // 查出所有本次编辑城市职位jobpostionmapping表数据
+            List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByTitleAndUserId(liePinPositionVO.getEjob_title(), liePinUserId, cityCodesIntList, positionId);
+
+            List<String> newCityCodeList = liepinMappingDOList.stream().map(liepinMapping -> String.valueOf(liepinMapping.getCityCode())).collect(Collectors.toList());
+
+            List<JobPositionLiepinMappingDO> allLiepinMappingDOList = liepinMappingDao.getMappingDataByTitleAndUserId(liePinPositionVO.getEjob_title(), liePinUserId, positionId);
+
+//            for(JobPositionLiepinMappingDO mappingDO : allLiepinMappingDOList){
+//                if(){
+//
+//                }
+//            }
 
             List<String> cityCodesListDb = new ArrayList<>();
 
@@ -378,7 +388,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
             try {
                 // 发布职位时如果是已经存在的职位，但是状态为0，则执行先上架后修改
-                updateExistPosition(republishIds, liePinToken, positionId, liePinPositionVO, successRePublishNum);
+                successRePublishNum = updateExistPosition(republishIds, liePinToken, positionId, liePinPositionVO);
 
                 // 编辑修改职位
                 if (editCity.size() > 0) {
@@ -444,7 +454,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
      * @date  2018/6/22
      * @return
      */
-    private void updateExistPosition(StringBuilder republishIds, String liePinToken, Integer positionId, LiePinPositionVO liePinPositionVO, int successRePublishNum) throws Exception {
+    private int updateExistPosition(StringBuilder republishIds, String liePinToken, Integer positionId, LiePinPositionVO liePinPositionVO) throws Exception {
         // 更新上架后的状态
         if (republishIds.length() > 0) {
 
@@ -468,9 +478,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, editResponse);
                 }
             }
-
-            successRePublishNum = republishIdList.size();
+            return republishIdList.size();
         }
+        return 0;
     }
 
     private String sendSyncRequestToLiepin(LiePinPositionVO liePinPositionVO, String liePinToken) throws Exception {

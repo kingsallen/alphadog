@@ -41,11 +41,21 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
     }
 
 
-    public List<JobPositionLiepinMappingDO> getMappingDataByTitleAndUserId(String jobTitle, Integer liepinUserId, List<Integer> cityCodesIntList) {
+    public List<JobPositionLiepinMappingDO> getMappingDataByTitleAndUserId(String jobTitle, Integer liepinUserId, List<Integer> cityCodesIntList, Integer positionId) {
         Query query = new Query.QueryBuilder()
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_TITLE.getName(), jobTitle)
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), liepinUserId)
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.getName(), positionId)
                 .and(new com.moseeker.common.util.query.Condition(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.getName(), cityCodesIntList, ValueOp.IN))
+                .buildQuery();
+        return getDatas(query);
+    }
+
+    public List<JobPositionLiepinMappingDO> getMappingDataByTitleAndUserId(String jobTitle, Integer liepinUserId, Integer positionId) {
+        Query query = new Query.QueryBuilder()
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_TITLE.getName(), jobTitle)
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), liepinUserId)
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.getName(), positionId)
                 .buildQuery();
         return getDatas(query);
     }
