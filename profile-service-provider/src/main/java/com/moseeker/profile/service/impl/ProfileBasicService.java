@@ -175,7 +175,7 @@ public class ProfileBasicService {
             qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
             ProfileBasicRecord repeat = dao.getRecord(qu);
             if (repeat != null) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
+                throw ExceptionUtils.getCommonException(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
             }
             if (struct.getProfile_id() > 0) {
                 resultStruct = dao.addRecord(BeanUtils.structToDB(struct, ProfileBasicRecord.class)).into(Basic.class);
