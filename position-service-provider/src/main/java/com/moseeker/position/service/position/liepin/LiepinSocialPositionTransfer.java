@@ -322,46 +322,56 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
                 String httpResultJson = null;
                 try {
+
                     httpResultJson = sendSyncRequestToLiepin(liePinPositionVO, liePinToken);
+                    String thirdPositionId = "";
+                    byte state = 0;
+                    try{
+                        JSONObject httpResult = JSONObject.parseObject(httpResultJson);
+                        logger.info("==============httpResult:{}===============", httpResult);
+
+                        if (null != httpResult && httpResult.getIntValue("code") == 0) {
+                            String data = httpResult.getString("data");
+                            thirdPositionId = data.substring(1, data.length() - 1);
+                            state = 1;
+                            successSyncNum++;
+                            logger.info("==============hrThirdPartyPositionDO:{}================", hrThirdPartyPositionDO);
+                        } else if (null != httpResult) {
+                            if (httpResult.getIntValue("code") == 1001 || httpResult.getIntValue("code") == 1007) {
+                                // 鉴权失败||token失效
+                                flag = false;
+                            }
+                            errorMsg = httpResult.getString("message");
+                        } else {
+                            flag = false;
+                            errorMsg = "http请求失败";
+                            errCityCodeList.add(cityCode);
+                        }
+                    }catch (Exception e){
+                        logger.info("===========http转化异常httpResult:{}============", httpResultJson);
+                        flag = false;
+                        logger.error(e.getMessage(), e);
+                        EmailSendUtil.sendWarnEmail(e.getMessage() + "liePinPositionVO:"
+                                + liePinPositionVO + "</br>" + httpResultJson, "猎聘同步职位失败");
+                    }
+
+                    // 如果同步失败，将mapping记录删除
+                    int id = jobPositionLiepinMappingDO.getId();
+                    if (!flag) {
+                        liepinMappingDao.deleteData(jobPositionLiepinMappingDO);
+                        logger.info("===============猎聘鉴权失败/token失效/http请求为空==================");
+                        EmailSendUtil.sendWarnEmail("猎聘鉴权失败/token失效/http请求为空：liePinPositionVO:"
+                                + liePinPositionVO, "猎聘同步职位失败");
+                    } else {
+                        // 更改数据库mapping的状态
+                        liepinMappingDao.updateJobInfoById(id, StringUtils.isNullOrEmpty(thirdPositionId) ? null : Integer.parseInt(thirdPositionId), state, errorMsg);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     errCityCodeList.add(cityCode);
-                    EmailSendUtil.sendWarnEmail("职位同步时http请求异常：jobPositionId:"
-                            + positionId, "猎聘同步职位失败");
+                    EmailSendUtil.sendWarnEmail(e.getMessage() + "liePinPositionVO:"
+                            + liePinPositionVO + "</br>", "猎聘同步职位失败");
                     continue;
-                }
-
-                JSONObject httpResult = JSONObject.parseObject(httpResultJson);
-                logger.info("==============httpResult:{}===============", httpResult);
-                String thirdPositionId = "";
-                byte state = 0;
-                if (null != httpResult && httpResult.getIntValue("code") == 0) {
-                    String data = httpResult.getString("data");
-                    thirdPositionId = data.substring(1, data.length() - 1);
-                    state = 1;
-                    successSyncNum++;
-                    logger.info("==============hrThirdPartyPositionDO:{}================", hrThirdPartyPositionDO);
-                } else if (null != httpResult) {
-                    if (httpResult.getIntValue("code") == 1001 || httpResult.getIntValue("code") == 1007) {
-                        // 鉴权失败||token失效
-                        flag = false;
-                    }
-                    errorMsg = httpResult.getString("message");
-                } else {
-                    flag = false;
-                    errorMsg = "http请求失败";
-                    errCityCodeList.add(cityCode);
-                }
-                // 如果同步失败，将mapping记录删除
-                int id = jobPositionLiepinMappingDO.getId();
-                if (!flag) {
-                    liepinMappingDao.deleteData(jobPositionLiepinMappingDO);
-                    logger.info("===============猎聘鉴权失败/token失效/http请求为空==================");
-                    EmailSendUtil.sendWarnEmail("猎聘鉴权失败/token失效/http请求为空：jobPositionId:"
-                            + positionId, "猎聘同步职位失败");
-                } else {
-                    // 更改数据库mapping的状态
-                    liepinMappingDao.updateJobInfoById(id, StringUtils.isNullOrEmpty(thirdPositionId) ? null : Integer.parseInt(thirdPositionId), state, errorMsg);
                 }
 
             }
