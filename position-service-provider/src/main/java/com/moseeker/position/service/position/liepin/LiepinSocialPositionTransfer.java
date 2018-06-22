@@ -130,8 +130,13 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         liePinPositionVO.setDetail_edulevel_tz(null);
         liePinPositionVO.setDetail_report2(null);
         liePinPositionVO.setDetail_subordinate(moseekerJobPosition.getUnderlings() == 0 ? 0 : (int) moseekerJobPosition.getUnderlings());
-        liePinPositionVO.setDetail_duty(moseekerJobPosition.getAccountabilities());
-        liePinPositionVO.setDetail_require(moseekerJobPosition.getRequirement());
+        String duty = moseekerJobPosition.getAccountabilities();
+        String requirement = moseekerJobPosition.getRequirement();
+        duty = filterSpecialSign(duty);
+        requirement = filterSpecialSign(requirement);
+
+        liePinPositionVO.setDetail_duty(duty);
+        liePinPositionVO.setDetail_require(requirement);
         // 映射部门名称
         liePinPositionVO.setDetail_dept(getDepartmentName(positionForm, moseekerJobPosition));
         // 每个亮点八个字，最多十六个
@@ -146,6 +151,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         liePinPositionVO.setCount((int) moseekerJobPosition.getCount());
         return liePinPositionVO;
     }
+
 
     @Override
     public HrThirdPartyPositionDO toThirdPartyPosition(ThirdPartyPosition thirdPartyPosition, LiePinPositionVO pwa) {
@@ -293,16 +299,13 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
                     String liepinCityCode = getValidLiepinDictCode(cityCode);
 
-                    // 生成职位发布到猎聘时需要的id 先查一遍是否有重复数据，如果没有，插入一条mapping数据
-//                    JobPositionLiepinMappingDO jobPositionLiepinMappingDO = liepinMappingDao.getDataByPidAndCityCode(positionId, cityCode);
-//                    if(jobPositionLiepinMappingDO == null){
+                    // 生成职位发布到猎聘时需要的id,插入一条mapping数据
                     JobPositionLiepinMappingDO jobPositionLiepinMappingDO = new JobPositionLiepinMappingDO();
                     jobPositionLiepinMappingDO.setJobId(positionId);
                     jobPositionLiepinMappingDO.setCityCode(Integer.parseInt(cityCode));
                     jobPositionLiepinMappingDO.setJobTitle(liePinPositionVO.getEjob_title());
                     jobPositionLiepinMappingDO.setLiepinUserId(liePinUserId);
                     jobPositionLiepinMappingDO = liepinMappingDao.addData(jobPositionLiepinMappingDO);
-//                    }
 
                     liePinPositionVO.setEjob_extRefid(jobPositionLiepinMappingDO.getId() + "");
                     liePinPositionVO.setEjob_dq(liepinCityCode);
@@ -658,5 +661,25 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             }
         }
         return tags.substring(0, tags.length() - 1);
+    }
+
+    /**
+     * 过滤掉中文特殊字符，否则猎聘收不到特殊字符导致验签失败
+     * @param
+     * @author  cjm
+     * @date  2018/6/22
+     * @return
+     */
+    private String filterSpecialSign(String str) throws BIZException {
+        if(StringUtils.isNullOrEmpty(str)){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+        return str.replaceAll("[\\u25b3\\u25bd\\u25cb\\u25c7\\u25a1\\u2606\\u25b7\\u25c1\\u2664" +
+                "\\u2661\\u2662\\u2667\\u2663\\u2666\\u2665\\u2660\\u25c0\\u25b6\\u2605\\u25a0\\u25c6" +
+                "\\u25cf\\u25bc\\u25b2\\u263c\\u263d\\u2640\\u263a\\u25d0\\u2611\\u221a\\u2714\\u261c" +
+                "\\u261d\\u261e\\u33c2\\u33d8\\u261b\\u261f\\u261a\\u2718\\u0026\\u0023\\u0032\\u0031" +
+                "\\u0035\\u003b\\u2612\\u25d1\\u2639\\u2642\\u263e\\u2600\\u25aa\\u2022\\u2025\\u2026" +
+                "\\u2581\\u2582\\u2583\\u2584\\u2585\\u2586\\u2587\\u2588\\u2589\\u258a\\u258b\\u258c" +
+                "\\u258d\\u258e\\u258f\\u2593\\u2592\\u2591\\u203b\\u2237]", "");
     }
 }

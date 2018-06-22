@@ -344,15 +344,6 @@ public class HRThirdPartyPositionDao  {
         thirdPartyPositionDao.update(update.buildUpdate());
     }
 
-    public void updateBindState(List<Integer> pids, int channel, int state) {
-        Update.UpdateBuilder update=new Update.UpdateBuilder()
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
-                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),pids, ValueOp.IN))
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
-        thirdPartyPositionDao.update(update.buildUpdate());
-    }
-
     /**
      * 隐藏的内部第三方职位dao，
      * 因为第三方职位分成主表和附表(坑爹的附表还有可能是多个)

@@ -93,14 +93,6 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 .execute();
     }
 
-    public JobPositionLiepinMappingDO getDataByPidAndCityCode(Integer positionId, String cityCode) {
-        return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
-                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(positionId))
-                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.eq(Integer.parseInt(cityCode)))
-                .limit(1)
-                .fetchOneInto(JobPositionLiepinMappingDO.class);
-    }
-
     public List<JobPositionLiepinMappingDO> getMappingDataByPidAndCode(int positionId, List<Integer> rePublishCityCodes) {
         if(rePublishCityCodes.isEmpty()){
             return new ArrayList<>();
