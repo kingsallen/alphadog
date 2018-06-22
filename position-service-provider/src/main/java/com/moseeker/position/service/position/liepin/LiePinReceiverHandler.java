@@ -236,15 +236,12 @@ public class LiePinReceiverHandler {
                 return;
             }
 
-            // 判断编辑的城市中是否有未发布过的城市，如果有，就走一遍发布流程，职位发布中会判断如果是发布过的职位，不会重新发布
-//            boolean flag = true;
-
             // 编辑职位中的城市list
             List<JobPositionCityDO> positionCityList = jobPositionCityDao.getPositionCityBypid(positionId);
             log.info("==============编辑城市positionCityList:{}============", positionCityList);
             // 编辑职位中的城市codelist
             List<String> newCityList = positionCityList.stream().map(positionCityDO -> String.valueOf(positionCityDO.getCode())).collect(Collectors.toList());
-            log.info("==============编辑城市cityCodesList:{}============", newCityList);
+            log.info("==============编辑城市newCityList:{}============", newCityList);
             // 如果数据库不存在编辑的职位，则发布新职位
 
             // 数据库中该仟寻职位id对应的城市codes list
@@ -262,6 +259,7 @@ public class LiePinReceiverHandler {
             // city改变标志 true是city发生改变，false是未发生改变
             boolean isCityChange = compareCity(newCityList, mappingCityList);
 
+            // true表示标题变化了
             boolean isTitleChange = !jobPositionDO.getTitle().equals(updateJobPosition.getTitle());
 
             if(!isCityChange && !isTitleChange){
@@ -276,7 +274,7 @@ public class LiePinReceiverHandler {
 
             // 先判断title是否存在，不存在的话发布新职位
             // 如果title没变
-            if(isTitleChange){
+            if(!isTitleChange){
                 // 如果城市没变
                 if(!isCityChange){
                     for(JobPositionLiepinMappingDO mappingDO : liepinMappingDOList){

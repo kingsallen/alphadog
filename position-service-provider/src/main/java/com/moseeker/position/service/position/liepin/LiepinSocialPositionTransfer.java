@@ -310,21 +310,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     liePinPositionVO.setEjob_extRefid(jobPositionLiepinMappingDO.getId() + "");
                     liePinPositionVO.setEjob_dq(liepinCityCode);
 
-                    // 构造请求数据
-                    JSONObject liePinJsonObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
-                    String t = DateUtils.dateToPattern(new Date(), "yyyyMMdd");
-                    liePinJsonObject.put("t", t);
-                    String sign = Md5Utils.getMD5SortKey(Md5Utils.mapToList(liePinJsonObject), liePinJsonObject);
-                    logger.info("===========sign:{}===========", sign);
-                    liePinJsonObject.put("sign", sign);
-                    logger.info("=============liePinJsonObject:{}=============", liePinJsonObject);
-                    //设置请求头
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("channel", "qianxun");
-                    headers.put("token", liePinToken);
                     String httpResultJson = null;
                     try {
-                        httpResultJson = HttpClientUtil.sentHttpPostRequest(LiepinPositionOperateUrl.liepinPositionSync, headers, liePinJsonObject);
+                        httpResultJson = sendSyncRequestToLiepin(liePinPositionVO, liePinToken);
                     } catch (Exception e) {
                         e.printStackTrace();
                         errCityCodeList.add(cityCode);
@@ -450,6 +438,23 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             EmailSendUtil.sendWarnEmail("同步猎聘职位失败：jobPositionId为" + liePinPositionVO.getPositionId(), "猎聘同步职位失败");
         }
 
+    }
+
+    private String sendSyncRequestToLiepin(LiePinPositionVO liePinPositionVO, String liePinToken) throws Exception {
+        // 构造请求数据
+        JSONObject liePinJsonObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
+        String t = DateUtils.dateToPattern(new Date(), "yyyyMMdd");
+        liePinJsonObject.put("t", t);
+        String sign = Md5Utils.getMD5SortKey(Md5Utils.mapToList(liePinJsonObject), liePinJsonObject);
+        logger.info("===========sign:{}===========", sign);
+        liePinJsonObject.put("sign", sign);
+        logger.info("=============liePinJsonObject:{}=============", liePinJsonObject);
+        //设置请求头
+        Map<String, String> headers = new HashMap<>();
+        headers.put("channel", "qianxun");
+        headers.put("token", liePinToken);
+
+        return HttpClientUtil.sentHttpPostRequest(LiepinPositionOperateUrl.liepinPositionSync, headers, liePinJsonObject);
     }
 
     /**
@@ -623,8 +628,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         }
         liePinPositionVO.setDetail_language_yueyu(yueyu);
         liePinPositionVO.setDetail_language_other(1);
-        if (language.length() > 80) {
-            language = language.substring(0, 80);
+        if (language.length() > 79) {
+            language = language.substring(0, 79);
         }
         liePinPositionVO.setDetail_language_content(language);
     }
@@ -665,13 +670,14 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     /**
      * 过滤掉中文特殊字符，否则猎聘收不到特殊字符导致验签失败
+     *
      * @param
-     * @author  cjm
-     * @date  2018/6/22
      * @return
+     * @author cjm
+     * @date 2018/6/22
      */
     private String filterSpecialSign(String str) throws BIZException {
-        if(StringUtils.isNullOrEmpty(str)){
+        if (StringUtils.isNullOrEmpty(str)) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         return str.replaceAll("[\\u25b3\\u25bd\\u25cb\\u25c7\\u25a1\\u2606\\u25b7\\u25c1\\u2664" +
