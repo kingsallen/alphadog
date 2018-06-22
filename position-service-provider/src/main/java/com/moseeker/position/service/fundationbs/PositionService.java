@@ -728,7 +728,10 @@ public class PositionService {
 
                 // 猎聘api对接下架职位 todo 这行代码是新增
                 logger.info("==================batchLiepinPositionDownShelf:{}=================", batchLiepinPositionDownShelf);
-                pool.startTast(() -> receiverHandler.batchHandlerLiepinDownShelfOperation(batchLiepinPositionDownShelf));
+                pool.startTast(() -> {
+                    batchHandlerCountDown.await();
+                    return receiverHandler.batchHandlerLiepinDownShelfOperation(batchLiepinPositionDownShelf);
+                });
             }
         }
         // 判断哪些数据不需要更新的
