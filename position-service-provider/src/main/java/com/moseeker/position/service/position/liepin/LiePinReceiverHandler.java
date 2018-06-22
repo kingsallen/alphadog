@@ -380,6 +380,7 @@ public class LiePinReceiverHandler {
      */
     public boolean batchHandlerLiepinDownShelfOperation(List<Integer> ids) throws UnsupportedEncodingException {
         try {
+            log.info("===========ids:{}=========", ids);
             if(ids == null || ids.size() < 1){
                 log.info("==============没有需要处理的猎聘api下架职位==============");
                 return false;
