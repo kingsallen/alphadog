@@ -98,4 +98,9 @@ private String requireValidOccupation(List<String> occupationList) throws BIZExc
     public void testFresh(){
         schedule.refreshLiepinToken();
     }
+
+    @Test
+    public void testRefreshs(){
+        schedule.refreshLiepinToken();
+    }
 }

@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.useraccounts.service.impl.LiePinUserAccountBindHandler;
@@ -49,7 +50,7 @@ public class RefreshLiepinTokenSchedule {
     static List<String> emailList = new ArrayList<>();
 
     // {秒数} {分钟} {小时} {日期} {月份} {星期} {年份(可为空)}
-//    @Scheduled(fixedDelay = 120000)
+    @Scheduled(fixedDelay = 120000)
     public void refreshLiepinToken() {
         try {
             List<HrThirdPartyAccountDO> successRequest = new ArrayList<>();
@@ -82,10 +83,11 @@ public class RefreshLiepinTokenSchedule {
 
             if(successRequest.size() > 0){
                 for(HrThirdPartyAccountDO accountDO : successRequest){
-
-                    int row = thirdPartyAccountDao.updateBindToken(accountDO.getExt2(), Integer.parseInt(accountDO.getExt()), accountDO.getId());
-                    if(row < 1){
-                        failUpdate.add(accountDO);
+                    if(StringUtils.isNotNullOrEmpty(accountDO.getExt()) && StringUtils.isNotNullOrEmpty(accountDO.getExt2())){
+                        int row = thirdPartyAccountDao.updateBindToken(accountDO.getExt2(), Integer.parseInt(accountDO.getExt()), accountDO.getId());
+                        if(row < 1){
+                            failUpdate.add(accountDO);
+                        }
                     }
                 }
             }
