@@ -168,22 +168,6 @@ public class LiePinReceiverHandler {
                 return;
             }
 
-            JobPositionDO updateJobPosition = getUpdateJobPositionFromMq(msgBody);
-
-            // 获取das端已修改后的职位数据
-            JobPositionDO jobPositionDO = getOldJobPositionFromMq(msgBody);
-
-            boolean positionFlag = getPositionFlag(msgBody);
-
-            if (updateJobPosition == null || jobPositionDO == null) {
-                return;
-            }
-
-            if(jobPositionDO.getCandidateSource() == 1){
-                log.info("===========校招职位不用处理===========");
-                return;
-            }
-
             int positionChannel = 2;
 
             int positionId = id;
@@ -201,19 +185,38 @@ public class LiePinReceiverHandler {
 
             log.info("==============liePinToken:{}===============", liePinToken);
 
-            // 是否需要编辑，返回true，两个职位相同，不需要edit
-            boolean noNeedEdit = compareJobPosition(jobPositionDO, updateJobPosition);
-
-            if (!positionFlag && noNeedEdit) {
-                log.info("=============没有修改猎聘所需字段，无需发布修改============");
-                return;
-            }
-
             // 获取在仟寻填写的猎聘职位信息
             HrThirdPartyPositionDO hrThirdPartyPositionDO = hrThirdPartyPositionDao.getThirdPartyPositionById(positionId, positionChannel, hrAccountId);
 
             if (hrThirdPartyPositionDO == null) {
                 log.info("==============第三方职位信息为空，positionId:{}=============", positionId);
+                return;
+            }
+
+            // 如果是1，则为面议，面议不需要薪资上下限
+            boolean salaryDiscuss = hrThirdPartyPositionDO.getSalaryDiscuss() == 1;
+
+            JobPositionDO updateJobPosition = getUpdateJobPositionFromMq(msgBody, salaryDiscuss);
+
+            // 获取das端已修改后的职位数据
+            JobPositionDO jobPositionDO = getOldJobPositionFromMq(msgBody, salaryDiscuss);
+
+            boolean positionFlag = getPositionFlag(msgBody);
+
+            if (updateJobPosition == null || jobPositionDO == null) {
+                return;
+            }
+
+            if(jobPositionDO.getCandidateSource() == 1){
+                log.info("===========校招职位不用处理===========");
+                return;
+            }
+
+            // 是否需要编辑，返回true，两个职位相同，不需要edit
+            boolean noNeedEdit = compareJobPosition(jobPositionDO, updateJobPosition);
+
+            if (!positionFlag && noNeedEdit) {
+                log.info("=============没有修改猎聘所需字段，无需发布修改============");
                 return;
             }
 
@@ -344,11 +347,11 @@ public class LiePinReceiverHandler {
         return false;
     }
 
-    private JobPositionDO getOldJobPositionFromMq(String msgBody) {
+    private JobPositionDO getOldJobPositionFromMq(String msgBody, boolean salaryDiscuss) {
         try {
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
             JSONObject jobPositionJSON = JSONObject.parseObject(jsonObject.getString("oldPosition"));
-            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON);
+            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON, salaryDiscuss);
             log.info("============jobPositionDO:{}=============", jobPositionDO);
             return jobPositionDO;
         } catch (Exception e) {
@@ -357,11 +360,11 @@ public class LiePinReceiverHandler {
         return null;
     }
 
-    private JobPositionDO getUpdateJobPositionFromMq(String msgBody) {
+    private JobPositionDO getUpdateJobPositionFromMq(String msgBody, boolean salaryDiscuss) {
         try {
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
             JSONObject jobPositionJSON = JSONObject.parseObject(jsonObject.getString("params"));
-            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON);
+            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON, salaryDiscuss);
             log.info("============jobPositionDO:{}=============", jobPositionDO);
             return jobPositionDO;
         } catch (Exception e) {
@@ -931,7 +934,7 @@ public class LiePinReceiverHandler {
     }
 
 
-    private JobPositionDO convertJSON2DO(JSONObject jobPositionJSON) {
+    private JobPositionDO convertJSON2DO(JSONObject jobPositionJSON, boolean salaryDiscuss) {
         JobPositionDO jobPositionDO = new JobPositionDO();
         jobPositionDO.setId(jobPositionJSON.getIntValue("id"));
         jobPositionDO.setCompanyId(jobPositionJSON.getIntValue("company_id"));
@@ -947,8 +950,13 @@ public class LiePinReceiverHandler {
         jobPositionDO.setCandidateSource(jobPositionJSON.getDouble("candidate_source") == null ? 0 : jobPositionJSON.getDouble("candidate_source"));
         jobPositionDO.setOccupation(jobPositionJSON.getString("occupation"));
         jobPositionDO.setCount(jobPositionJSON.getDouble("count") == null ? 0 : jobPositionJSON.getDouble("count"));
-        jobPositionDO.setSalaryTop(jobPositionJSON.getDouble("salary_top"));
-        jobPositionDO.setSalaryBottom(jobPositionJSON.getDouble("salary_bottom"));
+        if(!salaryDiscuss){
+            jobPositionDO.setSalaryTop(jobPositionJSON.getDouble("salary_top"));
+            jobPositionDO.setSalaryBottom(jobPositionJSON.getDouble("salary_bottom"));
+        }else{
+            jobPositionDO.setSalaryTop(0);
+            jobPositionDO.setSalaryBottom(0);
+        }
         jobPositionDO.setExperienceAbove("true".equals(jobPositionJSON.getString("experience_above")) ? (byte) 1 : 0);
         jobPositionDO.setDegreeAbove("true".equals(jobPositionJSON.getString("degree_above")) ? (byte) 1 : 0);
         jobPositionDO.setGender(jobPositionJSON.getDouble("gender") == null ? 2 : jobPositionJSON.getDouble("gender"));
