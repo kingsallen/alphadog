@@ -480,7 +480,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 try {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("ejob_extRefids", ids.substring(0, ids.length() - 1));
-                    downShelfResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(jsonObject), liePinToken, LiepinPositionOperateUrl.liepinPositionEdit);
+                    downShelfResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(jsonObject), liePinToken, LiepinPositionOperateUrl.liepinPositionEnd);
                     logger.info("==================downShelfResponse:{}==================", downShelfResponse);
                     receiverHandler.requireValidResult(downShelfResponse);
                 } catch (BIZException e) {
