@@ -309,4 +309,11 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
                 .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.eq((short)bindState))
                 .fetchInto(HrThirdPartyAccountDO.class);
     }
+
+//    public void updateBindState(int hrAccountId, int state) {
+//        create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+//                .set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING, (short)state)
+//                .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(hrAccountId))
+//                .execute();
+//    }
 }

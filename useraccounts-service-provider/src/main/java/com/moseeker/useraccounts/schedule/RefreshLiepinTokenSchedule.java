@@ -50,13 +50,15 @@ public class RefreshLiepinTokenSchedule {
     static List<String> emailList = new ArrayList<>();
 
     // {秒数} {分钟} {小时} {日期} {月份} {星期} {年份(可为空)}
-//    @Scheduled(fixedDelay = 120000)
-    @Scheduled(cron="0 0 0 1,15 * ?")
+    @Scheduled(fixedDelay = 120000)
+//    @Scheduled(cron="0 0 0 1,15 * ?")
     public void refreshLiepinToken() {
         try {
             List<HrThirdPartyAccountDO> successRequest = new ArrayList<>();
             List<Integer> failRequest = new ArrayList<>();
             List<HrThirdPartyAccountDO> failUpdate = new ArrayList<>();
+            // 猎聘返回用户名或密码错误时，需要重新绑定
+
             emailList = emailNotification.getRefreshMails();
             int channel = ChannelType.LIEPIN.getValue();
             int bindState = BindingStatus.BOUND.getValue();
@@ -81,7 +83,7 @@ public class RefreshLiepinTokenSchedule {
                     failRequest.add(accountDO.getId());
                 }
             }
-
+            // todo 密码错误时，绑定状态置为0
             if(successRequest.size() > 0){
                 for(HrThirdPartyAccountDO accountDO : successRequest){
                     if(StringUtils.isNotNullOrEmpty(accountDO.getExt()) && StringUtils.isNotNullOrEmpty(accountDO.getExt2())){

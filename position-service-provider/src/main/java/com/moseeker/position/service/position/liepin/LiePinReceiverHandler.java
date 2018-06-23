@@ -13,6 +13,7 @@ import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.email.Email;
@@ -892,7 +893,9 @@ public class LiePinReceiverHandler {
             log.info("==============httpResult:{}================", httpResult);
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_LIMIT);
         }else if (httpResult.getIntValue("code") != 0) {
-
+//            if(httpResult.getIntValue("code") == 1007){
+//                thirdPartyAccountDao.updateBindState(hrAccountId, BindingStatus.UNBIND.getValue());
+//            }
             log.info("==============httpResult:{}================", httpResult);
             throw ExceptionUtils.getBizException("{'status':-1,'message':'猎聘职位操作请求失败！" + httpResult.getString("message") + "'}");
         }
