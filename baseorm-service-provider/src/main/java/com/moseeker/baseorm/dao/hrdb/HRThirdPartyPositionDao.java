@@ -328,7 +328,7 @@ public class HRThirdPartyPositionDao  {
     }
 
     /**
-     * 修改绑定状态为未绑定，要不然无法复用positionbs
+     * 修改同步状态为未同步，要不然无法复用positionbs
      * @param
      * @author  cjm
      * @date  2018/6/11

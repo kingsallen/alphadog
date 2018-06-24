@@ -92,6 +92,9 @@ public class LiePinReceiverHandler {
     @Autowired
     private PositionEmailNotification emailNotification;
 
+    @Autowired
+    private PositionBS positionBS;
+
     private String emailSubject = "猎聘api请求操作失败";
 
     /**
@@ -124,8 +127,13 @@ public class LiePinReceiverHandler {
 
                 oldJobPositionDO = BeanUtils.DBToStruct(JobPositionDO.class, oldRecord);
 
+                boolean positionFlag = false;
+                if(jobPositionDO.getStatus() == 0 && oldJobPositionDO.getStatus() == 1){
+                    positionFlag = true;
+                }
+
                 liePinJsonObject.put("id", jobPositionDO.getId());
-                liePinJsonObject.put("positionFlag", false);
+                liePinJsonObject.put("positionFlag", positionFlag);
                 liePinJsonObject.put("params", JSONObject.toJSONString(jobPositionDO));
                 liePinJsonObject.put("oldPosition", JSONObject.toJSONString(oldJobPositionDO));
 
@@ -161,7 +169,9 @@ public class LiePinReceiverHandler {
 
             log.info("===============msgBody:{}===============", msgBody);
 
-            id = requireValidEditId(msgBody);
+            JSONObject msgObject = JSONObject.parseObject(msgBody);
+
+            id = requireValidEditId(msgObject);
 
             if (id == null) {
                 return;
@@ -192,15 +202,19 @@ public class LiePinReceiverHandler {
                 return;
             }
 
+            // 组装同步时需要的数据，相当于在第三方页面填写的表单数据，将不匹配字段手动映射
+            ThirdPartyPosition thirdPartyPosition = mappingThirdPartyPosition(hrThirdPartyPositionDO);
+
             // 如果是1，则为面议，面议不需要薪资上下限
             boolean salaryDiscuss = hrThirdPartyPositionDO.getSalaryDiscuss() == 1;
 
-            JobPositionDO updateJobPosition = getUpdateJobPositionFromMq(msgBody, salaryDiscuss);
+            JobPositionDO updateJobPosition = getUpdateJobPositionFromMq(msgObject, salaryDiscuss);
 
             // 获取das端已修改后的职位数据
-            JobPositionDO jobPositionDO = getOldJobPositionFromMq(msgBody, salaryDiscuss);
+            JobPositionDO jobPositionDO = getOldJobPositionFromMq(msgObject, salaryDiscuss);
 
-            boolean positionFlag = getPositionFlag(msgBody);
+            // true表示从下架状态编辑
+            boolean positionFlag = getPositionFlag(msgObject);
 
             if (updateJobPosition == null || jobPositionDO == null) {
                 return;
@@ -219,17 +233,6 @@ public class LiePinReceiverHandler {
                 return;
             }
 
-            ThirdPartyPosition thirdPartyPosition = new ThirdPartyPosition();
-
-            // 组装同步时需要的数据，相当于在第三方页面填写的表单数据，将不匹配字段手动映射
-            org.springframework.beans.BeanUtils.copyProperties(hrThirdPartyPositionDO, thirdPartyPosition);
-            thirdPartyPosition.setSalaryDiscuss(hrThirdPartyPositionDO.getSalaryDiscuss() != 0);
-            thirdPartyPosition.setSalaryBottom(thirdPartyPosition.getSalaryBottom() / 1000);
-            thirdPartyPosition.setSalaryTop(thirdPartyPosition.getSalaryTop() / 1000);
-            String occupations = hrThirdPartyPositionDO.getOccupation();
-            String[] occupationsArr = occupations.split(",");
-            thirdPartyPosition.setOccupation(Arrays.asList(occupationsArr));
-
             // 将数据组装为向猎聘请求的格式，此数据也是用户编辑后的数据
             liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(thirdPartyPosition, updateJobPosition, null);
             log.info("================liePinPositionVO:{}=============", liePinPositionVO);
@@ -247,7 +250,6 @@ public class LiePinReceiverHandler {
             // 编辑职位中的城市codelist
             List<String> newCityList = positionCityList.stream().map(positionCityDO -> String.valueOf(positionCityDO.getCode())).collect(Collectors.toList());
             log.info("==============编辑城市newCityList:{}============", newCityList);
-            // 如果数据库不存在编辑的职位，则发布新职位
 
             // 数据库中该仟寻职位id对应的城市codes list
             List<String> mappingCityList = liepinMappingDOList.stream().filter(mappingDo -> mappingDo.getState() == 1)
@@ -276,7 +278,6 @@ public class LiePinReceiverHandler {
                 hrThirdPartyPositionDao.updateBindState(positionId, hrAccountId, 2, 0);
 
             }
-
             // 如果title没变
             if(!isTitleChange){
                 // 如果城市没变
@@ -313,7 +314,19 @@ public class LiePinReceiverHandler {
         }
     }
 
-    private boolean compareCity(List<String> newCityList, List<String> mappingCityList) {
+    public ThirdPartyPosition mappingThirdPartyPosition(HrThirdPartyPositionDO hrThirdPartyPositionDO) {
+        ThirdPartyPosition thirdPartyPosition = new ThirdPartyPosition();
+        org.springframework.beans.BeanUtils.copyProperties(hrThirdPartyPositionDO, thirdPartyPosition);
+        thirdPartyPosition.setSalaryDiscuss(hrThirdPartyPositionDO.getSalaryDiscuss() != 0);
+        thirdPartyPosition.setSalaryBottom(hrThirdPartyPositionDO.getSalaryBottom() / 1000);
+        thirdPartyPosition.setSalaryTop(hrThirdPartyPositionDO.getSalaryTop() / 1000);
+        String occupations = hrThirdPartyPositionDO.getOccupation();
+        String[] occupationsArr = occupations.split(",");
+        thirdPartyPosition.setOccupation(Arrays.asList(occupationsArr));
+        return thirdPartyPosition;
+    }
+
+    public boolean compareCity(List<String> newCityList, List<String> mappingCityList) {
         if(newCityList == null || mappingCityList == null){
             return false;
         }
@@ -328,10 +341,9 @@ public class LiePinReceiverHandler {
         return false;
     }
 
-    private boolean getPositionFlag(String msgBody) {
+    public boolean getPositionFlag(JSONObject msgObject) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            String flag = jsonObject.getString("positionFlag");
+            String flag = msgObject.getString("positionFlag");
             if(StringUtils.isBlank(flag)){
                 return false;
             }
@@ -346,10 +358,9 @@ public class LiePinReceiverHandler {
         return false;
     }
 
-    private JobPositionDO getOldJobPositionFromMq(String msgBody, boolean salaryDiscuss) {
+    public JobPositionDO getOldJobPositionFromMq(JSONObject msgObject, boolean salaryDiscuss) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            JSONObject jobPositionJSON = JSONObject.parseObject(jsonObject.getString("oldPosition"));
+            JSONObject jobPositionJSON = JSONObject.parseObject(msgObject.getString("oldPosition"));
             JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON, salaryDiscuss);
             log.info("============jobPositionDO:{}=============", jobPositionDO);
             return jobPositionDO;
@@ -359,10 +370,9 @@ public class LiePinReceiverHandler {
         return null;
     }
 
-    private JobPositionDO getUpdateJobPositionFromMq(String msgBody, boolean salaryDiscuss) {
+    public JobPositionDO getUpdateJobPositionFromMq(JSONObject msgObject, boolean salaryDiscuss) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            JSONObject jobPositionJSON = JSONObject.parseObject(jsonObject.getString("params"));
+            JSONObject jobPositionJSON = JSONObject.parseObject(msgObject.getString("params"));
             JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON, salaryDiscuss);
             log.info("============jobPositionDO:{}=============", jobPositionDO);
             return jobPositionDO;
@@ -597,13 +607,11 @@ public class LiePinReceiverHandler {
      * @author cjm
      * @date 2018/6/13
      */
-    private Integer requireValidEditId(String msgBody) throws UnsupportedEncodingException {
+    public Integer requireValidEditId(JSONObject msgObject) throws UnsupportedEncodingException {
 
-        JSONObject jsonObject = JSONObject.parseObject(msgBody);
+        log.info("职位操作的rabitmq的参数是========" + msgObject.toJSONString());
 
-        log.info("职位操作的rabitmq的参数是========" + jsonObject.toJSONString());
-
-        Integer positionId = jsonObject.getInteger("id");
+        Integer positionId = msgObject.getInteger("id");
 
         if (positionId == null) {
             log.info("===============传入id为空=================");
@@ -652,7 +660,7 @@ public class LiePinReceiverHandler {
      * @author cjm
      * @date 2018/6/13
      */
-    private HrThirdPartyAccountDO getLiepinToken(int positionId) throws Exception {
+    public HrThirdPartyAccountDO getLiepinToken(int positionId) throws Exception {
 
         int channel = 2;
 
@@ -740,7 +748,7 @@ public class LiePinReceiverHandler {
      * @author cjm
      * @date 2018/6/10
      */
-    private void editSinglePosition(LiePinPositionVO liePinPositionVO, String liePinToken, JobPositionLiepinMappingDO mappingDO) throws BIZException {
+    public void editSinglePosition(LiePinPositionVO liePinPositionVO, String liePinToken, JobPositionLiepinMappingDO mappingDO) throws BIZException {
         // 猎聘修改职位api必填字段
 
         liePinPositionVO.setEjob_extRefid(String.valueOf(mappingDO.getId()));
@@ -812,7 +820,7 @@ public class LiePinReceiverHandler {
      * @author cjm
      * @date 2018/6/11
      */
-    private void downShelfOldSinglePosition(JobPositionLiepinMappingDO jobPositionMapping, String liepinToken) {
+    public void downShelfOldSinglePosition(JobPositionLiepinMappingDO jobPositionMapping, String liepinToken) {
 
         List<JobPositionLiepinMappingDO> list = new ArrayList<>();
 
@@ -1056,5 +1064,4 @@ public class LiePinReceiverHandler {
         }
         return jobPositionDO;
     }
-
 }
