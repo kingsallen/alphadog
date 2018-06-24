@@ -760,7 +760,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 break;
             }
         }
-
+        if(tags.length() < 1){
+            return "";
+        }
         return tags.substring(0, tags.length() - 1);
     }
 

@@ -448,8 +448,8 @@ public class LiePinReceiverHandler {
                     // 获取职位所在城市codeList
                     List<Integer> rePublishCityCodes = jobPositionCityList.stream().map(jobPositionCityDO -> jobPositionCityDO.getCode()).collect(Collectors.toList());
 
-                    // 通过职位id和code获取JobPositionLiepinMapping表的信息，此表存的是仟寻请求猎聘生成的职位主键id等信息的映射
-                    List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByPidAndCode(id, rePublishCityCodes);
+                    // 通过职位id和code获取已经下架的JobPositionLiepinMapping表的信息，此表存的是仟寻请求猎聘生成的职位主键id等信息的映射
+                    List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getDownShelfMappingDataByPidAndCode(id, rePublishCityCodes);
 
                     if (liepinMappingDOList == null || liepinMappingDOList.size() < 1) {
                         log.info("===============未在猎聘发布过，不需要重新发布================");

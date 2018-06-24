@@ -2489,6 +2489,7 @@ public class PositionService {
      * @return
      */
     public Response updatePosition(String param) {
+        logger.info("===================批量上下架开始===================");
         JSONObject obj = JSONObject.parseObject(param);
         int position_id = obj.getIntValue("id");
         int account_id = obj.getIntValue("accountId");
