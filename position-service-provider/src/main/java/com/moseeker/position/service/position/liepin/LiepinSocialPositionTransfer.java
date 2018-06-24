@@ -501,7 +501,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
      * @author cjm
      * @date 2018/6/22
      */
-    private int updateExistPosition(StringBuilder republishIds, String liePinToken, Integer positionId, LiePinPositionVO liePinPositionVO) throws Exception {
+    public int updateExistPosition(StringBuilder republishIds, String liePinToken, Integer positionId, LiePinPositionVO liePinPositionVO) throws Exception {
         // 更新上架后的状态
         if (republishIds.length() > 0) {
             List<Integer> republishIdList = new ArrayList<>();
@@ -588,7 +588,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     }
 
 
-    private List<Integer> upshelfJobPosition(StringBuilder republishIds, String liePinToken, Integer positionId) throws Exception {
+    public List<Integer> upshelfJobPosition(StringBuilder republishIds, String liePinToken, Integer positionId) throws Exception {
         byte state = 1;
         JSONObject liePinJsonObject = new JSONObject();
         // 去掉末尾的逗号
