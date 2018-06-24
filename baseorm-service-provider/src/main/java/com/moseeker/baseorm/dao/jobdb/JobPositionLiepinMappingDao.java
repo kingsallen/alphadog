@@ -51,10 +51,9 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
         return getDatas(query);
     }
 
-    public List<JobPositionLiepinMappingDO> getMappingDataByTitleAndUserId(String jobTitle, Integer liepinUserId, Integer positionId) {
+    public List<JobPositionLiepinMappingDO> getMappingDataByPidAndUserId(Integer liepinUserId, Integer positionId) {
         Query query = new Query.QueryBuilder()
-                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_TITLE.getName(), jobTitle)
-                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), liepinUserId)
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), liepinUserId)
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.getName(), positionId)
                 .buildQuery();
         return getDatas(query);

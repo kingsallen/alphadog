@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.useraccounts.service.impl.LiePinUserAccountBindHandler;
@@ -12,6 +13,8 @@ import com.moseeker.useraccounts.service.thirdpartyaccount.EmailNotification;
 import com.moseeker.useraccounts.utils.AESUtils;
 import com.rabbitmq.client.AMQP;
 import com.taobao.api.domain.BizResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,6 +36,8 @@ import java.util.List;
 @EnableScheduling
 public class RefreshLiepinTokenSchedule {
 
+    static Logger logger = LoggerFactory.getLogger(RefreshLiepinTokenSchedule.class);
+
     @Autowired
     private HRThirdPartyAccountDao thirdPartyAccountDao;
 
@@ -45,12 +50,15 @@ public class RefreshLiepinTokenSchedule {
     static List<String> emailList = new ArrayList<>();
 
     // {秒数} {分钟} {小时} {日期} {月份} {星期} {年份(可为空)}
-    @Scheduled(fixedDelay = 120000)
+//    @Scheduled(fixedDelay = 120000)
+//    @Scheduled(cron="0 0 0 1,15 * ?")
     public void refreshLiepinToken() {
         try {
             List<HrThirdPartyAccountDO> successRequest = new ArrayList<>();
             List<Integer> failRequest = new ArrayList<>();
             List<HrThirdPartyAccountDO> failUpdate = new ArrayList<>();
+            // 猎聘返回用户名或密码错误时，需要重新绑定
+
             emailList = emailNotification.getRefreshMails();
             int channel = ChannelType.LIEPIN.getValue();
             int bindState = BindingStatus.BOUND.getValue();
@@ -68,18 +76,21 @@ public class RefreshLiepinTokenSchedule {
             for(HrThirdPartyAccountDO accountDO : accountDOS){
                 try{
                     accountDO = bindHandler.bind(accountDO, null);
+                    logger.info("========userId:{}, token:{}==============", accountDO.getExt(), accountDO.getExt2());
                     successRequest.add(accountDO);
                 }catch (BIZException e){
                     e.printStackTrace();
                     failRequest.add(accountDO.getId());
                 }
             }
-
+            // todo 密码错误时，绑定状态置为0
             if(successRequest.size() > 0){
                 for(HrThirdPartyAccountDO accountDO : successRequest){
-                    int row = thirdPartyAccountDao.updateBindToken(accountDO.getExt2(), Integer.parseInt(accountDO.getExt()), accountDO.getId());
-                    if(row < 1){
-                        failUpdate.add(accountDO);
+                    if(StringUtils.isNotNullOrEmpty(accountDO.getExt()) && StringUtils.isNotNullOrEmpty(accountDO.getExt2())){
+                        int row = thirdPartyAccountDao.updateBindToken(accountDO.getExt2(), Integer.parseInt(accountDO.getExt()), accountDO.getId());
+                        if(row < 1){
+                            failUpdate.add(accountDO);
+                        }
                     }
                 }
             }

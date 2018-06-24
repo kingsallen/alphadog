@@ -70,7 +70,13 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
                 hrThirdPartyAccount.setExt2(token);
                 hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
                 logger.info("==================请求绑定成功，hrThirdPartyAccount:{}==================", hrThirdPartyAccount);
-            }else{
+            }
+//            else if("2".equals(String.valueOf(result.get("code"))) || "用户名或密码错误".equals(result.getString("message"))){
+//                hrThirdPartyAccount.setExt("");
+//                hrThirdPartyAccount.setExt2("");
+//                hrThirdPartyAccount.setBinding((short) BindingStatus.UNBIND.getValue());
+//            }
+            else{
                 throw new BIZException(Integer.parseInt(String.valueOf(result.get("code"))), String.valueOf(result.get("message")));
             }
         }catch (BIZException e){
@@ -88,6 +94,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
             hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
             hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_TIMEOUT_MSG);
         }
+        logger.info("==================hrThirdPartyAccount:{}==================", hrThirdPartyAccount);
         return hrThirdPartyAccount;
     }
 
