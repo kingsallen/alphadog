@@ -64,6 +64,16 @@ public class LiepinTransferCheck extends AbstractTransferCheck<ThirdPartyPositio
             // 必须设置福利特色
             if(thirdPartyPosition.getFeature() == null || thirdPartyPosition.getFeature().size() < 1){
                 errorMsg.add(FEATURE_NOT_EMPTY);
+            }else if(thirdPartyPosition.getFeature() != null || thirdPartyPosition.getFeature().size() > 1){
+                int index = 0;
+                for(String singleFeature : thirdPartyPosition.getFeature()){
+                    if(StringUtils.isNullOrEmpty(singleFeature)){
+                        index ++;
+                    }
+                }
+                if(thirdPartyPosition.getFeature().size() == index){
+                    errorMsg.add(FEATURE_NOT_EMPTY);
+                }
             }
 
             return errorMsg;
