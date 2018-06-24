@@ -102,13 +102,14 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 .execute();
     }
 
-    public List<JobPositionLiepinMappingDO> getMappingDataByPidAndCode(int positionId, List<Integer> rePublishCityCodes) {
+    public List<JobPositionLiepinMappingDO> getDownShelfMappingDataByPidAndCode(int positionId, List<Integer> rePublishCityCodes) {
         if(rePublishCityCodes.isEmpty()){
             return new ArrayList<>();
         }
         return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(positionId))
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.in(rePublishCityCodes))
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE.eq((byte)0))
                 .fetchInto(JobPositionLiepinMappingDO.class);
     }
 
