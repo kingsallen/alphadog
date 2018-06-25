@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition implements Serializable {
 
-    private static final long serialVersionUID = -1468284452;
+    private static final long serialVersionUID = -398628564;
 
     private Integer   id;
     private Integer   positionId;
@@ -55,6 +55,8 @@ public class HrThirdPartyPosition implements Serializable {
     private String    addressName;
     private String    departmentName;
     private Integer   count;
+    private String    feature;
+    private Byte      internship;
 
     public HrThirdPartyPosition() {}
 
@@ -89,6 +91,8 @@ public class HrThirdPartyPosition implements Serializable {
         this.addressName = value.addressName;
         this.departmentName = value.departmentName;
         this.count = value.count;
+        this.feature = value.feature;
+        this.internship = value.internship;
     }
 
     public HrThirdPartyPosition(
@@ -121,7 +125,9 @@ public class HrThirdPartyPosition implements Serializable {
         String    companyName,
         String    addressName,
         String    departmentName,
-        Integer   count
+        Integer   count,
+        String    feature,
+        Byte      internship
     ) {
         this.id = id;
         this.positionId = positionId;
@@ -153,6 +159,8 @@ public class HrThirdPartyPosition implements Serializable {
         this.addressName = addressName;
         this.departmentName = departmentName;
         this.count = count;
+        this.feature = feature;
+        this.internship = internship;
     }
 
     public Integer getId() {
@@ -395,6 +403,22 @@ public class HrThirdPartyPosition implements Serializable {
         this.count = count;
     }
 
+    public String getFeature() {
+        return this.feature;
+    }
+
+    public void setFeature(String feature) {
+        this.feature = feature;
+    }
+
+    public Byte getInternship() {
+        return this.internship;
+    }
+
+    public void setInternship(Byte internship) {
+        this.internship = internship;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrThirdPartyPosition (");
@@ -429,6 +453,8 @@ public class HrThirdPartyPosition implements Serializable {
         sb.append(", ").append(addressName);
         sb.append(", ").append(departmentName);
         sb.append(", ").append(count);
+        sb.append(", ").append(feature);
+        sb.append(", ").append(internship);
 
         sb.append(")");
         return sb.toString();

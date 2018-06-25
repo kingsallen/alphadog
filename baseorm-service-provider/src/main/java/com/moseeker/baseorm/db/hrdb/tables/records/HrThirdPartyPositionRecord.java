@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 1255470952;
+    private static final long serialVersionUID = 1030444279;
 
     /**
      * Setter for <code>hrdb.hr_third_party_position.id</code>.
@@ -450,17 +450,31 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个
+     * Setter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个，用于回显猎聘第三方补填页面福利特色，由于猎聘职位福利特色可以编辑，且不影响仟寻职位福利特色，因此加了这个字段保存福利特色相关信息
      */
     public void setFeature(String value) {
         set(30, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个
+     * Getter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个，用于回显猎聘第三方补填页面福利特色，由于猎聘职位福利特色可以编辑，且不影响仟寻职位福利特色，因此加了这个字段保存福利特色相关信息
      */
     public String getFeature() {
         return (String) get(30);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_third_party_position.internship</code>. 是否使用实习职位的额度,0：不使用，1：使用
+     */
+    public void setInternship(Byte value) {
+        set(31, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_third_party_position.internship</code>. 是否使用实习职位的额度,0：不使用，1：使用
+     */
+    public Byte getInternship() {
+        return (Byte) get(31);
     }
 
     // -------------------------------------------------------------------------
@@ -489,7 +503,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     /**
      * Create a detached, initialised HrThirdPartyPositionRecord
      */
-    public HrThirdPartyPositionRecord(Integer id, Integer positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String address, String occupation, String syncFailReason, Short useCompanyAddress, Integer thirdPartyAccountId, String department, Integer salaryMonth, Integer feedbackPeriod, Short salaryDiscuss, Integer salaryBottom, Integer salaryTop, Integer practiceSalary, Byte practicePerWeek, Byte practiceSalaryUnit, Integer companyId, Integer addressId, Integer departmentId, String companyName, String addressName, String departmentName, Integer count, String feature) {
+    public HrThirdPartyPositionRecord(Integer id, Integer positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String address, String occupation, String syncFailReason, Short useCompanyAddress, Integer thirdPartyAccountId, String department, Integer salaryMonth, Integer feedbackPeriod, Short salaryDiscuss, Integer salaryBottom, Integer salaryTop, Integer practiceSalary, Byte practicePerWeek, Byte practiceSalaryUnit, Integer companyId, Integer addressId, Integer departmentId, String companyName, String addressName, String departmentName, Integer count, String feature, Byte internship) {
         super(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION);
 
         set(0, id);
@@ -523,5 +537,6 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
         set(28, departmentName);
         set(29, count);
         set(30, feature);
+        set(31, internship);
     }
 }
