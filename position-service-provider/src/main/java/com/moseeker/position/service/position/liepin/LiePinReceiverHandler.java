@@ -185,7 +185,7 @@ public class LiePinReceiverHandler {
             HrThirdPartyAccountDO hrThirdPartyAccountDO = getLiepinToken(positionId);
 
             if(hrThirdPartyAccountDO == null){
-                log.info("=============查不到用户猎聘第三方账号信息，本次操作结束===========");
+                log.info("=============positionId:{}查不到用户猎聘第三方账号信息，本次操作结束===========", positionId);
                 return;
             }
 
@@ -194,7 +194,7 @@ public class LiePinReceiverHandler {
             int hrAccountId = hrThirdPartyAccountDO.getId();
 
             if (StringUtils.isBlank(liePinToken)) {
-                log.info("============token为空=============");
+                log.info("============hrAccountId:{}, token为空=============", hrAccountId);
                 return;
             }
 
@@ -811,7 +811,7 @@ public class LiePinReceiverHandler {
 
         list.add(jobPositionMapping);
 
-        downShelfOldPositions(list, jobPositionMapping.getJobId(), liepinToken);
+        downShelfOldPositions(list, jobPositionMapping.getPositionId(), liepinToken);
     }
 
     /**

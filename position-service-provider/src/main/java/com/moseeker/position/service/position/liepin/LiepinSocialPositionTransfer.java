@@ -323,7 +323,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
                 // 生成职位发布到猎聘时需要的id,插入一条mapping数据
                 JobPositionLiepinMappingDO jobPositionLiepinMappingDO = new JobPositionLiepinMappingDO();
-                jobPositionLiepinMappingDO.setJobId(positionId);
+                jobPositionLiepinMappingDO.setPositionId(positionId);
                 jobPositionLiepinMappingDO.setCityCode(Integer.parseInt(cityCode));
                 jobPositionLiepinMappingDO.setJobTitle(liePinPositionVO.getEjob_title());
                 jobPositionLiepinMappingDO.setLiepinUserId(liePinUserId);
