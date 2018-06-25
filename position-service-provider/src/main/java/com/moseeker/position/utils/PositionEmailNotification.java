@@ -28,7 +28,9 @@ public class PositionEmailNotification {
 
     static List<String> devMails = new ArrayList<>();
 
-    static List<String> liepinDevmails = new ArrayList<>();
+    public static List<String> liepinDevmails = new ArrayList<>();
+
+    public static List<String> liepinProdMails = new ArrayList<>();
 
     static String br = "<br/>";
 
@@ -36,7 +38,8 @@ public class PositionEmailNotification {
 
     static {
         devMails = getEmails("position_sync.email.dev");
-        liepinDevmails = getEmails("position_liepin_operation.email");
+        liepinDevmails = getEmails("position_liepin_operation_dev.email");
+        liepinProdMails = getEmails("position_liepin_operation.email");
     }
 
     private static String getConfigString(String key) {
@@ -364,8 +367,7 @@ public class PositionEmailNotification {
      * @date  2018/6/22
      * @return
      */
-    public void sendSyncLiepinFailEmail(LiePinPositionVO liePinPositionVO, Exception syncException, String ext){
-            List<String> mails = liepinDevmails;
+    public void sendSyncLiepinFailEmail(List<String> mails, LiePinPositionVO liePinPositionVO, Exception syncException, String ext){
             if (mails == null || mails.size() == 0) {
                 logger.warn("没有配置同步邮箱地址!");
                 return;

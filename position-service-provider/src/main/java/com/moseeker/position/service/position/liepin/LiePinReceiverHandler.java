@@ -150,7 +150,7 @@ public class LiePinReceiverHandler {
             return true;
         } catch (Exception e) {
             log.error("调用api批量修改职位信息时发生错误，职位ids:{}", remainIds);
-            emailNotification.sendSyncLiepinFailEmail(null, e, "调用api批量修改职位信息时发生错误，职位ids:" + remainIds);
+            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, null, e, "调用api批量修改职位信息时发生错误，职位ids:" + remainIds);
             e.printStackTrace();
         }
 
@@ -315,9 +315,11 @@ public class LiePinReceiverHandler {
                 downShelfOldPositions(liepinMappingDOList, positionId, liePinToken);
             }
 
-        } catch (Exception e) {
-            emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, "【调用api批量修改职位信息时发生错误】:" + msgBody);
-            log.error(e.getMessage(), e);
+        } catch (BIZException e){
+            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, "【调用api批量修改职位信息时发生错误】:" + msgBody);
+        } catch (Exception e1) {
+            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, liePinPositionVO, e1, "【调用api批量修改职位信息时发生错误】:" + msgBody);
+            log.error(e1.getMessage(), e1);
         }
     }
 
@@ -417,7 +419,7 @@ public class LiePinReceiverHandler {
             return true;
         } catch (Exception e) {
             log.error("==============猎聘api批量处理职位下架失败, ids:{}==============", ids);
-            emailNotification.sendSyncLiepinFailEmail(null, e, "【调用api猎聘api批量处理职位下架失败】positionids:" + ids);
+            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails,null, e, "【调用api猎聘api批量处理职位下架失败】positionids:" + ids);
             e.printStackTrace();
         }
         return false;
@@ -509,16 +511,16 @@ public class LiePinReceiverHandler {
                         }
                     }
                 } catch (BIZException e) {
-                    emailNotification.sendSyncLiepinFailEmail(null, e, "【调用api猎聘api处理职位重新发布失败】positionid:" + id);
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails,null, e, "【调用api猎聘api处理职位重新发布失败】positionid:" + id);
                     liepinMappingDao.updateErrMsgBatch(positionId, e.getMessage());
                 } catch (Exception e1) {
-                    emailNotification.sendSyncLiepinFailEmail(null, e1, "【调用api猎聘api处理职位重新发布失败】positionid:" + id);
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, null, e1, "【调用api猎聘api处理职位重新发布失败】positionid:" + id);
                     liepinMappingDao.updateErrMsgBatch(idsList, e1.getMessage());
                 }
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            emailNotification.sendSyncLiepinFailEmail(null, e, "【调用api猎聘api处理职位重新发布失败】msgBody:" + msgBody);
+            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, null, e, "【调用api猎聘api处理职位重新发布失败】msgBody:" + msgBody);
         }
 
     }
@@ -600,16 +602,16 @@ public class LiePinReceiverHandler {
                     liepinMappingDao.updateState(requestIds, (byte) 0);
                 } catch (BIZException e) {
                     log.info("=============下架猎聘职位失败：requestIds:{},失败信息:msg:{}=================", requestIds.toString(), e.getMessage());
-                    emailNotification.sendSyncLiepinFailEmail(null, e, "【调用api猎聘api处理职位下架失败】positionid:" + requestIds.toString());
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, null, e, "【调用api猎聘api处理职位下架失败】positionid:" + requestIds.toString());
                 } catch (Exception e1) {
-                    emailNotification.sendSyncLiepinFailEmail(null, e1, "【调用api猎聘api处理职位下架失败】positionid:" + requestIds.toString());
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, null, e1, "【调用api猎聘api处理职位下架失败】positionid:" + requestIds.toString());
                     liepinMappingDao.updateErrMsgBatch(requestIds, e1.getMessage());
                 }
 
             }
 
         } catch (Exception e) {
-            emailNotification.sendSyncLiepinFailEmail(null, e, "【调用api猎聘api处理职位下架失败】positionid:" + (ids == null ? msgBody : ids.toString()));
+            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, null, e, "【调用api猎聘api处理职位下架失败】positionid:" + (ids == null ? msgBody : ids.toString()));
             log.error(e.getMessage(), e);
         }
     }
@@ -785,9 +787,9 @@ public class LiePinReceiverHandler {
 
         } catch (BIZException e) {
             liepinMappingDao.updateErrMsg(mappingDO.getId(), e.getMessage());
-            emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, "【调用api猎聘api处理职位编辑失败】mappingId为:" + mappingDO.getId());
+            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, "【调用api猎聘api处理职位编辑失败】mappingId为:" + mappingDO.getId());
         } catch (Exception e1) {
-            emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e1, "【调用api猎聘api处理职位编辑失败】mappingId为:" + mappingDO.getId());
+            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, liePinPositionVO, e1, "【调用api猎聘api处理职位编辑失败】mappingId为:" + mappingDO.getId());
             liepinMappingDao.updateErrMsg(mappingDO.getId(), e1.getMessage());
         }
     }
@@ -857,9 +859,9 @@ public class LiePinReceiverHandler {
 
             } catch (BIZException e) {
                 liepinMappingDao.updateErrMsgBatch(downShelfPositonListDb, e.getMessage());
-                emailNotification.sendSyncLiepinFailEmail(null, e, "【downShelfOldPositions批量下架猎聘职位失败】mappingIds为:" + ids + ",");
+                emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails,null, e, "【downShelfOldPositions批量下架猎聘职位失败】mappingIds为:" + ids + ",");
             } catch (Exception e1) {
-                emailNotification.sendSyncLiepinFailEmail(null, e1, "【downShelfOldPositions批量下架猎聘职位失败】mappingIds为:" + ids + ",");
+                emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, null, e1, "【downShelfOldPositions批量下架猎聘职位失败】mappingIds为:" + ids + ",");
                 liepinMappingDao.updateErrMsgBatch(downShelfPositonListDb, "后台异常");
                 log.error("===============向猎聘请求下架失败，mapping表主键ids:{}===============", ids);
             }
@@ -907,7 +909,7 @@ public class LiePinReceiverHandler {
         //设置请求头
         Map<String, String> headers = new HashMap<>();
 
-        headers.put("channel", "qianxun");
+        headers.put("channel", "qianxun_online");
 
         headers.put("token", liePinToken);
 
