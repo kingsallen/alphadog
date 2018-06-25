@@ -13,7 +13,9 @@ service SearchengineServices {
 
     common_struct.Response companyQuery(1: string keyWords,2:string citys,3:string industry,4:string scale,5:i32 page,6:i32 pageSize)throws (1: common_struct.BIZException e);
 
-    common_struct.Response positionQuery(1: string keyWords,2:string citys,3:string industry,4:string salaryCode,5:i32 page,6:i32 pageSize, 7:string startTime,8:string endTime,9:i32 companyId,10:i32 teamId,11:i32 motherCompanyId,12:i32 order,13:i32 moduleId)throws (1: common_struct.BIZException e);
+    common_struct.Response positionQuery(1: string keyWords,2:string citys,3:string industry,4:string salaryCode,5:i32 page,6:i32 pageSize,
+                                         7:string startTime,8:string endTime,9:i32 companyId,10:i32 teamId,11:i32 motherCompanyId,12:i32 order,
+                                         13:i32 moduleId,14:string candidateSource)throws (1: common_struct.BIZException e);
 
     common_struct.Response queryAwardRanking(1: list<i32> companyIds, 2: string timespan, 3: i32 pageSize, 4: i32 pageNum,5:string keyword,6:i32 filter)throws (1: common_struct.BIZException e);
 
@@ -36,6 +38,8 @@ service SearchengineServices {
     common_struct.Response queryPositionMini(1: map<string,string> params) throws (1: common_struct.BIZException e);
 
     list<i32> queryCompanyTagUserIdList(1: map<string,string> params) throws (1: common_struct.BIZException e);
+
+    i32 queryCompanyTagUserIdListCount(1: map<string,string> params) throws (1: common_struct.BIZException e);
 
     i32 talentSearchNum(1: map<string,string> params) throws (1: common_struct.BIZException e);
 

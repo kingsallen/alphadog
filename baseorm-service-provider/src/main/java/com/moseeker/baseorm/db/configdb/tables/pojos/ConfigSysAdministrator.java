@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysAdministrator implements Serializable {
 
-    private static final long serialVersionUID = 673498953;
+    private static final long serialVersionUID = -638731771;
 
     private Integer   id;
     private String    name;
@@ -34,6 +34,7 @@ public class ConfigSysAdministrator implements Serializable {
     private Integer   loginCount;
     private Timestamp lastLoginTime;
     private Timestamp createTime;
+    private Integer   authGroupId;
 
     public ConfigSysAdministrator() {}
 
@@ -47,6 +48,7 @@ public class ConfigSysAdministrator implements Serializable {
         this.loginCount = value.loginCount;
         this.lastLoginTime = value.lastLoginTime;
         this.createTime = value.createTime;
+        this.authGroupId = value.authGroupId;
     }
 
     public ConfigSysAdministrator(
@@ -58,7 +60,8 @@ public class ConfigSysAdministrator implements Serializable {
         Integer   isDisable,
         Integer   loginCount,
         Timestamp lastLoginTime,
-        Timestamp createTime
+        Timestamp createTime,
+        Integer   authGroupId
     ) {
         this.id = id;
         this.name = name;
@@ -69,6 +72,7 @@ public class ConfigSysAdministrator implements Serializable {
         this.loginCount = loginCount;
         this.lastLoginTime = lastLoginTime;
         this.createTime = createTime;
+        this.authGroupId = authGroupId;
     }
 
     public Integer getId() {
@@ -143,6 +147,14 @@ public class ConfigSysAdministrator implements Serializable {
         this.createTime = createTime;
     }
 
+    public Integer getAuthGroupId() {
+        return this.authGroupId;
+    }
+
+    public void setAuthGroupId(Integer authGroupId) {
+        this.authGroupId = authGroupId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ConfigSysAdministrator (");
@@ -156,6 +168,7 @@ public class ConfigSysAdministrator implements Serializable {
         sb.append(", ").append(loginCount);
         sb.append(", ").append(lastLoginTime);
         sb.append(", ").append(createTime);
+        sb.append(", ").append(authGroupId);
 
         sb.append(")");
         return sb.toString();

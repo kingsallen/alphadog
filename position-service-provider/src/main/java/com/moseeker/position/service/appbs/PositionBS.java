@@ -139,12 +139,12 @@ public class PositionBS {
                 results.addAll(syncPositionToThirdParty(positionForm,moseekerJobPosition,accounts));
             } catch(BIZException e){
                 logger.error("batch Sync Position error bizexception:{},positionForm:{}",e,JSON.toJSONString(positionForm));
-                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),JSON.toJSONString(positionForm),e.getMessage()));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),JSON.toJSONString(positionForm),e.getMessage(),-1));
                 continue;
             } catch(Exception e){
                 logger.error("batch Sync Position error exception:{},positionForm:{}",e,JSON.toJSONString(positionForm));
                 emailNotification.sendSyncFailureMail(positionForm, null, e);
-                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),JSON.toJSONString(positionForm),"batch Sync Position error"));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),JSON.toJSONString(positionForm),"batch Sync Position error",-1));
                 continue;
             }
 
@@ -192,18 +192,18 @@ public class PositionBS {
             //验证渠道是否存在
             ChannelType channelType=ChannelType.instaceFromInteger(channel);
             if(channelType==null){
-                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.CHANNEL_NOT_EXIST.getMessage()));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.CHANNEL_NOT_EXIST.getMessage(),channel));
                 continue;
             }
             //验证是否已经有相同渠道职位准备绑定
             if(channelTypeSet.contains(channelType)){
-                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_PREPARE_BIND.getMessage()));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_PREPARE_BIND.getMessage(),channel));
                 continue;
             }
 
             //验证并获取对应渠道账号
             if (!positionSyncHandler.containsThirdAccount(accounts,channel)) {
-                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST.getMessage()));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST.getMessage(),channel));
                 continue;
             }
             HrThirdPartyAccountDO avaliableAccount = positionSyncHandler.getThirdAccount(accounts,channel);
@@ -211,7 +211,7 @@ public class PositionBS {
 
             //验证是否有正在绑定的第三方职位
             if(positionSyncHandler.containsAlreadySyncThirdPosition(avaliableAccount.getId(),moseekerJobPosition.getId(),alreadySyncPosition)){
-                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_SYNCING_IN_DATABASE.getMessage()));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,ResultMessage.AREADY_SYNCING_IN_DATABASE.getMessage(),channel));
                 continue;
             }
 
@@ -221,7 +221,7 @@ public class PositionBS {
             //验证同步数据中的参数
             List<String> checkMsg= transferPreHandleUtil.checkBeforeTransfer(requestType,channelType,p,moseekerJobPosition);
             if(!StringUtils.isEmptyList(checkMsg)){
-                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,JSON.toJSONString(checkMsg)));
+                results.add(positionSyncHandler.createFailResult(moseekerJobPosition.getId(),json,JSON.toJSONString(checkMsg),channel));
                 continue;
             }
 

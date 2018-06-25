@@ -65,7 +65,7 @@ public class TalentpoolSearchengine {
             result = searchUtil.handleData(response, "users");
             return result;
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
             if (e.getMessage().contains("all shards")) {
                 return result;
             }
@@ -117,7 +117,7 @@ public class TalentpoolSearchengine {
             result = searchUtil.handleData(response, "users");
             return result;
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
             if (e.getMessage().contains("all shards")) {
                 return result;
             }
@@ -127,6 +127,7 @@ public class TalentpoolSearchengine {
     /*
      查询企业标签的人才数量
      */
+    @CounterIface
     public int talentSearchNum(Map<String, String> params) {
         Map<String, Object> result=new HashMap<>();
         TransportClient client=null;
@@ -145,7 +146,6 @@ public class TalentpoolSearchengine {
             logger.info(JSON.toJSONString(result));
             logger.info("=========================================");
             int total=(int)((long)result.get("totalNum"));
-            logger.info(JSON.toJSONString(result));
             return total;
         } catch (Exception e) {
             logger.info(e.getMessage(),e);
@@ -169,27 +169,29 @@ public class TalentpoolSearchengine {
             client=searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_INDEX).setQuery(query);
-            builder.addAggregation(this.handleAllApplicationCountAgg(params))
-                    .addAggregation(this.handleAllcountAgg(params))
-                    .addAggregation(this.handleAggInfo(params,"entry_count",12,0))
-                    .addAggregation(this.handleAggInfo(params,"entry_count_app",12,1))
-                    .addAggregation(this.handleAggInfo(params,"interview_ok_count",10,0))
-                    .addAggregation(this.handleAggInfo(params,"interview_ok_count_app",10,1))
-                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count",7,0))
-                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count_app",7,1))
-                    .addAggregation(this.handleAggInfo(params,"is_viewed_count",4,0))
-                    .addAggregation(this.handleAggInfo(params,"is_viewed_count_app",4,1))
-                    .addAggregation(this.handleAggInfo(params,"is_not_suitable",13,0))
-                    .addAggregation(this.handleAggInfo(params,"is_not_suitable_app",13,1))
-                    .addAggregation(this.handleAggInfo(params,"not_viewed_count",3,1))
-                    .addAggregation(this.handleAggInfo(params,"not_viewed_count_app",3,1));
+            builder.addAggregation(this.handleAllApplicationCountAgg(params))        //当前状态下的申请数量数量
+//                   .addAggregation(this.handleAllcountAgg(params))
+                    .addAggregation(this.handleAggInfo(params,"all_count_app","",1))//所有申请的数量
+                    .addAggregation(this.handleAggInfo(params,"all_count","",0))//所有申请的人数
+                    .addAggregation(this.handleAggInfo(params,"entry_count",12+"",0))//入职的人数
+                    .addAggregation(this.handleAggInfo(params,"entry_count_app",12+"",1))//入职的申请书
+                    .addAggregation(this.handleAggInfo(params,"interview_ok_count",10+"",0))//面试通过的人数
+                    .addAggregation(this.handleAggInfo(params,"interview_ok_count_app",10+"",1))//面试通过的申请数
+                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count",7+"",0))//初审通过的人数
+                    .addAggregation(this.handleAggInfo(params,"first_trial_ok_count_app",7+"",1))//初审通过的申请数
+                    .addAggregation(this.handleAggInfo(params,"is_viewed_count",4+"",0))
+                    .addAggregation(this.handleAggInfo(params,"is_viewed_count_app",4+"",1))
+                    .addAggregation(this.handleAggInfo(params,"is_not_suitable",13+"",0))
+                    .addAggregation(this.handleAggInfo(params,"is_not_suitable_app",13+"",1))
+                    .addAggregation(this.handleAggInfo(params,"not_viewed_count",3+"",0))
+                    .addAggregation(this.handleAggInfo(params,"not_viewed_count_app",3+"",1));
             builder.setSize(0);
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleAggData(response);
             return result;
         } catch (Exception e) {
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
             if (e.getMessage().contains("all shards")) {
                 return result;
             }
@@ -203,20 +205,8 @@ public class TalentpoolSearchengine {
     public List<Integer> getUserListByCompanyTag(Map<String,String> params){
         List<Integer> list=new ArrayList<>();
         try{
-            TransportClient client=searchUtil.getEsClient();
-            QueryBuilder query = this.getQueryByTag(params);
-            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
-            String[] returnParams={"user.profiles.profile.user_id"};
-            builder.setFetchSource(returnParams,null);
-            builder.setSize(100000);
-            logger.info("============================================");
-            logger.info(builder.toString());
-            logger.info("============================================");
-            SearchResponse response = builder.execute().actionGet();
+            SearchResponse response=this.handlerSearch(params);
             Map<String,Object> result = searchUtil.handleData(response,"userIdList");
-            logger.info("============================================");
-            logger.info(JSON.toJSONString(result));
-            logger.info("============================================");
             if(result!=null&&!result.isEmpty()){
                 long totalNum=(long)result.get("totalNum");
                 if(totalNum>0){
@@ -224,14 +214,50 @@ public class TalentpoolSearchengine {
                 }
             }
         }catch(Exception e){
-            logger.info(e.getMessage()+"=================");
+            logger.info(e.getMessage()+"=================",e);
         }
-        logger.info("==========================");
-        logger.info(JSON.toJSONString(list));
-        logger.info("==========================");
         return list;
     }
 
+    /*
+     获取tag_id的标签的条数
+     */
+    @CounterIface
+    public int getUserListByCompanyTagCount(Map<String,String> params){
+        try{
+            SearchResponse response=this.handlerSearch(params);
+            Map<String,Object> result = searchUtil.handleData(response,"userIdList");
+            logger.info("============================================");
+            logger.info(JSON.toJSONString(result));
+            logger.info("============================================");
+            if(result!=null&&!result.isEmpty()){
+                long totalNum=(long)result.get("totalNum");
+                return (int)totalNum;
+            }
+        }catch(Exception e){
+            logger.info(e.getMessage()+"=================",e);
+        }
+        return 0;
+    }
+
+    private SearchResponse handlerSearch(Map<String,String> params){
+        TransportClient client=searchUtil.getEsClient();
+        QueryBuilder query = this.getQueryByTag(params);
+        SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+        String[] returnParams={"user.profiles.profile.user_id"};
+        builder.setFetchSource(returnParams,null);
+        builder.addSort("user.profiles.profile.user_id",SortOrder.DESC);
+        if(StringUtils.isNotNullOrEmpty(params.get("size"))){
+            builder.setSize(0);
+        }else{
+            this.handlerPage(params,builder);
+        }
+        logger.info("============================================");
+        logger.info(builder.toString());
+        logger.info("============================================");
+        SearchResponse response = builder.execute().actionGet();
+        return response;
+    }
     /*
      根据筛选规则获取符合该规则的人才id
      */
@@ -493,21 +519,16 @@ public class TalentpoolSearchengine {
     private void handlerResult(Map<String,Object> result,List<Integer> userIdList){
         List<Map<String,Object>> dataList=(List<Map<String,Object>>)result.get("userIdList");
         for(Map<String,Object> map:dataList){
-            logger.info("============================================userIdList");
             if(map!=null&&!map.isEmpty()){
                 Map<String,Object> userMap=(Map<String,Object>)map.get("user");
-                logger.info("============================================user");
                 if(userMap!=null&&!userMap.isEmpty()){
                     Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
-                    logger.info("============================================profiles");
                     logger.info(JSON.toJSONString(profiles));
                     if(profiles!=null&&!profiles.isEmpty()){
                         Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
-                        logger.info("============================================profile");
                         logger.info(JSON.toJSONString(profile));
                         if(profile!=null&&!profile.isEmpty()){
                             int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
-                            logger.info("============================================user_id"+userId);
                             userIdList.add(userId);
                         }
                     }
@@ -719,12 +740,21 @@ public class TalentpoolSearchengine {
                 this.orderByTalent(publisherIdList,hrId,companyId,builder);
             }else {
                 if (publisherIdList.size() > 1) {
-                    builder.addSort("user.hr_all_" + hrId + "_last_submit_time", SortOrder.DESC);
+                    String sortName="user.hr_all_" + hrId + "_last_submit_time";
+                    if(this.getIsExistField(sortName)) {
+                        builder.addSort(sortName, SortOrder.DESC);
+                    }
                 } else {
                     if (this.isMianHr(Integer.parseInt(hrId))) {
-                        builder.addSort("user.hr_" + publisherIdList.get(0) + "_last_submit_time", SortOrder.DESC);
+                        String sortName="user.hr_" + publisherIdList.get(0) + "_last_submit_time";
+                        if(this.getIsExistField(sortName)) {
+                            builder.addSort(sortName, SortOrder.DESC);
+                        }
                     } else {
-                        builder.addSort("user.hr_" + hrId + "_last_submit_time", SortOrder.DESC);
+                        String sortName="user.hr_" + hrId + "_last_submit_time";
+                        if(this.getIsExistField(sortName)) {
+                            builder.addSort(sortName, SortOrder.DESC);
+                        }
                     }
                 }
             }
@@ -744,18 +774,27 @@ public class TalentpoolSearchengine {
      */
     private void orderByTalent(List<Integer> publisherIdList,String hrId,String companyId,SearchRequestBuilder builder){
         if (publisherIdList.size() > 1) {
-            builder.addSort("user.field_talent_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+            String sortName="user.field_talent_order.hr_all_"+hrId+"_order";
+            if(this.getIsExistField(sortName)){
+                builder.addSort(sortName, SortOrder.DESC);
+            }
+
         }else{
             if(this.isMianHr(Integer.parseInt(hrId))){
                 logger.info("==============================");
-                builder.addSort("user.field_talent_order.hr_all_" + hrId + "_order", SortOrder.DESC);
+                String sortName="user.field_talent_order.hr_all_"+hrId+"_order";
+                if(this.getIsExistField(sortName)){
+                    builder.addSort(sortName, SortOrder.DESC);
+                }
+
             }else{
                 UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
                 logger.info("++++++++++++++++++++++++++++++++");
-                builder.addSort("user.field_talent_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
+                String sortName="user.field_talent_order.hr_all_"+record.getId() +"_order";
+                if(this.getIsExistField(sortName)){
+                    builder.addSort(sortName, SortOrder.DESC);
+                }
 //                builder.addSort("user.field_talent_order.hr_" + hrId + "_order", SortOrder.DESC);
-
-
             }
         }
     }
@@ -765,16 +804,25 @@ public class TalentpoolSearchengine {
     private void orderByApp(List<Integer> publisherIdList,String hrId,String companyId,SearchRequestBuilder builder){
 
         if (publisherIdList.size() > 1) {
-            builder.addSort("user.field_order.hr_all_"+hrId+"_order", SortOrder.DESC);
+            String sortName="user.field_order.hr_all_"+hrId+"_order";
+            if(this.getIsExistField(sortName)){
+                builder.addSort(sortName, SortOrder.DESC);
+            }
         }else{
             if(this.isMianHr(Integer.parseInt(hrId))){
                 logger.info("==============================");
-                builder.addSort("user.field_order.hr_all_" + hrId + "_order", SortOrder.DESC);
+                String sortName="user.field_order.hr_all_"+hrId+"_order";
+                if(this.getIsExistField(sortName)){
+                    builder.addSort(sortName, SortOrder.DESC);
+                }
             }else{
 //                UserHrAccountRecord record=this.getMainAccount(Integer.parseInt(companyId));
                 logger.info("++++++++++++++++++++++++++++++++");
 //                builder.addSort("user.field_order.hr_all_" + record.getId() + "_order", SortOrder.DESC);
-                builder.addSort("user.field_order.hr_" + hrId + "_order", SortOrder.DESC);
+                String sortName="user.field_order.hr_"+hrId+"_order";
+                if(this.getIsExistField(sortName)){
+                    builder.addSort(sortName, SortOrder.DESC);
+                }
             }
         }
     }
@@ -1139,7 +1187,8 @@ public class TalentpoolSearchengine {
         String companyId=params.get("company_id");
         String positionStatus=params.get("position_status");
         if( StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
-                &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)&&StringUtils.isNullOrEmpty(positionStatus)){
+                &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)
+                &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))){
             return null;
         }
         StringBuffer sb=new StringBuffer();
@@ -1156,7 +1205,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
             sb.append("val.status=="+positionStatus+"&&");
         }
-        if(StringUtils.isNotNullOrEmpty(companyId)){
+        if(StringUtils.isNotNullOrEmpty(companyId)&& StringUtils.isNullOrEmpty(tagIds)){
             sb.append("val.company_id=="+companyId+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
@@ -1665,7 +1714,7 @@ public class TalentpoolSearchengine {
         return build;
     }
 
-    private AbstractAggregationBuilder handleAggInfo(Map<String,String> params,String name,int progressStatus,int type){
+    private AbstractAggregationBuilder handleAggInfo(Map<String,String> params,String name,String progressStatus,int type){
         MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric(name)
                 .initScript(new Script(getAggInitScript()))
                 .mapScript(new Script(this.getAggMapScript(params,progressStatus+"",type)))
@@ -1826,8 +1875,33 @@ public class TalentpoolSearchengine {
         return record;
     }
 
-
-
+    /*
+     判断某一字段是否存在的查询
+     */
+    private boolean getIsExistField(String name){
+        TransportClient client = searchUtil.getEsClient();
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        QueryBuilder cityfilter = QueryBuilders.existsQuery(name);
+        ((BoolQueryBuilder) query).must(cityfilter);
+        SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+        builder.setSize(0);
+        logger.info("=========查询排序字段是否存在==================");
+        logger.info(builder.toString());
+        logger.info("============================================");
+        SearchResponse response = builder.execute().actionGet();
+        Map<String,Object> result = searchUtil.handleData(response, "isExists");
+        if(StringUtils.isEmptyMap(result)){
+            return false;
+        }else{
+            long count=(long)result.get("totalNum");
+            if(count>0){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
 }
 
 

@@ -16,6 +16,24 @@ public class PositionVeryEastForm {
     private List<Language> language;
     private int computerLevel;
     private int indate;
+    private int salaryTop;
+    private int salaryBottom;
+
+    public int getSalaryTop() {
+        return salaryTop;
+    }
+
+    public void setSalaryTop(int salaryTop) {
+        this.salaryTop = salaryTop;
+    }
+
+    public int getSalaryBottom() {
+        return salaryBottom;
+    }
+
+    public void setSalaryBottom(int salaryBottom) {
+        this.salaryBottom = salaryBottom;
+    }
 
     public int getAgeBottom(){
         if(StringUtils.isEmptyList(age)){

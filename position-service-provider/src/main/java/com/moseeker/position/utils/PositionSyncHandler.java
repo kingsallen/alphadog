@@ -51,12 +51,13 @@ public class PositionSyncHandler {
 
 
     //创建失败结果
-    public PositionSyncResultPojo createFailResult(int positionId,String data,String reason){
+    public PositionSyncResultPojo createFailResult(int positionId,String data,String reason,int channel){
         PositionSyncResultPojo result=new PositionSyncResultPojo();
         result.setPosition_id(positionId);
         result.setData(data);
         result.setSync_fail_reason(reason);
         result.setSync_status(PositionSyncResultPojo.FAIL);
+        result.setChannel(channel);
         return result;
     }
     //创建普通结果

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysAdministrator extends TableImpl<ConfigSysAdministratorRecord> {
 
-    private static final long serialVersionUID = -1433882812;
+    private static final long serialVersionUID = -2127477670;
 
     /**
      * The reference instance of <code>configdb.config_sys_administrator</code>
@@ -95,6 +95,11 @@ public class ConfigSysAdministrator extends TableImpl<ConfigSysAdministratorReco
      * The column <code>configdb.config_sys_administrator.create_time</code>. 创建时间
      */
     public final TableField<ConfigSysAdministratorRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+
+    /**
+     * The column <code>configdb.config_sys_administrator.auth_group_id</code>.
+     */
+    public final TableField<ConfigSysAdministratorRecord, Integer> AUTH_GROUP_ID = createField("auth_group_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("-1", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * Create a <code>configdb.config_sys_administrator</code> table reference

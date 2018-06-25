@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -90,10 +91,13 @@ public class SearchengineServiceImpl implements Iface {
 
 	@Override
 	public Response positionQuery(String keyWords, String citys, String industry, String salaryCode, int page,
-								  int pageSize, String startTime, String endTime,int companyId,int teamId,int motherCompanyId,int order,int moduleId) throws BIZException,TException {
+								  int pageSize, String startTime, String endTime,int companyId,int teamId,int motherCompanyId,int order,int moduleId,
+								  String candidateSource
+	) throws BIZException,TException {
 		// TODO Auto-generated method stub
 		try{
-			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime,companyId,teamId,motherCompanyId,order,moduleId);
+			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime,
+					endTime,companyId,teamId,motherCompanyId,order,moduleId,candidateSource);
 			if(res==null){
 				return ResponseUtils.success("");
 			}
@@ -240,7 +244,18 @@ public class SearchengineServiceImpl implements Iface {
 			throw ExceptionUtils.convertException(e);		}
 	}
 
-    @Override
+	@Override
+	public int queryCompanyTagUserIdListCount(Map<String, String> params) throws BIZException, TException {
+		try{
+			int result=talentpoolSearchengine.getUserListByCompanyTagCount(params);
+			return result;
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
     public Response queryProfileFilterUserIdList(List<Map<String, String>> filterMapList, int page_number, int page_size) throws BIZException,TException {
 
         try{
