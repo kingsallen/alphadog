@@ -76,6 +76,9 @@ public class ChatDao {
     @Autowired
     HrCompanyAccountDao hrCompanyAccountDao;
 
+    @Autowired
+    private ChatFactory chatFactory;
+
     ThreadPool threadPool = ThreadPool.Instance;
 
     /**
@@ -671,7 +674,7 @@ public class ChatDao {
                 chatVO.setMsgType(hrWxHrChatDO.getMsgType());
                 chatVO.setPositionId(hrWxHrChatDO.getPid());
                 chatVO.setSpeaker(hrWxHrChatDO.getSpeaker());
-                return chatVO;
+                return chatFactory.outputHandler(chatVO);
             }).collect(Collectors.toList());
         } else {
             return new ArrayList<>();

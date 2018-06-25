@@ -19,6 +19,7 @@ import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.constant.ChatVoiceConstant;
 import com.moseeker.chat.exception.VoiceErrorEnum;
 import com.moseeker.chat.service.entity.ChatDao;
+import com.moseeker.chat.service.entity.ChatFactory;
 import com.moseeker.chat.utils.EmailSendUtil;
 import com.moseeker.chat.utils.Page;
 import com.moseeker.chat.utils.UpDownLoadUtil;
@@ -89,6 +90,9 @@ public class ChatService {
 
     @Autowired
     private HrChatVoiceDao hrChatVoiceDao;
+
+    @Autowired
+    private ChatFactory chatFactory;
 
     private ThreadPool pool = ThreadPool.Instance;
 
@@ -471,7 +475,7 @@ public class ChatService {
                         chatVO.setOrigin(ChatOrigin.Human.getValue());
                         chatVO.setOrigin_str(ChatOrigin.Human.getName());
                     }
-                    chatVOList.add(chatVO);
+                    chatVOList.add(chatFactory.outputHandler(chatVO));
                 }
                 //Lists.reverse(chatDOList);
                 Collections.reverse(chatVOList);
@@ -975,7 +979,7 @@ public class ChatService {
                     chatVO.setOrigin(origin);
                     chatVO.setId(id);
                     chatVO.setPositionId(positionId);
-                    chatVOList.add(chatVO);
+                    chatVOList.add(chatFactory.outputHandler(chatVO));
                 }
             }
             chatHistory.setChatList(chatVOList);

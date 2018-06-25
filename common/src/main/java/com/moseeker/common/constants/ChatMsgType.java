@@ -31,7 +31,13 @@ public enum ChatMsgType {
     VOICE("voice") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getMsgType()) && "voice".equals(chatVO.getMsgType());
+            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getMsgType());
+        }
+    },
+    JOB("job") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getContent());
         }
     }
     ;
