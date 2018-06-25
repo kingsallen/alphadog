@@ -28,13 +28,18 @@ public class PositionEmailNotification {
 
     static List<String> devMails = new ArrayList<>();
 
-    static List<String> liepinDevmails = new ArrayList<>();
+    public static List<String> liepinDevmails = new ArrayList<>();
+
+    public static List<String> liepinProdMails = new ArrayList<>();
 
     static String br = "<br/>";
 
+    static String emailLevel = getConfigString("chaos.email.level");
+
     static {
         devMails = getEmails("position_sync.email.dev");
-        liepinDevmails = getEmails("position_liepin_operation.email");
+        liepinDevmails = getEmails("position_liepin_operation_dev.email");
+        liepinProdMails = getEmails("position_liepin_operation.email");
     }
 
     private static String getConfigString(String key) {
@@ -83,7 +88,7 @@ public class PositionEmailNotification {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append("【职位同步失败】");
+            titleBuilder.append("【").append(emailLevel).append("】").append("【职位同步失败】");
 
             if(channel!=null) {
                 ChannelType channelType = channel.getChannelType();
@@ -143,7 +148,7 @@ public class PositionEmailNotification {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append("【职位同步验证失败】");
+            titleBuilder.append("【").append(emailLevel).append("】").append("【职位同步验证失败】");
 
             if(channel!=null) {
                 ChannelType channelType = channel.getChannelType();
@@ -218,7 +223,7 @@ public class PositionEmailNotification {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append(title);
+            titleBuilder.append("【").append(emailLevel).append("】").append(title);
 
             if(channelType!=null) {
                 titleBuilder.append(":【").append(channelType.getAlias()).append("】");
@@ -278,7 +283,7 @@ public class PositionEmailNotification {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append("【第三方渠道信息刷新失败】");
+            titleBuilder.append("【").append(emailLevel).append("】").append("【第三方渠道信息刷新失败】");
 
             if(channel!=null) {
                 ChannelType channelType = channel.getChannelType();
@@ -362,8 +367,7 @@ public class PositionEmailNotification {
      * @date  2018/6/22
      * @return
      */
-    public void sendSyncLiepinFailEmail(LiePinPositionVO liePinPositionVO, Exception syncException, String ext){
-            List<String> mails = liepinDevmails;
+    public void sendSyncLiepinFailEmail(List<String> mails, LiePinPositionVO liePinPositionVO, Exception syncException, String ext){
             if (mails == null || mails.size() == 0) {
                 logger.warn("没有配置同步邮箱地址!");
                 return;

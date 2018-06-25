@@ -347,10 +347,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                             thirdPositionId = data.substring(1, data.length() - 1);
                             state = 1;
                             successSyncNum++;
-                            logger.info("==============hrThirdPartyPositionDO:{}================", hrThirdPartyPositionDO);
                         } else if (null != httpResult) {
                             if (httpResult.getIntValue("code") == 1007) {
-                                //token失效 todo
+                                //token失效
                                 errorMsg = "会员名、用户名或密码错误，请重新绑定账号";
                             }else{
                                 errorMsg = httpResult.getString("message");
@@ -364,14 +363,14 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     } catch (Exception e) {
                         flag = false;
                         logger.error(e.getMessage(), e);
-                        emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, null);
+                        emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, liePinPositionVO, e, null);
                     }
 
                     // 如果同步失败，将mapping记录删除
                     int id = jobPositionLiepinMappingDO.getId();
                     if (!flag) {
                         liepinMappingDao.deleteData(jobPositionLiepinMappingDO);
-                        emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, null, httpResultJson);
+                        emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, null, httpResultJson);
                     } else {
                         // 更改数据库mapping的状态
                         liepinMappingDao.updateJobInfoById(id, StringUtils.isNullOrEmpty(thirdPositionId) ? null : Integer.parseInt(thirdPositionId), state, errorMsg);
@@ -379,7 +378,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 } catch (Exception e) {
                     e.printStackTrace();
                     errCityCodeList.add(cityCode);
-                    emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, null);
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, liePinPositionVO, e, null);
                     continue;
                 }
 
@@ -399,10 +398,10 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
             }catch (BIZException e){
                 errorMsg = e.getMessage();
-                emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, null);
+                emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, null);
             } catch (Exception e1) {
                 logger.error(e1.getMessage(), e1);
-                emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e1, null);
+                emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, liePinPositionVO, e1, null);
             }
 
             logger.info("============cityNum:{},successRePublishNum:{},successSyncNum:{},editNum:{}==============", cityNum, successRePublishNum, successSyncNum, editNum);
@@ -426,7 +425,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, null);
+            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, liePinPositionVO, e, null);
         }
 
     }
@@ -466,7 +465,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 } catch (BIZException e) {
                     e.printStackTrace();
                     logger.info("============同步已存在的城市，修改该城市的职位信息时未操作成功，message:{}===========", e.getMessage());
-                    emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, editResponse);
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, editResponse);
                     throw e;
                 }
             }
@@ -477,10 +476,12 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     private void downShelfPosition(int positionId, List<String> downShelfId, String liePinToken, LiePinPositionVO liePinPositionVO) throws Exception {
         logger.info("=================需要下架的职位downShelfId:{}=================", downShelfId);
+        List<Integer> downShelfIntList = new ArrayList<>();
         if (downShelfId.size() > 0) {
             StringBuilder ids = new StringBuilder();
             for (String id : downShelfId) {
                 ids.append(id).append(",");
+                downShelfIntList.add(Integer.parseInt(id));
             }
             if(ids.length() > 0){
                 String downShelfResponse = "";
@@ -490,10 +491,11 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                     downShelfResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(jsonObject), liePinToken, LiepinPositionOperateUrl.liepinPositionEnd);
                     logger.info("==================downShelfResponse:{}==================", downShelfResponse);
                     receiverHandler.requireValidResult(downShelfResponse, positionId, ChannelType.LIEPIN.getValue());
+                    liepinMappingDao.updateState(downShelfIntList, (byte) 0);
                 } catch (BIZException e) {
                     e.printStackTrace();
                     logger.error("============职位下架失败，message:{}===========", e.getMessage());
-                    emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, downShelfResponse);
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, downShelfResponse);
                     throw e;
                 }
             }
@@ -517,7 +519,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             try{
                 republishIdList = upshelfJobPosition(republishIds, liePinToken, positionId);
             }catch (Exception e){
-                emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, null);
+                logger.info(e.getMessage(), e);
+                emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, null);
             }
 
             logger.info("===========上架后返回此次上架职位的数量republishIdList:{}============", republishIdList);
@@ -535,7 +538,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 } catch (BIZException e) {
                     e.printStackTrace();
                     logger.info("============同步已存在的城市，修改该城市的职位信息时未操作成功，message:{}===========", e.getMessage());
-                    emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, editResponse);
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, editResponse);
                     throw e;
                 }
             }
@@ -550,12 +553,11 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         String t = DateUtils.dateToPattern(new Date(), "yyyyMMdd");
         liePinJsonObject.put("t", t);
         String sign = Md5Utils.getMD5SortKey(Md5Utils.mapToList(liePinJsonObject), liePinJsonObject);
-        logger.info("===========sign:{}===========", sign);
         liePinJsonObject.put("sign", sign);
         logger.info("=============liePinJsonObject:{}=============", liePinJsonObject);
         //设置请求头
         Map<String, String> headers = new HashMap<>();
-        headers.put("channel", "qianxun");
+        headers.put("channel", "qianxun_online");
         headers.put("token", liePinToken);
 
         return HttpClientUtil.sentHttpPostRequest(LiepinPositionOperateUrl.liepinPositionSync, headers, liePinJsonObject);
@@ -639,7 +641,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         StringBuilder occupation = new StringBuilder();
         // 获取所有猎聘社招职能
         List<DictLiepinOccupationDO> allSocialOccupation = liepinOccupationDao.getAllSocialOccupation();
+
         List<String> allSocialCode = allSocialOccupation.stream().map(socialOccupation -> socialOccupation.getOtherCode()).collect(Collectors.toList());
+
         List<String> moseekerCodeList = new ArrayList<>();
         int index = 0;
 
