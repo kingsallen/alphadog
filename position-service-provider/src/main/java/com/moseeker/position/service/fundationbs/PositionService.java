@@ -94,6 +94,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -130,8 +131,6 @@ public class PositionService {
     private HrTeamDao hrTeamDao;
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
-    @Autowired
-    private HRThirdPartyAccountDao thirdPartyAccountDao;
     @Autowired
     private HRThirdPartyPositionDao thirdpartyPositionDao;
     @Autowired
@@ -628,8 +627,6 @@ public class PositionService {
         }
     }
 
-    private CountDownLatch batchHandlerCountDown = new CountDownLatch(1);
-
     /**
      * 批量ATS职位适配器，包装batchHandlerJobPostion方法，
      * 原来准备在执行完batchHandlerJobPostion后加上更新职位福利特色
@@ -641,7 +638,8 @@ public class PositionService {
      */
 
     public JobPostionResponse batchHandlerJobPostionAdapter(BatchHandlerJobPostion batchHandlerJobPosition) throws TException {
-        JobPostionResponse response = batchHandlerJobPostion(batchHandlerJobPosition);
+        CountDownLatch batchHandlerCountDown = new CountDownLatch(1);
+        JobPostionResponse response = batchHandlerJobPostion(batchHandlerJobPosition, batchHandlerCountDown);
         batchHandlerCountDown.countDown();
         return response;
     }
@@ -653,7 +651,7 @@ public class PositionService {
      * @return
      */
     @CounterIface
-    public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) throws TException {
+    public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition, CountDownLatch batchHandlerCountDown) throws TException {
         logger.info("------开始批量修改职位--------");
         // 提交的数据为空
         if (batchHandlerJobPosition == null || com.moseeker.common.util.StringUtils.isEmptyList(batchHandlerJobPosition.getData())) {
@@ -715,7 +713,7 @@ public class PositionService {
                             jobPositionRecord.setStatus((byte) PositionStatus.BANNED.getValue());
                             jobPositionIds.add(jobPositionRecord.getId());
                             // todo 猎聘api新增
-                            if(jobPositionRecord.getCandidateSource() == 0){
+                            if (jobPositionRecord.getCandidateSource() == 0) {
                                 batchLiepinPositionDownShelf.add(jobPositionRecord.getId());
                             }
                         }
@@ -733,8 +731,11 @@ public class PositionService {
                 // 猎聘api对接下架职位 todo 这行代码是新增
                 logger.info("==================batchLiepinPositionDownShelf:{}=================", batchLiepinPositionDownShelf);
                 pool.startTast(() -> {
-                    batchHandlerCountDown.await();
-                    return receiverHandler.batchHandlerLiepinDownShelfOperation(batchLiepinPositionDownShelf);
+                    if (batchHandlerCountDown.await(60, TimeUnit.SECONDS)) {
+                        return receiverHandler.batchHandlerLiepinDownShelfOperation(batchLiepinPositionDownShelf);
+                    } else {
+                        throw new RuntimeException("rabbitmq线程等待超时");
+                    }
                 });
             }
         }
@@ -1110,14 +1111,17 @@ public class PositionService {
             }
             // 批量请求猎聘编辑职位信息 todo 代码是猎聘api新增
             Map<Integer, JobPositionRecord> oldJobMap = new HashMap<>();
-            for(JobPositionRecord jobPositionRecord : jobPositionOldRecordList){
-                if(jobPositionRecord != null){
+            for (JobPositionRecord jobPositionRecord : jobPositionOldRecordList) {
+                if (jobPositionRecord != null) {
                     oldJobMap.put(jobPositionRecord.getId(), jobPositionRecord);
                 }
             }
             pool.startTast(() -> {
-                batchHandlerCountDown.await();
-                return receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateRecordList, oldJobMap);
+                if (batchHandlerCountDown.await(60, TimeUnit.SECONDS)) {
+                    return receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateRecordList, oldJobMap);
+                } else {
+                    throw new RuntimeException("rabbitmq线程等待超时");
+                }
             });
 
         } catch (Exception e) {
@@ -1209,17 +1213,18 @@ public class PositionService {
         form.setChannels(channels);
         syncData.add(form);
     }
-    private CountDownLatch batchDeleteHandlerCountDown = new CountDownLatch(1);
+
     /**
      * 删除职位
      */
     public Response deleteJobposition(Integer id, Integer companyId, String jobnumber, Integer sourceId) {
-        Response response = deleteJobPositionAdaptor(id, companyId, jobnumber, sourceId);
+        CountDownLatch batchDeleteHandlerCountDown = new CountDownLatch(1);
+        Response response = deleteJobPositionAdaptor(id, companyId, jobnumber, sourceId, batchDeleteHandlerCountDown);
         batchDeleteHandlerCountDown.countDown();
         return response;
     }
 
-    public Response deleteJobPositionAdaptor(Integer id, Integer companyId, String jobnumber, Integer sourceId){
+    private Response deleteJobPositionAdaptor(Integer id, Integer companyId, String jobnumber, Integer sourceId, CountDownLatch batchDeleteHandlerCountDown) {
         JobPositionRecord jobPositionRecord = null;
         if (id != null && id.intValue() != 0) {
             Query queryUtil = new Query.QueryBuilder().where("id", id).buildQuery();
@@ -1254,8 +1259,11 @@ public class PositionService {
             jobPositionIds.add(jobPositionRecord.getId());
             logger.info("===============jobPositionIds:{}==================", jobPositionIds);
             pool.startTast(() -> {
-                batchDeleteHandlerCountDown.await();
-                return receiverHandler.batchHandlerLiepinDownShelfOperation(jobPositionIds);
+                if (batchDeleteHandlerCountDown.await(60, TimeUnit.SECONDS)) {
+                    return receiverHandler.batchHandlerLiepinDownShelfOperation(jobPositionIds);
+                } else {
+                    throw new RuntimeException("rabbitmq线程等待超时");
+                }
             });
 
             return ResponseUtils.success(0);
@@ -2507,6 +2515,13 @@ public class PositionService {
      * @return
      */
     public Response updatePosition(String param) {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        Response response = updatePositionAdaptor(param, countDownLatch);
+        countDownLatch.countDown();
+        return response;
+    }
+
+    private Response updatePositionAdaptor(String param, CountDownLatch countDownLatch) {
         logger.info("===================批量上下架开始===================");
         JSONObject obj = JSONObject.parseObject(param);
         int position_id = obj.getIntValue("id");
@@ -2531,6 +2546,40 @@ public class PositionService {
                 JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
                 jobPositionDao.updateRecord(record);
                 updateField.put("updateTime", dateStr);
+
+                // 猎聘api新增
+                if (updateField.get("status") != null) {
+                    if (positionDO != null && (int) updateField.get("status") == 2 && positionDO.getStatus() == 0) {
+
+                        pool.startTast(() -> {
+                            if (countDownLatch.await(60, TimeUnit.SECONDS)) {
+                                List<Integer> ids = new ArrayList<>();
+                                ids.add(position_id);
+                                return receiverHandler.batchHandlerLiepinDownShelfOperation(ids);
+                            } else {
+                                throw new RuntimeException("rabbitmq线程等待超时");
+                            }
+                        });
+                    }
+                    else if (positionDO != null && (int) updateField.get("status") == 0 && positionDO.getStatus() == 2) {
+
+                        pool.startTast(() -> {
+                            if (countDownLatch.await(60, TimeUnit.SECONDS)) {
+                                JSONObject liePinJsonObject = new JSONObject();
+                                JSONArray jsonArray = new JSONArray();
+                                jsonArray.add(position_id);
+                                liePinJsonObject.put("id", jsonArray);
+                                String requestStr = JSONObject.toJSONString(liePinJsonObject);
+                                Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
+                                receiverHandler.handlerPositionLiepinReSyncOperation(requestMsg, null);
+                                return true;
+                            } else {
+                                throw new RuntimeException("rabbitmq线程等待超时");
+                            }
+                        });
+                    }
+                }
+
                 return ResponseUtils.success(updateField);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2539,7 +2588,6 @@ public class PositionService {
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_UPDATE_FAIL);
         }
-
     }
 
 

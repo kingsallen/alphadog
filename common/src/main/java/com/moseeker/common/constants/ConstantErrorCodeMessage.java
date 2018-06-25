@@ -183,7 +183,7 @@ public final class ConstantErrorCodeMessage {
     public static final String NO_AUTH_IMPORT_VERYEAST_PROFILE = "{'status':61016,'message':'该公司没有导入最佳东方简历的权限！'}";
     public static final String NO_SYNC_QX_POSITION = "{'status':61017,'message':'查询不到要同步的职位！'}";
     public static final String NO_SYNC_THIRD_PARTY_ACCOUNT = "{'status':61018,'message':'查询不到可发布的第三方账号！'}";
-    public static final String LIEPIN_REQUEST_RESPONSE_NULL = "{'status':61019,'message':'请求猎聘失败，http请求为空！'}";
+    public static final String LIEPIN_REQUEST_RESPONSE_NULL = "{'status':61019,'message':'猎聘同步职位暂无响应，请稍后再试！'}";
     public static final String LIEPIN_REQUEST_LIMIT = "{'status':61020,'message':'今日职位同步次数已达上限！'}";
 
 

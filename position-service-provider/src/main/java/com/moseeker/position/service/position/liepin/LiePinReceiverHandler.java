@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.BindingStatus;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -128,7 +129,7 @@ public class LiePinReceiverHandler {
                 oldJobPositionDO = BeanUtils.DBToStruct(JobPositionDO.class, oldRecord);
 
                 boolean positionFlag = false;
-                if(jobPositionDO.getStatus() == 0 && oldJobPositionDO.getStatus() == 1){
+                if(jobPositionDO.getStatus() == 0 && (oldJobPositionDO.getStatus() == 1 || oldJobPositionDO.getStatus() == 2)){
                     positionFlag = true;
                 }
 
@@ -182,6 +183,11 @@ public class LiePinReceiverHandler {
             int positionId = id;
 
             HrThirdPartyAccountDO hrThirdPartyAccountDO = getLiepinToken(positionId);
+
+            if(hrThirdPartyAccountDO == null){
+                log.info("=============查不到用户猎聘第三方账号信息，本次操作结束===========");
+                return;
+            }
 
             String liePinToken = hrThirdPartyAccountDO.getExt2();
 
@@ -269,12 +275,13 @@ public class LiePinReceiverHandler {
             // true表示标题变化了
             boolean isTitleChange = !jobPositionDO.getTitle().equals(updateJobPosition.getTitle());
 
-            if(!isCityChange && !isTitleChange){
+            // 不是下架状态的修改  city没有变化      title没有变化
+            if(!positionFlag && !isCityChange && !isTitleChange){
 
                 hrThirdPartyPositionDao.updateBindState(positionId, hrAccountId, 2, 1);
 
-            }else if(isCityChange){
-
+            }else if(isCityChange || positionFlag){
+                // 如果是city变化，或者是下架状态的修改，将同步状态置为0，未同步
                 hrThirdPartyPositionDao.updateBindState(positionId, hrAccountId, 2, 0);
 
             }
@@ -285,7 +292,7 @@ public class LiePinReceiverHandler {
                     for(JobPositionLiepinMappingDO mappingDO : liepinMappingDOList){
                         // 修改
                         if(mappingDO.getState() == 1){
-                            editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
+                            editSinglePosition(positionId, liePinPositionVO, liePinToken, mappingDO);
                         }
 
                     }
@@ -305,7 +312,7 @@ public class LiePinReceiverHandler {
             }else{
                 //  title变化，将之前所有的下架获取所有的jobMappingIds，新的发布
                 log.info("============title变化，将之前所有的下架获取所有的jobMappingIds，新的发布===============");
-                downShelfOldPositions(liepinMappingDOList, liePinToken);
+                downShelfOldPositions(liepinMappingDOList, positionId, liePinToken);
             }
 
         } catch (Exception e) {
@@ -438,6 +445,11 @@ public class LiePinReceiverHandler {
                 // 获取hr账号在猎聘token
                 HrThirdPartyAccountDO hrThirdPartyAccountDO = getLiepinToken(positionId);
 
+                if(hrThirdPartyAccountDO == null){
+                    log.info("=============查不到用户猎聘第三方账号信息，本次操作结束===========");
+                    return;
+                }
+
                 String liePinToken = hrThirdPartyAccountDO.getExt2();
 
                 int hrAccountId = hrThirdPartyAccountDO.getId();
@@ -489,7 +501,7 @@ public class LiePinReceiverHandler {
 
                             log.info("===================httpResultJson:{}=====================", httpResultJson);
 
-                            requireValidResult(httpResultJson);
+                            requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
 
                             liepinMappingDao.updateState(idsListDb, (byte) 1);
 
@@ -542,6 +554,11 @@ public class LiePinReceiverHandler {
                     // 获取hr账号在猎聘token
                     HrThirdPartyAccountDO hrThirdPartyAccountDO = getLiepinToken(positionId);
 
+                    if(hrThirdPartyAccountDO == null){
+                        log.info("=============查不到用户猎聘第三方账号信息，本次操作结束===========");
+                        return;
+                    }
+
                     String liePinToken = hrThirdPartyAccountDO.getExt2();
 
                     JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(id);
@@ -579,7 +596,7 @@ public class LiePinReceiverHandler {
 
 
                     // 猎聘返回code如果不是0，就抛异常
-                    requireValidResult(httpResultJson);
+                    requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
 
                     liepinMappingDao.updateState(requestIds, (byte) 0);
                 } catch (BIZException e) {
@@ -668,7 +685,8 @@ public class LiePinReceiverHandler {
         JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(positionId);
 
         if (jobPositionDO == null) {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
+//            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
+            return null;
         }
 
         int publisher = jobPositionDO.getPublisher();
@@ -677,7 +695,8 @@ public class LiePinReceiverHandler {
         HrThirdPartyAccountHrDO hrThirdDO = hrThirdPartyDao.getHrAccountInfo(publisher, channel);
 
         if (hrThirdDO == null) {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
+//            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
+            return null;
         }
 
         int thirdAccountId = hrThirdDO.getThirdPartyAccountId();
@@ -686,7 +705,8 @@ public class LiePinReceiverHandler {
         HrThirdPartyAccountDO thirdPartyAccountDO = thirdPartyAccountDao.getAccountById(thirdAccountId);
 
         if (thirdPartyAccountDO == null) {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
+//            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
+            return null;
         }
 
         return thirdPartyAccountDO;
@@ -748,7 +768,7 @@ public class LiePinReceiverHandler {
      * @author cjm
      * @date 2018/6/10
      */
-    public void editSinglePosition(LiePinPositionVO liePinPositionVO, String liePinToken, JobPositionLiepinMappingDO mappingDO) throws BIZException {
+    public void editSinglePosition(int positionId, LiePinPositionVO liePinPositionVO, String liePinToken, JobPositionLiepinMappingDO mappingDO) throws BIZException {
         // 猎聘修改职位api必填字段
 
         liePinPositionVO.setEjob_extRefid(String.valueOf(mappingDO.getId()));
@@ -766,48 +786,13 @@ public class LiePinReceiverHandler {
 
             log.info("============httpResultJson:{}===========", httpResultJson);
 
-            requireValidResult(httpResultJson);
+            requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
 
         } catch (BIZException e) {
             liepinMappingDao.updateErrMsg(mappingDO.getId(), e.getMessage());
             EmailSendUtil.sendWarnEmail("修改猎聘职位失败：mappingId为" + mappingDO.getId(), emailSubject);
         } catch (Exception e1) {
             EmailSendUtil.sendWarnEmail("修改猎聘职位失败：mappingId为" + mappingDO.getId(), emailSubject);
-            liepinMappingDao.updateErrMsg(mappingDO.getId(), e1.getMessage());
-        }
-    }
-
-    /**
-     * 上架单个职位，并没有上架多个职位的接口
-     *
-     * @param mappingDO 数据库liepingmapping表中针对当前pid的单个职位
-     * @return
-     * @author cjm
-     * @date 2018/6/10
-     */
-    private void upShelfOldSinglePosition(JobPositionLiepinMappingDO mappingDO, String liepinToken) {
-
-        JSONObject liePinJsonObject = new JSONObject();
-
-        liePinJsonObject.put("ejob_extRefids", mappingDO.getId());
-
-        try {
-
-            String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LiepinPositionOperateUrl.liepinPositionRepub);
-
-            requireValidResult(httpResultJson);
-
-            List<Integer> ids = new ArrayList<>();
-
-            ids.add(mappingDO.getId());
-
-            liepinMappingDao.updateState(ids, (byte) 1);
-
-        } catch (BIZException e) {
-            liepinMappingDao.updateErrMsg(mappingDO.getId(), e.getMessage());
-            EmailSendUtil.sendWarnEmail("上架猎聘职位失败：mappingId为" + mappingDO.getId(), emailSubject);
-        } catch (Exception e1) {
-            EmailSendUtil.sendWarnEmail("上架猎聘职位失败：mappingId为" + mappingDO.getId(), emailSubject);
             liepinMappingDao.updateErrMsg(mappingDO.getId(), e1.getMessage());
         }
     }
@@ -826,7 +811,7 @@ public class LiePinReceiverHandler {
 
         list.add(jobPositionMapping);
 
-        downShelfOldPositions(list, liepinToken);
+        downShelfOldPositions(list, jobPositionMapping.getJobId(), liepinToken);
     }
 
     /**
@@ -837,7 +822,7 @@ public class LiePinReceiverHandler {
      * @author cjm
      * @date 2018/6/11
      */
-    public void downShelfOldPositions(List<JobPositionLiepinMappingDO> liepinMappingDOList, String liepinToken) {
+    public void downShelfOldPositions(List<JobPositionLiepinMappingDO> liepinMappingDOList, int positionId, String liepinToken) {
 
         List<String> downShelfPositonList = new ArrayList<>();
 
@@ -871,7 +856,7 @@ public class LiePinReceiverHandler {
 
                 log.info("================httpResultJson:{}===============", httpResultJson);
 
-                requireValidResult(httpResultJson);
+                requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
 
                 liepinMappingDao.updateState(downShelfPositonListDb, (byte) 0);
 
@@ -886,7 +871,7 @@ public class LiePinReceiverHandler {
         }
     }
 
-    public JSONObject requireValidResult(String httpResultJson) throws BIZException {
+    public JSONObject requireValidResult(String httpResultJson, int positionId, int channel) throws BIZException {
 
         if (StringUtils.isBlank(httpResultJson)) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_RESPONSE_NULL);
@@ -903,9 +888,11 @@ public class LiePinReceiverHandler {
             log.info("==============httpResult:{}================", httpResult);
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_LIMIT);
         }else if (httpResult.getIntValue("code") != 0) {
-//            if(httpResult.getIntValue("code") == 1007){
-//                thirdPartyAccountDao.updateBindState(hrAccountId, BindingStatus.UNBIND.getValue());
-//            }
+            if(httpResult.getIntValue("code") == 1007){
+                String errMsg = "会员名、用户名或密码错误，请重新绑定账号";
+                hrThirdPartyPositionDao.updateErrmsg(errMsg, positionId, channel, 0);
+                throw ExceptionUtils.getBizException("{'status':-1,'message':'" + errMsg + "'}");
+            }
             log.info("==============httpResult:{}================", httpResult);
             throw ExceptionUtils.getBizException("{'status':-1,'message':'猎聘职位操作请求失败！" + httpResult.getString("message") + "'}");
         }
@@ -1032,12 +1019,12 @@ public class LiePinReceiverHandler {
         if (StringUtils.isNotBlank(jobPositionDO.getDepartment())) {
             jobPositionDO.setDepartment(jobPositionDO.getDepartment().replaceAll("\\s", ""));
         }
-        if (StringUtils.isNotBlank(jobPositionDO.getAccountabilities())) {
-            jobPositionDO.setAccountabilities(jobPositionDO.getAccountabilities().replaceAll("\\s", ""));
-        }
-        if (StringUtils.isNotBlank(jobPositionDO.getRequirement())) {
-            jobPositionDO.setRequirement(jobPositionDO.getRequirement().replaceAll("\\s", ""));
-        }
+//        if (StringUtils.isNotBlank(jobPositionDO.getAccountabilities())) {
+//            jobPositionDO.setAccountabilities(jobPositionDO.getAccountabilities().replaceAll("\\s", ""));
+//        }
+//        if (StringUtils.isNotBlank(jobPositionDO.getRequirement())) {
+//            jobPositionDO.setRequirement(jobPositionDO.getRequirement().replaceAll("\\s", ""));
+//        }
         if (StringUtils.isNotBlank(jobPositionDO.getLanguage())) {
             jobPositionDO.setLanguage(jobPositionDO.getLanguage().replaceAll("\\s", ""));
         }
