@@ -15,7 +15,7 @@ import java.util.*;
  **/
 public class Md5Utils {
 
-    private static String SECRET_KEY = "8ba9496a47d33f6ea4d1b658697f723e";
+    private static String SECRET_KEY = "EA36911A20A58DB1C41D0631094DE514";
 
     private static Logger logger = LoggerFactory.getLogger(Md5Utils.class);
 

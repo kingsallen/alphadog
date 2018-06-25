@@ -557,7 +557,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         logger.info("=============liePinJsonObject:{}=============", liePinJsonObject);
         //设置请求头
         Map<String, String> headers = new HashMap<>();
-        headers.put("channel", "qianxun_online");
+        headers.put("channel", "qianxun");
         headers.put("token", liePinToken);
 
         return HttpClientUtil.sentHttpPostRequest(LiepinPositionOperateUrl.liepinPositionSync, headers, liePinJsonObject);
