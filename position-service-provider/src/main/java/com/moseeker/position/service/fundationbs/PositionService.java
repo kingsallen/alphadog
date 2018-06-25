@@ -2543,23 +2543,23 @@ public class PositionService {
                             }
                         });
                     }
-                    else if (positionDO != null && (int) updateField.get("status") == 0 && positionDO.getStatus() == 2) {
-
-                        pool.startTast(() -> {
-                            if (countDownLatch.await(60, TimeUnit.SECONDS)) {
-                                JSONObject liePinJsonObject = new JSONObject();
-                                JSONArray jsonArray = new JSONArray();
-                                jsonArray.add(position_id);
-                                liePinJsonObject.put("id", jsonArray);
-                                String requestStr = JSONObject.toJSONString(liePinJsonObject);
-                                Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
-                                receiverHandler.handlerPositionLiepinReSyncOperation(requestMsg, null);
-                                return true;
-                            } else {
-                                throw new RuntimeException("rabbitmq线程等待超时");
-                            }
-                        });
-                    }
+//                    else if (positionDO != null && (int) updateField.get("status") == 0 && positionDO.getStatus() == 2) {
+//
+//                        pool.startTast(() -> {
+//                            if (countDownLatch.await(60, TimeUnit.SECONDS)) {
+//                                JSONObject liePinJsonObject = new JSONObject();
+//                                JSONArray jsonArray = new JSONArray();
+//                                jsonArray.add(position_id);
+//                                liePinJsonObject.put("id", jsonArray);
+//                                String requestStr = JSONObject.toJSONString(liePinJsonObject);
+//                                Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
+//                                receiverHandler.handlerPositionLiepinReSyncOperation(requestMsg, null);
+//                                return true;
+//                            } else {
+//                                throw new RuntimeException("rabbitmq线程等待超时");
+//                            }
+//                        });
+//                    }
                 }
 
                 return ResponseUtils.success(updateField);

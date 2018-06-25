@@ -595,24 +595,22 @@ public class LiePinReceiverHandler {
 
                     log.info("===================httpResultJson:{}=====================", httpResultJson);
 
-
                     // 猎聘返回code如果不是0，就抛异常
                     requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
 
                     liepinMappingDao.updateState(requestIds, (byte) 0);
                 } catch (BIZException e) {
                     log.info("=============下架猎聘职位失败：requestIds:{},失败信息:msg:{}=================", requestIds.toString(), e.getMessage());
-                    EmailSendUtil.sendWarnEmail("下架猎聘职位失败：" + requestIds.toString(), emailSubject);
+                    emailNotification.sendSyncLiepinFailEmail(null, e, "【调用api猎聘api处理职位下架失败】positionid:" + requestIds.toString());
                 } catch (Exception e1) {
-                    EmailSendUtil.sendWarnEmail("下架猎聘职位失败,职位id：" + ids, emailSubject);
+                    emailNotification.sendSyncLiepinFailEmail(null, e1, "【调用api猎聘api处理职位下架失败】positionid:" + requestIds.toString());
                     liepinMappingDao.updateErrMsgBatch(requestIds, e1.getMessage());
                 }
 
             }
 
         } catch (Exception e) {
-            EmailSendUtil.sendWarnEmail("调用api批量修改职位信息时发生错误，职位ids" + (ids == null ? msgBody : ids.toString()),
-                    emailSubject);
+            emailNotification.sendSyncLiepinFailEmail(null, e, "【调用api猎聘api处理职位下架失败】positionid:" + (ids == null ? msgBody : ids.toString()));
             log.error(e.getMessage(), e);
         }
     }
@@ -686,7 +684,6 @@ public class LiePinReceiverHandler {
         JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(positionId);
 
         if (jobPositionDO == null) {
-//            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
             return null;
         }
 
@@ -696,7 +693,6 @@ public class LiePinReceiverHandler {
         HrThirdPartyAccountHrDO hrThirdDO = hrThirdPartyDao.getHrAccountInfo(publisher, channel);
 
         if (hrThirdDO == null) {
-//            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
             return null;
         }
 
@@ -706,7 +702,6 @@ public class LiePinReceiverHandler {
         HrThirdPartyAccountDO thirdPartyAccountDO = thirdPartyAccountDao.getAccountById(thirdAccountId);
 
         if (thirdPartyAccountDO == null) {
-//            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
             return null;
         }
 
@@ -791,9 +786,9 @@ public class LiePinReceiverHandler {
 
         } catch (BIZException e) {
             liepinMappingDao.updateErrMsg(mappingDO.getId(), e.getMessage());
-            EmailSendUtil.sendWarnEmail("修改猎聘职位失败：mappingId为" + mappingDO.getId(), emailSubject);
+            emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e, "【调用api猎聘api处理职位编辑失败】mappingId为:" + mappingDO.getId());
         } catch (Exception e1) {
-            EmailSendUtil.sendWarnEmail("修改猎聘职位失败：mappingId为" + mappingDO.getId(), emailSubject);
+            emailNotification.sendSyncLiepinFailEmail(liePinPositionVO, e1, "【调用api猎聘api处理职位编辑失败】mappingId为:" + mappingDO.getId());
             liepinMappingDao.updateErrMsg(mappingDO.getId(), e1.getMessage());
         }
     }
@@ -863,9 +858,9 @@ public class LiePinReceiverHandler {
 
             } catch (BIZException e) {
                 liepinMappingDao.updateErrMsgBatch(downShelfPositonListDb, e.getMessage());
-                EmailSendUtil.sendWarnEmail("downShelfOldPositions批量下架猎聘职位失败：mappingIds为" + ids, emailSubject);
+                emailNotification.sendSyncLiepinFailEmail(null, e, "【downShelfOldPositions批量下架猎聘职位失败】mappingIds为:" + ids + ",");
             } catch (Exception e1) {
-                EmailSendUtil.sendWarnEmail("下架猎聘职位失败：mappingIds为" + ids, emailSubject);
+                emailNotification.sendSyncLiepinFailEmail(null, e1, "【downShelfOldPositions批量下架猎聘职位失败】mappingIds为:" + ids + ",");
                 liepinMappingDao.updateErrMsgBatch(downShelfPositonListDb, "后台异常");
                 log.error("===============向猎聘请求下架失败，mapping表主键ids:{}===============", ids);
             }
