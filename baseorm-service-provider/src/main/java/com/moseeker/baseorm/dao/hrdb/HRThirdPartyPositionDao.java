@@ -319,23 +319,42 @@ public class HRThirdPartyPositionDao  {
      * @date  2018/6/4
      * @return
      */
-    public HrThirdPartyPositionDO getThirdPartyPositionById(int positionId, int positionChannel) {
+    public HrThirdPartyPositionDO getThirdPartyPositionById(int positionId, int positionChannel, int accountId) {
         Query query = new Query.QueryBuilder().where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(), positionId)
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), positionChannel)
+                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                 .buildQuery();
         return getSimpleData(query);
     }
 
     /**
-     * 修改绑定状态为未绑定，要不然无法复用positionbs
+     * 修改同步状态为未同步，要不然无法复用positionbs
      * @param
      * @author  cjm
      * @date  2018/6/11
      * @return
      */
-    public void updateBindState(int positionId, int channel) {
+    public void updateBindState(int positionId, int accountId, int channel, int state) {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0)
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
+                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
+                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
+                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
+        thirdPartyPositionDao.update(update.buildUpdate());
+    }
+
+    /**
+     * 当token失效时，修改同步状态和同步失败原
+     * @param
+     * @author  cjm
+     * @date  2018/6/25
+     * @return
+     */
+    public void updateErrmsg(String errMsg, int positionId, int channel, int state) {
+        Update.UpdateBuilder update=new Update.UpdateBuilder()
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.SYNC_FAIL_REASON.getName(), errMsg)
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
                 .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
@@ -357,6 +376,5 @@ public class HRThirdPartyPositionDao  {
         public InnerHRThirdPartyPositionDao(TableImpl<HrThirdPartyPositionRecord> table, Class<HrThirdPartyPositionDO> hrThirdPartyPositionDOClass) {
             super(table, hrThirdPartyPositionDOClass);
         }
-
     }
 }

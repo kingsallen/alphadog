@@ -33,7 +33,7 @@ import java.util.Map;
  * @date 2018-05-28 13:24
  **/
 @Component
-public class LiePinUserAccountBindHandler implements IBindRequest{
+public class LiePinUserAccountBindHandler implements IBindRequest {
 
     private Logger logger = LoggerFactory.getLogger(LiePinUserAccountBindHandler.class);
     @Autowired
@@ -43,7 +43,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
 
     @Override
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
-        try{
+        try {
 
             String username = hrThirdPartyAccount.getUsername();
 
@@ -53,50 +53,44 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
 
             String resultJson = sendRequest2Liepin(username, password);
 
-            logger.info("==============LiePinBindResultJson:{}================", resultJson);
-
-            if(StringUtils.isNullOrEmpty(resultJson)){
+            if (StringUtils.isNullOrEmpty(resultJson)) {
                 logger.info("================用户绑定时http请求结果为空=================");
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "用户绑定时http请求结果为空");
             }
             JSONObject result = JSONObject.parseObject(resultJson);
 
             // 请求结果处理
-            if("0".equals(String.valueOf(result.get("code")))){
+            if ("0".equals(String.valueOf(result.get("code")))) {
                 JSONObject userInfo = JSONObject.parseObject(result.getString("data"));
                 String userId = userInfo.getString("usere_id");
                 String token = userInfo.getString("token");
                 hrThirdPartyAccount.setExt(userId);
                 hrThirdPartyAccount.setExt2(token);
                 hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
-                logger.info("==================请求绑定成功，hrThirdPartyAccount:{}==================", hrThirdPartyAccount);
-            }else{
+            } else {
                 throw new BIZException(Integer.parseInt(String.valueOf(result.get("code"))), String.valueOf(result.get("message")));
             }
-        }catch (BIZException e){
-            emailNotification.sendCustomEmail(emailNotification.getRefreshMails(), e.getMessage() + "</br>用户账号:"
-                    + hrThirdPartyAccount.getUsername(), bindEmailSubject);
-            logger.info("=================errormsg:{}===================", e.getMessage());
-            e.printStackTrace();
+        } catch (BIZException e) {
+            logger.info("=================errormsg:{},username:{}===================", e.getMessage(), hrThirdPartyAccount.getUsername());
             hrThirdPartyAccount.setBinding((short) BindingStatus.ERROR.getValue());
             hrThirdPartyAccount.setErrorMessage(e.getMessage());
-        }catch (Exception e){
+        } catch (Exception e) {
             emailNotification.sendCustomEmail(emailNotification.getRefreshMails(), e.getMessage() + "</br>用户账号:"
                     + hrThirdPartyAccount.getUsername(), bindEmailSubject);
-            logger.info("=================猎聘对接用户绑定时后台异常===================");
-            e.printStackTrace();
-            hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
+            hrThirdPartyAccount.setBinding((short) BindingStatus.ERROR.getValue());
             hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_TIMEOUT_MSG);
+            logger.error(e.getMessage(), e);
         }
         return hrThirdPartyAccount;
     }
 
     /**
      * 将数据库中存的aes加密的密码解密
-     * @param   passwordHex aes加密后的十六位密码
-     * @author  cjm
-     * @date  2018/6/15
+     *
+     * @param passwordHex aes加密后的十六位密码
      * @return
+     * @author cjm
+     * @date 2018/6/15
      */
     private String decryPwd(String passwordHex) throws Exception {
         byte[] target = AESUtils.decrypt(passwordHex);
@@ -118,7 +112,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest{
 
         //设置请求头
         Map<String, String> headers = new HashMap<>();
-        headers.put("channel", "qianxun");
+        headers.put("channel", "qianxun_online");
 
         //发送请求
         return HttpClientUtil.sentHttpPostRequest(UserAccountConstant.liepinUserBindUrl, headers, requestMap);

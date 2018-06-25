@@ -3,19 +3,16 @@ package com.moseeker.position.service.position.liepin;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.position.config.AppConfig;
 import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
-import com.moseeker.position.service.position.liepin.LiepinSocialPositionTransfer;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -54,7 +51,7 @@ public class LiepinSocialTransferTesst {
 
     @Test
     public void testSendSyncRequest() throws Exception {
-        Integer positionId = 19492153;
+        Integer positionId = 19494081;
         ThirdPartyPosition positionForm = new ThirdPartyPosition();
         //软件/互联网开发/系统集成
         List<String> list = new ArrayList<>();
@@ -102,4 +99,5 @@ public class LiepinSocialTransferTesst {
         hrThirdPartyPositionDO.setOccupation("123,1231");
         liepinSocialPositionTransfer.toThirdPartyPositionForm(hrThirdPartyPositionDO, null);
     }
+
 }

@@ -37,6 +37,7 @@ public class Job51PositionEmailBuilder extends AbstractPositionEmailBuilder<Empt
         emailMessgeBuilder.name("【职能】：").value(positionSyncMailUtil.getOccupation(thirdPartyPosition.getChannel(), thirdPartyPosition.getOccupation()));
         emailMessgeBuilder.name("【工作年限】：").value(positionSyncMailUtil.getExperience(moseekerPosition.getExperience()));
         emailMessgeBuilder.name("【月薪】：").value(thirdPartyPosition.getSalaryBottom()+"-"+thirdPartyPosition.getSalaryTop());
+        emailMessgeBuilder.name("【是否使用实习职位额度】：").value(thirdPartyPosition.isInternship()?"是":"否");
         emailMessgeBuilder.line(email(moseekerPosition));
         emailMessgeBuilder.line("【职位描述】：");
         emailMessgeBuilder.line(describe(moseekerPosition));

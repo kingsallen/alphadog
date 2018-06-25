@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionLiepinMapping extends TableImpl<JobPositionLiepinMappingRecord> {
 
-    private static final long serialVersionUID = -1783032830;
+    private static final long serialVersionUID = -1505948178;
 
     /**
      * The reference instance of <code>jobdb.job_position_liepin_mapping</code>
@@ -52,14 +52,14 @@ public class JobPositionLiepinMapping extends TableImpl<JobPositionLiepinMapping
     }
 
     /**
-     * The column <code>jobdb.job_position_liepin_mapping.id</code>. job_position.id
+     * The column <code>jobdb.job_position_liepin_mapping.id</code>. 仟寻向猎聘发请求用的主键id
      */
-    public final TableField<JobPositionLiepinMappingRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "job_position.id");
+    public final TableField<JobPositionLiepinMappingRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "仟寻向猎聘发请求用的主键id");
 
     /**
-     * The column <code>jobdb.job_position_liepin_mapping.job_id</code>. job_position.id
+     * The column <code>jobdb.job_position_liepin_mapping.position_id</code>. job_position.id
      */
-    public final TableField<JobPositionLiepinMappingRecord, Integer> JOB_ID = createField("job_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "job_position.id");
+    public final TableField<JobPositionLiepinMappingRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "job_position.id");
 
     /**
      * The column <code>jobdb.job_position_liepin_mapping.liepin_job_id</code>. 猎聘返回的第三方职位id
@@ -87,14 +87,14 @@ public class JobPositionLiepinMapping extends TableImpl<JobPositionLiepinMapping
     public final TableField<JobPositionLiepinMappingRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "猎聘职位状态 0 下架 1 正常 ");
 
     /**
-     * The column <code>jobdb.job_position_liepin_mapping.liepin_user_id</code>.
+     * The column <code>jobdb.job_position_liepin_mapping.liepin_user_id</code>. hr在猎聘的userid
      */
-    public final TableField<JobPositionLiepinMappingRecord, Integer> LIEPIN_USER_ID = createField("liepin_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<JobPositionLiepinMappingRecord, Integer> LIEPIN_USER_ID = createField("liepin_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "hr在猎聘的userid");
 
     /**
      * The column <code>jobdb.job_position_liepin_mapping.create_time</code>.
      */
-    public final TableField<JobPositionLiepinMappingRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<JobPositionLiepinMappingRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>jobdb.job_position_liepin_mapping.update_time</code>.

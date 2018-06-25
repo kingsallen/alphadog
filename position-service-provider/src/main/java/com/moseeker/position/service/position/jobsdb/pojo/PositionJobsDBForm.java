@@ -16,6 +16,7 @@ public class PositionJobsDBForm {
     private int educationLevel;
     private String keyword;
     private int salaryType;
+    private List<String> employeeType;
 
 
 
@@ -29,6 +30,14 @@ public class PositionJobsDBForm {
         occupation.add(new ArrayList<>());
         occupation.add(new ArrayList<>());
         occupation.add(new ArrayList<>());
+    }
+
+    public List<String> getEmployeeType() {
+        return employeeType;
+    }
+
+    public void setEmployeeType(List<String> employeeType) {
+        this.employeeType = employeeType;
     }
 
     public int getCareerLevel() {
