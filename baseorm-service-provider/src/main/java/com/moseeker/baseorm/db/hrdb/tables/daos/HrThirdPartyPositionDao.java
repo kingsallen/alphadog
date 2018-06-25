@@ -267,4 +267,18 @@ public class HrThirdPartyPositionDao extends DAOImpl<HrThirdPartyPositionRecord,
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByCount(Integer... values) {
         return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.COUNT, values);
     }
+
+    /**
+     * Fetch records that have <code>feature IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByFeature(String... values) {
+        return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.FEATURE, values);
+    }
+
+    /**
+     * Fetch records that have <code>internship IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByInternship(Byte... values) {
+        return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.INTERNSHIP, values);
+    }
 }

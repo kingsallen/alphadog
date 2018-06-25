@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 2139604477;
+    private static final long serialVersionUID = -389852855;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -202,9 +202,14 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     public final TableField<HrThirdPartyPositionRecord, Integer> COUNT = createField("count", org.jooq.impl.SQLDataType.INTEGER, this, "招聘人数");
 
     /**
-     * The column <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个
+     * The column <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个，用于回显猎聘第三方补填页面福利特色，由于猎聘职位福利特色可以编辑，且不影响仟寻职位福利特色，因此加了这个字段保存福利特色相关信息
      */
-    public final TableField<HrThirdPartyPositionRecord, String> FEATURE = createField("feature", org.jooq.impl.SQLDataType.VARCHAR.length(150), this, "职位特色，每个特色不超过8个字，总特色数不超过16个");
+    public final TableField<HrThirdPartyPositionRecord, String> FEATURE = createField("feature", org.jooq.impl.SQLDataType.VARCHAR.length(150), this, "职位特色，每个特色不超过8个字，总特色数不超过16个，用于回显猎聘第三方补填页面福利特色，由于猎聘职位福利特色可以编辑，且不影响仟寻职位福利特色，因此加了这个字段保存福利特色相关信息");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.internship</code>. 是否使用实习职位的额度,0：不使用，1：使用
+     */
+    public final TableField<HrThirdPartyPositionRecord, Byte> INTERNSHIP = createField("internship", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否使用实习职位的额度,0：不使用，1：使用");
 
     /**
      * Create a <code>hrdb.hr_third_party_position</code> table reference
