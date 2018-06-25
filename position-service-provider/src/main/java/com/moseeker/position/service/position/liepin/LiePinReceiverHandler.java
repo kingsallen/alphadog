@@ -909,7 +909,7 @@ public class LiePinReceiverHandler {
         //设置请求头
         Map<String, String> headers = new HashMap<>();
 
-        headers.put("channel", "qianxun");
+        headers.put("channel", "qianxun_online");
 
         headers.put("token", liePinToken);
 
