@@ -36,7 +36,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
 
     public List<JobPositionLiepinMappingDO> getMappingDataByPid(int pid) {
        return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
-               .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(pid))
+               .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID.eq(pid))
                .fetchInto(JobPositionLiepinMappingDO.class);
     }
 
@@ -45,7 +45,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
         Query query = new Query.QueryBuilder()
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_TITLE.getName(), jobTitle)
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), liepinUserId)
-                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.getName(), positionId)
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID.getName(), positionId)
                 .and(new com.moseeker.common.util.query.Condition(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.getName(), cityCodesIntList, ValueOp.IN))
                 .buildQuery();
         return getDatas(query);
@@ -54,7 +54,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
     public List<JobPositionLiepinMappingDO> getMappingDataByPidAndUserId(Integer liepinUserId, Integer positionId) {
         Query query = new Query.QueryBuilder()
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), liepinUserId)
-                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.getName(), positionId)
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID.getName(), positionId)
                 .buildQuery();
         return getDatas(query);
     }
@@ -88,7 +88,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
         create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ERR_MSG, message)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
-                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(positionId))
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID.eq(positionId))
                 .execute();
     }
 
@@ -107,7 +107,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
             return new ArrayList<>();
         }
         return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
-                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(positionId))
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID.eq(positionId))
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.in(rePublishCityCodes))
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE.eq((byte)0))
                 .fetchInto(JobPositionLiepinMappingDO.class);
@@ -115,7 +115,7 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
 
     public List<JobPositionLiepinMappingDO> getMappingDataByUserId(int userId) {
         return create.select(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID,
-                JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID,
+                JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID,
                 JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_JOB_ID)
                 .from(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.eq(userId))
@@ -125,14 +125,14 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
 
     public List<JobPositionLiepinMappingDO> getValidMappingDataByPid(int id, byte state) {
         return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
-                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID.eq(id))
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID.eq(id))
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE.eq(state))
                 .fetchInto(JobPositionLiepinMappingDO.class);
     }
 
     public int updateStateAndJobId(List<Integer> republishIdList, byte state, Integer positionId) {
         return create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
-                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID, positionId)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID, positionId)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE, state)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.in(republishIdList))

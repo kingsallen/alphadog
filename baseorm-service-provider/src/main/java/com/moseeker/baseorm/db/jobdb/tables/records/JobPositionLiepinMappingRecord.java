@@ -30,33 +30,33 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPositionLiepinMappingRecord> implements Record10<Integer, Integer, Integer, Integer, String, String, Byte, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 979017275;
+    private static final long serialVersionUID = -1312273523;
 
     /**
-     * Setter for <code>jobdb.job_position_liepin_mapping.id</code>. job_position.id
+     * Setter for <code>jobdb.job_position_liepin_mapping.id</code>. 仟寻向猎聘发请求用的主键id
      */
     public void setId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position_liepin_mapping.id</code>. job_position.id
+     * Getter for <code>jobdb.job_position_liepin_mapping.id</code>. 仟寻向猎聘发请求用的主键id
      */
     public Integer getId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>jobdb.job_position_liepin_mapping.job_id</code>. job_position.id
+     * Setter for <code>jobdb.job_position_liepin_mapping.position_id</code>. job_position.id
      */
-    public void setJobId(Integer value) {
+    public void setPositionId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position_liepin_mapping.job_id</code>. job_position.id
+     * Getter for <code>jobdb.job_position_liepin_mapping.position_id</code>. job_position.id
      */
-    public Integer getJobId() {
+    public Integer getPositionId() {
         return (Integer) get(1);
     }
 
@@ -131,14 +131,14 @@ public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPosit
     }
 
     /**
-     * Setter for <code>jobdb.job_position_liepin_mapping.liepin_user_id</code>.
+     * Setter for <code>jobdb.job_position_liepin_mapping.liepin_user_id</code>. hr在猎聘的userid
      */
     public void setLiepinUserId(Integer value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position_liepin_mapping.liepin_user_id</code>.
+     * Getter for <code>jobdb.job_position_liepin_mapping.liepin_user_id</code>. hr在猎聘的userid
      */
     public Integer getLiepinUserId() {
         return (Integer) get(7);
@@ -217,7 +217,7 @@ public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPosit
      */
     @Override
     public Field<Integer> field2() {
-        return JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.JOB_ID;
+        return JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID;
     }
 
     /**
@@ -297,7 +297,7 @@ public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPosit
      */
     @Override
     public Integer value2() {
-        return getJobId();
+        return getPositionId();
     }
 
     /**
@@ -378,7 +378,7 @@ public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPosit
      */
     @Override
     public JobPositionLiepinMappingRecord value2(Integer value) {
-        setJobId(value);
+        setPositionId(value);
         return this;
     }
 
@@ -486,11 +486,11 @@ public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPosit
     /**
      * Create a detached, initialised JobPositionLiepinMappingRecord
      */
-    public JobPositionLiepinMappingRecord(Integer id, Integer jobId, Integer liepinJobId, Integer cityCode, String jobTitle, String errMsg, Byte state, Integer liepinUserId, Timestamp createTime, Timestamp updateTime) {
+    public JobPositionLiepinMappingRecord(Integer id, Integer positionId, Integer liepinJobId, Integer cityCode, String jobTitle, String errMsg, Byte state, Integer liepinUserId, Timestamp createTime, Timestamp updateTime) {
         super(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING);
 
         set(0, id);
-        set(1, jobId);
+        set(1, positionId);
         set(2, liepinJobId);
         set(3, cityCode);
         set(4, jobTitle);
