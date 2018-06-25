@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 355103740;
+    private static final long serialVersionUID = 1255470952;
 
     /**
      * Setter for <code>hrdb.hr_third_party_position.id</code>.
@@ -449,6 +449,20 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
         return (Integer) get(29);
     }
 
+    /**
+     * Setter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个
+     */
+    public void setFeature(String value) {
+        set(30, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个
+     */
+    public String getFeature() {
+        return (String) get(30);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -475,7 +489,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     /**
      * Create a detached, initialised HrThirdPartyPositionRecord
      */
-    public HrThirdPartyPositionRecord(Integer id, Integer positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String address, String occupation, String syncFailReason, Short useCompanyAddress, Integer thirdPartyAccountId, String department, Integer salaryMonth, Integer feedbackPeriod, Short salaryDiscuss, Integer salaryBottom, Integer salaryTop, Integer practiceSalary, Byte practicePerWeek, Byte practiceSalaryUnit, Integer companyId, Integer addressId, Integer departmentId, String companyName, String addressName, String departmentName, Integer count) {
+    public HrThirdPartyPositionRecord(Integer id, Integer positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String address, String occupation, String syncFailReason, Short useCompanyAddress, Integer thirdPartyAccountId, String department, Integer salaryMonth, Integer feedbackPeriod, Short salaryDiscuss, Integer salaryBottom, Integer salaryTop, Integer practiceSalary, Byte practicePerWeek, Byte practiceSalaryUnit, Integer companyId, Integer addressId, Integer departmentId, String companyName, String addressName, String departmentName, Integer count, String feature) {
         super(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION);
 
         set(0, id);
@@ -508,5 +522,6 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
         set(27, addressName);
         set(28, departmentName);
         set(29, count);
+        set(30, feature);
     }
 }

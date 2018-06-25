@@ -663,4 +663,25 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
         return null;
     }
+
+    public JobPositionDO getJobPositionById(int positionId) {
+        Query query = new Query.QueryBuilder()
+                .where(JobPosition.JOB_POSITION.ID.getName(), positionId)
+                .buildQuery();
+        return getData(query);
+    }
+
+    /** 
+     * 
+     * @param
+     * @author  cjm
+     * @date  2018/6/20 
+     * @return   
+     */ 
+    public JobPositionDO getJobPositionByPid(int positionId){
+        return create.selectFrom(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.eq(positionId))
+                .fetchOneInto(JobPositionDO.class);
+    }
+   
 }
