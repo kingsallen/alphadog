@@ -1450,10 +1450,7 @@ public class TalentpoolEmailService {
         }
         for(TalentEmailForwardsResumeInfo info:dataInfo){
             TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
-            String companyAbbr=info1.getCompanyAbbr();
-            if(StringUtils.isNullOrEmpty(companyAbbr)){
-                companyAbbr="";
-            }
+
             String positionName=info1.getPositionName();
             if(StringUtils.isNullOrEmpty(positionName)){
                 positionName="";
@@ -1462,10 +1459,7 @@ public class TalentpoolEmailService {
             if(StringUtils.isNullOrEmpty(userName)){
                 userName="";
             }
-            String accountName=info1.getOfficialAccountName();
-            if(StringUtils.isNullOrEmpty(accountName)){
-                accountName="";
-            }
+
             String context1= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
             info1.setCustomText(context1);
             info1.setHrName(record.getUsername());
@@ -1565,14 +1559,8 @@ public class TalentpoolEmailService {
             HrWxWechatRecord hrWxWechatRecord=this.getWxInfo(companyId);
             for(TalentEmailForwardsResumeInfo info:dataList){
                 if(hrCompanyRecord!=null){
-                    info.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
                     info.setCompanyLogo(CommonUtils.appendUrl(hrCompanyRecord.getLogo(),env.getProperty("http.cdn.url")));
                 }
-                if(hrWxWechatRecord!=null){
-                    info.setWeixinQrcode(CommonUtils.appendUrl(hrWxWechatRecord.getQrcode(),env.getProperty("http.cdn.url")));
-                    info.setOfficialAccountName(hrWxWechatRecord.getName());
-                }
-                info.setCustomText(context);
             }
         }
         return dataList;
@@ -1670,15 +1658,6 @@ public class TalentpoolEmailService {
                                 List<Map<String,Object>> applist=(List<Map<String,Object>>)userMap.get("applications");
                                 List<TalentEducationInfo> talentEducationInfo=this.getTalentEducationInfo(educationsList);
                                 List<TalentWorkExpInfo> talentWorkExpInfo=this.getTalentWorkExpInfo(recentJob,expJob);
-                                info.setEducationList(talentEducationInfo);
-                                info.setWorkexps(talentWorkExpInfo);
-                                int year=(int)userMap.get("age");
-                                info.setBirth(year);
-                                info.setPositionName(this.getPositionName(applist,hrId,companyId));
-                                info.setCompanyName("");
-                                if(!StringUtils.isEmptyList(talentEducationInfo)){
-                                    info.setCompanyName(talentWorkExpInfo.get(0).getWorkCompany());
-                                }
 
                                 list.add(info);
                             }
@@ -1689,6 +1668,24 @@ public class TalentpoolEmailService {
             }
         }
         return list;
+    }
+
+    private TalentBasicInfo handlerTalentBasicInfoData(Map<String,Object> basicData,List<Map<String,Object>> eduList,Map<String,Object> otherdata){
+        if(StringUtils.isEmptyMap(basicData)&&StringUtils.isEmptyList(eduList)){
+            return null;
+        }
+        TalentBasicInfo basicInfo=new TalentBasicInfo();
+        if(!StringUtils.isEmptyMap(basicData)){
+            basicInfo.setPosition((String)basicData.getOrDefault("position_name",""));
+            basicInfo.setBirth((String)basicData.getOrDefault("birth",""));
+            basicInfo.setDegree((String)basicData.getOrDefault("degreeName",""));
+        }
+        if(!StringUtils.isEmptyList(eduList)){
+            Map<String,Object> education=eduList.get(0);
+            basicInfo.setDegree(DegreeConvertUtil.intToEnum.get(education.get("degree")));
+            basicInfo.setMajor((String)education.getOrDefault("major_name",""));
+        }
+        return basicInfo;
     }
     /*
      获取职位信息

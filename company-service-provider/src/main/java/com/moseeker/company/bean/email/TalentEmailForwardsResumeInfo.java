@@ -1,7 +1,6 @@
 package com.moseeker.company.bean.email;
 
 import com.moseeker.company.bean.TalentWorkExpInfo;
-import com.moseeker.company.bean.email.TalentEducationInfo;
 
 import java.util.List;
 
@@ -9,35 +8,29 @@ import java.util.List;
  * Created by zztaiwll on 18/4/24.
  */
 public class TalentEmailForwardsResumeInfo {
-    private String companyAbbr;
     private String companyLogo;
-    private String coworkerName;
-    private String customText;
+    private String companyName;
+    private String positionName;
     private String heading;
     private String userName;
+    private String industryName;
     private String genderName;
     private String cityName;
-    private String degreeName;
-    private List<TalentEducationInfo> educationList;
-    private List<TalentWorkExpInfo> workexps;
-    private String weixinQrcode;
-    private String officialAccountName;
-    private String email;
+    private int age;
+    private String marriage;
+    private String resumeLink;
+    private TalentBasicInfo basicInfo;
+    private List<TalentIntentionInfo> intention;
+    private String introduction;
+    private List<TalentWorkExpInfo> workExps;
+    private List<TalentEducationInfo> eduExps;
+    private List<TalentProjectExpsInfo> proExps;
+    private List<TalentLanguagesInfo> languages;
+    private List<String> skills;
+    private List<String> credentials;
+    private TalentWorksInfo works;
+    private TalentOtherInfo other;
     private int userId;
-    private int birth;
-    private String positionName;
-    private String companyName;
-    private String rcpt;
-    private String hrName;
-    private String profileFullUrl;
-
-    public String getCompanyAbbr() {
-        return companyAbbr;
-    }
-
-    public void setCompanyAbbr(String companyAbbr) {
-        this.companyAbbr = companyAbbr;
-    }
 
     public String getCompanyLogo() {
         return companyLogo;
@@ -47,20 +40,20 @@ public class TalentEmailForwardsResumeInfo {
         this.companyLogo = companyLogo;
     }
 
-    public String getCoworkerName() {
-        return coworkerName;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setCoworkerName(String coworkerName) {
-        this.coworkerName = coworkerName;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
-    public String getCustomText() {
-        return customText;
+    public String getPositionName() {
+        return positionName;
     }
 
-    public void setCustomText(String customText) {
-        this.customText = customText;
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
     }
 
     public String getHeading() {
@@ -79,6 +72,14 @@ public class TalentEmailForwardsResumeInfo {
         this.userName = userName;
     }
 
+    public String getIndustryName() {
+        return industryName;
+    }
+
+    public void setIndustryName(String industryName) {
+        this.industryName = industryName;
+    }
+
     public String getGenderName() {
         return genderName;
     }
@@ -95,52 +96,116 @@ public class TalentEmailForwardsResumeInfo {
         this.cityName = cityName;
     }
 
-    public String getDegreeName() {
-        return degreeName;
+    public int getAge() {
+        return age;
     }
 
-    public void setDegreeName(String degreeName) {
-        this.degreeName = degreeName;
+    public void setAge(int age) {
+        this.age = age;
     }
 
-    public List<TalentEducationInfo> getEducationList() {
-        return educationList;
+    public String getMarriage() {
+        return marriage;
     }
 
-    public void setEducationList(List<TalentEducationInfo> educationList) {
-        this.educationList = educationList;
+    public void setMarriage(String marriage) {
+        this.marriage = marriage;
     }
 
-    public List<TalentWorkExpInfo> getWorkexps() {
-        return workexps;
+    public String getResumeLink() {
+        return resumeLink;
     }
 
-    public void setWorkexps(List<TalentWorkExpInfo> workexps) {
-        this.workexps = workexps;
+    public void setResumeLink(String resumeLink) {
+        this.resumeLink = resumeLink;
     }
 
-    public String getWeixinQrcode() {
-        return weixinQrcode;
+    public TalentBasicInfo getBasicInfo() {
+        return basicInfo;
     }
 
-    public void setWeixinQrcode(String weixinQrcode) {
-        this.weixinQrcode = weixinQrcode;
+    public void setBasicInfo(TalentBasicInfo basicInfo) {
+        this.basicInfo = basicInfo;
     }
 
-    public String getOfficialAccountName() {
-        return officialAccountName;
+    public List<TalentIntentionInfo> getIntention() {
+        return intention;
     }
 
-    public void setOfficialAccountName(String officialAccountName) {
-        this.officialAccountName = officialAccountName;
+    public void setIntention(List<TalentIntentionInfo> intention) {
+        this.intention = intention;
     }
 
-    public String getEmail() {
-        return email;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public List<TalentWorkExpInfo> getWorkExps() {
+        return workExps;
+    }
+
+    public void setWorkExps(List<TalentWorkExpInfo> workExps) {
+        this.workExps = workExps;
+    }
+
+    public List<TalentEducationInfo> getEduExps() {
+        return eduExps;
+    }
+
+    public void setEduExps(List<TalentEducationInfo> eduExps) {
+        this.eduExps = eduExps;
+    }
+
+    public List<TalentProjectExpsInfo> getProExps() {
+        return proExps;
+    }
+
+    public void setProExps(List<TalentProjectExpsInfo> proExps) {
+        this.proExps = proExps;
+    }
+
+    public List<TalentLanguagesInfo> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(List<TalentLanguagesInfo> languages) {
+        this.languages = languages;
+    }
+
+    public List<String> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<String> skills) {
+        this.skills = skills;
+    }
+
+    public List<String> getCredentials() {
+        return credentials;
+    }
+
+    public void setCredentials(List<String> credentials) {
+        this.credentials = credentials;
+    }
+
+    public TalentWorksInfo getWorks() {
+        return works;
+    }
+
+    public void setWorks(TalentWorksInfo works) {
+        this.works = works;
+    }
+
+    public TalentOtherInfo getOther() {
+        return other;
+    }
+
+    public void setOther(TalentOtherInfo other) {
+        this.other = other;
     }
 
     public int getUserId() {
@@ -149,53 +214,5 @@ public class TalentEmailForwardsResumeInfo {
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public int getBirth() {
-        return birth;
-    }
-
-    public void setBirth(int birth) {
-        this.birth = birth;
-    }
-
-    public String getPositionName() {
-        return positionName;
-    }
-
-    public void setPositionName(String positionName) {
-        this.positionName = positionName;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getRcpt() {
-        return rcpt;
-    }
-
-    public void setRcpt(String rcpt) {
-        this.rcpt = rcpt;
-    }
-
-    public String getHrName() {
-        return hrName;
-    }
-
-    public void setHrName(String hrName) {
-        this.hrName = hrName;
-    }
-
-    public String getProfileFullUrl() {
-        return profileFullUrl;
-    }
-
-    public void setProfileFullUrl(String profileFullUrl) {
-        this.profileFullUrl = profileFullUrl;
     }
 }
