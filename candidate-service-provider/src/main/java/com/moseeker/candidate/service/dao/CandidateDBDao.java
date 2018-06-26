@@ -260,10 +260,10 @@ public class CandidateDBDao {
 //        Timestamp time2=new Timestamp(dateTime.plusDays(-1).getMillis());
 //        Timestamp time3=new Timestamp(dateTime.plusDays(-2).getMillis());
 //        Timestamp time4=new Timestamp(dateTime.plusDays(-3).getMillis());
-        Timestamp time1=new Timestamp(dateTime.plusMinutes(10).getMillis());
-        Timestamp time2=new Timestamp(dateTime.plusMinutes(-10).getMillis());
-        Timestamp time3=new Timestamp(dateTime.plusMinutes(-20).getMillis());
-        Timestamp time4=new Timestamp(dateTime.plusMinutes(-30).getMillis());
+        Timestamp time1=new Timestamp(dateTime.plusMinutes(5).getMillis());
+        Timestamp time2=new Timestamp(dateTime.plusMinutes(-5).getMillis());
+        Timestamp time3=new Timestamp(dateTime.plusMinutes(-10).getMillis());
+        Timestamp time4=new Timestamp(dateTime.plusMinutes(-15).getMillis());
         List<CandidateRecomRecordDO> result=this.handlerListCandidateRecomData(postUserId,recoms,positionIdList,time,time1,time2,time3,time4);
         return result;
 
