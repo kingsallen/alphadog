@@ -61,6 +61,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailListStruct;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
+import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import org.apache.thrift.TException;
@@ -143,6 +144,7 @@ public class TalentpoolEmailService {
 
     @Autowired
     private UserWxEntity userWxEntity;
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
 
     /**
      * 获取公司邮件剩余额度
@@ -1556,7 +1558,8 @@ public class TalentpoolEmailService {
                             Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
                             logger.info(JSON.toJSONString(profiles));
                             if(profiles!=null&&!profiles.isEmpty()){
-                                this.handlerProfileUserId(profiles,info);
+                                int userId=this.handlerProfileUserId(profiles,info);
+
                                 this.handlerProfileBasicData(profiles,info);
                                 List<Map<String,Object>> applist=(List<Map<String,Object>>)userMap.get("applications");
                                 this.handlerProfileData(profiles,info);
@@ -1571,15 +1574,32 @@ public class TalentpoolEmailService {
         }
         return list;
     }
+
+    private TalentOtherInfo handlerProfileOtherData(int userId,int hrId){
+        try{
+            Response res=profileOtherService.getProfileOtherByPosition(userId,hrId,0);
+            if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
+                Map<String,Object> otherList= (Map<String, Object>) JSON.parse(res.getData());
+                List<Map<String,Object>> internshipList= (List<Map<String, Object>>) otherList.get("internship");
+                List<Map<String,Object>> schoolWorkList= (List<Map<String, Object>>) otherList.get("schooljob");
+            }
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
+        return null;
+
+    }
     /*
      处理profiles
      */
-    private void handlerProfileUserId(Map<String,Object> profiles,TalentEmailForwardsResumeInfo info){
+    private int handlerProfileUserId(Map<String,Object> profiles,TalentEmailForwardsResumeInfo info){
         Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
         if(profile!=null&&!profile.isEmpty()){
             int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
             info.setUserId(userId);
+            return userId;
         }
+        return 0;
     }
     /*
      处理简历通用信息
