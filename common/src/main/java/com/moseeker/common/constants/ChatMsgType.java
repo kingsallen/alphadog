@@ -53,6 +53,11 @@ public enum ChatMsgType {
         return value;
     }
 
+    /**
+     * 根据消息类型，校验需要入库的聊天内容
+     * @param chatVO 聊天内容
+     * @return true：校验通过，false：校验不通过
+     */
     public abstract boolean vaildChat(ChatVO chatVO);
 
     public static ChatMsgType toChatMsgType(String msgType){
