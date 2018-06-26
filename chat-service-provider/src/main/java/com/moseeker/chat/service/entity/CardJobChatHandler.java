@@ -10,6 +10,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.chat.struct.ChatVO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class CardJobChatHandler implements IChatHandler {
+public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHandler {
 
     @Autowired
     ChatDao chatDao;
@@ -88,6 +89,13 @@ public class CardJobChatHandler implements IChatHandler {
     @Override
     public ChatMsgType msgType() {
         return ChatMsgType.JOB;
+    }
+
+    @Override
+    public HrWxHrChatDO beforeSave(HrWxHrChatDO chat) {
+        PositionCard positionCard = JSON.parseObject(chat.getContent(),PositionCard.class);
+        chat.setContent(String.valueOf(positionCard.getId()));
+        return chat;
     }
 
     private static class PositionCard {

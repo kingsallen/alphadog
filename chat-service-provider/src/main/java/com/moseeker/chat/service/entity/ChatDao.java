@@ -26,7 +26,6 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-import org.jooq.Record;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -674,7 +673,7 @@ public class ChatDao {
                 chatVO.setMsgType(hrWxHrChatDO.getMsgType());
                 chatVO.setPositionId(hrWxHrChatDO.getPid());
                 chatVO.setSpeaker(hrWxHrChatDO.getSpeaker());
-                return chatFactory.outputHandler(chatVO);
+                return chatFactory.outputHandle(chatVO);
             }).collect(Collectors.toList());
         } else {
             return new ArrayList<>();

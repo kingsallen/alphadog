@@ -475,7 +475,7 @@ public class ChatService {
                         chatVO.setOrigin(ChatOrigin.Human.getValue());
                         chatVO.setOrigin_str(ChatOrigin.Human.getName());
                     }
-                    chatVOList.add(chatFactory.outputHandler(chatVO));
+                    chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
                 //Lists.reverse(chatDOList);
                 Collections.reverse(chatVOList);
@@ -559,6 +559,7 @@ public class ChatService {
 
             logger.info("saveChat before saveChat chatDO:{}", chatDO);
 
+            chatDO = chatFactory.beforeSaveHandle(chatDO);
             chatDO = chaoDao.saveChat(chatDO);
 
             if (chatDO == null) {
@@ -979,7 +980,7 @@ public class ChatService {
                     chatVO.setOrigin(origin);
                     chatVO.setId(id);
                     chatVO.setPositionId(positionId);
-                    chatVOList.add(chatFactory.outputHandler(chatVO));
+                    chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
             }
             chatHistory.setChatList(chatVOList);

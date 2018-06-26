@@ -6,6 +6,7 @@ import com.moseeker.chat.config.AppConfig;
 import com.moseeker.thrift.gen.chat.struct.ChatVO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,8 +22,8 @@ import static org.mockito.Mockito.*;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class CardJobChatHandlerTest {
 
     @Autowired
@@ -30,8 +31,9 @@ public class CardJobChatHandlerTest {
 
     private int positionId = 19494215;
     private int companyId = 39978;
+    private String content;
 
-//    @Before
+    @Before
     public void before(){
         cardJobChatHandler = new CardJobChatHandler();
         ChatDao chatDao = mock(ChatDao.class);
@@ -69,6 +71,15 @@ public class CardJobChatHandlerTest {
         ChatVO chat = new ChatVO();
         chat.setContent(String.valueOf(positionId));
         chat = cardJobChatHandler.outputHandler(chat);
+        content=chat.getContent();
+        System.out.println(chat.getContent());
+    }
+
+    @Test
+    public void beforeSave() throws Exception {
+        HrWxHrChatDO chat = new HrWxHrChatDO();
+        chat.setContent("{\"city\":[\"大连\",\"合肥\"],\"company_name\":\"寻仟信息\",\"id\":19494215,\"salary\":\"面议\",\"title\":\"职位编辑后上架1\"}");
+        chat = cardJobChatHandler.beforeSave(chat);
         System.out.println(chat.getContent());
     }
 
