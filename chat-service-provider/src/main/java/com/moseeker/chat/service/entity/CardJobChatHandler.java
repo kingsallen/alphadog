@@ -91,6 +91,12 @@ public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHan
         return ChatMsgType.JOB;
     }
 
+    /**
+     * 前端传入的content是一个{@link PositionCard}类型的json字符串
+     * 入库时只需要把职位ID存入content就行
+     * @param chat 处理前的聊天内容
+     * @return 处理后的聊天内容
+     */
     @Override
     public HrWxHrChatDO beforeSave(HrWxHrChatDO chat) {
         PositionCard positionCard = JSON.parseObject(chat.getContent(),PositionCard.class);
