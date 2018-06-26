@@ -21,11 +21,12 @@ public class ProfileMailTest {
     @Autowired
     ProfileMailUtil profileMailUtil ;
     @Test
-    public void testSendProfileParseWarnMail(){
+    public void testSendProfileParseWarnMail() throws InterruptedException {
 
         Account account = new Account();
         account.setUsage_remaining(12);
         account.setUsage_limit(12222);
         profileMailUtil.sendProfileParseWarnMail(account);
+        Thread.sleep(20000);
     }
 }

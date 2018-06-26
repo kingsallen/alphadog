@@ -59,7 +59,7 @@ public class ProfileMailUtil {
 
             messageBuilder.append("【可调用量共计】:").append(account.getUsage_limit()).append(br);
             messageBuilder.append("【剩余可调用量】:").append(account.getUsage_remaining()).append(br).append(br);
-            messageBuilder.append("【注：每成功调用一次，调用量减一，当剩余调用量为0时不能再调用。】");
+            messageBuilder.append("【注：每成功调用一次ResumeSDK简历解析，调用量减一，当剩余调用量为0时不能再调用。】");
             emailBuilder.setSubject(titleBuilder.toString());
             emailBuilder.setContent(messageBuilder.toString());
             if (mails.size() > 1) {
@@ -106,19 +106,5 @@ public class ProfileMailUtil {
         }
 
         return emails;
-    }
-
-    @Test
-    public void testSend() throws Exception {
-        ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
-        configUtils.loadResource("setting.properties");
-        String email = configUtils.get("profile_parse_warn_email", String.class);;
-        List<String> list = new ArrayList<>();
-        list.add(email);
-        Account account = new Account();
-        account.setUsage_limit(10000);
-        account.setUsage_remaining(1000);
-        sendProfileParseWarnMail(list, account);
-        Thread.sleep(1000);
     }
 }
