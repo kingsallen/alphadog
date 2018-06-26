@@ -8,6 +8,9 @@ import java.util.List;
  * Created by zztaiwll on 18/4/24.
  */
 public class TalentEmailForwardsResumeInfo {
+    private String companyAbbr;
+    private String customText;
+    private String officialAccountName;
     private String companyLogo;
     private String companyName;
     private String positionName;
@@ -20,7 +23,7 @@ public class TalentEmailForwardsResumeInfo {
     private String marriage;
     private String resumeLink;
     private TalentBasicInfo basicInfo;
-    private List<TalentIntentionInfo> intention;
+    private TalentIntentionInfo intention;
     private String introduction;
     private List<TalentWorkExpInfo> workExps;
     private List<TalentEducationInfo> eduExps;
@@ -128,14 +131,6 @@ public class TalentEmailForwardsResumeInfo {
         this.basicInfo = basicInfo;
     }
 
-    public List<TalentIntentionInfo> getIntention() {
-        return intention;
-    }
-
-    public void setIntention(List<TalentIntentionInfo> intention) {
-        this.intention = intention;
-    }
-
     public String getIntroduction() {
         return introduction;
     }
@@ -214,5 +209,37 @@ public class TalentEmailForwardsResumeInfo {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public TalentIntentionInfo getIntention() {
+        return intention;
+    }
+
+    public void setIntention(TalentIntentionInfo intention) {
+        this.intention = intention;
+    }
+
+    public String getCompanyAbbr() {
+        return companyAbbr;
+    }
+
+    public void setCompanyAbbr(String companyAbbr) {
+        this.companyAbbr = companyAbbr;
+    }
+
+    public String getCustomText() {
+        return customText;
+    }
+
+    public void setCustomText(String customText) {
+        this.customText = customText;
+    }
+
+    public String getOfficialAccountName() {
+        return officialAccountName;
+    }
+
+    public void setOfficialAccountName(String officialAccountName) {
+        this.officialAccountName = officialAccountName;
     }
 }

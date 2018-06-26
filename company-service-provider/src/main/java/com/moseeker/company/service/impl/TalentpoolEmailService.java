@@ -570,14 +570,9 @@ public class TalentpoolEmailService {
             try {
                 List<InviteToDelivyUserInfo> userInfo = this.talentEmailInviteInfoSearch(params,i,300);
                 EmailInviteBean emailDate = this.handlerData(positionIdList, companyId,context , userInfo, record, hrId,0);
-                logger.info("=============EmailInviteBean===========");
-                logger.info(JSON.toJSONString(emailDate));
-                logger.info("================================================");
                 if(emailDate!=null) {
                     MandrillEmailListStruct struct = convertToEmailStruct(emailDate);
-                    logger.info("=============MandrillEmailListStruct===========");
                     logger.info(JSON.toJSONString(struct));
-                    logger.info("================================================");
                     mqService.sendMandrilEmailList(struct);
                 }
             }catch(Exception e){
@@ -594,35 +589,23 @@ public class TalentpoolEmailService {
         }
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
         TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId,73);
-        logger.info("=============HrCompanyEmailInfoRecord===========");
         logger.info(hrCompanyEmailInfoRecord.toString());
-        logger.info("================================================");
-        logger.info("=============TalentpoolEmailRecord===========");
         logger.info(talentpoolEmailRecord.toString());
-        logger.info("================================================");
         boolean flag=this.validateSendEmail(hrCompanyEmailInfoRecord,talentpoolEmailRecord);
-        logger.info("校验邮件配置的结果========================{}",flag);
         if(flag){
             try {
                 List<UserEmployeeDO> employeeList = this.getUserEmployeeList(idList);
-                logger.info("=============List<UserEmployeeDO>===========");
                 logger.info(JSON.toJSONString(employeeList));
-                logger.info("================================================");
                 if (!StringUtils.isEmptyList(employeeList)) {
                     int lost = userIdList.size() * employeeList.size();
-                    logger.info("lost==================================={}=============",lost);
                     if (!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(), lost)) {
                         return TalentEmailEnum.NOBALANCE.getValue();
                     }
                     EmailResumeBean emailList = this.convertResumeEmailData(employeeList, userIdList, companyId, talentpoolEmailRecord.getContext(), hrId);
-                    logger.info("=============EmailResumeBean===========");
                     logger.info(JSON.toJSONString(emailList));
-                    logger.info("================================================");
                     updateEmailInfoBalance(companyId, lost,5);
                     List<MandrillEmailListStruct> struct = convertToEmailStruct(emailList);
-                    logger.info("=============MandrillEmailListStruct===========");
                     logger.info(JSON.toJSONString(struct));
-                    logger.info("================================================");
                     if(!StringUtils.isEmptyList(struct)){
                         for(MandrillEmailListStruct item:struct){
                             mqService.sendMandrilEmailList(item);
@@ -634,9 +617,7 @@ public class TalentpoolEmailService {
                 }
                 List<Map<String,Object>> employeeData=this.handlerEmployeeData(employeeList);
                 if(!StringUtils.isEmptyList(employeeData)){
-                    logger.info("=============employeeData===========");
                     logger.info(JSON.toJSONString(employeeData));
-                    logger.info("================================================");
                     this.handlerRedisEmployee(employeeData,hrId);
                 }
 
@@ -707,23 +688,15 @@ public class TalentpoolEmailService {
         params.put("company_id",companyId+"");
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
         TalentpoolEmailRecord talentpoolEmailRecord=this.getTalentpoolEmail(companyId,73);
-        logger.info("=============HrCompanyEmailInfoRecord===========");
         logger.info(hrCompanyEmailInfoRecord.toString());
-        logger.info("================================================");
-        logger.info("=============TalentpoolEmailRecord===========");
         logger.info(talentpoolEmailRecord.toString());
-        logger.info("================================================");
         boolean flag=this.validateSendEmail(hrCompanyEmailInfoRecord,talentpoolEmailRecord);
-        logger.info("校验邮件配置的结果========================{}",flag);
         if(flag){
             try {
                 int talentNum = searchService.talentSearchNum(params);
-                logger.info("符合转发的人数========================{}",talentNum);
                 if(talentNum>0){
                     List<UserEmployeeDO> employeeList=this.getUserEmployeeList(idList);
-                    logger.info("=============List<UserEmployeeDO>===========");
                     logger.info(JSON.toJSONString(employeeList));
-                    logger.info("================================================");
                     if(!StringUtils.isEmptyList(employeeList)){
                         int lost=talentNum*employeeList.size();
                         if(!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(),lost)){
@@ -767,13 +740,9 @@ public class TalentpoolEmailService {
 
             try{
                 EmailResumeBean emailList=this.convertResumeEmailData(employeeList,params,companyId,context,hrId);
-                logger.info("=============EmailResumeBean===========");
                 logger.info(JSON.toJSONString(emailList));
-                logger.info("================================================");
                 List<MandrillEmailListStruct> structs = convertToEmailStruct(emailList);
-                logger.info("=============MandrillEmailListStruct===========");
                 logger.info(JSON.toJSONString(structs));
-                logger.info("================================================");
                 if(!StringUtils.isEmptyList(structs)){
                     for(MandrillEmailListStruct struct:structs){
                         mqService.sendMandrilEmailList(struct);
@@ -849,10 +818,8 @@ public class TalentpoolEmailService {
             result.setSubject(emailInviteBean.getSubject());
             result.setFrom_name(emailInviteBean.getFromName());
             result.setFrom_email(emailInviteBean.getFromEmail());
-            logger.info("=============mergeData=============");
             String merges = JSON.toJSONString(mergeData);
             logger.info(merges);
-            logger.info("===============================");
             result.setMergeVars(merges);
             result.setTo(toReceive);
             dataList.add(result);
@@ -867,15 +834,10 @@ public class TalentpoolEmailService {
     private List<InviteToDelivyUserInfo> talentEmailInviteInfoSearch(List<Integer>UserIdList){
         try{
             Response res=searchService.userQueryById(UserIdList);
-            logger.info("=======获取邀请投递邮件的人员的信息======查询es获得结果的Response===========");
-            logger.info(JSON.toJSONString(res));
-            logger.info("================================================");
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
-                logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
                 logger.info(JSON.toJSONString(result));
-                logger.info("================================================");
                 return result;
             }
         }catch(Exception e){
@@ -890,15 +852,10 @@ public class TalentpoolEmailService {
         try{
             params.put("return_params","user.profiles.profile.user_id,user.profiles.basic.name,user.profiles.basic.email");
             Response res=searchService.userQuery(params);
-            logger.info("=======获取邀请投递邮件的人员的信息======查询es获得结果的Response===========");
             logger.info(JSON.toJSONString(res));
-            logger.info("================================================");
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
-                logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
-                logger.info(JSON.toJSONString(result));
-                logger.info("================================================");
                 return result;
             }
         }catch(Exception e){
@@ -910,15 +867,9 @@ public class TalentpoolEmailService {
     private List<InviteToDelivyUserInfo>  talentEmailInviteInfoSearch(List<Map<String,String>> params,int page,int pageSize){
         try{
             Response res=searchService.queryProfileFilterUserIdList(params,page,pageSize);
-            logger.info("=======获取邀请投递邮件的人员的信息======查询es获得结果的Response===========");
-            logger.info(JSON.toJSONString(res));
-            logger.info("================================================");
             if(res.getStatus()==0&& StringUtils.isNotNullOrEmpty(res.getData())&&!"null".equals(res.getData())){
                 Map<String,Object> data= JSON.parseObject(res.getData());
                 List<InviteToDelivyUserInfo> result=this.convertInviteData(data);
-                logger.info("=======转换response为List<InviteToDelivyUserInfo> ===========");
-                logger.info(JSON.toJSONString(result));
-                logger.info("================================================");
                 return result;
             }
         }catch(Exception e){
@@ -1456,17 +1407,14 @@ public class TalentpoolEmailService {
             if(StringUtils.isNullOrEmpty(userName)){
                 userName="";
             }
-
+            String companyAbbr=info.getCompanyAbbr();
+            String accountName=info.getOfficialAccountName();
             String context1= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
             info1.setCustomText(context1);
-            info1.setHrName(record.getUsername());
             String url=env.getProperty("talentpool.wholeProfile");
             String token="user_id="+info1.getUserId()+"&company_id="+companyId+"&hr_id="+hrId+"&timestamp="+new Date().getTime();
             token=CommonUtils.encryptString(token);
-            info1.setProfileFullUrl(url+token);
-            if(StringUtils.isNullOrEmpty(abbr)){
-                abbr=info1.getCompanyAbbr();
-            }
+            info1.setResumeLink(url+token);
             resumeInfoList.add(info1);
 
         }
@@ -1481,28 +1429,7 @@ public class TalentpoolEmailService {
         return result;
     }
      private TalentEmailForwardsResumeInfo convertInfo1(TalentEmailForwardsResumeInfo info){
-         TalentEmailForwardsResumeInfo info1=new TalentEmailForwardsResumeInfo();
-         info1.setCompanyAbbr(info.getCompanyAbbr());
-         info1.setCompanyLogo(info.getCompanyLogo());
-         info1.setCoworkerName(info.getCoworkerName());
-         info1.setCustomText(info.getCustomText());
-         info1.setHeading(info.getHeading());
-         info1.setUserName(info.getUserName());
-         info1.setGenderName(info.getGenderName());
-         info1.setCityName(info.getCityName());
-         info1.setDegreeName(info.getDegreeName());
-         info1.setEducationList(info.getEducationList());
-         info1.setWorkexps(info.getWorkexps());
-         info1.setWeixinQrcode(info.getWeixinQrcode());
-         info1.setOfficialAccountName(info.getOfficialAccountName());
-         info1.setEmail(info.getEmail());
-         info1.setUserId(info.getUserId());
-         info1.setBirth(info.getBirth());
-         info1.setPositionName(info.getPositionName());
-         info1.setCompanyName(info.getCompanyName());
-         info1.setProfileFullUrl(info.getProfileFullUrl());
-         info1.setHrName(info.getHrName());
-         info1.setRcpt(info.getRcpt());
+         TalentEmailForwardsResumeInfo info1=JSON.parseObject(JSON.toJSONString(info),TalentEmailForwardsResumeInfo.class);
          return info1;
      }
     /*
@@ -1557,7 +1484,14 @@ public class TalentpoolEmailService {
             for(TalentEmailForwardsResumeInfo info:dataList){
                 if(hrCompanyRecord!=null){
                     info.setCompanyLogo(CommonUtils.appendUrl(hrCompanyRecord.getLogo(),env.getProperty("http.cdn.url")));
+                    info.setCompanyName(hrCompanyRecord.getName());
+                    info.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
                 }
+                if(hrWxWechatRecord!=null){
+                    info.setOfficialAccountName(hrWxWechatRecord.getName());
+                }
+                info.setCustomText(context);
+
             }
         }
         return dataList;
@@ -1622,41 +1556,11 @@ public class TalentpoolEmailService {
                             Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
                             logger.info(JSON.toJSONString(profiles));
                             if(profiles!=null&&!profiles.isEmpty()){
-                                Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
-                                if(profile!=null&&!profile.isEmpty()){
-                                    int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
-                                    info.setUserId(userId);
-                                }
-                                Map<String,Object> basic=(Map<String,Object>)profiles.get("basic");
-                                if(!StringUtils.isEmptyMap(basic)){
-                                    String userName=(String)basic.get("name");
-                                    String heading=(String)basic.get("headimg");
-                                    String genderName=(String)basic.get("gender_name");
-                                    String cityName=(String)basic.get("city_name");
-                                    String nationName=(String)basic.getOrDefault("nationality_name","");
-                                    int age=(int)basic.getOrDefault("age",0);
-                                    info.setUserName(userName);
-                                    info.setUserName(userName);
-                                    if(StringUtils.isNotNullOrEmpty(heading)) {
-                                        info.setHeading(CommonUtils.appendUrl(heading, env.getProperty("http.cdn.url")));
-                                    }else{
-                                        info.setHeading(env.getProperty("email.user.heading.url"));
-                                    }
-                                    info.setCityName(cityName);
-                                    info.setGenderName(genderName);
-                                    info.setIndustryName(nationName);
-                                    info.setAge(age);
-                                }
-                                Map<String,Object> recentJob=(Map<String,Object>)profiles.get("recent_job");
-                                List<Map<String,Object>> expJob=(List<Map<String,Object>>)profiles.get("other_workexps");
-                                List<Map<String,Object>> educationsList=(List<Map<String,Object>>)profiles.get("educations");
+                                this.handlerProfileUserId(profiles,info);
+                                this.handlerProfileBasicData(profiles,info);
                                 List<Map<String,Object>> applist=(List<Map<String,Object>>)userMap.get("applications");
-                                List<Map<String,Object>> otherDataList= (List<Map<String, Object>>) userMap.get("others");
-                                List<Map<String,Object>> intentionList= (List<Map<String, Object>>) userMap.get("intentions");
-                                List<TalentEducationInfo> talentEducationInfo=this.getTalentEducationInfo(educationsList);
-                                info.setEduExps(this.handlerTalentEducationInfoData(educationsList));
-                                info.setBasicInfo(this.handlerTalentBasicInfoData(basic,educationsList,otherDataList));
-                                info.setIntention();
+                                this.handlerProfileData(profiles,info);
+                                info.setPositionName(this.getPositionName(applist,hrId,companyId));
                                 list.add(info);
                             }
 
@@ -1666,6 +1570,63 @@ public class TalentpoolEmailService {
             }
         }
         return list;
+    }
+    /*
+     处理profiles
+     */
+    private void handlerProfileUserId(Map<String,Object> profiles,TalentEmailForwardsResumeInfo info){
+        Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
+        if(profile!=null&&!profile.isEmpty()){
+            int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
+            info.setUserId(userId);
+        }
+    }
+    /*
+     处理简历通用信息
+     */
+    private void handlerProfileBasicData(Map<String,Object> profiles,TalentEmailForwardsResumeInfo info){
+        Map<String,Object> basic=(Map<String,Object>)profiles.get("basic");
+        if(!StringUtils.isEmptyMap(basic)){
+            String userName=(String)basic.get("name");
+            String heading=(String)basic.get("headimg");
+            String genderName=(String)basic.get("gender_name");
+            String cityName=(String)basic.get("city_name");
+            String nationName=(String)basic.getOrDefault("nationality_name","");
+            int age=(int)basic.getOrDefault("age",0);
+            info.setUserName(userName);
+            if(StringUtils.isNotNullOrEmpty(heading)) {
+                info.setHeading(CommonUtils.appendUrl(heading, env.getProperty("http.cdn.url")));
+            }else{
+                info.setHeading(env.getProperty("email.user.heading.url"));
+            }
+            info.setCityName(cityName);
+            info.setGenderName(genderName);
+            info.setIndustryName(nationName);
+            info.setAge(age);
+        }
+    }
+    private void handlerProfileData(Map<String,Object> profiles,TalentEmailForwardsResumeInfo info){
+        Map<String,Object> basic=(Map<String,Object>)profiles.get("basic");
+        Map<String,Object> recentJob=(Map<String,Object>)profiles.get("recent_job");
+        List<Map<String,Object>> expJob=(List<Map<String,Object>>)profiles.get("other_workexps");
+        List<Map<String,Object>> educationsList=(List<Map<String,Object>>)profiles.get("educations");
+        List<Map<String,Object>> otherDataList= (List<Map<String, Object>>) profiles.get("others");
+        List<Map<String,Object>> intentionList= (List<Map<String, Object>>) profiles.get("intentions");
+        List<Map<String,Object>> skillsList=(List<Map<String,Object>>)profiles.get("skills");
+        List<Map<String,Object>> languagesList=(List<Map<String,Object>>)profiles.get("languages");
+        List<Map<String,Object>> credentialsList=(List<Map<String,Object>>)profiles.get("credentials");
+        List<Map<String,Object>> worksList=(List<Map<String,Object>>)profiles.get("works");
+        List<Map<String,Object>> projectExpList=(List<Map<String,Object>>)profiles.get("projectexps");
+        info.setEduExps(this.handlerTalentEducationInfoData(educationsList));
+        info.setBasicInfo(this.handlerTalentBasicInfoData(basic,educationsList,otherDataList));
+        info.setIntention(this.handlerTalentIntentionInfoData(intentionList));
+        info.setWorkExps(this.handlerTalentWorkExpInfoData(recentJob,expJob));
+        info.setEduExps((this.handlerTalentEducationInfoData(educationsList)));
+        info.setLanguages(this.handlerLanguagesInfoData(languagesList));
+        info.setProExps(this.handlerTalentProjectExpsInfodata(projectExpList));
+        info.setSkills(this.handlerTalentSkillsData(skillsList));
+        info.setCredentials(this.handlerTalentCredentialsData(credentialsList));
+        info.setWorks(this.handlerTalentWorksInfo(worksList));
     }
 
     private TalentBasicInfo handlerTalentBasicInfoData(Map<String,Object> basicData,List<Map<String,Object>> eduList,List<Map<String,Object>> otherDataList){
@@ -1824,7 +1785,7 @@ public class TalentpoolEmailService {
         for(Map<String,Object> data:languagesList){
             TalentLanguagesInfo info=new TalentLanguagesInfo();
             String name=(String)data.getOrDefault("name","");
-            String levelName= ProfileLanguagesConvertUtil.intToEnum.get(data.get("level"));
+            String levelName= ProfileLanguagesLevelConvertUtil.intToEnum.get(data.get("level"));
             info.setLanguage(name);
             info.setLevel(levelName);
             list.add(info);
