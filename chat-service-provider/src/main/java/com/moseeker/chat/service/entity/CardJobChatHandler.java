@@ -78,8 +78,9 @@ public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHan
             }
 
             positionCard.setId(position.getId());
-            positionCard.setUpdateTime(position.getUpdateTime());
+            positionCard.setUpdate(position.getUpdateTime());
             positionCard.setTitle(position.getTitle());
+            positionCard.setStatus(Double.valueOf(position.getStatus()).intValue());
 
         }
         chat.setContent(JSON.toJSONString(positionCard, serializeConfig));
@@ -106,11 +107,20 @@ public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHan
 
     private static class PositionCard {
         private int id;
-        private String updateTime;
+        private String update;
         private List<String> city;
         private String salary;
         private String title;
         private String companyName;
+        private int status;
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
 
         public int getId() {
             return id;
@@ -120,12 +130,12 @@ public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHan
             this.id = id;
         }
 
-        public String getUpdateTime() {
-            return updateTime;
+        public String getUpdate() {
+            return update;
         }
 
-        public void setUpdateTime(String updateTime) {
-            this.updateTime = updateTime;
+        public void setUpdate(String update) {
+            this.update = update;
         }
 
         public List<String> getCity() {
