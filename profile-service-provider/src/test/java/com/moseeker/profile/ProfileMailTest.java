@@ -1,7 +1,9 @@
 package com.moseeker.profile;
 
 import com.moseeker.entity.pojo.resume.Account;
+import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.config.AppConfig;
+import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.profile.utils.ProfileMailUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,4 +31,20 @@ public class ProfileMailTest {
         profileMailUtil.sendProfileParseWarnMail(account);
         Thread.sleep(20000);
     }
+
+//    @Autowired
+//    ProfileService profileService;
+//    @Test
+//    public void testvalidateParseLimit() throws InterruptedException {
+//        ResumeObj resumeObj = new ResumeObj();
+//        Account account = new Account();
+//        account.setUsage_limit(10000);
+//        account.setUsage_remaining(1212);
+//        resumeObj.setAccount(account);
+//        profileService.validateParseLimit(resumeObj);
+//        account.setUsage_remaining(999);
+//        resumeObj.setAccount(account);
+//        profileService.validateParseLimit(resumeObj);
+//        Thread.sleep(10000);
+//    }
 }
