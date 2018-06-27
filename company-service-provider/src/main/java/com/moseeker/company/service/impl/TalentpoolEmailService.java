@@ -1559,11 +1559,12 @@ public class TalentpoolEmailService {
                             logger.info(JSON.toJSONString(profiles));
                             if(profiles!=null&&!profiles.isEmpty()){
                                 int userId=this.handlerProfileUserId(profiles,info);
-
                                 this.handlerProfileBasicData(profiles,info);
                                 List<Map<String,Object>> applist=(List<Map<String,Object>>)userMap.get("applications");
                                 this.handlerProfileData(profiles,info);
                                 info.setPositionName(this.getPositionName(applist,hrId,companyId));
+                                TalentOtherInfo otherInfo=this.handlerProfileOtherData(userId,hrId);
+                                info.setOther(otherInfo);
                                 list.add(info);
                             }
 
@@ -1574,20 +1575,81 @@ public class TalentpoolEmailService {
         }
         return list;
     }
-
+    /*
+     处理简历自定义字段
+     */
     private TalentOtherInfo handlerProfileOtherData(int userId,int hrId){
+        TalentOtherInfo info=new TalentOtherInfo();
         try{
             Response res=profileOtherService.getProfileOtherByPosition(userId,hrId,0);
             if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
                 Map<String,Object> otherList= (Map<String, Object>) JSON.parse(res.getData());
                 List<Map<String,Object>> internshipList= (List<Map<String, Object>>) otherList.get("internship");
                 List<Map<String,Object>> schoolWorkList= (List<Map<String, Object>>) otherList.get("schooljob");
+                List<TalentOtherInternshipInfo> internList=this.handlerTalentOtherInternShipData(internshipList);
+                List<TalentOtherSchoolWorkInfo> schoolList=this.handlerTalentOtherSchoolWorkData(schoolWorkList);
+                if(!StringUtils.isEmptyList(internList)){
+                    info.setInternship(internList);
+                }
+                if(!StringUtils.isEmptyList(schoolList)){
+                    info.setSchoolWork(schoolList);
+                }
             }
         }catch(Exception e){
             logger.error(e.getMessage(),e);
         }
-        return null;
+        return info;
 
+    }
+    /*
+     处理自定义字段的曾任职位相关的
+     */
+    private List<TalentOtherInternshipInfo> handlerTalentOtherInternShipData(List<Map<String,Object>> internshipList){
+        if(StringUtils.isEmptyList(internshipList)){
+            return null;
+        }
+        List<TalentOtherInternshipInfo> list=new ArrayList<>();
+        for(Map<String,Object> data:internshipList){
+            TalentOtherInternshipInfo info=new TalentOtherInternshipInfo();
+            String start=(String)data.getOrDefault("internshipStart","");
+            String end=(String)data.getOrDefault("internshipEnd","");
+            int endUntilNow=(int)data.getOrDefault("internshipEndUntilNow",0);
+            if(endUntilNow==1){
+                SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd");
+                end=ff.format(new Date());
+            }
+            info.setTime(start+"-"+end);
+            info.setCompany((String)data.getOrDefault("internshipCompanyName",""));
+            info.setDepartment((String)data.getOrDefault("internshipDepartmentName",""));
+            info.setPosition((String)data.getOrDefault("internshipJob",""));
+            info.setDescription((String)data.getOrDefault("internshipDescriptionHidden",""));
+            list.add(info);
+        }
+        return list;
+    }
+    /*
+     处理自定义字段的在校工作相关的
+     */
+    private List<TalentOtherSchoolWorkInfo> handlerTalentOtherSchoolWorkData(List<Map<String,Object>> schoolWorkList){
+        if(StringUtils.isEmptyList(schoolWorkList)){
+            return null;
+        }
+        List<TalentOtherSchoolWorkInfo> list=new ArrayList<>();
+        for(Map<String,Object> data:schoolWorkList){
+            TalentOtherSchoolWorkInfo info=new TalentOtherSchoolWorkInfo();
+            String start=(String)data.getOrDefault("schooljobStart","");
+            String end=(String)data.getOrDefault("schooljobEnd","");
+            int endUntilNow=(int)data.getOrDefault("schooljobEndUntilNow",0);
+            if(endUntilNow==1){
+                SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd");
+                end=ff.format(new Date());
+            }
+            info.setTime(start+"-"+end);
+            info.setDescription((String)data.getOrDefault("schooljobDescriptionHidden",""));
+            info.setName((String)data.getOrDefault("schooljobJob",""));
+            list.add(info);
+        }
+        return list;
     }
     /*
      处理profiles
