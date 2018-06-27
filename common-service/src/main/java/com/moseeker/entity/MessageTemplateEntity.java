@@ -93,9 +93,7 @@ public class MessageTemplateEntity {
         HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(params.getCompanyId());
         String wxSignture=DO.getSignature();
         String MDString= MD5Util.md5(params.getUserId()+params.getCompanyId()+""+new Date().getTime());
-        if(MDString.length()>7){
-            MDString=MDString.substring(0,8);
-        }
+        MDString=MDString.substring(8,24);
         String url=params.getUrl().replace("{}",wxSignture);
         if(params.getType()==2){
             //校验推送职位是否下架
@@ -107,6 +105,7 @@ public class MessageTemplateEntity {
             int recomId=this.addCampaignRecomPositionlist(params.getCompanyId(),params.getPositionIds());
             url=url.replace("{recomPushId}",recomId+"").replace("recom_code",MDString);
         }
+        url = url+"&from_template_message="+params.getTemplateId()+"&send_time=" + new Date().getTime();
         Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId());
         if(colMap==null||colMap.isEmpty()){
             return null;
@@ -115,6 +114,7 @@ public class MessageTemplateEntity {
         this.handlerRecomLog(params,MDString);
         return messageTemplateNoticeStruct;
     }
+
     /*
       添加日志
      */
