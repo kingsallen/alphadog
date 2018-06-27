@@ -107,16 +107,17 @@ public class MessageTemplateEntity {
         }
         Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId());
         if(colMap==null||colMap.isEmpty()){
+            this.handlerRecomLog(params,MDString,0);
             return null;
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct=this.convertMessageTemplate(params,colMap,url);
-        this.handlerRecomLog(params,MDString);
+        this.handlerRecomLog(params,MDString,1);
         return messageTemplateNoticeStruct;
     }
     /*
       添加日志
      */
-    private void handlerRecomLog(AIRecomParams params,String mdString){
+    private void handlerRecomLog(AIRecomParams params,String mdString,int isSend){
         LogAiRecomRecord recomRecord=new LogAiRecomRecord();
         recomRecord.setUserId(params.getUserId());
         recomRecord.setCompanyId(params.getCompanyId());
@@ -129,6 +130,7 @@ public class MessageTemplateEntity {
         if(StringUtils.isNotNullOrEmpty(params.getAlgorithmName())){
             recomRecord.setAlgorithmName(params.getAlgorithmName());
         }
+        recomRecord.setIsSend((byte)isSend);
         logAiRecomDao.addRecord(recomRecord);
     }
     /*

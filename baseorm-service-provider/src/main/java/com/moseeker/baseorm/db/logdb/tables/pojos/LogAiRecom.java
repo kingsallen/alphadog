@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogAiRecom implements Serializable {
 
-    private static final long serialVersionUID = -32873689;
+    private static final long serialVersionUID = -306593247;
 
     private Integer   id;
     private Integer   userId;
@@ -34,6 +34,7 @@ public class LogAiRecom implements Serializable {
     private String    mdCode;
     private String    algorithmName;
     private Integer   wxId;
+    private Byte      isSend;
 
     public LogAiRecom() {}
 
@@ -47,6 +48,7 @@ public class LogAiRecom implements Serializable {
         this.mdCode = value.mdCode;
         this.algorithmName = value.algorithmName;
         this.wxId = value.wxId;
+        this.isSend = value.isSend;
     }
 
     public LogAiRecom(
@@ -58,7 +60,8 @@ public class LogAiRecom implements Serializable {
         Timestamp sendTime,
         String    mdCode,
         String    algorithmName,
-        Integer   wxId
+        Integer   wxId,
+        Byte      isSend
     ) {
         this.id = id;
         this.userId = userId;
@@ -69,6 +72,7 @@ public class LogAiRecom implements Serializable {
         this.mdCode = mdCode;
         this.algorithmName = algorithmName;
         this.wxId = wxId;
+        this.isSend = isSend;
     }
 
     public Integer getId() {
@@ -143,6 +147,14 @@ public class LogAiRecom implements Serializable {
         this.wxId = wxId;
     }
 
+    public Byte getIsSend() {
+        return this.isSend;
+    }
+
+    public void setIsSend(Byte isSend) {
+        this.isSend = isSend;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("LogAiRecom (");
@@ -156,6 +168,7 @@ public class LogAiRecom implements Serializable {
         sb.append(", ").append(mdCode);
         sb.append(", ").append(algorithmName);
         sb.append(", ").append(wxId);
+        sb.append(", ").append(isSend);
 
         sb.append(")");
         return sb.toString();
