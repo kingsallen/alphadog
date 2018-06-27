@@ -462,8 +462,7 @@ public class DeliveryEmailProducer {
             start = ((String)startTime).substring(0, 7).replace("-", ".");
         }
         String end = "";
-        if (endTime != null && (1 == (int) endUntilNow
-                || endTime == null)) {
+        if (endTime == null || 1 == (int) endUntilNow) {
             endTime = "至今";
         } else {
             endTime = ((String)endTime).substring(0, 7).replace("-", ".");
