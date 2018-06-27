@@ -284,12 +284,12 @@ public class DeliveryEmailProducer {
                 emailInfo.setIntroduction((String) basicData.getOrDefault("self_introduction",""));
             }
             if(otherDatas != null){
-                OtherInfo otherInfo = new OtherInfo();
+//                OtherInfo otherInfo = new OtherInfo();
                 List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>)otherDatas.getOrDefault("keyvalues", new ArrayList<>());
                 if(!StringUtils.isEmptyList(keyvalueList)){
-                    otherInfo.setIdentity(ProfileOtherIdentityType.getMessageList(keyvalueList));
-                    otherInfo.setCareer(ProfileOtherCareerType.getMessageList(keyvalueList));
-                    otherInfo.setSchool(ProfileOtherSchoolType.getMessageList(keyvalueList));
+                    emailInfo.setOther_identity(ProfileOtherIdentityType.getMessageList(keyvalueList));
+                    emailInfo.setOther_career(ProfileOtherCareerType.getMessageList(keyvalueList));
+                    emailInfo.setOther_school(ProfileOtherSchoolType.getMessageList(keyvalueList));
                 }
                 List<Map<String, Object>> internshipList = (List<Map<String, Object>>)otherDatas.getOrDefault("internship", new ArrayList());
                 if(!StringUtils.isEmptyList(internshipList)){
@@ -303,7 +303,7 @@ public class DeliveryEmailProducer {
                         ship.setDescription((String)internship.getOrDefault("internshipDescriptionHidden", ""));
                         shipList.add(ship);
                     }
-                    otherInfo.setInternship(shipList);
+                    emailInfo.setOther_internship(shipList);
                 }
                 List<Map<String, Object>> schooljobList = (List<Map<String, Object>>)otherDatas.getOrDefault("schooljob", new ArrayList());
                 if(!StringUtils.isEmptyList(schooljobList)){
@@ -315,10 +315,9 @@ public class DeliveryEmailProducer {
                         ship.setDescription((String)school.getOrDefault("schooljobDescriptionHidden", ""));
                         schoolList.add(ship);
                     }
-                    otherInfo.setSchoolWork(schoolList);
+                    emailInfo.setOther_schoolWork(schoolList);
                 }
-                otherInfo.setIdPhoto((String)otherDatas.getOrDefault("photo", ""));
-                emailInfo.setOther(otherInfo);
+                emailInfo.setOther_idPhoto((String)otherDatas.getOrDefault("photo", ""));
             }
 
         }
@@ -397,7 +396,7 @@ public class DeliveryEmailProducer {
                 WorkExps workExps = new WorkExps();
                 workExps.setTime(appendTime(workexp.get("start_date"), workexp.get("end_date"), workexp.get("end_until_now")));
                 workExps.setDescription((String) workexp.getOrDefault("description",""));
-                workExps.setComapny((String) workexp.getOrDefault("company_name",""));
+                workExps.setCompany((String) workexp.getOrDefault("company_name",""));
                 workExps.setDepartment((String) workexp.getOrDefault("department_name",""));
                 workExps.setPosition((String) workexp.getOrDefault("job",""));
                 workList.add(workExps);
