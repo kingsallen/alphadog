@@ -1,5 +1,8 @@
 package com.moseeker.mq.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCcmailDao;
@@ -34,6 +37,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.biz.CommonUtils;
+import com.moseeker.mq.pojo.ProfileEmailInfo;
 import com.moseeker.mq.service.sms.SmsService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
@@ -51,6 +55,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,6 +120,11 @@ public class ResumeDeliveryService {
     private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
     private static final String mandrillApikey = propertiesReader.get("mandrill.apikey", String.class);
 
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public ResumeDeliveryService(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
     /**
      * 职位申请发送信息
      * @param  messageEmailStruct 申请信息
@@ -613,7 +623,7 @@ public class ResumeDeliveryService {
      * @param email_status  邮件申请状态
      * @param userUserDO    申请者信息
      */
-    public void sendEmailToHr(UserHrAccountDO accountDO,HrCompanyDO companyDO, JobPositionDO positionDO, UserUserDO userUserDO, int applt_type, int email_status){
+    public void sendEmailToHr(UserHrAccountDO accountDO,HrCompanyDO companyDO, JobPositionDO positionDO, UserUserDO userUserDO, int applt_type, int email_status)  {
         //获取邮件信息
         Map<String, Object>  emailStruct = new HashMap<>();
         if(applt_type == 1 && email_status == 0){
@@ -622,8 +632,18 @@ public class ResumeDeliveryService {
             emailStruct.put("mergeVars", params);
         }else if(applt_type == 0){
             emailStruct.put("templateName", Constant.RESUME_INFORM_HR);
-            Map<String, Object> params = deliveryEmailToHr.emailBady(companyDO, positionDO, userUserDO);
-            emailStruct.put("mergeVars", params);
+            ProfileEmailInfo params = null;
+            try {
+                params = deliveryEmailToHr.emailBadyV2(companyDO, positionDO, userUserDO);
+            } catch (TException e) {
+                e.printStackTrace();
+                logger.info(e.getMessage(), e);
+                logger.info("Hr邮件===================报错了");
+                return;
+            }
+            String res= JSON.toJSONString(params,serializeConfig);
+            Map<String, Object> data = JSON.parseObject(res, Map.class);
+            emailStruct.put("mergeVars", data);
         }else{
             return ;
         }

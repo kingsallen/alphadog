@@ -306,14 +306,14 @@ public class PositionService {
 
                 }
             }
-        } else {
-            jobPositionPojo.custom = "";
-            jobPositionPojo.occupation = "";
-        }
+         } else{
+               jobPositionPojo.custom = "";
+               jobPositionPojo.occupation = "";
+             }
         searchData.setCustom(StringUtils.filterStringForSearch(jobPositionPojo.custom));
         searchData.setOccupation(StringUtils.filterStringForSearch(jobPositionPojo.occupation));
 
-        // 修改更新时间
+    // 修改更新时间
         jobPositionPojo.publish_date_view = DateUtils.dateToPattern(jobPositionPojo.publish_date,
                 DateUtils.SHOT_TIME);
         jobPositionPojo.update_time_view = DateUtils.dateToPattern(jobPositionPojo.update_time,
