@@ -27,11 +27,8 @@ import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolEmailRecord
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.constants.DegreeConvertUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
@@ -64,6 +61,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailListStruct;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
+import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import org.apache.thrift.TException;
@@ -146,6 +144,7 @@ public class TalentpoolEmailService {
 
     @Autowired
     private UserWxEntity userWxEntity;
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
 
     /**
      * 获取公司邮件剩余额度
@@ -804,7 +803,6 @@ public class TalentpoolEmailService {
             List<Map<String,String>> toReceive=new ArrayList<>();
             for(ReceiveInfo receiveInfo:to){
                 Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
-
                 infoMap.put("rcpt",receiveInfo.getToEmail());
                 infoMap.put("coworker_name",receiveInfo.getToName());
                 mergeData.add(infoMap);
@@ -815,7 +813,6 @@ public class TalentpoolEmailService {
                     map1.put(key,String.valueOf(map.get(key)));
                 }
                 toReceive.add(map1);
-
             }
             result.setTemplateName(emailInviteBean.getTemplateName());
             result.setSubject(emailInviteBean.getSubject());
@@ -1401,10 +1398,7 @@ public class TalentpoolEmailService {
         }
         for(TalentEmailForwardsResumeInfo info:dataInfo){
             TalentEmailForwardsResumeInfo info1=this.convertInfo1(info);
-            String companyAbbr=info1.getCompanyAbbr();
-            if(StringUtils.isNullOrEmpty(companyAbbr)){
-                companyAbbr="";
-            }
+
             String positionName=info1.getPositionName();
             if(StringUtils.isNullOrEmpty(positionName)){
                 positionName="";
@@ -1413,20 +1407,14 @@ public class TalentpoolEmailService {
             if(StringUtils.isNullOrEmpty(userName)){
                 userName="";
             }
-            String accountName=info1.getOfficialAccountName();
-            if(StringUtils.isNullOrEmpty(accountName)){
-                accountName="";
-            }
+            String companyAbbr=info.getCompanyAbbr();
+            String accountName=info.getOfficialAccountName();
             String context1= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
             info1.setCustomText(context1);
-            info1.setHrName(record.getUsername());
             String url=env.getProperty("talentpool.wholeProfile");
             String token="user_id="+info1.getUserId()+"&company_id="+companyId+"&hr_id="+hrId+"&timestamp="+new Date().getTime();
             token=CommonUtils.encryptString(token);
-            info1.setProfileFullUrl(url+token);
-            if(StringUtils.isNullOrEmpty(abbr)){
-                abbr=info1.getCompanyAbbr();
-            }
+            info1.setResumeLink(url+token);
             resumeInfoList.add(info1);
 
         }
@@ -1441,28 +1429,7 @@ public class TalentpoolEmailService {
         return result;
     }
      private TalentEmailForwardsResumeInfo convertInfo1(TalentEmailForwardsResumeInfo info){
-         TalentEmailForwardsResumeInfo info1=new TalentEmailForwardsResumeInfo();
-         info1.setCompanyAbbr(info.getCompanyAbbr());
-         info1.setCompanyLogo(info.getCompanyLogo());
-         info1.setCoworkerName(info.getCoworkerName());
-         info1.setCustomText(info.getCustomText());
-         info1.setHeading(info.getHeading());
-         info1.setUserName(info.getUserName());
-         info1.setGenderName(info.getGenderName());
-         info1.setCityName(info.getCityName());
-         info1.setDegreeName(info.getDegreeName());
-         info1.setEducationList(info.getEducationList());
-         info1.setWorkexps(info.getWorkexps());
-         info1.setWeixinQrcode(info.getWeixinQrcode());
-         info1.setOfficialAccountName(info.getOfficialAccountName());
-         info1.setEmail(info.getEmail());
-         info1.setUserId(info.getUserId());
-         info1.setBirth(info.getBirth());
-         info1.setPositionName(info.getPositionName());
-         info1.setCompanyName(info.getCompanyName());
-         info1.setProfileFullUrl(info.getProfileFullUrl());
-         info1.setHrName(info.getHrName());
-         info1.setRcpt(info.getRcpt());
+         TalentEmailForwardsResumeInfo info1=JSON.parseObject(JSON.toJSONString(info),TalentEmailForwardsResumeInfo.class);
          return info1;
      }
     /*
@@ -1516,14 +1483,15 @@ public class TalentpoolEmailService {
             HrWxWechatRecord hrWxWechatRecord=this.getWxInfo(companyId);
             for(TalentEmailForwardsResumeInfo info:dataList){
                 if(hrCompanyRecord!=null){
-                    info.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
                     info.setCompanyLogo(CommonUtils.appendUrl(hrCompanyRecord.getLogo(),env.getProperty("http.cdn.url")));
+                    info.setCompanyName(hrCompanyRecord.getName());
+                    info.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
                 }
                 if(hrWxWechatRecord!=null){
-                    info.setWeixinQrcode(CommonUtils.appendUrl(hrWxWechatRecord.getQrcode(),env.getProperty("http.cdn.url")));
                     info.setOfficialAccountName(hrWxWechatRecord.getName());
                 }
                 info.setCustomText(context);
+
             }
         }
         return dataList;
@@ -1588,49 +1556,13 @@ public class TalentpoolEmailService {
                             Map<String,Object> profiles=(Map<String,Object>)userMap.get("profiles");
                             logger.info(JSON.toJSONString(profiles));
                             if(profiles!=null&&!profiles.isEmpty()){
-                                Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
-                                if(profile!=null&&!profile.isEmpty()){
-                                    int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
-                                    info.setUserId(userId);
-                                }
-                                Map<String,Object> basic=(Map<String,Object>)profiles.get("basic");
-                                if(!StringUtils.isEmptyMap(basic)){
-                                    String name=(String)basic.get("name");
-                                    String email=(String)basic.get("email");
-                                    String heading=(String)basic.get("headimg");
-                                    String genderName=(String)basic.get("gender_name");
-                                    String cityName=(String)basic.get("city_name");
-                                    if(basic.get("highest_degree")!=null){
-                                        int highestDegree=(int)basic.get("highest_degree");
-                                        info.setDegreeName(DegreeConvertUtil.intToEnum.get(highestDegree));
-                                    }
-
-                                    info.setEmail(email);
-                                    info.setUserName(name);
-                                    if(StringUtils.isNotNullOrEmpty(heading)) {
-                                        info.setHeading(CommonUtils.appendUrl(heading, env.getProperty("http.cdn.url")));
-                                    }else{
-                                        info.setHeading(env.getProperty("email.user.heading.url"));
-                                    }
-                                    info.setCityName(cityName);
-                                    info.setGenderName(genderName);
-                                }
-                                Map<String,Object> recentJob=(Map<String,Object>)profiles.get("recent_job");
-                                List<Map<String,Object>> expJob=(List<Map<String,Object>>)profiles.get("other_workexps");
-                                List<Map<String,Object>> educationsList=(List<Map<String,Object>>)profiles.get("educations");
+                                int userId=this.handlerProfileUserId(profiles,info);
+                                this.handlerProfileBasicData(profiles,info);
                                 List<Map<String,Object>> applist=(List<Map<String,Object>>)userMap.get("applications");
-                                List<TalentEducationInfo> talentEducationInfo=this.getTalentEducationInfo(educationsList);
-                                List<TalentWorkExpInfo> talentWorkExpInfo=this.getTalentWorkExpInfo(recentJob,expJob);
-                                info.setEducationList(talentEducationInfo);
-                                info.setWorkexps(talentWorkExpInfo);
-                                int year=(int)userMap.get("age");
-                                info.setBirth(year);
+                                this.handlerProfileData(profiles,info);
                                 info.setPositionName(this.getPositionName(applist,hrId,companyId));
-                                info.setCompanyName("");
-                                if(!StringUtils.isEmptyList(talentEducationInfo)){
-                                    info.setCompanyName(talentWorkExpInfo.get(0).getWorkCompany());
-                                }
-
+                                TalentOtherInfo otherInfo=this.handlerProfileOtherData(userId,hrId);
+                                info.setOther(otherInfo);
                                 list.add(info);
                             }
 
@@ -1641,6 +1573,369 @@ public class TalentpoolEmailService {
         }
         return list;
     }
+    /*
+     处理简历自定义字段
+     */
+    private TalentOtherInfo handlerProfileOtherData(int userId,int hrId){
+        TalentOtherInfo info=new TalentOtherInfo();
+        try{
+            Response res=profileOtherService.getProfileOtherByPosition(userId,hrId,0);
+            if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
+                Map<String,Object> otherData= (Map<String, Object>) JSON.parse(res.getData());
+                List<Map<String,Object>>keyvaluesList= (List<Map<String, Object>>) otherData.get("keyvalues");
+                List<Map<String,Object>> internshipList= (List<Map<String, Object>>) otherData.get("internship");
+                List<Map<String,Object>> schoolWorkList= (List<Map<String, Object>>) otherData.get("schooljob");
+                List<TalentOtherInternshipInfo> internList=this.handlerTalentOtherInternShipData(internshipList);
+                List<TalentOtherSchoolWorkInfo> schoolList=this.handlerTalentOtherSchoolWorkData(schoolWorkList);
+                if(!StringUtils.isEmptyList(internList)){
+                    info.setInternship(internList);
+                }
+                if(!StringUtils.isEmptyList(schoolList)){
+                    info.setSchoolWork(schoolList);
+                }
+                List<Message> schoolData=ProfileOtherSchoolType.getMessageList(keyvaluesList);
+                List<Message> identityData=ProfileOtherIdentityType.getMessageList(keyvaluesList);
+                List<Message> careerData=ProfileOtherCareerType.getMessageList(keyvaluesList);
+                if(!StringUtils.isEmptyList(schoolData)){
+                    info.setSchool(schoolData);
+                }
+                if(!StringUtils.isEmptyList(identityData)){
+                    info.setIdentity(identityData);
+                }
+                if(!StringUtils.isEmptyList(careerData)){
+                    info.setCareer(careerData);
+                }
+                if(!StringUtils.isNullOrEmpty((String)otherData.getOrDefault("photo",""))){
+                    info.setIdPhoto((String)otherData.getOrDefault("photo",""));
+                }
+            }
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
+        return info;
+
+    }
+    /*
+     处理自定义字段的曾任职位相关的
+     */
+    private List<TalentOtherInternshipInfo> handlerTalentOtherInternShipData(List<Map<String,Object>> internshipList){
+        if(StringUtils.isEmptyList(internshipList)){
+            return null;
+        }
+        List<TalentOtherInternshipInfo> list=new ArrayList<>();
+        for(Map<String,Object> data:internshipList){
+            TalentOtherInternshipInfo info=new TalentOtherInternshipInfo();
+            String start=(String)data.getOrDefault("internshipStart","");
+            String end=(String)data.getOrDefault("internshipEnd","");
+            int endUntilNow=(int)data.getOrDefault("internshipEndUntilNow",0);
+            if(endUntilNow==1){
+                SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd");
+                end=ff.format(new Date());
+            }
+            info.setTime(start+"-"+end);
+            info.setCompany((String)data.getOrDefault("internshipCompanyName",""));
+            info.setDepartment((String)data.getOrDefault("internshipDepartmentName",""));
+            info.setPosition((String)data.getOrDefault("internshipJob",""));
+            info.setDescription((String)data.getOrDefault("internshipDescriptionHidden",""));
+            list.add(info);
+        }
+        return list;
+    }
+    /*
+     处理自定义字段的在校工作相关的
+     */
+    private List<TalentOtherSchoolWorkInfo> handlerTalentOtherSchoolWorkData(List<Map<String,Object>> schoolWorkList){
+        if(StringUtils.isEmptyList(schoolWorkList)){
+            return null;
+        }
+        List<TalentOtherSchoolWorkInfo> list=new ArrayList<>();
+        for(Map<String,Object> data:schoolWorkList){
+            TalentOtherSchoolWorkInfo info=new TalentOtherSchoolWorkInfo();
+            String start=(String)data.getOrDefault("schooljobStart","");
+            String end=(String)data.getOrDefault("schooljobEnd","");
+            int endUntilNow=(int)data.getOrDefault("schooljobEndUntilNow",0);
+            if(endUntilNow==1){
+                SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd");
+                end=ff.format(new Date());
+            }
+            info.setTime(start+"-"+end);
+            info.setDescription((String)data.getOrDefault("schooljobDescriptionHidden",""));
+            info.setName((String)data.getOrDefault("schooljobJob",""));
+            list.add(info);
+        }
+        return list;
+    }
+    /*
+     处理profiles
+     */
+    private int handlerProfileUserId(Map<String,Object> profiles,TalentEmailForwardsResumeInfo info){
+        Map<String,Object> profile=(Map<String,Object>)profiles.get("profile");
+        if(profile!=null&&!profile.isEmpty()){
+            int userId=Integer.parseInt(String.valueOf(profile.get("user_id")));
+            info.setUserId(userId);
+            return userId;
+        }
+        return 0;
+    }
+    /*
+     处理简历通用信息
+     */
+    private void handlerProfileBasicData(Map<String,Object> profiles,TalentEmailForwardsResumeInfo info){
+        Map<String,Object> basic=(Map<String,Object>)profiles.get("basic");
+        if(!StringUtils.isEmptyMap(basic)){
+            String userName=(String)basic.get("name");
+            String heading=(String)basic.get("headimg");
+            String genderName=(String)basic.get("gender_name");
+            String cityName=(String)basic.get("city_name");
+            String nationName=(String)basic.getOrDefault("nationality_name","");
+            int age=(int)basic.getOrDefault("age",0);
+            info.setUserName(userName);
+            if(StringUtils.isNotNullOrEmpty(heading)) {
+                info.setHeading(CommonUtils.appendUrl(heading, env.getProperty("http.cdn.url")));
+            }else{
+                info.setHeading(env.getProperty("email.user.heading.url"));
+            }
+            info.setCityName(cityName);
+            info.setGenderName(genderName);
+            info.setIndustryName(nationName);
+            info.setAge(age);
+        }
+    }
+    private void handlerProfileData(Map<String,Object> profiles,TalentEmailForwardsResumeInfo info){
+        Map<String,Object> basic=(Map<String,Object>)profiles.get("basic");
+        Map<String,Object> recentJob=(Map<String,Object>)profiles.get("recent_job");
+        List<Map<String,Object>> expJob=(List<Map<String,Object>>)profiles.get("other_workexps");
+        List<Map<String,Object>> educationsList=(List<Map<String,Object>>)profiles.get("educations");
+        List<Map<String,Object>> otherDataList= (List<Map<String, Object>>) profiles.get("others");
+        List<Map<String,Object>> intentionList= (List<Map<String, Object>>) profiles.get("intentions");
+        List<Map<String,Object>> skillsList=(List<Map<String,Object>>)profiles.get("skills");
+        List<Map<String,Object>> languagesList=(List<Map<String,Object>>)profiles.get("languages");
+        List<Map<String,Object>> credentialsList=(List<Map<String,Object>>)profiles.get("credentials");
+        List<Map<String,Object>> worksList=(List<Map<String,Object>>)profiles.get("works");
+        List<Map<String,Object>> projectExpList=(List<Map<String,Object>>)profiles.get("projectexps");
+        info.setEduExps(this.handlerTalentEducationInfoData(educationsList));
+        info.setBasicInfo(this.handlerTalentBasicInfoData(basic,educationsList,otherDataList));
+        info.setIntention(this.handlerTalentIntentionInfoData(intentionList));
+        info.setWorkExps(this.handlerTalentWorkExpInfoData(recentJob,expJob));
+        info.setEduExps((this.handlerTalentEducationInfoData(educationsList)));
+        info.setLanguages(this.handlerLanguagesInfoData(languagesList));
+        info.setProExps(this.handlerTalentProjectExpsInfodata(projectExpList));
+        info.setSkills(this.handlerTalentSkillsData(skillsList));
+        info.setCredentials(this.handlerTalentCredentialsData(credentialsList));
+        info.setWorks(this.handlerTalentWorksInfo(worksList));
+    }
+
+    private TalentBasicInfo handlerTalentBasicInfoData(Map<String,Object> basicData,List<Map<String,Object>> eduList,List<Map<String,Object>> otherDataList){
+        if(StringUtils.isEmptyMap(basicData)&&StringUtils.isEmptyList(eduList)){
+            return null;
+        }
+        TalentBasicInfo basicInfo=new TalentBasicInfo();
+        if(!StringUtils.isEmptyMap(basicData)){
+            basicInfo.setPosition((String)basicData.getOrDefault("position_name",""));
+            basicInfo.setBirth((String)basicData.getOrDefault("birth",""));
+            basicInfo.setDegree((String)basicData.getOrDefault("degreeName",""));
+        }
+        if(!StringUtils.isEmptyList(eduList)){
+            Map<String,Object> education=eduList.get(0);
+            basicInfo.setDegree(DegreeConvertUtil.intToEnum.get(education.get("degree")));
+            basicInfo.setMajor((String)education.getOrDefault("major_name",""));
+        }
+        //==========================================
+        //==========================================
+        return basicInfo;
+    }
+    /*
+     处理求职意向的数据
+     */
+    private TalentIntentionInfo handlerTalentIntentionInfoData(List<Map<String,Object>> intentionsList){
+        if(StringUtils.isEmptyList(intentionsList)){
+            return null;
+        }
+        TalentIntentionInfo info=new TalentIntentionInfo();
+        Map<String,Object> intention=intentionsList.get(0);
+        List<Map<String,Object>> cityList= (List<Map<String, Object>>) intention.get("cities");
+        List<Map<String,Object>> positionList=(List<Map<String,Object>>)intention.get("positions");
+        List<Map<String,Object>> industryList=(List<Map<String,Object>>)intention.get("industries");
+        info.setCity(this.handlerListdata(cityList,"city_name"));
+        info.setJob(this.handlerListdata(positionList,"position_name"));
+        info.setIndustry(this.handlerListdata(industryList,"industry_name"));
+        info.setWorkStatus((String)intention.get("workstate_name"));
+        info.setMonthSalary((String)intention.get("salary_code_name"));
+        info.setEmployeeType((String)intention.get("worktype_name"));
+        return info;
+    }
+    /*
+    处理List<Map<String,Object>>数据
+    */
+    private String handlerListdata( List<Map<String,Object>> dataList,String field){
+        if(StringUtils.isEmptyList(dataList)){
+            return "";
+        }
+        String datas="";
+        for(Map<String,Object> data:dataList){
+            datas+=data.get(field)+",";
+        }
+        if(StringUtils.isNotNullOrEmpty(datas)){
+            datas=datas.substring(0,datas.lastIndexOf(","));
+        }
+        return datas;
+    }
+    /*
+     处理工作经历数据
+     */
+    private List<TalentWorkExpInfo> handlerTalentWorkExpInfoData(Map<String,Object> recentJob,List<Map<String,Object>>  workExpList){
+        if(StringUtils.isEmptyMap(recentJob)&&StringUtils.isEmptyList(workExpList)){
+            return null;
+        }
+        List<TalentWorkExpInfo> list=new ArrayList<>();
+        TalentWorkExpInfo info1=this.handlerTalentWorkExpSingleData(recentJob);
+        if(info1!=null){
+            list.add(info1);
+        }
+        for(Map<String,Object> workExp:workExpList){
+            TalentWorkExpInfo data=this.handlerTalentWorkExpSingleData(workExp);
+            if(data!=null){
+                list.add(data);
+            }
+        }
+        return list;
+    }
+    /*
+    处理单个TalentWorkExpInfo
+     */
+    private TalentWorkExpInfo handlerTalentWorkExpSingleData(Map<String,Object> data){
+        if(StringUtils.isEmptyMap(data)){
+            return null;
+        }
+        TalentWorkExpInfo info=new TalentWorkExpInfo();
+        String start= (String) data.get("start_date");
+        String end= (String) data.get("end_date");
+        int endUntilNow= (int) data.get("end_until_now");
+        if(endUntilNow==1){
+            end="至今";
+        }
+        info.setTime(start+"-"+end);
+        info.setCompany((String)data.getOrDefault("company_name",""));
+        info.setDepartment((String)data.getOrDefault("department_name",""));
+        info.setPosition((String)data.getOrDefault("job_name",""));
+        info.setDescription((String)data.getOrDefault("description",""));
+        return info;
+    }
+    /*
+    处理简历教育数据
+     */
+    private List<TalentEducationInfo> handlerTalentEducationInfoData(List<Map<String,Object>> educationList ){
+        if(StringUtils.isEmptyList(educationList)){
+            return null;
+        }
+        List<TalentEducationInfo> list=new ArrayList<>();
+        for(Map<String,Object> data:educationList){
+            TalentEducationInfo info=new TalentEducationInfo();
+            String start= (String) data.get("start_date");
+            String end= (String) data.get("end_date");
+            int endUntilNow= (int) data.get("end_until_now");
+            if(endUntilNow==1){
+                end="至今";
+            }
+            info.setTime(start+"-"+end);
+            info.setCollege((String)data.getOrDefault("college_name",""));
+            info.setDegree(DegreeConvertUtil.intToEnum.get(data.get("degree")));
+            info.setMajor((String)data.getOrDefault("major_name",""));
+            info.setDescription((String)data.getOrDefault("description",""));
+            list.add(info);
+        }
+        return list;
+    }
+    /*
+     处理项目经历
+     */
+    private List<TalentProjectExpsInfo> handlerTalentProjectExpsInfodata(List<Map<String,Object>> projectExpList){
+        if(StringUtils.isEmptyList(projectExpList)){
+            return null;
+        }
+        List<TalentProjectExpsInfo> list=new ArrayList<>();
+        for(Map<String,Object> data:projectExpList){
+            TalentProjectExpsInfo info=new TalentProjectExpsInfo();
+            String start= (String) data.get("start_date");
+            String end= (String) data.get("end_date");
+            int endUntilNow= (int) data.get("end_until_now");
+            if(endUntilNow==1){
+                end="至今";
+            }
+            info.setTime(start+"-"+end);
+            info.setCompany((String)data.getOrDefault("company_name",""));
+            info.setName((String)data.getOrDefault("name",""));
+            info.setDescription((String)data.getOrDefault("description",""));
+            list.add(info);
+        }
+        return list;
+    }
+    /*
+     处理语言
+     */
+    private List<TalentLanguagesInfo> handlerLanguagesInfoData(List<Map<String,Object>> languagesList){
+        if(StringUtils.isEmptyList(languagesList)){
+            return null;
+        }
+        List<TalentLanguagesInfo> list=new ArrayList<>();
+        for(Map<String,Object> data:languagesList){
+            TalentLanguagesInfo info=new TalentLanguagesInfo();
+            String name=(String)data.getOrDefault("name","");
+            String levelName= ProfileLanguagesLevelConvertUtil.intToEnum.get(data.get("level"));
+            info.setLanguage(name);
+            info.setLevel(levelName);
+            list.add(info);
+        }
+        return list;
+    }
+    /*
+     处理技能
+     */
+    public List<String> handlerTalentSkillsData(List<Map<String,Object>> skillsList ){
+        if(StringUtils.isEmptyList(skillsList)){
+            return null;
+        }
+        List<String> list=new ArrayList<>();
+        for(Map<String,Object> data:skillsList){
+            String name=(String)data.getOrDefault("name","");
+            if(StringUtils.isNotNullOrEmpty(name)){
+                list.add(name);
+            }
+        }
+        return list;
+    }
+    /*
+    处理证书
+     */
+    private List<String> handlerTalentCredentialsData(List<Map<String,Object>> credentialsList){
+        if(StringUtils.isEmptyList(credentialsList)){
+            return null;
+        }
+        List<String> list=new ArrayList<>();
+        for(Map<String,Object> data:credentialsList){
+            String name=(String)data.getOrDefault("name","");
+            list.add(name);
+        }
+        return list;
+    }
+    /*
+     处理Profile的个人作品
+     */
+    private TalentWorksInfo handlerTalentWorksInfo(List<Map<String,Object>> dataList){
+        if(StringUtils.isEmptyList(dataList)){
+            return null;
+        }
+        TalentWorksInfo info=new TalentWorksInfo();
+        Map<String,Object> data=dataList.get(0);
+        String cover=(String)data.getOrDefault("cover","");
+        String url=(String)data.getOrDefault("url","");
+        String description=(String)data.getOrDefault("description","");
+        info.setCover(cover);
+        info.setUrl(url);
+        info.setDescription(description);
+        return info;
+    }
+
     /*
      获取职位信息
      */
@@ -1676,87 +1971,7 @@ public class TalentpoolEmailService {
         }
         return positionName;
     }
-    /*
-     获取学历信息
-     */
-    private List<TalentEducationInfo> getTalentEducationInfo(List<Map<String,Object>> educationsList) {
-        List<TalentEducationInfo> list=new ArrayList<>();
-        if(!StringUtils.isEmptyList(educationsList)) {
-            for(Map<String,Object> education:educationsList){
-                TalentEducationInfo info = new TalentEducationInfo();
-                String startTime = (String) education.get("start_date");
-                int endUntilNow = (int) education.get("end_until_now");
-                String endTime = (String) education.get("end_date");
-                String collegeName = (String) education.get("college_name");
-                int degree = (int) education.get("degree");
-                String majorName = (String) education.get("major_name");
-                endTime = DateUtils.dateFormat(endTime, 7);
-                if (endUntilNow == 1) {
-//                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");/**/
-                    endTime ="今";
-                }
-                startTime = DateUtils.dateFormat(startTime, 7);
-                info.setStartTime(startTime);
-                info.setCollegeName(collegeName);
-                info.setDegree(DegreeConvertUtil.intToEnum.get(degree));
-                info.setEndTime(endTime);
-                info.setMajorName(majorName);
-                list.add(info);
-            }
 
-            return list;
-        }
-        return null;
-
-    }
-    /*
-     获取工作经验
-     */
-    private List<TalentWorkExpInfo> getTalentWorkExpInfo(Map<String,Object> recentJob,List<Map<String,Object>> expList){
-        List<TalentWorkExpInfo> list=new ArrayList<>();
-        if(!StringUtils.isEmptyMap(recentJob)){
-            TalentWorkExpInfo info=new TalentWorkExpInfo();
-            String workStartTime= (String) recentJob.get("start_date");
-            String workEndTime= (String) recentJob.get("end_date");
-            String companyName= (String) recentJob.get("company_name");
-            String job= (String) recentJob.get("job");
-            int endUntilNow=(int)recentJob.get("end_until_now");
-            workStartTime = DateUtils.dateFormat(workStartTime, 7);
-            workEndTime = DateUtils.dateFormat(workEndTime, 7);
-            if(endUntilNow==1){
-//                SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                workEndTime = "今";
-            }
-            info.setWorkCompany(companyName);
-            info.setWorkEndTime(workEndTime);
-            info.setWorkJob(job);
-            info.setWorkStartTime(workStartTime);
-            list.add(info);
-
-        }
-        if(!StringUtils.isEmptyList(expList)){
-            for(Map<String,Object> map:expList){
-                TalentWorkExpInfo info=new TalentWorkExpInfo();
-                String workStartTime= (String) map.get("start_date");
-                String workEndTime= (String) map.get("end_date");
-                String companyName= (String) map.get("company_name");
-                String job= (String) map.get("job");
-                int endUntilNow=(int)map.get("end_until_now");
-                workStartTime = DateUtils.dateFormat(workStartTime, 7);
-                workEndTime = DateUtils.dateFormat(workEndTime, 7);
-                if(endUntilNow==1){
-//                    SimpleDateFormat ff = new SimpleDateFormat("yyyy-MM-DD");
-                    workEndTime ="今";// ff.format(new Date());
-                }
-                info.setWorkCompany(companyName);
-                info.setWorkEndTime(workEndTime);
-                info.setWorkJob(job);
-                info.setWorkStartTime(workStartTime);
-                list.add(info);
-            }
-        }
-        return list;
-    }
     /*
      获取hr下的公司
      */

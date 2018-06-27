@@ -1685,9 +1685,7 @@ public class PositionService {
         if (StringUtils.isEmptyList(pids)) {
             return null;
         }
-
         List<WechatPositionListData> result=this.getRecomWxPosition(pids);
-
         //这段本来可以不加，可是涉及到分页，所以肯定要在这边加上修改是否推送的功能
         if (!StringUtils.isEmptyList(result) && pageNum > 1) {
             this.updateIsSendStatus(list);
