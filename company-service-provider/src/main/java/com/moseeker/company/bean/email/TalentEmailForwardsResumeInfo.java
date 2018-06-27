@@ -15,7 +15,7 @@ public class TalentEmailForwardsResumeInfo {
     private String companyLogo;
     private String companyName;
     private String positionName;
-    private String heading;
+    private String headimg;
     private String userName;
     private String industryName;
     private String genderName;
@@ -65,12 +65,12 @@ public class TalentEmailForwardsResumeInfo {
         this.positionName = positionName;
     }
 
-    public String getHeading() {
-        return heading;
+    public String getHeadimg() {
+        return headimg;
     }
 
-    public void setHeading(String heading) {
-        this.heading = heading;
+    public void setHeadimg(String headimg) {
+        this.headimg = headimg;
     }
 
     public String getUserName() {

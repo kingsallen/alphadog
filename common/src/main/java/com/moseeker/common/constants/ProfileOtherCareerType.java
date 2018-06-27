@@ -118,6 +118,9 @@ public enum ProfileOtherCareerType {
         ]
      */
     public static List<Message> getMessageList(List<Map<String, Object>> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
         List<Message> messages = new ArrayList<>();
         for(Map<String, Object> entry : list){
             if(entry.get("key")!=null) {

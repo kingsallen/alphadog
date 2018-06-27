@@ -1604,7 +1604,7 @@ public class TalentpoolEmailService {
                     info.setOtherCareer(careerData);
                 }
                 if(!StringUtils.isNullOrEmpty((String)otherData.getOrDefault("photo",""))){
-                    info.setOtherIdPhoto((String)otherData.getOrDefault("photo",""));
+                    info.setOtherIdPhoto(CommonUtils.appendUrl((String)otherData.getOrDefault("photo",""), env.getProperty("http.cdn.url")));
                 }
             }
         }catch(Exception e){
@@ -1688,9 +1688,9 @@ public class TalentpoolEmailService {
             int age=(int)basic.getOrDefault("age",0);
             info.setUserName(userName);
             if(StringUtils.isNotNullOrEmpty(heading)) {
-                info.setHeading(CommonUtils.appendUrl(heading, env.getProperty("http.cdn.url")));
+                info.setHeadimg(CommonUtils.appendUrl(heading, env.getProperty("http.cdn.url")));
             }else{
-                info.setHeading(env.getProperty("email.user.heading.url"));
+                info.setHeadimg(env.getProperty("email.user.heading.url"));
             }
             info.setCityName(cityName);
             info.setGenderName(genderName);
