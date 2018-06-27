@@ -7,7 +7,7 @@ import java.util.List;
  * Created by moseeker on 2018/6/26.
  */
 public class ProfileEmailInfo {
-    private String comapnyLogo;
+    private String companyLogo;
     private String companyName;
     private String positionName;
     private String headimg;
@@ -35,12 +35,12 @@ public class ProfileEmailInfo {
     private List<Message> other_career;
     private String other_idPhoto;
 
-    public String getComapnyLogo() {
-        return comapnyLogo;
+    public String getCompanyLogo() {
+        return companyLogo;
     }
 
-    public void setComapnyLogo(String comapnyLogo) {
-        this.comapnyLogo = comapnyLogo;
+    public void setCompanyLogo(String companyLogo) {
+        this.companyLogo = companyLogo;
     }
 
     public String getCompanyName() {
