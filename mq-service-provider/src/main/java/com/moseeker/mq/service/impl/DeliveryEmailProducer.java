@@ -233,7 +233,7 @@ public class DeliveryEmailProducer {
 
         Response responseOther = profileOtherService.getProfileOtherByPosition(user.getId(), position.getPublisher(), position.getId());
         String resultOther = responseOther.getData();
-        Map<String, Object> otherDatas = JSON.parseObject(result, Map.class);
+        Map<String, Object> otherDatas = JSON.parseObject(resultOther, Map.class);
         //获取学历字典
         List<DictConstantDO> degree = dictConstantDao.getDatas(new Query.QueryBuilder().
                 where(DictConstant.DICT_CONSTANT.PARENT_CODE.getName(), Constant.DICT_CONSTANT_DEGREE_USER)
@@ -284,12 +284,12 @@ public class DeliveryEmailProducer {
                 emailInfo.setIntroduction((String) basicData.getOrDefault("self_introduction",""));
             }
             if(otherDatas != null){
-                OtherInfo otherInfo = new OtherInfo();
+//                OtherInfo otherInfo = new OtherInfo();
                 List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>)otherDatas.getOrDefault("keyvalues", new ArrayList<>());
                 if(!StringUtils.isEmptyList(keyvalueList)){
-                    otherInfo.setIdentity(ProfileOtherIdentityType.getMessageList(keyvalueList));
-                    otherInfo.setCareer(ProfileOtherCareerType.getMessageList(keyvalueList));
-                    otherInfo.setSchool(ProfileOtherSchoolType.getMessageList(keyvalueList));
+                    emailInfo.setOther_identity(ProfileOtherIdentityType.getMessageList(keyvalueList));
+                    emailInfo.setOther_career(ProfileOtherCareerType.getMessageList(keyvalueList));
+                    emailInfo.setOther_school(ProfileOtherSchoolType.getMessageList(keyvalueList));
                 }
                 List<Map<String, Object>> internshipList = (List<Map<String, Object>>)otherDatas.getOrDefault("internship", new ArrayList());
                 if(!StringUtils.isEmptyList(internshipList)){
@@ -303,7 +303,7 @@ public class DeliveryEmailProducer {
                         ship.setDescription((String)internship.getOrDefault("internshipDescriptionHidden", ""));
                         shipList.add(ship);
                     }
-                    otherInfo.setInternship(shipList);
+                    emailInfo.setOther_internship(shipList);
                 }
                 List<Map<String, Object>> schooljobList = (List<Map<String, Object>>)otherDatas.getOrDefault("schooljob", new ArrayList());
                 if(!StringUtils.isEmptyList(schooljobList)){
@@ -315,10 +315,9 @@ public class DeliveryEmailProducer {
                         ship.setDescription((String)school.getOrDefault("schooljobDescriptionHidden", ""));
                         schoolList.add(ship);
                     }
-                    otherInfo.setSchoolWork(schoolList);
+                    emailInfo.setOther_schoolWork(schoolList);
                 }
-                otherInfo.setIdPhoto((String)otherDatas.getOrDefault("photo", ""));
-                emailInfo.setOther(otherInfo);
+                emailInfo.setOther_idPhoto((String)otherDatas.getOrDefault("photo", ""));
             }
 
         }
@@ -339,7 +338,7 @@ public class DeliveryEmailProducer {
             for (int i = 0; i < educationList.size(); i++) {
                 Map<String, Object> education = educationList.get(i);
                 EduExps eduExps = new EduExps();
-                eduExps.setTime(appendTime(education.get("start_time"), education.get("end_time"), education.get("end_until_now")));
+                eduExps.setTime(appendTime(education.get("start_date"), education.get("end_date"), education.get("end_until_now")));
                 eduExps.setCollege((String) education.getOrDefault("college_name",""));
                 eduExps.setMajor((String) education.getOrDefault("major_name",""));
                 eduExps.setDescription((String) education.getOrDefault("description",""));
@@ -395,9 +394,9 @@ public class DeliveryEmailProducer {
             basic.setPosition((String) workexpList.get(0).getOrDefault("job",""));
             for(Map<String, Object> workexp : workexpList) {
                 WorkExps workExps = new WorkExps();
-                workExps.setTime(appendTime(workexp.get("start_time"), workexp.get("end_time"), workexp.get("end_until_now")));
+                workExps.setTime(appendTime(workexp.get("start_date"), workexp.get("end_date"), workexp.get("end_until_now")));
                 workExps.setDescription((String) workexp.getOrDefault("description",""));
-                workExps.setComapny((String) workexp.getOrDefault("company_name",""));
+                workExps.setCompany((String) workexp.getOrDefault("company_name",""));
                 workExps.setDepartment((String) workexp.getOrDefault("department_name",""));
                 workExps.setPosition((String) workexp.getOrDefault("job",""));
                 workList.add(workExps);
