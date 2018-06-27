@@ -306,14 +306,14 @@ public class PositionService {
 
                 }
             }
-        } else {
-            jobPositionPojo.custom = "";
-            jobPositionPojo.occupation = "";
-        }
+         } else{
+               jobPositionPojo.custom = "";
+               jobPositionPojo.occupation = "";
+             }
         searchData.setCustom(StringUtils.filterStringForSearch(jobPositionPojo.custom));
         searchData.setOccupation(StringUtils.filterStringForSearch(jobPositionPojo.occupation));
 
-        // 修改更新时间
+    // 修改更新时间
         jobPositionPojo.publish_date_view = DateUtils.dateToPattern(jobPositionPojo.publish_date,
                 DateUtils.SHOT_TIME);
         jobPositionPojo.update_time_view = DateUtils.dateToPattern(jobPositionPojo.update_time,
@@ -1685,9 +1685,7 @@ public class PositionService {
         if (StringUtils.isEmptyList(pids)) {
             return null;
         }
-
         List<WechatPositionListData> result=this.getRecomWxPosition(pids);
-
         //这段本来可以不加，可是涉及到分页，所以肯定要在这边加上修改是否推送的功能
         if (!StringUtils.isEmptyList(result) && pageNum > 1) {
             this.updateIsSendStatus(list);
@@ -1701,7 +1699,6 @@ public class PositionService {
         if (StringUtils.isEmptyList(pids)) {
             return null;
         }
-
         int count=this.getCampaignRecomPositionlistByIdAndCompanyTypeCount(recomPushId,companyId,type);
         List<WechatPositionListData> result=this.getRecomWxPosition(pids);
         if(!StringUtils.isEmptyList(result)){
@@ -1766,7 +1763,6 @@ public class PositionService {
     /*
       通过user_id 获取 CampaignPersonaRecomPojo 的list集合
      */
-
     private  List<CampaignPersonaRecomRecord> getPersonaRecomPositionList(int userId,int companyId,int type, int pageNum, int pageSize){
         Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).orderBy("id", Order.ASC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
@@ -2561,6 +2557,23 @@ public class PositionService {
                             }
                         });
                     }
+//                    else if (positionDO != null && (int) updateField.get("status") == 0 && positionDO.getStatus() == 2) {
+//
+//                        pool.startTast(() -> {
+//                            if (countDownLatch.await(60, TimeUnit.SECONDS)) {
+//                                JSONObject liePinJsonObject = new JSONObject();
+//                                JSONArray jsonArray = new JSONArray();
+//                                jsonArray.add(position_id);
+//                                liePinJsonObject.put("id", jsonArray);
+//                                String requestStr = JSONObject.toJSONString(liePinJsonObject);
+//                                Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
+//                                receiverHandler.handlerPositionLiepinReSyncOperation(requestMsg, null);
+//                                return true;
+//                            } else {
+//                                throw new RuntimeException("rabbitmq线程等待超时");
+//                            }
+//                        });
+//                    }
                 }
 
                 return ResponseUtils.success(updateField);

@@ -1,9 +1,10 @@
-package com.moseeker.company.bean.email;
+package com.moseeker.mq.pojo;
 
 /**
- * Created by zztaiwll on 18/4/25.
+ * Created by moseeker on 2018/6/26.
  */
-public class TalentEducationInfo {
+public class EduExps {
+
     private String time;
     private String college;
     private String degree;

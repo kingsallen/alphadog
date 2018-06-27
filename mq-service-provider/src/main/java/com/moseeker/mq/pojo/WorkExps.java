@@ -1,11 +1,12 @@
-package com.moseeker.company.bean;
+package com.moseeker.mq.pojo;
 
 /**
- * Created by zztaiwll on 18/4/25.
+ * Created by moseeker on 2018/6/26.
  */
-public class TalentWorkExpInfo {
+public class WorkExps {
+
     private String time;
-    private String company;
+    private String comapny;
     private String position;
     private String department;
     private String description;
@@ -18,12 +19,12 @@ public class TalentWorkExpInfo {
         this.time = time;
     }
 
-    public String getCompany() {
-        return company;
+    public String getComapny() {
+        return comapny;
     }
 
-    public void setCompany(String company) {
-        this.company = company;
+    public void setComapny(String comapny) {
+        this.comapny = comapny;
     }
 
     public String getPosition() {
