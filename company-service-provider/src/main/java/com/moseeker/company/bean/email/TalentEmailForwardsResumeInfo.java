@@ -1,5 +1,6 @@
 package com.moseeker.company.bean.email;
 
+import com.moseeker.common.constants.Message;
 import com.moseeker.company.bean.TalentWorkExpInfo;
 
 import java.util.List;
@@ -32,8 +33,13 @@ public class TalentEmailForwardsResumeInfo {
     private List<String> skills;
     private List<String> credentials;
     private TalentWorksInfo works;
-    private TalentOtherInfo other;
     private int userId;
+    private List<Message> otherIdentity;
+    private List<Message> otherSchool;
+    private List<TalentOtherSchoolWorkInfo> otherSchoolWork;
+    private List<TalentOtherInternshipInfo> otherInternship;
+    private List<Message> otherCareer;
+    private String otherIdPhoto;
 
     public String getCompanyLogo() {
         return companyLogo;
@@ -195,14 +201,6 @@ public class TalentEmailForwardsResumeInfo {
         this.works = works;
     }
 
-    public TalentOtherInfo getOther() {
-        return other;
-    }
-
-    public void setOther(TalentOtherInfo other) {
-        this.other = other;
-    }
-
     public int getUserId() {
         return userId;
     }
@@ -241,5 +239,53 @@ public class TalentEmailForwardsResumeInfo {
 
     public void setOfficialAccountName(String officialAccountName) {
         this.officialAccountName = officialAccountName;
+    }
+
+    public List<Message> getOtherIdentity() {
+        return otherIdentity;
+    }
+
+    public void setOtherIdentity(List<Message> otherIdentity) {
+        this.otherIdentity = otherIdentity;
+    }
+
+    public List<Message> getOtherSchool() {
+        return otherSchool;
+    }
+
+    public void setOtherSchool(List<Message> otherSchool) {
+        this.otherSchool = otherSchool;
+    }
+
+    public List<TalentOtherSchoolWorkInfo> getOtherSchoolWork() {
+        return otherSchoolWork;
+    }
+
+    public void setOtherSchoolWork(List<TalentOtherSchoolWorkInfo> otherSchoolWork) {
+        this.otherSchoolWork = otherSchoolWork;
+    }
+
+    public List<TalentOtherInternshipInfo> getOtherInternship() {
+        return otherInternship;
+    }
+
+    public void setOtherInternship(List<TalentOtherInternshipInfo> otherInternship) {
+        this.otherInternship = otherInternship;
+    }
+
+    public List<Message> getOtherCareer() {
+        return otherCareer;
+    }
+
+    public void setOtherCareer(List<Message> otherCareer) {
+        this.otherCareer = otherCareer;
+    }
+
+    public String getOtherIdPhoto() {
+        return otherIdPhoto;
+    }
+
+    public void setOtherIdPhoto(String otherIdPhoto) {
+        this.otherIdPhoto = otherIdPhoto;
     }
 }
