@@ -6,7 +6,9 @@ package com.moseeker.common.constants;
 public class Message {
     private String key;
     private String value;
+    public Message(){
 
+    }
     public Message(String key, Object value) {
         this.key = key;
         if(value != null)
