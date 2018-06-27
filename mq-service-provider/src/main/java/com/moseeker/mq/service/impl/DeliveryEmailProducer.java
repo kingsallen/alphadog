@@ -457,17 +457,20 @@ public class DeliveryEmailProducer {
     }
 
     private String appendTime(Object startTime, Object endTime, Object endUntilNow ){
+        logger.info("startTime:{},endTime:{},endUntilNow:{}",startTime,endTime,endUntilNow);
         String start = "";
         if (startTime != null) {
             start = ((String)startTime).substring(0, 7).replace("-", ".");
         }
         String end = "";
         if (endTime == null || 1 == (int) endUntilNow) {
-            endTime = "至今";
+            end = "至今";
         } else {
-            endTime = ((String)endTime).substring(0, 7).replace("-", ".");
+            end = ((String)endTime).substring(0, 7).replace("-", ".");
         }
-        return  start + " - " + end;
+        String time = start + " - " + end;
+        logger.info("time:{}",time);
+        return  time;
     }
 
 
