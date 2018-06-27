@@ -120,4 +120,11 @@ public class DictLiepinOccupationDao extends DAOImpl<DictLiepinOccupationRecord,
     public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByName(String... values) {
         return fetch(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.NAME, values);
     }
+
+    /**
+     * Fetch records that have <code>candidate_source IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictLiepinOccupation> fetchByCandidateSource(Byte... values) {
+        return fetch(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CANDIDATE_SOURCE, values);
+    }
 }

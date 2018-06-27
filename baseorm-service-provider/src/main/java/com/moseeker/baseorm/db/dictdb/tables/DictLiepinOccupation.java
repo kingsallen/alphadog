@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictLiepinOccupation extends TableImpl<DictLiepinOccupationRecord> {
 
-    private static final long serialVersionUID = 32975493;
+    private static final long serialVersionUID = -292051451;
 
     /**
      * The reference instance of <code>dictdb.dict_liepin_occupation</code>
@@ -95,6 +95,11 @@ public class DictLiepinOccupation extends TableImpl<DictLiepinOccupationRecord> 
      * The column <code>dictdb.dict_liepin_occupation.name</code>.
      */
     public final TableField<DictLiepinOccupationRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false), this, "");
+
+    /**
+     * The column <code>dictdb.dict_liepin_occupation.candidate_source</code>. 0:社招 1：校招
+     */
+    public final TableField<DictLiepinOccupationRecord, Byte> CANDIDATE_SOURCE = createField("candidate_source", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "0:社招 1：校招");
 
     /**
      * Create a <code>dictdb.dict_liepin_occupation</code> table reference

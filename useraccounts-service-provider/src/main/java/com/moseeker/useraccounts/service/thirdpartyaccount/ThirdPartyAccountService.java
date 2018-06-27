@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
@@ -10,10 +11,13 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.useraccounts.service.impl.LiePinUserAccountBindHandler;
 import com.moseeker.useraccounts.service.thirdpartyaccount.info.ThirdPartyAcountEntity;
 import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -80,6 +84,9 @@ public class ThirdPartyAccountService {
 
     @Autowired
     BindCheck bindCheck;
+
+    @Autowired
+    LiePinUserAccountBindHandler bindHandler;
 
     /**
      * 第三方账号绑定
@@ -388,5 +395,51 @@ public class ThirdPartyAccountService {
             accountInfo.getHrs().add(hrInfo);
         }
         return accountInfo;
+    }
+
+    /**
+     * 获取已经在猎聘绑定的hr第三方账号信息，主要是为了提供猎聘token
+     * @param
+     * @author  cjm
+     * @date  2018/5/30
+     * @return
+     */
+    public Response getBoundThirdPartyAccountDO(int channel) throws Exception{
+        List<HrThirdPartyAccountDO> hrThirdPartyAccountDOList = thirdPartyAccountDao.getBoundThirdPartyAccountDO(channel);
+        if(hrThirdPartyAccountDOList == null || hrThirdPartyAccountDOList.size() == 0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
+        }
+        return ResponseUtils.success(hrThirdPartyAccountDOList);
+    }
+
+
+    /**
+     * 获取已经在仟寻绑定，但是未在猎聘绑定的第三方信息
+     * @param
+     * @author  cjm
+     * @date  2018/5/30
+     * @return
+     */
+    public List<HrThirdPartyAccountDO> getUnBindThirdPartyAccountDO(int channel) throws Exception{
+        List<HrThirdPartyAccountDO> hrThirdPartyAccountDOList = thirdPartyAccountDao.getUnBindThirdPartyAccountDO(channel);
+        if(hrThirdPartyAccountDOList == null){
+            return new ArrayList<>();
+        }
+        return hrThirdPartyAccountDOList;
+    }
+
+    public String bindLiepinUserAccount(String liepinToken, Integer liepinUserId, Integer hrThirdAccountId) throws Exception {
+        HrThirdPartyAccountDO hrThirdPartyAccountDO = thirdPartyAccountDao.getAccountById(hrThirdAccountId);
+        if(hrThirdPartyAccountDO == null){
+            return "failed";
+        }
+        if(hrThirdPartyAccountDO.getChannel() != 2){
+            return "failed";
+        }
+        int row = thirdPartyAccountDao.updateBindToken(liepinToken, liepinUserId, hrThirdAccountId);
+        if(row != 1){
+            return "failed";
+        }
+        return "success";
     }
 }

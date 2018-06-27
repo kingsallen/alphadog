@@ -75,6 +75,9 @@ public final class ConstantErrorCodeMessage {
     public static final String CRAWLER_SERVICE_IMPORT_UPPER_LIMIT = "{'status':32008,'message':'导入次数过多!'}";
     public static final String CRAWLER_RESUME_EMPTY = "{'status':32009,'message':'简历导入失败，请重新尝试!'}";
     public static final String CRAWLER_SERVICE_PROFILE_EMPTY = "{'status':32010,'message':'简历为空'}";
+    public static final String CRAWLER_SERVICE_NEED_VERIFY_CODE = "{'status':32011,'message':'需要验证码！'}";
+    public static final String CRAWLER_SERVICE_ACCOUNT_LIMIT = "{'status':32012,'message':'账号被限制！'}";
+    public static final String CRAWLER_SERVICE_VERIFY_CODE_WRONG = "{'status':32013,'message':'验证码错误！'}";
     //talentpool
     public static final String COMPANY_STATUS_NOT_AUTHORITY = "{'status':34001,'message':'免费公司没有权限'}";
     public static final String COMPANY_CONF_TALENTPOOL_NOT = "{'status':34002,'message':'该公司还没有开启智能人才库'}";
@@ -157,6 +160,9 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_ACCOUNTABILITIES_NOT_EMPTY="{'status':52004,'message':'职位描述不能为空!'}";
     public static final String POSITION_REQUIREMENT_NOT_EMPTY="{'status':52005,'message':'任职条件不能为空!'}";
     public static final String POSITION_CITY_NOT_EMPTY="{'status':52006,'message':'工作地点不能为空!'}";
+    public static final String POSITION_OCCUPATION_INVALID="{'status':52007,'message':'传入职能中没有有效的职能code!'}";
+    public static final String POSITION_PUBLISHCITY_INVALID="{'status':52008,'message':'该职位查不到发布地区!'}";
+    public static final String POSITION_CITYCODE_INVALID="{'status':52009,'message':'错误的仟寻citycode，查不到该code的所有城市level!'}";
 
 
     //职位同步
@@ -177,6 +183,8 @@ public final class ConstantErrorCodeMessage {
     public static final String NO_AUTH_IMPORT_VERYEAST_PROFILE = "{'status':61016,'message':'该公司没有导入最佳东方简历的权限！'}";
     public static final String NO_SYNC_QX_POSITION = "{'status':61017,'message':'查询不到要同步的职位！'}";
     public static final String NO_SYNC_THIRD_PARTY_ACCOUNT = "{'status':61018,'message':'查询不到可发布的第三方账号！'}";
+    public static final String LIEPIN_REQUEST_RESPONSE_NULL = "{'status':61019,'message':'猎聘同步职位暂无响应，请稍后再试！'}";
+    public static final String LIEPIN_REQUEST_LIMIT = "{'status':61020,'message':'今日职位同步次数已达上限！'}";
 
 
     //mq服务提示信息说明

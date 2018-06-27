@@ -194,11 +194,9 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             per_page = page_size > 0 ? page_size : per_page;
             record.limit((page - 1) * per_page, per_page);
             List<Record> positionDetailsList = record.fetch();
-            logger.info("positionDetailsList.get(0) salaryTop:{}, salaryBottom", positionDetailsList.get(0).get("salaryTop"), positionDetailsList.get(0).get("salaryBottom"));
 
             logger.info("hotPositionDetailsList positionDetails sql:{}", record.getSQL());
             positionDetails = record.fetchInto(PositionDetails.class);
-            logger.info("positionDetails.get(0) salaryTop:{}, salaryBottom", positionDetails.get(0).getSalaryTop(), positionDetails.get(0).getSalaryBottom());
             logger.info("hotPositionDetailsList positionDetails:{}", positionDetails);
             if (positionDetails != null && positionDetails.size() > 0) {
                 // 查询职位图片信息
@@ -665,4 +663,25 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
         return null;
     }
+
+    public JobPositionDO getJobPositionById(int positionId) {
+        Query query = new Query.QueryBuilder()
+                .where(JobPosition.JOB_POSITION.ID.getName(), positionId)
+                .buildQuery();
+        return getData(query);
+    }
+
+    /** 
+     * 
+     * @param
+     * @author  cjm
+     * @date  2018/6/20 
+     * @return   
+     */ 
+    public JobPositionDO getJobPositionByPid(int positionId){
+        return create.selectFrom(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.eq(positionId))
+                .fetchOneInto(JobPositionDO.class);
+    }
+   
 }
