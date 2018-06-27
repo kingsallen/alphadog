@@ -7,6 +7,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.validation.ValidateUtil;
+import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
         this.remark = "点击查看求职进度详情";
         this.result = "您好，您的简历已被查阅";
         this.statusDesc = "已查阅简历";
-        this.url = "{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message={3}";
+        this.url = "{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message={3}&send_time={4}";
         this.color = "#173177";
 
         this.positionName = positionName;
@@ -86,7 +87,7 @@ public class CVCheckedWXMsgNotice extends WXMsgNoticeViceMTP {
                 url,
                 ConfigPropertiesUtil.getInstance().get("platform.url",
                         String.class), signature,
-                String.valueOf(applicationId), String.valueOf(configId)));
+                String.valueOf(applicationId), String.valueOf(configId), String.valueOf(new Date().getTime())));
 
     }
 

@@ -230,6 +230,7 @@ public class TemlateMsgHttp {
             Map<String, String> miniprogram = new HashMap<>();
             miniprogram.put("appid", appid);
             String page = Constant.WX_APP_PROFILE_INFO_URL.replace("{}", user.getId()+"")+"&from_template_message="+template.getSysTemplateId();
+            page = page + "&send_time=" + new Date().getTime();
             miniprogram.put("pagepath", page);
             logger.info("minprogram 参数 ：{}", miniprogram);
             applierTemplate.put("miniprogram", miniprogram);

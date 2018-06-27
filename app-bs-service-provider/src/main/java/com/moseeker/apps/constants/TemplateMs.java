@@ -1,6 +1,7 @@
 package com.moseeker.apps.constants;
 
 import java.text.MessageFormat;
+import java.util.Date;
 
 public enum TemplateMs {
 
