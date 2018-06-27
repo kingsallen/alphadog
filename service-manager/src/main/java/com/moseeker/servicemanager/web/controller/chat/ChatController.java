@@ -583,8 +583,6 @@ public class ChatController {
     }
 
     private class ContentValueFilter implements ValueFilter {
-
-
         @Override
         public Object process(Object object, String name, Object value) {
             if(object instanceof ChatVO
