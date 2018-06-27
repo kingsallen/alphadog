@@ -803,7 +803,6 @@ public class TalentpoolEmailService {
             List<Map<String,String>> toReceive=new ArrayList<>();
             for(ReceiveInfo receiveInfo:to){
                 Map<String,Object> infoMap=(Map<String,Object>)JSON.parse(infos);
-
                 infoMap.put("rcpt",receiveInfo.getToEmail());
                 infoMap.put("coworker_name",receiveInfo.getToName());
                 mergeData.add(infoMap);
@@ -814,7 +813,6 @@ public class TalentpoolEmailService {
                     map1.put(key,String.valueOf(map.get(key)));
                 }
                 toReceive.add(map1);
-
             }
             result.setTemplateName(emailInviteBean.getTemplateName());
             result.setSubject(emailInviteBean.getSubject());
@@ -1583,9 +1581,10 @@ public class TalentpoolEmailService {
         try{
             Response res=profileOtherService.getProfileOtherByPosition(userId,hrId,0);
             if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
-                Map<String,Object> otherList= (Map<String, Object>) JSON.parse(res.getData());
-                List<Map<String,Object>> internshipList= (List<Map<String, Object>>) otherList.get("internship");
-                List<Map<String,Object>> schoolWorkList= (List<Map<String, Object>>) otherList.get("schooljob");
+                Map<String,Object> otherData= (Map<String, Object>) JSON.parse(res.getData());
+                List<Map<String,Object>>keyvaluesList= (List<Map<String, Object>>) otherData.get("keyvalues");
+                List<Map<String,Object>> internshipList= (List<Map<String, Object>>) otherData.get("internship");
+                List<Map<String,Object>> schoolWorkList= (List<Map<String, Object>>) otherData.get("schooljob");
                 List<TalentOtherInternshipInfo> internList=this.handlerTalentOtherInternShipData(internshipList);
                 List<TalentOtherSchoolWorkInfo> schoolList=this.handlerTalentOtherSchoolWorkData(schoolWorkList);
                 if(!StringUtils.isEmptyList(internList)){
@@ -1593,6 +1592,21 @@ public class TalentpoolEmailService {
                 }
                 if(!StringUtils.isEmptyList(schoolList)){
                     info.setSchoolWork(schoolList);
+                }
+                List<Message> schoolData=ProfileOtherSchoolType.getMessageList(keyvaluesList);
+                List<Message> identityData=ProfileOtherIdentityType.getMessageList(keyvaluesList);
+                List<Message> careerData=ProfileOtherCareerType.getMessageList(keyvaluesList);
+                if(!StringUtils.isEmptyList(schoolData)){
+                    info.setSchool(schoolData);
+                }
+                if(!StringUtils.isEmptyList(identityData)){
+                    info.setIdentity(identityData);
+                }
+                if(!StringUtils.isEmptyList(careerData)){
+                    info.setCareer(careerData);
+                }
+                if(!StringUtils.isNullOrEmpty((String)otherData.getOrDefault("photo",""))){
+                    info.setIdPhoto((String)otherData.getOrDefault("photo",""));
                 }
             }
         }catch(Exception e){
