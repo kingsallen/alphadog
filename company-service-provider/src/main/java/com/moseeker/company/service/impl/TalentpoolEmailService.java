@@ -1561,8 +1561,7 @@ public class TalentpoolEmailService {
                                 List<Map<String,Object>> applist=(List<Map<String,Object>>)userMap.get("applications");
                                 this.handlerProfileData(profiles,info);
                                 info.setPositionName(this.getPositionName(applist,hrId,companyId));
-                                TalentOtherInfo otherInfo=this.handlerProfileOtherData(userId,hrId);
-                                info.setOther(otherInfo);
+                                this.handlerProfileOtherData(userId,hrId,info);
                                 list.add(info);
                             }
 
@@ -1576,8 +1575,7 @@ public class TalentpoolEmailService {
     /*
      处理简历自定义字段
      */
-    private TalentOtherInfo handlerProfileOtherData(int userId,int hrId){
-        TalentOtherInfo info=new TalentOtherInfo();
+    private void handlerProfileOtherData(int userId,int hrId,TalentEmailForwardsResumeInfo info){
         try{
             Response res=profileOtherService.getProfileOtherByPosition(userId,hrId,0);
             if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
@@ -1588,31 +1586,30 @@ public class TalentpoolEmailService {
                 List<TalentOtherInternshipInfo> internList=this.handlerTalentOtherInternShipData(internshipList);
                 List<TalentOtherSchoolWorkInfo> schoolList=this.handlerTalentOtherSchoolWorkData(schoolWorkList);
                 if(!StringUtils.isEmptyList(internList)){
-                    info.setInternship(internList);
+                    info.setOtherInternship(internList);
                 }
                 if(!StringUtils.isEmptyList(schoolList)){
-                    info.setSchoolWork(schoolList);
+                    info.setOtherSchoolWork(schoolList);
                 }
                 List<Message> schoolData=ProfileOtherSchoolType.getMessageList(keyvaluesList);
                 List<Message> identityData=ProfileOtherIdentityType.getMessageList(keyvaluesList);
                 List<Message> careerData=ProfileOtherCareerType.getMessageList(keyvaluesList);
                 if(!StringUtils.isEmptyList(schoolData)){
-                    info.setSchool(schoolData);
+                    info.setOtherSchool(schoolData);
                 }
                 if(!StringUtils.isEmptyList(identityData)){
-                    info.setIdentity(identityData);
+                    info.setOtherIdentity(identityData);
                 }
                 if(!StringUtils.isEmptyList(careerData)){
-                    info.setCareer(careerData);
+                    info.setOtherCareer(careerData);
                 }
                 if(!StringUtils.isNullOrEmpty((String)otherData.getOrDefault("photo",""))){
-                    info.setIdPhoto((String)otherData.getOrDefault("photo",""));
+                    info.setOtherIdPhoto((String)otherData.getOrDefault("photo",""));
                 }
             }
         }catch(Exception e){
             logger.error(e.getMessage(),e);
         }
-        return info;
 
     }
     /*
