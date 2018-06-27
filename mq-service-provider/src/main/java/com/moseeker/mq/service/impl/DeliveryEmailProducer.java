@@ -7,13 +7,11 @@ import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileEducationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileWorkexpDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileBasic;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileEducation;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp;
-import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import static com.moseeker.common.constants.Constant.CDN_URL;
@@ -38,7 +36,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import java.util.*;
-import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,13 +52,9 @@ public class DeliveryEmailProducer {
 
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
 
-    @Resource(name = "cacheClient")
-    private RedisClient redisClient;
-
-    @Autowired
-    private UserUserDao userDao;
     @Autowired
     private Environment env;
+
 
     @Autowired
     private ProfileProfileDao profileDao;
@@ -245,17 +238,18 @@ public class DeliveryEmailProducer {
         ProfileEmailInfo emailInfo = new ProfileEmailInfo();
         emailInfo.setCompanyName(company.getAbbreviation());
         emailInfo.setPositionName(position.getTitle());
-        emailInfo.setComapnyLogo(company.getLogo());
+        String logo = company.getLogo().trim().startsWith("http")? company.getLogo() : env.getProperty("http.cdn.url")+company.getLogo();
+        emailInfo.setCompanyLogo(logo);
         //邮件头像默认地址
         emailInfo.setHeadimg(env.getProperty("email.user.heading.url"));
         //hr端人才详情路径
         String resume_url = env.getProperty("email.resume.info.url");
         if(resume_url != null)
             resume_url = resume_url.replace("{}", user.getId()+"");
-       emailInfo.setResumeLink(resume_url);
+        emailInfo.setResumeLink(resume_url);
         if(user != null) {
             if (user.getHeadimg() != null && !user.getHeadimg().isEmpty()) {
-                String headImgUrl = user.getHeadimg().trim().startsWith("http")? user.getHeadimg() : CDN_URL+user.getHeadimg();
+                String headImgUrl = user.getHeadimg().trim().startsWith("http")? user.getHeadimg() : env.getProperty("http.cdn.url")+user.getHeadimg();
                 emailInfo.setHeadimg(headImgUrl);
             }
             if (user.getName() != null && !user.getName().isEmpty()) {
