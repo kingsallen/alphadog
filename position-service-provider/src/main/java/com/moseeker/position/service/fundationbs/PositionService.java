@@ -1699,6 +1699,7 @@ public class PositionService {
         if (StringUtils.isEmptyList(pids)) {
             return null;
         }
+
         int count=this.getCampaignRecomPositionlistByIdAndCompanyTypeCount(recomPushId,companyId,type);
         List<WechatPositionListData> result=this.getRecomWxPosition(pids);
         if(!StringUtils.isEmptyList(result)){
@@ -1763,6 +1764,7 @@ public class PositionService {
     /*
       通过user_id 获取 CampaignPersonaRecomPojo 的list集合
      */
+
     private  List<CampaignPersonaRecomRecord> getPersonaRecomPositionList(int userId,int companyId,int type, int pageNum, int pageSize){
         Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).orderBy("id", Order.ASC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
@@ -2557,23 +2559,6 @@ public class PositionService {
                             }
                         });
                     }
-//                    else if (positionDO != null && (int) updateField.get("status") == 0 && positionDO.getStatus() == 2) {
-//
-//                        pool.startTast(() -> {
-//                            if (countDownLatch.await(60, TimeUnit.SECONDS)) {
-//                                JSONObject liePinJsonObject = new JSONObject();
-//                                JSONArray jsonArray = new JSONArray();
-//                                jsonArray.add(position_id);
-//                                liePinJsonObject.put("id", jsonArray);
-//                                String requestStr = JSONObject.toJSONString(liePinJsonObject);
-//                                Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
-//                                receiverHandler.handlerPositionLiepinReSyncOperation(requestMsg, null);
-//                                return true;
-//                            } else {
-//                                throw new RuntimeException("rabbitmq线程等待超时");
-//                            }
-//                        });
-//                    }
                 }
 
                 return ResponseUtils.success(updateField);
