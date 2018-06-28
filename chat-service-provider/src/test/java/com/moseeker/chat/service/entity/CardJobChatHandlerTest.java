@@ -43,9 +43,9 @@ public class CardJobChatHandlerTest {
         JobPositionDO positionDO = new JobPositionDO();
         positionDO.setId(positionId);
         positionDO.setTitle("职位编辑后上架1");
-        positionDO.setSalary("面议");
-        positionDO.setSalaryTop(20);
-        positionDO.setSalaryBottom(10);
+//        positionDO.setSalary("面议");
+        positionDO.setSalaryTop(0);
+        positionDO.setSalaryBottom(0);
         positionDO.setId(positionId);
         positionDO.setCompanyId(companyId);
         when(chatDao.getPositionById(19494215)).thenReturn(positionDO);

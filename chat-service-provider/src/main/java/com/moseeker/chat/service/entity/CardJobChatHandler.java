@@ -53,7 +53,7 @@ public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHan
         if (position != null) {
             // 设置公司名称
             HrCompanyDO companyDO = companyDao.getCompanyById(position.getCompanyId());
-            if(StringUtils.isNotNullOrEmpty(companyDO.getAbbreviation())) {
+            if (StringUtils.isNotNullOrEmpty(companyDO.getAbbreviation())) {
                 positionCard.setCompanyName(companyDO.getAbbreviation());
             } else {
                 positionCard.setCompanyName(companyDO.getName());
@@ -68,6 +68,8 @@ public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHan
             // 设置薪资
             if (StringUtils.isNotNullOrEmpty(position.getSalary())) {
                 positionCard.setSalary(position.getSalary());
+            } else if(position.getSalaryTop()==0 && position.getSalaryBottom() == 0){
+                positionCard.setSalary("面议");
             } else {
                 StringBuilder strBuilder = new StringBuilder();
                 positionCard.setSalary(strBuilder
