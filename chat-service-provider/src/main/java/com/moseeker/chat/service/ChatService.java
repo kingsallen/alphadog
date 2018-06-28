@@ -763,6 +763,7 @@ public class ChatService {
                     positionVO.setUpdateTime(positionDO.getUpdateTime());
                     positionVO.setCity(positionDO.getCity());
                     positionVO.setStatus(Double.valueOf(positionDO.getStatus()).intValue());
+                    positionVO.setTeam(positionDO.getDepartment());
 
                     if (positionDO.getCompanyId() > 0) {
                         HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getPublisher());
