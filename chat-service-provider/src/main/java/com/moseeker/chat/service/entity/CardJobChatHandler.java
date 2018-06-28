@@ -81,6 +81,7 @@ public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHan
             positionCard.setUpdate(position.getUpdateTime());
             positionCard.setTitle(position.getTitle());
             positionCard.setStatus(Double.valueOf(position.getStatus()).intValue());
+            positionCard.setTeam(position.getDepartment());
 
         }
         chat.setContent(JSON.toJSONString(positionCard, serializeConfig));
@@ -113,6 +114,15 @@ public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHan
         private String title;
         private String companyName;
         private int status;
+        private String team;
+
+        public String getTeam() {
+            return team;
+        }
+
+        public void setTeam(String team) {
+            this.team = team;
+        }
 
         public int getStatus() {
             return status;
