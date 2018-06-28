@@ -445,7 +445,7 @@ public class ChatService {
                     chatVO.setId(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.ID));
                     chatVO.setContent(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.CONTENT));
                     chatVO.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME)));
-                    chatVO.setRoomId(roomId);
+                    chatVO.setRoomId(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID));
                     String msgType = record.getValue(HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE);
                     if (StringUtils.isNullOrEmpty(msgType)) {
                         chatVO.setMsgType("html");
