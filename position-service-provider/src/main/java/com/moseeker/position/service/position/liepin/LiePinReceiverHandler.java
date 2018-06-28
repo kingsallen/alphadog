@@ -16,9 +16,8 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.DateUtils;
-import com.moseeker.position.constants.position.LiepinPositionOperateUrl;
+import com.moseeker.position.constants.position.LiepinPositionOperateConstant;
 import com.moseeker.position.pojo.LiePinPositionVO;
-import com.moseeker.position.service.appbs.PositionBS;
 import com.moseeker.position.utils.HttpClientUtil;
 import com.moseeker.position.utils.Md5Utils;
 import com.moseeker.position.utils.PositionEmailNotification;
@@ -485,7 +484,7 @@ public class LiePinReceiverHandler {
 
                             liePinJsonObject.put("ejob_extRefids", requestIds);
 
-                            String httpResultJson = sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateUrl.liepinPositionRepub);
+                            String httpResultJson = sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionRepub);
 
                             log.info("===================httpResultJson:{}=====================", httpResultJson);
 
@@ -578,7 +577,7 @@ public class LiePinReceiverHandler {
 
                     liePinJsonObject.put("ejob_extRefids", requestStr);
 
-                    String httpResultJson = sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateUrl.liepinPositionEnd);
+                    String httpResultJson = sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionEnd);
 
                     log.info("===================httpResultJson:{}=====================", httpResultJson);
 
@@ -719,7 +718,7 @@ public class LiePinReceiverHandler {
             JSONObject liePinJsonObject = new JSONObject();
             liePinJsonObject.put("ejob_extRefids", id);
             liePinJsonObject.put("usere_id", liePinUserId);
-            return sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateUrl.liepinPositionGet);
+            return sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionGet);
         }
         return null;
     }
@@ -765,7 +764,7 @@ public class LiePinReceiverHandler {
         JSONObject liePinObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
         try {
 
-            String httpResultJson = sendRequest2LiePin(liePinObject, liePinToken, LiepinPositionOperateUrl.liepinPositionEdit);
+            String httpResultJson = sendRequest2LiePin(liePinObject, liePinToken, LiepinPositionOperateConstant.liepinPositionEdit);
 
             log.info("============httpResultJson:{}===========", httpResultJson);
 
@@ -835,7 +834,7 @@ public class LiePinReceiverHandler {
                 log.info("==================title变化，将之前所有的下架获取所有的hashid，新的发布=====================");
 
                 // 下架
-                String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LiepinPositionOperateUrl.liepinPositionEnd);
+                String httpResultJson = sendRequest2LiePin(liePinJsonObject, liepinToken, LiepinPositionOperateConstant.liepinPositionEnd);
 
                 log.info("================httpResultJson:{}===============", httpResultJson);
 
@@ -895,7 +894,7 @@ public class LiePinReceiverHandler {
         //设置请求头
         Map<String, String> headers = new HashMap<>();
 
-        headers.put("channel", "qianxun_online");
+        headers.put("channel", LiepinPositionOperateConstant.liepinChannel);
 
         headers.put("token", liePinToken);
 

@@ -411,8 +411,6 @@ public class PositionEmailNotification {
                 });
             } catch (Exception e) {
                 logger.error("发送同步职位到猎聘失败的邮件发生错误：{}", e.getMessage());
-                e.printStackTrace();
-                logger.error(e.getMessage(), e);
             }
     }
 
