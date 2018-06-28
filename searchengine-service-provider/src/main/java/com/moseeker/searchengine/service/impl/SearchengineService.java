@@ -388,9 +388,9 @@ public class SearchengineService {
     private QueryBuilder handlerCommonCity(String citys){
         if(StringUtils.isNotBlank(citys)){
             List<String> fieldList=new ArrayList<>();
-            fieldList.add("citys.name");
-            fieldList.add("citys.ename");
-            QueryBuilder keyand=searchUtil.shouldTermsQuery(fieldList,searchUtil.stringConvertList(citys));
+            fieldList.add("city");
+            fieldList.add("city_ename");
+            QueryBuilder keyand=searchUtil.(fieldList,searchUtil.stringConvertList(citys));
             return keyand;
         }
         return null;
