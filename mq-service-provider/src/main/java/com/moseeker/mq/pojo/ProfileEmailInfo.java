@@ -28,12 +28,12 @@ public class ProfileEmailInfo {
     private List<Languages> languages;
     private List<String> credentials;
     private Works works;
-    private List<Message> other_identity;
-    private List<Message> other_school;
-    private List<SchoolWork> other_schoolWork;
-    private List<Internship> other_internship;
-    private List<Message> other_career;
-    private String other_idPhoto;
+    private List<Message> otherIdentity;
+    private List<Message> otherSchool;
+    private List<SchoolWork> otherSchoolWork;
+    private List<Internship> otherInternship;
+    private List<Message> otherCareer;
+    private String otherIdPhoto;
 
     public String getCompanyLogo() {
         return companyLogo;
@@ -203,51 +203,51 @@ public class ProfileEmailInfo {
         this.works = works;
     }
 
-    public List<Message> getOther_identity() {
-        return other_identity;
+    public List<Message> getOtherIdentity() {
+        return otherIdentity;
     }
 
-    public void setOther_identity(List<Message> other_identity) {
-        this.other_identity = other_identity;
+    public void setOtherIdentity(List<Message> otherIdentity) {
+        this.otherIdentity = otherIdentity;
     }
 
-    public List<Message> getOther_school() {
-        return other_school;
+    public List<Message> getOtherSchool() {
+        return otherSchool;
     }
 
-    public void setOther_school(List<Message> other_school) {
-        this.other_school = other_school;
+    public void setOtherSchool(List<Message> otherSchool) {
+        this.otherSchool = otherSchool;
     }
 
-    public List<SchoolWork> getOther_schoolWork() {
-        return other_schoolWork;
+    public List<SchoolWork> getOtherSchoolWork() {
+        return otherSchoolWork;
     }
 
-    public void setOther_schoolWork(List<SchoolWork> other_schoolWork) {
-        this.other_schoolWork = other_schoolWork;
+    public void setOtherSchoolWork(List<SchoolWork> otherSchoolWork) {
+        this.otherSchoolWork = otherSchoolWork;
     }
 
-    public List<Internship> getOther_internship() {
-        return other_internship;
+    public List<Internship> getOtherInternship() {
+        return otherInternship;
     }
 
-    public void setOther_internship(List<Internship> other_internship) {
-        this.other_internship = other_internship;
+    public void setOtherInternship(List<Internship> otherInternship) {
+        this.otherInternship = otherInternship;
     }
 
-    public List<Message> getOther_career() {
-        return other_career;
+    public List<Message> getOtherCareer() {
+        return otherCareer;
     }
 
-    public void setOther_career(List<Message> other_career) {
-        this.other_career = other_career;
+    public void setOtherCareer(List<Message> otherCareer) {
+        this.otherCareer = otherCareer;
     }
 
-    public String getOther_idPhoto() {
-        return other_idPhoto;
+    public String getOtherIdPhoto() {
+        return otherIdPhoto;
     }
 
-    public void setOther_idPhoto(String other_idPhoto) {
-        this.other_idPhoto = other_idPhoto;
+    public void setOtherIdPhoto(String otherIdPhoto) {
+        this.otherIdPhoto = otherIdPhoto;
     }
 }

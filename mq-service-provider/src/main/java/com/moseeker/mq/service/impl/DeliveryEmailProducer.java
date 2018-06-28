@@ -281,9 +281,9 @@ public class DeliveryEmailProducer {
 //                OtherInfo otherInfo = new OtherInfo();
                 List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>)otherDatas.getOrDefault("keyvalues", new ArrayList<>());
                 if(!StringUtils.isEmptyList(keyvalueList)){
-                    emailInfo.setOther_identity(ProfileOtherIdentityType.getMessageList(keyvalueList));
-                    emailInfo.setOther_career(ProfileOtherCareerType.getMessageList(keyvalueList));
-                    emailInfo.setOther_school(ProfileOtherSchoolType.getMessageList(keyvalueList));
+                    emailInfo.setOtherIdentity(ProfileOtherIdentityType.getMessageList(keyvalueList));
+                    emailInfo.setOtherCareer(ProfileOtherCareerType.getMessageList(keyvalueList));
+                    emailInfo.setOtherSchool(ProfileOtherSchoolType.getMessageList(keyvalueList));
                 }
                 List<Map<String, Object>> internshipList = (List<Map<String, Object>>)otherDatas.getOrDefault("internship", new ArrayList());
                 if(!StringUtils.isEmptyList(internshipList)){
@@ -297,7 +297,7 @@ public class DeliveryEmailProducer {
                         ship.setDescription((String)internship.getOrDefault("internshipDescriptionHidden", ""));
                         shipList.add(ship);
                     }
-                    emailInfo.setOther_internship(shipList);
+                    emailInfo.setOtherInternship(shipList);
                 }
                 List<Map<String, Object>> schooljobList = (List<Map<String, Object>>)otherDatas.getOrDefault("schooljob", new ArrayList());
                 if(!StringUtils.isEmptyList(schooljobList)){
@@ -309,9 +309,10 @@ public class DeliveryEmailProducer {
                         ship.setDescription((String)school.getOrDefault("schooljobDescriptionHidden", ""));
                         schoolList.add(ship);
                     }
-                    emailInfo.setOther_schoolWork(schoolList);
+                    emailInfo.setOtherSchoolWork(schoolList);
                 }
-                emailInfo.setOther_idPhoto((String)otherDatas.getOrDefault("photo", ""));
+                String photo = (String)otherDatas.getOrDefault("photo", "");
+                emailInfo.setOtherIdPhoto(photo.trim().startsWith("http")? photo : env.getProperty("http.cdn.url")+photo);
             }
 
         }
