@@ -135,6 +135,7 @@ public enum ProfileOtherSchoolType {
                         lastline=1;
                     }
                     messages.add(new Message(type.getValue(), entry.get("value"),i%2,lastline));
+                    i++;
                 }
             }
         }
