@@ -66,10 +66,8 @@ public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHan
             }
 
             // 设置薪资
-            if (StringUtils.isNotNullOrEmpty(position.getSalary())) {
-                positionCard.setSalary(position.getSalary());
-            } else if(position.getSalaryTop()==0 && position.getSalaryBottom() == 0){
-                positionCard.setSalary("面议");
+            if (position.getSalaryTop()==0 && position.getSalaryBottom() == 0){
+                positionCard.setSalary("薪资面议");
             } else {
                 StringBuilder strBuilder = new StringBuilder();
                 positionCard.setSalary(strBuilder
