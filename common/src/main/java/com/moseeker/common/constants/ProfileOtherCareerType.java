@@ -91,7 +91,7 @@ public enum ProfileOtherCareerType {
         for(Map.Entry<String, Object> entry : entries){
             ProfileOtherCareerType type = instanceFromKey(entry.getKey());
             if(type != null) {
-                messages.add(new Message(type.getValue(), entry.getValue()));
+                messages.add(new Message(type.getValue(), entry.getValue(),0,0));
             }
         }
         return messages;
@@ -121,12 +121,18 @@ public enum ProfileOtherCareerType {
         if(StringUtils.isEmptyList(list)){
             return null;
         }
+        int i=0;
         List<Message> messages = new ArrayList<>();
         for(Map<String, Object> entry : list){
             if(entry.get("key")!=null) {
                 ProfileOtherCareerType type = instanceFromValue((String)entry.get("key"));
                 if (type != null) {
-                    messages.add(new Message(type.getValue(), entry.get("value")));
+                    int lastline=0;
+                    if(i==list.size()){
+                        lastline=1;
+                    }
+                    messages.add(new Message(type.getValue(), entry.get("value"),i%2,lastline));
+                    i++;
                 }
             }
         }
