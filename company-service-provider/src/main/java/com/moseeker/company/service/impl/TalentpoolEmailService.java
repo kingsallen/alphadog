@@ -691,16 +691,31 @@ public class TalentpoolEmailService {
             }else{
                for(Map<String,Object> map:resData){
                    int id=(int)map.get("id");
-                   int flag=0;
-                   for(Map<String,Object> itemMap:employeeData){
-                       int itemId=(int)itemMap.get("id");
-                       if(itemId==id){
-                           flag=1;
-                           break;
+                   if(id==0){
+                       String email=(String)map.get("email");
+                       int flag=0;
+                       for(Map<String,Object> itemMap:employeeData){
+                           String originEmail=(String)itemMap.get("email");
+                           if(originEmail.equals(email)){
+                               flag=1;
+                               break;
+                           }
                        }
-                   }
-                   if(flag==0){
-                       employeeData.add(map);
+                       if(flag==0){
+                           employeeData.add(map);
+                       }
+                   }else{
+                       int flag=0;
+                       for(Map<String,Object> itemMap:employeeData){
+                           int itemId=(int)itemMap.get("id");
+                           if(itemId==id){
+                               flag=1;
+                               break;
+                           }
+                       }
+                       if(flag==0){
+                           employeeData.add(map);
+                       }
                    }
                }
                if(employeeData.size()>10){
