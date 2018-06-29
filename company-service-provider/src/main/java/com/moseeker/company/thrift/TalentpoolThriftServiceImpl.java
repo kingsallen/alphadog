@@ -556,9 +556,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response sendResumeEmail(Map<String, String> params, List<Integer> userIdList, List<Integer> idList, int companyId, int hrId, int flag) throws BIZException, TException {
+    public Response sendResumeEmail(Map<String, String> params, List<Integer> userIdList, List<Integer> idList, int companyId, int hrId, int flag,List<String> emailList) throws BIZException, TException {
         try{
-            int result=talentpoolEmailService.talentPoolSendResumeEmail(idList,params,userIdList,companyId,hrId,flag);
+            int result=talentpoolEmailService.talentPoolSendResumeEmail(idList,params,userIdList,companyId,hrId,flag,emailList);
             if(result<0){
                 return  ResponseUtils.fail(TalentEmailEnum.intToEnum.get(result));
             }
