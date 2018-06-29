@@ -18,8 +18,6 @@ public class Message {
         }
         this.newline=newline;
         this.lastline=lastline;
-        if(value != null) {
-            this.value = (String) value;
     }
 
     public String getKey() {
