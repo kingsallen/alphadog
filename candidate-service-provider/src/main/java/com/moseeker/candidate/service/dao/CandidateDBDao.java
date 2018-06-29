@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.candidate.constant.EmployeeType;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
@@ -30,7 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -221,6 +226,7 @@ public class CandidateDBDao {
         return candidateRecomRecordDao.listCandidateRecomRecord(postUserId, clickTime, recoms, positionIdList);
     }
 
+
     /**
      * 推荐的结果记录是根据职位和浏览者过滤的，在推荐时，需要将被过滤的数据也给添加上
      *
@@ -245,7 +251,146 @@ public class CandidateDBDao {
             return null;
         }
     }
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordDONew(int postUserId, String
+            clickTime, List<Integer> recoms, List<Integer> positionIdList){
+        DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
+        DateTime dateTime = DateTime.parse(clickTime, format);
+        Timestamp time=new Timestamp(dateTime.getMillis());
+        Timestamp time1=new Timestamp(dateTime.plusDays(1).getMillis());
+        Timestamp time2=new Timestamp(dateTime.plusDays(-1).getMillis());
+        Timestamp time3=new Timestamp(dateTime.plusDays(-2).getMillis());
+        Timestamp time4=new Timestamp(dateTime.plusDays(-3).getMillis());
+        List<CandidateRecomRecordDO> result=this.handlerListCandidateRecomData(postUserId,recoms,positionIdList,time,time1,time2,time3,time4);
+        return result;
 
+    }
+
+    private List<CandidateRecomRecordDO> handlerListCandidateRecomData(int postUserId, List<Integer> recoms, List<Integer> positionIdList, Timestamp time, Timestamp time1, Timestamp time2, Timestamp time3, Timestamp time4){
+        List<CandidateRecomRecordDO> recommendInfo=candidateRecomRecordDao.listCandidateRecomRecord(postUserId,time,time1,recoms,positionIdList);
+        List<CandidateRecomRecordDO> recommendInfo1=candidateRecomRecordDao.listCandidateRecomRecord(postUserId,time2,time,recoms,positionIdList);
+        List<CandidateRecomRecordDO> recommendInfo2=candidateRecomRecordDao.listCandidateRecomRecord(postUserId,time3,time2,recoms,positionIdList);
+        List<CandidateRecomRecordDO> recommendInfo3=candidateRecomRecordDao.listCandidateRecomRecord(postUserId,time4,time3,recoms,positionIdList);
+        List<CandidateRecomRecordDO> result=new ArrayList<>();
+        if(!StringUtils.isEmptyList(recommendInfo)){
+            result.addAll(recommendInfo);
+        }
+        List<CandidateRecomRecordDO> firstData=this.handlerFirstCandidateRecomData(recommendInfo,recommendInfo1);
+        if(!StringUtils.isEmptyList(firstData)){
+            result.addAll(firstData);
+        }
+        List<CandidateRecomRecordDO> secondData=this.handlerSeacondCandidateRecomData(recommendInfo,recommendInfo1,recommendInfo2);
+        if(!StringUtils.isEmptyList(secondData)){
+            result.addAll(secondData);
+        }
+        List<CandidateRecomRecordDO> thridData=this.handlerThridCandidateRecomData(recommendInfo,recommendInfo1,recommendInfo2,recommendInfo3);
+        if(!StringUtils.isEmptyList(thridData)){
+            result.addAll(thridData);
+        }
+        return result;
+    }
+    /*
+     处理前一天的推荐数据
+     */
+    private List<CandidateRecomRecordDO> handlerFirstCandidateRecomData(List<CandidateRecomRecordDO> recommendInfo,List<CandidateRecomRecordDO> recommendInfo1){
+        List<CandidateRecomRecordDO> result=this.filterCandidateRecomData(recommendInfo,recommendInfo1);
+        result=this.filterRecomReasonData(result);
+        return result;
+    }
+    /*
+     处理前两天的推荐数据
+     */
+    private List<CandidateRecomRecordDO> handlerSeacondCandidateRecomData(List<CandidateRecomRecordDO> recommendInfo,List<CandidateRecomRecordDO> recommendInfo1,List<CandidateRecomRecordDO> recommendInfo2){
+        List<CandidateRecomRecordDO> result=this.filterCandidateRecomData(recommendInfo1,recommendInfo2);
+        result=this.filterCandidateRecomData(recommendInfo,result);
+        result=this.filterRecomReasonData(result);
+        return result;
+    }
+    /*
+    处理前三天的推荐数据
+    */
+    private List<CandidateRecomRecordDO> handlerThridCandidateRecomData(List<CandidateRecomRecordDO> recommendInfo,List<CandidateRecomRecordDO> recommendInfo1,
+                                                                        List<CandidateRecomRecordDO> recommendInfo2,List<CandidateRecomRecordDO> recommendInfo3){
+        List<CandidateRecomRecordDO> result=this.filterCandidateRecomData(recommendInfo2,recommendInfo3);
+        result=this.filterCandidateRecomData(recommendInfo1,result);
+        result=this.filterCandidateRecomData(recommendInfo,result);
+        result=this.filterRecomReasonData(result);
+        return result;
+    }
+    /*
+     过滤两个CandidateRecomRecordDO列表
+     */
+    private List<CandidateRecomRecordDO> filterCandidateRecomData(List<CandidateRecomRecordDO> recommendInfo,List<CandidateRecomRecordDO> originInfos){
+        List<CandidateRecomRecordDO> result=new ArrayList<>();
+        if(StringUtils.isEmptyList(recommendInfo)){
+            return originInfos;
+        }
+        if(StringUtils.isEmptyList(originInfos)){
+            return null;
+        }
+        for(CandidateRecomRecordDO originInfo:originInfos){
+            int postUserId=originInfo.getPostUserId();
+            boolean flag=true;
+            for(CandidateRecomRecordDO recomRecordDO:recommendInfo ){
+                int userId=recomRecordDO.getPostUserId();
+                if(postUserId==userId){
+                    flag=false;
+                    break;
+                }
+            }
+            if(flag){
+                result.add(originInfo);
+            }
+        }
+        return result;
+    }
+    /*
+      过滤recom_reason数据
+     */
+    private List<CandidateRecomRecordDO> filterRecomReasonData( List<CandidateRecomRecordDO> infosList){
+        List<Integer> filterIdList=this.getPostUserIdList(infosList);
+        if(StringUtils.isEmptyList(filterIdList)){
+            return null;
+        }
+        List<CandidateRecomRecordDO> result=new ArrayList<>();
+        for(Integer userId:filterIdList){
+            for(CandidateRecomRecordDO infos:infosList){
+                int postUserId=infos.getPostUserId();
+                if(postUserId==userId){
+                    result.add(infos);
+                }
+            }
+        }
+        return result;
+    }
+    /*
+     获取推荐的post_user_id
+     */
+    private List<Integer> getPostUserIdList(List<CandidateRecomRecordDO> infosList){
+        if(StringUtils.isEmptyList(infosList)){
+            return null;
+        }
+        List<Integer> filterUserIdList=new ArrayList<>();
+        for(CandidateRecomRecordDO info:infosList){
+            String recomReason=info.getRecomReason();
+            int postUserId=info.getPostUserId();
+            if(StringUtils.isNullOrEmpty(recomReason)){
+                boolean flag=true;
+                for(CandidateRecomRecordDO info1:infosList){
+                    int userId=info1.getPostUserId();
+                    String reason=info1.getRecomReason();
+                    if(userId==postUserId&&StringUtils.isNotNullOrEmpty(reason)){
+                        flag=flag;
+                        break;
+                    }
+                }
+                if(flag&&!filterUserIdList.contains(postUserId)){
+                    filterUserIdList.add(postUserId);
+                }
+
+            }
+        }
+        return filterUserIdList;
+    }
     /**
      * 过滤某个ID之后查找推荐记录信息
      *

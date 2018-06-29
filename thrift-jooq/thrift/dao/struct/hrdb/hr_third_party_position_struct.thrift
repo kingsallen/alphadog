@@ -33,5 +33,7 @@ struct HrThirdPartyPositionDO {
     27: optional string addressName,
     28: optional i32 departmentId,
     29: optional string departmentName,
-    30: optional i32 count  //招聘人数
+    30: optional i32 count,  //招聘人数
+    31: optional bool internship, //是否使用实习职位的额度
+    32: optional string feature //福利特色
 }

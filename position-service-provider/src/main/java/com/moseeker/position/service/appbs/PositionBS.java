@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -32,6 +33,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
@@ -81,7 +83,8 @@ public class PositionBS {
     private MobileVeifyHandler mobileVeifyHandler;
     @Autowired
     private HRThirdPartyAccountDao thirdPartyAccountDao;
-
+    @Autowired
+    private JobPositionLiepinMappingDao mappingDao;
 
     /**
      * 单一处理职位同步
@@ -226,21 +229,16 @@ public class PositionBS {
             AbstractPositionTransfer.TransferResult result= positionChangeUtil.changeToThirdPartyPosition(p, moseekerJobPosition,avaliableAccount);
 
             positionsForSynchronizations.addAll(positionChangeUtil.toChaosJson(channel,result.getPositionWithAccount()));
+
             writeBackThirdPartyPositionList.add(new TwoParam(result.getThirdPartyPositionDO(),result.getExtPosition()));
 
             results.add(positionSyncHandler.createNormalResult(moseekerJobPosition.getId(),channel,json));
 
             //完成转换操作，可以绑定
             channelTypeSet.add(channelType);
+
+            positionChangeUtil.sendRequest(channel,result,moseekerJobPosition);
         }
-
-        // 提交到chaos处理
-        logger.info("chaosService.synchronizePosition:{}", positionsForSynchronizations);
-        chaosService.synchronizePosition(positionsForSynchronizations);
-
-        // 回写数据到第三方职位表表
-        logger.info("write back to thirdpartyposition:{}", JSON.toJSONString(writeBackThirdPartyPositionList));
-        thirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
 
         positionSyncHandler.removeRedis(moseekerJobPosition.getId());
         return results;
@@ -421,4 +419,7 @@ public class PositionBS {
         jobPositionDao.updateData(positionDO);
     }
 
+    public List<JobPositionLiepinMappingDO> getLiepinPositionIds(int userId) {
+        return mappingDao.getMappingDataByUserId(userId);
+    }
 }

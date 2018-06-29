@@ -27,8 +27,9 @@ struct ThirdPartyPosition {
      16:optional i32 companyId,            //公司id
      17:optional string companyName,       //公司名称
      18:optional i32 addressId,                //地址id
-     19:optional string addressName               //地址全称
+     19:optional string addressName,               //地址全称
 
+     20:optional list<string> feature            // 公司福利特色，目前是用于猎聘api发布职位时可编辑福利特色使用
      //3.5.9.3废弃的字段
      //5: optional string address,             // 工作地址
      //10: optional string department,         // 部门名称
