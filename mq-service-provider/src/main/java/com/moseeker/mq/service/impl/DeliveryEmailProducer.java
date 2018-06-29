@@ -238,7 +238,7 @@ public class DeliveryEmailProducer {
         ProfileEmailInfo emailInfo = new ProfileEmailInfo();
         emailInfo.setCompanyName(company.getAbbreviation());
         emailInfo.setPositionName(position.getTitle());
-        String logo = "";
+        String logo = env.getProperty("http.cdn.url")+ Constant.COMPANY_LOGO_URL;
         if(company.getLogo() != null) {
             logo = company.getLogo().trim().startsWith("http") ? company.getLogo() : env.getProperty("http.cdn.url") + company.getLogo();
         }
