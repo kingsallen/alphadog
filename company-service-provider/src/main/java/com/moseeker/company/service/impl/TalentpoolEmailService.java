@@ -672,7 +672,7 @@ public class TalentpoolEmailService {
             String name=email.substring(0,email.lastIndexOf("@"));
             UserEmployeeDO userEmployeeDO=new UserEmployeeDO();
             userEmployeeDO.setCname(name);
-            userEmployeeDO.setEmail(name);
+            userEmployeeDO.setEmail(email);
             employeeList.add(userEmployeeDO);
         }
         return employeeList;
