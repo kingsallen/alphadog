@@ -1,9 +1,9 @@
-package com.moseeker.company.bean;
+package com.moseeker.company.bean.email;
 
 /**
- * Created by zztaiwll on 18/4/25.
+ * Created by zztaiwll on 18/6/26.
  */
-public class TalentWorkExpInfo {
+public class TalentOtherInternshipInfo {
     private String time;
     private String company;
     private String position;
