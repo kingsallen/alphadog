@@ -312,7 +312,10 @@ public class DeliveryEmailProducer {
                     emailInfo.setOtherSchoolWork(schoolList);
                 }
                 String photo = (String)otherDatas.getOrDefault("photo", "");
-                emailInfo.setOtherIdPhoto(photo.trim().startsWith("http")? photo : env.getProperty("http.cdn.url")+photo);
+                logger.info("photo:{}",photo);
+                if(StringUtils.isNotNullOrEmpty(photo)) {
+                    emailInfo.setOtherIdPhoto(photo.trim().startsWith("http") ? photo : env.getProperty("http.cdn.url") + photo);
+                }
             }
 
         }
