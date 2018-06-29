@@ -690,8 +690,8 @@ public class TalentpoolEmailService {
                 employeeData=employeeData.subList(0,10);
             }else{
                for(Map<String,Object> map:resData){
-                   int id=(int)map.get("id");
-                   if(id==0){
+                   Integer id=(Integer)map.get("id");
+                   if(id==0||id==null){
                        String email=(String)map.get("email");
                        int flag=0;
                        for(Map<String,Object> itemMap:employeeData){
