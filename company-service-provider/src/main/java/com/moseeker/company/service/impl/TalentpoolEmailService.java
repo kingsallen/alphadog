@@ -586,7 +586,7 @@ public class TalentpoolEmailService {
      发送部分转发邮件
      */
     private int sendResumeEmail(List<Integer> idList,List<Integer> userIdList,int companyId,int hrId,List<String> sendEmailList){
-        if(StringUtils.isEmptyList(idList)) {
+        if(StringUtils.isEmptyList(idList)&&StringUtils.isEmptyList(sendEmailList)) {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
@@ -672,7 +672,7 @@ public class TalentpoolEmailService {
             String name=email.substring(0,email.lastIndexOf("@"));
             UserEmployeeDO userEmployeeDO=new UserEmployeeDO();
             userEmployeeDO.setCname(name);
-            userEmployeeDO.setEmail(name);
+            userEmployeeDO.setEmail(email);
             employeeList.add(userEmployeeDO);
         }
         return employeeList;
@@ -745,7 +745,7 @@ public class TalentpoolEmailService {
      发送全部转发邮件
      */
     private  int sendAllResumeEmail(List<Integer> idList,Map<String,String> params,int companyId,int hrId,List<String> sendEmailList){
-        if(StringUtils.isEmptyList(idList)) {
+        if(StringUtils.isEmptyList(idList)&&StringUtils.isEmptyList(sendEmailList)) {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
         params.put("company_id",companyId+"");
@@ -1687,7 +1687,7 @@ public class TalentpoolEmailService {
             String start=(String)data.getOrDefault("internshipStart","");
             String end=(String)data.getOrDefault("internshipEnd","");
             int endUntilNow=(int)data.getOrDefault("internshipEndUntilNow",0);
-
+            end=end.substring(0,7).replace("-",".");
             if(endUntilNow==1){
                 end="至今";
             }
@@ -1717,6 +1717,7 @@ public class TalentpoolEmailService {
             String start=(String)data.getOrDefault("schooljobStart","");
             String end=(String)data.getOrDefault("schooljobEnd","");
             int endUntilNow=(int)data.getOrDefault("schooljobEndUntilNow",0);
+            end=end.substring(0,7).replace("-",".");
             if(endUntilNow==1){
                 end="至今";
             }
@@ -1874,6 +1875,7 @@ public class TalentpoolEmailService {
         TalentWorkExpInfo info=new TalentWorkExpInfo();
         String start= (String) data.get("start_date");
         String end= (String) data.get("end_date");
+        end=end.substring(0,7).replace("-",".");
         int endUntilNow= (int) data.get("end_until_now");
         if(endUntilNow==1){
             end="至今";
@@ -1901,6 +1903,7 @@ public class TalentpoolEmailService {
             String start= (String) data.get("start_date");
             String end= (String) data.get("end_date");
             int endUntilNow= (int) data.get("end_until_now");
+            end=end.substring(0,7).replace("-",".");
             if(endUntilNow==1){
                 end="至今";
             }
@@ -1928,6 +1931,7 @@ public class TalentpoolEmailService {
             TalentProjectExpsInfo info=new TalentProjectExpsInfo();
             String start= (String) data.get("start_date");
             String end= (String) data.get("end_date");
+            end=end.substring(0,7).replace("-",".");
             int endUntilNow= (int) data.get("end_until_now");
             if(endUntilNow==1){
                 end="至今";
