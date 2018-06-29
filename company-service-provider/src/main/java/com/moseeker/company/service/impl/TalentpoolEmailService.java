@@ -340,15 +340,15 @@ public class TalentpoolEmailService {
     发送转发简历邮件
      */
     @CounterIface
-    public int talentPoolSendResumeEmail(List<Integer> idList,Map<String,String> params,List<Integer> userIdList,int companyId,int hrId,int flag){
+    public int talentPoolSendResumeEmail(List<Integer> idList,Map<String,String> params,List<Integer> userIdList,int companyId,int hrId,int flag,List<String>emailList){
         int sflag=validateCompanyAndOther(companyId,hrId);
         if(sflag<0){
             return sflag ;
         }
         if(flag==0){
-            return sendResumeEmail(idList, userIdList, companyId, hrId);
+            return sendResumeEmail(idList, userIdList, companyId, hrId,emailList);
         }else{
-            return sendAllResumeEmail(idList,params,companyId,hrId);
+            return sendAllResumeEmail(idList,params,companyId,hrId,emailList);
         }
     }
 
@@ -585,7 +585,7 @@ public class TalentpoolEmailService {
     /*
      发送部分转发邮件
      */
-    private int sendResumeEmail(List<Integer> idList,List<Integer> userIdList,int companyId,int hrId){
+    private int sendResumeEmail(List<Integer> idList,List<Integer> userIdList,int companyId,int hrId,List<String> sendEmailList){
         if(StringUtils.isEmptyList(idList)) {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
@@ -598,11 +598,12 @@ public class TalentpoolEmailService {
             try {
                 List<UserEmployeeDO> employeeList = this.getUserEmployeeList(idList);
                 logger.info(JSON.toJSONString(employeeList));
-                if (!StringUtils.isEmptyList(employeeList)) {
-                    int lost = userIdList.size() * employeeList.size();
+                if (!StringUtils.isEmptyList(employeeList)||!StringUtils.isEmptyList(sendEmailList)) {
+                    int lost = this.handlerLost(employeeList,userIdList,sendEmailList);
                     if (!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(), lost)) {
                         return TalentEmailEnum.NOBALANCE.getValue();
                     }
+                    employeeList=this.handlerEmployeeList(employeeList,sendEmailList);
                     EmailResumeBean emailList = this.convertResumeEmailData(employeeList, userIdList, companyId, talentpoolEmailRecord.getContext(), hrId);
                     logger.info(JSON.toJSONString(emailList));
                     updateEmailInfoBalance(companyId, lost,5);
@@ -631,6 +632,51 @@ public class TalentpoolEmailService {
         }
         return 0;
     }
+    /*
+     计算所消耗的积分
+     */
+    private int handlerLost(List<UserEmployeeDO> employeeList,List<Integer> userIdList,List<String> sendEmailList){
+            int sendNum=0;
+            if(!StringUtils.isEmptyList(employeeList)){
+                sendNum+=employeeList.size();
+            }
+            if(!StringUtils.isEmptyList(sendEmailList)){
+                sendNum+=sendEmailList.size();
+            }
+            return sendNum*userIdList.size();
+    }
+    /*
+     重载方法，参数不同
+     */
+    private int handlerLost(List<UserEmployeeDO> employeeList, int userNum,List<String> sendEmailList){
+        int sendNum=0;
+        if(!StringUtils.isEmptyList(employeeList)){
+            sendNum+=employeeList.size();
+        }
+        if(!StringUtils.isEmptyList(sendEmailList)){
+            sendNum+=sendEmailList.size();
+        }
+        return sendNum*userNum;
+    }
+    /*
+     处理员工的数据，将手动填写的email写入employee
+     */
+    private List<UserEmployeeDO>  handlerEmployeeList(List<UserEmployeeDO> employeeList,List<String> sendEmailList){
+        if(StringUtils.isEmptyList(employeeList)){
+            employeeList=new ArrayList<>();
+        }
+        if(StringUtils.isEmptyList(sendEmailList)){
+            return employeeList;
+        }
+        for(String email:sendEmailList){
+            String name=email.substring(0,email.lastIndexOf("@"));
+            UserEmployeeDO userEmployeeDO=new UserEmployeeDO();
+            userEmployeeDO.setCname(name);
+            userEmployeeDO.setEmail(name);
+            employeeList.add(userEmployeeDO);
+        }
+        return employeeList;
+    }
 
     private void handlerRedisEmployee(List<Map<String,Object>> employeeData,int hrId){
         String res=client.get(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"");
@@ -644,17 +690,32 @@ public class TalentpoolEmailService {
                 employeeData=employeeData.subList(0,10);
             }else{
                for(Map<String,Object> map:resData){
-                   int id=(int)map.get("id");
-                   int flag=0;
-                   for(Map<String,Object> itemMap:employeeData){
-                       int itemId=(int)itemMap.get("id");
-                       if(itemId==id){
-                           flag=1;
-                           break;
+                   Integer id=(Integer)map.get("id");
+                   if(id==0||id==null){
+                       String email=(String)map.get("email");
+                       int flag=0;
+                       for(Map<String,Object> itemMap:employeeData){
+                           String originEmail=(String)itemMap.get("email");
+                           if(originEmail.equals(email)){
+                               flag=1;
+                               break;
+                           }
                        }
-                   }
-                   if(flag==0){
-                       employeeData.add(map);
+                       if(flag==0){
+                           employeeData.add(map);
+                       }
+                   }else{
+                       int flag=0;
+                       for(Map<String,Object> itemMap:employeeData){
+                           int itemId=(int)itemMap.get("id");
+                           if(itemId==id){
+                               flag=1;
+                               break;
+                           }
+                       }
+                       if(flag==0){
+                           employeeData.add(map);
+                       }
                    }
                }
                if(employeeData.size()>10){
@@ -683,7 +744,7 @@ public class TalentpoolEmailService {
     /*
      发送全部转发邮件
      */
-    private  int sendAllResumeEmail(List<Integer> idList,Map<String,String> params,int companyId,int hrId){
+    private  int sendAllResumeEmail(List<Integer> idList,Map<String,String> params,int companyId,int hrId,List<String> sendEmailList){
         if(StringUtils.isEmptyList(idList)) {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
@@ -699,14 +760,15 @@ public class TalentpoolEmailService {
                 if(talentNum>0){
                     List<UserEmployeeDO> employeeList=this.getUserEmployeeList(idList);
                     logger.info(JSON.toJSONString(employeeList));
-                    if(!StringUtils.isEmptyList(employeeList)){
-                        int lost=talentNum*employeeList.size();
+                    if(!StringUtils.isEmptyList(employeeList)||!StringUtils.isEmptyList(sendEmailList)){
+                        int lost=this.handlerLost(employeeList,talentNum,sendEmailList);
                         if(!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(),lost)){
                             return TalentEmailEnum.NOBALANCE.getValue();
                         }
                         updateEmailInfoBalance(companyId,lost,5);
+                        List<UserEmployeeDO> useEmployeeList=this.handlerEmployeeList(employeeList,sendEmailList);
                         tp.startTast(() -> {
-                            sendResumeEmailCore(employeeList,params,companyId,hrId,talentpoolEmailRecord.getContext(),talentNum);
+                            sendResumeEmailCore(useEmployeeList,params,companyId,hrId,talentpoolEmailRecord.getContext(),talentNum);
                             return 0;
                         });
                     }else{
