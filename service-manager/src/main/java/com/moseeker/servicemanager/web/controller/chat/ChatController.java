@@ -1,9 +1,15 @@
 package com.moseeker.servicemanager.web.controller.chat;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.parser.Feature;
+import com.alibaba.fastjson.serializer.*;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChatMsgType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -38,6 +44,15 @@ public class ChatController {
     ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
 
     private Logger logger = LoggerFactory.getLogger(ChatController.class);
+
+    public PropertyPreFilter setPropertyPreFilter = new SetPropertyPreFilter();
+    public ValueFilter contentValueFilter = new ContentValueFilter();
+
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public ChatController(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
 
     @RequestMapping(value = "/chat-rooms/{id}", method = RequestMethod.GET)
     @ResponseBody
@@ -525,6 +540,60 @@ public class ChatController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    @RequestMapping(value = "/chat/listChatLogs", method = RequestMethod.GET)
+    @ResponseBody
+    public String listChatLogs(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer roomId = params.getInt("room_id");
+            Integer pageNo = params.getInt("page_no");
+            Integer pageSize = params.getInt("page_size");
+
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredValidate("roomId", roomId, null, null);
+            validateUtil.addRequiredValidate("pageNo", pageNo, null, null);
+            validateUtil.addRequiredValidate("pageSize", pageSize, null, null);
+            String message = validateUtil.validate();
+            if (StringUtils.isBlank(message)) {
+                ChatsVO result = chatService.listChatLogs(roomId,pageNo,pageSize);
+                SerializeFilter[] filters = {setPropertyPreFilter,contentValueFilter};
+                Response response = ResponseUtils.successWithoutStringify(JSON.toJSONString(result,serializeConfig,filters));
+                return ResponseLogNotification.success(request, response);
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    private class SetPropertyPreFilter implements PropertyPreFilter {
+
+        @Override
+        public boolean apply(JSONSerializer serializer, Object object, String name) {
+            if(name.startsWith("set")){
+                return false;
+            }
+            return true;
+        }
+    }
+
+    private class ContentValueFilter implements ValueFilter {
+        @Override
+        public Object process(Object object, String name, Object value) {
+            if(object instanceof ChatVO
+                    && ChatVO._Fields.CONTENT.getFieldName().equals(name)
+                    && value instanceof String){
+                ChatVO chat = (ChatVO)object;
+                if(chat.getMsgType().equals(ChatMsgType.JOB.value())){
+                    return JSON.parseObject(chat.getContent());
+                }
+            }
+            return value;
         }
     }
 }
