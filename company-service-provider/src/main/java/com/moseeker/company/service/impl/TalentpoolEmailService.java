@@ -1687,9 +1687,10 @@ public class TalentpoolEmailService {
             String start=(String)data.getOrDefault("internshipStart","");
             String end=(String)data.getOrDefault("internshipEnd","");
             int endUntilNow=(int)data.getOrDefault("internshipEndUntilNow",0);
-            end=end.substring(0,7).replace("-",".");
             if(endUntilNow==1){
                 end="至今";
+            }else{
+                end=end.substring(0,7).replace("-",".");
             }
             if(StringUtils.isNotNullOrEmpty(start)){
                 start=start.substring(0,7).replace("-",".");
@@ -1717,9 +1718,10 @@ public class TalentpoolEmailService {
             String start=(String)data.getOrDefault("schooljobStart","");
             String end=(String)data.getOrDefault("schooljobEnd","");
             int endUntilNow=(int)data.getOrDefault("schooljobEndUntilNow",0);
-            end=end.substring(0,7).replace("-",".");
             if(endUntilNow==1){
                 end="至今";
+            }else{
+                end=end.substring(0,7).replace("-",".");
             }
             if(StringUtils.isNotNullOrEmpty(start)){
                 start=start.substring(0,7).replace("-",".");
@@ -1875,10 +1877,11 @@ public class TalentpoolEmailService {
         TalentWorkExpInfo info=new TalentWorkExpInfo();
         String start= (String) data.get("start_date");
         String end= (String) data.get("end_date");
-        end=end.substring(0,7).replace("-",".");
         int endUntilNow= (int) data.get("end_until_now");
         if(endUntilNow==1){
             end="至今";
+        }else{
+            end=end.substring(0,7).replace("-",".");
         }
         if(StringUtils.isNotNullOrEmpty(start)){
             start=start.substring(0,7).replace("-",".");
@@ -1903,9 +1906,10 @@ public class TalentpoolEmailService {
             String start= (String) data.get("start_date");
             String end= (String) data.get("end_date");
             int endUntilNow= (int) data.get("end_until_now");
-            end=end.substring(0,7).replace("-",".");
             if(endUntilNow==1){
                 end="至今";
+            }else{
+                end=end.substring(0,7).replace("-",".");
             }
             if(StringUtils.isNotNullOrEmpty(start)){
                 start=start.substring(0,7).replace("-",".");
@@ -1931,10 +1935,11 @@ public class TalentpoolEmailService {
             TalentProjectExpsInfo info=new TalentProjectExpsInfo();
             String start= (String) data.get("start_date");
             String end= (String) data.get("end_date");
-            end=end.substring(0,7).replace("-",".");
             int endUntilNow= (int) data.get("end_until_now");
             if(endUntilNow==1){
                 end="至今";
+            }else{
+                end=end.substring(0,7).replace("-",".");
             }
             if(StringUtils.isNotNullOrEmpty(start)){
                 start=start.substring(0,7).replace("-",".");
