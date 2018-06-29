@@ -311,9 +311,9 @@ public class DeliveryEmailProducer {
                     }
                     emailInfo.setOtherSchoolWork(schoolList);
                 }
-                String photo = (String)otherDatas.getOrDefault("photo", "");
-                logger.info("photo:{}",photo);
-                if(StringUtils.isNotNullOrEmpty(photo)) {
+                if(otherDatas.get("photo") != null) {
+                    String photo = (String)otherDatas.getOrDefault("photo", "");
+                    logger.info("photo=====================:{}",photo);
                     emailInfo.setOtherIdPhoto(photo.trim().startsWith("http") ? photo : env.getProperty("http.cdn.url") + photo);
                 }
             }
