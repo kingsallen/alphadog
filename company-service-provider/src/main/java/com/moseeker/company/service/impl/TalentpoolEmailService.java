@@ -1687,9 +1687,12 @@ public class TalentpoolEmailService {
             String start=(String)data.getOrDefault("internshipStart","");
             String end=(String)data.getOrDefault("internshipEnd","");
             int endUntilNow=(int)data.getOrDefault("internshipEndUntilNow",0);
+
             if(endUntilNow==1){
-                SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd");
-                end=ff.format(new Date());
+                end="至今";
+            }
+            if(StringUtils.isNotNullOrEmpty(start)){
+                start=start.substring(0,7);
             }
             info.setTime(start+"-"+end);
             info.setCompany((String)data.getOrDefault("internshipCompanyName",""));
@@ -1714,8 +1717,10 @@ public class TalentpoolEmailService {
             String end=(String)data.getOrDefault("schooljobEnd","");
             int endUntilNow=(int)data.getOrDefault("schooljobEndUntilNow",0);
             if(endUntilNow==1){
-                SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd");
-                end=ff.format(new Date());
+                end="至今";
+            }
+            if(StringUtils.isNotNullOrEmpty(start)){
+                start=start.substring(0,7);
             }
             info.setTime(start+"-"+end);
             info.setDescription((String)data.getOrDefault("schooljobDescriptionHidden",""));
@@ -1776,7 +1781,6 @@ public class TalentpoolEmailService {
         info.setBasicInfo(this.handlerTalentBasicInfoData(basic,educationsList,otherDataList));
         info.setIntention(this.handlerTalentIntentionInfoData(intentionList));
         info.setWorkExps(this.handlerTalentWorkExpInfoData(recentJob,expJob));
-        info.setEduExps((this.handlerTalentEducationInfoData(educationsList)));
         info.setLanguages(this.handlerLanguagesInfoData(languagesList));
         info.setProExps(this.handlerTalentProjectExpsInfodata(projectExpList));
         info.setSkills(this.handlerTalentSkillsData(skillsList));
@@ -1873,6 +1877,9 @@ public class TalentpoolEmailService {
         if(endUntilNow==1){
             end="至今";
         }
+        if(StringUtils.isNotNullOrEmpty(start)){
+            start=start.substring(0,7);
+        }
         info.setTime(start+"-"+end);
         info.setCompany((String)data.getOrDefault("company_name",""));
         info.setDepartment((String)data.getOrDefault("department_name",""));
@@ -1895,6 +1902,9 @@ public class TalentpoolEmailService {
             int endUntilNow= (int) data.get("end_until_now");
             if(endUntilNow==1){
                 end="至今";
+            }
+            if(StringUtils.isNotNullOrEmpty(start)){
+                start=start.substring(0,7);
             }
             info.setTime(start+"-"+end);
             info.setCollege((String)data.getOrDefault("college_name",""));
@@ -1920,6 +1930,9 @@ public class TalentpoolEmailService {
             int endUntilNow= (int) data.get("end_until_now");
             if(endUntilNow==1){
                 end="至今";
+            }
+            if(StringUtils.isNotNullOrEmpty(start)){
+                start=start.substring(0,7);
             }
             info.setTime(start+"-"+end);
             info.setCompany((String)data.getOrDefault("company_name",""));
