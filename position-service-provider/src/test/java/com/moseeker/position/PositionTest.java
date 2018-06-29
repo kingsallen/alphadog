@@ -29,7 +29,7 @@ public class PositionTest {
         ThirdPartyPosition positionForm =new ThirdPartyPosition();
         PositionLiepin position=new PositionLiepin();
         positionForm.setOccupation(new ArrayList<>(Arrays.asList("cate-01","cate-01-05","662","360331")));
-        transfer.setOccupation(positionForm,position);
+//        transfer.setOccupation(positionForm,position);
     }
 
 

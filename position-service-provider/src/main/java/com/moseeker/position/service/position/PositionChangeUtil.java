@@ -11,6 +11,7 @@ import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class PositionChangeUtil {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"change To ThirdPartyPosition no matched channelType");
         }
 
-        AbstractPositionTransfer transfer=transferSimpleFactory(channelType);
+        AbstractPositionTransfer transfer=transferSimpleFactory(channelType,positionDB);
 
         AbstractPositionTransfer.TransferResult result=transfer.changeToThirdPartyPosition(jsonForm,positionDB,account);
         logger.info("changeToThirdPartyPosition result:{}",result);
@@ -95,14 +96,27 @@ public class PositionChangeUtil {
         }
     }
 
-    public AbstractPositionTransfer transferSimpleFactory(ChannelType channelType) throws BIZException {
+    public void sendRequest(int channel, AbstractPositionTransfer.TransferResult transferResult, JobPositionDO moseekerJobPosition) throws TException {
+        ChannelType channelType = ChannelType.instaceFromInteger(channel);
+
+        AbstractPositionTransfer transfer=transferSimpleFactory(channelType,moseekerJobPosition);
+
+        transfer.sendSyncRequest(transferResult);
+    }
+
+    public AbstractPositionTransfer transferSimpleFactory(ChannelType channelType,JobPositionDO position) throws BIZException {
         for(AbstractPositionTransfer transfer:transferList){
-            if(channelType==transfer.getChannel()){
+            if(channelType==transfer.getChannel()
+                    && (position == null || transfer.extTransferCheck(position))){
                 return transfer;
             }
         }
         logger.error("no matched AbstractPositionTransfer {}",channelType);
         throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"no matched AbstractPositionTransfer");
+    }
+
+    public AbstractPositionTransfer transferSimpleFactory(ChannelType channelType) throws BIZException {
+        return transferSimpleFactory(channelType, null);
     }
 
     public static Map<String,Object> objectToMap(Object object){

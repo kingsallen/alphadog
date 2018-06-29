@@ -279,4 +279,5 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
     public List<DictCityDO> getFullCity() {
         return create.selectFrom(DictCity.DICT_CITY).fetchInto(DictCityDO.class);
     }
+
 }

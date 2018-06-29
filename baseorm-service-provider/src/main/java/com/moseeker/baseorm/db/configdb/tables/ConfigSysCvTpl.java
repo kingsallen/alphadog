@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
 
-    private static final long serialVersionUID = 969238953;
+    private static final long serialVersionUID = 1499683055;
 
     /**
      * The reference instance of <code>configdb.config_sys_cv_tpl</code>
@@ -59,7 +59,7 @@ public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
     /**
      * The column <code>configdb.config_sys_cv_tpl.field_name</code>. 属性含义
      */
-    public final TableField<ConfigSysCvTplRecord, String> FIELD_NAME = createField("field_name", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性含义");
+    public final TableField<ConfigSysCvTplRecord, String> FIELD_NAME = createField("field_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性含义");
 
     /**
      * The column <code>configdb.config_sys_cv_tpl.field_title</code>. 属性标题
@@ -67,14 +67,9 @@ public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
     public final TableField<ConfigSysCvTplRecord, String> FIELD_TITLE = createField("field_title", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性标题");
 
     /**
-     * The column <code>configdb.config_sys_cv_tpl.field_type</code>. 属性类型 0:短文本, 1:长文本,  2:多选, 3:单选, 4:长tag, 5tag:, 6:时间, 7img, 8:复合字段-单条, 9:复合字段-多条,10:下拉列表, 11:数字输入框(用于校验)
+     * The column <code>configdb.config_sys_cv_tpl.field_type</code>. 属性类型 -1:不显示 0:短文本,1:长文本,2:多选,3:单选,4:长tag,5:tag:,6:时间,7:img,8:复合字段-单条,9:复合字段-多条,10:下拉列表, 12 手机号带国际区号 101:城市选择控件, 102:国家选择控件,103:行业选择控件,104:学校选择控件,105:火箭专业选择控件
      */
-    public final TableField<ConfigSysCvTplRecord, Integer> FIELD_TYPE = createField("field_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "属性类型 0:短文本, 1:长文本,  2:多选, 3:单选, 4:长tag, 5tag:, 6:时间, 7img, 8:复合字段-单条, 9:复合字段-多条,10:下拉列表, 11:数字输入框(用于校验)");
-
-    /**
-     * The column <code>configdb.config_sys_cv_tpl.field_value</code>. 微信端页面标签默认值
-     */
-    public final TableField<ConfigSysCvTplRecord, String> FIELD_VALUE = createField("field_value", org.jooq.impl.SQLDataType.VARCHAR.length(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "微信端页面标签默认值");
+    public final TableField<ConfigSysCvTplRecord, Integer> FIELD_TYPE = createField("field_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "属性类型 -1:不显示 0:短文本,1:长文本,2:多选,3:单选,4:长tag,5:tag:,6:时间,7:img,8:复合字段-单条,9:复合字段-多条,10:下拉列表, 12 手机号带国际区号 101:城市选择控件, 102:国家选择控件,103:行业选择控件,104:学校选择控件,105:火箭专业选择控件");
 
     /**
      * The column <code>configdb.config_sys_cv_tpl.priority</code>. 排序字段
@@ -119,7 +114,12 @@ public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
     /**
      * The column <code>configdb.config_sys_cv_tpl.map</code>. 与profile的映射关系
      */
-    public final TableField<ConfigSysCvTplRecord, String> MAP = createField("map", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "与profile的映射关系");
+    public final TableField<ConfigSysCvTplRecord, String> MAP = createField("map", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "与profile的映射关系");
+
+    /**
+     * The column <code>configdb.config_sys_cv_tpl.constant_parent_code</code>.
+     */
+    public final TableField<ConfigSysCvTplRecord, Integer> CONSTANT_PARENT_CODE = createField("constant_parent_code", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>configdb.config_sys_cv_tpl.parent_id</code>. 复合字段关联
@@ -132,9 +132,14 @@ public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
     public final TableField<ConfigSysCvTplRecord, String> VALIDATE_RE = createField("validate_re", org.jooq.impl.SQLDataType.VARCHAR.length(200), this, "数据校验规则（正则）");
 
     /**
-     * The column <code>configdb.config_sys_cv_tpl.constant_parent_code</code>. 下拉选项关联字典表
+     * The column <code>configdb.config_sys_cv_tpl.error_msg</code>. 错误提示
      */
-    public final TableField<ConfigSysCvTplRecord, Integer> CONSTANT_PARENT_CODE = createField("constant_parent_code", org.jooq.impl.SQLDataType.INTEGER, this, "下拉选项关联字典表");
+    public final TableField<ConfigSysCvTplRecord, String> ERROR_MSG = createField("error_msg", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "错误提示");
+
+    /**
+     * The column <code>configdb.config_sys_cv_tpl.field_value</code>. 微信端页面标签默认值
+     */
+    public final TableField<ConfigSysCvTplRecord, String> FIELD_VALUE = createField("field_value", org.jooq.impl.SQLDataType.VARCHAR.length(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "微信端页面标签默认值");
 
     /**
      * Create a <code>configdb.config_sys_cv_tpl</code> table reference

@@ -19,6 +19,7 @@ import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.constant.ChatVoiceConstant;
 import com.moseeker.chat.exception.VoiceErrorEnum;
 import com.moseeker.chat.service.entity.ChatDao;
+import com.moseeker.chat.service.entity.ChatFactory;
 import com.moseeker.chat.utils.EmailSendUtil;
 import com.moseeker.chat.utils.Page;
 import com.moseeker.chat.utils.UpDownLoadUtil;
@@ -89,6 +90,9 @@ public class ChatService {
 
     @Autowired
     private HrChatVoiceDao hrChatVoiceDao;
+
+    @Autowired
+    private ChatFactory chatFactory;
 
     private ThreadPool pool = ThreadPool.Instance;
 
@@ -441,6 +445,7 @@ public class ChatService {
                     chatVO.setId(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.ID));
                     chatVO.setContent(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.CONTENT));
                     chatVO.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME)));
+                    chatVO.setRoomId(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID));
                     String msgType = record.getValue(HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE);
                     if (StringUtils.isNullOrEmpty(msgType)) {
                         chatVO.setMsgType("html");
@@ -471,7 +476,7 @@ public class ChatService {
                         chatVO.setOrigin(ChatOrigin.Human.getValue());
                         chatVO.setOrigin_str(ChatOrigin.Human.getName());
                     }
-                    chatVOList.add(chatVO);
+                    chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
                 //Lists.reverse(chatDOList);
                 Collections.reverse(chatVOList);
@@ -555,10 +560,11 @@ public class ChatService {
 
             logger.info("saveChat before saveChat chatDO:{}", chatDO);
 
+            chatDO = chatFactory.beforeSaveHandle(chatDO);
             chatDO = chaoDao.saveChat(chatDO);
 
             if (chatDO == null) {
-                throw new Exception();
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
             }
             // 新增聊天记录的id
             int chatId = chatDO.getId();
@@ -580,10 +586,12 @@ public class ChatService {
             chaoDao.addChatTOChatRoom(chatDO);
 
             // 修改未读消息数量
-            pool.startTast(() -> chaoDao.addUnreadCount(chat.getRoomId(), chat.getSpeaker(), date));
+            chaoDao.addUnreadCount(chat.getRoomId(), chat.getSpeaker(), date);
             return chatId;
+        } catch (BIZException e){
+            throw e;
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             throw new BIZException(VoiceErrorEnum.CHAT_INFO_ADD_FAILED.getCode(), VoiceErrorEnum.CHAT_INFO_ADD_FAILED.getMsg());
         }
     }
@@ -663,7 +671,7 @@ public class ChatService {
      * @param is_gamma   是否从聚合号进入
      * @return ResultOfSaveRoomVO
      */
-    public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId, final boolean is_gamma) {
+    public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId, final boolean is_gamma) throws BIZException {
         logger.info("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}, is_gamma:{}", userId, hrId, positionId, roomId, is_gamma);
         final ResultOfSaveRoomVO resultOfSaveRoomVO;
 
@@ -689,15 +697,16 @@ public class ChatService {
         if (chatRoom != null) {
             resultOfSaveRoomVO = searchResult(chatRoom, positionId);
             if (chatDebut) {
-                pool.startTast(() -> createChat(resultOfSaveRoomVO, is_gamma));
-                resultOfSaveRoomVO.setChatDebut(chatDebut);
                 HrChatUnreadCountDO unreadCountDO = new HrChatUnreadCountDO();
                 unreadCountDO.setHrId(hrId);
                 unreadCountDO.setUserId(userId);
                 unreadCountDO.setHrHaveUnreadMsg((byte) 0);
                 unreadCountDO.setUserHaveUnreadMsg((byte) 1);
                 unreadCountDO.setRoomId(chatRoom.getId());
-                pool.startTast(() -> chaoDao.saveUnreadCount(unreadCountDO));
+                chaoDao.saveUnreadCount(unreadCountDO);
+
+                createChat(resultOfSaveRoomVO, is_gamma);
+                resultOfSaveRoomVO.setChatDebut(chatDebut);
             } else {
                 //默认清空C端账号的未读消息
                 int chatRoomId = chatRoom.getId();
@@ -737,6 +746,7 @@ public class ChatService {
             positionFuture = pool.startTast(() -> chaoDao.getPositionById(positionId));
         }
         Future hrFuture = pool.startTast(() -> chaoDao.getHr(chatRoom.getHraccountId()));
+        Future hrCompanyFuture = pool.startTast(() -> chaoDao.getCompany(chatRoom.getHraccountId()));
         Future userFuture = pool.startTast(() -> chaoDao.getUser(chatRoom.getSysuserId()));
 
         /** 设置职位信息 */
@@ -753,6 +763,8 @@ public class ChatService {
                     positionVO.setSalaryTop((int) positionDO.getSalaryTop());
                     positionVO.setUpdateTime(positionDO.getUpdateTime());
                     positionVO.setCity(positionDO.getCity());
+                    positionVO.setStatus(Double.valueOf(positionDO.getStatus()).intValue());
+                    positionVO.setTeam(positionDO.getDepartment());
 
                     if (positionDO.getCompanyId() > 0) {
                         HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getPublisher());
@@ -795,11 +807,18 @@ public class ChatService {
         /** 设置HR信息 */
         try {
             UserHrAccountDO hrAccountDO = (UserHrAccountDO) hrFuture.get();
+            HrCompanyDO hrCompanyDO = (HrCompanyDO) hrCompanyFuture.get();
             if (hrAccountDO != null) {
                 HrVO hrVO = new HrVO();
                 hrVO.setHrId(hrAccountDO.getId());
                 hrVO.setHrName(hrAccountDO.getUsername());
                 hrVO.setHrHeadImg(hrAccountDO.getHeadimgurl());
+                if (StringUtils.isNotNullOrEmpty(hrCompanyDO.getAbbreviation())) {
+                    hrVO.setCompanyName(hrCompanyDO.getAbbreviation());
+                } else {
+                    hrVO.setCompanyName(hrCompanyDO.getName());
+                }
+
                 resultOfSaveRoomVO.setHr(hrVO);
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -831,14 +850,21 @@ public class ChatService {
         if (is_gamma) {
             content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
         } else {
+            String companyName;
+            if ( resultOfSaveRoomVO.getPosition() != null){
+                companyName = resultOfSaveRoomVO.getPosition().getCompanyName();
+            } else{
+                companyName = resultOfSaveRoomVO.getHr().getCompanyName();
+            }
+
             if (resultOfSaveRoomVO.getHr() != null
                     && StringUtils.isNotNullOrEmpty(resultOfSaveRoomVO.getHr().getHrName())
                     && resultOfSaveRoomVO.getPosition() != null) {
                 content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
-                        .getHrName()).replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+                        .getHrName()).replace("{companyName}", companyName);
             } else {
                 content = AUTO_CONTENT_WITH_HR_NOTEXIST
-                        .replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+                        .replace("{companyName}", companyName);
             }
         }
         chatDO.setContent(content);
@@ -957,7 +983,7 @@ public class ChatService {
                     chatVO.setOrigin(origin);
                     chatVO.setId(id);
                     chatVO.setPositionId(positionId);
-                    chatVOList.add(chatVO);
+                    chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
             }
             chatHistory.setChatList(chatVOList);

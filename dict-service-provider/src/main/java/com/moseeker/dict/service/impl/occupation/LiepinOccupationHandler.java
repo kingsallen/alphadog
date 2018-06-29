@@ -20,6 +20,7 @@ public class LiepinOccupationHandler  extends AbstractOccupationHandler<DictLiep
         obj.put("code_other", occupation.getOtherCode());
         obj.put("level", occupation.getLevel());
         obj.put("status", occupation.getStatus());
+        obj.put("candidate_source", occupation.getCandidate_source());
 
         return obj;
     }

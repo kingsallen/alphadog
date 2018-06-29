@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCacheconfigRediskey;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
+import com.moseeker.baseorm.db.configdb.tables.ConfigHbBalance;
 import com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAdministrator;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAppTemplate;
@@ -30,6 +31,7 @@ import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationMe
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAtsSourceRecord;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigCacheconfigRediskeyRecord;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigCronjobsRecord;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigHbBalanceRecord;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigPositionKenexaRecord;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysAdministratorRecord;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysAppTemplateRecord;
@@ -70,6 +72,7 @@ public class Keys {
     public static final Identity<ConfigAtsSourceRecord, Integer> IDENTITY_CONFIG_ATS_SOURCE = Identities0.IDENTITY_CONFIG_ATS_SOURCE;
     public static final Identity<ConfigCacheconfigRediskeyRecord, Integer> IDENTITY_CONFIG_CACHECONFIG_REDISKEY = Identities0.IDENTITY_CONFIG_CACHECONFIG_REDISKEY;
     public static final Identity<ConfigCronjobsRecord, Integer> IDENTITY_CONFIG_CRONJOBS = Identities0.IDENTITY_CONFIG_CRONJOBS;
+    public static final Identity<ConfigHbBalanceRecord, Integer> IDENTITY_CONFIG_HB_BALANCE = Identities0.IDENTITY_CONFIG_HB_BALANCE;
     public static final Identity<ConfigPositionKenexaRecord, Integer> IDENTITY_CONFIG_POSITION_KENEXA = Identities0.IDENTITY_CONFIG_POSITION_KENEXA;
     public static final Identity<ConfigSysAdministratorRecord, Integer> IDENTITY_CONFIG_SYS_ADMINISTRATOR = Identities0.IDENTITY_CONFIG_SYS_ADMINISTRATOR;
     public static final Identity<ConfigSysAppTemplateRecord, Integer> IDENTITY_CONFIG_SYS_APP_TEMPLATE = Identities0.IDENTITY_CONFIG_SYS_APP_TEMPLATE;
@@ -101,6 +104,7 @@ public class Keys {
     public static final UniqueKey<ConfigCacheconfigRediskeyRecord> KEY_CONFIG_CACHECONFIG_REDISKEY_KEY_IDENTIFIER = UniqueKeys0.KEY_CONFIG_CACHECONFIG_REDISKEY_KEY_IDENTIFIER;
     public static final UniqueKey<ConfigCacheconfigRediskeyRecord> KEY_CONFIG_CACHECONFIG_REDISKEY_PATTERN = UniqueKeys0.KEY_CONFIG_CACHECONFIG_REDISKEY_PATTERN;
     public static final UniqueKey<ConfigCronjobsRecord> KEY_CONFIG_CRONJOBS_PRIMARY = UniqueKeys0.KEY_CONFIG_CRONJOBS_PRIMARY;
+    public static final UniqueKey<ConfigHbBalanceRecord> KEY_CONFIG_HB_BALANCE_PRIMARY = UniqueKeys0.KEY_CONFIG_HB_BALANCE_PRIMARY;
     public static final UniqueKey<ConfigPositionKenexaRecord> KEY_CONFIG_POSITION_KENEXA_PRIMARY = UniqueKeys0.KEY_CONFIG_POSITION_KENEXA_PRIMARY;
     public static final UniqueKey<ConfigSysAdministratorRecord> KEY_CONFIG_SYS_ADMINISTRATOR_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_ADMINISTRATOR_PRIMARY;
     public static final UniqueKey<ConfigSysAppTemplateRecord> KEY_CONFIG_SYS_APP_TEMPLATE_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_APP_TEMPLATE_PRIMARY;
@@ -126,6 +130,7 @@ public class Keys {
         public static Identity<ConfigAtsSourceRecord, Integer> IDENTITY_CONFIG_ATS_SOURCE = createIdentity(ConfigAtsSource.CONFIG_ATS_SOURCE, ConfigAtsSource.CONFIG_ATS_SOURCE.ID);
         public static Identity<ConfigCacheconfigRediskeyRecord, Integer> IDENTITY_CONFIG_CACHECONFIG_REDISKEY = createIdentity(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY, ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.ID);
         public static Identity<ConfigCronjobsRecord, Integer> IDENTITY_CONFIG_CRONJOBS = createIdentity(ConfigCronjobs.CONFIG_CRONJOBS, ConfigCronjobs.CONFIG_CRONJOBS.ID);
+        public static Identity<ConfigHbBalanceRecord, Integer> IDENTITY_CONFIG_HB_BALANCE = createIdentity(ConfigHbBalance.CONFIG_HB_BALANCE, ConfigHbBalance.CONFIG_HB_BALANCE.ID);
         public static Identity<ConfigPositionKenexaRecord, Integer> IDENTITY_CONFIG_POSITION_KENEXA = createIdentity(ConfigPositionKenexa.CONFIG_POSITION_KENEXA, ConfigPositionKenexa.CONFIG_POSITION_KENEXA.ID);
         public static Identity<ConfigSysAdministratorRecord, Integer> IDENTITY_CONFIG_SYS_ADMINISTRATOR = createIdentity(ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR, ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR.ID);
         public static Identity<ConfigSysAppTemplateRecord, Integer> IDENTITY_CONFIG_SYS_APP_TEMPLATE = createIdentity(ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE, ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE.ID);
@@ -155,6 +160,7 @@ public class Keys {
         public static final UniqueKey<ConfigCacheconfigRediskeyRecord> KEY_CONFIG_CACHECONFIG_REDISKEY_KEY_IDENTIFIER = createUniqueKey(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY, "KEY_config_cacheconfig_rediskey_key_identifier", ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.KEY_IDENTIFIER);
         public static final UniqueKey<ConfigCacheconfigRediskeyRecord> KEY_CONFIG_CACHECONFIG_REDISKEY_PATTERN = createUniqueKey(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY, "KEY_config_cacheconfig_rediskey_pattern", ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.PATTERN);
         public static final UniqueKey<ConfigCronjobsRecord> KEY_CONFIG_CRONJOBS_PRIMARY = createUniqueKey(ConfigCronjobs.CONFIG_CRONJOBS, "KEY_config_cronjobs_PRIMARY", ConfigCronjobs.CONFIG_CRONJOBS.ID);
+        public static final UniqueKey<ConfigHbBalanceRecord> KEY_CONFIG_HB_BALANCE_PRIMARY = createUniqueKey(ConfigHbBalance.CONFIG_HB_BALANCE, "KEY_config_hb_balance_PRIMARY", ConfigHbBalance.CONFIG_HB_BALANCE.ID);
         public static final UniqueKey<ConfigPositionKenexaRecord> KEY_CONFIG_POSITION_KENEXA_PRIMARY = createUniqueKey(ConfigPositionKenexa.CONFIG_POSITION_KENEXA, "KEY_config_position_kenexa_PRIMARY", ConfigPositionKenexa.CONFIG_POSITION_KENEXA.ID);
         public static final UniqueKey<ConfigSysAdministratorRecord> KEY_CONFIG_SYS_ADMINISTRATOR_PRIMARY = createUniqueKey(ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR, "KEY_config_sys_administrator_PRIMARY", ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR.ID);
         public static final UniqueKey<ConfigSysAppTemplateRecord> KEY_CONFIG_SYS_APP_TEMPLATE_PRIMARY = createUniqueKey(ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE, "KEY_config_sys_app_template_PRIMARY", ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE.ID);

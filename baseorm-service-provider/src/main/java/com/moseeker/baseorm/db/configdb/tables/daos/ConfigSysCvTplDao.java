@@ -87,13 +87,6 @@ public class ConfigSysCvTplDao extends DAOImpl<ConfigSysCvTplRecord, com.moseeke
     }
 
     /**
-     * Fetch records that have <code>field_value IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysCvTpl> fetchByFieldValue(String... values) {
-        return fetch(ConfigSysCvTpl.CONFIG_SYS_CV_TPL.FIELD_VALUE, values);
-    }
-
-    /**
      * Fetch records that have <code>priority IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysCvTpl> fetchByPriority(Integer... values) {
@@ -157,6 +150,13 @@ public class ConfigSysCvTplDao extends DAOImpl<ConfigSysCvTplRecord, com.moseeke
     }
 
     /**
+     * Fetch records that have <code>constant_parent_code IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysCvTpl> fetchByConstantParentCode(Integer... values) {
+        return fetch(ConfigSysCvTpl.CONFIG_SYS_CV_TPL.CONSTANT_PARENT_CODE, values);
+    }
+
+    /**
      * Fetch records that have <code>parent_id IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysCvTpl> fetchByParentId(Integer... values) {
@@ -171,9 +171,16 @@ public class ConfigSysCvTplDao extends DAOImpl<ConfigSysCvTplRecord, com.moseeke
     }
 
     /**
-     * Fetch records that have <code>constant_parent_code IN (values)</code>
+     * Fetch records that have <code>error_msg IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysCvTpl> fetchByConstantParentCode(Integer... values) {
-        return fetch(ConfigSysCvTpl.CONFIG_SYS_CV_TPL.CONSTANT_PARENT_CODE, values);
+    public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysCvTpl> fetchByErrorMsg(String... values) {
+        return fetch(ConfigSysCvTpl.CONFIG_SYS_CV_TPL.ERROR_MSG, values);
+    }
+
+    /**
+     * Fetch records that have <code>field_value IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysCvTpl> fetchByFieldValue(String... values) {
+        return fetch(ConfigSysCvTpl.CONFIG_SYS_CV_TPL.FIELD_VALUE, values);
     }
 }

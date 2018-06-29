@@ -130,6 +130,10 @@ public class UserPositionEmailService {
 		String keyWord=(String) map.get("keyWord");
 		String citys=(String) map.get("citys");
 		String industry=(String) map.get("industry");
+		String candidateSource=(String)map.get("candidateSource");
+		if(StringUtils.isBlank(candidateSource)){
+			candidateSource="-1";
+		}
 		int page=1;
 		int pageSize=10;
 		Map<String,Integer> salaryMap= (Map<String, Integer>) map.get("salaryCode");
@@ -143,7 +147,7 @@ public class UserPositionEmailService {
 		lastDate.roll(Calendar.DATE, -7);//日期回滚7天
 		String startTime=format.format(lastDate.getTime());
 		Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, page, pageSize,
-				null, null,0,0,0,1,0);
+				null, null,0,0,0,1,0,candidateSource);
 		if(res.getStatus()==0&&!Strings.isNullOrEmpty(res.getData())){
 			String data=res.getData();
 			Map<String,Object> result=JSON.parseObject(data);

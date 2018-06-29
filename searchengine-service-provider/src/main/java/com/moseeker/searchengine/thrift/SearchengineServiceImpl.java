@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -90,10 +91,13 @@ public class SearchengineServiceImpl implements Iface {
 
 	@Override
 	public Response positionQuery(String keyWords, String citys, String industry, String salaryCode, int page,
-								  int pageSize, String startTime, String endTime,int companyId,int teamId,int motherCompanyId,int order,int moduleId) throws BIZException,TException {
+								  int pageSize, String startTime, String endTime,int companyId,int teamId,int motherCompanyId,int order,int moduleId,
+								  String candidateSource
+	) throws BIZException,TException {
 		// TODO Auto-generated method stub
 		try{
-			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime,companyId,teamId,motherCompanyId,order,moduleId);
+			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime,
+					endTime,companyId,teamId,motherCompanyId,order,moduleId,candidateSource);
 			if(res==null){
 				return ResponseUtils.success("");
 			}

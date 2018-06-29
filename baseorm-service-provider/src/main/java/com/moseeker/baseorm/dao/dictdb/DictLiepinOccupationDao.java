@@ -46,7 +46,7 @@ public class DictLiepinOccupationDao extends AbstractDictOccupationDao<DictLiepi
 
     @Override
     protected boolean isTopOccupation(DictLiepinOccupationDO dictLiepinOccupationDO) {
-        return dictLiepinOccupationDO!=null && dictLiepinOccupationDO.getId()>0 && dictLiepinOccupationDO.getParentId()==0;
+        return dictLiepinOccupationDO!=null && dictLiepinOccupationDO.getId()>0 && "0".equals(dictLiepinOccupationDO.getParentId());
     }
 
     @Override
@@ -68,5 +68,11 @@ public class DictLiepinOccupationDao extends AbstractDictOccupationDao<DictLiepi
     @Override
     public ChannelType getChannelType() {
         return ChannelType.LIEPIN;
+    }
+
+    public List<DictLiepinOccupationDO> getAllSocialOccupation() {
+        Query query = new Query.QueryBuilder().where(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CANDIDATE_SOURCE.getName(), 0)
+                .buildQuery();
+        return getDatas(query);
     }
 }
