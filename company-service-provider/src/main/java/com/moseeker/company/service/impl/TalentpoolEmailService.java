@@ -1692,7 +1692,8 @@ public class TalentpoolEmailService {
                 end="至今";
             }
             if(StringUtils.isNotNullOrEmpty(start)){
-                start=start.substring(0,7);
+                start=start.substring(0,7).replace("-",".");
+
             }
             info.setTime(start+"-"+end);
             info.setCompany((String)data.getOrDefault("internshipCompanyName",""));
@@ -1720,7 +1721,7 @@ public class TalentpoolEmailService {
                 end="至今";
             }
             if(StringUtils.isNotNullOrEmpty(start)){
-                start=start.substring(0,7);
+                start=start.substring(0,7).replace("-",".");
             }
             info.setTime(start+"-"+end);
             info.setDescription((String)data.getOrDefault("schooljobDescriptionHidden",""));
@@ -1878,7 +1879,7 @@ public class TalentpoolEmailService {
             end="至今";
         }
         if(StringUtils.isNotNullOrEmpty(start)){
-            start=start.substring(0,7);
+            start=start.substring(0,7).replace("-",".");
         }
         info.setTime(start+"-"+end);
         info.setCompany((String)data.getOrDefault("company_name",""));
@@ -1904,7 +1905,7 @@ public class TalentpoolEmailService {
                 end="至今";
             }
             if(StringUtils.isNotNullOrEmpty(start)){
-                start=start.substring(0,7);
+                start=start.substring(0,7).replace("-",".");
             }
             info.setTime(start+"-"+end);
             info.setCollege((String)data.getOrDefault("college_name",""));
@@ -1932,7 +1933,7 @@ public class TalentpoolEmailService {
                 end="至今";
             }
             if(StringUtils.isNotNullOrEmpty(start)){
-                start=start.substring(0,7);
+                start=start.substring(0,7).replace("-",".");
             }
             info.setTime(start+"-"+end);
             info.setCompany((String)data.getOrDefault("company_name",""));
