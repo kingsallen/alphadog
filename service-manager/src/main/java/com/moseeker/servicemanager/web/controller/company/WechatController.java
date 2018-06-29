@@ -1,7 +1,10 @@
 package com.moseeker.servicemanager.web.controller.company;
 
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.servicemanager.common.ParamUtils;
+import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
 import com.moseeker.servicemanager.web.controller.util.Params;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -87,6 +90,27 @@ public class WechatController {
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
+        }
+    }
+
+    @RequestMapping(value = "/api/wechat/theme", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String updateWechatTheme(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            String company_id=String.valueOf(data.get("company_id"));
+            String status=String.valueOf(data.get("status"));
+            if(StringUtils.isNullOrEmpty(status)){
+                ResponseLogNotification.fail(request,"主题状态不可以为空");
+            }
+            if(StringUtils.isNullOrEmpty(company_id)){
+                ResponseLogNotification.fail(request,"公司编号不可以为空");
+            }
+            Response result = companyServices.updateWechatThenm(Integer.parseInt(status), Integer.parseInt(company_id));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
 }
