@@ -604,17 +604,11 @@ public class TalentpoolEmailService {
                     if (!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(), lost)) {
                         return TalentEmailEnum.NOBALANCE.getValue();
                     }
-                    employeeList=this.handlerEmployeeList(employeeList,sendEmailList);
-                    EmailResumeBean emailList = this.convertResumeEmailData(employeeList, userIdList, companyId, talentpoolEmailRecord.getContext(), hrId);
-                    logger.info(JSON.toJSONString(emailList));
-                    updateEmailInfoBalance(companyId, lost,5);
-                    List<MandrillEmailListStruct> struct = convertToEmailStruct(emailList);
-                    logger.info(JSON.toJSONString(struct));
-                    if(!StringUtils.isEmptyList(struct)){
-                        for(MandrillEmailListStruct item:struct){
-                            mqService.sendMandrilEmailList(item);
-                        }
-                    }
+                    List<UserEmployeeDO> userEmployeeDOList=this.handlerEmployeeList(employeeList,sendEmailList);
+                    tp.startTast(() -> {
+                        sendSingleResumeEmail(userEmployeeDOList,userIdList,companyId,talentpoolEmailRecord.getContext(),hrId,lost);
+                        return 0;
+                    });
 
                 } else {
                     return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
@@ -632,6 +626,20 @@ public class TalentpoolEmailService {
             return TalentEmailEnum.NOCONFIGEMAIL.getValue();
         }
         return 0;
+    }
+    //异步发送邮件
+
+    private void sendSingleResumeEmail(List<UserEmployeeDO> employeeList,List<Integer> userIdList,int companyId,String context,int hrId,int lost) throws Exception {
+        EmailResumeBean emailList = this.convertResumeEmailData(employeeList, userIdList, companyId, context, hrId);
+        logger.info(JSON.toJSONString(emailList));
+        updateEmailInfoBalance(companyId, lost,5);
+        List<MandrillEmailListStruct> struct = convertToEmailStruct(emailList);
+        logger.info(JSON.toJSONString(struct));
+        if(!StringUtils.isEmptyList(struct)){
+            for(MandrillEmailListStruct item:struct){
+                mqService.sendMandrilEmailList(item);
+            }
+        }
     }
     /*
      计算所消耗的积分
