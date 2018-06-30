@@ -120,7 +120,7 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
      */
     public Result listChat(int roomId, int startIndex, int pageSize) {
         return create.select(HrWxHrChat.HR_WX_HR_CHAT.ID, HrWxHrChat.HR_WX_HR_CHAT.CONTENT, HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME,
-                HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE, HrWxHrChat.HR_WX_HR_CHAT.PIC_URL, HrWxHrChat.HR_WX_HR_CHAT.BTN_CONTENT,
+                HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE, HrWxHrChat.HR_WX_HR_CHAT.PIC_URL, HrWxHrChat.HR_WX_HR_CHAT.BTN_CONTENT,HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID,
                 HrWxHrChat.HR_WX_HR_CHAT.SPEAKER, HrWxHrChat.HR_WX_HR_CHAT.ORIGIN, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.SERVER_ID,
                 HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.DURATION, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.LOCAL_URL)
                 .from(HrWxHrChat.HR_WX_HR_CHAT)

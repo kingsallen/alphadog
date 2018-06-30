@@ -2,17 +2,16 @@ package com.moseeker.position.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.iface.IChannelType;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.StructSerializer;
 import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -407,13 +406,14 @@ public class PositionEmailNotification {
 
                     @Override
                     public void failed(Exception e) {
-                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+                        logger.error("发送同步职位到猎聘失败的邮件发生错误：{}", e.getMessage());
                     }
                 });
             } catch (Exception e) {
-                logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+                logger.error("发送同步职位到猎聘失败的邮件发生错误：{}", e.getMessage());
                 e.printStackTrace();
                 logger.error(e.getMessage(), e);
             }
     }
+
 }

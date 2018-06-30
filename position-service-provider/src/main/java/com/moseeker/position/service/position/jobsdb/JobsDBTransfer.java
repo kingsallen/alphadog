@@ -66,8 +66,14 @@ public class JobsDBTransfer extends AbstractPositionTransfer<PositionJobsDBForm,
         positionInfo.setSummary_points(Arrays.asList(positionForm.getSummery1(),positionForm.getSummery2(),positionForm.getSummery3()));
         positionInfo.setJob_functions(Arrays.asList(positionForm.getOccupation1(),positionForm.getOccupation2(),positionForm.getOccupation3()));
         positionInfo.setWork_location(positionForm.getAddress());
-        String employment_type = JobsDBTransferStrategy.EmploymentType.moseekerToOther((int)positionDB.getEmploymentType());
-        positionInfo.setEmployment_type(Arrays.asList(employment_type));
+
+        if(StringUtils.isEmptyList(positionForm.getEmployeeType())){
+            String employment_type = JobsDBTransferStrategy.EmploymentType.moseekerToOther((int)positionDB.getEmploymentType());
+            positionInfo.setEmployment_type(Arrays.asList(employment_type));
+        } else{
+            positionInfo.setEmployment_type(positionForm.getEmployeeType());
+        }
+
         positionInfo.setSalary_bottom(positionForm.getSalaryBottom());
         positionInfo.setSalary_top(positionForm.getSalaryTop());
         positionInfo.setBenefits(getFeature(positionDB));

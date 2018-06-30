@@ -231,6 +231,8 @@ public class CompanyPcService {
         return list;
     }
 
+
+
     //开启关闭只能人才库
     @Transactional
     public Response updateComapnyConfStatus(int status, int company_id){

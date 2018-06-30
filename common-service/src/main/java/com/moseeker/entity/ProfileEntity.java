@@ -72,6 +72,17 @@ public class ProfileEntity {
     }
 
     /**
+     * 为了不影响重构，提出一个方法封装原方法
+     * @param
+     * @author  cjm
+     * @date  2018/6/26
+     * @return
+     */
+    public ResumeObj profileParserAdaptor(String fileName, String file) throws TException, IOException {
+       return profileParser(fileName, file);
+    }
+
+    /**
      * 解析简历
      *
      * @param fileName 文件名字
