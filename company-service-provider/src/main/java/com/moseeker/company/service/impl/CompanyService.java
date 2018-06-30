@@ -16,6 +16,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.*;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyFeatureRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
@@ -93,6 +94,10 @@ public class CompanyService {
 
     @Autowired
     HrEmployeeCertConfDao hrEmployeeCertConfDao;
+
+
+    @Autowired
+    HrSuperaccountApplyDao superaccountApplyDao;
 
     @Autowired
     UserEmployeeDao userEmployeeDao;
@@ -837,6 +842,26 @@ public class CompanyService {
             return ResponseUtils.fail(1,"操作失败");
         }
         return ResponseUtils.success("");
+    }
+
+    public Response findSubAccountNum(int companyId){
+        HrSuperaccountApplyDO superaccountApply = superaccountApplyDao.getByCompanyId(companyId);
+        Map<String, Object> params = new HashMap<>();
+        if(superaccountApply != null) {
+            params.put("account_limit", superaccountApply.getAccountLimit());
+        }
+        return ResponseUtils.success(params);
+    }
+
+    @Transactional
+    public Response upsertWechatTheme(int companyId, int status){
+        HrWxWechatDO wechatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
+        if(wechatDO != null){
+            wechatDO.setShowCustomTheme(status);
+            wechatDao.updateData(wechatDO);
+            return  ResponseUtils.success("");
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
 
     /**

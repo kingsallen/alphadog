@@ -19,6 +19,7 @@ import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.constant.ChatVoiceConstant;
 import com.moseeker.chat.exception.VoiceErrorEnum;
 import com.moseeker.chat.service.entity.ChatDao;
+import com.moseeker.chat.service.entity.ChatFactory;
 import com.moseeker.chat.utils.EmailSendUtil;
 import com.moseeker.chat.utils.Page;
 import com.moseeker.chat.utils.UpDownLoadUtil;
@@ -89,6 +90,9 @@ public class ChatService {
 
     @Autowired
     private HrChatVoiceDao hrChatVoiceDao;
+
+    @Autowired
+    private ChatFactory chatFactory;
 
     private ThreadPool pool = ThreadPool.Instance;
 
@@ -441,6 +445,7 @@ public class ChatService {
                     chatVO.setId(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.ID));
                     chatVO.setContent(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.CONTENT));
                     chatVO.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME)));
+                    chatVO.setRoomId(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID));
                     String msgType = record.getValue(HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE);
                     if (StringUtils.isNullOrEmpty(msgType)) {
                         chatVO.setMsgType("html");
@@ -471,7 +476,7 @@ public class ChatService {
                         chatVO.setOrigin(ChatOrigin.Human.getValue());
                         chatVO.setOrigin_str(ChatOrigin.Human.getName());
                     }
-                    chatVOList.add(chatVO);
+                    chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
                 //Lists.reverse(chatDOList);
                 Collections.reverse(chatVOList);
@@ -555,6 +560,7 @@ public class ChatService {
 
             logger.info("saveChat before saveChat chatDO:{}", chatDO);
 
+            chatDO = chatFactory.beforeSaveHandle(chatDO);
             chatDO = chaoDao.saveChat(chatDO);
 
             if (chatDO == null) {
@@ -757,6 +763,8 @@ public class ChatService {
                     positionVO.setSalaryTop((int) positionDO.getSalaryTop());
                     positionVO.setUpdateTime(positionDO.getUpdateTime());
                     positionVO.setCity(positionDO.getCity());
+                    positionVO.setStatus(Double.valueOf(positionDO.getStatus()).intValue());
+                    positionVO.setTeam(positionDO.getDepartment());
 
                     if (positionDO.getCompanyId() > 0) {
                         HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getPublisher());
@@ -975,7 +983,7 @@ public class ChatService {
                     chatVO.setOrigin(origin);
                     chatVO.setId(id);
                     chatVO.setPositionId(positionId);
-                    chatVOList.add(chatVO);
+                    chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
             }
             chatHistory.setChatList(chatVOList);

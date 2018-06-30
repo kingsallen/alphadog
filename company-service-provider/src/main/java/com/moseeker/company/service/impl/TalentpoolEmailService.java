@@ -597,6 +597,7 @@ public class TalentpoolEmailService {
         if(flag){
             try {
                 List<UserEmployeeDO> employeeList = this.getUserEmployeeList(idList);
+                logger.info("=============List<UserEmployeeDO>===========");
                 logger.info(JSON.toJSONString(employeeList));
                 if (!StringUtils.isEmptyList(employeeList)||!StringUtils.isEmptyList(sendEmailList)) {
                     int lost = this.handlerLost(employeeList,userIdList,sendEmailList);

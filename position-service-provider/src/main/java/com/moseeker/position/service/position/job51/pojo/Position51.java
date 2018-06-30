@@ -19,13 +19,22 @@ public class Position51 implements Serializable {
     private List<List<String>> cities;
     private ThirdpartyAccountCompanyAddress address;
     private String degree;
-    private List<String> occupation;
+    private List<List<String>> occupation;
     private String experience;
     private String type_code;
     private String salary_low;
     private String salary_high;
     private String description;
     private String email;
+    private boolean internship;
+
+    public boolean isInternship() {
+        return internship;
+    }
+
+    public void setInternship(boolean internship) {
+        this.internship = internship;
+    }
 
     public ThirdpartyAccountCompanyAddress getAddress() {
         return address;
@@ -83,11 +92,11 @@ public class Position51 implements Serializable {
         this.cities = cities;
     }
 
-    public List<String> getOccupation() {
+    public List<List<String>> getOccupation() {
         return occupation;
     }
 
-    public void setOccupation(List<String> occupation) {
+    public void setOccupation(List<List<String>> occupation) {
         this.occupation = occupation;
     }
 
