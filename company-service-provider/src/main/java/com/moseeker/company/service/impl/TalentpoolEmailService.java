@@ -651,7 +651,7 @@ public class TalentpoolEmailService {
             }
             return 0;
         }
-         return TalentEmailEnum.NOUSEREMPLOYEE.getValue();;
+         return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
     }
     /*
      计算所消耗的积分
