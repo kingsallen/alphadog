@@ -1,9 +1,10 @@
-package com.moseeker.company.bean;
+package com.moseeker.mq.pojo;
 
 /**
- * Created by zztaiwll on 18/4/25.
+ * Created by moseeker on 2018/6/26.
  */
-public class TalentWorkExpInfo {
+public class Internship {
+
     private String time;
     private String company;
     private String position;
