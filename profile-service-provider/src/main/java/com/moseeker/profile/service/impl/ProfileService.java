@@ -53,6 +53,7 @@ import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.profile.utils.DictCode;
+import com.moseeker.profile.utils.ProfileMailUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -157,6 +158,9 @@ public class ProfileService {
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
+
+    @Autowired
+    private ProfileMailUtil profileMailUtil;
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
             .getService(JobApplicationServices.Iface.class);
@@ -561,7 +565,9 @@ public class ProfileService {
         ProfileObj profileObj = new ProfileObj();
         try {
             // 调用SDK得到结果
-            ResumeObj resumeObj = profileEntity.profileParser(fileName, file);
+            ResumeObj resumeObj = profileEntity.profileParserAdaptor(fileName, file);
+            // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
+            validateParseLimit(resumeObj);
             logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
             // 调用成功,开始转换对象,我把它单独独立出来
             profileObj=handlerParseData(resumeObj,uid,fileName);
@@ -570,6 +576,19 @@ public class ProfileService {
         }
         logger.info("profileParser:{}", JSON.toJSONString(profileObj));
         return profileObj;
+    }
+
+    /**
+     * 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
+     * @param
+     * @author  cjm
+     * @date  2018/6/26
+     * @return
+     */
+    private void validateParseLimit(ResumeObj resumeObj) {
+        if(resumeObj != null && resumeObj.getAccount() != null && resumeObj.getAccount().getUsage_remaining() < 1000){
+            profileMailUtil.sendProfileParseWarnMail(resumeObj.getAccount());
+        }
     }
 
 
@@ -1312,7 +1331,9 @@ public class ProfileService {
      */
     public Response talentpoolUploadParse(String fileName,String fileData,int companyId) throws TException, IOException {
         Map<String, Object> result = new HashMap<>();
-        ResumeObj resumeObj = profileEntity.profileParser(fileName, fileData);
+        ResumeObj resumeObj = profileEntity.profileParserAdaptor(fileName, fileData);
+        // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
+        validateParseLimit(resumeObj);
         logger.info(JSON.toJSONString(resumeObj));
         result.put("resumeObj", resumeObj);
         if (resumeObj.getStatus().getCode() == 200) {
