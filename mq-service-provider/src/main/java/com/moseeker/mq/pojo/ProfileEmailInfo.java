@@ -1,12 +1,13 @@
 package com.moseeker.mq.pojo;
 
+import com.moseeker.common.constants.Message;
 import java.util.List;
 
 /**
  * Created by moseeker on 2018/6/26.
  */
 public class ProfileEmailInfo {
-    private String comapnyLogo;
+    private String companyLogo;
     private String companyName;
     private String positionName;
     private String headimg;
@@ -27,14 +28,19 @@ public class ProfileEmailInfo {
     private List<Languages> languages;
     private List<String> credentials;
     private Works works;
-    private OtherInfo other;
+    private List<Message> otherIdentity;
+    private List<Message> otherSchool;
+    private List<SchoolWork> otherSchoolWork;
+    private List<Internship> otherInternship;
+    private List<Message> otherCareer;
+    private String otherIdPhoto;
 
-    public String getComapnyLogo() {
-        return comapnyLogo;
+    public String getCompanyLogo() {
+        return companyLogo;
     }
 
-    public void setComapnyLogo(String comapnyLogo) {
-        this.comapnyLogo = comapnyLogo;
+    public void setCompanyLogo(String companyLogo) {
+        this.companyLogo = companyLogo;
     }
 
     public String getCompanyName() {
@@ -197,11 +203,51 @@ public class ProfileEmailInfo {
         this.works = works;
     }
 
-    public OtherInfo getOther() {
-        return other;
+    public List<Message> getOtherIdentity() {
+        return otherIdentity;
     }
 
-    public void setOther(OtherInfo other) {
-        this.other = other;
+    public void setOtherIdentity(List<Message> otherIdentity) {
+        this.otherIdentity = otherIdentity;
+    }
+
+    public List<Message> getOtherSchool() {
+        return otherSchool;
+    }
+
+    public void setOtherSchool(List<Message> otherSchool) {
+        this.otherSchool = otherSchool;
+    }
+
+    public List<SchoolWork> getOtherSchoolWork() {
+        return otherSchoolWork;
+    }
+
+    public void setOtherSchoolWork(List<SchoolWork> otherSchoolWork) {
+        this.otherSchoolWork = otherSchoolWork;
+    }
+
+    public List<Internship> getOtherInternship() {
+        return otherInternship;
+    }
+
+    public void setOtherInternship(List<Internship> otherInternship) {
+        this.otherInternship = otherInternship;
+    }
+
+    public List<Message> getOtherCareer() {
+        return otherCareer;
+    }
+
+    public void setOtherCareer(List<Message> otherCareer) {
+        this.otherCareer = otherCareer;
+    }
+
+    public String getOtherIdPhoto() {
+        return otherIdPhoto;
+    }
+
+    public void setOtherIdPhoto(String otherIdPhoto) {
+        this.otherIdPhoto = otherIdPhoto;
     }
 }

@@ -6,7 +6,7 @@ package com.moseeker.mq.pojo;
 public class WorkExps {
 
     private String time;
-    private String comapny;
+    private String company;
     private String position;
     private String department;
     private String description;
@@ -19,12 +19,12 @@ public class WorkExps {
         this.time = time;
     }
 
-    public String getComapny() {
-        return comapny;
+    public String getCompany() {
+        return company;
     }
 
-    public void setComapny(String comapny) {
-        this.comapny = comapny;
+    public void setCompany(String company) {
+        this.company = company;
     }
 
     public String getPosition() {

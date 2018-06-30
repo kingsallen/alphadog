@@ -16,4 +16,5 @@ public enum UserType {
     public byte getValueToByte() {
         return (byte)value;
     }
+
 }

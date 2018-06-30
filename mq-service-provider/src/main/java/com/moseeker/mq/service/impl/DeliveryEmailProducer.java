@@ -7,13 +7,11 @@ import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileEducationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileWorkexpDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileBasic;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileEducation;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp;
-import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import static com.moseeker.common.constants.Constant.CDN_URL;
@@ -38,7 +36,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import java.util.*;
-import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,13 +52,9 @@ public class DeliveryEmailProducer {
 
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
 
-    @Resource(name = "cacheClient")
-    private RedisClient redisClient;
-
-    @Autowired
-    private UserUserDao userDao;
     @Autowired
     private Environment env;
+
 
     @Autowired
     private ProfileProfileDao profileDao;
@@ -233,7 +226,7 @@ public class DeliveryEmailProducer {
 
         Response responseOther = profileOtherService.getProfileOtherByPosition(user.getId(), position.getPublisher(), position.getId());
         String resultOther = responseOther.getData();
-        Map<String, Object> otherDatas = JSON.parseObject(result, Map.class);
+        Map<String, Object> otherDatas = JSON.parseObject(resultOther, Map.class);
         //获取学历字典
         List<DictConstantDO> degree = dictConstantDao.getDatas(new Query.QueryBuilder().
                 where(DictConstant.DICT_CONSTANT.PARENT_CODE.getName(), Constant.DICT_CONSTANT_DEGREE_USER)
@@ -245,17 +238,21 @@ public class DeliveryEmailProducer {
         ProfileEmailInfo emailInfo = new ProfileEmailInfo();
         emailInfo.setCompanyName(company.getAbbreviation());
         emailInfo.setPositionName(position.getTitle());
-        emailInfo.setComapnyLogo(company.getLogo());
+        String logo = env.getProperty("http.cdn.url") + Constant.COMPANY_LOGO_URL;
+        if(company.getLogo() != null) {
+            logo = company.getLogo().trim().startsWith("http") ? company.getLogo() : env.getProperty("http.cdn.url") + company.getLogo();
+        }
+        emailInfo.setCompanyLogo(logo);
         //邮件头像默认地址
         emailInfo.setHeadimg(env.getProperty("email.user.heading.url"));
         //hr端人才详情路径
         String resume_url = env.getProperty("email.resume.info.url");
         if(resume_url != null)
             resume_url = resume_url.replace("{}", user.getId()+"");
-       emailInfo.setResumeLink(resume_url);
+        emailInfo.setResumeLink(resume_url);
         if(user != null) {
             if (user.getHeadimg() != null && !user.getHeadimg().isEmpty()) {
-                String headImgUrl = user.getHeadimg().trim().startsWith("http")? user.getHeadimg() : CDN_URL+user.getHeadimg();
+                String headImgUrl = user.getHeadimg().trim().startsWith("http")? user.getHeadimg() : env.getProperty("http.cdn.url")+user.getHeadimg();
                 emailInfo.setHeadimg(headImgUrl);
             }
             if (user.getName() != null && !user.getName().isEmpty()) {
@@ -284,12 +281,12 @@ public class DeliveryEmailProducer {
                 emailInfo.setIntroduction((String) basicData.getOrDefault("self_introduction",""));
             }
             if(otherDatas != null){
-                OtherInfo otherInfo = new OtherInfo();
+//                OtherInfo otherInfo = new OtherInfo();
                 List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>)otherDatas.getOrDefault("keyvalues", new ArrayList<>());
                 if(!StringUtils.isEmptyList(keyvalueList)){
-                    otherInfo.setIdentity(ProfileOtherIdentityType.getMessageList(keyvalueList));
-                    otherInfo.setCareer(ProfileOtherCareerType.getMessageList(keyvalueList));
-                    otherInfo.setSchool(ProfileOtherSchoolType.getMessageList(keyvalueList));
+                    emailInfo.setOtherIdentity(ProfileOtherIdentityType.getMessageList(keyvalueList));
+                    emailInfo.setOtherCareer(ProfileOtherCareerType.getMessageList(keyvalueList));
+                    emailInfo.setOtherSchool(ProfileOtherSchoolType.getMessageList(keyvalueList));
                 }
                 List<Map<String, Object>> internshipList = (List<Map<String, Object>>)otherDatas.getOrDefault("internship", new ArrayList());
                 if(!StringUtils.isEmptyList(internshipList)){
@@ -303,7 +300,7 @@ public class DeliveryEmailProducer {
                         ship.setDescription((String)internship.getOrDefault("internshipDescriptionHidden", ""));
                         shipList.add(ship);
                     }
-                    otherInfo.setInternship(shipList);
+                    emailInfo.setOtherInternship(shipList);
                 }
                 List<Map<String, Object>> schooljobList = (List<Map<String, Object>>)otherDatas.getOrDefault("schooljob", new ArrayList());
                 if(!StringUtils.isEmptyList(schooljobList)){
@@ -315,10 +312,13 @@ public class DeliveryEmailProducer {
                         ship.setDescription((String)school.getOrDefault("schooljobDescriptionHidden", ""));
                         schoolList.add(ship);
                     }
-                    otherInfo.setSchoolWork(schoolList);
+                    emailInfo.setOtherSchoolWork(schoolList);
                 }
-                otherInfo.setIdPhoto((String)otherDatas.getOrDefault("photo", ""));
-                emailInfo.setOther(otherInfo);
+                String photo = (String)otherDatas.getOrDefault("photo", "");
+                logger.info("photo:{}",photo);
+                if(StringUtils.isNotNullOrEmpty(photo)) {
+                    emailInfo.setOtherIdPhoto(photo.trim().startsWith("http") ? photo : env.getProperty("http.cdn.url") + photo);
+                }
             }
 
         }
@@ -339,7 +339,7 @@ public class DeliveryEmailProducer {
             for (int i = 0; i < educationList.size(); i++) {
                 Map<String, Object> education = educationList.get(i);
                 EduExps eduExps = new EduExps();
-                eduExps.setTime(appendTime(education.get("start_time"), education.get("end_time"), education.get("end_until_now")));
+                eduExps.setTime(appendTime(education.get("start_date"), education.get("end_date"), education.get("end_until_now")));
                 eduExps.setCollege((String) education.getOrDefault("college_name",""));
                 eduExps.setMajor((String) education.getOrDefault("major_name",""));
                 eduExps.setDescription((String) education.getOrDefault("description",""));
@@ -395,9 +395,9 @@ public class DeliveryEmailProducer {
             basic.setPosition((String) workexpList.get(0).getOrDefault("job",""));
             for(Map<String, Object> workexp : workexpList) {
                 WorkExps workExps = new WorkExps();
-                workExps.setTime(appendTime(workexp.get("start_time"), workexp.get("end_time"), workexp.get("end_until_now")));
+                workExps.setTime(appendTime(workexp.get("start_date"), workexp.get("end_date"), workexp.get("end_until_now")));
                 workExps.setDescription((String) workexp.getOrDefault("description",""));
-                workExps.setComapny((String) workexp.getOrDefault("company_name",""));
+                workExps.setCompany((String) workexp.getOrDefault("company_name",""));
                 workExps.setDepartment((String) workexp.getOrDefault("department_name",""));
                 workExps.setPosition((String) workexp.getOrDefault("job",""));
                 workList.add(workExps);
@@ -457,18 +457,20 @@ public class DeliveryEmailProducer {
     }
 
     private String appendTime(Object startTime, Object endTime, Object endUntilNow ){
+        logger.info("startTime:{},endTime:{},endUntilNow:{}",startTime,endTime,endUntilNow);
         String start = "";
         if (startTime != null) {
             start = ((String)startTime).substring(0, 7).replace("-", ".");
         }
         String end = "";
-        if (endTime != null && (1 == (int) endUntilNow
-                || endTime == null)) {
-            endTime = "至今";
+        if (endTime == null || 1 == (int) endUntilNow) {
+            end = "至今";
         } else {
-            endTime = ((String)endTime).substring(0, 7).replace("-", ".");
+            end = ((String)endTime).substring(0, 7).replace("-", ".");
         }
-        return  start + " - " + end;
+        String time = start + " - " + end;
+        logger.info("time:{}",time);
+        return  time;
     }
 
 
