@@ -586,7 +586,7 @@ public class TalentpoolEmailService {
      发送部分转发邮件
      */
     private int sendResumeEmail(List<Integer> idList,List<Integer> userIdList,int companyId,int hrId,List<String> sendEmailList){
-        if(StringUtils.isEmptyList(idList)) {
+        if(StringUtils.isEmptyList(idList)&&StringUtils.isEmptyList(sendEmailList)) {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
         HrCompanyEmailInfoRecord hrCompanyEmailInfoRecord=this.getHrCompanyEmailInfo(companyId);
@@ -597,23 +597,18 @@ public class TalentpoolEmailService {
         if(flag){
             try {
                 List<UserEmployeeDO> employeeList = this.getUserEmployeeList(idList);
+                logger.info("=============List<UserEmployeeDO>===========");
                 logger.info(JSON.toJSONString(employeeList));
                 if (!StringUtils.isEmptyList(employeeList)||!StringUtils.isEmptyList(sendEmailList)) {
                     int lost = this.handlerLost(employeeList,userIdList,sendEmailList);
                     if (!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(), lost)) {
                         return TalentEmailEnum.NOBALANCE.getValue();
                     }
-                    employeeList=this.handlerEmployeeList(employeeList,sendEmailList);
-                    EmailResumeBean emailList = this.convertResumeEmailData(employeeList, userIdList, companyId, talentpoolEmailRecord.getContext(), hrId);
-                    logger.info(JSON.toJSONString(emailList));
-                    updateEmailInfoBalance(companyId, lost,5);
-                    List<MandrillEmailListStruct> struct = convertToEmailStruct(emailList);
-                    logger.info(JSON.toJSONString(struct));
-                    if(!StringUtils.isEmptyList(struct)){
-                        for(MandrillEmailListStruct item:struct){
-                            mqService.sendMandrilEmailList(item);
-                        }
-                    }
+                    List<UserEmployeeDO> userEmployeeDOList=this.handlerEmployeeList(employeeList,sendEmailList);
+                    tp.startTast(() -> {
+                        sendSingleResumeEmail(userEmployeeDOList,userIdList,companyId,talentpoolEmailRecord.getContext(),hrId,lost);
+                        return 0;
+                    });
 
                 } else {
                     return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
@@ -631,6 +626,20 @@ public class TalentpoolEmailService {
             return TalentEmailEnum.NOCONFIGEMAIL.getValue();
         }
         return 0;
+    }
+    //异步发送邮件
+
+    private void sendSingleResumeEmail(List<UserEmployeeDO> employeeList,List<Integer> userIdList,int companyId,String context,int hrId,int lost) throws Exception {
+        EmailResumeBean emailList = this.convertResumeEmailData(employeeList, userIdList, companyId, context, hrId);
+        logger.info(JSON.toJSONString(emailList));
+        updateEmailInfoBalance(companyId, lost,5);
+        List<MandrillEmailListStruct> struct = convertToEmailStruct(emailList);
+        logger.info(JSON.toJSONString(struct));
+        if(!StringUtils.isEmptyList(struct)){
+            for(MandrillEmailListStruct item:struct){
+                mqService.sendMandrilEmailList(item);
+            }
+        }
     }
     /*
      计算所消耗的积分
@@ -672,7 +681,7 @@ public class TalentpoolEmailService {
             String name=email.substring(0,email.lastIndexOf("@"));
             UserEmployeeDO userEmployeeDO=new UserEmployeeDO();
             userEmployeeDO.setCname(name);
-            userEmployeeDO.setEmail(name);
+            userEmployeeDO.setEmail(email);
             employeeList.add(userEmployeeDO);
         }
         return employeeList;
@@ -745,7 +754,7 @@ public class TalentpoolEmailService {
      发送全部转发邮件
      */
     private  int sendAllResumeEmail(List<Integer> idList,Map<String,String> params,int companyId,int hrId,List<String> sendEmailList){
-        if(StringUtils.isEmptyList(idList)) {
+        if(StringUtils.isEmptyList(idList)&&StringUtils.isEmptyList(sendEmailList)) {
             return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
         }
         params.put("company_id",companyId+"");
@@ -1550,7 +1559,6 @@ public class TalentpoolEmailService {
                     }else{
                         info.setCompanyLogo("http://cdn.moseeker.com/hr/common/images/default-company-logo.jpg");
                     }
-
                     info.setCompanyName(hrCompanyRecord.getName());
                     info.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
                 }
@@ -1692,9 +1700,10 @@ public class TalentpoolEmailService {
             String start=(String)data.getOrDefault("internshipStart","");
             String end=(String)data.getOrDefault("internshipEnd","");
             int endUntilNow=(int)data.getOrDefault("internshipEndUntilNow",0);
-
             if(endUntilNow==1){
                 end="至今";
+            }else{
+                end=end.substring(0,7).replace("-",".");
             }
             if(StringUtils.isNotNullOrEmpty(start)){
                 start=start.substring(0,7).replace("-",".");
@@ -1724,6 +1733,8 @@ public class TalentpoolEmailService {
             int endUntilNow=(int)data.getOrDefault("schooljobEndUntilNow",0);
             if(endUntilNow==1){
                 end="至今";
+            }else{
+                end=end.substring(0,7).replace("-",".");
             }
             if(StringUtils.isNotNullOrEmpty(start)){
                 start=start.substring(0,7).replace("-",".");
@@ -1882,6 +1893,8 @@ public class TalentpoolEmailService {
         int endUntilNow= (int) data.get("end_until_now");
         if(endUntilNow==1){
             end="至今";
+        }else{
+            end=end.substring(0,7).replace("-",".");
         }
         if(StringUtils.isNotNullOrEmpty(start)){
             start=start.substring(0,7).replace("-",".");
@@ -1908,6 +1921,8 @@ public class TalentpoolEmailService {
             int endUntilNow= (int) data.get("end_until_now");
             if(endUntilNow==1){
                 end="至今";
+            }else{
+                end=end.substring(0,7).replace("-",".");
             }
             if(StringUtils.isNotNullOrEmpty(start)){
                 start=start.substring(0,7).replace("-",".");
@@ -1936,6 +1951,8 @@ public class TalentpoolEmailService {
             int endUntilNow= (int) data.get("end_until_now");
             if(endUntilNow==1){
                 end="至今";
+            }else{
+                end=end.substring(0,7).replace("-",".");
             }
             if(StringUtils.isNotNullOrEmpty(start)){
                 start=start.substring(0,7).replace("-",".");

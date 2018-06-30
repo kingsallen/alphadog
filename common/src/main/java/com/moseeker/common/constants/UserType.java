@@ -1,6 +1,7 @@
 package com.moseeker.common.constants;
 
 public enum UserType {
+
     PC(0), HR(1);
 
     private UserType(int value) {
