@@ -609,15 +609,16 @@ public class TalentpoolEmailService {
                         sendSingleResumeEmail(userEmployeeDOList,userIdList,companyId,talentpoolEmailRecord.getContext(),hrId,lost);
                         return 0;
                     });
+                    List<Map<String,Object>> employeeData=this.handlerEmployeeData(userEmployeeDOList);
+                    if(!StringUtils.isEmptyList(employeeData)){
+                        logger.info(JSON.toJSONString(employeeData));
+                        this.handlerRedisEmployee(employeeData,hrId);
+                    }
 
                 } else {
                     return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
                 }
-                List<Map<String,Object>> employeeData=this.handlerEmployeeData(employeeList);
-                if(!StringUtils.isEmptyList(employeeData)){
-                    logger.info(JSON.toJSONString(employeeData));
-                    this.handlerRedisEmployee(employeeData,hrId);
-                }
+
 
             }catch(Exception e){
                 logger.error(e.getMessage(),e);
