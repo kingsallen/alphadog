@@ -1527,6 +1527,9 @@ public class TalentpoolEmailService {
         if(StringUtils.isNotNullOrEmpty(companyName)){
             subject+="-"+companyName;
         }
+        if(subject.length()>107){
+            subject=subject.substring(0,107);
+        }
         return subject;
      }
      private TalentEmailForwardsResumeInfo convertInfo1(TalentEmailForwardsResumeInfo info){

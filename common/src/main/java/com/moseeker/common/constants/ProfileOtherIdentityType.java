@@ -127,13 +127,13 @@ public enum ProfileOtherIdentityType {
                 ProfileOtherIdentityType type = instanceFromValue((String)entry.get("key"));
                 if (type != null) {
                     int lastline=0;
-                    if(i==list.size()-1){
-                        lastline=1;
-                    }
                     messages.add(new Message(type.getValue(), entry.get("value"),i%2,lastline));
                     i++;
                 }
             }
+        }
+        if(!StringUtils.isEmptyList(messages)){
+            messages.get(messages.size()-1).setLastline(1);
         }
         return messages;
     }
