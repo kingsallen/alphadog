@@ -23,6 +23,7 @@ public class TalentEmailForwardsResumeInfo {
     private int age;
     private String marriage;
     private String resumeLink;
+    private String weixinQrcode;
     private TalentBasicInfo basicInfo;
     private TalentIntentionInfo intention;
     private String introduction;
@@ -287,5 +288,13 @@ public class TalentEmailForwardsResumeInfo {
 
     public void setOtherIdPhoto(String otherIdPhoto) {
         this.otherIdPhoto = otherIdPhoto;
+    }
+
+    public String getWeixinQrcode() {
+        return weixinQrcode;
+    }
+
+    public void setWeixinQrcode(String weixinQrcode) {
+        this.weixinQrcode = weixinQrcode;
     }
 }

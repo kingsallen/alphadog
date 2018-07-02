@@ -1576,9 +1576,12 @@ public class TalentpoolEmailService {
                 }
                 if(hrWxWechatRecord!=null){
                     info.setOfficialAccountName(hrWxWechatRecord.getName());
+                    String qrCode=hrWxWechatRecord.getQrcode();
+                    if(StringUtils.isNotNullOrEmpty(qrCode)){
+                        info.setWeixinQrcode(qrCode);
+                    }
                 }
                 info.setCustomText(context);
-
             }
         }
         return dataList;
