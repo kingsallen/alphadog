@@ -319,7 +319,7 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.FEATURE, new org.apache.thrift.meta_data.FieldMetaData("feature", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.INTERNSHIP, new org.apache.thrift.meta_data.FieldMetaData("internship", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.INTERNSHIP, new org.apache.thrift.meta_data.FieldMetaData("internship", org.apache.thrift.TFieldRequirementType.OPTIONAL,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(HrThirdPartyPositionDO.class, metaDataMap);
@@ -2954,7 +2954,7 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.feature = iprot.readString();
               struct.setFeatureIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -3276,10 +3276,7 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
       if (struct.isSetFeature()) {
         optionals.set(30);
       }
-      if (struct.isSetInternship()) {
-        optionals.set(31);
-      }
-      oprot.writeBitSet(optionals, 32);
+      oprot.writeBitSet(optionals, 31);
       if (struct.isSetId()) {
         oprot.writeI32(struct.id);
       }

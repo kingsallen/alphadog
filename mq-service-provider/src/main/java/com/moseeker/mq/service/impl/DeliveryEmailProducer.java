@@ -238,7 +238,10 @@ public class DeliveryEmailProducer {
         ProfileEmailInfo emailInfo = new ProfileEmailInfo();
         emailInfo.setCompanyName(company.getAbbreviation());
         emailInfo.setPositionName(position.getTitle());
-        String logo = company.getLogo().trim().startsWith("http")? company.getLogo() : env.getProperty("http.cdn.url")+company.getLogo();
+        String logo = env.getProperty("http.cdn.url")+ Constant.COMPANY_LOGO_URL;
+        if(company.getLogo() != null) {
+            logo = company.getLogo().trim().startsWith("http") ? company.getLogo() : env.getProperty("http.cdn.url") + company.getLogo();
+        }
         emailInfo.setCompanyLogo(logo);
         //邮件头像默认地址
         emailInfo.setHeadimg(env.getProperty("email.user.heading.url"));

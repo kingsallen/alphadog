@@ -597,32 +597,37 @@ public class TalentpoolEmailService {
         if(flag){
             try {
                 List<UserEmployeeDO> employeeList = this.getUserEmployeeList(idList);
+                logger.info("=============List<UserEmployeeDO>===========");
                 logger.info(JSON.toJSONString(employeeList));
                 if (!StringUtils.isEmptyList(employeeList)||!StringUtils.isEmptyList(sendEmailList)) {
                     int lost = this.handlerLost(employeeList,userIdList,sendEmailList);
                     if (!this.validateBalance(hrCompanyEmailInfoRecord.getBalance(), lost)) {
                         return TalentEmailEnum.NOBALANCE.getValue();
                     }
-                    employeeList=this.handlerEmployeeList(employeeList,sendEmailList);
-                    EmailResumeBean emailList = this.convertResumeEmailData(employeeList, userIdList, companyId, talentpoolEmailRecord.getContext(), hrId);
-                    logger.info(JSON.toJSONString(emailList));
-                    updateEmailInfoBalance(companyId, lost,5);
-                    List<MandrillEmailListStruct> struct = convertToEmailStruct(emailList);
-                    logger.info(JSON.toJSONString(struct));
-                    if(!StringUtils.isEmptyList(struct)){
-                        for(MandrillEmailListStruct item:struct){
-                            mqService.sendMandrilEmailList(item);
-                        }
+                    List<UserEmployeeDO> userEmployeeDOList=this.handlerEmployeeList(employeeList,sendEmailList);
+                    if(lost>10){
+                        tp.startTast(() -> {
+                            sendSingleResumeEmail(userEmployeeDOList,userIdList,companyId,talentpoolEmailRecord.getContext(),hrId,lost);
+                            return 0;
+                        });
+                    }else{
+                        int resultSend=sendSingleResumeEmail(userEmployeeDOList,userIdList,companyId,talentpoolEmailRecord.getContext(),hrId,lost);
+                         if(resultSend>0){
+                             return resultSend;
+                         }
+                    }
+
+
+                    List<Map<String,Object>> employeeData=this.handlerEmployeeData(userEmployeeDOList);
+                    if(!StringUtils.isEmptyList(employeeData)){
+                        logger.info(JSON.toJSONString(employeeData));
+                        this.handlerRedisEmployee(employeeData,hrId);
                     }
 
                 } else {
                     return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
                 }
-                List<Map<String,Object>> employeeData=this.handlerEmployeeData(employeeList);
-                if(!StringUtils.isEmptyList(employeeData)){
-                    logger.info(JSON.toJSONString(employeeData));
-                    this.handlerRedisEmployee(employeeData,hrId);
-                }
+
 
             }catch(Exception e){
                 logger.error(e.getMessage(),e);
@@ -631,6 +636,22 @@ public class TalentpoolEmailService {
             return TalentEmailEnum.NOCONFIGEMAIL.getValue();
         }
         return 0;
+    }
+    //异步发送邮件
+
+    private int sendSingleResumeEmail(List<UserEmployeeDO> employeeList,List<Integer> userIdList,int companyId,String context,int hrId,int lost) throws Exception {
+        EmailResumeBean emailList = this.convertResumeEmailData(employeeList, userIdList, companyId, context, hrId);
+        logger.info(JSON.toJSONString(emailList));
+        updateEmailInfoBalance(companyId, lost,5);
+        List<MandrillEmailListStruct> struct = convertToEmailStruct(emailList);
+        logger.info(JSON.toJSONString(struct));
+        if(!StringUtils.isEmptyList(struct)){
+            for(MandrillEmailListStruct item:struct){
+                mqService.sendMandrilEmailList(item);
+            }
+            return 0;
+        }
+         return TalentEmailEnum.NOUSEREMPLOYEE.getValue();
     }
     /*
      计算所消耗的积分
@@ -1545,8 +1566,11 @@ public class TalentpoolEmailService {
             HrWxWechatRecord hrWxWechatRecord=this.getWxInfo(companyId);
             for(TalentEmailForwardsResumeInfo info:dataList){
                 if(hrCompanyRecord!=null){
-
-                    info.setCompanyLogo(CommonUtils.appendUrl(hrCompanyRecord.getLogo(),env.getProperty("http.cdn.url")));
+                    if(StringUtils.isNotNullOrEmpty(hrCompanyRecord.getLogo())){
+                        info.setCompanyLogo(CommonUtils.appendUrl(hrCompanyRecord.getLogo(),env.getProperty("http.cdn.url")));
+                    }else{
+                        info.setCompanyLogo("http://cdn.moseeker.com/hr/common/images/default-company-logo.jpg");
+                    }
                     info.setCompanyName(hrCompanyRecord.getName());
                     info.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
                 }
