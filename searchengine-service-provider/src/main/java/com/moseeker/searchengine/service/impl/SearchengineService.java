@@ -109,7 +109,6 @@ public class SearchengineService {
             }
         } catch (Exception e) {
             logger.error("error in search", e);
-
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         Map<String, List> res = new HashMap<String, List>();
@@ -153,8 +152,8 @@ public class SearchengineService {
      */
     @CounterIface
     public Map<String,Object> searchPositionMini(Map<String,String> params){
-        TransportClient client= EsClientInstance.getClient();
 
+        TransportClient client= EsClientInstance.getClient();
         String pageFrom=params.get("page");
         String pageSize=params.get("pageSize");
         String childCompanyId=params.get("childCompanyId");
