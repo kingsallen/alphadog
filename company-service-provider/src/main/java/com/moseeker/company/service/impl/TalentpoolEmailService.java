@@ -1545,6 +1545,7 @@ public class TalentpoolEmailService {
             HrWxWechatRecord hrWxWechatRecord=this.getWxInfo(companyId);
             for(TalentEmailForwardsResumeInfo info:dataList){
                 if(hrCompanyRecord!=null){
+
                     info.setCompanyLogo(CommonUtils.appendUrl(hrCompanyRecord.getLogo(),env.getProperty("http.cdn.url")));
                     info.setCompanyName(hrCompanyRecord.getName());
                     info.setCompanyAbbr(hrCompanyRecord.getAbbreviation());
