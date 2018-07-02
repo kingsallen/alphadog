@@ -701,6 +701,9 @@ public class TalentpoolEmailService {
 
     private void handlerRedisEmployee(List<Map<String,Object>> employeeData,int hrId){
         String res=client.get(Constant.APPID_ALPHADOG, KeyIdentifier.PAST_USER_EMPLOYEE_VALIDATE.toString(),hrId+"");
+        logger.info("在redis中的转发记录是==========================");
+        logger.info(res);
+        logger.info("========================");
         if(StringUtils.isNullOrEmpty(res)){
             if(employeeData.size()>10){
                 employeeData=employeeData.subList(0,10);
@@ -1510,7 +1513,7 @@ public class TalentpoolEmailService {
         result.setMergeVars(resumeInfoList);
         result.setFromName(abbr+"人才招聘团队");
         result.setFromEmail("info@moseeker.net");
-        result.setTemplateName("forward-resume-v2");
+        result.setTemplateName("test");
         return result;
     }
      /*
