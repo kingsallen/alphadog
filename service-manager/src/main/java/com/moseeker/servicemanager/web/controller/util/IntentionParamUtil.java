@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -51,10 +52,14 @@ public class IntentionParamUtil {
 				//查找城市信息
 				if(entry.getKey().startsWith("cities[")) {
 					if(entry.getKey().contains("city_code")) {
+
 						cityCode.put(Integer.valueOf(entry.getKey().charAt(7)), BeanUtils.converToInteger(entry.getValue()));
 					}
 					if(entry.getKey().contains("city_name")) {
-						cityName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(7)));
+                        List<String> cityNames = (List<String>) entry.getValue();
+                        for(String name : cityNames) {
+                            cityName.put(name, Integer.valueOf(entry.getKey().charAt(7)));
+                        }
 					}
 				}
 				//查找职能信息
