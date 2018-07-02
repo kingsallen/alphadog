@@ -1492,6 +1492,8 @@ public class TalentpoolEmailService {
             }
             String companyAbbr=info.getCompanyAbbr();
             String accountName=info.getOfficialAccountName();
+            String subject=this.handlerSubject(companyAbbr,userName,positionName,info.getCompanyName());
+            info1.setSubject(subject);
             String context1= CommonUtils.replaceUtil(context,companyAbbr,positionName,userName,record.getUsername(),accountName);
             info1.setCustomText(context1);
             String url=env.getProperty("talentpool.wholeProfile");
@@ -1508,9 +1510,28 @@ public class TalentpoolEmailService {
         result.setMergeVars(resumeInfoList);
         result.setFromName(abbr+"人才招聘团队");
         result.setFromEmail("info@moseeker.net");
-        result.setTemplateName("forward-resume");
+        result.setTemplateName("forward-resume-v2");
         return result;
     }
+     /*
+      处理邮件主题
+      */
+     private String handlerSubject(String companyAbbr,String userName,String positionName,String  companyName){
+        String subject="【"+companyAbbr+"】请您评审简历";
+        if(StringUtils.isNotNullOrEmpty(userName)){
+            subject+="-"+userName;
+        }
+        if(StringUtils.isNotNullOrEmpty(positionName)){
+            subject+="-"+positionName;
+        }
+        if(StringUtils.isNotNullOrEmpty(companyName)){
+            subject+="-"+companyName;
+        }
+        if(subject.length()>107){
+            subject=subject.substring(0,107);
+        }
+        return subject;
+     }
      private TalentEmailForwardsResumeInfo convertInfo1(TalentEmailForwardsResumeInfo info){
          TalentEmailForwardsResumeInfo info1=JSON.parseObject(JSON.toJSONString(info),TalentEmailForwardsResumeInfo.class);
          return info1;
@@ -1576,9 +1597,12 @@ public class TalentpoolEmailService {
                 }
                 if(hrWxWechatRecord!=null){
                     info.setOfficialAccountName(hrWxWechatRecord.getName());
+                    String qrCode=hrWxWechatRecord.getQrcode();
+                    if(StringUtils.isNotNullOrEmpty(qrCode)){
+                        info.setWeixinQrcode(qrCode);
+                    }
                 }
                 info.setCustomText(context);
-
             }
         }
         return dataList;
