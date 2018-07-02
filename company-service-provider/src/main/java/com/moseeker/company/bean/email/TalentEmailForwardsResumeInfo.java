@@ -9,6 +9,7 @@ import java.util.List;
  * Created by zztaiwll on 18/4/24.
  */
 public class TalentEmailForwardsResumeInfo {
+    private String subject;
     private String companyAbbr;
     private String customText;
     private String officialAccountName;
@@ -41,6 +42,14 @@ public class TalentEmailForwardsResumeInfo {
     private List<TalentOtherInternshipInfo> otherInternship;
     private List<Message> otherCareer;
     private String otherIdPhoto;
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
 
     public String getCompanyLogo() {
         return companyLogo;
