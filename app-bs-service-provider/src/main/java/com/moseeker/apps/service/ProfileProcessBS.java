@@ -387,7 +387,7 @@ public class ProfileProcessBS {
             return;
         }
         MsInfo msInfo = tm.processStatus(status, userName);
-        logger.info("msInfo: {}", msInfo);
+        logger.info("msInfo================================: {}", msInfo);
         if(msInfo == null){
             return ;
         }
@@ -459,7 +459,9 @@ public class ProfileProcessBS {
                             String.class), signature,
                     String.valueOf(applicationId));
             url = url +"&send_time=" + new Date().getTime();
+            logger.info("url====================:{}",url);
             templateNoticeStruct.setUrl(url);
+            logger.info("templateNoticeStruct====================:{}",templateNoticeStruct);
             try {
                 mqService.messageTemplateNotice(templateNoticeStruct);
             } catch (TException e) {
