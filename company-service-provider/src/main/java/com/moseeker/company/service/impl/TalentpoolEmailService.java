@@ -1513,7 +1513,7 @@ public class TalentpoolEmailService {
         result.setMergeVars(resumeInfoList);
         result.setFromName(abbr+"人才招聘团队");
         result.setFromEmail("info@moseeker.net");
-        result.setTemplateName("test");
+        result.setTemplateName("forward-resume-v2");
         return result;
     }
      /*
