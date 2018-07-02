@@ -1,6 +1,8 @@
 package com.moseeker.position.service.fundationbs;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.position.config.AppConfig;
+import com.moseeker.position.pojo.ChannelTypePojo;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
 import org.apache.thrift.TException;
@@ -33,5 +35,10 @@ public class PositionATSServiceTest {
         list.add(obj);
         batchHandlerJobPostion.setData(list);
         positionATSService.updatePositionFeature(batchHandlerJobPostion);
+    }
+    @Test
+    public void getSyncChannel(){
+        List<ChannelTypePojo> list = positionATSService.getSyncChannel();
+        System.out.println(JSONObject.toJSONString(list));
     }
 }

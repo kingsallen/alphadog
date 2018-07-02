@@ -123,4 +123,19 @@ public class HRThirdPartyAccountHrDao extends JooqCrudImpl<HrThirdPartyAccountHr
         return update(update);
     }
 
+    /**
+     * 获取第三方hr账号信息
+     * @param
+     * @author  cjm
+     * @date  2018/6/13
+     * @return
+     */
+    public HrThirdPartyAccountHrDO getHrAccountInfo(int hrId, int channel) {
+        return create.selectFrom(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
+                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(hrId))
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.CHANNEL.eq((short)channel))
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte)1))
+                .limit(1)
+                .fetchOneInto(HrThirdPartyAccountHrDO.class);
+    }
 }

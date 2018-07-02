@@ -112,6 +112,7 @@ public class TalentpoolSearchengine {
             client = searchUtil.getEsClient();
             QueryBuilder query = this.queryByUserId(userIds);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+            builder.setSize(userIds.size());
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleData(response, "users");

@@ -139,4 +139,41 @@ public class AppConfig {
             add(BindingBuilder.bind(positionSyncMobileQueue()).to(positionSyncMobileExchange()).with(PositionSyncVerify.MOBILE_VERIFY_ROUTING_KEY));
         }};
     }
+
+    // 猎聘api对接的交换机
+    @Bean
+    public DirectExchange positionSyncLiePinExchange(){
+        return new DirectExchange(PositionSyncVerify.POSITION_OPERATE_LIEPIN_EXCHANGE,true,false);
+    }
+
+    @Bean
+    public Queue positionDelLiePinQueue(){
+        return new Queue(PositionSyncVerify.POSITION_QUEUE_DELETE,true,false,false);
+    }
+
+    @Bean
+    public Queue positionRevertLiePinQueue(){
+        return new Queue(PositionSyncVerify.POSITION_QUEUE_RESYNC,true,false,false);
+    }
+
+    @Bean
+    public Queue positionDownShelfLiePinQueue(){
+        return new Queue(PositionSyncVerify.POSITION_QUEUE_DOWNSHELF,true,false,false);
+    }
+
+    @Bean
+    public Queue positionEditLiePinQueue(){
+        return new Queue(PositionSyncVerify.POSITION_QUEUE_EDIT,true,false,false);
+
+    }
+
+    @Bean
+    public List<Binding> bindPositionLiePinQueue(){
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(positionDelLiePinQueue()).to(positionSyncLiePinExchange()).with(PositionSyncVerify.POSITION_OPERATE_ROUTEKEY_DEL));
+            add(BindingBuilder.bind(positionRevertLiePinQueue()).to(positionSyncLiePinExchange()).with(PositionSyncVerify.POSITION_OPERATE_ROUTEKEY_RESYNC));
+            add(BindingBuilder.bind(positionDownShelfLiePinQueue()).to(positionSyncLiePinExchange()).with(PositionSyncVerify.POSITION_OPERATE_ROUTEKEY_DOWNSHELF));
+            add(BindingBuilder.bind(positionEditLiePinQueue()).to(positionSyncLiePinExchange()).with(PositionSyncVerify.POSITION_OPERATE_ROUTEKEY_EDIT));
+        }};
+    }
 }

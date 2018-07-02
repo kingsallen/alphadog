@@ -4,40 +4,49 @@ package com.moseeker.company.bean;
  * Created by zztaiwll on 18/4/25.
  */
 public class TalentWorkExpInfo {
-    private String workStartTime;
-    private String workEndTime;
-    private String workJob;
-    private String workCompany;
+    private String time;
+    private String company;
+    private String position;
+    private String department;
+    private String description;
 
-    public String getWorkStartTime() {
-        return workStartTime;
+    public String getTime() {
+        return time;
     }
 
-    public void setWorkStartTime(String workStartTime) {
-        this.workStartTime = workStartTime;
+    public void setTime(String time) {
+        this.time = time;
     }
 
-    public String getWorkEndTime() {
-        return workEndTime;
+    public String getCompany() {
+        return company;
     }
 
-    public void setWorkEndTime(String workEndTime) {
-        this.workEndTime = workEndTime;
+    public void setCompany(String company) {
+        this.company = company;
     }
 
-    public String getWorkJob() {
-        return workJob;
+    public String getPosition() {
+        return position;
     }
 
-    public void setWorkJob(String workJob) {
-        this.workJob = workJob;
+    public void setPosition(String position) {
+        this.position = position;
     }
 
-    public String getWorkCompany() {
-        return workCompany;
+    public String getDepartment() {
+        return department;
     }
 
-    public void setWorkCompany(String workCompany) {
-        this.workCompany = workCompany;
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
