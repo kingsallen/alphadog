@@ -282,13 +282,13 @@ public class DeliveryEmailProducer {
             }
             if(otherDatas != null){
 //                OtherInfo otherInfo = new OtherInfo();
-                List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>)otherDatas.getOrDefault("keyvalues", new ArrayList<>());
+                List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>)otherDatas.getOrDefault("keyvalues", null);
                 if(!StringUtils.isEmptyList(keyvalueList)){
                     emailInfo.setOtherIdentity(ProfileOtherIdentityType.getMessageList(keyvalueList));
                     emailInfo.setOtherCareer(ProfileOtherCareerType.getMessageList(keyvalueList));
                     emailInfo.setOtherSchool(ProfileOtherSchoolType.getMessageList(keyvalueList));
                 }
-                List<Map<String, Object>> internshipList = (List<Map<String, Object>>)otherDatas.getOrDefault("internship", new ArrayList());
+                List<Map<String, Object>> internshipList = (List<Map<String, Object>>)otherDatas.getOrDefault("internship", null);
                 if(!StringUtils.isEmptyList(internshipList)){
                     List<Internship> shipList = new ArrayList<>();
                     for(Map<String, Object> internship : internshipList){
@@ -302,7 +302,7 @@ public class DeliveryEmailProducer {
                     }
                     emailInfo.setOtherInternship(shipList);
                 }
-                List<Map<String, Object>> schooljobList = (List<Map<String, Object>>)otherDatas.getOrDefault("schooljob", new ArrayList());
+                List<Map<String, Object>> schooljobList = (List<Map<String, Object>>)otherDatas.getOrDefault("schooljob", null);
                 if(!StringUtils.isEmptyList(schooljobList)){
                     List<SchoolWork> schoolList = new ArrayList<>();
                     for(Map<String, Object> school : schooljobList){
@@ -324,7 +324,7 @@ public class DeliveryEmailProducer {
         }
 
         //获取教育信息
-        List<Map<String, Object>> educationList = (List<Map<String, Object>>) data.getOrDefault("educations", new ArrayList());
+        List<Map<String, Object>> educationList = (List<Map<String, Object>>) data.getOrDefault("educations", null);
         if (degree != null && degree.size() > 0 && !StringUtils.isEmptyList(educationList)) {
             for (DictConstantDO constantDO : degree) {
                 if (educationList.get(0).get("degree") != null) {
@@ -354,12 +354,12 @@ public class DeliveryEmailProducer {
             emailInfo.setEduExps(eduList);
         }
         //获取期望信息
-        List<Map<String, Object>> intentionList = (List<Map<String, Object>>) data.getOrDefault("intentions", new ArrayList<>());
+        List<Map<String, Object>> intentionList = (List<Map<String, Object>>) data.getOrDefault("intentions", null);
         if (!StringUtils.isEmptyList(intentionList)) {
             Map<String, Object> intention = intentionList.get(0);
             intentions.setEmployeeType((String) intention.getOrDefault("worktype_name",""));
             intentions.setMonthSalary((String) intention.getOrDefault("salary_code_name",""));
-            List<Map<String, Object>> cities = (List<Map<String, Object>>) intention.getOrDefault("cities", new ArrayList<>());
+            List<Map<String, Object>> cities = (List<Map<String, Object>>) intention.getOrDefault("cities", null);
             if(!StringUtils.isEmptyList(cities)){
                 StringBuffer cityName= new StringBuffer();
                 for(Map<String, Object> city : cities){
@@ -369,7 +369,7 @@ public class DeliveryEmailProducer {
                 }
                 intentions.setCity(cityName.substring(0,cityName.length()-1));
             }
-            List<Map<String, Object>> positionsList = (List<Map<String, Object>>) intention.getOrDefault("positions", new ArrayList<>());
+            List<Map<String, Object>> positionsList = (List<Map<String, Object>>) intention.getOrDefault("positions", null);
             if(!StringUtils.isEmptyList(positionsList)){
                 StringBuffer positionName= new StringBuffer();
                 for(Map<String, Object> positions : positionsList){
@@ -380,7 +380,7 @@ public class DeliveryEmailProducer {
                 intentions.setJob(positionName.substring(0,positionName.length()-1));
             }
             intentions.setWorkStatus((String) intention.getOrDefault("workstate_name",""));
-            List<String> industriesList = (List<String>) intention.getOrDefault("industries", new ArrayList<>());
+            List<String> industriesList = (List<String>) intention.getOrDefault("industries", null);
             if(!StringUtils.isEmptyList(industriesList)){
                 intentions.setIndustry(String.join(",", industriesList));
             }
@@ -389,7 +389,7 @@ public class DeliveryEmailProducer {
         emailInfo.setIntention(intentions);
 
         //获取工作经验
-        List<Map<String, Object>> workexpList = (List<Map<String, Object>>) data.getOrDefault("workexps", new ArrayList<>());
+        List<Map<String, Object>> workexpList = (List<Map<String, Object>>) data.getOrDefault("workexps", null);
         if(!StringUtils.isEmptyList(workexpList)){
             List<WorkExps> workList = new ArrayList<>();
             basic.setPosition((String) workexpList.get(0).getOrDefault("job",""));
@@ -405,7 +405,7 @@ public class DeliveryEmailProducer {
             emailInfo.setWorkExps(workList);
         }
         //获取语言
-        List<Map<String, Object>> languageList = (List<Map<String, Object>>) data.getOrDefault("languages", new ArrayList<>());
+        List<Map<String, Object>> languageList = (List<Map<String, Object>>) data.getOrDefault("languages", null);
         if(!StringUtils.isEmptyList(languageList)){
             List<Languages> languagesList = new ArrayList<>();
             for(Map<String, Object> languageData : languageList) {
@@ -425,7 +425,7 @@ public class DeliveryEmailProducer {
 
 
         //获取技能
-        List<Map<String, Object>> skillsList = (List<Map<String, Object>>) data.getOrDefault("skills", new ArrayList<>());
+        List<Map<String, Object>> skillsList = (List<Map<String, Object>>) data.getOrDefault("skills", null);
         if(!StringUtils.isEmptyList(skillsList)){
             List<String> strList = new ArrayList<>();
             for(Map<String, Object> skills : skillsList) {
@@ -434,7 +434,7 @@ public class DeliveryEmailProducer {
             emailInfo.setSkills(strList);
         }
         //获取证书
-        List<Map<String, Object>> credentialsList = (List<Map<String, Object>>) data.getOrDefault("credentials", new ArrayList<>());
+        List<Map<String, Object>> credentialsList = (List<Map<String, Object>>) data.getOrDefault("credentials", null);
         if(!StringUtils.isEmptyList(credentialsList)){
             List<String> strList = new ArrayList<>();
             for(Map<String, Object> skills : credentialsList) {
@@ -443,7 +443,7 @@ public class DeliveryEmailProducer {
             emailInfo.setCredentials(strList);
         }
         //获取个人作品
-        List<Map<String, Object>> worksList = (List<Map<String, Object>>) data.getOrDefault("works", new ArrayList<>());
+        List<Map<String, Object>> worksList = (List<Map<String, Object>>) data.getOrDefault("works", null);
         if(!StringUtils.isEmptyList(worksList)){
             Works works = new Works();
             Map<String, Object> worksData = worksList.get(0);
