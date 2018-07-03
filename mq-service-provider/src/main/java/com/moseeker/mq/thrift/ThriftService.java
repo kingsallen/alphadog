@@ -146,10 +146,6 @@ public class ThriftService implements Iface {
 		}
 	}
 
-    @Override
-    public Response sendMessageAndEmail(int application_id) throws TException{
-        return null;
-    }
 
     @Override
     public Response sendMessageAndEmailToDelivery(MessageEmailStruct messageEmailStruct) throws TException {
