@@ -93,13 +93,7 @@ public class IntentionParamUtil {
                 if(intention.getIndustries() == null) {
                     intention.setIndustries(new HashMap<String, Integer>());
                 }
-                int code = 0;
-                if(industryCode.size() > 0) {
-                    if(industryCode.get(entry.getValue()) != null) {
-                        code = industryCode.get(entry.getValue());
-                    }
-                }
-                intention.getIndustries().put(String.valueOf(code), code);
+                intention.getIndustries().put(String.valueOf(entry.getValue()), entry.getValue());
             }
         }
 		//拼装职能信息
