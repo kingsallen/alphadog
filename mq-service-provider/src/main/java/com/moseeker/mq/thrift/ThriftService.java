@@ -64,7 +64,8 @@ public class ThriftService implements Iface {
 	@Override
 	public Response messageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct) throws TException {
 		try {
-			return mqService.messageTemplateNotice(messageTemplateNoticeStruct);		} catch (Exception e) {
+			return mqService.messageTemplateNotice(messageTemplateNoticeStruct);
+		} catch (Exception e) {
 			logger.info(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
