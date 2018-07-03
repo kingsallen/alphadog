@@ -66,7 +66,6 @@ public class ThriftService implements Iface {
 		try {
 			return mqService.messageTemplateNotice(messageTemplateNoticeStruct);
 		} catch (Exception e) {
-			logger.info(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
 
@@ -100,7 +99,6 @@ public class ThriftService implements Iface {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vuResult));
 			}
 		} catch (Exception e) {
-			logger.info(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -111,7 +109,6 @@ public class ThriftService implements Iface {
 		try {
 			return mandrillEmailProducer.queueEmail(mandrillEmailStruct);
 		} catch (Exception e) {
-			logger.info(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -121,7 +118,6 @@ public class ThriftService implements Iface {
         try {
              mandrillMailListConsumer.sendMailList(mandrillEmailStruct);
         } catch (Exception e) {
-			logger.info(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
         }
     }
@@ -131,7 +127,6 @@ public class ThriftService implements Iface {
 		try {
 			return emailProvider.sendBizEmail(params, eventType, email, subject, senderName, senderDisplay);
 		}catch (Exception e){
-			logger.info(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
     }
@@ -142,7 +137,6 @@ public class ThriftService implements Iface {
 		try {
 			return smsService.sendSMS(smsType, mobile, data, sys, ip);
 		}catch (Exception e){
-			logger.info(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -154,7 +148,7 @@ public class ThriftService implements Iface {
 		try {
 			return deliveryService.sendMessageAndEmail(messageEmailStruct);
 		}catch (Exception e){
-			logger.info(e.getMessage(),e);
+			logger.error(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
     }
