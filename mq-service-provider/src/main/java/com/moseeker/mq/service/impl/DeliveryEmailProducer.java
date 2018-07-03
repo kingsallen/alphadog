@@ -389,6 +389,7 @@ public class DeliveryEmailProducer {
         emailInfo.setIntention(intentions);
 
         //获取工作经验
+        logger.info("=======================data:{}",data);
         List<Map<String, Object>> workexpList = (List<Map<String, Object>>) data.getOrDefault("workexps", null);
         if(!StringUtils.isEmptyList(workexpList)){
             List<WorkExps> workList = new ArrayList<>();
@@ -422,8 +423,6 @@ public class DeliveryEmailProducer {
             }
             emailInfo.setLanguages(languagesList);
         }
-
-
         //获取技能
         List<Map<String, Object>> skillsList = (List<Map<String, Object>>) data.getOrDefault("skills", null);
         if(!StringUtils.isEmptyList(skillsList)){
