@@ -88,6 +88,20 @@ public class IntentionParamUtil {
 				intention.getIndustries().put(entry.getKey(), code);
 			}
 		}
+        if(industryCode.size() > 0) {
+            for(Entry<Integer, Integer> entry : industryCode.entrySet()) {
+                if(intention.getIndustries() == null) {
+                    intention.setIndustries(new HashMap<String, Integer>());
+                }
+                int code = 0;
+                if(industryCode.size() > 0) {
+                    if(industryCode.get(entry.getValue()) != null) {
+                        code = industryCode.get(entry.getValue());
+                    }
+                }
+                intention.getIndustries().put(String.valueOf(code), code);
+            }
+        }
 		//拼装职能信息
 		if(positionName.size() > 0) {
 			for(Entry<String, Integer> entry : positionName.entrySet()) {
