@@ -103,4 +103,10 @@ private String requireValidOccupation(List<String> occupationList) throws BIZExc
     public void testRefreshs(){
         schedule.refreshLiepinToken();
     }
+
+    @Test
+    public void testDecryPwd() throws Exception {
+        String str = handler.decryPwd("cd42dc6db84006e30ebc1902b6275caa");
+
+    }
 }

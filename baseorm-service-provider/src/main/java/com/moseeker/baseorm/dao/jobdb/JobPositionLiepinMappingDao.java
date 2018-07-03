@@ -51,14 +51,6 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
         return getDatas(query);
     }
 
-    public List<JobPositionLiepinMappingDO> getMappingDataByPidAndUserId(Integer liepinUserId, Integer positionId) {
-        Query query = new Query.QueryBuilder()
-                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_USER_ID.getName(), liepinUserId)
-                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID.getName(), positionId)
-                .buildQuery();
-        return getDatas(query);
-    }
-
     public void updateErrMsg(int id, String message) {
         create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ERR_MSG, message)
@@ -73,6 +65,14 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE, state)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(condition)
+                .execute();
+    }
+
+    public void updateState(int id, byte state) {
+        create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE, state)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.eq(id))
                 .execute();
     }
 
@@ -137,5 +137,12 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.in(republishIdList))
                 .execute();
+    }
+
+    public List<JobPositionLiepinMappingDO> getMappingDataByPidAndCityCodes(int positionId, List<Integer> cityCodes) {
+        return create.selectFrom(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID.eq(positionId))
+                .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.in(cityCodes))
+                .fetchInto(JobPositionLiepinMappingDO.class);
     }
 }

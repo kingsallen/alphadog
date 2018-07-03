@@ -1,4 +1,4 @@
-package com.moseeker.position.constants.position;
+package com.moseeker.position.constants.position.liepin;
 
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import org.slf4j.Logger;

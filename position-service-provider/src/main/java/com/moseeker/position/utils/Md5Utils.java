@@ -2,7 +2,7 @@ package com.moseeker.position.utils;
 
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.position.constants.position.LiepinPositionOperateConstant;
+import com.moseeker.position.constants.position.liepin.LiepinPositionOperateConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

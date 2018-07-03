@@ -16,7 +16,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.DateUtils;
-import com.moseeker.position.constants.position.LiepinPositionOperateConstant;
+import com.moseeker.position.constants.position.liepin.LiepinPositionOperateConstant;
 import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.position.utils.HttpClientUtil;
 import com.moseeker.position.utils.Md5Utils;
@@ -465,7 +465,7 @@ public class LiePinReceiverHandler {
                     }
 
                     // 过滤重新发布城市中的state已经为1的城市
-                    liepinMappingDOList = filterUnneedRepublishCitys(liepinMappingDOList);
+                    liepinMappingDOList = liepinMappingDOList.stream().filter(liepinMappingDO -> liepinMappingDO.getState() == 1).collect(Collectors.toList());
 
                     if (liepinMappingDOList.size() > 0) {
 
@@ -724,25 +724,6 @@ public class LiePinReceiverHandler {
     }
 
     /**
-     * 过滤不需要重新发布的职位，通过发布状态是否为1来确定
-     *
-     * @param
-     * @return
-     * @author cjm
-     * @date 2018/6/19
-     */
-    private List<JobPositionLiepinMappingDO> filterUnneedRepublishCitys(List<JobPositionLiepinMappingDO> liepinMappingDOList) {
-        List<JobPositionLiepinMappingDO> list = new ArrayList<>();
-        for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
-            if (mappingDO.getState() == 1) {
-                continue;
-            }
-            list.add(mappingDO);
-        }
-        return list;
-    }
-
-    /**
      * 编辑单个职位信息
      *
      * @param liePinToken 猎聘生成的hr账号token
@@ -853,6 +834,13 @@ public class LiePinReceiverHandler {
         }
     }
 
+    /**
+     * 验证有效的http请求结果
+     * @param
+     * @author  cjm
+     * @date  2018/7/2
+     * @return
+     */
     public JSONObject requireValidResult(String httpResultJson, int positionId, int channel) throws BIZException {
 
         if (StringUtils.isBlank(httpResultJson)) {
@@ -881,6 +869,13 @@ public class LiePinReceiverHandler {
         return httpResult;
     }
 
+    /**
+     * 向猎聘发请求
+     * @param
+     * @author  cjm
+     * @date  2018/7/2
+     * @return  返回http请求结果
+     */
     public String sendRequest2LiePin(JSONObject liePinJsonObject, String liePinToken, String url) throws Exception {
 
         String t = DateUtils.dateToPattern(new Date(), "yyyyMMdd");
@@ -901,6 +896,13 @@ public class LiePinReceiverHandler {
         return HttpClientUtil.sentHttpPostRequest(url, headers, liePinJsonObject);
     }
 
+    /**
+     * 数据库中可能存在重复的title，将重复的title去掉
+     * @param
+     * @author  cjm
+     * @date  2018/7/2
+     * @return
+     */
     private List<String> removeDuplicateTitle(List<String> titleDbList) {
         LinkedHashSet<String> set = new LinkedHashSet<>(titleDbList.size());
         set.addAll(titleDbList);
@@ -909,7 +911,13 @@ public class LiePinReceiverHandler {
         return titleDbList;
     }
 
-
+    /**
+     * 将json转成DO
+     * @param
+     * @author  cjm
+     * @date  2018/7/2
+     * @return
+     */
     private JobPositionDO convertJSON2DO(JSONObject jobPositionJSON, boolean salaryDiscuss) {
         JobPositionDO jobPositionDO = new JobPositionDO();
         jobPositionDO.setId(jobPositionJSON.getIntValue("id"));
@@ -945,6 +953,13 @@ public class LiePinReceiverHandler {
         return jobPositionDO;
     }
 
+    /**
+     * 比较编辑前后的职位数据是否发生变化
+     * @param
+     * @author  cjm
+     * @date  2018/7/2
+     * @return
+     */
     private boolean compareJobPosition(JobPositionDO jobPositionDO, JobPositionDO updateJobPosition) {
         jobPositionDO = filterBlank(jobPositionDO);
         updateJobPosition = filterBlank(updateJobPosition);
@@ -994,6 +1009,13 @@ public class LiePinReceiverHandler {
         return false;
     }
 
+    /**
+     * 为减少接口访问次数，防止增减个空格就要向猎聘发请求，将部分字段里的空格过滤掉，如果过滤后的字段相同，认为职位信息没有改变
+     * @param
+     * @author  cjm
+     * @date  2018/7/2
+     * @return
+     */
     private JobPositionDO filterBlank(JobPositionDO jobPositionDO) {
         if (StringUtils.isNotBlank(jobPositionDO.getTitle())) {
             jobPositionDO.setTitle(jobPositionDO.getTitle().replaceAll("\\s", ""));

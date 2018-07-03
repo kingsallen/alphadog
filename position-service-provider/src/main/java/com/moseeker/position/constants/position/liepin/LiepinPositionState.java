@@ -1,4 +1,4 @@
-package com.moseeker.position.constants.position;
+package com.moseeker.position.constants.position.liepin;
 
 /**
  * 猎聘职位状态
@@ -14,11 +14,7 @@ public enum LiepinPositionState {
     /*
     发布成功状态
      */
-    PUBLISH(1),
-    /*
-    待审核状态
-     */
-    WAITCHECK(2);
+    PUBLISH(1),;
 
     LiepinPositionState(int value) {
         this.value = value;

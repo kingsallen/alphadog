@@ -180,7 +180,7 @@ public class HRThirdPartyPositionDao  {
      * @throws BIZException
      */
     public <P> List<TwoParam<HrThirdPartyPositionDO,P>> getDatas(Query query) throws BIZException {
-        List<HrThirdPartyPositionDO> list=thirdPartyPositionDao.getDatas(query);
+            List<HrThirdPartyPositionDO> list=thirdPartyPositionDao.getDatas(query);
         if(list==null || list.isEmpty()){
             return new ArrayList<>();
         }
@@ -360,6 +360,7 @@ public class HRThirdPartyPositionDao  {
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
         thirdPartyPositionDao.update(update.buildUpdate());
     }
+
 
     /**
      * 隐藏的内部第三方职位dao，
