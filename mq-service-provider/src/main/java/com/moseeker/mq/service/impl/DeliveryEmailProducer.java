@@ -380,7 +380,7 @@ public class DeliveryEmailProducer {
                 intentions.setJob(positionName.substring(0,positionName.length()-1));
             }
             intentions.setWorkStatus((String) intention.getOrDefault("workstate_name",""));
-            List<Map<String, Object> industriesList = (List<Map<String, Object>) intention.getOrDefault("industries", null);
+            List<Map<String, Object>> industriesList = (List<Map<String, Object>>) intention.getOrDefault("industries", null);
             if(!StringUtils.isEmptyList(industriesList)){
                 StringBuffer industrieName= new StringBuffer();
                 for(Map<String, Object> industries : industriesList){
