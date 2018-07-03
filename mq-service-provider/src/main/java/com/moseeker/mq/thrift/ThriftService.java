@@ -65,7 +65,7 @@ public class ThriftService implements Iface {
 	public Response messageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct) throws TException {
 		try {
 			return mqService.messageTemplateNotice(messageTemplateNoticeStruct);		} catch (Exception e) {
-			e.printStackTrace();
+			logger.info(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
 
@@ -99,7 +99,7 @@ public class ThriftService implements Iface {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vuResult));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.info(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -120,7 +120,7 @@ public class ThriftService implements Iface {
         try {
              mandrillMailListConsumer.sendMailList(mandrillEmailStruct);
         } catch (Exception e) {
-            e.printStackTrace();
+			logger.info(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
         }
     }
