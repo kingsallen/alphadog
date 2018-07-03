@@ -111,7 +111,7 @@ public class ThriftService implements Iface {
 		try {
 			return mandrillEmailProducer.queueEmail(mandrillEmailStruct);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.info(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
 	}
