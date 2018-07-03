@@ -262,7 +262,9 @@ public class MessageTemplateEntity {
             if(record !=null&&StringUtils.isNotNullOrEmpty(record.getFirst())){
                 first.setValue(record.getFirst());
             }else {
-                first.setValue("根据您的求职意愿，仟寻为您挑选了一些新机会。");
+                String text = "根据您的求职意愿，仟寻为您挑选了一些新机会。";
+                text.replace("仟寻", companyName);
+                first.setValue(text);
             }
             colMap.put("first",first);
             MessageTplDataCol remark=new MessageTplDataCol();
