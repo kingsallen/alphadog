@@ -20,11 +20,37 @@ public class CommonUtils {
         context = StringEscapeUtils.escapeHtml4(context);
         context = context.replace(" ","&nbsp;");
         context = context.replace("\n","<br>");
-        context = context.replace("#公司简称#",companyName);
-        context = context.replace("#职位名称#",positionName);
-        context = context.replace("#HR姓名#",hrName);
-        context = context.replace("#求职者姓名#",profileName);
-        context = context.replace("#公众号名称#",wechatName);
+        if(StringUtils.isNotNullOrEmpty(companyName)){
+            context = context.replace("#公司简称#",companyName);
+        }else{
+            context = context.replace("#公司简称#","");
+        }
+
+        if(StringUtils.isNotNullOrEmpty(positionName)){
+            context = context.replace("#职位名称#",positionName);
+        }else{
+            context = context.replace("#职位名称#","");
+        }
+        if(StringUtils.isNotNullOrEmpty(hrName)){
+            context = context.replace("#HR姓名#",hrName);
+        }else{
+            context = context.replace("#HR姓名#","");
+
+        }
+        if(StringUtils.isNotNullOrEmpty(profileName)){
+            context = context.replace("#求职者姓名#",profileName);
+
+        }else{
+            context = context.replace("#求职者姓名#","");
+
+        }
+
+        if(StringUtils.isNotNullOrEmpty(wechatName)){
+            context = context.replace("#公众号名称#",wechatName);
+
+        }else{
+            context = context.replace("#公众号名称#","");
+        }
         return  context;
     }
 

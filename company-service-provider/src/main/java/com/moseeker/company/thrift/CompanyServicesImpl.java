@@ -515,6 +515,32 @@ public class CompanyServicesImpl implements Iface {
         }
     }
 
+    @Override
+    public Response findSubAccountNum(int companyId) throws BIZException, TException {
+        try {
+            Response result= service.findSubAccountNum(companyId);
+            return result;
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response updateWechatThenm(int status, int companyId) throws BIZException, TException {
+        try {
+            Response result= service.upsertWechatTheme(companyId, status);
+            return result;
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
 
     /**
      * 获取公司员工认证后补填字段配置信息列表

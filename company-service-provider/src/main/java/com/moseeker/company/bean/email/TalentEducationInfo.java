@@ -4,34 +4,26 @@ package com.moseeker.company.bean.email;
  * Created by zztaiwll on 18/4/25.
  */
 public class TalentEducationInfo {
-    private String startTime;
-    private String endTime;
-    private String collegeName;
+    private String time;
+    private String college;
     private String degree;
-    private String majorName;
+    private String major;
+    private String description;
 
-    public String getStartTime() {
-        return startTime;
+    public String getTime() {
+        return time;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
+    public void setTime(String time) {
+        this.time = time;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public String getCollege() {
+        return college;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getCollegeName() {
-        return collegeName;
-    }
-
-    public void setCollegeName(String collegeName) {
-        this.collegeName = collegeName;
+    public void setCollege(String college) {
+        this.college = college;
     }
 
     public String getDegree() {
@@ -42,11 +34,19 @@ public class TalentEducationInfo {
         this.degree = degree;
     }
 
-    public String getMajorName() {
-        return majorName;
+    public String getMajor() {
+        return major;
     }
 
-    public void setMajorName(String majorName) {
-        this.majorName = majorName;
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
