@@ -8,7 +8,6 @@ import com.microtripit.mandrillapp.lutung.view.MandrillMessage.Recipient;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessageStatus;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.logdb.LogEmailSendrecordDO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
