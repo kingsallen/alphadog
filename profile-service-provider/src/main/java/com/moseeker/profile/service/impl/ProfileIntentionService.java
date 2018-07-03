@@ -577,14 +577,15 @@ public class ProfileIntentionService {
                             }
                             tobeAddCityRecord.setCityName(entry.getKey());
                             tobeAddCityRecord.setProfileIntentionId((int) (intentionId));
+                            if (tobeAddCityRecord != null) {
+                                intentionCityDao.addRecord(tobeAddCityRecord);
+                            }
                         }
                     }
                 }
             }
         }
-        if (tobeAddCityRecord != null) {
-            intentionCityDao.addRecord(tobeAddCityRecord);
-        }
+
         if (selectedCityRecords != null && selectedCityRecords.size() > 0) {
             intentionCityDao.deleteRecords(selectedCityRecords);
         }
