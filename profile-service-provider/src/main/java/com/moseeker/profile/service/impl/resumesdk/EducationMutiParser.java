@@ -23,11 +23,8 @@ public class EducationMutiParser extends AbstractMutiResumeParser<EducationObj, 
     protected Education parseResume(EducationObj educationObj) throws ResumeParserHelper.ResumeParseException {
         Education education = new Education();
         if (educationObj.getEdu_degree() != null) {
-            if (DegreeSource.intToEnum.get(educationObj.getEdu_degree()) != null) {
-                education.setDegree(DegreeSource.intToEnum.get(educationObj.getEdu_degree()));
-            } else {
-                education.setDegree(0);
-            }
+            int degree = DegreeSource.get(educationObj.getEdu_degree());
+            education.setDegree(degree);
         }
         try {
             education.setStartDate(DateUtils.dateRepair(educationObj.getStart_date(), "\\."));

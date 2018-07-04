@@ -1,5 +1,8 @@
 package com.moseeker.profile.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by lucky8987 on 17/10/11.
  */
@@ -40,6 +43,18 @@ public class DictCode {
         }
     }
 
+    private static final Map<String,Integer> genderMap =new HashMap<>();
+    private static final int KEEP_SECRET = 3;
+
+    static {
+        genderMap.put("男",1);
+        genderMap.put("女",2);
+        genderMap.put("保密",3);
+
+        genderMap.put("male",1);
+        genderMap.put("female",2);
+    }
+
     /**
      0	女 <br/>
      1	男 <br/>
@@ -48,16 +63,10 @@ public class DictCode {
      * @return
      */
     public static int gender(String gender) {
-        switch (gender) {
-            case "男":
-                return 1;
-            case "女":
-                return 2;
-            case "保密":
-                return 3;
-            default:
-                return 3;
+        if(genderMap.containsKey(gender)){
+            return genderMap.get(gender);
         }
+        return KEEP_SECRET;
     }
 
     /**
@@ -74,22 +83,24 @@ public class DictCode {
      * @return
      */
     public static int salary(int topValue){
-        if (topValue < 2000) {
-            return 1;
-        } else if (topValue < 4000) {
-            return 2;
-        } else if (topValue < 6000) {
-            return 3;
-        } else if (topValue < 8000) {
-            return 5;
-        } else if (topValue < 10000) {
-            return 6;
-        } else if (topValue < 15000) {
-            return 7;
-        } else if (topValue >= 25000) {
-            return 8;
-        } else {
+        if (topValue <= 0){
             return 0;
+        } else if (topValue < 2000) {
+            return 1;
+        } else if (topValue <= 4000) {
+            return 2;
+        } else if (topValue <= 6000) {
+            return 3;
+        } else if (topValue <= 8000) {
+            return 4;
+        } else if (topValue <= 10000) {
+            return 5;
+        } else if (topValue <= 15000) {
+            return 6;
+        } else if (topValue <= 25000) {
+            return 7;
+        } else {    // topValue > 25000
+            return 8;
         }
     }
 

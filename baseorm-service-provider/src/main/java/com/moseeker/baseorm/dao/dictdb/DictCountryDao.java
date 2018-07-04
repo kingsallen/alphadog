@@ -78,4 +78,12 @@ public class DictCountryDao extends JooqCrudImpl<DictCountryDO, DictCountryRecor
     public List<DictCountryDO> getAll(){
         return getDatas(new Query.QueryBuilder().buildQuery());
     }
+
+    public DictCountryDO getCountryByNameOrEName(String name){
+        return create.selectFrom(DictCountry.DICT_COUNTRY)
+                .where(DictCountry.DICT_COUNTRY.NAME.equal(name))
+                .or(DictCountry.DICT_COUNTRY.NAME.equal(name))
+                .limit(1)
+                .fetchOneInto(DictCountryDO.class);
+    }
 }

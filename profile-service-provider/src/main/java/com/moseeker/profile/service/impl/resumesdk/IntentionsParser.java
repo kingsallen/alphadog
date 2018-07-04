@@ -16,7 +16,6 @@ import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.service.impl.resumesdk.iface.IResumeParser;
 import com.moseeker.profile.utils.DictCode;
-import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
 import org.slf4j.Logger;
