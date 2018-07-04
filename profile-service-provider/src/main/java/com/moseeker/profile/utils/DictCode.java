@@ -53,6 +53,9 @@ public class DictCode {
 
         genderMap.put("male",1);
         genderMap.put("female",2);
+
+        genderMap.put("man",1);
+        genderMap.put("woman",2);
     }
 
     /**
