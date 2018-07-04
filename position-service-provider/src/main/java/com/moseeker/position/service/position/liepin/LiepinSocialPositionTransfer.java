@@ -303,22 +303,19 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                         repubCityIdCodeMap, liePinPositionVO, liePinUserId, liePinToken, successSyncIds);
 
                 // 发布职位时如果是已经存在的职位，但是状态为0，则执行先上架后修改
-                successRePublishNum = updateExistPosition(republishIds, liePinToken, positionId, liePinPositionVO);
+                successRePublishNum = updateExistPosition(republishIds.substring(0, republishIds.length() - 1), liePinToken, positionId, liePinPositionVO);
 
                 // 编辑修改职位
                 editNum = editExistPosition(editCity, editCityIdCodeMap, liePinPositionVO, liePinToken);
 
                 // 职位发布和修改后可能发布成功但是需要审核，该操作是发布后获取职位审核状态
-                List<Integer> auditList = getAuditList(successSyncIds, editCityIdCodeMap);
+                List<Integer> auditList = getAuditList(successSyncIds, editCityIdCodeMap, republishIds.substring(0, republishIds.length() - 1));
 
                 for (int mappingId : auditList) {
                     JSONObject positionInfoDetail = getPositionAuditState(mappingId, liePinToken, positionId, channel);
                     logger.info("=======================positionInfoDetail:{}", positionInfoDetail);
                     if (positionInfoDetail != null) {
                         String audit = positionInfoDetail.getString("ejob_auditflag");
-                        if (StringUtils.isNullOrEmpty(audit)) {
-                            continue;
-                        }
                         // 根据职位审批状态进行不同的同步状态处理，如果待审核，同步状态设置为2，如果审核通过，同步状态设置为1，如果审核失败，同步状态设置为3，设置errmsg
                         comparePositionAudit(hrThirdPartyPositionDO, audit, thirdPartyPositionId, mappingId);
                         logger.info("=======================hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
@@ -353,7 +350,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
      * @date  2018/7/3
      * @return List
      */
-    private List<Integer> getAuditList(List<Integer> successSyncIds, Map<String, Integer> editCityIdCodeMap) {
+    private List<Integer> getAuditList(List<Integer> successSyncIds, Map<String, Integer> editCityIdCodeMap, String republishIds) {
         Set<Integer> set = new HashSet<>();
         if(successSyncIds != null && successSyncIds.size() > 0){
             set.addAll(successSyncIds);
@@ -361,6 +358,11 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         if(editCityIdCodeMap != null){
             List<Integer> editList = new ArrayList<>(editCityIdCodeMap.values());
             set.addAll(editList);
+        }
+        if(StringUtils.isNotNullOrEmpty(republishIds)){
+            List<String> list = Arrays.asList(republishIds.split(","));
+            List<Integer> intList = list.stream().map(one -> Integer.parseInt(one)).collect(Collectors.toList());
+            set.addAll(intList);
         }
         return new ArrayList<>(set);
     }
@@ -487,13 +489,13 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
      * @author cjm
      * @date 2018/6/22
      */
-    private int updateExistPosition(StringBuilder republishIds, String liePinToken, Integer positionId, LiePinPositionVO liePinPositionVO) throws Exception {
+    private int updateExistPosition(String republishIds, String liePinToken, Integer positionId, LiePinPositionVO liePinPositionVO) throws Exception {
         // 更新上架后的状态
         if (republishIds.length() > 0) {
             List<Integer> republishIdList = new ArrayList<>();
             try {
                 // 上架后返回此次上架职位的数量
-                republishIdList = upshelfJobPosition(republishIds.substring(0, republishIds.length() - 1), liePinToken, positionId);
+                republishIdList = upshelfJobPosition(republishIds, liePinToken, positionId);
 
                 logger.info("===========上架后返回此次上架职位的数量republishIdList:{}============", republishIdList);
 
