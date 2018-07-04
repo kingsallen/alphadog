@@ -123,7 +123,8 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh{
             logger.info("=================没有查到职位id/citycode对应的mapping表信息，positionId:{}, cityCodes:{}===============", positionId, cityCodes);
             return new ArrayList<>();
         }
-        return jobPositionLiepinMappingDOS.stream().filter(jobPositionLiepinMappingDO -> jobPositionLiepinMappingDO.getState() == 1)
+        // todo 已修改filter=1
+        return jobPositionLiepinMappingDOS.stream().filter(jobPositionLiepinMappingDO -> jobPositionLiepinMappingDO.getState() != 1)
                 .map(jobPositionLiepinMappingDO -> jobPositionLiepinMappingDO.getId()).collect(Collectors.toList());
 
     }

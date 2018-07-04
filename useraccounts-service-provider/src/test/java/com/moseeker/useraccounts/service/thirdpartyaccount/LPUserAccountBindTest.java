@@ -44,8 +44,8 @@ public class LPUserAccountBindTest {
     @Test
     public void testBind() throws Exception {
         HrThirdPartyAccountDO user = new HrThirdPartyAccountDO();
-        user.setUsername("mayflower");
-        user.setPassword("20180612");
+        user.setUsername("test1232");
+        user.setPassword("7a85e7c8df7af1e79c2f89040319af6c");
         user = handler.bind(user, null);
     }
 

@@ -479,7 +479,7 @@ public class LiePinReceiverHandler {
                     }
 
                     // 过滤重新发布城市中的state已经为1的城市
-                    liepinMappingDOList = liepinMappingDOList.stream().filter(liepinMappingDO -> liepinMappingDO.getState() == 1).collect(Collectors.toList());
+                    liepinMappingDOList = liepinMappingDOList.stream().filter(liepinMappingDO -> liepinMappingDO.getState() == 0).collect(Collectors.toList());
 
                     if (liepinMappingDOList.size() > 0) {
 

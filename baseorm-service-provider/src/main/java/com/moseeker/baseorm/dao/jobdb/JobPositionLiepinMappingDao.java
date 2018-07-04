@@ -14,6 +14,7 @@ import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.List;
  */
 @Repository
 public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinMappingDO, JobPositionLiepinMappingRecord> {
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
 
     public JobPositionLiepinMappingDao() {
         super(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING, JobPositionLiepinMappingDO.class);
@@ -144,5 +147,12 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.POSITION_ID.eq(positionId))
                 .and(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.CITY_CODE.in(cityCodes))
                 .fetchInto(JobPositionLiepinMappingDO.class);
+    }
+
+    public int updateUpdateTime(int id) {
+        return create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
+                .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.eq(id))
+                .execute();
     }
 }

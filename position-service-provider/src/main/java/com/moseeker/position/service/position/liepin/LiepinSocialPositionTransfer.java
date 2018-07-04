@@ -566,6 +566,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
             httpClientUtil.requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
 
+            liepinMappingDao.updateUpdateTime(Integer.parseInt(mappingDOId));
+
         } catch (Exception e) {
             liepinMappingDao.updateErrMsg(Integer.parseInt(mappingDOId), e.getMessage());
             throw e;
