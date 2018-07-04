@@ -1,5 +1,8 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
+import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,7 +28,8 @@ import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
 public class CustomizeResumeController {
 
 	Logger logger = LoggerFactory.getLogger(CustomizeResumeController.class);
-
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER
+            .getService(ProfileOtherThriftService.Iface.class);
 	CustomizeResumeServices.Iface awardService = ServiceManager.SERVICEMANAGER.getService(CustomizeResumeServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/other", method = RequestMethod.GET)
@@ -44,6 +48,26 @@ public class CustomizeResumeController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+
+    @RequestMapping(value = "/profile/other/list", method = RequestMethod.GET)
+    @ResponseBody
+    public String getOtherList(HttpServletRequest request, HttpServletResponse response) {
+        //PrintWriter writer = null;
+        try {
+            // GET方法 通用参数解析并赋值
+            Params<String, Object> form = ParamUtils.parseRequestParam(request);
+            int accountId = form.getInt("account_id", 0);
+            int userId = form.getInt("user_ids",0);
+            Response result = profileOtherService.getProfileInfo(userId, accountId);
+
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
 
 	@RequestMapping(value = "/profile/other", method = RequestMethod.POST)
 	@ResponseBody

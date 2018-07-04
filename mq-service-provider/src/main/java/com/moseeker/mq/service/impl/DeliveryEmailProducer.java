@@ -290,7 +290,7 @@ public class DeliveryEmailProducer {
                     List<Internship> shipList = new ArrayList<>();
                     for(Map<String, Object> internship : internshipList){
                         Internship ship = new Internship();
-                        ship.setTime(appendTime(internship.get("internshipStart"), internship.get("internshipEnd"), internship.get("internshipEndUntilNow")));
+                        ship.setTime(DateUtils.appendTime(internship.get("internshipStart"), internship.get("internshipEnd"), internship.get("internshipEndUntilNow")));
                         ship.setCompany((String)internship.getOrDefault("internshipCompanyName", ""));
                         ship.setPosition((String)internship.getOrDefault("internshipJob", ""));
                         ship.setDepartment((String)internship.getOrDefault("internshipDepartmentName", ""));
@@ -304,7 +304,7 @@ public class DeliveryEmailProducer {
                     List<SchoolWork> schoolList = new ArrayList<>();
                     for(Map<String, Object> school : schooljobList){
                         SchoolWork ship = new SchoolWork();
-                        ship.setTime(appendTime(school.get("schooljobStart"), school.get("schooljobEnd"), school.get("schooljobEndUntilNow")));
+                        ship.setTime(DateUtils.appendTime(school.get("schooljobStart"), school.get("schooljobEnd"), school.get("schooljobEndUntilNow")));
                         ship.setName((String)school.getOrDefault("schooljobJob", ""));
                         ship.setDescription((String)school.getOrDefault("schooljobDescriptionHidden", ""));
                         schoolList.add(ship);
@@ -332,7 +332,7 @@ public class DeliveryEmailProducer {
             for (int i = 0; i < educationList.size(); i++) {
                 Map<String, Object> education = educationList.get(i);
                 EduExps eduExps = new EduExps();
-                eduExps.setTime(appendTime(education.get("start_date"), education.get("end_date"), education.get("end_until_now")));
+                eduExps.setTime(DateUtils.appendTime(education.get("start_date"), education.get("end_date"), education.get("end_until_now")));
                 eduExps.setCollege((String) education.getOrDefault("college_name",""));
                 eduExps.setMajor((String) education.getOrDefault("major_name",""));
                 eduExps.setDescription((String) education.getOrDefault("description",""));
@@ -388,7 +388,7 @@ public class DeliveryEmailProducer {
             basic.setPosition((String) workexpList.get(0).getOrDefault("job",""));
             for(Map<String, Object> workexp : workexpList) {
                 WorkExps workExps = new WorkExps();
-                workExps.setTime(appendTime(workexp.get("start_date"), workexp.get("end_date"), workexp.get("end_until_now")));
+                workExps.setTime(DateUtils.appendTime(workexp.get("start_date"), workexp.get("end_date"), workexp.get("end_until_now")));
                 workExps.setDescription((String) workexp.getOrDefault("description",""));
                 workExps.setCompany((String) workexp.getOrDefault("company_name",""));
                 workExps.setDepartment((String) workexp.getOrDefault("department_name",""));
@@ -447,23 +447,6 @@ public class DeliveryEmailProducer {
         }
 
         return emailInfo;
-    }
-
-    private String appendTime(Object startTime, Object endTime, Object endUntilNow ){
-        logger.info("startTime:{},endTime:{},endUntilNow:{}",startTime,endTime,endUntilNow);
-        String start = "";
-        if (startTime != null) {
-            start = ((String)startTime).substring(0, 7).replace("-", ".");
-        }
-        String end = "";
-        if (endTime == null || 1 == (int) endUntilNow) {
-            end = "至今";
-        } else {
-            end = ((String)endTime).substring(0, 7).replace("-", ".");
-        }
-        String time = start + " - " + end;
-        logger.info("time:{}",time);
-        return  time;
     }
 
 

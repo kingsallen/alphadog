@@ -32,8 +32,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -50,6 +49,9 @@ import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.entity.pojo.profile.*;
 import com.moseeker.entity.pojo.resume.*;
+import com.moseeker.profile.constants.pojo.Internship;
+import com.moseeker.profile.constants.pojo.ProfileInfo;
+import com.moseeker.profile.constants.pojo.SchoolWork;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.profile.utils.DictCode;
@@ -1142,6 +1144,52 @@ public class ProfileService {
         return otherMap;
     }
 
+    public void getProfileOtherListByIds(List<Integer> userIds, int accountId){
+        List<ProfileInfo> infoList = new ArrayList<>();
+        if(!StringUtils.isEmptyList(userIds)) {
+            for (Integer userId : userIds) {
+                Map<String, Object> otherDatas = this.getApplicationOther(userId, accountId, 0);
+                ProfileInfo info = new ProfileInfo();
+                if(otherDatas != null){
+                    List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>)otherDatas.getOrDefault("keyvalues", new ArrayList<>());
+                    if(!StringUtils.isEmptyList(keyvalueList)){
+                        info.setOther_identity(ProfileOtherIdentityType.getMessageList(keyvalueList));
+                        info.setOther_career(ProfileOtherCareerType.getMessageList(keyvalueList));
+                        info.setOther_school(ProfileOtherSchoolType.getMessageList(keyvalueList));
+                    }
+                    List<Map<String, Object>> internshipList = (List<Map<String, Object>>)otherDatas.getOrDefault("internship", new ArrayList());
+                    if(!StringUtils.isEmptyList(internshipList)){
+                        List<Internship> shipList = new ArrayList<>();
+                        for(Map<String, Object> internship : internshipList){
+                            Internship ship = new Internship();
+                            ship.setTime(DateUtils.appendTime(internship.get("internshipStart"), internship.get("internshipEnd"), internship.get("internshipEndUntilNow")));
+                            ship.setCompany((String)internship.getOrDefault("internshipCompanyName", ""));
+                            ship.setPosition((String)internship.getOrDefault("internshipJob", ""));
+                            ship.setDepartment((String)internship.getOrDefault("internshipDepartmentName", ""));
+                            ship.setDescription((String)internship.getOrDefault("internshipDescriptionHidden", ""));
+                            shipList.add(ship);
+                        }
+                        info.setOther_internship(shipList);
+                    }
+                    List<Map<String, Object>> schooljobList = (List<Map<String, Object>>)otherDatas.getOrDefault("schooljob", new ArrayList());
+                    if(!StringUtils.isEmptyList(schooljobList)){
+                        List<SchoolWork> schoolList = new ArrayList<>();
+                        for(Map<String, Object> school : schooljobList){
+                            SchoolWork ship = new SchoolWork();
+                            ship.setTime(DateUtils.appendTime(school.get("schooljobStart"), school.get("schooljobEnd"), school.get("schooljobEndUntilNow")));
+                            ship.setName((String)school.getOrDefault("schooljobJob", ""));
+                            ship.setDescription((String)school.getOrDefault("schooljobDescriptionHidden", ""));
+                            schoolList.add(ship);
+                        }
+                        info.setOther_schoolWork(schoolList);
+                    }
+                    info.setOther_idPhoto((String)otherDatas.getOrDefault("photo", ""));
+                }
+                infoList.add(info);
+            }
+        }
+    }
+
     /**
      *查询申请者申请HR账号下的自定义简历
      *
@@ -1163,8 +1211,8 @@ public class ProfileService {
         if(accountDO == null)
             throw  CommonException.PROGRAM_PARAM_NOTEXIST;
         List<JobApplicationDO> applicationDOS = new ArrayList<>();
-      List<Integer> updateList = new ArrayList<>();
-      List<JobApplicationDO> applicationDOList = new ArrayList<>();
+        List<Integer> updateList = new ArrayList<>();
+        List<JobApplicationDO> applicationDOList = new ArrayList<>();
         if(positionId <= 0) {
             Query positionQuery = null;
             //获取这份简历在该公司下所有申请
