@@ -2,10 +2,12 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
+import com.moseeker.baseorm.dao.dictdb.DictIndustryTypeDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryTypeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionCityRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
@@ -54,6 +56,9 @@ public class ProfileIntentionService {
 
     @Autowired
     private DictIndustryDao dictIndustryDao;
+
+    @Autowired
+    private DictIndustryTypeDao dictIndustryTypeDao;
 
     @Autowired
     private DictPositionDao dictPositionDao;
@@ -438,7 +443,7 @@ public class ProfileIntentionService {
         QueryUtil industryQuery = new QueryUtil();
         industryQuery.setPageNo(1);
         industryQuery.setPageSize(Integer.MAX_VALUE);
-        List<DictIndustryRecord> industryRecordList = dictIndustryDao.getRecords(industryQuery);
+        List<DictIndustryTypeRecord> industryRecordList = dictIndustryTypeDao.getRecords(industryQuery);
 
         QueryUtil selectedIndustryQuery = new QueryUtil();
         selectedIndustryQuery.addEqualFilter("profile_intention_id", String.valueOf(intentionId));
@@ -465,8 +470,8 @@ public class ProfileIntentionService {
                 if (!exist) {
                     if (entry.getValue() != null && entry.getValue().intValue() > 0) {
 
-                        DictIndustryRecord legalRecord = null;
-                        for (DictIndustryRecord dictIndustryRecord : industryRecordList) {
+                        DictIndustryTypeRecord legalRecord = null;
+                        for (DictIndustryTypeRecord dictIndustryRecord : industryRecordList) {
                             if (dictIndustryRecord.getCode().intValue() == entry.getValue().intValue()) {
                                 legalRecord = dictIndustryRecord;
                                 break;
@@ -483,8 +488,8 @@ public class ProfileIntentionService {
                         //如果没有key的情况下，只有name有值才有意义
                         if (!StringUtils.isNullOrEmpty(entry.getKey())) {
                             toBeAddIntentionIndustry = new ProfileIntentionIndustryRecord();
-                            DictIndustryRecord legalRecord = null;
-                            for (DictIndustryRecord dictIndustryRecord : industryRecordList) {
+                            DictIndustryTypeRecord legalRecord = null;
+                            for (DictIndustryTypeRecord dictIndustryRecord : industryRecordList) {
                                 if (dictIndustryRecord.getName().equals(entry.getKey())) {
                                     legalRecord = dictIndustryRecord;
                                     break;
