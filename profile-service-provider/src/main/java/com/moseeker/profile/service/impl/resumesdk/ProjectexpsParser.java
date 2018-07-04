@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl.resumesdk;
 
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.profile.Projectexps;
 import com.moseeker.entity.pojo.resume.ProjectexpObj;
@@ -36,7 +37,10 @@ public class ProjectexpsParser extends AbstractMutiResumeParser<ProjectexpObj, P
         }
         // 职责
         project.setResponsibility(projectexpObj.getProj_resp());
-        project.setDescription(projectexpObj.getProj_content()+"\n项目职责："+projectexpObj.getProj_resp());
+        project.setDescription(projectexpObj.getProj_content());
+        if(StringUtils.isNotNullOrEmpty(projectexpObj.getProj_resp())) {
+            project.setDescription(projectexpObj.getProj_content() + "\n项目职责：" + projectexpObj.getProj_resp());
+        }
         project.setName(projectexpObj.getProj_name());
         return project;
     }
