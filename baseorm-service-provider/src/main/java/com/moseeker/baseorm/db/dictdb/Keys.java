@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
 import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
+import com.moseeker.baseorm.db.dictdb.tables.DictCityLiepin;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityPostcode;
 import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
@@ -27,6 +28,7 @@ import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCarnocOccupationRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityLiepinRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityMapRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
@@ -71,6 +73,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<Dict_51jobOccupationRecord, Integer> IDENTITY_DICT_51JOB_OCCUPATION = Identities0.IDENTITY_DICT_51JOB_OCCUPATION;
+    public static final Identity<DictCityLiepinRecord, Integer> IDENTITY_DICT_CITY_LIEPIN = Identities0.IDENTITY_DICT_CITY_LIEPIN;
     public static final Identity<DictCityMapRecord, Integer> IDENTITY_DICT_CITY_MAP = Identities0.IDENTITY_DICT_CITY_MAP;
     public static final Identity<DictCityPostcodeRecord, Integer> IDENTITY_DICT_CITY_POSTCODE = Identities0.IDENTITY_DICT_CITY_POSTCODE;
     public static final Identity<DictConstantRecord, Integer> IDENTITY_DICT_CONSTANT = Identities0.IDENTITY_DICT_CONSTANT;
@@ -87,7 +90,9 @@ public class Keys {
     public static final UniqueKey<DictAlipaycampusCityRecord> KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY = UniqueKeys0.KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY;
     public static final UniqueKey<DictAlipaycampusJobcategoryRecord> KEY_DICT_ALIPAYCAMPUS_JOBCATEGORY_PRIMARY = UniqueKeys0.KEY_DICT_ALIPAYCAMPUS_JOBCATEGORY_PRIMARY;
     public static final UniqueKey<DictCarnocOccupationRecord> KEY_DICT_CARNOC_OCCUPATION_PRIMARY = UniqueKeys0.KEY_DICT_CARNOC_OCCUPATION_PRIMARY;
+    public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_PRIMARY = UniqueKeys0.KEY_DICT_CITY_PRIMARY;
     public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_CODE = UniqueKeys0.KEY_DICT_CITY_CODE;
+    public static final UniqueKey<DictCityLiepinRecord> KEY_DICT_CITY_LIEPIN_PRIMARY = UniqueKeys0.KEY_DICT_CITY_LIEPIN_PRIMARY;
     public static final UniqueKey<DictCityMapRecord> KEY_DICT_CITY_MAP_PRIMARY = UniqueKeys0.KEY_DICT_CITY_MAP_PRIMARY;
     public static final UniqueKey<DictCityPostcodeRecord> KEY_DICT_CITY_POSTCODE_PRIMARY = UniqueKeys0.KEY_DICT_CITY_POSTCODE_PRIMARY;
     public static final UniqueKey<DictCityPostcodeRecord> KEY_DICT_CITY_POSTCODE_DICT_CITY_POSTCODE_POSTCODE_UINDEX = UniqueKeys0.KEY_DICT_CITY_POSTCODE_DICT_CITY_POSTCODE_POSTCODE_UINDEX;
@@ -117,6 +122,7 @@ public class Keys {
 
     private static class Identities0 extends AbstractKeys {
         public static Identity<Dict_51jobOccupationRecord, Integer> IDENTITY_DICT_51JOB_OCCUPATION = createIdentity(Dict_51jobOccupation.DICT_51JOB_OCCUPATION, Dict_51jobOccupation.DICT_51JOB_OCCUPATION.CODE);
+        public static Identity<DictCityLiepinRecord, Integer> IDENTITY_DICT_CITY_LIEPIN = createIdentity(DictCityLiepin.DICT_CITY_LIEPIN, DictCityLiepin.DICT_CITY_LIEPIN.ID);
         public static Identity<DictCityMapRecord, Integer> IDENTITY_DICT_CITY_MAP = createIdentity(DictCityMap.DICT_CITY_MAP, DictCityMap.DICT_CITY_MAP.ID);
         public static Identity<DictCityPostcodeRecord, Integer> IDENTITY_DICT_CITY_POSTCODE = createIdentity(DictCityPostcode.DICT_CITY_POSTCODE, DictCityPostcode.DICT_CITY_POSTCODE.ID);
         public static Identity<DictConstantRecord, Integer> IDENTITY_DICT_CONSTANT = createIdentity(DictConstant.DICT_CONSTANT, DictConstant.DICT_CONSTANT.ID);
@@ -131,7 +137,9 @@ public class Keys {
         public static final UniqueKey<DictAlipaycampusCityRecord> KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY = createUniqueKey(DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY, "KEY_dict_alipaycampus_city_PRIMARY", DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY.ID);
         public static final UniqueKey<DictAlipaycampusJobcategoryRecord> KEY_DICT_ALIPAYCAMPUS_JOBCATEGORY_PRIMARY = createUniqueKey(DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY, "KEY_dict_alipaycampus_jobcategory_PRIMARY", DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY.ID);
         public static final UniqueKey<DictCarnocOccupationRecord> KEY_DICT_CARNOC_OCCUPATION_PRIMARY = createUniqueKey(DictCarnocOccupation.DICT_CARNOC_OCCUPATION, "KEY_dict_carnoc_occupation_PRIMARY", DictCarnocOccupation.DICT_CARNOC_OCCUPATION.CODE);
+        public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_PRIMARY = createUniqueKey(DictCity.DICT_CITY, "KEY_dict_city_PRIMARY", DictCity.DICT_CITY.CODE);
         public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_CODE = createUniqueKey(DictCity.DICT_CITY, "KEY_dict_city_code", DictCity.DICT_CITY.CODE);
+        public static final UniqueKey<DictCityLiepinRecord> KEY_DICT_CITY_LIEPIN_PRIMARY = createUniqueKey(DictCityLiepin.DICT_CITY_LIEPIN, "KEY_dict_city_liepin_PRIMARY", DictCityLiepin.DICT_CITY_LIEPIN.ID);
         public static final UniqueKey<DictCityMapRecord> KEY_DICT_CITY_MAP_PRIMARY = createUniqueKey(DictCityMap.DICT_CITY_MAP, "KEY_dict_city_map_PRIMARY", DictCityMap.DICT_CITY_MAP.ID);
         public static final UniqueKey<DictCityPostcodeRecord> KEY_DICT_CITY_POSTCODE_PRIMARY = createUniqueKey(DictCityPostcode.DICT_CITY_POSTCODE, "KEY_dict_city_postcode_PRIMARY", DictCityPostcode.DICT_CITY_POSTCODE.ID);
         public static final UniqueKey<DictCityPostcodeRecord> KEY_DICT_CITY_POSTCODE_DICT_CITY_POSTCODE_POSTCODE_UINDEX = createUniqueKey(DictCityPostcode.DICT_CITY_POSTCODE, "KEY_dict_city_postcode_dict_city_postcode_postcode_uindex", DictCityPostcode.DICT_CITY_POSTCODE.POSTCODE);

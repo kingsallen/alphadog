@@ -1,52 +1,37 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionProfileFilterDao;
 import com.moseeker.baseorm.dao.logdb.LogTalentpoolProfileFilterLogDao;
-import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
-import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
-import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
-import com.moseeker.baseorm.dao.talentpooldb.TalentpoolExecuteDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolProfileFilterDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolProfileFilterExcuteDao;
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolProfileFilterLogRecord;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter;
-import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
-import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
-import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
-import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 /**
@@ -66,41 +51,12 @@ public class JobApplicationFilterService {
     private HrCompanyDao hrCompanyDao;
     @Autowired
     private TalentpoolProfileFilterDao talentpoolProfileFilterDao;
-
     @Autowired
     private CompanyFilterTagValidation tagValidation;
     @Autowired
     private LogTalentpoolProfileFilterLogDao logDao;
-
-    @Autowired
-    private Environment env;
-
     @Autowired
     private TalentpoolProfileFilterExcuteDao talentpoolProfileFilterExcuteDao;
-
-    @Autowired
-    private TalentpoolExecuteDao talentpoolExecuteDao;
-    @Autowired
-    private TalentpoolEmailDao talentpoolEmailDao;
-
-    @Autowired
-    private UserHrAccountDao userHrAccountDao;
-
-    @Autowired
-    private HrCompanyAccountDao companyAccountDao;
-
-    @Autowired
-    private HrWxWechatDao hrWxWechatDao;
-    @Autowired
-    private UserUserDao userUserDao;
-
-    @Autowired
-    private ProfileProfileDao profileDao;
-
-    @Autowired
-    private ProfileBasicDao basicDao;
-    @Autowired
-    private TalentPoolEmailEntity emailEntity;
 
 
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
