@@ -303,13 +303,13 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                         repubCityIdCodeMap, liePinPositionVO, liePinUserId, liePinToken, successSyncIds);
 
                 // 发布职位时如果是已经存在的职位，但是状态为0，则执行先上架后修改
-                successRePublishNum = updateExistPosition(republishIds.substring(0, republishIds.length() - 1), liePinToken, positionId, liePinPositionVO);
+                successRePublishNum = updateExistPosition(republishIds, liePinToken, positionId, liePinPositionVO);
 
                 // 编辑修改职位
                 editNum = editExistPosition(editCity, editCityIdCodeMap, liePinPositionVO, liePinToken);
 
                 // 职位发布和修改后可能发布成功但是需要审核，该操作是发布后获取职位审核状态
-                List<Integer> auditList = getAuditList(successSyncIds, editCityIdCodeMap, republishIds.substring(0, republishIds.length() - 1));
+                List<Integer> auditList = getAuditList(successSyncIds, editCityIdCodeMap, republishIds);
 
                 for (int mappingId : auditList) {
                     JSONObject positionInfoDetail = getPositionAuditState(mappingId, liePinToken, positionId, channel);
@@ -350,7 +350,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
      * @date  2018/7/3
      * @return List
      */
-    private List<Integer> getAuditList(List<Integer> successSyncIds, Map<String, Integer> editCityIdCodeMap, String republishIds) {
+    private List<Integer> getAuditList(List<Integer> successSyncIds, Map<String, Integer> editCityIdCodeMap, StringBuilder republishIds) {
         Set<Integer> set = new HashSet<>();
         if(successSyncIds != null && successSyncIds.size() > 0){
             set.addAll(successSyncIds);
@@ -359,11 +359,12 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             List<Integer> editList = new ArrayList<>(editCityIdCodeMap.values());
             set.addAll(editList);
         }
-        if(StringUtils.isNotNullOrEmpty(republishIds)){
-            List<String> list = Arrays.asList(republishIds.split(","));
-            List<Integer> intList = list.stream().map(one -> Integer.parseInt(one)).collect(Collectors.toList());
+        if(republishIds.length() > 0){
+            List<String> list = Arrays.asList(republishIds.toString().split(","));
+            List<Integer> intList = list.stream().filter(one -> StringUtils.isNotNullOrEmpty(one)).map(one -> Integer.parseInt(one)).collect(Collectors.toList());
             set.addAll(intList);
         }
+        logger.info("====================set:{}", set);
         return new ArrayList<>(set);
     }
 
@@ -489,13 +490,13 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
      * @author cjm
      * @date 2018/6/22
      */
-    private int updateExistPosition(String republishIds, String liePinToken, Integer positionId, LiePinPositionVO liePinPositionVO) throws Exception {
+    private int updateExistPosition(StringBuilder republishIds, String liePinToken, Integer positionId, LiePinPositionVO liePinPositionVO) throws Exception {
         // 更新上架后的状态
         if (republishIds.length() > 0) {
             List<Integer> republishIdList = new ArrayList<>();
             try {
                 // 上架后返回此次上架职位的数量
-                republishIdList = upshelfJobPosition(republishIds, liePinToken, positionId);
+                republishIdList = upshelfJobPosition(republishIds.substring(0, republishIds.length() - 1), liePinToken, positionId);
 
                 logger.info("===========上架后返回此次上架职位的数量republishIdList:{}============", republishIdList);
 
