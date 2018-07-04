@@ -25,7 +25,8 @@ import com.moseeker.position.constants.position.liepin.LiepinPositionOperateCons
 import com.moseeker.position.constants.position.liepin.LiepinPositionState;
 import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.position.service.schedule.constant.LiepinPositionAuditState;
-import com.moseeker.position.service.schedule.delay.LiepinSyncStateRefresh;
+import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
+import com.moseeker.position.service.schedule.delay.refresh.LiepinSyncStateRefresh;
 import com.moseeker.position.service.schedule.delay.PositionTaskQueueDaemonThread;
 import com.moseeker.position.utils.LiepinHttpClientUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
@@ -44,7 +45,6 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -389,8 +389,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             hrThirdPartyPositionDO.setSyncFailReason("审核中");
             liepinMappingDao.updateState(mappingId, (byte) LiepinPositionState.UNPUBLISH.getValue());
             // 放入延时队列去更新职位审核状态
-            LiepinSyncStateRefresh liepinSyncStateRefresh = new LiepinSyncStateRefresh(thirdPartyPositionId);
-            delayQueueThread.put(liepinSyncStateRefresh.timeout + random.nextInt(5 * 60 * 1000), liepinSyncStateRefresh);
+            PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(thirdPartyPositionId, getChannel().getValue(), LiepinSyncStateRefresh.timeout);
+            delayQueueThread.put(refreshBean.getTimeout() + random.nextInt(1 * 60 * 1000), refreshBean);
             logger.info("========================放入LiepinSyncStateRefresh");
         } else if (LiepinPositionAuditState.NOTPASS.getValue().equals(audit)) {
             logger.info("=====================审核不通过");

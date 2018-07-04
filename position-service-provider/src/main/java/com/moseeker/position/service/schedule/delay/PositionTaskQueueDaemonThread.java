@@ -1,8 +1,9 @@
 package com.moseeker.position.service.schedule.delay;
 
-import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.DelayQueue;
@@ -29,7 +30,8 @@ public class PositionTaskQueueDaemonThread {
         return LazyHolder.taskQueueDaemonThread;
     }
 
-    private ThreadPool pool = ThreadPool.Instance;
+    @Autowired
+    SyncStateRefreshFactory refreshFactory;
     /**
      * 守护线程
      */
@@ -52,13 +54,15 @@ public class PositionTaskQueueDaemonThread {
                 PositionDelayTask t1 = delayQueue.take();
                 if (t1 != null) {
                     //修改问题的状态
-                    Runnable task = t1.getTask();
+                    PositionSyncStateRefreshBean task = t1.getTask();
                     if (task == null) {
                         continue;
                     }
-                    pool.startTast(task, null);
+                    refreshFactory.refresh(task);
                     logger.info("[at task:" + task + "]   [Time:" + System.currentTimeMillis() + "]");
                 }
+                System.out.println(delayQueue.size());
+
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 break;
@@ -78,7 +82,7 @@ public class PositionTaskQueueDaemonThread {
      * 用户为问题设置延迟时间
      */
     @SuppressWarnings("unchecked")
-    public void put(long time, Runnable task) {
+    public void put(long time, PositionSyncStateRefreshBean task) {
         //转换成ns
         long nanoTime = TimeUnit.NANOSECONDS.convert(time, TimeUnit.MILLISECONDS);
         //创建一个任务
@@ -91,7 +95,7 @@ public class PositionTaskQueueDaemonThread {
      * 结束订单
      * @param task
      */
-    public boolean endTask(PositionDelayTask<Runnable> task){
+    public boolean endTask(PositionDelayTask task){
         return delayQueue.remove(task);
     }
 }

@@ -1,4 +1,4 @@
-package com.moseeker.position.service.schedule.delay;
+package com.moseeker.position.service.schedule.delay.refresh;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
@@ -9,7 +9,7 @@ import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.liepin.LiepinSocialPositionTransfer;
 import com.moseeker.position.service.schedule.constant.LiepinPositionAuditState;
-import com.moseeker.position.utils.PositionEmailNotification;
+import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
@@ -17,6 +17,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,12 @@ import java.util.stream.Collectors;
  * @author cjm
  * @date 2018-07-02 9:19
  **/
+@Component
 public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh{
 
     private Logger logger = LoggerFactory.getLogger(LiepinSyncStateRefresh.class);
 
-    public long timeout = 1 * 1* 60 *1000;
+    public static final long timeout = 1 * 1 * 60 * 1000;
 
     @Autowired
     private JobPositionLiepinMappingDao liepinMappingDao;
@@ -44,15 +46,15 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh{
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
-    public LiepinSyncStateRefresh(int hrThirdPartyPositionId) {
-        super(hrThirdPartyPositionId);
-    }
-
     @Override
-    public void run() {
+    public void refresh(PositionSyncStateRefreshBean refreshBean) {
+        logger.info("========================职位状态刷新开始");
         // 使用第三方职位id刷新职位状态
         short isSynchronization = 2;
+        int hrThirdPartyPositionId = refreshBean.getHrThirdPartyPositionId();
+        logger.info("===================isSynchronization");
         HrThirdPartyPositionDO hrThirdPartyPositionDO = getHrThirdPartyPosition(hrThirdPartyPositionId, isSynchronization);
+        logger.info("=========================hrThirdPartyPositionDO{}", hrThirdPartyPositionDO);
         if(hrThirdPartyPositionDO == null){
             logger.info("=========================无第三方职位信息hrThirdPartyPositionId:{}", hrThirdPartyPositionId);
             return;
@@ -63,6 +65,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh{
         int positionId = hrThirdPartyPositionDO.getPositionId();
         // 使用第三方职位id获取token
         String liePinToken = getLiepinToken(thirdAccountId);
+        logger.info("=====================thirdAccountId:{},positionId:{},liePinToken:{}", thirdAccountId, positionId, liePinToken);
         if(StringUtils.isNullOrEmpty(liePinToken)){
             logger.info("=========================token为空thirdAccountId:{}", thirdAccountId);
             return;
@@ -79,7 +82,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh{
             for(int requestId : requestIds){
 
                 JSONObject positionInfoDetail = socialPositionTransfer.getPositionAuditState(requestId, liePinToken, positionId, getChannelType().getValue());
-
+                logger.info("======================positionInfoDetail:{}",positionInfoDetail);
                 if(positionInfoDetail == null){
                     continue;
                 }
@@ -92,14 +95,17 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh{
                 }
                 if(LiepinPositionAuditState.PASS.getValue().equals(audit)){
                     // 修改同步状态和mapping表state
+                    logger.info("======================审核通过");
                     hrThirdPartyPositionDao.updateBindState(positionId, thirdAccountId, getChannelType().getValue(), PositionSync.bound.getValue());
                     liepinMappingDao.updateState(requestId, (byte)1);
                 } else if(LiepinPositionAuditState.NOTPASS.getValue().equals(audit)){
                     // 修改同步状态为3，设置失败原因
+                    logger.info("======================审核不通过");
                     hrThirdPartyPositionDao.updateErrmsg(errMsg, positionId, getChannelType().getValue(), PositionSync.failed.getValue());
                 } else if(LiepinPositionAuditState.WAITCHECK.getValue().equals(audit)){
                     // 再次加入队列中，继续等待审核
-                    delayQueueThread.put(timeout + random.nextInt(5 * 60 * 1000), new LiepinSyncStateRefresh(hrThirdPartyPositionId));
+                    logger.info("======================等待审核");
+                    delayQueueThread.put(timeout + random.nextInt(5 * 60 * 1000), refreshBean);
                 }
             }
         } catch (Exception e) {

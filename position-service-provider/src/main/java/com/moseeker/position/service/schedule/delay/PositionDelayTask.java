@@ -1,5 +1,6 @@
 package com.moseeker.position.service.schedule.delay;
 
+import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Delayed;
@@ -10,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author cjm
  * @date 2018-06-28 18:23
  **/
-public class PositionDelayTask<T extends Runnable> implements Delayed {
+public class PositionDelayTask implements Delayed {
     /**
      * 到期时间
      */
@@ -19,13 +20,13 @@ public class PositionDelayTask<T extends Runnable> implements Delayed {
     /**
      * 延时队列需要处理的对象
      */
-    private final T task;
+    private final PositionSyncStateRefreshBean task;
 
     private static final AtomicLong ATOMIC = new AtomicLong(0);
 
     private final long n;
 
-    public PositionDelayTask(long timeout, T t) {
+    public PositionDelayTask(long timeout, PositionSyncStateRefreshBean t) {
         this.time = System.nanoTime() + timeout;
         this.task = t;
         this.n = ATOMIC.getAndIncrement();
@@ -59,7 +60,7 @@ public class PositionDelayTask<T extends Runnable> implements Delayed {
         return (d == 0) ? 0 : ((d < 0) ? -1 : 1);
     }
 
-    public T getTask() {
+    public PositionSyncStateRefreshBean getTask() {
         return this.task;
     }
 
