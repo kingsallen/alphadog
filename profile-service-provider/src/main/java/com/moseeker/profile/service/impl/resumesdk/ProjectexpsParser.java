@@ -36,7 +36,7 @@ public class ProjectexpsParser extends AbstractMutiResumeParser<ProjectexpObj, P
         }
         // 职责
         project.setResponsibility(projectexpObj.getProj_resp());
-        project.setDescription(projectexpObj.getProj_content());
+        project.setDescription(projectexpObj.getProj_content()+"\n项目职责："+projectexpObj.getProj_resp());
         project.setName(projectexpObj.getProj_name());
         return project;
     }
