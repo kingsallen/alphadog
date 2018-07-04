@@ -10,14 +10,21 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ProfileOtherCareerType;
+import com.moseeker.common.constants.ProfileOtherIdentityType;
+import com.moseeker.common.constants.ProfileOtherSchoolType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
+import com.moseeker.entity.pojo.profile.info.Internship;
+import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
+import com.moseeker.entity.pojo.profile.info.SchoolWork;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -603,5 +610,43 @@ public class ProfileEntity {
             userProfileList.add(userProfile);
         }
         return userProfileList;
+    }
+
+
+    public void updateProfileOther(Map<String, Object> otherDatas, ProfileEmailInfo emailInfo){
+        List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>)otherDatas.getOrDefault("keyvalues", new ArrayList<>());
+        if(!StringUtils.isEmptyList(keyvalueList)){
+            emailInfo.setOther_identity(ProfileOtherIdentityType.getMessageList(keyvalueList));
+            emailInfo.setOther_career(ProfileOtherCareerType.getMessageList(keyvalueList));
+            emailInfo.setOther_school(ProfileOtherSchoolType.getMessageList(keyvalueList));
+        }
+        List<Map<String, Object>> internshipList = (List<Map<String, Object>>)otherDatas.getOrDefault("internship", new ArrayList());
+        if(!StringUtils.isEmptyList(internshipList)){
+            List<Internship> shipList = new ArrayList<>();
+            for(Map<String, Object> internship : internshipList){
+                Internship ship = new Internship();
+                ship.setTime(DateUtils.appendTime(internship.get("internshipStart"), internship.get("internshipEnd"), internship.get("internshipEndUntilNow")));
+                ship.setCompany((String)internship.getOrDefault("internshipCompanyName", ""));
+                ship.setPosition((String)internship.getOrDefault("internshipJob", ""));
+                ship.setDepartment((String)internship.getOrDefault("internshipDepartmentName", ""));
+                ship.setDescription((String)internship.getOrDefault("internshipDescriptionHidden", ""));
+                shipList.add(ship);
+            }
+            emailInfo.setOther_internship(shipList);
+        }
+        List<Map<String, Object>> schooljobList = (List<Map<String, Object>>)otherDatas.getOrDefault("schooljob", new ArrayList());
+        if(!StringUtils.isEmptyList(schooljobList)){
+            List<SchoolWork> schoolList = new ArrayList<>();
+            for(Map<String, Object> school : schooljobList){
+                SchoolWork ship = new SchoolWork();
+                ship.setTime(DateUtils.appendTime(school.get("schooljobStart"), school.get("schooljobEnd"), school.get("schooljobEndUntilNow")));
+                ship.setName((String)school.getOrDefault("schooljobJob", ""));
+                ship.setDescription((String)school.getOrDefault("schooljobDescriptionHidden", ""));
+                schoolList.add(ship);
+            }
+            emailInfo.setOther_schoolWork(schoolList);
+        }
+        emailInfo.setOther_idPhoto((String)otherDatas.getOrDefault("photo", ""));
+
     }
 }

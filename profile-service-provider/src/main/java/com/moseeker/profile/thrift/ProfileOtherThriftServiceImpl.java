@@ -14,6 +14,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
 import com.moseeker.profile.service.ProfileOtherService;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
 import com.moseeker.profile.service.impl.ProfileService;
@@ -251,14 +252,13 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     }
 
     @Override
-    public Response getProfileOtherListByIds(List<Integer> userIds, int accountId) throws BIZException, TException {
+    public Response getProfileOtherListByIds(List<Integer> userIds, int accountId, int positionId) throws BIZException, TException {
         try {
             long start = System.currentTimeMillis();
-            Map<String, Object> others = profileService.getApplicationOther(userId, accountId, positionId);
-            Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(others);
+            List<ProfileEmailInfo> others = profileService.getProfileOtherListByIds(userIds, accountId, positionId);
             long end = System.currentTimeMillis();
             logger.info("getProfileOtherByPosition others time :{}", end-start);
-            return ResponseUtils.success(profilrCamle);
+            return ResponseUtils.success(others);
         }catch (CommonException e){
             return ResponseUtils.fail(e.getCode(),e.getMessage());
         }

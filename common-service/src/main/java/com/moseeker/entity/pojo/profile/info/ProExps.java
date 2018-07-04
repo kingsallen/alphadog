@@ -1,11 +1,12 @@
-package com.moseeker.profile.constants.pojo;
+package com.moseeker.entity.pojo.profile.info;
 
 /**
  * Created by moseeker on 2018/6/26.
  */
-public class SchoolWork {
+public class ProExps {
     private String time;
     private String name;
+    private String company;
     private String description;
 
     public String getTime() {
@@ -22,6 +23,14 @@ public class SchoolWork {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 
     public String getDescription() {

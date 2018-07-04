@@ -1,9 +1,9 @@
-package com.moseeker.profile.constants.pojo;
+package com.moseeker.entity.pojo.profile.info;
 
 /**
  * Created by moseeker on 2018/6/26.
  */
-public class Internship {
+public class WorkExps {
 
     private String time;
     private String company;

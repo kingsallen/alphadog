@@ -42,7 +42,7 @@ public class ProfileOtherThriftService {
 
         public com.moseeker.thrift.gen.common.struct.Response getProfileOtherByPosition(int userId, int accountId, int positionId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-        public com.moseeker.thrift.gen.common.struct.Response getProfileOtherListByIds(java.util.List<java.lang.Integer> userIds, int accountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+        public com.moseeker.thrift.gen.common.struct.Response getProfileOtherListByIds(java.util.List<java.lang.Integer> userIds, int accountId, int positionId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     }
 
@@ -74,7 +74,7 @@ public class ProfileOtherThriftService {
 
         public void getProfileOtherByPosition(int userId, int accountId, int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-        public void getProfileOtherListByIds(java.util.List<java.lang.Integer> userIds, int accountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+        public void getProfileOtherListByIds(java.util.List<java.lang.Integer> userIds, int accountId, int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     }
 
@@ -441,17 +441,18 @@ public class ProfileOtherThriftService {
             throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getProfileOtherByPosition failed: unknown result");
         }
 
-        public com.moseeker.thrift.gen.common.struct.Response getProfileOtherListByIds(java.util.List<java.lang.Integer> userIds, int accountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+        public com.moseeker.thrift.gen.common.struct.Response getProfileOtherListByIds(java.util.List<java.lang.Integer> userIds, int accountId, int positionId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
         {
-            send_getProfileOtherListByIds(userIds, accountId);
+            send_getProfileOtherListByIds(userIds, accountId, positionId);
             return recv_getProfileOtherListByIds();
         }
 
-        public void send_getProfileOtherListByIds(java.util.List<java.lang.Integer> userIds, int accountId) throws org.apache.thrift.TException
+        public void send_getProfileOtherListByIds(java.util.List<java.lang.Integer> userIds, int accountId, int positionId) throws org.apache.thrift.TException
         {
             getProfileOtherListByIds_args args = new getProfileOtherListByIds_args();
             args.setUserIds(userIds);
             args.setAccountId(accountId);
+            args.setPositionId(positionId);
             sendBase("getProfileOtherListByIds", args);
         }
 
@@ -917,9 +918,9 @@ public class ProfileOtherThriftService {
             }
         }
 
-        public void getProfileOtherListByIds(java.util.List<java.lang.Integer> userIds, int accountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        public void getProfileOtherListByIds(java.util.List<java.lang.Integer> userIds, int accountId, int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
             checkReady();
-            getProfileOtherListByIds_call method_call = new getProfileOtherListByIds_call(userIds, accountId, resultHandler, this, ___protocolFactory, ___transport);
+            getProfileOtherListByIds_call method_call = new getProfileOtherListByIds_call(userIds, accountId, positionId, resultHandler, this, ___protocolFactory, ___transport);
             this.___currentMethod = method_call;
             ___manager.call(method_call);
         }
@@ -927,10 +928,12 @@ public class ProfileOtherThriftService {
         public static class getProfileOtherListByIds_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
             private java.util.List<java.lang.Integer> userIds;
             private int accountId;
-            public getProfileOtherListByIds_call(java.util.List<java.lang.Integer> userIds, int accountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+            private int positionId;
+            public getProfileOtherListByIds_call(java.util.List<java.lang.Integer> userIds, int accountId, int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
                 super(client, protocolFactory, transport, resultHandler, false);
                 this.userIds = userIds;
                 this.accountId = accountId;
+                this.positionId = positionId;
             }
 
             public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -938,6 +941,7 @@ public class ProfileOtherThriftService {
                 getProfileOtherListByIds_args args = new getProfileOtherListByIds_args();
                 args.setUserIds(userIds);
                 args.setAccountId(accountId);
+                args.setPositionId(positionId);
                 args.write(prot);
                 prot.writeMessageEnd();
             }
@@ -1312,7 +1316,7 @@ public class ProfileOtherThriftService {
             public getProfileOtherListByIds_result getResult(I iface, getProfileOtherListByIds_args args) throws org.apache.thrift.TException {
                 getProfileOtherListByIds_result result = new getProfileOtherListByIds_result();
                 try {
-                    result.success = iface.getProfileOtherListByIds(args.userIds, args.accountId);
+                    result.success = iface.getProfileOtherListByIds(args.userIds, args.accountId, args.positionId);
                 } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
                     result.e = e;
                 }
@@ -2258,7 +2262,7 @@ public class ProfileOtherThriftService {
             }
 
             public void start(I iface, getProfileOtherListByIds_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-                iface.getProfileOtherListByIds(args.userIds, args.accountId,resultHandler);
+                iface.getProfileOtherListByIds(args.userIds, args.accountId, args.positionId,resultHandler);
             }
         }
 
@@ -13955,17 +13959,20 @@ public class ProfileOtherThriftService {
 
         private static final org.apache.thrift.protocol.TField USER_IDS_FIELD_DESC = new org.apache.thrift.protocol.TField("userIds", org.apache.thrift.protocol.TType.LIST, (short)1);
         private static final org.apache.thrift.protocol.TField ACCOUNT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("accountId", org.apache.thrift.protocol.TType.I32, (short)2);
+        private static final org.apache.thrift.protocol.TField POSITION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("positionId", org.apache.thrift.protocol.TType.I32, (short)3);
 
         private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getProfileOtherListByIds_argsStandardSchemeFactory();
         private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getProfileOtherListByIds_argsTupleSchemeFactory();
 
         public java.util.List<java.lang.Integer> userIds; // required
         public int accountId; // required
+        public int positionId; // required
 
         /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             USER_IDS((short)1, "userIds"),
-            ACCOUNT_ID((short)2, "accountId");
+            ACCOUNT_ID((short)2, "accountId"),
+            POSITION_ID((short)3, "positionId");
 
             private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -13984,6 +13991,8 @@ public class ProfileOtherThriftService {
                         return USER_IDS;
                     case 2: // ACCOUNT_ID
                         return ACCOUNT_ID;
+                    case 3: // POSITION_ID
+                        return POSITION_ID;
                     default:
                         return null;
                 }
@@ -14025,6 +14034,7 @@ public class ProfileOtherThriftService {
 
         // isset id assignments
         private static final int __ACCOUNTID_ISSET_ID = 0;
+        private static final int __POSITIONID_ISSET_ID = 1;
         private byte __isset_bitfield = 0;
         public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
         static {
@@ -14033,6 +14043,8 @@ public class ProfileOtherThriftService {
                     new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
                             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
             tmpMap.put(_Fields.ACCOUNT_ID, new org.apache.thrift.meta_data.FieldMetaData("accountId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
             metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
             org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getProfileOtherListByIds_args.class, metaDataMap);
@@ -14043,12 +14055,15 @@ public class ProfileOtherThriftService {
 
         public getProfileOtherListByIds_args(
                 java.util.List<java.lang.Integer> userIds,
-                int accountId)
+                int accountId,
+                int positionId)
         {
             this();
             this.userIds = userIds;
             this.accountId = accountId;
             setAccountIdIsSet(true);
+            this.positionId = positionId;
+            setPositionIdIsSet(true);
         }
 
         /**
@@ -14061,6 +14076,7 @@ public class ProfileOtherThriftService {
                 this.userIds = __this__userIds;
             }
             this.accountId = other.accountId;
+            this.positionId = other.positionId;
         }
 
         public getProfileOtherListByIds_args deepCopy() {
@@ -14072,6 +14088,8 @@ public class ProfileOtherThriftService {
             this.userIds = null;
             setAccountIdIsSet(false);
             this.accountId = 0;
+            setPositionIdIsSet(false);
+            this.positionId = 0;
         }
 
         public int getUserIdsSize() {
@@ -14136,6 +14154,29 @@ public class ProfileOtherThriftService {
             __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ACCOUNTID_ISSET_ID, value);
         }
 
+        public int getPositionId() {
+            return this.positionId;
+        }
+
+        public getProfileOtherListByIds_args setPositionId(int positionId) {
+            this.positionId = positionId;
+            setPositionIdIsSet(true);
+            return this;
+        }
+
+        public void unsetPositionId() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __POSITIONID_ISSET_ID);
+        }
+
+        /** Returns true if field positionId is set (has been assigned a value) and false otherwise */
+        public boolean isSetPositionId() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __POSITIONID_ISSET_ID);
+        }
+
+        public void setPositionIdIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __POSITIONID_ISSET_ID, value);
+        }
+
         public void setFieldValue(_Fields field, java.lang.Object value) {
             switch (field) {
                 case USER_IDS:
@@ -14154,6 +14195,14 @@ public class ProfileOtherThriftService {
                     }
                     break;
 
+                case POSITION_ID:
+                    if (value == null) {
+                        unsetPositionId();
+                    } else {
+                        setPositionId((java.lang.Integer)value);
+                    }
+                    break;
+
             }
         }
 
@@ -14164,6 +14213,9 @@ public class ProfileOtherThriftService {
 
                 case ACCOUNT_ID:
                     return getAccountId();
+
+                case POSITION_ID:
+                    return getPositionId();
 
             }
             throw new java.lang.IllegalStateException();
@@ -14180,6 +14232,8 @@ public class ProfileOtherThriftService {
                     return isSetUserIds();
                 case ACCOUNT_ID:
                     return isSetAccountId();
+                case POSITION_ID:
+                    return isSetPositionId();
             }
             throw new java.lang.IllegalStateException();
         }
@@ -14217,6 +14271,15 @@ public class ProfileOtherThriftService {
                     return false;
             }
 
+            boolean this_present_positionId = true;
+            boolean that_present_positionId = true;
+            if (this_present_positionId || that_present_positionId) {
+                if (!(this_present_positionId && that_present_positionId))
+                    return false;
+                if (this.positionId != that.positionId)
+                    return false;
+            }
+
             return true;
         }
 
@@ -14229,6 +14292,8 @@ public class ProfileOtherThriftService {
                 hashCode = hashCode * 8191 + userIds.hashCode();
 
             hashCode = hashCode * 8191 + accountId;
+
+            hashCode = hashCode * 8191 + positionId;
 
             return hashCode;
         }
@@ -14257,6 +14322,16 @@ public class ProfileOtherThriftService {
             }
             if (isSetAccountId()) {
                 lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.accountId, other.accountId);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetPositionId()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.positionId, other.positionId);
                 if (lastComparison != 0) {
                     return lastComparison;
                 }
@@ -14291,6 +14366,10 @@ public class ProfileOtherThriftService {
             if (!first) sb.append(", ");
             sb.append("accountId:");
             sb.append(this.accountId);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("positionId:");
+            sb.append(this.positionId);
             first = false;
             sb.append(")");
             return sb.toString();
@@ -14363,6 +14442,14 @@ public class ProfileOtherThriftService {
                                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                             }
                             break;
+                        case 3: // POSITION_ID
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.positionId = iprot.readI32();
+                                struct.setPositionIdIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
                         default:
                             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                     }
@@ -14393,6 +14480,9 @@ public class ProfileOtherThriftService {
                 oprot.writeFieldBegin(ACCOUNT_ID_FIELD_DESC);
                 oprot.writeI32(struct.accountId);
                 oprot.writeFieldEnd();
+                oprot.writeFieldBegin(POSITION_ID_FIELD_DESC);
+                oprot.writeI32(struct.positionId);
+                oprot.writeFieldEnd();
                 oprot.writeFieldStop();
                 oprot.writeStructEnd();
             }
@@ -14417,7 +14507,10 @@ public class ProfileOtherThriftService {
                 if (struct.isSetAccountId()) {
                     optionals.set(1);
                 }
-                oprot.writeBitSet(optionals, 2);
+                if (struct.isSetPositionId()) {
+                    optionals.set(2);
+                }
+                oprot.writeBitSet(optionals, 3);
                 if (struct.isSetUserIds()) {
                     {
                         oprot.writeI32(struct.userIds.size());
@@ -14430,12 +14523,15 @@ public class ProfileOtherThriftService {
                 if (struct.isSetAccountId()) {
                     oprot.writeI32(struct.accountId);
                 }
+                if (struct.isSetPositionId()) {
+                    oprot.writeI32(struct.positionId);
+                }
             }
 
             @Override
             public void read(org.apache.thrift.protocol.TProtocol prot, getProfileOtherListByIds_args struct) throws org.apache.thrift.TException {
                 org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-                java.util.BitSet incoming = iprot.readBitSet(2);
+                java.util.BitSet incoming = iprot.readBitSet(3);
                 if (incoming.get(0)) {
                     {
                         org.apache.thrift.protocol.TList _list61 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
@@ -14452,6 +14548,10 @@ public class ProfileOtherThriftService {
                 if (incoming.get(1)) {
                     struct.accountId = iprot.readI32();
                     struct.setAccountIdIsSet(true);
+                }
+                if (incoming.get(2)) {
+                    struct.positionId = iprot.readI32();
+                    struct.setPositionIdIsSet(true);
                 }
             }
         }

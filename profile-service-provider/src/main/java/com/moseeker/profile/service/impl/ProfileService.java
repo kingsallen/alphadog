@@ -32,7 +32,8 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.*;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -48,17 +49,14 @@ import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.entity.pojo.profile.*;
+import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
 import com.moseeker.entity.pojo.resume.*;
-import com.moseeker.profile.constants.pojo.Internship;
-import com.moseeker.profile.constants.pojo.ProfileInfo;
-import com.moseeker.profile.constants.pojo.SchoolWork;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.profile.utils.DictCode;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
@@ -73,14 +71,12 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import com.moseeker.thrift.gen.profile.struct.UserProfile;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
-import com.moseeker.thrift.gen.profile.struct.UserProfile;
-import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
@@ -89,12 +85,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 @CounterIface
@@ -1144,50 +1134,34 @@ public class ProfileService {
         return otherMap;
     }
 
-    public void getProfileOtherListByIds(List<Integer> userIds, int accountId){
-        List<ProfileInfo> infoList = new ArrayList<>();
+    public List<ProfileEmailInfo> getProfileOtherListByIds(List<Integer> userIds, int accountId, int positionId){
+        List<ProfileEmailInfo> infoList = new ArrayList<>();
         if(!StringUtils.isEmptyList(userIds)) {
             for (Integer userId : userIds) {
-                Map<String, Object> otherDatas = this.getApplicationOther(userId, accountId, 0);
-                ProfileInfo info = new ProfileInfo();
+                Query query = new Query.QueryBuilder().where(ProfileProfile.PROFILE_PROFILE.USER_ID.getName(), userId).buildQuery();
+                ProfileProfileDO profileDO = dao.getData(query);
+                if(profileDO == null)
+                    continue;
+                Map<String, Object> otherDatas = new HashMap<>();
+                if(accountId > 0) {
+                    otherDatas = this.getApplicationOther(userId, accountId, positionId);
+                }else{
+                    Query querys = new Query.QueryBuilder().where(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), userId).buildQuery();
+                    List<JobApplicationDO> applicationDOS = jobApplicationDao.getDatas(querys);
+                    List<Integer> positionIds = applicationDOS.stream().filter(m -> m.getApplyType() == 0 ||(m.getEmailStatus() == 0
+                        && m.getApplyType() == 1))
+                            .map(m -> m.getPositionId()).collect(Collectors.toList());
+                    otherDatas = this.getProfileOther(positionIds,profileDO.getId());
+
+                }
+                ProfileEmailInfo info = new ProfileEmailInfo();
                 if(otherDatas != null){
-                    List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>)otherDatas.getOrDefault("keyvalues", new ArrayList<>());
-                    if(!StringUtils.isEmptyList(keyvalueList)){
-                        info.setOther_identity(ProfileOtherIdentityType.getMessageList(keyvalueList));
-                        info.setOther_career(ProfileOtherCareerType.getMessageList(keyvalueList));
-                        info.setOther_school(ProfileOtherSchoolType.getMessageList(keyvalueList));
-                    }
-                    List<Map<String, Object>> internshipList = (List<Map<String, Object>>)otherDatas.getOrDefault("internship", new ArrayList());
-                    if(!StringUtils.isEmptyList(internshipList)){
-                        List<Internship> shipList = new ArrayList<>();
-                        for(Map<String, Object> internship : internshipList){
-                            Internship ship = new Internship();
-                            ship.setTime(DateUtils.appendTime(internship.get("internshipStart"), internship.get("internshipEnd"), internship.get("internshipEndUntilNow")));
-                            ship.setCompany((String)internship.getOrDefault("internshipCompanyName", ""));
-                            ship.setPosition((String)internship.getOrDefault("internshipJob", ""));
-                            ship.setDepartment((String)internship.getOrDefault("internshipDepartmentName", ""));
-                            ship.setDescription((String)internship.getOrDefault("internshipDescriptionHidden", ""));
-                            shipList.add(ship);
-                        }
-                        info.setOther_internship(shipList);
-                    }
-                    List<Map<String, Object>> schooljobList = (List<Map<String, Object>>)otherDatas.getOrDefault("schooljob", new ArrayList());
-                    if(!StringUtils.isEmptyList(schooljobList)){
-                        List<SchoolWork> schoolList = new ArrayList<>();
-                        for(Map<String, Object> school : schooljobList){
-                            SchoolWork ship = new SchoolWork();
-                            ship.setTime(DateUtils.appendTime(school.get("schooljobStart"), school.get("schooljobEnd"), school.get("schooljobEndUntilNow")));
-                            ship.setName((String)school.getOrDefault("schooljobJob", ""));
-                            ship.setDescription((String)school.getOrDefault("schooljobDescriptionHidden", ""));
-                            schoolList.add(ship);
-                        }
-                        info.setOther_schoolWork(schoolList);
-                    }
-                    info.setOther_idPhoto((String)otherDatas.getOrDefault("photo", ""));
+                   profileEntity.updateProfileOther(otherDatas, info);
                 }
                 infoList.add(info);
             }
         }
+        return infoList;
     }
 
     /**
