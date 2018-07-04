@@ -30,7 +30,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh{
 
     private Logger logger = LoggerFactory.getLogger(LiepinSyncStateRefresh.class);
 
-    public long timeout = 24 * 60 * 60 *1000;
+    public long timeout = 1 * 1* 60 *1000;
 
     @Autowired
     private JobPositionLiepinMappingDao liepinMappingDao;
