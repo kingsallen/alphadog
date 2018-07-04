@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.servicemanager.web.controller.util.ProfileParamUtil;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
@@ -63,7 +64,8 @@ public class CustomizeResumeController {
             int positionId = form.getInt("position_id", 0);
             List<Integer> userIds = new ArrayList<>();
             if(form.get("user_ids") != null){
-                userIds = (List<Integer>)form.get("user_ids");
+                String user_ids = (String)form.get("user_ids");
+                userIds = ParamUtils.convertIntList(user_ids);
             }
             Response result = profileOtherService.getProfileOtherListByIds(userIds, accountId, positionId);
 
