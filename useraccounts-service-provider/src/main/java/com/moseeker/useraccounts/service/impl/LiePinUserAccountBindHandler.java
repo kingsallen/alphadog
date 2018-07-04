@@ -71,7 +71,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
             } else {
                 emailNotification.sendCustomEmail(emailNotification.getRefreshMails(),  resultJson+ "</br>用户账号:"
                         + hrThirdPartyAccount.getUsername(), bindEmailSubject);
-                throw new BIZException(Integer.parseInt(String.valueOf(result.get("code"))), String.valueOf(result.get("message")));
+                throw new BIZException(result.getInteger("code"), result.getString("message"));
             }
         } catch (BIZException e) {
             logger.info("=================errormsg:{},username:{}===================", e.getMessage(), hrThirdPartyAccount.getUsername());
