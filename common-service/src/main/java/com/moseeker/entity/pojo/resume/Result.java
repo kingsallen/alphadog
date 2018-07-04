@@ -37,6 +37,24 @@ public class Result {
     private String work_position;
     private String work_start_time;
     private String cont_certificate;
+    private String nationality;
+    private String qq;
+
+    public String getQq() {
+        return qq;
+    }
+
+    public void setQq(String qq) {
+        this.qq = qq;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
 
     public void setSurname(String surname) {
         this.surname = surname;
