@@ -45,6 +45,8 @@ public class EducationMutiParser extends AbstractMutiResumeParser<EducationObj, 
         if (StringUtils.isNotNullOrEmpty(educationObj.getEdu_recruit())) {
             education.setIsUnified(educationObj.getEdu_recruit().equals("统招") ? 1 : 2);
         }
+
+        education.setDescription("无");
         return education;
     }
 
