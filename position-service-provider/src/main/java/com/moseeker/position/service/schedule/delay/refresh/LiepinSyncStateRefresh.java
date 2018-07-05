@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,11 +30,11 @@ import java.util.stream.Collectors;
  * @date 2018-07-02 9:19
  **/
 @Component
-public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh{
+public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
 
     private Logger logger = LoggerFactory.getLogger(LiepinSyncStateRefresh.class);
 
-    public static final long timeout = 1 * 1 * 60 * 1000;
+    public static final long TIMEOUT = 60 * 60 * 1000;
 
     @Autowired
     private JobPositionLiepinMappingDao liepinMappingDao;
@@ -48,14 +50,15 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh{
 
     @Override
     public void refresh(PositionSyncStateRefreshBean refreshBean) {
+
         logger.info("========================职位状态刷新开始");
         // 使用第三方职位id刷新职位状态
         short isSynchronization = 2;
         int hrThirdPartyPositionId = refreshBean.getHrThirdPartyPositionId();
-        logger.info("===================isSynchronization");
+        logger.info("===================refreshBean:{}", refreshBean);
         HrThirdPartyPositionDO hrThirdPartyPositionDO = getHrThirdPartyPosition(hrThirdPartyPositionId, isSynchronization);
         logger.info("=========================hrThirdPartyPositionDO{}", hrThirdPartyPositionDO);
-        if(hrThirdPartyPositionDO == null){
+        if (hrThirdPartyPositionDO == null) {
             logger.info("=========================无第三方职位信息hrThirdPartyPositionId:{}", hrThirdPartyPositionId);
             return;
         }
@@ -63,49 +66,52 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh{
         int thirdAccountId = hrThirdPartyPositionDO.getThirdPartyAccountId();
         // 获取职位job_position.id
         int positionId = hrThirdPartyPositionDO.getPositionId();
-        // 使用第三方职位id获取token
-        String liePinToken = getLiepinToken(thirdAccountId);
-        logger.info("=====================thirdAccountId:{},positionId:{},liePinToken:{}", thirdAccountId, positionId, liePinToken);
-        if(StringUtils.isNullOrEmpty(liePinToken)){
-            logger.info("=========================token为空thirdAccountId:{}", thirdAccountId);
-            return;
-        }
         // 向猎聘发请求的id list
         List<Integer> requestIds = getRequestIds(positionId);
-        if(requestIds == null || requestIds.size() == 0){
+        if (requestIds == null || requestIds.size() == 0) {
             logger.info("=========================猎聘请求ids为空, positionId:{}", positionId);
             return;
         }
-
         // 调接口获取职位信息
         try {
-            for(int requestId : requestIds){
+
+            boolean isExpired = confirmNoExpired(hrThirdPartyPositionDO);
+
+            // 使用第三方职位id获取token
+            String liePinToken = getLiepinToken(thirdAccountId);
+            logger.info("=====================thirdAccountId:{},positionId:{},liePinToken:{}", thirdAccountId, positionId, liePinToken);
+            if (StringUtils.isNullOrEmpty(liePinToken)) {
+                logger.info("=========================token为空thirdAccountId:{}", thirdAccountId);
+                return;
+            }
+
+            for (int requestId : requestIds) {
 
                 JSONObject positionInfoDetail = socialPositionTransfer.getPositionAuditState(requestId, liePinToken, positionId, getChannelType().getValue());
-                logger.info("======================positionInfoDetail:{}",positionInfoDetail);
-                if(positionInfoDetail == null){
+                logger.info("======================positionInfoDetail:{}", positionInfoDetail);
+                if (positionInfoDetail == null) {
                     continue;
                 }
                 String audit = positionInfoDetail.getString("ejob_auditflag");
 
                 // 根据审核状态，如果还是未审核，再把任务加入到队列中，如果已经审核通过，修改数据库同步状态
-                if(StringUtils.isNullOrEmpty(audit)){
+                if (StringUtils.isNullOrEmpty(audit)) {
                     logger.error("==============================请求失败requestIds:{}", requestIds);
                     continue;
                 }
-                if(LiepinPositionAuditState.PASS.getValue().equals(audit)){
+                if (LiepinPositionAuditState.PASS.getValue().equals(audit)) {
                     // 修改同步状态和mapping表state
                     logger.info("======================审核通过");
                     hrThirdPartyPositionDao.updateBindState(positionId, thirdAccountId, getChannelType().getValue(), PositionSync.bound.getValue());
-                    liepinMappingDao.updateState(requestId, (byte)1);
-                } else if(LiepinPositionAuditState.NOTPASS.getValue().equals(audit)){
+                    liepinMappingDao.updateState(requestId, (byte) 1);
+                } else if (LiepinPositionAuditState.NOTPASS.getValue().equals(audit)) {
                     // 修改同步状态为3，设置失败原因
                     logger.info("======================审核不通过");
-                    hrThirdPartyPositionDao.updateErrmsg(errMsg, positionId, getChannelType().getValue(), PositionSync.failed.getValue());
-                } else if(LiepinPositionAuditState.WAITCHECK.getValue().equals(audit)){
+                    hrThirdPartyPositionDao.updateErrmsg(ERRMSG, positionId, getChannelType().getValue(), PositionSync.failed.getValue());
+                } else if (LiepinPositionAuditState.WAITCHECK.getValue().equals(audit)) {
                     // 再次加入队列中，继续等待审核
                     logger.info("======================等待审核");
-                    delayQueueThread.put(timeout + random.nextInt(5 * 60 * 1000), refreshBean);
+                    delayQueueThread.put(TIMEOUT + random.nextInt(5 * 60 * 1000), refreshBean);
                 }
             }
         } catch (Exception e) {
@@ -116,16 +122,23 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh{
 
     }
 
+    private boolean confirmNoExpired(HrThirdPartyPositionDO hrThirdPartyPositionDO) throws ParseException {
+        String syncTime = hrThirdPartyPositionDO.getSyncTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+        long time = sdf.parse(syncTime).getTime();
+        return false;
+    }
+
     private List<Integer> getRequestIds(int positionId) {
         List<JobPositionCityDO> jobPositionCityDOS = jobPositionCityDao.getPositionCitysByPid(positionId);
-        if(jobPositionCityDOS == null || jobPositionCityDOS.size() == 0){
+        if (jobPositionCityDOS == null || jobPositionCityDOS.size() == 0) {
             logger.info("=================没有查到职位id对应的发布城市positionId:{}===============", positionId);
             return new ArrayList<>();
         }
         List<Integer> cityCodes = jobPositionCityDOS.stream().map(jobPositionCityDO -> jobPositionCityDO.getCode()).collect(Collectors.toList());
 
         List<JobPositionLiepinMappingDO> jobPositionLiepinMappingDOS = liepinMappingDao.getMappingDataByPidAndCityCodes(positionId, cityCodes);
-        if(jobPositionLiepinMappingDOS == null || jobPositionLiepinMappingDOS.size() == 0){
+        if (jobPositionLiepinMappingDOS == null || jobPositionLiepinMappingDOS.size() == 0) {
             logger.info("=================没有查到职位id/citycode对应的mapping表信息，positionId:{}, cityCodes:{}===============", positionId, cityCodes);
             return new ArrayList<>();
         }

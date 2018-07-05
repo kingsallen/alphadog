@@ -34,12 +34,12 @@ public abstract class AbstractSyncStateRefresh implements IChannelType{
     @Autowired
     PositionEmailNotification emailNotification;
 
-    protected static final String errMsg = "审核不通过，请修改职位信息后重新发布。(审核失败原因可能是:1、校招职位在社招渠道发布;2、职位信息中包含网站链接等。)";
+    protected static final String ERRMSG = "审核不通过，请修改职位信息后重新发布。(审核失败原因可能是:1、校招职位在社招渠道发布;2、职位信息中包含网站链接等。)";
 
     /**
      * 单位：毫秒
      */
-    public static final long timeout = 2 * 60 * 60 * 1000;
+    public static final long TIMEOUT = 2 * 60 * 60 * 1000;
 
     public void refresh(PositionSyncStateRefreshBean refreshBean) {
         try{
@@ -50,7 +50,7 @@ public abstract class AbstractSyncStateRefresh implements IChannelType{
                 return;
             }
             // todo 同步失败，设置失败原因
-            hrThirdPartyPositionDao.updateErrmsg(errMsg, hrThirdPartyPositionDO.getPositionId(), getChannelType().getValue(), PositionSync.failed.getValue());
+            hrThirdPartyPositionDao.updateErrmsg(ERRMSG, hrThirdPartyPositionDO.getPositionId(), getChannelType().getValue(), PositionSync.failed.getValue());
         }catch (Exception e){
             logger.error(e.getMessage(), e);
             emailNotification.sendRefreshSyncStateFailEmail("default channel refresh sync state error", e);

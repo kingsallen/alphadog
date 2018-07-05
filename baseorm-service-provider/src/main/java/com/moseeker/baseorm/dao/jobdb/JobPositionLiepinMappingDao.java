@@ -95,11 +95,10 @@ public class JobPositionLiepinMappingDao extends JooqCrudImpl<JobPositionLiepinM
                 .execute();
     }
 
-    public void updateJobInfoById(Integer id, Integer thirdPositionId, byte state, String errorMsg) {
+    public void updateJobInfoById(Integer id, Integer thirdPositionId, byte state) {
         create.update(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING)
-                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ERR_MSG, errorMsg)
-                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE, state)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.LIEPIN_JOB_ID, thirdPositionId)
+                .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.STATE, state)
                 .set(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID.eq(id))
                 .execute();

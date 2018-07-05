@@ -10,12 +10,9 @@ public class PositionSyncStateRefreshBean {
 
     private int channel;
 
-    private long timeout;
-
-    public PositionSyncStateRefreshBean(int hrThirdPartyPositionId, int channel, long timeout) {
+    public PositionSyncStateRefreshBean(int hrThirdPartyPositionId, int channel) {
         this.hrThirdPartyPositionId = hrThirdPartyPositionId;
         this.channel = channel;
-        this.timeout = timeout;
     }
 
     public int getChannel() {
@@ -24,10 +21,6 @@ public class PositionSyncStateRefreshBean {
 
     public int getHrThirdPartyPositionId() {
         return hrThirdPartyPositionId;
-    }
-
-    public long getTimeout() {
-        return timeout;
     }
 
 }

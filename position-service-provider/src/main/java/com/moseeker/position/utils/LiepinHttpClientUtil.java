@@ -104,6 +104,8 @@ public class LiepinHttpClientUtil {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_RESPONSE_NULL);
         }
 
+        logger.info("==============httpResultJson:{}================", httpResultJson);
+
         JSONObject httpResult = JSONObject.parseObject(httpResultJson);
 
         if (null == httpResult) {
@@ -111,7 +113,7 @@ public class LiepinHttpClientUtil {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_RESPONSE_NULL);
 
         } else if (httpResult.getIntValue("code") == 1002) {
-            logger.info("==============httpResult:{}================", httpResult);
+
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_LIMIT);
         } else if (httpResult.getIntValue("code") != 0) {
             if (httpResult.getIntValue("code") == 1007) {
@@ -120,7 +122,6 @@ public class LiepinHttpClientUtil {
                 hrThirdPartyPositionDao.updateErrmsg(errMsg, positionId, channel, 0);
                 throw ExceptionUtils.getBizException("{'status':-1,'message':'" + errMsg + "'}");
             }
-            logger.info("==============httpResult:{}================", httpResult);
             throw ExceptionUtils.getBizException("{'status':-1,'message':'" + httpResult.getString("message") + "'}");
         }
         return httpResult;
