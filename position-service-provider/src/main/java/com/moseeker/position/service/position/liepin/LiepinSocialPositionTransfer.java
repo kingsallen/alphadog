@@ -305,6 +305,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 // 编辑修改职位
                 editNum = editExistPosition(editCity, editCityIdCodeMap, liePinPositionVO, liePinToken);
 
+                hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
             } catch (BIZException e) {
                 hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
                 hrThirdPartyPositionDO.setSyncFailReason(e.getMessage());
@@ -330,7 +331,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(hrThirdPartyPositionDO.getId(), channel);
         delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
         logger.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
-        hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
     }
 
     /**
