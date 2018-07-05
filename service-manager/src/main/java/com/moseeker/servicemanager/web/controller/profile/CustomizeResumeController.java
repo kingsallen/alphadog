@@ -53,6 +53,7 @@ public class CustomizeResumeController {
 		}
 	}
 
+
 	@RequestMapping(value = "/profile/other", method = RequestMethod.POST)
 	@ResponseBody
 	public String post(HttpServletRequest request, HttpServletResponse response) {

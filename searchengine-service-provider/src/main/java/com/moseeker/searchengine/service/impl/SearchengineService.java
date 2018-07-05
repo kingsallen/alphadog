@@ -819,6 +819,9 @@ public class SearchengineService {
                 }
                 data.add(objectMap);
             }
+            logger.info("==================================");
+            logger.info("total ======="+response.getHits().getTotalHits());
+            logger.info("==================================");
             object.put("data", data);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

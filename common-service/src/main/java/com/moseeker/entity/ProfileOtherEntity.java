@@ -54,7 +54,8 @@ public class ProfileOtherEntity {
 
     public void updateProfileOther(Map<String, Object> otherDatas, ProfileEmailInfo emailInfo) {
         List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>) otherDatas.getOrDefault("keyvalues", new ArrayList<>());
-        if (!StringUtils.isEmptyList(keyvalueList)) {emailInfo.setOtherIdentity(ProfileOtherIdentityType.getMessageList(keyvalueList));
+        if (!StringUtils.isEmptyList(keyvalueList)) {
+            emailInfo.setOtherIdentity(ProfileOtherIdentityType.getMessageList(keyvalueList));
             emailInfo.setOtherCareer(ProfileOtherCareerType.getMessageList(keyvalueList));
             emailInfo.setOtherSchool(ProfileOtherSchoolType.getMessageList(keyvalueList));
         }
