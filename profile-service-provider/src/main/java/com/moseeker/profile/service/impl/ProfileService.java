@@ -1060,7 +1060,6 @@ public class ProfileService {
             throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
         Map<String, Object> otherDatas = JSON.parseObject(profileOtherDO.getOther(), Map.class);
-//        Map<String, Object> parentkeys = new HashMap<>();
         if(positionIds != null && positionIds.size()>0 && profileId > 0) {
             logger.info("positionIdList:{}", positionIds);
             long profileTime = System.currentTimeMillis();
@@ -1080,92 +1079,33 @@ public class ProfileService {
             long infoTime = System.currentTimeMillis();
             logger.info("getProfileOther others info time:{}", profileTime - infoTime);
             logger.info("getProfileOther others info time:{}", infoTime - start);
-            positionIds.stream().forEach(positionId -> {
-                try {
-                    if (positionCustomConfigMap.containsKey(positionId)) {
-
-                        if (otherDatas != null) {
-                            Map<String, Object> parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
-                                    .stream()
-                                    .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
-                                            map(m -> JSONObject.parseObject(String.valueOf(m)))
-                                    .filter(f -> f.getIntValue("parent_id") == 0)
-                                    .collect(Collectors.toMap(k -> k.getString("field_name"), v -> {
-                                        String field_name = v.getString("field_name");
-                                        String field_value = (String)otherDatas.getOrDefault(field_name, "");
-                                        return org.apache.commons.lang.StringUtils
-                                                .defaultIfBlank(field_value, "");
-                                    }, (oldKey, newKey) -> newKey));
-                            parentValues.putAll(parentValue);
-//                            Map<String, Object> parentkey = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
-//                                    .stream()
-//                                    .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
-//                                            map(m -> JSONObject.parseObject(String.valueOf(m)))
-//                                    .filter(f -> f.getIntValue("parent_id") == 0)
-//                                    .collect(Collectors.toMap(k -> k.getString("field_name"),v -> v.getString("field_title"), (oldKey, newKey) -> newKey));
-//                            parentkeys.putAll(parentkey);
+            for(Integer positionId : positionIds){
+                if(positionCustomConfigMap.containsKey(positionId)){
+                    JSONArray otherCvTplMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)));
+                    if(otherCvTplMap.size()>0){
+                        for(int i=0;i<otherCvTplMap.size();i++){
+                            JSONObject apJson = otherCvTplMap.getJSONObject(i);
+                            List<Map<String, Object>> fieldList = (List<Map<String, Object>>)apJson.get("fields");
+                            if(fieldList.size()>0){
+                                for(Map<String, Object> obj : fieldList){
+                                    if(obj.get("parent_id") != null && ((int)obj.get("parent_id")) == 0){
+                                        if(obj.get("field_name") != null ) {
+                                            String field_name = (String)obj.get("field_name");
+                                            parentValues.put(field_name, otherDatas.get(field_name));
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                } catch (Exception e1) {
-                    logger.error(e1.getMessage(), e1);
                 }
-            });
+            }
             long positionTime = System.currentTimeMillis();
             logger.info("getProfileOther others position time:{}", positionTime - infoTime);
         }else{
             parentValues.putAll(otherDatas);
         }
         otherMap = profileOtherEntity.handerOtherInfo(parentValues);
-//        List<ConfigSysCvTplDO> tplDOList = confTplDao.findAll();
-//            //组装所需要的数据结构
-//            List<Map<String, Object>> otherList = new ArrayList<>();
-//            Set<Map.Entry<String, Object>> entries = parentValues.entrySet();
-//            Set<Map.Entry<String, Object>> keyEntries = parentkeys.entrySet();
-//            for(Map.Entry<String, Object> entry : entries){
-//                if(!entry.getValue().toString().startsWith("[{") && !entry.getValue().toString().startsWith("[")) {
-//                    Map<String, Object> map = new HashMap<>();
-//                    if("IDPhoto".equals(entry.getKey())){
-//                        otherMap.put("photo", entry.getValue());
-//                        continue;
-//                    }
-//                    for(ConfigSysCvTplDO tplDO : tplDOList) {
-//                        if(tplDO.getFieldName().equals(entry.getKey())) {
-//                            map.put("key", tplDO.getFieldTitle());
-//                            if (entry.getValue() != null && !"".equals(entry.getValue())) {
-//                                map.put("value", entry.getValue());
-//                                otherList.add(map);
-//                            }
-//                        }
-//                    }
-//                }else if(entry.getValue().toString().startsWith("[{")){
-//                    TypeReference<List<Map<String,Object>>> typeRef
-//                            = new TypeReference<List<Map<String,Object>>>() {};
-//                    List<Map<String , Object>> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
-//                    if(infoList!=null && infoList.size()>0) {
-//                        otherMap.put(entry.getKey(), infoList);
-////                        for (Map.Entry<String, Object> key : keyEntries) {
-////                            if (entry.getKey().equals(key.getValue())) {
-////                                otherMap.put(key.getKey(), infoList);
-////                                break;
-////                            }
-////                        }
-//                    }
-//                }else if(entry.getValue().toString().startsWith("[")){
-//                    TypeReference<List<String>> typeRef
-//                            = new TypeReference<List<String>>() {};
-//                    List<String> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
-//                    if(infoList!=null && infoList.size()>0){
-//                        otherMap.put(entry.getKey(), infoList);
-////                        for(Map.Entry<String, Object> key : keyEntries){
-////                            if(entry.getKey().equals(key.getValue())){
-////                                otherMap.put(key.getKey(), infoList);
-////                                break;
-////                            }
-////                        }
-//                    }
-//                }
-
-//            otherMap.put("keyvalues", otherList);
         long end = System.currentTimeMillis();
         logger.info("getProfileOther others time:{}", end-start);
 //        }
@@ -1199,7 +1139,7 @@ public class ProfileService {
         if(applicationDOS != null && applicationDOS.size()>0){
             positionList = applicationDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
         }
-        params.put("profile_id", positionId);
+        params.put("profile_id", profileId);
         params.put("updateList", updateList);
         params.put("positionList", positionList);
         return params;
