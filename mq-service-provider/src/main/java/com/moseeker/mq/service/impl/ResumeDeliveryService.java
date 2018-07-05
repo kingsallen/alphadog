@@ -337,7 +337,7 @@ public class ResumeDeliveryService {
                     .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.DISABLE.getName(),"0").buildQuery());
             if( qx_userWxDO != null) {
                 String link = handlerLink("applier").replace("{}", application_id + "");
-                link = link+"?from_template_message="+Constant.TEMPLATES_APPLY_NOTICE_TPL +"&send_time=" + new Date().getTime();;
+                link = link+"?wechat_signature="+ qxChatDO.getSignature()+"&from_template_message="+Constant.TEMPLATES_APPLY_NOTICE_TPL +"&send_time=" + new Date().getTime();;
                 response = msgHttp.handleApplierTemplate(positionDO, companyDO, qxChatDO, qx_userWxDO.getOpenid(), url, link, templateMessageDOQX);
             }
         }

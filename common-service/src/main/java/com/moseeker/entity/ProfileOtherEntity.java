@@ -54,10 +54,9 @@ public class ProfileOtherEntity {
 
     public void updateProfileOther(Map<String, Object> otherDatas, ProfileEmailInfo emailInfo) {
         List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>) otherDatas.getOrDefault("keyvalues", new ArrayList<>());
-        if (!StringUtils.isEmptyList(keyvalueList)) {
-            emailInfo.setOther_identity(ProfileOtherIdentityType.getMessageList(keyvalueList));
-            emailInfo.setOther_career(ProfileOtherCareerType.getMessageList(keyvalueList));
-            emailInfo.setOther_school(ProfileOtherSchoolType.getMessageList(keyvalueList));
+        if (!StringUtils.isEmptyList(keyvalueList)) {emailInfo.setOtherIdentity(ProfileOtherIdentityType.getMessageList(keyvalueList));
+            emailInfo.setOtherCareer(ProfileOtherCareerType.getMessageList(keyvalueList));
+            emailInfo.setOtherSchool(ProfileOtherSchoolType.getMessageList(keyvalueList));
         }
         List<Map<String, Object>> internshipList = (List<Map<String, Object>>) otherDatas.getOrDefault("internship", new ArrayList());
         if (!StringUtils.isEmptyList(internshipList)) {
@@ -71,7 +70,7 @@ public class ProfileOtherEntity {
                 ship.setDescription((String) internship.getOrDefault("internshipDescriptionHidden", ""));
                 shipList.add(ship);
             }
-            emailInfo.setOther_internship(shipList);
+            emailInfo.setOtherInternship(shipList);
         }
         List<Map<String, Object>> schooljobList = (List<Map<String, Object>>) otherDatas.getOrDefault("schooljob", new ArrayList());
         if (!StringUtils.isEmptyList(schooljobList)) {
@@ -83,9 +82,9 @@ public class ProfileOtherEntity {
                 ship.setDescription((String) school.getOrDefault("schooljobDescriptionHidden", ""));
                 schoolList.add(ship);
             }
-            emailInfo.setOther_schoolWork(schoolList);
+            emailInfo.setOtherSchoolWork(schoolList);
         }
-        emailInfo.setOther_idPhoto((String) otherDatas.getOrDefault("photo", ""));
+        emailInfo.setOtherIdPhoto((String) otherDatas.getOrDefault("photo", ""));
 
     }
 
@@ -138,12 +137,12 @@ public class ProfileOtherEntity {
         //组装所需要的数据结构
         List<Map<String, Object>> otherList = new ArrayList<>();
         Set<Map.Entry<String, Object>> entries = parentValues.entrySet();
-//            Set<Map.Entry<String, Object>> keyEntries = parentkeys.entrySet();
+        String photo = "";
         for(Map.Entry<String, Object> entry : entries){
-            if(!entry.getValue().toString().startsWith("[{") && !entry.getValue().toString().startsWith("[")) {
+            if(entry.getValue() instanceof String) {
                 Map<String, Object> map = new HashMap<>();
                 if("IDPhoto".equals(entry.getKey())){
-                    otherMap.put("photo", entry.getValue());
+                    photo =  (String) entry.getValue();
                     continue;
                 }
                 for(ConfigSysCvTplDO tplDO : tplDOList) {
@@ -155,37 +154,16 @@ public class ProfileOtherEntity {
                         }
                     }
                 }
-            }else if(entry.getValue().toString().startsWith("[{")){
-                TypeReference<List<Map<String,Object>>> typeRef
-                        = new TypeReference<List<Map<String,Object>>>() {};
-                List<Map<String , Object>> infoList= JSON.parseObject(entry.getValue().toString(),typeRef);
+            }else if(entry.getValue() instanceof List){
+                List infoList= (List)entry.getValue();
                 if(infoList!=null && infoList.size()>0) {
-                    otherMap.put(entry.getKey(), infoList);
-//                        for (Map.Entry<String, Object> key : keyEntries) {
-//                            if (entry.getKey().equals(key.getValue())) {
-//                                otherMap.put(key.getKey(), infoList);
-//                                break;
-//                            }
-//                        }
-                }
-            }else if(entry.getValue().toString().startsWith("[")){
-                TypeReference<List<String>> typeRef
-                        = new TypeReference<List<String>>() {};
-                List<String> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
-                if(infoList!=null && infoList.size()>0){
-                    otherMap.put(entry.getKey(), infoList);
-//                        for(Map.Entry<String, Object> key : keyEntries){
-//                            if(entry.getKey().equals(key.getValue())){
-//                                otherMap.put(key.getKey(), infoList);
-//                                break;
-//                            }
-//                        }
+                        otherMap.put(entry.getKey(), infoList);
                 }
             }
             otherMap.put("keyvalues", otherList);
             long end = System.currentTimeMillis();
         }
-
+        otherMap.put("photo", photo);
         return otherMap;
     }
 
