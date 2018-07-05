@@ -20,6 +20,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.ProfileOtherEntity;
 import com.moseeker.entity.pojo.profile.info.*;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -68,7 +69,7 @@ public class DeliveryEmailProducer {
     private HrCompanyDao companyDao;
 
     @Autowired
-    private ProfileEntity profileEntity;
+    private ProfileOtherEntity profileEntity;
 
     WholeProfileServices.Iface profileServices = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
     ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER
@@ -225,7 +226,7 @@ public class DeliveryEmailProducer {
         String result = response.getData();
         Map<String, Object> data = JSON.parseObject(result, Map.class);
 
-        Response responseOther = profileOtherService.getProfileOtherByPosition(user.getId(), position.getPublisher(), position.getId());
+        Response responseOther = profileOtherService.getProfileOtherByPositionNotViewApplication(user.getId(), position.getPublisher(), position.getId());
         String resultOther = responseOther.getData();
         Map<String, Object> otherDatas = JSON.parseObject(resultOther, Map.class);
         //获取学历字典

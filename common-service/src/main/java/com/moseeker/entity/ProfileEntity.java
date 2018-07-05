@@ -3,9 +3,13 @@ package com.moseeker.entity;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.ParserConfig;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -13,6 +17,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ProfileOtherCareerType;
 import com.moseeker.common.constants.ProfileOtherIdentityType;
 import com.moseeker.common.constants.ProfileOtherSchoolType;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
@@ -26,11 +31,17 @@ import com.moseeker.entity.pojo.profile.info.Internship;
 import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
 import com.moseeker.entity.pojo.profile.info.SchoolWork;
 import com.moseeker.entity.pojo.resume.ResumeObj;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.sql.Timestamp;
 
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
+import java.util.stream.Collectors;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -503,53 +514,7 @@ public class ProfileEntity {
         completenessImpl.reCalculateProfileCompleteness(profileId);
     }
 
-    @Autowired
-    private ProfileAttachmentDao attachmentDao;
 
-    @Autowired
-    private ProfileWorksDao worksDao;
-
-    @Autowired
-    private ProfileEducationDao educationDao;
-
-    @Autowired
-    private ProfileIntentionDao intentionDao;
-
-    @Autowired
-    private ProfileLanguageDao languageDao;
-
-    @Autowired
-    private ProfileOtherDao otherDao;
-
-    @Autowired
-    private ProfileBasicDao profileBasicDao;
-
-    @Autowired
-    private ProfileProfileDao profileDao;
-
-    @Autowired
-    private ProfileImportDao profileImportDao;
-
-    @Autowired
-    private ProfileProjectexpDao projectExpDao;
-
-    @Autowired
-    private ProfileSkillDao skillDao;
-
-    @Autowired
-    private ProfileWorkexpDao workExpDao;
-
-    @Autowired
-    private ProfileCompletenessImpl completenessImpl;
-
-    @Autowired
-    private UserUserDao userDao;
-
-    @Autowired
-    private ProfileCredentialsDao credentialsDao;
-
-    @Autowired
-    private ProfileAwardsDao awardsDao;
 
     public void updateProfile(ProfilePojo profilePojo, ProfileProfileDO profileProfileDO) {
         int profileId = profileProfileDO.getId();
@@ -612,41 +577,51 @@ public class ProfileEntity {
         return userProfileList;
     }
 
+    @Autowired
+    private ProfileAttachmentDao attachmentDao;
 
-    public void updateProfileOther(Map<String, Object> otherDatas, ProfileEmailInfo emailInfo){
-        List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>)otherDatas.getOrDefault("keyvalues", new ArrayList<>());
-        if(!StringUtils.isEmptyList(keyvalueList)){
-            emailInfo.setOther_identity(ProfileOtherIdentityType.getMessageList(keyvalueList));
-            emailInfo.setOther_career(ProfileOtherCareerType.getMessageList(keyvalueList));
-            emailInfo.setOther_school(ProfileOtherSchoolType.getMessageList(keyvalueList));
-        }
-        List<Map<String, Object>> internshipList = (List<Map<String, Object>>)otherDatas.getOrDefault("internship", new ArrayList());
-        if(!StringUtils.isEmptyList(internshipList)){
-            List<Internship> shipList = new ArrayList<>();
-            for(Map<String, Object> internship : internshipList){
-                Internship ship = new Internship();
-                ship.setTime(DateUtils.appendTime(internship.get("internshipStart"), internship.get("internshipEnd"), internship.get("internshipEndUntilNow")));
-                ship.setCompany((String)internship.getOrDefault("internshipCompanyName", ""));
-                ship.setPosition((String)internship.getOrDefault("internshipJob", ""));
-                ship.setDepartment((String)internship.getOrDefault("internshipDepartmentName", ""));
-                ship.setDescription((String)internship.getOrDefault("internshipDescriptionHidden", ""));
-                shipList.add(ship);
-            }
-            emailInfo.setOther_internship(shipList);
-        }
-        List<Map<String, Object>> schooljobList = (List<Map<String, Object>>)otherDatas.getOrDefault("schooljob", new ArrayList());
-        if(!StringUtils.isEmptyList(schooljobList)){
-            List<SchoolWork> schoolList = new ArrayList<>();
-            for(Map<String, Object> school : schooljobList){
-                SchoolWork ship = new SchoolWork();
-                ship.setTime(DateUtils.appendTime(school.get("schooljobStart"), school.get("schooljobEnd"), school.get("schooljobEndUntilNow")));
-                ship.setName((String)school.getOrDefault("schooljobJob", ""));
-                ship.setDescription((String)school.getOrDefault("schooljobDescriptionHidden", ""));
-                schoolList.add(ship);
-            }
-            emailInfo.setOther_schoolWork(schoolList);
-        }
-        emailInfo.setOther_idPhoto((String)otherDatas.getOrDefault("photo", ""));
+    @Autowired
+    private ProfileWorksDao worksDao;
 
-    }
+    @Autowired
+    private ProfileEducationDao educationDao;
+
+    @Autowired
+    private ProfileIntentionDao intentionDao;
+
+    @Autowired
+    private ProfileLanguageDao languageDao;
+
+    @Autowired
+    private ProfileOtherDao otherDao;
+
+    @Autowired
+    private ProfileBasicDao profileBasicDao;
+
+    @Autowired
+    private ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileImportDao profileImportDao;
+
+    @Autowired
+    private ProfileProjectexpDao projectExpDao;
+
+    @Autowired
+    private ProfileSkillDao skillDao;
+
+    @Autowired
+    private ProfileWorkexpDao workExpDao;
+
+    @Autowired
+    private ProfileCompletenessImpl completenessImpl;
+
+    @Autowired
+    private UserUserDao userDao;
+
+    @Autowired
+    private ProfileCredentialsDao credentialsDao;
+
+    @Autowired
+    private ProfileAwardsDao awardsDao;
 }

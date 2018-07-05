@@ -26,7 +26,7 @@ service ProfileOtherThriftService {
     common_struct.Response getProfileOther(1: string params) throws (1: common_struct.BIZException e);
     common_struct.Response otherFieldsCheck(1: i32 profileId, 2: string fields) throws(1: common_struct.BIZException e);
     common_struct.Response getProfileOtherByPosition(1:i32 userId, 2:i32 accountId, 3:i32 positionId) throws (1: common_struct.BIZException e);
-    common_struct.Response getProfileOtherListByIds(1:list<i32> userIds, 2:i32 accountId, 3:i32 positionId) throws (1: common_struct.BIZException e);
+    common_struct.Response getProfileOtherByPositionNotViewApplication(1:i32 userId, 2:i32 accountId, 3:i32 positionId) throws (1: common_struct.BIZException e);
 }
 
 service WholeProfileServices {
