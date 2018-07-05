@@ -14,6 +14,7 @@ import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.position.constants.position.liepin.LiepinPositionOperateConstant;
@@ -291,19 +292,17 @@ public class LiePinReceiverHandler {
                         // 修改
                         if (mappingDO.getState() == 1) {
                             liepinSocialPositionTransfer.editSinglePosition(liePinPositionVO, liePinToken, mappingDO.getId() + "", mappingDO.getCityCode() + "");
-//                            // 修改成功后，获取职位审核状态并作出相应修改
-//                            JSONObject positionInfoDetail = liepinSocialPositionTransfer.getPositionAuditState(mappingDO.getId(), liePinToken, positionId, ChannelType.LIEPIN.getValue());
-//                            log.info("=======================positionInfoDetail:{}", positionInfoDetail);
-//                            if (positionInfoDetail != null) {
-//                                String audit = positionInfoDetail.getString("ejob_auditflag");
-//                                // 根据职位审批状态进行不同的同步状态处理，如果待审核，同步状态设置为2，如果审核通过，同步状态设置为1，如果审核失败，同步状态设置为3，设置errmsg
-//                                liepinSocialPositionTransfer.comparePositionAudit(hrThirdPartyPositionDO, audit, thirdPartyPositionId, mappingDO.getId());
-//                                TwoParam<HrThirdPartyPositionDO, HrThirdPartyPositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, null);
-//                                log.info("=========================hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
-//                                hrThirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
-//                            }
+                            // 将职位同步状态设置为2，待审核
+                            PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(thirdPartyPositionId, positionChannel);
+                            delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
+                            log.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
+                            hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
                         }
                     }
+
+                    TwoParam<HrThirdPartyPositionDO, HrThirdPartyPositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, null);
+                    hrThirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
+
                     PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(thirdPartyPositionId, positionChannel);
                     delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
                     log.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);

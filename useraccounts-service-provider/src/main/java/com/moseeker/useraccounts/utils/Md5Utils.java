@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.utils;
 
 import com.moseeker.common.util.MD5Util;
+import com.moseeker.useraccounts.service.thirdpartyaccount.EmailNotification;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.security.MessageDigest;
@@ -15,8 +16,11 @@ import java.util.*;
  **/
 public class Md5Utils {
 
-    // TODO 放入配置文件
-    private static String SECRET_KEY = "EA36911A20A58DB1C41D0631094DE514";
+    private static final String SECRECT_KEY;
+
+    static{
+        SECRECT_KEY = EmailNotification.getConfig("liepin_position_api_secretkey");
+    }
 
     /**
      * 用于猎聘对接时的md5加密字符串
@@ -31,10 +35,7 @@ public class Md5Utils {
         for(String paraName : list) {
             paras.append(map.get(paraName));
         }
-        paras.append(SECRET_KEY);
-
-        System.out.println(paras.toString());
-
+        paras.append(SECRECT_KEY);
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(paras.toString().getBytes("UTF-8"));
         byte b[] = md.digest();

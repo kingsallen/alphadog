@@ -36,6 +36,13 @@ import java.util.Map;
 public class LiePinUserAccountBindHandler implements IBindRequest {
 
     private Logger logger = LoggerFactory.getLogger(LiePinUserAccountBindHandler.class);
+
+    private static final String CHANNEL;
+
+    static{
+        CHANNEL = EmailNotification.getConfig("liepin_position_api_channel");
+    }
+
     @Autowired
     EmailNotification emailNotification;
 
@@ -57,7 +64,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
                 logger.info("================用户绑定时http请求结果为空=================");
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "用户绑定时http请求结果为空");
             }
-            logger.info("=========================resultJson:{}", resultJson);
+            logger.info("=========================bindResultJson:{}", resultJson);
             JSONObject result = JSONObject.parseObject(resultJson);
 
             // 请求结果处理
@@ -115,7 +122,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
 
         //设置请求头
         Map<String, String> headers = new HashMap<>();
-        headers.put("channel", "qianxun");
+        headers.put("channel", CHANNEL);
 
         //发送请求
         return HttpClientUtil.sentHttpPostRequest(UserAccountConstant.liepinUserBindUrl, headers, requestMap);

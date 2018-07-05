@@ -271,7 +271,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             Map<String, Object> repubCityIdCodeMap = new HashMap<>();
             for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
                 // 该title下的职位处于下架、删除状态，用于重新发布到猎聘
-                if (mappingDO.getState() != 1) {
+                if (mappingDO.getState() == 0) {
                     republishCity.add(String.valueOf(mappingDO.getCityCode()));
                     repubCityIdCodeMap.put(String.valueOf(mappingDO.getCityCode()), mappingDO.getId());
                 }
@@ -308,7 +308,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 // 编辑修改职位
                 editNum = editExistPosition(editCity, editCityIdCodeMap, liePinPositionVO, liePinToken);
 
-                // todo 将职位设置为2，待审核
+                // 将职位同步状态设置为2，待审核
                 PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(thirdPartyPositionId, channel);
                 delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
                 logger.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
