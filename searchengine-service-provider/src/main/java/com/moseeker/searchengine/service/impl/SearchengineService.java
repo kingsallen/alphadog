@@ -790,7 +790,7 @@ public class SearchengineService {
                 .combineScript(new Script(combinScript));
         return build;
     }
-
+    @CounterIface
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum, String keyword, int filter) {
         Map<String, Object> object = new HashMap<>();
         TransportClient searchClient =null;
@@ -819,6 +819,9 @@ public class SearchengineService {
                 }
                 data.add(objectMap);
             }
+            logger.info("==================================");
+            logger.info("total ======="+response.getHits().getTotalHits());
+            logger.info("==================================");
             object.put("data", data);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
