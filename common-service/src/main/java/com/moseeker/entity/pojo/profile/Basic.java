@@ -4,10 +4,46 @@ package com.moseeker.entity.pojo.profile;
 public class Basic {
 
     private String cityName;
+    private int cityCode;
     private String gender;
     private String name;
     private String birth;
     private String selfIntroduction;
+    private String nationalityCode;
+    private String nationalityName;
+    private String qq;
+
+    public int getCityCode() {
+        return cityCode;
+    }
+
+    public void setCityCode(int cityCode) {
+        this.cityCode = cityCode;
+    }
+
+    public String getQq() {
+        return qq;
+    }
+
+    public void setQq(String qq) {
+        this.qq = qq;
+    }
+
+    public String getNationalityCode() {
+        return nationalityCode;
+    }
+
+    public void setNationalityCode(String nationalityCode) {
+        this.nationalityCode = nationalityCode;
+    }
+
+    public String getNationalityName() {
+        return nationalityName;
+    }
+
+    public void setNationalityName(String nationalityName) {
+        this.nationalityName = nationalityName;
+    }
 
     public void setCityName(String cityName) {
         this.cityName = cityName;
