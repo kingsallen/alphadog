@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.config.HRAccountActivationType;
@@ -873,6 +874,9 @@ public class UserHrAccountService {
             List<Map<String, Object>> result = userEmployeeDao.getMaps(queryBuilder.buildQuery());
             int unCount=0;
             if (!StringUtils.isEmptyList(result)) {
+                logger.info("=======================");
+                logger.info(JSON.toJSONString(result));
+                logger.info("=======================");
                 for (Map<String, Object> map : result) {
                     if (map.get("activation") != null) {
                         if ((Byte) map.get("activation") == 0) {
