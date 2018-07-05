@@ -142,7 +142,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
 
     private boolean confirmNoExpired(HrThirdPartyPositionDO hrThirdPartyPositionDO) throws ParseException {
         String syncTime = hrThirdPartyPositionDO.getSyncTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy--dd HH:mm:ss");
         long time = sdf.parse(syncTime).getTime();
         long currentTime = System.currentTimeMillis();
         return currentTime - time >= EXPIRED_TIME;
