@@ -61,7 +61,6 @@ public class PositionTaskQueueDaemonThread {
                     refreshFactory.refresh(task);
                     logger.info("[at task:" + task + "]   [Time:" + System.currentTimeMillis() + "]");
                 }
-                System.out.println(delayQueue.size());
 
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);

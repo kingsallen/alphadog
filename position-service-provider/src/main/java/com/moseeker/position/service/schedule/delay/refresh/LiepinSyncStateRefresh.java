@@ -64,12 +64,11 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
         // 使用第三方职位id刷新职位状态
         short isSynchronization = 2;
         int hrThirdPartyPositionId = refreshBean.getHrThirdPartyPositionId();
-        logger.info("===================refreshBean:{}", refreshBean);
         HrThirdPartyPositionDO hrThirdPartyPositionDO = getHrThirdPartyPosition(hrThirdPartyPositionId, isSynchronization);
         logger.info("=========================hrThirdPartyPositionDO{}", hrThirdPartyPositionDO);
         if (hrThirdPartyPositionDO == null) {
             logger.info("=========================无第三方职位信息hrThirdPartyPositionId:{}", hrThirdPartyPositionId);
-            // todo 发邮件
+            emailNotification.sendRefreshSyncStateFailEmail("refreshBean:" + refreshBean, null);
             return;
         }
         // 获取第三方账号id
@@ -80,7 +79,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
         List<Integer> requestIds = getRequestIds(positionId);
         if (requestIds == null || requestIds.size() == 0) {
             logger.info("=========================没有需要审核的mappingid, positionId:{}", positionId);
-            // todo 发邮件
+            emailNotification.sendRefreshSyncStateFailEmail("refreshBean:" + refreshBean, null);
             return;
         }
 

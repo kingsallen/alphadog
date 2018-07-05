@@ -94,6 +94,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     private Random random = new Random();
 
+    protected static final String ERRMSG = "审核不通过，请修改职位信息后重新发布。\n" +
+            "审核失败原因可能是:\n1、校招职位在社招渠道发布;\n2、职位信息中包含网站链接;\n3。职位信息中包含敏感信息等。";
+
     @Override
     public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
         JSONObject jsonObject = JSONObject.parseObject(JSON.toJSONString(thirdPartyPosition));
@@ -386,7 +389,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         } else if (LiepinPositionAuditState.NOTPASS.getValue().equals(audit)) {
             logger.info("=====================审核不通过");
             liepinMappingDao.updateState(mappingId, (byte) LiepinPositionState.UNPUBLISH.getValue());
-            hrThirdPartyPositionDO.setSyncFailReason("审核不通过，请修改职位信息后重新发布。(审核失败原因可能是:1、校招职位在社招渠道发布;2、职位信息中包含网站链接等。)");
+            hrThirdPartyPositionDO.setSyncFailReason(ERRMSG);
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
         } else {
             logger.info("=====================不存在的审核类型======");

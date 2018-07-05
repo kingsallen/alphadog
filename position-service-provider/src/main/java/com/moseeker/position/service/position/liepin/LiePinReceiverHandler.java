@@ -259,7 +259,7 @@ public class LiePinReceiverHandler {
             // 数据库中该仟寻职位id对应的城市codes list
             List<String> mappingCityList = liepinMappingDOList.stream().filter(mappingDo -> mappingDo.getState() == 1)
                     .map(mappingDo -> String.valueOf(mappingDo.getCityCode())).distinct().collect(Collectors.toList());
-            log.info("===============数据库中该仟寻职位id对应的城市cityDbList:{}====================", mappingCityList);
+            log.info("===============数据库中该仟寻职位id对应的职位状态为1的城市cityDbList:{}====================", mappingCityList);
 
             // 数据库中该仟寻职位id对应的titlelist
             List<String> titleDbList = liepinMappingDOList.stream().map(mappingDo -> mappingDo.getJobTitle()).collect(Collectors.toList());
@@ -274,12 +274,8 @@ public class LiePinReceiverHandler {
             // true表示标题变化了
             boolean isTitleChange = !jobPositionDO.getTitle().equals(updateJobPosition.getTitle());
 
-            // 不是下架状态的修改  city没有变化      title没有变化
-            if (!positionFlag && !isCityChange && !isTitleChange) {
-
-                hrThirdPartyPositionDao.updateBindState(positionId, hrAccountId, 2, 1);
-
-            } else if (isCityChange || positionFlag) {
+            // das端其实已经做过同步状态的修改，此举是为了兼容ats端
+            if (isCityChange || positionFlag) {
                 // 如果是city变化，或者是下架状态的修改，将同步状态置为0，未同步
                 hrThirdPartyPositionDao.updateBindState(positionId, hrAccountId, 2, 0);
 
@@ -292,14 +288,10 @@ public class LiePinReceiverHandler {
                         // 修改
                         if (mappingDO.getState() == 1) {
                             liepinSocialPositionTransfer.editSinglePosition(liePinPositionVO, liePinToken, mappingDO.getId() + "", mappingDO.getCityCode() + "");
-                            // 将职位同步状态设置为2，待审核
-                            PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(thirdPartyPositionId, positionChannel);
-                            delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
-                            log.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
-                            hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
                         }
                     }
-
+                    // 将职位同步状态设置为2，待审核
+                    hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
                     TwoParam<HrThirdPartyPositionDO, HrThirdPartyPositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, null);
                     hrThirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
 
