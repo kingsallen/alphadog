@@ -51,8 +51,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 监听das中的职位操作，进行与猎聘相关的职位处理
- *
+ * 1、监听das中的职位操作，进行与猎聘相关的职位处理
+ * 2、处理ats的批量请求
+ * 3、和liepinSocialPositionTransfer公用的一些方法
  * @author cjm
  * @date 2018-06-04 19:03
  **/
@@ -287,7 +288,7 @@ public class LiePinReceiverHandler {
                     for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
                         // 修改
                         if (mappingDO.getState() == 1) {
-                            liepinSocialPositionTransfer.editSinglePosition(liePinPositionVO, liePinToken, mappingDO.getId() + "", mappingDO.getCityCode() + "");
+                            liepinSocialPositionTransfer.editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
                         }
                     }
                     // 将职位同步状态设置为2，待审核
@@ -919,12 +920,6 @@ public class LiePinReceiverHandler {
         if (StringUtils.isNotBlank(jobPositionDO.getDepartment())) {
             jobPositionDO.setDepartment(jobPositionDO.getDepartment().replaceAll("\\s", ""));
         }
-//        if (StringUtils.isNotBlank(jobPositionDO.getAccountabilities())) {
-//            jobPositionDO.setAccountabilities(jobPositionDO.getAccountabilities().replaceAll("\\s", ""));
-//        }
-//        if (StringUtils.isNotBlank(jobPositionDO.getRequirement())) {
-//            jobPositionDO.setRequirement(jobPositionDO.getRequirement().replaceAll("\\s", ""));
-//        }
         if (StringUtils.isNotBlank(jobPositionDO.getLanguage())) {
             jobPositionDO.setLanguage(jobPositionDO.getLanguage().replaceAll("\\s", ""));
         }
@@ -961,23 +956,10 @@ public class LiePinReceiverHandler {
      * @return
      */
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
-    public int syncNewPosition(List<String> cityCodesList, List<JobPositionLiepinMappingDO> liepinMappingDOList, List<String> cityCodesListDb,
-                               List<String> republishCity, StringBuilder republishIds, Map<String, Object> repubCityIdCodeMap, LiePinPositionVO liePinPositionVO,
-                               int liePinUserId, String liePinToken, List<Integer> successSyncIds) throws Exception {
+    public int syncNewPosition(List<String> syncCityList, LiePinPositionVO liePinPositionVO, int liePinUserId, String liePinToken) throws Exception {
         int index = 0;
         // 逐个城市发布职位
-        for (String cityCode : cityCodesList) {
-            // 只要有相同title和城市的职位，就不发布
-            if (liepinMappingDOList.size() > 0) {
-                // 如果存在已同步记录信息，需要判断下是否要是否是新的地区或者title
-                if (cityCodesListDb.contains(cityCode)) {
-                    // 状态不为1的城市中如果包括本次发布城市
-                    if (republishCity.contains(cityCode)) {
-                        republishIds.append(repubCityIdCodeMap.get(cityCode)).append(",");
-                    }
-                    continue;
-                }
-            }
+        for (String cityCode : syncCityList) {
 
             String liepinCityCode = liepinSocialPositionTransfer.getValidLiepinDictCode(cityCode);
 
@@ -995,7 +977,6 @@ public class LiePinReceiverHandler {
             // 猎聘返回的职位在猎聘的id标识
             String thirdPositionId = data.substring(1, data.length() - 1);
 
-            successSyncIds.add(jobPositionLiepinMappingDO.getId());
             // 成功发布职位的个数
             index++;
 
