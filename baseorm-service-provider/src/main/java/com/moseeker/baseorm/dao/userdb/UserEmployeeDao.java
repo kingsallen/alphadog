@@ -94,31 +94,35 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
     public List<Map<String,Object>> getUserEmployeeLike(int companyId,String email,int pageNum,int pageSize){
         List<Map<String,Object>> list=create.select(UserEmployee.USER_EMPLOYEE.ID,UserEmployee.USER_EMPLOYEE.CNAME,UserEmployee.USER_EMPLOYEE.SYSUSER_ID,UserEmployee.USER_EMPLOYEE.EMAIL.as("email"))
                 .from(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId)).and(UserEmployee.USER_EMPLOYEE.EMAIL.like("%"+email+"%"))
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.eq((byte)0))
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
                 .orderBy(UserEmployee.USER_EMPLOYEE.UPDATE_TIME.desc())
                 .union(
-                        create.select(UserEmployee.USER_EMPLOYEE.ID,UserEmployee.USER_EMPLOYEE.CNAME,UserEmployee.USER_EMPLOYEE.SYSUSER_ID,UserUser.USER_USER.EMAIL.as("email")).from(UserEmployee.USER_EMPLOYEE).join(UserUser.USER_USER).on(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(UserUser.USER_USER.ID))
-                                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte)1)).and(UserUser.USER_USER.EMAIL.like("%"+email+"%")).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
-                                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.ne((byte)0))
+                        create.select(UserEmployee.USER_EMPLOYEE.ID,UserEmployee.USER_EMPLOYEE.CNAME,UserEmployee.USER_EMPLOYEE.SYSUSER_ID,UserUser.USER_USER.EMAIL.as("email"))
+                                .from(UserEmployee.USER_EMPLOYEE).join(UserUser.USER_USER).on(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(UserUser.USER_USER.ID))
+                                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte)1)).and(UserUser.USER_USER.EMAIL.like("%"+email+"%"))
+                                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.EMAIL.eq(""))
                 ).limit((pageNum-1)*pageSize,pageSize).fetchMaps();
         return list;
     }
     /*
-   获取有邮箱认证的雇员数量
+   获取有邮箱雇员数量
      */
     public int getUserEmployeeLikeCount(int companyId,String email){
-        int count=create.selectCount().from(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId)).and(UserEmployee.USER_EMPLOYEE.EMAIL.like("%"+email+"%"))
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+        int count=create.selectCount()
+                .from(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId)).and(UserEmployee.USER_EMPLOYEE.EMAIL.like("%"+email+"%"))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
                 .orderBy(UserEmployee.USER_EMPLOYEE.UPDATE_TIME.desc()).fetchOne().value1();
-        int count1=create.selectCount().from(UserEmployee.USER_EMPLOYEE).join(UserUser.USER_USER).on(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(UserUser.USER_USER.ID))
-                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte)1)).and(UserUser.USER_USER.EMAIL.like("%"+email+"%")).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.ne((byte)0)).fetchOne().value1();
+        int count1=create.selectCount()
+                .from(UserEmployee.USER_EMPLOYEE).join(UserUser.USER_USER).on(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(UserUser.USER_USER.ID))
+                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte)1)).and(UserUser.USER_USER.EMAIL.like("%"+email+"%"))
+                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.EMAIL.eq("")).fetchOne().value1();
         return count+count1;
     }
 
     /*
-    根据id获取有邮箱认证的雇员信息
+    根据id获取有邮箱的雇员信息
      */
     public List<Map<String,Object>> getUserEmployeeInfoById(List<Integer> idList){
         List<Map<String,Object>> list=create.select(UserEmployee.USER_EMPLOYEE.ID,UserEmployee.USER_EMPLOYEE.CNAME,UserEmployee.USER_EMPLOYEE.SYSUSER_ID,UserEmployee.USER_EMPLOYEE.EMAIL.as("email"))

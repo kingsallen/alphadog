@@ -56,6 +56,7 @@ import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.profile.utils.DictCode;
+import com.moseeker.profile.utils.ProfileMailUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -123,13 +124,13 @@ public class ProfileService {
     private ProfileEntity profileEntity;
 
     @Autowired
+    private ProfileOtherEntity profileOtherEntity;
+
+    @Autowired
     private HrAppCvConfDao hrAppCvConfDao;
 
     @Autowired
     private PositionEntity positionEntity;
-
-    @Autowired
-    private ProfileOtherEntity profileOtherEntity;
 
     @Autowired
     private ProfileOtherDao profileOtherDao;
@@ -157,6 +158,9 @@ public class ProfileService {
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
+
+    @Autowired
+    private ProfileMailUtil profileMailUtil;
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
             .getService(JobApplicationServices.Iface.class);
@@ -561,7 +565,9 @@ public class ProfileService {
         ProfileObj profileObj = new ProfileObj();
         try {
             // 调用SDK得到结果
-            ResumeObj resumeObj = profileEntity.profileParser(fileName, file);
+            ResumeObj resumeObj = profileEntity.profileParserAdaptor(fileName, file);
+            // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
+            validateParseLimit(resumeObj);
             logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
             // 调用成功,开始转换对象,我把它单独独立出来
             profileObj=handlerParseData(resumeObj,uid,fileName);
@@ -570,6 +576,19 @@ public class ProfileService {
         }
         logger.info("profileParser:{}", JSON.toJSONString(profileObj));
         return profileObj;
+    }
+
+    /**
+     * 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
+     * @param
+     * @author  cjm
+     * @date  2018/6/26
+     * @return
+     */
+    private void validateParseLimit(ResumeObj resumeObj) {
+        if(resumeObj != null && resumeObj.getAccount() != null && resumeObj.getAccount().getUsage_remaining() < 1000){
+            profileMailUtil.sendProfileParseWarnMail(resumeObj.getAccount());
+        }
     }
 
 
@@ -1037,7 +1056,6 @@ public class ProfileService {
             throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
         Map<String, Object> otherDatas = JSON.parseObject(profileOtherDO.getOther(), Map.class);
-//        Map<String, Object> parentkeys = new HashMap<>();
         if(positionIds != null && positionIds.size()>0 && profileId > 0) {
             logger.info("positionIdList:{}", positionIds);
             long profileTime = System.currentTimeMillis();
@@ -1057,94 +1075,35 @@ public class ProfileService {
             long infoTime = System.currentTimeMillis();
             logger.info("getProfileOther others info time:{}", profileTime - infoTime);
             logger.info("getProfileOther others info time:{}", infoTime - start);
-            positionIds.stream().forEach(positionId -> {
-                try {
-                    if (positionCustomConfigMap.containsKey(positionId)) {
-
-                        if (otherDatas != null) {
-                            Map<String, Object> parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
-                                    .stream()
-                                    .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
-                                            map(m -> JSONObject.parseObject(String.valueOf(m)))
-                                    .filter(f -> f.getIntValue("parent_id") == 0)
-                                    .collect(Collectors.toMap(k -> k.getString("field_name"), v -> {
-                                        String field_name = v.getString("field_name");
-                                        String field_value = (String)otherDatas.getOrDefault(field_name, "");
-                                        return org.apache.commons.lang.StringUtils
-                                                .defaultIfBlank(field_value, "");
-                                    }, (oldKey, newKey) -> newKey));
-                            parentValues.putAll(parentValue);
-//                            Map<String, Object> parentkey = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
-//                                    .stream()
-//                                    .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
-//                                            map(m -> JSONObject.parseObject(String.valueOf(m)))
-//                                    .filter(f -> f.getIntValue("parent_id") == 0)
-//                                    .collect(Collectors.toMap(k -> k.getString("field_name"),v -> v.getString("field_title"), (oldKey, newKey) -> newKey));
-//                            parentkeys.putAll(parentkey);
+            for(Integer positionId : positionIds){
+                if(positionCustomConfigMap.containsKey(positionId)){
+                    JSONArray otherCvTplMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)));
+                    if(otherCvTplMap.size()>0){
+                        for(int i=0;i<otherCvTplMap.size();i++){
+                            JSONObject apJson = otherCvTplMap.getJSONObject(i);
+                            List<Map<String, Object>> fieldList = (List<Map<String, Object>>)apJson.get("fields");
+                            if(fieldList.size()>0){
+                                for(Map<String, Object> obj : fieldList){
+                                    if(obj.get("parent_id") != null && ((int)obj.get("parent_id")) == 0){
+                                        if(obj.get("field_name") != null ) {
+                                            String field_name = (String)obj.get("field_name");
+                                            parentValues.put(field_name, otherDatas.get(field_name));
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                } catch (Exception e1) {
-                    logger.error(e1.getMessage(), e1);
                 }
-            });
+            }
             long positionTime = System.currentTimeMillis();
             logger.info("getProfileOther others position time:{}", positionTime - infoTime);
         }else{
             parentValues.putAll(otherDatas);
         }
         otherMap = profileOtherEntity.handerOtherInfo(parentValues);
-//        List<ConfigSysCvTplDO> tplDOList = confTplDao.findAll();
-//            //组装所需要的数据结构
-//            List<Map<String, Object>> otherList = new ArrayList<>();
-//            Set<Map.Entry<String, Object>> entries = parentValues.entrySet();
-//            Set<Map.Entry<String, Object>> keyEntries = parentkeys.entrySet();
-//            for(Map.Entry<String, Object> entry : entries){
-//                if(!entry.getValue().toString().startsWith("[{") && !entry.getValue().toString().startsWith("[")) {
-//                    Map<String, Object> map = new HashMap<>();
-//                    if("IDPhoto".equals(entry.getKey())){
-//                        otherMap.put("photo", entry.getValue());
-//                        continue;
-//                    }
-//                    for(ConfigSysCvTplDO tplDO : tplDOList) {
-//                        if(tplDO.getFieldName().equals(entry.getKey())) {
-//                            map.put("key", tplDO.getFieldTitle());
-//                            if (entry.getValue() != null && !"".equals(entry.getValue())) {
-//                                map.put("value", entry.getValue());
-//                                otherList.add(map);
-//                            }
-//                        }
-//                    }
-//                }else if(entry.getValue().toString().startsWith("[{")){
-//                    TypeReference<List<Map<String,Object>>> typeRef
-//                            = new TypeReference<List<Map<String,Object>>>() {};
-//                    List<Map<String , Object>> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
-//                    if(infoList!=null && infoList.size()>0) {
-//                        otherMap.put(entry.getKey(), infoList);
-////                        for (Map.Entry<String, Object> key : keyEntries) {
-////                            if (entry.getKey().equals(key.getValue())) {
-////                                otherMap.put(key.getKey(), infoList);
-////                                break;
-////                            }
-////                        }
-//                    }
-//                }else if(entry.getValue().toString().startsWith("[")){
-//                    TypeReference<List<String>> typeRef
-//                            = new TypeReference<List<String>>() {};
-//                    List<String> infoList=JSON.parseObject(entry.getValue().toString(),typeRef);
-//                    if(infoList!=null && infoList.size()>0){
-//                        otherMap.put(entry.getKey(), infoList);
-////                        for(Map.Entry<String, Object> key : keyEntries){
-////                            if(entry.getKey().equals(key.getValue())){
-////                                otherMap.put(key.getKey(), infoList);
-////                                break;
-////                            }
-////                        }
-//                    }
-//                }
-
-//            otherMap.put("keyvalues", otherList);
-            long end = System.currentTimeMillis();
-            logger.info("getProfileOther others time:{}", end-start);
+        long end = System.currentTimeMillis();
+        logger.info("getProfileOther others time:{}", end-start);
 //        }
 
         return otherMap;
@@ -1176,7 +1135,7 @@ public class ProfileService {
         if(applicationDOS != null && applicationDOS.size()>0){
             positionList = applicationDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
         }
-        params.put("profile_id", positionId);
+        params.put("profile_id", profileId);
         params.put("updateList", updateList);
         params.put("positionList", positionList);
         return params;
@@ -1187,6 +1146,7 @@ public class ProfileService {
             pool.startTast(() -> viewApplications(accountId, updateList));
         }
     }
+
     public String viewApplications(int accountId, List<Integer> updateList){
         try {
             logger.info("查看简历 viewApplications accountId:{}; updateList:{}", accountId, updateList);
@@ -1196,6 +1156,8 @@ public class ProfileService {
         }
         return null;
     }
+
+
     /**
      * 校验other指定字段
      * @param fields
@@ -1264,7 +1226,9 @@ public class ProfileService {
      */
     public Response talentpoolUploadParse(String fileName,String fileData,int companyId) throws TException, IOException {
         Map<String, Object> result = new HashMap<>();
-        ResumeObj resumeObj = profileEntity.profileParser(fileName, fileData);
+        ResumeObj resumeObj = profileEntity.profileParserAdaptor(fileName, fileData);
+        // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
+        validateParseLimit(resumeObj);
         logger.info(JSON.toJSONString(resumeObj));
         result.put("resumeObj", resumeObj);
         if (resumeObj.getStatus().getCode() == 200) {

@@ -103,8 +103,8 @@ public class LiepinReceiverTest {
 
     @Test
     public void testGetPosition() throws Exception {
-        Integer positionId = 19493745;
-        Integer id = 986122478;
+        Integer positionId = 1977351;
+        Integer id = 14;
         String info = receiverHandler.getLpPositionInfo(positionId, id);
     }
 

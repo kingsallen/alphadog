@@ -146,7 +146,6 @@ public class MandrillMailListConsumer {
                 logger.info("messageStatus :{}",messageStatus);
 
             } catch (Exception e) {
-                e.printStackTrace();
                 logger.error(e.getMessage());
             }
 

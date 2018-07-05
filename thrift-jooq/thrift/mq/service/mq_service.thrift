@@ -20,7 +20,5 @@ service MqService {
 
    common_struct.Response sendSMS(1: mq_struct.SmsType smsType, 2: string mobile, 3: map<string, string> data, 4: string sys, 5: string ip);
 
-   common_struct.Response sendMessageAndEmail(1: i32 application_id);
-
    common_struct.Response sendMessageAndEmailToDelivery(1: mq_struct.MessageEmailStruct messageEmailStruct);
 }

@@ -91,7 +91,8 @@ public class TemplateMsgProducer {
 				}
 			}
 		} catch (RedisException e) {
-    		WarnService.notify(e);
+			logger.error(e.getMessage(),e);
+			WarnService.notify(e);
 		} catch (Exception e) {
 			logger.error("MqServiceImpl messageTemplateNotice error: ", e);
 		} finally {

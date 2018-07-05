@@ -53,30 +53,6 @@ public class CustomizeResumeController {
 		}
 	}
 
-    @RequestMapping(value = "/profile/other/list", method = RequestMethod.GET)
-    @ResponseBody
-    public String getOtherList(HttpServletRequest request, HttpServletResponse response) {
-        //PrintWriter writer = null;
-        try {
-            // GET方法 通用参数解析并赋值
-            Params<String, Object> form = ParamUtils.parseRequestParam(request);
-            int accountId = form.getInt("account_id", 0);
-            int positionId = form.getInt("position_id", 0);
-            List<Integer> userIds = new ArrayList<>();
-            if(form.get("user_ids") != null){
-                String user_ids = (String)form.get("user_ids");
-                userIds = ParamUtils.convertIntList(user_ids);
-            }
-            Response result = profileOtherService.getProfileOtherListByIds(userIds, accountId, positionId);
-
-            return ResponseLogNotification.success(request, result);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
-        } finally {
-            // do nothing
-        }
-    }
 
 	@RequestMapping(value = "/profile/other", method = RequestMethod.POST)
 	@ResponseBody

@@ -65,6 +65,7 @@ public class EmailProducer {
 			redisClient.lpush(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_BIZ, constantlyMsg);
 			return ResponseUtils.success("success");
 		} catch (RedisException e) {
+			logger.error(e.getMessage(),e);
 			WarnService.notify(e);
 			return ResponseUtils.fail(99999, e.getMessage());
 		} catch (Exception e) {
