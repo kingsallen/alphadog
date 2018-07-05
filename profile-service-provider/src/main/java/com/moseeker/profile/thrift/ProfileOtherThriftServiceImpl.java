@@ -240,8 +240,13 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     public Response getProfileOtherByPosition(int userId, int accountId, int positionId) throws BIZException, TException {
         try {
             long start = System.currentTimeMillis();
-            Map<String, Object> others = profileService.getApplicationOther(userId, accountId, positionId);
-            Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(others);
+            Map<String, Object> others = profileService.getApplicationOtherCommon(userId, accountId, positionId);
+            List<Integer> updateList = (List<Integer>)others.getOrDefault("updateList", null);
+            profileService.viewApplicationsByApplication(accountId, updateList);
+            List<Integer> positionList = (List<Integer>)others.getOrDefault("positionList", null);
+            Integer profile_id = (Integer)others.getOrDefault("profile_id", 0);
+            Map<String, Object> result = profileService.getProfileOther(positionList, profile_id);
+            Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(result);
             long end = System.currentTimeMillis();
             logger.info("getProfileOtherByPosition others time :{}", end-start);
             return ResponseUtils.success(profilrCamle);
@@ -249,6 +254,24 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             return ResponseUtils.fail(e.getCode(),e.getMessage());
         }
     }
+
+    @Override
+    public Response getProfileOtherByPositionNotViewApplication(int userId, int accountId, int positionId) throws BIZException, TException {
+        try {
+            long start = System.currentTimeMillis();
+            Map<String, Object> others = profileService.getApplicationOtherCommon(userId, accountId, positionId);
+            List<Integer> positionList = (List<Integer>)others.getOrDefault("positionList", null);
+            Integer profile_id = (Integer)others.getOrDefault("profile_id", 0);
+            Map<String, Object> result = profileService.getProfileOther(positionList, profile_id);
+            Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(result);
+            long end = System.currentTimeMillis();
+            logger.info("getProfileOtherByPosition others time :{}", end-start);
+            return ResponseUtils.success(profilrCamle);
+        }catch (CommonException e){
+            return ResponseUtils.fail(e.getCode(),e.getMessage());
+        }
+    }
+
 
 
 }

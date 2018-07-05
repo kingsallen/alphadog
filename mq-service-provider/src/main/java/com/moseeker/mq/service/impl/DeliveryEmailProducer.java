@@ -15,14 +15,13 @@ import com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import static com.moseeker.common.constants.Constant.CDN_URL;
-import com.moseeker.common.constants.ProfileOtherCareerType;
-import com.moseeker.common.constants.ProfileOtherIdentityType;
-import com.moseeker.common.constants.ProfileOtherSchoolType;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.mq.pojo.*;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.ProfileOtherEntity;
+import com.moseeker.entity.pojo.profile.info.*;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
@@ -68,6 +67,9 @@ public class DeliveryEmailProducer {
     private DictConstantDao dictConstantDao;
     @Autowired
     private HrCompanyDao companyDao;
+
+    @Autowired
+    private ProfileOtherEntity profileEntity;
 
     WholeProfileServices.Iface profileServices = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
     ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER
@@ -224,35 +226,32 @@ public class DeliveryEmailProducer {
         String result = response.getData();
         Map<String, Object> data = JSON.parseObject(result, Map.class);
 
-        Response responseOther = profileOtherService.getProfileOtherByPosition(user.getId(), position.getPublisher(), position.getId());
+        Response responseOther = profileOtherService.getProfileOtherByPositionNotViewApplication(user.getId(), position.getPublisher(), position.getId());
         String resultOther = responseOther.getData();
         Map<String, Object> otherDatas = JSON.parseObject(resultOther, Map.class);
         //获取学历字典
         List<DictConstantDO> degree = dictConstantDao.getDatas(new Query.QueryBuilder().
                 where(DictConstant.DICT_CONSTANT.PARENT_CODE.getName(), Constant.DICT_CONSTANT_DEGREE_USER)
-                .orderBy(DictConstant.DICT_CONSTANT.PRIORITY.getName(),Order.ASC).buildQuery());
+                .orderBy(DictConstant.DICT_CONSTANT.PRIORITY.getName(), Order.ASC).buildQuery());
         //语言字典
         List<DictConstantDO> languageDict = dictConstantDao.getDatas(new Query.QueryBuilder().
                 where(DictConstant.DICT_CONSTANT.PARENT_CODE.getName(), Constant.DICT_CONSTANT_LANGUAGE_FRUENCY)
-                .orderBy(DictConstant.DICT_CONSTANT.PRIORITY.getName(),Order.ASC).buildQuery());
+                .orderBy(DictConstant.DICT_CONSTANT.PRIORITY.getName(), Order.ASC).buildQuery());
         ProfileEmailInfo emailInfo = new ProfileEmailInfo();
         emailInfo.setCompanyName(company.getAbbreviation());
         emailInfo.setPositionName(position.getTitle());
-        String logo = env.getProperty("http.cdn.url") + Constant.COMPANY_LOGO_URL;
-        if(company.getLogo() != null) {
-            logo = company.getLogo().trim().startsWith("http") ? company.getLogo() : env.getProperty("http.cdn.url") + company.getLogo();
-        }
+        String logo = company.getLogo().trim().startsWith("http") ? company.getLogo() : env.getProperty("http.cdn.url") + company.getLogo();
         emailInfo.setCompanyLogo(logo);
         //邮件头像默认地址
         emailInfo.setHeadimg(env.getProperty("email.user.heading.url"));
         //hr端人才详情路径
         String resume_url = env.getProperty("email.resume.info.url");
-        if(resume_url != null)
-            resume_url = resume_url.replace("{}", user.getId()+"");
+        if (resume_url != null)
+            resume_url = resume_url.replace("{}", user.getId() + "");
         emailInfo.setResumeLink(resume_url);
-        if(user != null) {
+        if (user != null) {
             if (user.getHeadimg() != null && !user.getHeadimg().isEmpty()) {
-                String headImgUrl = user.getHeadimg().trim().startsWith("http")? user.getHeadimg() : env.getProperty("http.cdn.url")+user.getHeadimg();
+                String headImgUrl = user.getHeadimg().trim().startsWith("http") ? user.getHeadimg() : env.getProperty("http.cdn.url") + user.getHeadimg();
                 emailInfo.setHeadimg(headImgUrl);
             }
             if (user.getName() != null && !user.getName().isEmpty()) {
@@ -263,219 +262,156 @@ public class DeliveryEmailProducer {
         }
         BasicInfo basic = new BasicInfo();
         Intention intentions = new Intention();
-        if(data != null) {
+        if (data != null) {
             if (data.get("basic") != null) {
                 Map<String, Object> basicData = (Map<String, Object>) data.get("basic");
-                emailInfo.setNationalityName((String) basicData.getOrDefault("nationality_name",""));
-                emailInfo.setGenderName((String)basicData.getOrDefault("gender_name",""));
-                emailInfo.setCityName((String)basicData.getOrDefault("city_name",""));
+                emailInfo.setNationalityName((String) basicData.getOrDefault("nationality_name", ""));
+                emailInfo.setGenderName((String) basicData.getOrDefault("gender_name", ""));
+                emailInfo.setCityName((String) basicData.getOrDefault("city_name", ""));
                 Date date = new Date();
                 String years = DateUtils.formatDate(date, "yyyy");
                 if (basicData.get("birth") != null) {
                     String startBirth = ((String) basicData.get("birth")).substring(0, 4);
                     int birth = Integer.parseInt(years) - Integer.parseInt(startBirth);
                     emailInfo.setAge(birth + "岁");
-                    String birthStr = ((String) basicData.get("birth")).replace("-",".");
+                    String birthStr = ((String) basicData.get("birth")).replace("-", ".");
                     basic.setBirth(birthStr);
                 }
-                emailInfo.setIntroduction((String) basicData.getOrDefault("self_introduction",""));
+                emailInfo.setIntroduction((String) basicData.getOrDefault("self_introduction", ""));
             }
-            if(otherDatas != null){
-//                OtherInfo otherInfo = new OtherInfo();
-                List<Map<String, Object>> keyvalueList = (List<Map<String, Object>>)otherDatas.getOrDefault("keyvalues", null);
-                if(!StringUtils.isEmptyList(keyvalueList)){
-                    emailInfo.setOtherIdentity(ProfileOtherIdentityType.getMessageList(keyvalueList));
-                    emailInfo.setOtherCareer(ProfileOtherCareerType.getMessageList(keyvalueList));
-                    emailInfo.setOtherSchool(ProfileOtherSchoolType.getMessageList(keyvalueList));
-                }
-                List<Map<String, Object>> internshipList = (List<Map<String, Object>>)otherDatas.getOrDefault("internship", null);
-                if(!StringUtils.isEmptyList(internshipList)){
-                    List<Internship> shipList = new ArrayList<>();
-                    for(Map<String, Object> internship : internshipList){
-                        Internship ship = new Internship();
-                        ship.setTime(appendTime(internship.get("internshipStart"), internship.get("internshipEnd"), internship.get("internshipEndUntilNow")));
-                        ship.setCompany((String)internship.getOrDefault("internshipCompanyName", ""));
-                        ship.setPosition((String)internship.getOrDefault("internshipJob", ""));
-                        ship.setDepartment((String)internship.getOrDefault("internshipDepartmentName", ""));
-                        ship.setDescription((String)internship.getOrDefault("internshipDescriptionHidden", ""));
-                        shipList.add(ship);
-                    }
-                    emailInfo.setOtherInternship(shipList);
-                }
-                List<Map<String, Object>> schooljobList = (List<Map<String, Object>>)otherDatas.getOrDefault("schooljob", null);
-                if(!StringUtils.isEmptyList(schooljobList)){
-                    List<SchoolWork> schoolList = new ArrayList<>();
-                    for(Map<String, Object> school : schooljobList){
-                        SchoolWork ship = new SchoolWork();
-                        ship.setTime(appendTime(school.get("schooljobStart"), school.get("schooljobEnd"), school.get("schooljobEndUntilNow")));
-                        ship.setName((String)school.getOrDefault("schooljobJob", ""));
-                        ship.setDescription((String)school.getOrDefault("schooljobDescriptionHidden", ""));
-                        schoolList.add(ship);
-                    }
-                    emailInfo.setOtherSchoolWork(schoolList);
-                }
-                String photo = (String)otherDatas.getOrDefault("photo", "");
-                logger.info("photo:{}",photo);
-                if(StringUtils.isNotNullOrEmpty(photo)) {
-                    emailInfo.setOtherIdPhoto(photo.trim().startsWith("http") ? photo : env.getProperty("http.cdn.url") + photo);
-                }
+            if (otherDatas != null) {
+                profileEntity.updateProfileOther(otherDatas, emailInfo);
             }
+            //获取教育信息
+            List<Map<String, Object>> educationList = (List<Map<String, Object>>) data.getOrDefault("educations", new ArrayList());
+            if (degree != null && degree.size() > 0 && !StringUtils.isEmptyList(educationList)) {
+                for (DictConstantDO constantDO : degree) {
+                    if (educationList.get(0).get("degree") != null) {
+                        if (constantDO.getCode() == (int) educationList.get(0).get("degree"))
+                            basic.setDegree(constantDO.getName());
+                    }
+                }
+                basic.setMajor((String) educationList.get(0).getOrDefault("major_name", ""));
+                basic.setCollege((String) educationList.get(0).getOrDefault("college_name", ""));
 
-        }
-
-        //获取教育信息
-        List<Map<String, Object>> educationList = (List<Map<String, Object>>) data.getOrDefault("educations", null);
-        if (degree != null && degree.size() > 0 && !StringUtils.isEmptyList(educationList)) {
-            for (DictConstantDO constantDO : degree) {
-                if (educationList.get(0).get("degree") != null) {
-                    if (constantDO.getCode() == (int) educationList.get(0).get("degree"))
-                        basic.setDegree(constantDO.getName());
-                }
-            }
-            basic.setMajor((String) educationList.get(0).getOrDefault("major_name",""));
-            basic.setCollege((String) educationList.get(0).getOrDefault("college_name",""));
-
-            List<EduExps> eduList = new ArrayList<>();
-            for (int i = 0; i < educationList.size(); i++) {
-                Map<String, Object> education = educationList.get(i);
-                EduExps eduExps = new EduExps();
-                eduExps.setTime(appendTime(education.get("start_date"), education.get("end_date"), education.get("end_until_now")));
-                eduExps.setCollege((String) education.getOrDefault("college_name",""));
-                eduExps.setMajor((String) education.getOrDefault("major_name",""));
-                eduExps.setDescription((String) education.getOrDefault("description",""));
-                if (education.get("degree") != null) {
-                    for (DictConstantDO constantDO : degree) {
-                        if (constantDO.getCode() == (int) education.get("degree"))
-                            eduExps.setDegree(constantDO.getName());
-                    }
-                }
-                eduList.add(eduExps);
-            }
-            emailInfo.setEduExps(eduList);
-        }
-        //获取期望信息
-        List<Map<String, Object>> intentionList = (List<Map<String, Object>>) data.getOrDefault("intentions", null);
-        if (!StringUtils.isEmptyList(intentionList)) {
-            Map<String, Object> intention = intentionList.get(0);
-            intentions.setEmployeeType((String) intention.getOrDefault("worktype_name",""));
-            intentions.setMonthSalary((String) intention.getOrDefault("salary_code_name",""));
-            List<Map<String, Object>> cities = (List<Map<String, Object>>) intention.getOrDefault("cities", null);
-            if(!StringUtils.isEmptyList(cities)){
-                StringBuffer cityName= new StringBuffer();
-                for(Map<String, Object> city : cities){
-                    if(city.get("city_name")!=null){
-                        cityName.append(city.get("city_name")+",");
-                    }
-                }
-                intentions.setCity(cityName.substring(0,cityName.length()-1));
-            }
-            List<Map<String, Object>> positionsList = (List<Map<String, Object>>) intention.getOrDefault("positions", null);
-            if(!StringUtils.isEmptyList(positionsList)){
-                StringBuffer positionName= new StringBuffer();
-                for(Map<String, Object> positions : positionsList){
-                    if(positions.get("position_name")!=null){
-                        positionName.append(positions.get("position_name")+",");
-                    }
-                }
-                intentions.setJob(positionName.substring(0,positionName.length()-1));
-            }
-            intentions.setWorkStatus((String) intention.getOrDefault("workstate_name",""));
-            List<Map<String, Object>> industriesList = (List<Map<String, Object>>) intention.getOrDefault("industries", null);
-            if(!StringUtils.isEmptyList(industriesList)){
-                StringBuffer industrieName= new StringBuffer();
-                for(Map<String, Object> industries : industriesList){
-                    if(industries.get("industry_name")!=null){
-                        industrieName.append(industries.get("industry_name")+",");
-                    }
-                }
-                intentions.setIndustry(industrieName.substring(0,industrieName.length()-1));
-            }
-        }
-        emailInfo.setIntention(intentions);
-
-        //获取工作经验
-        List<Map<String, Object>> workexpList = (List<Map<String, Object>>) data.getOrDefault("workexps", null);
-        if(!StringUtils.isEmptyList(workexpList)){
-            List<WorkExps> workList = new ArrayList<>();
-            basic.setPosition((String) workexpList.get(0).getOrDefault("job",""));
-            for(Map<String, Object> workexp : workexpList) {
-                WorkExps workExps = new WorkExps();
-                workExps.setTime(appendTime(workexp.get("start_date"), workexp.get("end_date"), workexp.get("end_until_now")));
-                workExps.setDescription((String) workexp.getOrDefault("description",""));
-                workExps.setCompany((String) workexp.getOrDefault("company_name",""));
-                workExps.setDepartment((String) workexp.getOrDefault("department_name",""));
-                workExps.setPosition((String) workexp.getOrDefault("job",""));
-                workList.add(workExps);
-            }
-            emailInfo.setWorkExps(workList);
-        }
-        //获取语言
-        List<Map<String, Object>> languageList = (List<Map<String, Object>>) data.getOrDefault("languages", null);
-        if(!StringUtils.isEmptyList(languageList)){
-            List<Languages> languagesList = new ArrayList<>();
-            for(Map<String, Object> languageData : languageList) {
-                Languages languages = new Languages();
-                languages.setLanguage((String) languageData.getOrDefault("name",""));
-                if (languageData.get("level") != null) {
-                    for(DictConstantDO constant : languageDict){
-                        if(constant.getCode() == (int) languageData.get("level")){
-                            languages.setLevel(constant.getName());
+                List<EduExps> eduList = new ArrayList<>();
+                for (int i = 0; i < educationList.size(); i++) {
+                    Map<String, Object> education = educationList.get(i);
+                    EduExps eduExps = new EduExps();
+                    eduExps.setTime(DateUtils.appendTime(education.get("start_date"), education.get("end_date"), education.get("end_until_now")));
+                    eduExps.setCollege((String) education.getOrDefault("college_name", ""));
+                    eduExps.setMajor((String) education.getOrDefault("major_name", ""));
+                    eduExps.setDescription((String) education.getOrDefault("description", ""));
+                    if (education.get("degree") != null) {
+                        for (DictConstantDO constantDO : degree) {
+                            if (constantDO.getCode() == (int) education.get("degree"))
+                                eduExps.setDegree(constantDO.getName());
                         }
                     }
+                    eduList.add(eduExps);
                 }
-                languagesList.add(languages);
+                emailInfo.setEduExps(eduList);
             }
-            emailInfo.setLanguages(languagesList);
-        }
+            //获取期望信息
+            List<Map<String, Object>> intentionList = (List<Map<String, Object>>) data.getOrDefault("intentions", new ArrayList<>());
+            if (!StringUtils.isEmptyList(intentionList)) {
+                Map<String, Object> intention = intentionList.get(0);
+                intentions.setEmployeeType((String) intention.getOrDefault("worktype_name", ""));
+                intentions.setMonthSalary((String) intention.getOrDefault("salary_code_name", ""));
+                List<Map<String, Object>> cities = (List<Map<String, Object>>) intention.getOrDefault("cities", new ArrayList<>());
+                if (!StringUtils.isEmptyList(cities)) {
+                    StringBuffer cityName = new StringBuffer();
+                    for (Map<String, Object> city : cities) {
+                        if (city.get("city_name") != null) {
+                            cityName.append(city.get("city_name") + ",");
+                        }
+                    }
+                    intentions.setCity(cityName.substring(0, cityName.length() - 1));
+                }
+                List<Map<String, Object>> positionsList = (List<Map<String, Object>>) intention.getOrDefault("positions", new ArrayList<>());
+                if (!StringUtils.isEmptyList(positionsList)) {
+                    StringBuffer positionName = new StringBuffer();
+                    for (Map<String, Object> positions : positionsList) {
+                        if (positions.get("position_name") != null) {
+                            positionName.append(positions.get("position_name") + ",");
+                        }
+                    }
+                    intentions.setJob(positionName.substring(0, positionName.length() - 1));
+                }
+                intentions.setWorkStatus((String) intention.getOrDefault("workstate_name", ""));
+                List<String> industriesList = (List<String>) intention.getOrDefault("industries", new ArrayList<>());
+                if (!StringUtils.isEmptyList(industriesList)) {
+                    intentions.setIndustry(String.join(",", industriesList));
+                }
 
-
-        //获取技能
-        List<Map<String, Object>> skillsList = (List<Map<String, Object>>) data.getOrDefault("skills", null);
-        if(!StringUtils.isEmptyList(skillsList)){
-            List<String> strList = new ArrayList<>();
-            for(Map<String, Object> skills : skillsList) {
-                strList.add((String) skills.getOrDefault("name",""));
             }
-            emailInfo.setSkills(strList);
-        }
-        //获取证书
-        List<Map<String, Object>> credentialsList = (List<Map<String, Object>>) data.getOrDefault("credentials", null);
-        if(!StringUtils.isEmptyList(credentialsList)){
-            List<String> strList = new ArrayList<>();
-            for(Map<String, Object> skills : credentialsList) {
-                strList.add((String) skills.getOrDefault("name",""));
-            }
-            emailInfo.setCredentials(strList);
-        }
-        //获取个人作品
-        List<Map<String, Object>> worksList = (List<Map<String, Object>>) data.getOrDefault("works", null);
-        if(!StringUtils.isEmptyList(worksList)){
-            Works works = new Works();
-            Map<String, Object> worksData = worksList.get(0);
-            works.setCover((String) worksData.getOrDefault("cover",""));
-            works.setUrl((String) worksData.getOrDefault("url",""));
-            works.setDescription((String) worksData.getOrDefault("description",""));
-            emailInfo.setWorks(works);
-        }
+            emailInfo.setIntention(intentions);
 
+            //获取工作经验
+            List<Map<String, Object>> workexpList = (List<Map<String, Object>>) data.getOrDefault("workexps", new ArrayList<>());
+            if (!StringUtils.isEmptyList(workexpList)) {
+                List<WorkExps> workList = new ArrayList<>();
+                basic.setPosition((String) workexpList.get(0).getOrDefault("job", ""));
+                for (Map<String, Object> workexp : workexpList) {
+                    WorkExps workExps = new WorkExps();
+                    workExps.setTime(DateUtils.appendTime(workexp.get("start_date"), workexp.get("end_date"), workexp.get("end_until_now")));
+                    workExps.setDescription((String) workexp.getOrDefault("description", ""));
+                    workExps.setCompany((String) workexp.getOrDefault("company_name", ""));
+                    workExps.setDepartment((String) workexp.getOrDefault("department_name", ""));
+                    workExps.setPosition((String) workexp.getOrDefault("job", ""));
+                    workList.add(workExps);
+                }
+                emailInfo.setWorkExps(workList);
+            }
+            //获取语言
+            List<Map<String, Object>> languageList = (List<Map<String, Object>>) data.getOrDefault("languages", new ArrayList<>());
+            if (!StringUtils.isEmptyList(languageList)) {
+                List<Languages> languagesList = new ArrayList<>();
+                for (Map<String, Object> languageData : languageList) {
+                    Languages languages = new Languages();
+                    languages.setLanguage((String) languageData.getOrDefault("name", ""));
+                    if (languageData.get("level") != null) {
+                        for (DictConstantDO constant : languageDict) {
+                            if (constant.getCode() == (int) languageData.get("level")) {
+                                languages.setLevel(constant.getName());
+                            }
+                        }
+                    }
+                    languagesList.add(languages);
+                }
+                emailInfo.setLanguages(languagesList);
+            }
+
+            //获取技能
+            List<Map<String, Object>> skillsList = (List<Map<String, Object>>) data.getOrDefault("skills", new ArrayList<>());
+            if (!StringUtils.isEmptyList(skillsList)) {
+                List<String> strList = new ArrayList<>();
+                for (Map<String, Object> skills : skillsList) {
+                    strList.add((String) skills.getOrDefault("name", ""));
+                }
+                emailInfo.setSkills(strList);
+            }
+            //获取证书
+            List<Map<String, Object>> credentialsList = (List<Map<String, Object>>) data.getOrDefault("credentials", new ArrayList<>());
+            if (!StringUtils.isEmptyList(credentialsList)) {
+                List<String> strList = new ArrayList<>();
+                for (Map<String, Object> skills : credentialsList) {
+                    strList.add((String) skills.getOrDefault("name", ""));
+                }
+                emailInfo.setCredentials(strList);
+            }
+            //获取个人作品
+            List<Map<String, Object>> worksList = (List<Map<String, Object>>) data.getOrDefault("works", new ArrayList<>());
+            if (!StringUtils.isEmptyList(worksList)) {
+                Works works = new Works();
+                Map<String, Object> worksData = worksList.get(0);
+                works.setCover((String) worksData.getOrDefault("cover", ""));
+                works.setUrl((String) worksData.getOrDefault("url", ""));
+                works.setDescription((String) worksData.getOrDefault("description", ""));
+                emailInfo.setWorks(works);
+            }
+        }
         return emailInfo;
-    }
-
-    private String appendTime(Object startTime, Object endTime, Object endUntilNow ){
-        logger.info("startTime:{},endTime:{},endUntilNow:{}",startTime,endTime,endUntilNow);
-        String start = "";
-        if (startTime != null) {
-            start = ((String)startTime).substring(0, 7).replace("-", ".");
-        }
-        String end = "";
-        if (endTime == null || 1 == (int) endUntilNow) {
-            end = "至今";
-        } else {
-            end = ((String)endTime).substring(0, 7).replace("-", ".");
-        }
-        String time = start + " - " + end;
-        logger.info("time:{}",time);
-        return  time;
     }
 
 
