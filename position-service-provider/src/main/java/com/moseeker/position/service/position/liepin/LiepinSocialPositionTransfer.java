@@ -224,6 +224,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         // 发布职位时如果存在之前发布过并且状态正常的职位，需要对职位同步修改
         int editNum = 0;
 
+        Integer channel = ChannelType.LIEPIN.getValue();
         try {
             // 这个city是citycodes字符串，是要发布的城市
             String citys = liePinPositionVO.getEjob_dq();
@@ -232,10 +233,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             if (cityCodesArr.length < 1) {
                 return;
             }
-
-            int thirdPartyPositionId = hrThirdPartyPositionDO.getId();
-
-            Integer channel = ChannelType.LIEPIN.getValue();
 
             // 发布职位的hrid
             Integer publisher = liePinPositionVO.getPublisher();
@@ -308,12 +305,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 // 编辑修改职位
                 editNum = editExistPosition(editCity, editCityIdCodeMap, liePinPositionVO, liePinToken);
 
-                // 将职位同步状态设置为2，待审核
-                PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(thirdPartyPositionId, channel);
-                delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
-                logger.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
-                hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
-
             } catch (BIZException e) {
                 hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
                 hrThirdPartyPositionDO.setSyncFailReason(e.getMessage());
@@ -332,7 +323,14 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         hrThirdPartyPositionDO.setOccupation(liePinPositionVO.getEjob_jobtitle());
         hrThirdPartyPositionDO.setChannel(2);
         TwoParam<HrThirdPartyPositionDO, HrThirdPartyPositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, null);
-        thirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
+        twoParam = thirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
+        hrThirdPartyPositionDO = twoParam.getR1();
+        logger.info("====================hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
+        // 将职位同步状态设置为2，待审核
+        PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(hrThirdPartyPositionDO.getId(), channel);
+        delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
+        logger.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
+        hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
     }
 
     /**

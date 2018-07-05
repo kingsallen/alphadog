@@ -23,5 +23,12 @@ public class PositionSyncStateRefreshBean {
         return hrThirdPartyPositionId;
     }
 
+    @Override
+    public String toString() {
+        return "PositionSyncStateRefreshBean{" +
+                "hrThirdPartyPositionId=" + hrThirdPartyPositionId +
+                ", channel=" + channel +
+                '}';
+    }
 }
 
