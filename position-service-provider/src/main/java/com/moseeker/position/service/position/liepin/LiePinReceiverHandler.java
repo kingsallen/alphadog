@@ -231,17 +231,9 @@ public class LiePinReceiverHandler {
                 return;
             }
 
-            // 是否需要编辑，返回true，两个职位相同，不需要edit
+            // 是否需要编辑，返回true，两个职位相同，不需要edit，需要注意的是比较中包括title，但是city的比较不准确，所以代码下方对city进行了精确的比对
             boolean noNeedEdit = compareJobPosition(jobPositionDO, updateJobPosition);
 
-            if (!positionFlag && noNeedEdit) {
-                log.info("=============没有修改猎聘所需字段，无需发布修改============");
-                return;
-            }
-
-            // 将数据组装为向猎聘请求的格式，此数据也是用户编辑后的数据
-            liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(thirdPartyPosition, updateJobPosition, null);
-            log.info("================liePinPositionVO:{}=============", liePinPositionVO);
             // 用于查询所修改的职位之前是否发布过
             List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByPid(positionId);
 
@@ -281,6 +273,16 @@ public class LiePinReceiverHandler {
                 hrThirdPartyPositionDao.updateBindState(positionId, hrAccountId, 2, 0);
 
             }
+
+            if (!positionFlag && noNeedEdit && !isCityChange) {
+                log.info("=============没有修改猎聘所需字段，无需发布修改============");
+                return;
+            }
+
+            // 将数据组装为向猎聘请求的格式，此数据也是用户编辑后的数据
+            liePinPositionVO = liepinSocialPositionTransfer.changeToThirdPartyPosition(thirdPartyPosition, updateJobPosition, null);
+            log.info("================liePinPositionVO:{}=============", liePinPositionVO);
+
             // 如果title没变
             if (!isTitleChange) {
                 // 如果城市没变
@@ -505,8 +507,6 @@ public class LiePinReceiverHandler {
 
                             String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionRepub);
 
-                            log.info("===================httpResultJson:{}=====================", httpResultJson);
-
                             httpClientUtil.requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
 
                             liepinMappingDao.updateState(idsListDb, (byte) 1);
@@ -597,8 +597,6 @@ public class LiePinReceiverHandler {
                     liePinJsonObject.put("ejob_extRefids", requestStr);
 
                     String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionEnd);
-
-                    log.info("===================httpResultJson:{}=====================", httpResultJson);
 
                     // 猎聘返回code如果不是0，就抛异常
                     httpClientUtil.requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
