@@ -871,6 +871,7 @@ public class UserHrAccountService {
             queryBuilder.groupBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
             // 查询
             List<Map<String, Object>> result = userEmployeeDao.getMaps(queryBuilder.buildQuery());
+            int unCount=0;
             if (!StringUtils.isEmptyList(result)) {
                 for (Map<String, Object> map : result) {
                     if (map.get("activation") != null) {
@@ -880,10 +881,12 @@ public class UserHrAccountService {
                                 || (Byte) map.get("activation") == 2
                                 || (Byte) map.get("activation") == 3
                                 || (Byte) map.get("activation") == 4) {
-                            userEmployeeNumStatistic.setUnregcount(userEmployeeNumStatistic.getUnregcount() + (Integer) map.get("activation_count"));
+                            unCount+=(Integer) map.get("activation_count");
+//                            userEmployeeNumStatistic.setUnregcount(userEmployeeNumStatistic.getUnregcount() + (Integer) map.get("activation_count"));
                         }
                     }
                 }
+                userEmployeeNumStatistic.setUnregcount(unCount);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
