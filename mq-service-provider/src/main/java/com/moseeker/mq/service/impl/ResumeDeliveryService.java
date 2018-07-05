@@ -37,7 +37,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.biz.CommonUtils;
-import com.moseeker.mq.pojo.ProfileEmailInfo;
+import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
 import com.moseeker.mq.service.sms.SmsService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
