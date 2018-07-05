@@ -34,8 +34,8 @@ public abstract class AbstractSyncStateRefresh implements IChannelType{
     @Autowired
     PositionEmailNotification emailNotification;
 
-    protected static final String ERRMSG = "审核不通过，请修改职位信息后重新发布。</br>" +
-            "审核失败原因可能是:</br>1、校招职位在社招渠道发布;</br>2、职位信息中包含网站链接;</br>3。职位信息中包含敏感信息。";
+    protected static final String ERRMSG = "审核不通过，请修改职位信息后重新发布。\n" +
+            "审核失败原因可能是:\n1、校招职位在社招渠道发布;\n2、职位信息中包含网站链接;\n3。职位信息中包含敏感信息等。";
 
     /**
      * 单位：毫秒

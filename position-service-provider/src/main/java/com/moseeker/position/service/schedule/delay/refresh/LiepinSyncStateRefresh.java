@@ -69,6 +69,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
         logger.info("=========================hrThirdPartyPositionDO{}", hrThirdPartyPositionDO);
         if (hrThirdPartyPositionDO == null) {
             logger.info("=========================无第三方职位信息hrThirdPartyPositionId:{}", hrThirdPartyPositionId);
+            // todo 发邮件
             return;
         }
         // 获取第三方账号id
@@ -79,6 +80,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
         List<Integer> requestIds = getRequestIds(positionId);
         if (requestIds == null || requestIds.size() == 0) {
             logger.info("=========================没有需要审核的mappingid, positionId:{}", positionId);
+            // todo 发邮件
             return;
         }
 
@@ -142,7 +144,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
 
     private boolean confirmNoExpired(HrThirdPartyPositionDO hrThirdPartyPositionDO) throws ParseException {
         String syncTime = hrThirdPartyPositionDO.getSyncTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy--dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         long time = sdf.parse(syncTime).getTime();
         long currentTime = System.currentTimeMillis();
         return currentTime - time >= EXPIRED_TIME;
