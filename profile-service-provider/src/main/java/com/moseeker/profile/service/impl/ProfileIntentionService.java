@@ -564,7 +564,6 @@ public class ProfileIntentionService {
                             tobeAddCityRecord.setCityCode(legalRecord.getCode());
                             tobeAddCityRecord.setCityName(legalRecord.getName());
                             tobeAddCityRecord.setProfileIntentionId(intentionId);
-                            break;
                         }
                     } else {
                         //如果没有key的情况下，只有name有值才有意义
