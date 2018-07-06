@@ -443,7 +443,7 @@ public class ProfileIntentionService {
         QueryUtil industryQuery = new QueryUtil();
         industryQuery.setPageNo(1);
         industryQuery.setPageSize(Integer.MAX_VALUE);
-        List<DictIndustryTypeRecord> industryRecordList = dictIndustryTypeDao.getRecords(industryQuery);
+        List<DictIndustryRecord> industryList = dictIndustryDao.getRecords(industryQuery);
 
         QueryUtil selectedIndustryQuery = new QueryUtil();
         selectedIndustryQuery.addEqualFilter("profile_intention_id", String.valueOf(intentionId));
@@ -470,8 +470,8 @@ public class ProfileIntentionService {
                 if (!exist) {
                     if (entry.getValue() != null && entry.getValue().intValue() > 0) {
 
-                        DictIndustryTypeRecord legalRecord = null;
-                        for (DictIndustryTypeRecord dictIndustryRecord : industryRecordList) {
+                        DictIndustryRecord legalRecord = null;
+                        for (DictIndustryRecord dictIndustryRecord : industryList) {
                             if (dictIndustryRecord.getCode().intValue() == entry.getValue().intValue()) {
                                 legalRecord = dictIndustryRecord;
                                 break;
@@ -488,8 +488,8 @@ public class ProfileIntentionService {
                         //如果没有key的情况下，只有name有值才有意义
                         if (!StringUtils.isNullOrEmpty(entry.getKey())) {
                             toBeAddIntentionIndustry = new ProfileIntentionIndustryRecord();
-                            DictIndustryTypeRecord legalRecord = null;
-                            for (DictIndustryTypeRecord dictIndustryRecord : industryRecordList) {
+                            DictIndustryRecord legalRecord = null;
+                            for (DictIndustryRecord dictIndustryRecord : industryList) {
                                 if (dictIndustryRecord.getName().equals(entry.getKey())) {
                                     legalRecord = dictIndustryRecord;
                                     break;

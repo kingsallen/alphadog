@@ -56,10 +56,7 @@ public class IntentionParamUtil {
 						cityCode.put(Integer.valueOf(entry.getKey().charAt(7)), BeanUtils.converToInteger(entry.getValue()));
 					}
 					if(entry.getKey().contains("city_name")) {
-                        List<String> cityNames = (List<String>) entry.getValue();
-                        for(String name : cityNames) {
-                            cityName.put(name, Integer.valueOf(entry.getKey().charAt(7)));
-                        }
+                        cityName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(7)));
 					}
 				}
 				//查找职能信息
@@ -73,6 +70,7 @@ public class IntentionParamUtil {
 				}
 			}
 		}
+
 		//拼装行业信息
 		if(industryName.size() > 0) {
 			for(Entry<String, Integer> entry : industryName.entrySet()) {
@@ -87,8 +85,7 @@ public class IntentionParamUtil {
 				}
 				intention.getIndustries().put(entry.getKey(), code);
 			}
-		}
-        if(industryCode.size() > 0) {
+		}else if(industryCode.size() > 0) {
             for(Entry<Integer, Integer> entry : industryCode.entrySet()) {
                 if(intention.getIndustries() == null) {
                     intention.setIndustries(new HashMap<String, Integer>());
@@ -96,6 +93,7 @@ public class IntentionParamUtil {
                 intention.getIndustries().put(String.valueOf(entry.getValue()), entry.getValue());
             }
         }
+
 		//拼装职能信息
 		if(positionName.size() > 0) {
 			for(Entry<String, Integer> entry : positionName.entrySet()) {
