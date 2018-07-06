@@ -217,10 +217,10 @@ public class LiePinReceiverHandler {
             // 如果是1，则为面议，面议不需要薪资上下限
             boolean salaryDiscuss = hrThirdPartyPositionDO.getSalaryDiscuss() == 1;
 
-            // 获取das端已修改后的职位数据
-            JobPositionDO updateJobPosition = getJobPositionFromMq(msgObject, salaryDiscuss, "params");
+            JobPositionDO updateJobPosition = getJobPositionFromMq(msgObject, "params");
 
-            JobPositionDO jobPositionDO = getJobPositionFromMq(msgObject, salaryDiscuss, "oldPosition");
+            // 获取das端已修改后的职位数据
+            JobPositionDO jobPositionDO = getJobPositionFromMq(msgObject, "oldPosition");
 
             // true表示从下架状态编辑
             boolean positionFlag = getPositionFlag(msgObject);
@@ -376,13 +376,14 @@ public class LiePinReceiverHandler {
         return false;
     }
 
-    private JobPositionDO getJobPositionFromMq(JSONObject msgObject, boolean salaryDiscuss, String key) throws BIZException {
-        JSONObject jobPositionJSON = JSONObject.parseObject(msgObject.getString(key));
+    private JobPositionDO getJobPositionFromMq(JSONObject msgObject, String key) throws BIZException {
+        String jobPositionJSON = msgObject.getString(key);
         log.info("============jobPositionJSON:{}=============", jobPositionJSON);
-        JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON, salaryDiscuss);
+        JobPositionDO jobPositionDO = JSON.parseObject(jobPositionJSON, JobPositionDO.class);
         log.info("============jobPositionDO:{}=============", jobPositionDO);
         return jobPositionDO;
     }
+
 
     /**
      * 批量处理职位下架
@@ -886,8 +887,8 @@ public class LiePinReceiverHandler {
      * @date 2018/7/2
      */
     private boolean compareJobPosition(JobPositionDO jobPositionDO, JobPositionDO updateJobPosition) {
-        jobPositionDO = filterBlank(jobPositionDO);
-        updateJobPosition = filterBlank(updateJobPosition);
+//        jobPositionDO = filterBlank(jobPositionDO);
+//        updateJobPosition = filterBlank(updateJobPosition);
         return strEquals(jobPositionDO.getTitle(), updateJobPosition.getTitle())
                 && strEquals(jobPositionDO.getCity(), updateJobPosition.getCity())
                 && strEquals(jobPositionDO.getAccountabilities(), updateJobPosition.getAccountabilities())
