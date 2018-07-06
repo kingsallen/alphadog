@@ -49,7 +49,7 @@ public class BasicParser extends AbstractResumeParser<Result, Basic> {
             setCity(basic, result.getLiving_address());
         }
         if (StringUtils.isNotNullOrEmpty(result.getGender())) {
-            basic.setGender(String.valueOf(DictCode.gender(result.getGender())));
+            basic.setGender(DictCode.gender(result.getGender()));
         }
         basic.setName(result.getName());
         basic.setSelfIntroduction(result.getCont_my_desc());
