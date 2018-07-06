@@ -44,7 +44,14 @@ public class WorkexpsParser extends AbstractMutiResumeParser<JobExpObj,Workexps>
         }
         company.setCompanyScale(String.valueOf(DictCode.companyScale(companyScaleMaxValue)));
         workexps.setCompany(company);
-        workexps.setDescription(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_content(),jobExpObj.getJob_cpy_desc()));
+
+        StringBuilder description = new StringBuilder();
+        if(StringUtils.isNotNullOrEmpty(jobExpObj.getJob_content())){
+            description.append(jobExpObj.getJob_content()+"\n");
+        }
+        if(StringUtils.isNotNullOrEmpty(jobExpObj.getJob_cpy_desc())){
+            description.append(jobExpObj.getJob_cpy_desc()+"\n");
+        }
         try {
             workexps.setStartDate(DateUtils.dateRepair(jobExpObj.getStart_date(), "\\."));
             if (jobExpObj.getEnd_date() != null && jobExpObj.getEnd_date().equals("至今")) {
