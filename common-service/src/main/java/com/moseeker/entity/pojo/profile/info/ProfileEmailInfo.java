@@ -1,55 +1,39 @@
-package com.moseeker.company.bean.email;
+package com.moseeker.entity.pojo.profile.info;
 
 import com.moseeker.common.constants.Message;
-import com.moseeker.company.bean.TalentWorkExpInfo;
-
 import java.util.List;
 
 /**
- * Created by zztaiwll on 18/4/24.
+ * Created by moseeker on 2018/6/26.
  */
-public class TalentEmailForwardsResumeInfo {
-    private String subject;
-    private String companyAbbr;
-    private String customText;
-    private String officialAccountName;
+public class ProfileEmailInfo {
     private String companyLogo;
     private String companyName;
     private String positionName;
     private String headimg;
     private String userName;
-    private String industryName;
+    private String nationalityName;
     private String genderName;
     private String cityName;
-    private int age;
+    private String age;
     private String marriage;
     private String resumeLink;
-    private String weixinQrcode;
-    private TalentBasicInfo basicInfo;
-    private TalentIntentionInfo intention;
     private String introduction;
-    private List<TalentWorkExpInfo> workExps;
-    private List<TalentEducationInfo> eduExps;
-    private List<TalentProjectExpsInfo> proExps;
-    private List<TalentLanguagesInfo> languages;
+    private BasicInfo basicInfo;
+    private Intention intention;
+    private List<WorkExps> workExps;
+    private List<EduExps> eduExps;
+    private List<ProExps> proExps;
     private List<String> skills;
+    private List<Languages> languages;
     private List<String> credentials;
-    private TalentWorksInfo works;
-    private int userId;
+    private Works works;
     private List<Message> otherIdentity;
     private List<Message> otherSchool;
-    private List<TalentOtherSchoolWorkInfo> otherSchoolWork;
-    private List<TalentOtherInternshipInfo> otherInternship;
+    private List<SchoolWork> otherSchoolWork;
+    private List<Internship> otherInternship;
     private List<Message> otherCareer;
     private String otherIdPhoto;
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
 
     public String getCompanyLogo() {
         return companyLogo;
@@ -91,12 +75,12 @@ public class TalentEmailForwardsResumeInfo {
         this.userName = userName;
     }
 
-    public String getIndustryName() {
-        return industryName;
+    public String getNationalityName() {
+        return nationalityName;
     }
 
-    public void setIndustryName(String industryName) {
-        this.industryName = industryName;
+    public void setNationalityName(String nationalityName) {
+        this.nationalityName = nationalityName;
     }
 
     public String getGenderName() {
@@ -115,11 +99,11 @@ public class TalentEmailForwardsResumeInfo {
         this.cityName = cityName;
     }
 
-    public int getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
@@ -139,14 +123,6 @@ public class TalentEmailForwardsResumeInfo {
         this.resumeLink = resumeLink;
     }
 
-    public TalentBasicInfo getBasicInfo() {
-        return basicInfo;
-    }
-
-    public void setBasicInfo(TalentBasicInfo basicInfo) {
-        this.basicInfo = basicInfo;
-    }
-
     public String getIntroduction() {
         return introduction;
     }
@@ -155,36 +131,44 @@ public class TalentEmailForwardsResumeInfo {
         this.introduction = introduction;
     }
 
-    public List<TalentWorkExpInfo> getWorkExps() {
+    public BasicInfo getBasicInfo() {
+        return basicInfo;
+    }
+
+    public void setBasicInfo(BasicInfo basicInfo) {
+        this.basicInfo = basicInfo;
+    }
+
+    public Intention getIntention() {
+        return intention;
+    }
+
+    public void setIntention(Intention intention) {
+        this.intention = intention;
+    }
+
+    public List<WorkExps> getWorkExps() {
         return workExps;
     }
 
-    public void setWorkExps(List<TalentWorkExpInfo> workExps) {
+    public void setWorkExps(List<WorkExps> workExps) {
         this.workExps = workExps;
     }
 
-    public List<TalentEducationInfo> getEduExps() {
+    public List<EduExps> getEduExps() {
         return eduExps;
     }
 
-    public void setEduExps(List<TalentEducationInfo> eduExps) {
+    public void setEduExps(List<EduExps> eduExps) {
         this.eduExps = eduExps;
     }
 
-    public List<TalentProjectExpsInfo> getProExps() {
+    public List<ProExps> getProExps() {
         return proExps;
     }
 
-    public void setProExps(List<TalentProjectExpsInfo> proExps) {
+    public void setProExps(List<ProExps> proExps) {
         this.proExps = proExps;
-    }
-
-    public List<TalentLanguagesInfo> getLanguages() {
-        return languages;
-    }
-
-    public void setLanguages(List<TalentLanguagesInfo> languages) {
-        this.languages = languages;
     }
 
     public List<String> getSkills() {
@@ -195,6 +179,14 @@ public class TalentEmailForwardsResumeInfo {
         this.skills = skills;
     }
 
+    public List<Languages> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(List<Languages> languages) {
+        this.languages = languages;
+    }
+
     public List<String> getCredentials() {
         return credentials;
     }
@@ -203,52 +195,12 @@ public class TalentEmailForwardsResumeInfo {
         this.credentials = credentials;
     }
 
-    public TalentWorksInfo getWorks() {
+    public Works getWorks() {
         return works;
     }
 
-    public void setWorks(TalentWorksInfo works) {
+    public void setWorks(Works works) {
         this.works = works;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public TalentIntentionInfo getIntention() {
-        return intention;
-    }
-
-    public void setIntention(TalentIntentionInfo intention) {
-        this.intention = intention;
-    }
-
-    public String getCompanyAbbr() {
-        return companyAbbr;
-    }
-
-    public void setCompanyAbbr(String companyAbbr) {
-        this.companyAbbr = companyAbbr;
-    }
-
-    public String getCustomText() {
-        return customText;
-    }
-
-    public void setCustomText(String customText) {
-        this.customText = customText;
-    }
-
-    public String getOfficialAccountName() {
-        return officialAccountName;
-    }
-
-    public void setOfficialAccountName(String officialAccountName) {
-        this.officialAccountName = officialAccountName;
     }
 
     public List<Message> getOtherIdentity() {
@@ -267,19 +219,19 @@ public class TalentEmailForwardsResumeInfo {
         this.otherSchool = otherSchool;
     }
 
-    public List<TalentOtherSchoolWorkInfo> getOtherSchoolWork() {
+    public List<SchoolWork> getOtherSchoolWork() {
         return otherSchoolWork;
     }
 
-    public void setOtherSchoolWork(List<TalentOtherSchoolWorkInfo> otherSchoolWork) {
+    public void setOtherSchoolWork(List<SchoolWork> otherSchoolWork) {
         this.otherSchoolWork = otherSchoolWork;
     }
 
-    public List<TalentOtherInternshipInfo> getOtherInternship() {
+    public List<Internship> getOtherInternship() {
         return otherInternship;
     }
 
-    public void setOtherInternship(List<TalentOtherInternshipInfo> otherInternship) {
+    public void setOtherInternship(List<Internship> otherInternship) {
         this.otherInternship = otherInternship;
     }
 
@@ -297,13 +249,5 @@ public class TalentEmailForwardsResumeInfo {
 
     public void setOtherIdPhoto(String otherIdPhoto) {
         this.otherIdPhoto = otherIdPhoto;
-    }
-
-    public String getWeixinQrcode() {
-        return weixinQrcode;
-    }
-
-    public void setWeixinQrcode(String weixinQrcode) {
-        this.weixinQrcode = weixinQrcode;
     }
 }

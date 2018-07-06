@@ -66,8 +66,8 @@ public class TalentpoolEmailTest {
         int hrId=82752;
         int flag=0;
         int positionFlag=0;
-        int result=talentpoolEmailService.talentPoolSendResumeEmail(idList,params,userIdList,companyId,hrId,0);
-        System.out.println(result) ;
+//        int result=talentpoolEmailService.talentPoolSendResumeEmail(idList,params,userIdList,companyId,hrId,0);
+//        System.out.println(result) ;
 
     }
     @Test

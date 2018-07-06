@@ -229,7 +229,9 @@ public class TemlateMsgHttp {
             applierTemplate.put("topcolor", template.getTopcolor());
             Map<String, String> miniprogram = new HashMap<>();
             miniprogram.put("appid", appid);
-            miniprogram.put("pagepath", Constant.WX_APP_PROFILE_INFO_URL.replace("{}", user.getId()+""));
+            String page = Constant.WX_APP_PROFILE_INFO_URL.replace("{}", user.getId()+"")+"&from_template_message="+template.getSysTemplateId();
+            page = page + "&send_time=" + new Date().getTime();
+            miniprogram.put("pagepath", page);
             logger.info("minprogram 参数 ：{}", miniprogram);
             applierTemplate.put("miniprogram", miniprogram);
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));

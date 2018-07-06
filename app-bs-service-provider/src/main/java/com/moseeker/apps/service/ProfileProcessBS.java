@@ -450,12 +450,13 @@ public class ProfileProcessBS {
             templateNoticeStruct.setData(data);
             templateNoticeStruct.setUser_id(userId);
             templateNoticeStruct.setSys_template_id(msInfo.getConfig_id());
-
-            templateNoticeStruct.setUrl(MessageFormat.format(
+            String url = MessageFormat.format(
                     msInfo.getUrl(),
                     ConfigPropertiesUtil.getInstance().get("platform.url",
                             String.class), signature,
-                    String.valueOf(applicationId)));
+                    String.valueOf(applicationId));
+            url = url +"&send_time=" + new Date().getTime();
+            templateNoticeStruct.setUrl(url);
             try {
                 mqService.messageTemplateNotice(templateNoticeStruct);
             } catch (TException e) {
