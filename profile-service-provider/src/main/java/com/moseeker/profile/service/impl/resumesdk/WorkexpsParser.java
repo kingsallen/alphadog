@@ -52,6 +52,7 @@ public class WorkexpsParser extends AbstractMutiResumeParser<JobExpObj,Workexps>
         if(StringUtils.isNotNullOrEmpty(jobExpObj.getJob_cpy_desc())){
             description.append(jobExpObj.getJob_cpy_desc()+"\n");
         }
+        workexps.setDescription(description.toString());
         try {
             workexps.setStartDate(DateUtils.dateRepair(jobExpObj.getStart_date(), "\\."));
             if (jobExpObj.getEnd_date() != null && jobExpObj.getEnd_date().equals("至今")) {
