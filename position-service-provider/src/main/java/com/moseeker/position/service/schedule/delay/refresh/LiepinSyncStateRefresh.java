@@ -14,7 +14,6 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +102,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
             boolean isNeedRefresh = false;
             for (int requestId : requestIds) {
 
-                JSONObject positionInfoDetail = socialPositionTransfer.getPositionAuditState(requestId, liePinToken, positionId, getChannelType().getValue());
+                JSONObject positionInfoDetail = socialPositionTransfer.getPositionAuditState(requestId, liePinToken);
                 logger.info("======================positionInfoDetail:{}", positionInfoDetail);
                 if (positionInfoDetail == null) {
                     continue;
@@ -151,10 +150,10 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
 
     /**
      * 获取jobpositionMapping表中state为2的主键id
-     * @param
+     * @param positionId 职位id
      * @author  cjm
      * @date  2018/7/5
-     * @return
+     * @return 返回用于请求猎聘的id集合，也就是job_position_mapping的主键
      */
     private List<Integer> getRequestIds(int positionId) {
         List<JobPositionCityDO> jobPositionCityDOS = jobPositionCityDao.getPositionCitysByPid(positionId);
@@ -162,7 +161,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
             logger.info("=================没有查到职位id对应的发布城市positionId:{}===============", positionId);
             return new ArrayList<>();
         }
-        List<Integer> cityCodes = jobPositionCityDOS.stream().map(jobPositionCityDO -> jobPositionCityDO.getCode()).collect(Collectors.toList());
+        List<Integer> cityCodes = jobPositionCityDOS.stream().map(JobPositionCityDO::getCode).collect(Collectors.toList());
 
         List<JobPositionLiepinMappingDO> jobPositionLiepinMappingDOS = liepinMappingDao.getMappingDataByPidAndCityCodes(positionId, cityCodes);
         if (jobPositionLiepinMappingDOS == null || jobPositionLiepinMappingDOS.size() == 0) {
@@ -170,7 +169,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
             return new ArrayList<>();
         }
         return jobPositionLiepinMappingDOS.stream().filter(jobPositionLiepinMappingDO -> jobPositionLiepinMappingDO.getState() == 2)
-                .map(jobPositionLiepinMappingDO -> jobPositionLiepinMappingDO.getId()).collect(Collectors.toList());
+                .map(JobPositionLiepinMappingDO::getId).collect(Collectors.toList());
 
     }
 

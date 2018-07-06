@@ -254,7 +254,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             int cityNum = cityCodesArr.length;
             Integer positionId = liePinPositionVO.getPositionId();
             List<String> cityCodesList = Arrays.asList(cityCodesArr);
-            List<Integer> cityCodesIntList = cityCodesList.stream().map(cityCode -> Integer.parseInt(cityCode)).collect(Collectors.toList());
+            List<Integer> cityCodesIntList = cityCodesList.stream().map(Integer::parseInt).collect(Collectors.toList());
 
             // 查出所有本次编辑城市职位jobpostionmapping表数据
             List<JobPositionLiepinMappingDO> liepinMappingDOList =
@@ -309,7 +309,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     /**
      * 获取需要同步的cityCodesList
-     * @param
+     * @param liepinMappingDOList job_position_mapping 集合
+     * @param cityCodesList cityCode 集合
      * @author  cjm
      * @date  2018/7/5
      * @return   List<String> cityCodes
@@ -336,7 +337,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     /**
      * 获取需要编辑的job_position_mapping DO 实体
-     * @param
+     * @param liepinMappingDOList job_position_mapping 集合
+     * @param cityCodesList cityCode 集合
      * @author  cjm
      * @date  2018/7/5
      * @return   List<JobPositionLiepinMappingDO> job_position_mapping DO 实体
@@ -353,7 +355,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     /**
      * 获取需要重新发布的job_position_mapping DO 实体
-     * @param
+     * @param liepinMappingDOList job_position_mapping 集合
+     * @param cityCodesList cityCode 集合
      * @author  cjm
      * @date  2018/7/5
      * @return   List<JobPositionLiepinMappingDO> job_position_mapping DO 实体
@@ -371,9 +374,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     /**
      * 插入一条新的jobpositionmapping数据，用来获取主键id
-     *
-     * @param
-     * @return
+     * @param liePinPositionVO 猎聘职位实体
+     * @param cityCode 仟寻cityCode
+     * @param liePinUserId hr在猎聘的id
      * @author cjm
      * @date 2018/7/2
      */
@@ -404,17 +407,18 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     /**
      * 获取猎聘职位审核状态
      *
-     * @param
-     * @return
+     * @param jobPositionMappingId job_position_mapping表主键
+     * @param liePinToken hr在猎聘绑定后的token
+     * @return 返回职位信息
      * @author cjm
      * @date 2018/7/2
      */
-    public JSONObject getPositionAuditState(int jobPositionMappingId, String liePinToken, int positionId, int channel) throws Exception {
+    public JSONObject getPositionAuditState(int jobPositionMappingId, String liePinToken) throws Exception {
         JSONObject liePinJsonObject = new JSONObject();
         liePinJsonObject.put("ejob_extRefids", jobPositionMappingId);
         String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionGet);
         logger.info("=======================获取职位信息结果httpResultJson:{}", httpResultJson);
-        JSONObject httpResult = httpClientUtil.requireValidResult(httpResultJson, positionId, channel);
+        JSONObject httpResult = httpClientUtil.requireValidResult(httpResultJson);
         JSONObject positionInfo = httpResult.getJSONObject("data");
         if (positionInfo == null) {
             emailNotification.sendRefreshSyncStateFailEmail("mappingId:" + jobPositionMappingId + "</br>" + "httpResultJson:" + httpResultJson, null);
@@ -426,8 +430,10 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     /**
      * 编辑数据库中已经存在的职位
      *
-     * @param
-     * @return
+     * @param editCityList 编辑城市的job_position_mapping集合
+     * @param liePinPositionVO 猎聘职位实体
+     * @param liePinToken hr在猎聘绑定后的token
+     * @return 返回职位编辑成功的数量
      * @author cjm
      * @date 2018/7/3
      */
@@ -450,7 +456,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     /**
      * 发布职位时如果是已经存在的职位，但是状态为0，则执行先上架后修改
      *
-     * @return
+     * @return 返回上架并更新成功的职位个数
      * @author cjm
      * @date 2018/6/22
      */
@@ -485,7 +491,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         return 0;
     }
 
-    public List<Integer> upshelfJobPosition(String republishIds, String liePinToken, Integer positionId) throws Exception {
+    private List<Integer> upshelfJobPosition(String republishIds, String liePinToken, Integer positionId) throws Exception {
         byte state = 1;
         JSONObject liePinJsonObject = new JSONObject();
         // 去掉末尾的逗号
@@ -493,7 +499,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
         String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionRepub);
 
-        httpClientUtil.requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
+        httpClientUtil.requireValidResult(httpResultJson);
 
         List<Integer> republishIdList = getRepublishList(republishIds);
 
@@ -515,11 +521,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         String id = mappingDO.getId() + "";
         try {
             // 由于在程序走到向猎聘发送修改请求时能确认数据库中职位状态是发布状态，所以如果hr在猎聘网站上将职位下架的话，仟寻的操作是需要先将职位上架
-            confirmPositionState(liePinPositionVO.getPositionId(), id + "", liePinToken);
+            confirmPositionState(id, liePinToken);
 
             // 猎聘修改职位api必填字段
-            int positionId = liePinPositionVO.getPositionId();
-
             liePinPositionVO.setEjob_extRefid(id);
 
             String liepinCityCode = getValidLiepinDictCode(mappingDO.getCityCode() + "");
@@ -530,7 +534,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
             String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinObject, liePinToken, LiepinPositionOperateConstant.liepinPositionEdit);
 
-            httpClientUtil.requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
+            httpClientUtil.requireValidResult(httpResultJson);
 
             liepinMappingDao.updateState(Integer.parseInt(id), (byte) 2);
 
@@ -543,14 +547,14 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     /**
      * 由于在程序走到向猎聘发送修改请求时能确认数据库中职位状态是发布状态，所以如果hr在猎聘网站上将职位下架的话，仟寻的操作是需要先将职位上架
      *
-     * @param
-     * @return
+     * @param liePinToken 猎聘生成的hr账号token
+     * @param mappingDOId   job_position_mapping表主键id
      * @author cjm
      * @date 2018/7/4
      */
-    private void confirmPositionState(int positionId, String mappingDOId, String liePinToken) throws Exception {
+    private void confirmPositionState(String mappingDOId, String liePinToken) throws Exception {
         // 获取猎聘职位信息
-        JSONObject liepinPositionInfo = getPositionAuditState(Integer.parseInt(mappingDOId), liePinToken, positionId, ChannelType.LIEPIN.getValue());
+        JSONObject liepinPositionInfo = getPositionAuditState(Integer.parseInt(mappingDOId), liePinToken);
 
         if (liepinPositionInfo == null) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_RESPONSE_NULL);
@@ -564,15 +568,15 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
             String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionRepub);
 
-            httpClientUtil.requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
+            httpClientUtil.requireValidResult(httpResultJson);
         }
     }
 
     /**
      * 通过仟寻citycode获取猎聘citycode
      *
-     * @param
-     * @return
+     * @param cityCode 仟寻cityCode
+     * @return 返回猎聘的cityCode
      * @author cjm
      * @date 2018/6/21
      */
@@ -617,8 +621,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     /**
      * 将前端传来的职能组合成以逗号隔开的格式
      *
-     * @param
-     * @return
+     * @param occupationList 职能code集合
+     * @return 返回以逗号隔开的职能字符串
      * @author cjm
      * @date 2018/6/19
      */
@@ -628,9 +632,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         // 获取所有猎聘社招职能
         List<DictLiepinOccupationDO> allSocialOccupation = liepinOccupationDao.getAllSocialOccupation();
 
-        List<String> allSocialCode = allSocialOccupation.stream().map(socialOccupation -> socialOccupation.getOtherCode()).collect(Collectors.toList());
+        List<String> allSocialCode = allSocialOccupation.stream().map(DictLiepinOccupationDO::getOtherCode).collect(Collectors.toList());
 
-        List<String> moseekerCodeList = new ArrayList<>();
+        List<String> moseekerCodeList;
         int index = 0;
 
         for (String moseekerCode : occupationList) {
@@ -663,13 +667,11 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     /**
      * 映射部门名字，本是由第三方页面手动填入，若为空，使用仟寻职位部门
      *
-     * @param
-     * @return
      * @author cjm
      * @date 2018/6/11
      */
     private String getDepartmentName(ThirdPartyPosition positionForm, JobPositionDO moseekerJobPosition) {
-        String departmentName = null;
+        String departmentName;
         if (StringUtils.isNotNullOrEmpty(positionForm.getDepartmentName())) {
             departmentName = positionForm.getDepartmentName();
         } else {
@@ -722,6 +724,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         }
         liePinPositionVO.setDetail_language_yueyu(yueyu);
         liePinPositionVO.setDetail_language_other(1);
+        // 猎聘数据库语言长度限制为79，所以这里同样限制长度
         if (language.length() > 79) {
             language = language.substring(0, 79);
         }
@@ -742,7 +745,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
         if (features == null || features.size() < 1) {
             List<HrCompanyFeature> hrCompanyFeatureList = featureDao.getFeatureListByCompanyId(positionForm.getCompanyId());
-            features = hrCompanyFeatureList.stream().map(hrCompanyFeature -> hrCompanyFeature.getFeature()).collect(Collectors.toList());
+            features = hrCompanyFeatureList.stream().map(HrCompanyFeature::getFeature).collect(Collectors.toList());
         }
         int index = 0;
 
@@ -768,8 +771,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     /**
      * 过滤掉中文特殊字符，否则猎聘收不到特殊字符导致验签失败
      *
-     * @param
-     * @return
+     * @param str 本来是要过滤 □ 类型的特殊字符，但是后来发现特殊字符验签也能成功了，应该是猎聘将特殊字符的过滤去掉了，目前这个方法只做非空判断
+     * @return 返回过滤后的字符串
      * @author cjm
      * @date 2018/6/22
      */
