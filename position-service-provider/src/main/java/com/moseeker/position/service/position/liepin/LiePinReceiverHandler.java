@@ -121,10 +121,11 @@ public class LiePinReceiverHandler {
                     continue;
                 }
                 jobPositionDO = BeanUtils.DBToStruct(JobPositionDO.class, record);
-
+                log.info("======================批量处理的DO转换jobPositionDO:{}", jobPositionDO);
                 JobPositionRecord oldRecord = oldJobMap.get(jobPositionDO.getId());
 
                 oldJobPositionDO = BeanUtils.DBToStruct(JobPositionDO.class, oldRecord);
+                log.info("======================批量处理的DO转换oldJobPositionDO:{}", oldJobPositionDO);
 
                 boolean positionFlag = false;
                 if (jobPositionDO.getStatus() == 0 && (oldJobPositionDO.getStatus() == 1 || oldJobPositionDO.getStatus() == 2)) {
@@ -377,6 +378,7 @@ public class LiePinReceiverHandler {
 
     private JobPositionDO getJobPositionFromMq(JSONObject msgObject, boolean salaryDiscuss, String key) throws BIZException {
         JSONObject jobPositionJSON = JSONObject.parseObject(msgObject.getString(key));
+        log.info("============jobPositionJSON:{}=============", jobPositionJSON);
         JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON, salaryDiscuss);
         log.info("============jobPositionDO:{}=============", jobPositionDO);
         return jobPositionDO;
@@ -755,12 +757,8 @@ public class LiePinReceiverHandler {
             liePinJsonObject.put("ejob_extRefids", ids);
 
             try {
-                log.info("==================title变化，将之前所有的下架获取所有的hashid，新的发布=====================");
-
                 // 下架
                 String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionEnd);
-
-                log.info("================httpResultJson:{}===============", httpResultJson);
 
                 httpClientUtil.requireValidResult(httpResultJson);
 
@@ -823,7 +821,11 @@ public class LiePinReceiverHandler {
             Double salaryTop = jobPositionJSON.getDouble("salary_top");
             Double salaryBottom = jobPositionJSON.getDouble("salary_bottom");
             if (salaryTop == null || salaryBottom == null) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SALARY_NULL);
+                salaryTop = jobPositionJSON.getDouble("salaryTop");
+                salaryBottom = jobPositionJSON.getDouble("salaryBottom");
+                if (salaryTop == null || salaryBottom == null) {
+                    throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SALARY_NULL);
+                }
             }
             jobPositionDO.setSalaryTop(salaryTop);
             jobPositionDO.setSalaryBottom(salaryBottom);
