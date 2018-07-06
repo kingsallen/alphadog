@@ -54,6 +54,7 @@ import java.util.stream.Collectors;
  * 1、监听das中的职位操作，进行与猎聘相关的职位处理
  * 2、处理ats的批量请求
  * 3、和liepinSocialPositionTransfer公用的一些方法
+ *
  * @author cjm
  * @date 2018-06-04 19:03
  **/
@@ -99,7 +100,7 @@ public class LiePinReceiverHandler {
      * 批量处理编辑职位操作
      * 用于ats批量处理
      *
-     * @param list 修改后的jobposition集合
+     * @param list      修改后的jobposition集合
      * @param oldJobMap 修改前的jobposition集合
      * @return 返回批量处理是否调用成功
      * @author cjm
@@ -215,10 +216,10 @@ public class LiePinReceiverHandler {
             // 如果是1，则为面议，面议不需要薪资上下限
             boolean salaryDiscuss = hrThirdPartyPositionDO.getSalaryDiscuss() == 1;
 
-            JobPositionDO updateJobPosition = getUpdateJobPositionFromMq(msgObject, salaryDiscuss);
-
             // 获取das端已修改后的职位数据
-            JobPositionDO jobPositionDO = getOldJobPositionFromMq(msgObject, salaryDiscuss);
+            JobPositionDO updateJobPosition = getJobPositionFromMq(msgObject, salaryDiscuss, "params");
+
+            JobPositionDO jobPositionDO = getJobPositionFromMq(msgObject, salaryDiscuss, "oldPosition");
 
             // true表示从下架状态编辑
             boolean positionFlag = getPositionFlag(msgObject);
@@ -271,7 +272,7 @@ public class LiePinReceiverHandler {
             // das端其实已经做过同步状态的修改，此举是为了兼容ats端
             if (isCityChange || positionFlag) {
                 // 如果是city变化，或者是下架状态的修改，将同步状态置为0，未同步
-                hrThirdPartyPositionDao.updateBindState(positionId, hrAccountId, 2, 0);
+                hrThirdPartyPositionDao.updateBindState(positionId, hrAccountId, ChannelType.LIEPIN.getValue(), 0);
 
             }
 
@@ -374,28 +375,11 @@ public class LiePinReceiverHandler {
         return false;
     }
 
-    private JobPositionDO getOldJobPositionFromMq(JSONObject msgObject, boolean salaryDiscuss) {
-        try {
-            JSONObject jobPositionJSON = JSONObject.parseObject(msgObject.getString("oldPosition"));
-            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON, salaryDiscuss);
-            log.info("============jobPositionDO:{}=============", jobPositionDO);
-            return jobPositionDO;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private JobPositionDO getUpdateJobPositionFromMq(JSONObject msgObject, boolean salaryDiscuss) {
-        try {
-            JSONObject jobPositionJSON = JSONObject.parseObject(msgObject.getString("params"));
-            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON, salaryDiscuss);
-            log.info("============jobPositionDO:{}=============", jobPositionDO);
-            return jobPositionDO;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    private JobPositionDO getJobPositionFromMq(JSONObject msgObject, boolean salaryDiscuss, String key) throws BIZException {
+        JSONObject jobPositionJSON = JSONObject.parseObject(msgObject.getString(key));
+        JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON, salaryDiscuss);
+        log.info("============jobPositionDO:{}=============", jobPositionDO);
+        return jobPositionDO;
     }
 
     /**
@@ -436,8 +420,9 @@ public class LiePinReceiverHandler {
 
     /**
      * 职位上架，目前逻辑改变，上架职位不再同时在猎聘上架
-     * @author  cjm
-     * @date  2018/7/6
+     *
+     * @author cjm
+     * @date 2018/7/6
      */
     @Deprecated
     @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_RESYNC, containerFactory = "rabbitListenerContainerFactoryAutoAck")
@@ -721,7 +706,7 @@ public class LiePinReceiverHandler {
      * 下架单个职位
      *
      * @param jobPositionMapping job_position_mapping表实体
-     * @param liePinToken hr在猎聘绑定后的token
+     * @param liePinToken        hr在猎聘绑定后的token
      * @author cjm
      * @date 2018/6/11
      */
@@ -738,7 +723,7 @@ public class LiePinReceiverHandler {
      * 下架多个职位
      *
      * @param liePinMappingDOList job_position_mapping表实体list
-     * @param liePinToken hr在猎聘绑定后的token
+     * @param liePinToken         hr在猎聘绑定后的token
      * @return
      * @author cjm
      * @date 2018/6/11
@@ -813,12 +798,12 @@ public class LiePinReceiverHandler {
      * 将json转成DO
      *
      * @param jobPositionJSON jobPosition的jsonObject对象
-     * @param salaryDiscuss 是否面议
+     * @param salaryDiscuss   是否面议
      * @return
      * @author cjm
      * @date 2018/7/2
      */
-    private JobPositionDO convertJSON2DO(JSONObject jobPositionJSON, boolean salaryDiscuss) {
+    private JobPositionDO convertJSON2DO(JSONObject jobPositionJSON, boolean salaryDiscuss) throws BIZException {
         JobPositionDO jobPositionDO = new JobPositionDO();
         jobPositionDO.setId(jobPositionJSON.getIntValue("id"));
         jobPositionDO.setCompanyId(jobPositionJSON.getIntValue("company_id"));
@@ -835,8 +820,13 @@ public class LiePinReceiverHandler {
         jobPositionDO.setOccupation(jobPositionJSON.getString("occupation"));
         jobPositionDO.setCount(jobPositionJSON.getDouble("count") == null ? 0 : jobPositionJSON.getDouble("count"));
         if (!salaryDiscuss) {
-            jobPositionDO.setSalaryTop(jobPositionJSON.getDouble("salary_top"));
-            jobPositionDO.setSalaryBottom(jobPositionJSON.getDouble("salary_bottom"));
+            Double salaryTop = jobPositionJSON.getDouble("salary_top");
+            Double salaryBottom = jobPositionJSON.getDouble("salary_bottom");
+            if (salaryTop == null || salaryBottom == null) {
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_SALARY_NULL);
+            }
+            jobPositionDO.setSalaryTop(salaryTop);
+            jobPositionDO.setSalaryBottom(salaryBottom);
         } else {
             jobPositionDO.setSalaryTop(0);
             jobPositionDO.setSalaryBottom(0);
@@ -856,7 +846,7 @@ public class LiePinReceiverHandler {
     /**
      * 比较编辑前后的职位数据是否发生变化
      *
-     * @param jobPositionDO 编辑前的jobPosition实体
+     * @param jobPositionDO     编辑前的jobPosition实体
      * @param updateJobPosition 编辑后的jobPosition实体
      * @return 返回是否发生变化，true表示变化，false表示没有变化
      * @author cjm
@@ -951,13 +941,14 @@ public class LiePinReceiverHandler {
     /**
      * 由于这个事务和sendSyncRequest()的事务在一个被事务aop代理的对象里，无法做到当同步失败时回滚数据库的目的，因此暂时将该方法放入rabbitmq的监听类里
      * 优化时考虑将猎聘的四个职位操作分别封装
-     * @param syncCityList 需要同步的cityCode集合
+     *
+     * @param syncCityList     需要同步的cityCode集合
      * @param liePinPositionVO 需要同步的猎聘职位实体
-     * @param liePinUserId hr在猎聘的id
-     * @param liePinToken hr在猎聘绑定后返回的token
-     * @author  cjm
-     * @date  2018/7/4
+     * @param liePinUserId     hr在猎聘的id
+     * @param liePinToken      hr在猎聘绑定后返回的token
      * @return 返回成功同步职位的个数
+     * @author cjm
+     * @date 2018/7/4
      */
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public int syncNewPosition(List<String> syncCityList, LiePinPositionVO liePinPositionVO, int liePinUserId, String liePinToken) throws Exception {
@@ -986,7 +977,7 @@ public class LiePinReceiverHandler {
 
             int id = jobPositionLiepinMappingDO.getId();
             // 默认改为待审核
-            liepinMappingDao.updateJobInfoById(id, Integer.parseInt(thirdPositionId), (byte)2);
+            liepinMappingDao.updateJobInfoById(id, Integer.parseInt(thirdPositionId), (byte) 2);
         }
         return index;
     }
