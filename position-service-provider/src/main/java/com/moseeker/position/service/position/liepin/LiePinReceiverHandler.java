@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position.liepin;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
@@ -200,10 +201,10 @@ public class LiePinReceiverHandler {
             // 如果是1，则为面议，面议不需要薪资上下限
             boolean salaryDiscuss = hrThirdPartyPositionDO.getSalaryDiscuss() == 1;
 
-            JobPositionDO updateJobPosition = getUpdateJobPositionFromMq(msgObject, salaryDiscuss);
+            JobPositionDO updateJobPosition = getJobPositionFromMq(msgObject, "params");
 
             // 获取das端已修改后的职位数据
-            JobPositionDO jobPositionDO = getOldJobPositionFromMq(msgObject, salaryDiscuss);
+            JobPositionDO jobPositionDO = getJobPositionFromMq(msgObject, "oldPosition");
 
             // true表示从下架状态编辑
             boolean positionFlag = getPositionFlag(msgObject);
@@ -353,29 +354,14 @@ public class LiePinReceiverHandler {
         return false;
     }
 
-    public JobPositionDO getOldJobPositionFromMq(JSONObject msgObject, boolean salaryDiscuss) {
-        try {
-            JSONObject jobPositionJSON = JSONObject.parseObject(msgObject.getString("oldPosition"));
-            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON, salaryDiscuss);
-            log.info("============jobPositionDO:{}=============", jobPositionDO);
-            return jobPositionDO;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    private JobPositionDO getJobPositionFromMq(JSONObject msgObject, String key) throws BIZException {
+        String jobPositionJSON = msgObject.getString(key);
+        log.info("============jobPositionJSON:{}=============", jobPositionJSON);
+        JobPositionDO jobPositionDO = JSON.parseObject(jobPositionJSON, JobPositionDO.class);
+        log.info("============jobPositionDO:{}=============", jobPositionDO);
+        return jobPositionDO;
     }
 
-    public JobPositionDO getUpdateJobPositionFromMq(JSONObject msgObject, boolean salaryDiscuss) {
-        try {
-            JSONObject jobPositionJSON = JSONObject.parseObject(msgObject.getString("params"));
-            JobPositionDO jobPositionDO = convertJSON2DO(jobPositionJSON, salaryDiscuss);
-            log.info("============jobPositionDO:{}=============", jobPositionDO);
-            return jobPositionDO;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     /**
      * 批量处理职位下架
@@ -947,8 +933,8 @@ public class LiePinReceiverHandler {
     }
 
     private boolean compareJobPosition(JobPositionDO jobPositionDO, JobPositionDO updateJobPosition) {
-        jobPositionDO = filterBlank(jobPositionDO);
-        updateJobPosition = filterBlank(updateJobPosition);
+//        jobPositionDO = filterBlank(jobPositionDO);
+//        updateJobPosition = filterBlank(updateJobPosition);
         return strEquals(jobPositionDO.getTitle(), updateJobPosition.getTitle())
                 && strEquals(jobPositionDO.getCity(), updateJobPosition.getCity())
                 && strEquals(jobPositionDO.getAccountabilities(), updateJobPosition.getAccountabilities())
