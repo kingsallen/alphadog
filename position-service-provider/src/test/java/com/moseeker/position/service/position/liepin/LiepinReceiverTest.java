@@ -8,16 +8,15 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.position.config.AppConfig;
+import com.moseeker.position.constants.position.liepin.LiepinPositionOperateConstant;
 import com.moseeker.position.service.appbs.PositionBS;
-import com.moseeker.position.service.position.liepin.LiePinReceiverHandler;
-import com.moseeker.position.utils.HttpClientUtil;
+import com.moseeker.position.utils.LiepinHttpClientUtil;
 import com.moseeker.position.utils.Md5Utils;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Message;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -103,9 +102,11 @@ public class LiepinReceiverTest {
 
     @Test
     public void testGetPosition() throws Exception {
-        Integer positionId = 1977351;
-        Integer id = 14;
-        String info = receiverHandler.getLpPositionInfo(positionId, id);
+        JSONObject liePinJsonObject = new JSONObject();
+        liePinJsonObject.put("ejob_extRefids", 986300089);
+        liePinJsonObject.put("usere_id", 1916031);
+        String liePinToken = "a8676f15dd8ce0687373eee1d373d5f91288522acbf267ff3486777f15b952b0b4497b0ada0bb2e86fea2dfbc5c787b5381b754b2b2e55f5e7ce4c509fc2f548";
+        String result = sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionGet);
     }
 
     //    @Test
@@ -134,7 +135,7 @@ public class LiepinReceiverTest {
         headers.put("token", liePinToken);
         String httpResultJson = null;
         try {
-            httpResultJson = HttpClientUtil.sentHttpPostRequest(url, headers, liePinJsonObject);
+            httpResultJson = LiepinHttpClientUtil.sentHttpPostRequest(url, headers, liePinJsonObject);
         } catch (Exception e) {
             e.printStackTrace();
         }

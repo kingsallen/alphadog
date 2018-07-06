@@ -411,9 +411,60 @@ public class PositionEmailNotification {
                 });
             } catch (Exception e) {
                 logger.error("发送同步职位到猎聘失败的邮件发生错误：{}", e.getMessage());
-                e.printStackTrace();
-                logger.error(e.getMessage(), e);
             }
+    }
+
+    /**
+     * 发送猎聘同步失败邮件
+     * @param
+     * @author  cjm
+     * @date  2018/6/22
+     * @return
+     */
+    public void sendRefreshSyncStateFailEmail(String message, Exception syncException){
+        List<String> mails=devMails;
+        if (mails == null || mails.size() == 0) {
+            logger.warn("没有配置同步邮箱地址!");
+            return;
+        }
+
+        try {
+
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
+
+            StringBuilder titleBuilder = new StringBuilder();
+            titleBuilder.append("【职位同步状态刷新失败：AbstractSyncStateRefresh】");
+
+            StringBuilder messageBuilder = new StringBuilder();
+
+            if(syncException != null){
+                messageBuilder.append("【失败信息】:").append(getExceptionAllinformation(syncException)).append(br);
+            }
+
+            if(StringUtils.isNotNullOrEmpty(message)){
+                messageBuilder.append("【其他信息】:").append(message);
+            }
+
+            emailBuilder.setSubject(titleBuilder.toString());
+            emailBuilder.setContent(messageBuilder.toString());
+            if (mails.size() > 1) {
+                emailBuilder.addCCList(mails.subList(1, mails.size()));
+            }
+            Email email = emailBuilder.build();
+            email.send(3, new Email.EmailListener() {
+                @Override
+                public void success() {
+                    logger.info("email send messageDelivered");
+                }
+
+                @Override
+                public void failed(Exception e) {
+                    logger.error("发送刷新职位同步状态失败的邮件发生错误：{}", e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            logger.error("发送刷新职位同步状态失败的邮件发生错误：{}", e.getMessage());
+        }
     }
 
 }

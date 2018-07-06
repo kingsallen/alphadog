@@ -1,6 +1,4 @@
-package com.moseeker.position.constants.position;
-
-import com.moseeker.common.constants.ChannelType;
+package com.moseeker.position.constants.position.liepin;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -180,7 +180,7 @@ public class HRThirdPartyPositionDao  {
      * @throws BIZException
      */
     public <P> List<TwoParam<HrThirdPartyPositionDO,P>> getDatas(Query query) throws BIZException {
-        List<HrThirdPartyPositionDO> list=thirdPartyPositionDao.getDatas(query);
+            List<HrThirdPartyPositionDO> list=thirdPartyPositionDao.getDatas(query);
         if(list==null || list.isEmpty()){
             return new ArrayList<>();
         }
@@ -337,7 +337,7 @@ public class HRThirdPartyPositionDao  {
     public void updateBindState(int positionId, int accountId, int channel, int state) {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(), sdf.format(new Date()))
                 .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
@@ -355,11 +355,12 @@ public class HRThirdPartyPositionDao  {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.SYNC_FAIL_REASON.getName(), errMsg)
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
+                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(), sdf.format(new Date()))
                 .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
         thirdPartyPositionDao.update(update.buildUpdate());
     }
+
 
     /**
      * 隐藏的内部第三方职位dao，

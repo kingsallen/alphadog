@@ -36,6 +36,13 @@ import java.util.Map;
 public class LiePinUserAccountBindHandler implements IBindRequest {
 
     private Logger logger = LoggerFactory.getLogger(LiePinUserAccountBindHandler.class);
+
+    private static final String CHANNEL;
+
+    static{
+        CHANNEL = EmailNotification.getConfig("liepin_position_api_channel");
+    }
+
     @Autowired
     EmailNotification emailNotification;
 
@@ -57,6 +64,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
                 logger.info("================用户绑定时http请求结果为空=================");
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "用户绑定时http请求结果为空");
             }
+            logger.info("=========================bindResultJson:{}", resultJson);
             JSONObject result = JSONObject.parseObject(resultJson);
 
             // 请求结果处理
@@ -68,11 +76,13 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
                 hrThirdPartyAccount.setExt2(token);
                 hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
             } else {
-                throw new BIZException(Integer.parseInt(String.valueOf(result.get("code"))), String.valueOf(result.get("message")));
+                emailNotification.sendCustomEmail(emailNotification.getRefreshMails(),  resultJson+ "</br>用户账号:"
+                        + hrThirdPartyAccount.getUsername(), bindEmailSubject);
+                throw new BIZException(result.getInteger("code"), result.getString("message"));
             }
         } catch (BIZException e) {
             logger.info("=================errormsg:{},username:{}===================", e.getMessage(), hrThirdPartyAccount.getUsername());
-            hrThirdPartyAccount.setBinding((short) BindingStatus.ERROR.getValue());
+            hrThirdPartyAccount.setBinding((short) BindingStatus.INFOWRONG.getValue());
             hrThirdPartyAccount.setErrorMessage(e.getMessage());
         } catch (Exception e) {
             emailNotification.sendCustomEmail(emailNotification.getRefreshMails(), e.getMessage() + "</br>用户账号:"
@@ -92,7 +102,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
      * @author cjm
      * @date 2018/6/15
      */
-    private String decryPwd(String passwordHex) throws Exception {
+    public String decryPwd(String passwordHex) throws Exception {
         byte[] target = AESUtils.decrypt(passwordHex);
         return new String(target, "UTF-8").trim();
     }
@@ -112,7 +122,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
 
         //设置请求头
         Map<String, String> headers = new HashMap<>();
-        headers.put("channel", "qianxun_online");
+        headers.put("channel", CHANNEL);
 
         //发送请求
         return HttpClientUtil.sentHttpPostRequest(UserAccountConstant.liepinUserBindUrl, headers, requestMap);
