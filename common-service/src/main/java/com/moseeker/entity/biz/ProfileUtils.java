@@ -404,7 +404,6 @@ public class ProfileUtils {
 										ProfileIntentionCityRecord.class);
 								if (cityRecord != null && ((cityRecord.getCityCode() != null&& cityRecord.getCityCode().intValue() != 0)|| StringUtils.isNotBlank(cityRecord.getCityName()))) {
 									record.getCities().add(cityRecord);
-									break;
 								}
 							}
 						}
