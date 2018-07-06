@@ -79,6 +79,39 @@ public class IntentionController {
 		}
 	}
 
+
+    @RequestMapping(value = "/v2/profile/intention", method = RequestMethod.POST)
+    @ResponseBody
+    public String postV2(HttpServletRequest request, HttpServletResponse response) {
+        // PrintWriter writer = null;
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            Intention intention = ParamUtils.initModelForm(data, Intention.class);
+            IntentionParamUtil.buildIntentionV2(data, intention);
+            Response result = intentionService.postResource(intention);
+
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/v2/profile/intention", method = RequestMethod.PUT)
+    @ResponseBody
+    public String putV2(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            Intention intention = ParamUtils.initModelForm(data, Intention.class);
+            IntentionParamUtil.buildIntentionV2(data, intention);
+            Response result = intentionService.putResource(intention);
+
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 	@RequestMapping(value = "/profile/intention", method = RequestMethod.DELETE)
 	@ResponseBody
 	public String delete(HttpServletRequest request, HttpServletResponse response) {
