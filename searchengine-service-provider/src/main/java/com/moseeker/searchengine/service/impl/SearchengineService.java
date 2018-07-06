@@ -109,7 +109,6 @@ public class SearchengineService {
             }
         } catch (Exception e) {
             logger.error("error in search", e);
-
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         Map<String, List> res = new HashMap<String, List>();
@@ -153,8 +152,8 @@ public class SearchengineService {
      */
     @CounterIface
     public Map<String,Object> searchPositionMini(Map<String,String> params){
-        TransportClient client= EsClientInstance.getClient();
 
+        TransportClient client= EsClientInstance.getClient();
         String pageFrom=params.get("page");
         String pageSize=params.get("pageSize");
         String childCompanyId=params.get("childCompanyId");
@@ -791,7 +790,7 @@ public class SearchengineService {
                 .combineScript(new Script(combinScript));
         return build;
     }
-
+    @CounterIface
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum, String keyword, int filter) {
         Map<String, Object> object = new HashMap<>();
         TransportClient searchClient =null;
@@ -820,6 +819,9 @@ public class SearchengineService {
                 }
                 data.add(objectMap);
             }
+            logger.info("==================================");
+            logger.info("total ======="+response.getHits().getTotalHits());
+            logger.info("==================================");
             object.put("data", data);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

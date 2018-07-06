@@ -54,7 +54,7 @@ public class IntentionsParser implements IResumeParser {
         if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getExpect_salary())) {
             try{
                 int topSalary = Arrays.stream(resumeObj.getResult().getExpect_salary().replaceAll("[\\u4E00-\\u9FA5|/]", "").split("-|~", 2)).max(String::compareTo).map(m -> Integer.valueOf(m)).get();
-                intentions.setSalaryCode(String.valueOf(DictCode.salary(topSalary)));
+                intentions.setSalaryCode(DictCode.salary(topSalary));
             } catch (Exception e) {
                 LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
                 logResumeRecordRecord.setErrorLog("期望薪资转换异常: " + e.getMessage());
