@@ -60,6 +60,22 @@ public class IntentionParamUtil {
                         cityName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(7)));
 					}
 				}
+
+                //查找城市信息
+                if(entry.getKey().startsWith("city")) {
+                    List<Map<String, Object>> cities = (List<Map<String,Object>>) entry.getValue();
+                    if(!StringUtils.isEmptyList(cities)) {
+                        for (int i = 0; i < cities.size(); i++) {
+                            Map<String, Object> city = cities.get(i);
+                            if (city.get("city_code") != null) {
+                                cityCode.put(i, BeanUtils.converToInteger(city.get("city_code")));
+                            }
+                            if (city.get("city_name") != null) {
+                                cityName.put((String) city.get("city_name"), i);
+                            }
+                        }
+                    }
+                }
 				//查找职能信息
 				if(entry.getKey().startsWith("positions[")) {
 					if(entry.getKey().contains("position_code")) {
@@ -124,130 +140,4 @@ public class IntentionParamUtil {
 			}
 		}
 	}
-
-    /**
-     * 将参数中通用解析方式无法解析的行业、职能、城市信息补填到Intention中
-     *
-     * "positions[0][position_code]" -> "120202"
-     * "cities[0][city_code]" -> "310000"
-     *
-     * @param reqParams 从request中解析出来的参数
-     * @param intention 感兴趣信息
-     */
-    public static void buildIntentionV2(Map<String, Object> reqParams, Intention intention) {
-
-        Map<Integer, Integer> industryCode = new HashMap<>();
-        Map<String, Integer> industryName= new HashMap<>();
-
-        Map<Integer, Integer> positionCode = new HashMap<>();
-        Map<String, Integer> positionName= new HashMap<>();
-
-        Map<Integer, Integer> cityCode = new HashMap<>();
-        Map<String, Integer> cityName= new HashMap<>();
-        if (reqParams != null) {
-            for (Entry<String, Object> entry : reqParams.entrySet()) {
-                //查找行业信息
-                if(entry.getKey().startsWith("industry")) {
-                    List<Map<String, Object>> industries = (List<Map<String,Object>>) entry.getValue();
-                    if(!StringUtils.isEmptyList(industries)) {
-//                        for (int i = 0; i < industries.size(); i++) {
-                        //单选
-                        int i = 0;
-                        Map<String, Object> industry = industries.get(i);
-                        if (industry.get("industry_code") != null) {
-                            industryCode.put(i, BeanUtils.converToInteger(industry.get("industry_code")));
-                        }
-                        if (industry.get("industry_name") != null) {
-                            industryName.put((String) industry.get("industry_name"), i);
-                        }
-//                        }
-                    }
-                }
-                //查找城市信息
-                if(entry.getKey().startsWith("city")) {
-                    List<Map<String, Object>> cities = (List<Map<String,Object>>) entry.getValue();
-                    if(!StringUtils.isEmptyList(cities)) {
-                        for (int i = 0; i < cities.size(); i++) {
-                            Map<String, Object> city = cities.get(i);
-                            if (city.get("city_code") != null) {
-                                cityCode.put(i, BeanUtils.converToInteger(city.get("city_code")));
-                            }
-                            if (city.get("city_name") != null) {
-                                cityName.put((String) city.get("city_name"), i);
-                            }
-                        }
-                    }
-                }
-                //查找职能信息
-                if(entry.getKey().startsWith("position")) {
-                    List<Map<String, Object>> positions = (List<Map<String,Object>>) entry.getValue();
-                    if(!StringUtils.isEmptyList(positions)) {
-//                        for (int i = 0; i < cities.size(); i++) {
-                        int i= 0;
-                        Map<String, Object> position = positions.get(i);
-                        if (position.get("position_code") != null) {
-                            positionCode.put(i, BeanUtils.converToInteger(position.get("position_code")));
-                        }
-                        if (position.get("position_name") != null) {
-                            positionName.put((String) position.get("position_name"), i);
-                        }
-//                        }
-                    }
-                }
-            }
-        }
-
-        //拼装行业信息
-        if(industryName.size() > 0) {
-            for(Entry<String, Integer> entry : industryName.entrySet()) {
-                if(intention.getIndustries() == null) {
-                    intention.setIndustries(new HashMap<String, Integer>());
-                }
-                int code = 0;
-                if(industryCode.size() > 0) {
-                    if(industryCode.get(entry.getValue()) != null) {
-                        code = industryCode.get(entry.getValue());
-                    }
-                }
-                intention.getIndustries().put(entry.getKey(), code);
-            }
-        }else if(industryCode.size() > 0) {
-            for(Entry<Integer, Integer> entry : industryCode.entrySet()) {
-                if(intention.getIndustries() == null) {
-                    intention.setIndustries(new HashMap<String, Integer>());
-                }
-                intention.getIndustries().put(String.valueOf(entry.getValue()), entry.getValue());
-            }
-        }
-
-        //拼装职能信息
-        if(positionName.size() > 0) {
-            for(Entry<String, Integer> entry : positionName.entrySet()) {
-                if(intention.positions == null) {
-                    intention.setPositions(new HashMap<String, Integer>());
-                }
-                int code = 0;
-                if(positionCode.size() > 0) {
-                    if(positionCode.get(entry.getValue()) != null) {
-                        code = positionCode.get(entry.getValue());
-                    }
-                }
-                intention.getPositions().put(entry.getKey(), code);
-            }
-        }
-        //拼装城市信息
-        if(cityName.size() > 0) {
-            for(Entry<String, Integer> entry : cityName.entrySet()) {
-                if(intention.cities == null) {
-                    intention.setCities(new HashMap<String, Integer>());
-                }
-                int code = 0;
-                if(cityCode.get(entry.getValue()) != null) {
-                    code = cityCode.get(entry.getValue());
-                }
-                intention.getCities().put(entry.getKey(), code);
-            }
-        }
-    }
-
 }
