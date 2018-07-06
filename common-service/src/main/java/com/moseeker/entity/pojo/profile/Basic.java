@@ -5,7 +5,7 @@ public class Basic {
 
     private String cityName;
     private int cityCode;
-    private String gender;
+    private int gender;
     private String name;
     private String birth;
     private String selfIntroduction;
@@ -53,12 +53,12 @@ public class Basic {
         return cityName;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public int getGender() {
+        return gender;
     }
 
-    public String getGender() {
-        return gender;
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 
     public void setName(String name) {
