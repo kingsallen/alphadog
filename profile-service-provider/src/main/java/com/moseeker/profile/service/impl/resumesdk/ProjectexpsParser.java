@@ -37,10 +37,16 @@ public class ProjectexpsParser extends AbstractMutiResumeParser<ProjectexpObj, P
         }
         // 职责
         project.setResponsibility(projectexpObj.getProj_resp());
-        project.setDescription(projectexpObj.getProj_content());
-        if(StringUtils.isNotNullOrEmpty(projectexpObj.getProj_resp())) {
-            project.setDescription(projectexpObj.getProj_content() + "\n" + projectexpObj.getProj_resp());
+
+        StringBuilder description = new StringBuilder();
+        if(StringUtils.isNotNullOrEmpty(projectexpObj.getProj_content())) {
+            description.append(projectexpObj.getProj_content()+"\n");
         }
+        if (StringUtils.isNotNullOrEmpty(projectexpObj.getProj_resp())) {
+            description.append(projectexpObj.getProj_resp());
+        }
+        project.setDescription(description.toString());
+
         project.setName(projectexpObj.getProj_name());
         return project;
     }
