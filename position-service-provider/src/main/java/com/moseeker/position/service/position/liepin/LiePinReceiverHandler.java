@@ -804,7 +804,8 @@ public class LiePinReceiverHandler {
     private JobPositionDO convertJSON2DO(JSONObject jobPositionJSON, boolean salaryDiscuss) throws BIZException {
         JobPositionDO jobPositionDO = new JobPositionDO();
         jobPositionDO.setId(jobPositionJSON.getIntValue("id"));
-        jobPositionDO.setCompanyId(jobPositionJSON.getIntValue("company_id"));
+        int companyId = jobPositionJSON.getIntValue("company_id");
+        jobPositionDO.setCompanyId( companyId== 0 ? jobPositionJSON.getIntValue("companyId") : companyId);
         jobPositionDO.setTitle(jobPositionJSON.getString("title"));
         jobPositionDO.setDepartment(jobPositionJSON.getString("department"));
         jobPositionDO.setAccountabilities(jobPositionJSON.getString("accountabilities"));
@@ -814,7 +815,15 @@ public class LiePinReceiverHandler {
         jobPositionDO.setLanguage(jobPositionJSON.getString("language"));
         jobPositionDO.setDegree(jobPositionJSON.getDouble("degree") == null ? 0 : jobPositionJSON.getDouble("degree"));
         jobPositionDO.setFeature(jobPositionJSON.getString("feature"));
-        jobPositionDO.setCandidateSource(jobPositionJSON.getDouble("candidate_source") == null ? 0 : jobPositionJSON.getDouble("candidate_source"));
+        Double candidateSource = jobPositionJSON.getDouble("candidate_source");
+        Double candidateSource1 = jobPositionJSON.getDouble("candidateSource");
+        if(candidateSource != null){
+            jobPositionDO.setCandidateSource(candidateSource);
+        }else if(candidateSource1!=null){
+            jobPositionDO.setCandidateSource(candidateSource1);
+        }else {
+            jobPositionDO.setCandidateSource(0);
+        }
         jobPositionDO.setOccupation(jobPositionJSON.getString("occupation"));
         jobPositionDO.setCount(jobPositionJSON.getDouble("count") == null ? 0 : jobPositionJSON.getDouble("count"));
         if (!salaryDiscuss) {
@@ -833,14 +842,36 @@ public class LiePinReceiverHandler {
             jobPositionDO.setSalaryTop(0);
             jobPositionDO.setSalaryBottom(0);
         }
-        jobPositionDO.setExperienceAbove("true".equals(jobPositionJSON.getString("experience_above")) ? (byte) 1 : 0);
-        jobPositionDO.setDegreeAbove("true".equals(jobPositionJSON.getString("degree_above")) ? (byte) 1 : 0);
+        String experienceAbove = jobPositionJSON.getString("experience_above");
+        if(StringUtils.isBlank(experienceAbove)){
+            experienceAbove = jobPositionJSON.getString("experiencebove");
+        }
+        jobPositionDO.setExperienceAbove("true".equals(experienceAbove) ? (byte) 1 : 0);
+        String degreeAbove = jobPositionJSON.getString("degree_above");
+        if(StringUtils.isBlank(degreeAbove)){
+            degreeAbove = jobPositionJSON.getString("degreeAbove");
+        }
+        jobPositionDO.setDegreeAbove("true".equals(degreeAbove) ? (byte) 1 : 0);
+
         jobPositionDO.setGender(jobPositionJSON.getDouble("gender") == null ? 2 : jobPositionJSON.getDouble("gender"));
         jobPositionDO.setPublisher(jobPositionJSON.getIntValue("publisher"));
         jobPositionDO.setAge(jobPositionJSON.getByte("age") == null ? 0 : jobPositionJSON.getByte("age"));
-        jobPositionDO.setMajorRequired(jobPositionJSON.getString("major_required"));
-        jobPositionDO.setLanguageRequired("true".equals(jobPositionJSON.getString("language_required")) ? (byte) 1 : 0);
-        jobPositionDO.setPositionCode(jobPositionJSON.getIntValue("position_code"));
+        String majorRequired = jobPositionJSON.getString("major_required");
+        if(StringUtils.isBlank(majorRequired)){
+            majorRequired = jobPositionJSON.getString("majorRequired");
+        }
+        jobPositionDO.setMajorRequired(majorRequired);
+        String languageRequired = jobPositionJSON.getString("language_required");
+        if(StringUtils.isBlank(languageRequired)){
+            languageRequired = jobPositionJSON.getString("languageRequired");
+        }
+        jobPositionDO.setLanguageRequired("true".equals(languageRequired) ? (byte) 1 : 0);
+        int positionCode = jobPositionJSON.getIntValue("position_code");
+        if(positionCode == 0){
+            positionCode = jobPositionJSON.getIntValue("positionCode");
+        }
+        jobPositionDO.setPositionCode(positionCode);
+
         jobPositionDO.setUnderlings(jobPositionJSON.getByte("underlings") == null ? 0 : jobPositionJSON.getByte("underlings"));
         return jobPositionDO;
     }
