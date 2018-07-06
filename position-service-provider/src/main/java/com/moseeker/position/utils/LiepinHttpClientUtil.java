@@ -31,9 +31,6 @@ import java.util.Map;
 @Component
 public class LiepinHttpClientUtil {
 
-    @Autowired
-    private HRThirdPartyPositionDao hrThirdPartyPositionDao;
-
     private static Logger logger = LoggerFactory.getLogger(HttpClient.class);
 
     public static String sentHttpPostRequest(String url, Map<String, String> headers, Map<String, Object> params) throws Exception {
@@ -93,12 +90,12 @@ public class LiepinHttpClientUtil {
     /**
      * 验证有效的http请求结果
      *
-     * @param
-     * @return
+     * @param httpResultJson json格式的返回值
+     * @return jsonObject格式的返回值
      * @author cjm
      * @date 2018/7/2
      */
-    public JSONObject requireValidResult(String httpResultJson, int positionId, int channel) throws BIZException {
+    public JSONObject requireValidResult(String httpResultJson) throws BIZException {
 
         if (StringUtils.isBlank(httpResultJson)) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_RESPONSE_NULL);
@@ -118,9 +115,7 @@ public class LiepinHttpClientUtil {
         } else if (httpResult.getIntValue("code") != 0) {
             if (httpResult.getIntValue("code") == 1007) {
                 // token失效时，只会是因为hr在猎聘修改了用户名密码，因此提示如下，将文案提示与其他渠道保持一致
-                String errMsg = "会员名、用户名或密码错误，请重新绑定账号";
-                hrThirdPartyPositionDao.updateErrmsg(errMsg, positionId, channel, 0);
-                throw ExceptionUtils.getBizException("{'status':-1,'message':'" + errMsg + "'}");
+                throw ExceptionUtils.getBizException("{'status':-1,'message':'会员名、用户名或密码错误，请重新绑定账号'}");
             }
             throw ExceptionUtils.getBizException("{'status':-1,'message':'" + httpResult.getString("message") + "'}");
         }
