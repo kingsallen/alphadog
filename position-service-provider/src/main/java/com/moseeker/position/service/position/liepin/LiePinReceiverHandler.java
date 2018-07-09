@@ -13,16 +13,12 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.constants.PositionSyncVerify;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.position.constants.position.liepin.LiepinPositionOperateConstant;
-import com.moseeker.position.constants.position.liepin.LiepinPositionState;
 import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
 import com.moseeker.position.service.schedule.delay.PositionTaskQueueDaemonThread;
-import com.moseeker.position.service.schedule.delay.refresh.LiepinSyncStateRefresh;
 import com.moseeker.position.utils.LiepinHttpClientUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
@@ -46,7 +42,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -299,6 +294,7 @@ public class LiePinReceiverHandler {
                     hrThirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
 
                     PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(thirdPartyPositionId, positionChannel);
+                    // 过期时间加上一个随机数，减少大量职位在同一时间内操作时的服务器压力
                     delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
                     log.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
                 } else {
@@ -797,8 +793,6 @@ public class LiePinReceiverHandler {
      * @date 2018/7/2
      */
     private boolean compareJobPosition(JobPositionDO jobPositionDO, JobPositionDO updateJobPosition) {
-//        jobPositionDO = filterBlank(jobPositionDO);
-//        updateJobPosition = filterBlank(updateJobPosition);
         return strEquals(jobPositionDO.getTitle(), updateJobPosition.getTitle())
                 && strEquals(jobPositionDO.getCity(), updateJobPosition.getCity())
                 && strEquals(jobPositionDO.getAccountabilities(), updateJobPosition.getAccountabilities())
@@ -903,6 +897,8 @@ public class LiePinReceiverHandler {
             JobPositionLiepinMappingDO jobPositionLiepinMappingDO = liepinSocialPositionTransfer.getNewJobPositionLiepinMapping(liePinPositionVO, cityCode, liePinUserId);
             liePinPositionVO.setEjob_extRefid(jobPositionLiepinMappingDO.getId() + "");
             liePinPositionVO.setEjob_dq(liepinCityCode);
+            // 截取title
+            liepinSocialPositionTransfer.requireValidTitle(liePinPositionVO);
             JSONObject liepinObject = JSONObject.parseObject(JSON.toJSONString(liePinPositionVO));
             String httpResultJson = httpClientUtil.sendRequest2LiePin(liepinObject, liePinToken, LiepinPositionOperateConstant.liepinPositionSync);
 
