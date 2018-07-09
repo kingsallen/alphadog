@@ -342,9 +342,15 @@ public class DeliveryEmailProducer {
                     intentions.setJob(positionName.substring(0, positionName.length() - 1));
                 }
                 intentions.setWorkStatus((String) intention.getOrDefault("workstate_name", ""));
-                List<String> industriesList = (List<String>) intention.getOrDefault("industries", new ArrayList<>());
-                if (!StringUtils.isEmptyList(industriesList)) {
-                    intentions.setIndustry(String.join(",", industriesList));
+                List<Map<String, Object>> industriesList = (List<Map<String, Object>>) intention.getOrDefault("industries", null);
+                if(!StringUtils.isEmptyList(industriesList)){
+                    StringBuffer industrieName= new StringBuffer();
+                    for(Map<String, Object> industries : industriesList){
+                        if(industries.get("industry_name")!=null){
+                            industrieName.append(industries.get("industry_name")+",");
+                        }
+                    }
+                    intentions.setIndustry(industrieName.substring(0,industrieName.length()-1));
                 }
 
             }

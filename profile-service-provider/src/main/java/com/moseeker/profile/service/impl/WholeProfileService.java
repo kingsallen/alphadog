@@ -51,6 +51,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.*;
@@ -904,6 +905,9 @@ public class WholeProfileService {
                 collegeCodes.add(record.getCollegeCode());
             });
             List<DictCollegeDO> collegeRecords = collegeDao.getCollegesByIDs(collegeCodes);
+            List<Integer> parentCodes = new ArrayList<>();
+            parentCodes.add(Constant.DICT_CONSTANT_DEGREE_USER);
+            List<DictConstantRecord> constantDOS = constantDao.getCitiesByParentCodes(parentCodes);
             records.forEach(record -> {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("id", record.getId().intValue());
@@ -925,6 +929,14 @@ public class WholeProfileService {
                 map.put("major_name", record.getMajorName());
                 map.put("major_code", record.getMajorCode());
                 map.put("degree", record.getDegree().intValue());
+                if(!StringUtils.isEmptyList(constantDOS)){
+                    for(DictConstantRecord record1 : constantDOS) {
+                        if (record.getDegree().intValue() == record1.getCode()){
+                            map.put("degree_name", record1.getName());
+                            break;
+                        }
+                    }
+                }
                 if (record.getStart() != null) {
                     map.put("start_date", DateUtils.dateToNormalDate(record.getStart()));
                 }
