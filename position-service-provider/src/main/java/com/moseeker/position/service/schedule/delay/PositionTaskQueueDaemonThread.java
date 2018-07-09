@@ -1,11 +1,20 @@
 package com.moseeker.position.service.schedule.delay;
 
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
+import com.moseeker.position.service.schedule.delay.refresh.DefaultSyncStateRefresh;
+import com.moseeker.position.service.schedule.delay.refresh.LiepinSyncStateRefresh;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -14,21 +23,13 @@ import java.util.concurrent.TimeUnit;
  * @date 2018-06-29 10:20
  **/
 @Component
+@DependsOn({"HRThirdPartyPositionDao","syncStateRefreshFactory"})
 public class PositionTaskQueueDaemonThread {
 
+    @Autowired
+    private HRThirdPartyPositionDao hrThirdPartyPositionDao;
+
     private Logger logger = LoggerFactory.getLogger(PositionTaskQueueDaemonThread.class);
-
-    private PositionTaskQueueDaemonThread() {
-        init();
-    }
-
-    private static class LazyHolder{
-        private static PositionTaskQueueDaemonThread taskQueueDaemonThread = new PositionTaskQueueDaemonThread();
-    }
-
-    public static PositionTaskQueueDaemonThread getInstance() {
-        return LazyHolder.taskQueueDaemonThread;
-    }
 
     @Autowired
     SyncStateRefreshFactory refreshFactory;
@@ -37,9 +38,12 @@ public class PositionTaskQueueDaemonThread {
      */
     private Thread daemonThread;
 
+    private Random random = new Random();
+
     /**
      * 初始化守护线程
      */
+    @PostConstruct
     public void init() {
         daemonThread = new Thread(() -> execute());
         daemonThread.setDaemon(true);
@@ -47,7 +51,10 @@ public class PositionTaskQueueDaemonThread {
         daemonThread.start();
     }
 
+
     private void execute() {
+        // 由于服务器重启时会将内存中延迟队列的数据删除，所以服务器启动时将数据库查一遍，将历史数据再次放入队列中
+//        getHistoryData();
         while (true) {
             try {
                 //从延迟队列中取值,如果没有对象过期则队列一直等待，
@@ -65,6 +72,28 @@ public class PositionTaskQueueDaemonThread {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 break;
+            }
+        }
+    }
+
+    /**
+     * 由于服务器重启时会将内存中延迟队列的数据删除，所以服务器启动时将数据库查一遍，将历史数据再次放入队列中
+     * @author  cjm
+     * @date  2018/7/9
+     */
+    private void getHistoryData() {
+        List<HrThirdPartyPositionDO> hrThirdPartyPositionDOS =  hrThirdPartyPositionDao.getAuditPositionData();
+        if(hrThirdPartyPositionDOS == null){
+            return;
+        }
+        PositionSyncStateRefreshBean refreshBean;
+        for(HrThirdPartyPositionDO hrThirdPartyPositionDO : hrThirdPartyPositionDOS){
+            if(hrThirdPartyPositionDO.getChannel() == ChannelType.LIEPIN.getValue()) {
+                refreshBean = new PositionSyncStateRefreshBean(hrThirdPartyPositionDO.getId(), hrThirdPartyPositionDO.getChannel());
+                put(LiepinSyncStateRefresh.TIMEOUT + random.nextInt(60 * 1000), refreshBean);
+            }else {
+                refreshBean = new PositionSyncStateRefreshBean(hrThirdPartyPositionDO.getId(), ChannelType.NONE.getValue());
+                put(DefaultSyncStateRefresh.TIMEOUT + random.nextInt(60 * 1000), refreshBean);
             }
         }
     }

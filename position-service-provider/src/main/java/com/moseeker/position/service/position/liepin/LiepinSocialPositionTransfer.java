@@ -22,11 +22,8 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.position.liepin.LiePinPositionDegree;
 import com.moseeker.position.constants.position.liepin.LiepinPositionOperateConstant;
-import com.moseeker.position.constants.position.liepin.LiepinPositionState;
 import com.moseeker.position.pojo.LiePinPositionVO;
-import com.moseeker.position.service.schedule.constant.LiepinPositionAuditState;
 import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
-import com.moseeker.position.service.schedule.delay.refresh.LiepinSyncStateRefresh;
 import com.moseeker.position.service.schedule.delay.PositionTaskQueueDaemonThread;
 import com.moseeker.position.utils.LiepinHttpClientUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
@@ -93,9 +90,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     LiepinHttpClientUtil httpClientUtil;
 
     private Random random = new Random();
-
-    protected static final String ERRMSG = "审核不通过，请修改职位信息后重新发布。\n" +
-            "审核失败原因可能是:\n1、校招职位在社招渠道发布;\n2、职位信息中包含网站链接;\n3。职位信息中包含敏感信息等。";
 
     @Override
     public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
@@ -270,7 +264,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             List<JobPositionLiepinMappingDO> editCityList = getEditCityList(liepinMappingDOList, cityCodesList);
 
             try {
-                // 发布职位时，如果之前未发布过，就发布新的职位
+                // 发布职位时，如果之前未发布过，就发布新的职位，title在此步骤中截取
                 successSyncNum = receiverHandler.syncNewPosition(syncCityList, liePinPositionVO, liePinUserId, liePinToken);
 
                 // 发布职位时如果是已经存在的职位，但是状态为0，则执行先上架后修改
@@ -278,7 +272,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
                 // 编辑修改职位
                 editNum = editExistPosition(editCityList, liePinPositionVO, liePinToken);
-
+                // 将职位同步状态设置为2，待审核
                 hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
             } catch (BIZException e) {
                 hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
@@ -301,8 +295,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         twoParam = thirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
         hrThirdPartyPositionDO = twoParam.getR1();
         logger.info("====================hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
-        // 将职位同步状态设置为2，待审核
+
         PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(hrThirdPartyPositionDO.getId(), channel);
+        // 过期时间加上一个随机数，减少大量职位在同一时间内操作时的服务器压力
         delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
         logger.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
     }
@@ -517,7 +512,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
      * @date 2018/6/10
      */
     public void editSinglePosition(LiePinPositionVO liePinPositionVO, String liePinToken, JobPositionLiepinMappingDO mappingDO) throws Exception {
-
+        // 截取 tilte
+        requireValidTitle(liePinPositionVO);
         String id = mappingDO.getId() + "";
         try {
             // 由于在程序走到向猎聘发送修改请求时能确认数据库中职位状态是发布状态，所以如果hr在猎聘网站上将职位下架的话，仟寻的操作是需要先将职位上架
@@ -541,6 +537,21 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         } catch (Exception e) {
             liepinMappingDao.updateErrMsg(Integer.parseInt(id), e.getMessage());
             throw e;
+        }
+    }
+
+    /**
+     * 猎聘职位title长度限制为143，如果传来的职位长度大于此值，则截取
+     * @param liePinPositionVO 猎聘职位vo对象
+     * @author  cjm
+     * @date  2018/7/9
+     */
+    public void requireValidTitle(LiePinPositionVO liePinPositionVO) {
+        String title = liePinPositionVO.getEjob_title();
+        logger.info("====================title长度:{}", title.length());
+        if(title.length() > 143){
+            title = title.substring(0, 143);
+            liePinPositionVO.setEjob_title(title);
         }
     }
 

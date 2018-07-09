@@ -130,6 +130,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
                 }
             }
             if(isNeedRefresh){
+                // 过期时间加上一个随机数，减少大量职位在同一时间内操作时的服务器压力
                 delayQueueThread.put(TIMEOUT + random.nextInt(60 * 1000), refreshBean);
             }
         } catch (Exception e) {

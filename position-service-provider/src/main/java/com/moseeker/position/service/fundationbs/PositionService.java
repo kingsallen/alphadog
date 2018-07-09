@@ -92,9 +92,7 @@ import static java.lang.Math.toIntExact;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -737,6 +735,7 @@ public class PositionService {
                         throw new RuntimeException("rabbitmq线程等待超时");
                     }
                 });
+
             }
         }
         // 判断哪些数据不需要更新的
@@ -1116,13 +1115,16 @@ public class PositionService {
                     oldJobMap.put(jobPositionRecord.getId(), jobPositionRecord);
                 }
             }
-            pool.startTast(() -> {
-                if (batchHandlerCountDown.await(60, TimeUnit.SECONDS)) {
-                    return receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateRecordList, oldJobMap);
-                } else {
-                    throw new RuntimeException("rabbitmq线程等待超时");
-                }
-            });
+            receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateRecordList, oldJobMap);
+//            Future editFuture = pool.startTast(() -> {
+//                if (batchHandlerCountDown.await(60, TimeUnit.SECONDS)) {
+//                    return receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateRecordList, oldJobMap);
+//                } else {
+//                    throw new RuntimeException("rabbitmq线程等待超时");
+//                }
+//            });
+//
+//            editFuture.get(60, TimeUnit.SECONDS);
 
         } catch (Exception e) {
             logger.error("更新和插入数据发生异常,异常信息为：" + e.getMessage());
