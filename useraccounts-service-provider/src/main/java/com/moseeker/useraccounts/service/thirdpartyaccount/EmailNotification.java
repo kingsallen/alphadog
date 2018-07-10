@@ -258,7 +258,7 @@ public class EmailNotification {
             return;
         }
         try {
-
+            emailSubject = "【" + emailLevel + "】" + emailSubject;
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails);
             emailBuilder.setContent(emailContent);
             emailBuilder.setSubject(emailSubject);
