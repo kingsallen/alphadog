@@ -55,7 +55,7 @@ public class RefreshLiepinTokenSchedule {
      * @date  2018/7/9
      */
     //    @Scheduled(cron="0 0 0 1,15 * ?")
-//    @Scheduled(cron="0 /5 0 * * ?")
+    @Scheduled(cron="0 * 0 * * ?")
     public void refreshLiepinToken() {
         try {
             List<HrThirdPartyAccountDO> successRequest = new ArrayList<>();
@@ -84,6 +84,9 @@ public class RefreshLiepinTokenSchedule {
                     successRequest.add(accountDO);
                 }catch (BIZException e){
                     logger.warn("=================errormsg:{},username:{}===================", e.getMessage(), accountDO.getUsername());
+                    failRequest.add(accountDO.getId());
+                }catch (Exception e){
+                    logger.error(e.getMessage(), e);
                     failRequest.add(accountDO.getId());
                 }
             }
