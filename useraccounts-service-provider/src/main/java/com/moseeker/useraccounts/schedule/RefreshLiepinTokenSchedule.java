@@ -54,8 +54,8 @@ public class RefreshLiepinTokenSchedule {
      * @author  cjm
      * @date  2018/7/9
      */
+    //    @Scheduled(cron="0 0 0 1,15 * ?")
     @Scheduled(cron="0 /5 0 * * ? ")
-//    @Scheduled(cron="0 0 0 1,15 * ?")
     public void refreshLiepinToken() {
         try {
             List<HrThirdPartyAccountDO> successRequest = new ArrayList<>();
