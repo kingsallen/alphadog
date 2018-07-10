@@ -262,9 +262,11 @@ public class LiePinReceiverHandler {
             // true表示标题变化了
             boolean isTitleChange = !jobPositionDO.getTitle().equals(updateJobPosition.getTitle());
 
+            log.info("==========isCityChange:{},isTitleChange:{},positionFlag:{}==================", isCityChange, isTitleChange, positionFlag);
             // das端其实已经做过同步状态的修改，此举是为了兼容ats端
-            if (isCityChange || positionFlag) {
+            if (isCityChange) {
                 // 如果是city变化，或者是下架状态的修改，将同步状态置为0，未同步
+                log.info("================city变化，或者是下架状态的修改==============");
                 hrThirdPartyPositionDao.updateBindState(positionId, hrAccountId, ChannelType.LIEPIN.getValue(), 0);
 
             }
