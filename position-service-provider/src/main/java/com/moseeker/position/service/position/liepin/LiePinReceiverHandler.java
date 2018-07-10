@@ -286,17 +286,18 @@ public class LiePinReceiverHandler {
                         // 修改
                         if (mappingDO.getState() == 1) {
                             liepinSocialPositionTransfer.editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
+                            // 将职位同步状态设置为2，待审核
+                            hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
+                            TwoParam<HrThirdPartyPositionDO, HrThirdPartyPositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, null);
+                            hrThirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
+                            log.info("======================hrThirdPartyPositionDO:{}",hrThirdPartyPositionDO);
+                            PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(thirdPartyPositionId, positionChannel);
+                            // 过期时间加上一个随机数，减少大量职位在同一时间内操作时的服务器压力
+                            delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
+                            log.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
                         }
                     }
-                    // 将职位同步状态设置为2，待审核
-                    hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
-                    TwoParam<HrThirdPartyPositionDO, HrThirdPartyPositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, null);
-                    hrThirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
 
-                    PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(thirdPartyPositionId, positionChannel);
-                    // 过期时间加上一个随机数，减少大量职位在同一时间内操作时的服务器压力
-                    delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
-                    log.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
                 } else {
                     // 数据库中存在，但是本次编辑中没有的城市，执行下架
                     for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
