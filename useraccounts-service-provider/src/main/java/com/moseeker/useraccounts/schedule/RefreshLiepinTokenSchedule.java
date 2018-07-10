@@ -4,15 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.email.Email;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.useraccounts.service.impl.LiePinUserAccountBindHandler;
 import com.moseeker.useraccounts.service.thirdpartyaccount.EmailNotification;
-import com.moseeker.useraccounts.utils.AESUtils;
-import com.rabbitmq.client.AMQP;
-import com.taobao.api.domain.BizResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +49,7 @@ public class RefreshLiepinTokenSchedule {
      * @date  2018/7/9
      */
     //    @Scheduled(cron="0 0 0 1,15 * ?")
-    @Scheduled(cron="0 * * * * ?")
+//    @Scheduled(cron="0 * * * * ?")
     public void refreshLiepinToken() {
         try {
             List<HrThirdPartyAccountDO> successRequest = new ArrayList<>();
@@ -74,7 +70,7 @@ public class RefreshLiepinTokenSchedule {
                 emailNotification.sendCustomEmail(emailList, content.toString(), subject.toString());
                 return;
             }
-
+            // 将所有查出得第三方账号刷新token，如果抛出bizException则是猎聘返回的业务异常，将第三方账号id和异常信息放入failRequest的map中用于发邮件
             for(HrThirdPartyAccountDO accountDO : accountDOS){
                 try{
                     accountDO = bindHandler.bindAdaptor(accountDO, null);
@@ -88,7 +84,7 @@ public class RefreshLiepinTokenSchedule {
                     failRequest.put(accountDO.getId(), e.getMessage());
                 }
             }
-
+            // 将成功刷新token的账号信息更新
             if(successRequest.size() > 0){
                 for(HrThirdPartyAccountDO accountDO : successRequest){
                     if(StringUtils.isNotNullOrEmpty(accountDO.getExt()) && StringUtils.isNotNullOrEmpty(accountDO.getExt2())){
@@ -99,7 +95,7 @@ public class RefreshLiepinTokenSchedule {
                     }
                 }
             }
-
+            // 刷新token失败的信息发邮件
             if(failRequest.size() > 0){
                 StringBuilder faileRequestContent = new StringBuilder("请求刷新第三方token失败，第三方账号HrThirdPartyAccountDO.id失败列表:");
                 String faileRequestSubject = "猎聘token刷新失败项";
@@ -109,7 +105,7 @@ public class RefreshLiepinTokenSchedule {
                 }
                 emailNotification.sendCustomEmail(emailList, faileRequestContent.toString(), faileRequestSubject);
             }
-
+            // 数据库更新失败的信息发邮件
             if(failUpdate.size() > 0){
                 StringBuilder faileRequestContent = new StringBuilder("更新token到数据库失败，详细信息如下:</br>");
                 String faileRequestSubject = "定时任务更新猎聘token到数据库失败";
