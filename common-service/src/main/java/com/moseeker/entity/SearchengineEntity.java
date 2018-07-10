@@ -498,6 +498,7 @@ public class SearchengineEntity {
                 return this.handlerSingleDelEmployeeEs(employeeIds,client);
             }
         } catch (Exception e) {
+            logger.error(e.getMessage(),e);
             return this.handlerSingleDelEmployeeEs(employeeIds,client);
         }
         logger.info("----删除员工积分索引信息结束-------");
