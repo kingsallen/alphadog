@@ -54,7 +54,7 @@ public class PositionTaskQueueDaemonThread {
 
     private void execute() {
         // 由于服务器重启时会将内存中延迟队列的数据删除，所以服务器启动时将数据库查一遍，将历史数据再次放入队列中
-//        getHistoryData();
+        getHistoryData();
         while (true) {
             try {
                 //从延迟队列中取值,如果没有对象过期则队列一直等待，
