@@ -67,7 +67,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
         logger.info("=========================hrThirdPartyPositionDO{}", hrThirdPartyPositionDO);
         if (hrThirdPartyPositionDO == null) {
             logger.info("=========================无第三方职位信息hrThirdPartyPositionId:{}", hrThirdPartyPositionId);
-            emailNotification.sendRefreshSyncStateFailEmail("refreshBean:" + refreshBean, null);
+            emailNotification.sendRefreshSyncStateFailEmail("无第三方职位信息,refreshBean:" + refreshBean, null);
             return;
         }
         // 获取第三方账号id
@@ -78,7 +78,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
         List<Integer> requestIds = getRequestIds(positionId);
         if (requestIds == null || requestIds.size() == 0) {
             logger.info("=========================没有需要审核的mappingid, positionId:{}", positionId);
-            emailNotification.sendRefreshSyncStateFailEmail("refreshBean:" + refreshBean, null);
+            emailNotification.sendRefreshSyncStateFailEmail("没有需要审核的mappingid,refreshBean:" + refreshBean, null);
             return;
         }
 
