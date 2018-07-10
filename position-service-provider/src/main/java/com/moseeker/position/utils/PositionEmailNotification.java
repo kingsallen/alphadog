@@ -361,10 +361,12 @@ public class PositionEmailNotification {
 
     /**
      * 发送猎聘同步失败邮件
-     * @param
+     * @param mails 需要发送的邮箱地址
+     * @param liePinPositionVO 职位同步时的职位vo
+     * @param syncException 异常信息
+     * @param ext 额外补充信息
      * @author  cjm
      * @date  2018/6/22
-     * @return
      */
     public void sendSyncLiepinFailEmail(List<String> mails, LiePinPositionVO liePinPositionVO, Exception syncException, String ext){
             if (mails == null || mails.size() == 0) {
@@ -376,8 +378,7 @@ public class PositionEmailNotification {
 
                 Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
-                StringBuilder titleBuilder = new StringBuilder();
-                titleBuilder.append("【职位同步失败】");
+                String titleBuilder = "【"+ emailLevel +"】【职位同步失败】";
 
                 StringBuilder messageBuilder = new StringBuilder();
                 if(liePinPositionVO!=null) {
@@ -392,7 +393,7 @@ public class PositionEmailNotification {
                     messageBuilder.append("【其他信息】:").append(ext);
                 }
 
-                emailBuilder.setSubject(titleBuilder.toString());
+                emailBuilder.setSubject(titleBuilder);
                 emailBuilder.setContent(messageBuilder.toString());
                 if (mails.size() > 1) {
                     emailBuilder.addCCList(mails.subList(1, mails.size()));
@@ -416,10 +417,10 @@ public class PositionEmailNotification {
 
     /**
      * 发送猎聘同步失败邮件
-     * @param
+     * @param message 失败业务信息
+     * @param syncException 异常信息
      * @author  cjm
      * @date  2018/6/22
-     * @return
      */
     public void sendRefreshSyncStateFailEmail(String message, Exception syncException){
         List<String> mails=devMails;
@@ -432,8 +433,7 @@ public class PositionEmailNotification {
 
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
-            StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append("【职位同步状态刷新失败：AbstractSyncStateRefresh】");
+            String titleBuilder = "【"+ emailLevel +"】【职位同步状态刷新失败：AbstractSyncStateRefresh】";
 
             StringBuilder messageBuilder = new StringBuilder();
 
@@ -445,7 +445,7 @@ public class PositionEmailNotification {
                 messageBuilder.append("【其他信息】:").append(message);
             }
 
-            emailBuilder.setSubject(titleBuilder.toString());
+            emailBuilder.setSubject(titleBuilder);
             emailBuilder.setContent(messageBuilder.toString());
             if (mails.size() > 1) {
                 emailBuilder.addCCList(mails.subList(1, mails.size()));
