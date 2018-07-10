@@ -14,6 +14,7 @@ import com.moseeker.position.utils.LiepinHttpClientUtil;
 import com.moseeker.position.utils.Md5Utils;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Message;
@@ -68,16 +69,16 @@ public class LiepinReceiverTest {
 
     }
 
-    @Test
-    public void testDownShelf() throws UnsupportedEncodingException {
-        JSONObject liePinJsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.add(19493756);
-        liePinJsonObject.put("id", jsonArray);
-        String requestStr = JSONObject.toJSONString(liePinJsonObject);
-        Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
-        receiverHandler.handlerPositionLiepinDownShelfOperation(requestMsg, null);
-    }
+//    @Test
+//    public void testDownShelf() throws UnsupportedEncodingException {
+//        JSONObject liePinJsonObject = new JSONObject();
+//        JSONArray jsonArray = new JSONArray();
+//        jsonArray.add(19493756);
+//        liePinJsonObject.put("id", jsonArray);
+//        String requestStr = JSONObject.toJSONString(liePinJsonObject);
+//        Message requestMsg = new Message(requestStr.getBytes("UTF-8"), null);
+//        receiverHandler.handlerPositionLiepinDownShelfOperation(requestMsg, null);
+//    }
 
     private static final String LP_USER_STOP_JOB = "https://apidev1.liepin.com/e/job/endEJob.json";
 
@@ -231,5 +232,18 @@ public class LiepinReceiverTest {
         }
 
         return positionId;
+    }
+
+    @Test
+    public void testDownShelf() throws Exception {
+        // 构造请求数据
+        JSONObject liePinJsonObject = new JSONObject();
+
+        LiepinHttpClientUtil httpClientUtil = new LiepinHttpClientUtil();
+        liePinJsonObject.put("ejob_extRefids", 986300123);
+
+        String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinJsonObject,
+                "19bb0c417f30d436fe6e2d3cf5aecba314e9430e3016ffa1623b146c50b957439da458eff7d621709af8c4f92929d3d9489ea842de395ffec115161fb69d2bdf",
+                "https://apidev1.liepin.com/e/job/rePublishEjob.json");
     }
 }
