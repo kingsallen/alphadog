@@ -21,9 +21,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 定时刷新猎聘hr账号token
@@ -55,11 +53,11 @@ public class RefreshLiepinTokenSchedule {
      * @date  2018/7/9
      */
     //    @Scheduled(cron="0 0 0 1,15 * ?")
-    @Scheduled(cron="0 * 0 * * ?")
+    @Scheduled(cron="0 * * * * ?")
     public void refreshLiepinToken() {
         try {
             List<HrThirdPartyAccountDO> successRequest = new ArrayList<>();
-            List<Integer> failRequest = new ArrayList<>();
+            Map<Integer, String> failRequest = new HashMap<>();
             List<HrThirdPartyAccountDO> failUpdate = new ArrayList<>();
             emailList = emailNotification.getRefreshMails();
             int channel = ChannelType.LIEPIN.getValue();
@@ -84,10 +82,10 @@ public class RefreshLiepinTokenSchedule {
                     successRequest.add(accountDO);
                 }catch (BIZException e){
                     logger.warn("=================errormsg:{},username:{}===================", e.getMessage(), accountDO.getUsername());
-                    failRequest.add(accountDO.getId());
+                    failRequest.put(accountDO.getId(), e.getMessage());
                 }catch (Exception e){
                     logger.error(e.getMessage(), e);
-                    failRequest.add(accountDO.getId());
+                    failRequest.put(accountDO.getId(), e.getMessage());
                 }
             }
 
@@ -103,11 +101,11 @@ public class RefreshLiepinTokenSchedule {
             }
 
             if(failRequest.size() > 0){
-                StringBuilder faileRequestContent = new StringBuilder("请求刷新第三方token失败，失败列表:");
+                StringBuilder faileRequestContent = new StringBuilder("请求刷新第三方token失败，第三方账号HrThirdPartyAccountDO.id失败列表:");
                 String faileRequestSubject = "猎聘token刷新失败项";
-
-                for(Integer id : failRequest){
-                    faileRequestContent.append(id).append("</br>");
+                Set<Integer> idSet = failRequest.keySet();
+                for(Integer id : idSet){
+                    faileRequestContent.append(id).append(":").append(failRequest.get(id)).append("</br>");
                 }
                 emailNotification.sendCustomEmail(emailList, faileRequestContent.toString(), faileRequestSubject);
             }
