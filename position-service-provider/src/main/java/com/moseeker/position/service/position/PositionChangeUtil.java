@@ -119,13 +119,7 @@ public class PositionChangeUtil {
             PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(result.getR1().getId(), channel);
             delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
             logger.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
-        }else{
-            PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(result.getR1().getId(), ChannelType.NONE.getValue());
-            delayQueueThread.put(AbstractSyncStateRefresh.TIMEOUT + random.nextInt(5 * 1000), refreshBean);
-            logger.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
         }
-
-
     }
 
     public AbstractPositionTransfer transferSimpleFactory(ChannelType channelType,JobPositionDO position) throws BIZException {

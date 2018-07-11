@@ -85,8 +85,6 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
 
         if(candidateSource == 1){
             // 不处理校招职位
-            PositionSyncStateRefreshBean schoolRefresh = new PositionSyncStateRefreshBean(refreshBean.getHrThirdPartyPositionId(), ChannelType.NONE.getValue());
-            delayQueueThread.put(AbstractSyncStateRefresh.TIMEOUT, schoolRefresh);
             return;
         }
         // 向猎聘发请求的id list，只获取状态为2(审核中)的职位

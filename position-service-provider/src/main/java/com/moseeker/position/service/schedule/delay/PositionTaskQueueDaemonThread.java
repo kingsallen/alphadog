@@ -91,9 +91,6 @@ public class PositionTaskQueueDaemonThread {
             if(hrThirdPartyPositionDO.getChannel() == ChannelType.LIEPIN.getValue()) {
                 refreshBean = new PositionSyncStateRefreshBean(hrThirdPartyPositionDO.getId(), hrThirdPartyPositionDO.getChannel());
                 put(LiepinSyncStateRefresh.TIMEOUT + random.nextInt(60 * 1000), refreshBean);
-            }else {
-                refreshBean = new PositionSyncStateRefreshBean(hrThirdPartyPositionDO.getId(), ChannelType.NONE.getValue());
-                put(DefaultSyncStateRefresh.TIMEOUT + random.nextInt(60 * 1000), refreshBean);
             }
         }
     }
