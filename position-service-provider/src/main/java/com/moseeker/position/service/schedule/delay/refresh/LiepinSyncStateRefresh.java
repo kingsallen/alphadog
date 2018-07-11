@@ -2,6 +2,7 @@ package com.moseeker.position.service.schedule.delay.refresh;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
@@ -80,7 +81,9 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
         int positionId = hrThirdPartyPositionDO.getPositionId();
         // 获取job_position
         JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(positionId);
-
+        if(jobPositionDO == null){
+            hrThirdPartyPositionDao.updateBindState(positionId, thirdAccountId, getChannelType().getValue(), 0);
+        }
         double candidateSource = jobPositionDO.getCandidateSource();
 
         if(candidateSource == 1){
