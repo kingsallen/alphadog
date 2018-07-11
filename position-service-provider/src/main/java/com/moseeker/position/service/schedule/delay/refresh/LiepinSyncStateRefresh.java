@@ -3,6 +3,7 @@ package com.moseeker.position.service.schedule.delay.refresh;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
@@ -13,6 +14,7 @@ import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +39,12 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
     /**
      * 每次任务执行的剩余时间
      */
-    public static final long TIMEOUT = 60 * 60 * 1000;
+    public static final long TIMEOUT = 1 * 60 * 1000;
 
     /**
      * 如果本次刷新距离同步时间已经超过24小时，认定为同步失败
      */
-    public static final long EXPIRED_TIME = 24 * 60 * 60 * 1000;
+    public static final long EXPIRED_TIME = 1 * 5 * 60 * 1000;
 
     @Autowired
     private JobPositionLiepinMappingDao liepinMappingDao;
@@ -52,6 +54,9 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
 
     @Autowired
     private JobPositionCityDao jobPositionCityDao;
+
+    @Autowired
+    private JobPositionDao jobPositionDao;
 
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
@@ -67,18 +72,27 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
         logger.info("=========================hrThirdPartyPositionDO{}", hrThirdPartyPositionDO);
         if (hrThirdPartyPositionDO == null) {
             logger.info("=========================无第三方职位信息hrThirdPartyPositionId:{}", hrThirdPartyPositionId);
-            emailNotification.sendRefreshSyncStateFailEmail("无第三方职位信息,refreshBean:" + refreshBean, null);
             return;
         }
         // 获取第三方账号id
         int thirdAccountId = hrThirdPartyPositionDO.getThirdPartyAccountId();
         // 获取职位job_position.id
         int positionId = hrThirdPartyPositionDO.getPositionId();
+        // 获取job_position
+        JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(positionId);
+
+        double candidateSource = jobPositionDO.getCandidateSource();
+
+        if(candidateSource == 1){
+            // 不处理校招职位
+            PositionSyncStateRefreshBean schoolRefresh = new PositionSyncStateRefreshBean(refreshBean.getHrThirdPartyPositionId(), ChannelType.NONE.getValue());
+            delayQueueThread.put(AbstractSyncStateRefresh.TIMEOUT, schoolRefresh);
+            return;
+        }
         // 向猎聘发请求的id list，只获取状态为2(审核中)的职位
         List<Integer> requestIds = getRequestIds(positionId);
         if (requestIds == null || requestIds.size() == 0) {
             logger.info("=========================没有需要审核的mappingid, positionId:{}", positionId);
-            emailNotification.sendRefreshSyncStateFailEmail("没有需要审核的mappingid,refreshBean:" + refreshBean, null);
             return;
         }
 
