@@ -1,12 +1,14 @@
 package com.moseeker.position.service.position.base.sync;
 
 import com.moseeker.common.util.StringUtils;
+import org.junit.Test;
 
 public class PositionTransferHelper {
 
     public static String limitTitle(String title, int limitLength) {
         if (StringUtils.isNotNullOrEmpty(title)) {
             int titleLen = 0;
+            char lastChar = ' ';
             StringBuilder result = new StringBuilder();
             for (char c : title.toCharArray()) {
                 if (c > 0xff) {     // 中文
@@ -16,12 +18,13 @@ public class PositionTransferHelper {
                 }
 
                 if (titleLen > limitLength) {
+                    lastChar = c;
                     break;
                 }
                 result.append(c);
             }
 
-            if(title.charAt(limitLength)==' '){
+            if(lastChar == ' '){
                 return result.toString();
             }
 
@@ -37,5 +40,11 @@ public class PositionTransferHelper {
             return result.toString();
         }
         return title;
+    }
+
+    @Test
+    public void test(){
+        String title="Jade Relationship我我我我 Manager Hong Kong 我Plaza我 Sub-branch";
+        System.out.println(limitTitle(title,50));
     }
 }
