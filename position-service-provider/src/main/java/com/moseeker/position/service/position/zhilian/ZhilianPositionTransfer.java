@@ -11,6 +11,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.ExperienceChangeUtil;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
+import com.moseeker.position.service.position.base.sync.PositionTransferHelper;
 import com.moseeker.position.service.position.zhilian.pojo.PositionZhilian;
 import com.moseeker.position.service.position.zhilian.pojo.PositionZhilianForm;
 import com.moseeker.position.service.position.zhilian.pojo.PositionZhilianWithAccount;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 public class ZhilianPositionTransfer extends AbstractPositionTransfer<PositionZhilianForm,PositionZhilianWithAccount,PositionZhilian,List<ThirdpartyZhilianPositionAddressDO>> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private static final int TITLE_LIMT = 40;
 
     @Override
     public PositionZhilianWithAccount changeToThirdPartyPosition(PositionZhilianForm positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
@@ -70,8 +72,11 @@ public class ZhilianPositionTransfer extends AbstractPositionTransfer<PositionZh
     @Override
     protected PositionZhilian createAndInitPositionInfo(PositionZhilianForm positionForm, JobPositionDO positionDB) throws Exception {
         PositionZhilian positionZhilian = new PositionZhilian();
-
-        positionZhilian.setTitle(positionDB.getTitle());
+        if(positionForm.isLimitTitle()) {
+            positionZhilian.setTitle(PositionTransferHelper.limitTitle(positionDB.getTitle(),TITLE_LIMT));
+        } else{
+            positionZhilian.setTitle(positionDB.getTitle());
+        }
 
         setCities(positionForm,positionZhilian);
 

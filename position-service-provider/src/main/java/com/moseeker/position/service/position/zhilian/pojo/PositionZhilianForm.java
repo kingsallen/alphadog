@@ -17,6 +17,7 @@ public class PositionZhilianForm {
     private int departmentId;
     private String departmentName;
     private String addressName;     //ATS还是需要传这个字段，然后在职位同步的时候需要
+    private boolean limitTitle;
 
     public String getAddressName() {
         return addressName;
@@ -112,5 +113,13 @@ public class PositionZhilianForm {
 
     public void setAddress(List<ThirdpartyZhilianPositionAddressDO> address) {
         this.address = address;
+    }
+
+    public boolean isLimitTitle() {
+        return limitTitle;
+    }
+
+    public void setLimitTitle(boolean limitTitle) {
+        this.limitTitle = limitTitle;
     }
 }

@@ -2,9 +2,8 @@ package com.moseeker.position.service.position.base.sync;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
@@ -18,7 +17,6 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -27,18 +25,29 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * 第三方职位同步抽象类
+ * @param <Form>    前台或者ats端同步请求的表单数据
+ * @param <R>       推送给第三方的职位结构包含账号信息和职位信息
+ * @param <Info>    R中的职位信息（其实可以省略掉）
+ * @param <ExtP>    持久化到数据库中的第三方职位的额外表对象，
+ *                  例如Jobsdb:HrThirdPartyPositionDO + ThirdpartyJobsDBPositionDO是一个完整的第三方职位
+ *                  ThirdpartyJobsDBPositionDO就是额外表对象。
+ *                  如果HrThirdPartyPositionDO中的字段可以满足需要持久化的数据，定义{@link EmptyExtThirdPartyPosition}即可
+ *
+ * @author pyb
+ */
 public abstract class AbstractPositionTransfer<Form, R, Info, ExtP> {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
