@@ -82,6 +82,7 @@ public class PositionTaskQueueDaemonThread {
      * @date  2018/7/9
      */
     private void getHistoryData() {
+        logger.info("=========================将历史数据再次放入队列中");
         List<HrThirdPartyPositionDO> hrThirdPartyPositionDOS =  hrThirdPartyPositionDao.getAuditPositionData();
         if(hrThirdPartyPositionDOS == null){
             return;
