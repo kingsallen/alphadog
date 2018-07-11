@@ -286,7 +286,7 @@ public class LiePinReceiverHandler {
                 if (!isCityChange) {
                     for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
                         // 修改
-                        if (mappingDO.getState() == 1) {
+                        if (mappingDO.getState() != 0) {
                             liepinSocialPositionTransfer.editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
                             // 将职位同步状态设置为2，待审核
                             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
