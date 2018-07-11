@@ -81,6 +81,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
         int positionId = hrThirdPartyPositionDO.getPositionId();
         // 获取job_position
         JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(positionId);
+
         if(jobPositionDO == null){
             hrThirdPartyPositionDao.updateBindState(positionId, thirdAccountId, getChannelType().getValue(), 0);
             return;
@@ -104,6 +105,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
             if(isExpired){
                 logger.info("====================审核超过24小时，同步失败");
                 hrThirdPartyPositionDao.updateErrmsg(ERRMSG, positionId, getChannelType().getValue(), PositionSync.failed.getValue());
+                liepinMappingDao.updateState(requestIds, (byte) 1);
                 return;
             }
 
@@ -139,6 +141,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
                     // 修改同步状态为3，设置失败原因
                     logger.info("======================审核不通过");
                     hrThirdPartyPositionDao.updateErrmsg(ERRMSG, positionId, getChannelType().getValue(), PositionSync.failed.getValue());
+                    liepinMappingDao.updateState(requestId, (byte) 1);
                 } else if (LiepinPositionAuditState.WAITCHECK.getValue().equals(audit)) {
                     // 再次加入队列中，继续等待审核
                     logger.info("======================等待审核");

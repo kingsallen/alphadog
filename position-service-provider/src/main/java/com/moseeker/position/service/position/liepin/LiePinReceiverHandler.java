@@ -304,7 +304,7 @@ public class LiePinReceiverHandler {
                     // 数据库中存在，但是本次编辑中没有的城市，执行下架
                     for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
 
-                        if (!newCityList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() == 1) {
+                        if (!newCityList.contains(String.valueOf(mappingDO.getCityCode())) && mappingDO.getState() != 0) {
                             log.info("============本次下架mappingdo:{}===========", mappingDO);
                             // 如果编辑的城市中存在数据库中的该城市，但是title不相同，并且该城市之前出于上架状态，则将其下架
                             downShelfOldSinglePosition(mappingDO, liePinToken);
@@ -735,7 +735,7 @@ public class LiePinReceiverHandler {
 
             int state = liePinMappingDO.getState();
 
-            if (state == 1) {
+            if (state != 0) {
 
                 downShelfPositonList.add(String.valueOf(liePinMappingDO.getId()));
 
