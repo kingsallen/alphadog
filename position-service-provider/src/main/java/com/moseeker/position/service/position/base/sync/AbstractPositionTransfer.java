@@ -136,16 +136,17 @@ public abstract class AbstractPositionTransfer<Form, R, Info, ExtP> {
      * 发送请求，并处理结果，默认是发送给爬虫端
      * @param result
      */
-    public void sendSyncRequest(TransferResult<R,Info> result) throws TException {
+    public TwoParam<HrThirdPartyPositionDO,ExtP> sendSyncRequest(TransferResult<R,ExtP> result) throws TException {
         String syncData = JSON.toJSONString(result.getPositionWithAccount());
         // 提交到chaos处理
         logger.info("chaosService.synchronizePosition:{}", syncData);
         chaosService.synchronizePosition(toChaosJson(result.getPositionWithAccount()));
 
         // 回写数据到第三方职位表表
-        TwoParam fullThirdPartyPosition = new TwoParam(result.getThirdPartyPositionDO(),result.getExtPosition());
+        TwoParam<HrThirdPartyPositionDO,ExtP> fullThirdPartyPosition = new TwoParam<>(result.getThirdPartyPositionDO(),result.getExtPosition());
         logger.info("write back to thirdpartyposition:{}", JSON.toJSONString(fullThirdPartyPosition));
-        thirdPartyPositionDao.upsertThirdPartyPositions(Arrays.asList(fullThirdPartyPosition));
+        return thirdPartyPositionDao.upsertThirdPartyPosition(fullThirdPartyPosition);
+
     }
 
     /**
