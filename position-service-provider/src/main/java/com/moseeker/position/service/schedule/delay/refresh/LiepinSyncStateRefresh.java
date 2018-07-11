@@ -81,6 +81,11 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
         // 获取job_position
         JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(positionId);
 
+        if(jobPositionDO == null){
+            hrThirdPartyPositionDao.updateBindState(positionId, thirdAccountId, getChannelType().getValue(), 0);
+            return;
+        }
+
         double candidateSource = jobPositionDO.getCandidateSource();
 
         if(candidateSource == 1){

@@ -71,7 +71,6 @@ public class PositionTaskQueueDaemonThread {
 
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                break;
             }
         }
     }
