@@ -6,6 +6,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.common.constants.AbleFlag;
 import org.jooq.Configuration;
 import org.jooq.Record2;
+import org.jooq.Record3;
 import org.jooq.Result;
 
 import java.util.ArrayList;
@@ -127,10 +128,10 @@ public class JobApplicationJOOQDao extends com.moseeker.baseorm.db.jobdb.tables.
      * @param applicationIdList 申请编号集合
      * @return 申请和申请人集合
      */
-    public List<Record2<Integer,Integer>> fetchApplierIdListByIdList(List<Integer> applicationIdList) {
+    public List<Record3<Integer,Integer,Integer>> fetchApplierIdAndRecomIdListByIdList(List<Integer> applicationIdList) {
         if (applicationIdList != null && applicationIdList.size() > 0) {
-            Result<Record2<Integer, Integer>> result = using(configuration())
-                    .select(JobApplication.JOB_APPLICATION.ID, JobApplication.JOB_APPLICATION.APPLIER_ID)
+            Result<Record3<Integer,Integer,Integer>> result = using(configuration())
+                    .select(JobApplication.JOB_APPLICATION.ID, JobApplication.JOB_APPLICATION.APPLIER_ID, JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID)
                     .from(JobApplication.JOB_APPLICATION)
                     .where(JobApplication.JOB_APPLICATION.ID.in(applicationIdList))
                     .fetch();
