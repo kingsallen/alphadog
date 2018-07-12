@@ -60,6 +60,10 @@ public class TemlateMsgHttp {
                  || url== null || url.isEmpty()){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
+        String companyName = companyDO.getAbbreviation();
+        if(StringUtils.isNullOrEmpty(companyName)){
+            companyName = companyDO.getName();
+        }
         try {
             Map<String, Object> applierTemplate = new HashMap<>();
             Map<String,MessageTplDataCol> colMap =new HashMap<>();
@@ -77,13 +81,13 @@ public class TemlateMsgHttp {
             colMap.put("job",job);
             MessageTplDataCol company=new MessageTplDataCol();
             company.setColor("#173177");
-            company.setValue(companyDO.getName());
+            company.setValue(companyName);
             colMap.put("company",company);
             String dateTime = DateUtils.dateToPattern(new Date(), "yyyy年MM月dd日 HH:mm");
             MessageTplDataCol time=new MessageTplDataCol();
             time.setColor("#173177");
             time.setValue(dateTime);
-            colMap.put("time",time);;
+            colMap.put("time",time);
             applierTemplate.put("data", colMap);
             applierTemplate.put("touser", openId);
             applierTemplate.put("template_id", template.getWxTemplateId());
@@ -229,7 +233,9 @@ public class TemlateMsgHttp {
             applierTemplate.put("topcolor", template.getTopcolor());
             Map<String, String> miniprogram = new HashMap<>();
             miniprogram.put("appid", appid);
-            miniprogram.put("pagepath", Constant.WX_APP_PROFILE_INFO_URL.replace("{}", user.getId()+""));
+            String page = Constant.WX_APP_PROFILE_INFO_URL.replace("{}", user.getId()+"")+"&from_template_message="+template.getSysTemplateId();
+            page = page + "&send_time=" + new Date().getTime();
+            miniprogram.put("pagepath", page);
             logger.info("minprogram 参数 ：{}", miniprogram);
             applierTemplate.put("miniprogram", miniprogram);
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));

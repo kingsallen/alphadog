@@ -130,6 +130,14 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
         return record;
     }
 
+    public DictCityDO getCityByNameOrEname(String city_name) {
+        return create
+                .selectFrom(DictCity.DICT_CITY)
+                .where(DictCity.DICT_CITY.NAME.equal(city_name))
+                .or(DictCity.DICT_CITY.ENAME.equal(city_name))
+                .limit(1).fetchOneInto(DictCityDO.class);
+    }
+
     public DictCityDO getCityDOByCode(int city_code) {
         Query query=new Query.QueryBuilder().where(DictCity.DICT_CITY.CODE.getName(),city_code).buildQuery();
         return getData(query);

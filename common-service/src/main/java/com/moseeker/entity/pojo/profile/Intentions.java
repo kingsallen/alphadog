@@ -7,7 +7,7 @@ import java.util.List;
 public class Intentions {
 
     private List<Industries> industries;
-    private String salaryCode;
+    private int salaryCode;
     private int workstate;
     private List<Positions> positions;
     private List<City> cities;
@@ -21,12 +21,12 @@ public class Intentions {
         return industries;
     }
 
-    public void setSalaryCode(String salaryCode) {
-        this.salaryCode = salaryCode;
+    public int getSalaryCode() {
+        return salaryCode;
     }
 
-    public String getSalaryCode() {
-        return salaryCode;
+    public void setSalaryCode(int salaryCode) {
+        this.salaryCode = salaryCode;
     }
 
     public void setWorkstate(int workstate) {
