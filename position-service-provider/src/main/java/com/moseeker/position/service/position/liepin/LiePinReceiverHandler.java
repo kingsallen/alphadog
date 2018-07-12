@@ -591,11 +591,11 @@ public class LiePinReceiverHandler {
                 } catch (BIZException e) {
                     log.info("=============下架猎聘职位失败：requestIds:{},失败信息:msg:{}=================", requestIds.toString(), e.getMessage());
                     liepinMappingDao.updateErrMsgBatch(requestIds, e.getMessage());
-                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, null, e, "【调用api猎聘api处理职位下架失败】positionid:" + requestIds.toString());
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, null, e, "【调用api猎聘api处理职位下架失败】mappingId:" + requestIds.toString());
                 } catch (Exception e1) {
                     log.error(e1.getMessage(), e1);
                     liepinMappingDao.updateErrMsgBatch(requestIds, "后台异常");
-                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, null, e1, "【调用api猎聘api处理职位下架失败】positionid:" + requestIds.toString());
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, null, e1, "【调用api猎聘api处理职位下架失败】mappingId:" + requestIds.toString());
                 }
 
             }
