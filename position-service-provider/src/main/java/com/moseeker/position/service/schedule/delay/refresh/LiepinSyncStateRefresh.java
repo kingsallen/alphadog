@@ -39,7 +39,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
     /**
      * 每次任务执行的剩余时间
      */
-    public static final long TIMEOUT = 10 * 60 * 1000;
+    public static final long TIMEOUT = 60 * 60 * 1000;
 
     /**
      * 如果本次刷新距离同步时间已经超过24小时，认定为同步失败
