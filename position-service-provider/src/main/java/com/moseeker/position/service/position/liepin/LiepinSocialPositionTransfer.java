@@ -245,7 +245,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             // 获取本次职位发布中已存在且状态为0的职位，需要执行先上架后编辑操作
             List<JobPositionLiepinMappingDO> republishCityList = getRepublishCityList(liepinMappingDOList, cityCodesList);
 
-            // 获取本次职位发布中已存在且状态为1的职位，需要执行编辑操作
+            // 获取本次职位发布中已存在且状态为1或2的职位，需要执行编辑操作
             List<JobPositionLiepinMappingDO> editCityList = getEditCityList(liepinMappingDOList, cityCodesList);
 
             // 发布职位时，如果之前未发布过，就发布新的职位，title在此步骤中截取
@@ -324,7 +324,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     private List<JobPositionLiepinMappingDO> getEditCityList(List<JobPositionLiepinMappingDO> liepinMappingDOList, List<String> cityCodesList) {
         List<JobPositionLiepinMappingDO> editCityList = new ArrayList<>();
         for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
-            if (mappingDO.getState() == 1 && cityCodesList.contains(String.valueOf(mappingDO.getCityCode()))) {
+            if (mappingDO.getState() != 0 && cityCodesList.contains(String.valueOf(mappingDO.getCityCode()))) {
                 editCityList.add(mappingDO);
             }
         }
