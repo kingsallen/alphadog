@@ -19,6 +19,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.joda.time.DateTime;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
@@ -58,11 +59,8 @@ public class HRThirdPartyPositionDao  {
     @Autowired
     private InnerHRThirdPartyPositionDao thirdPartyPositionDao;
 
-
     @Autowired
     private ThirdPartyPositionDaoFactory daoFactory;
-
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
     public <P> TwoParam<HrThirdPartyPositionDO, P> getThirdPositionById(int id) throws BIZException {
@@ -180,7 +178,7 @@ public class HRThirdPartyPositionDao  {
      * @throws BIZException
      */
     public <P> List<TwoParam<HrThirdPartyPositionDO,P>> getDatas(Query query) throws BIZException {
-        List<HrThirdPartyPositionDO> list=thirdPartyPositionDao.getDatas(query);
+            List<HrThirdPartyPositionDO> list=thirdPartyPositionDao.getDatas(query);
         if(list==null || list.isEmpty()){
             return new ArrayList<>();
         }
@@ -337,7 +335,6 @@ public class HRThirdPartyPositionDao  {
     public void updateBindState(int positionId, int accountId, int channel, int state) {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
                 .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
@@ -355,11 +352,18 @@ public class HRThirdPartyPositionDao  {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.SYNC_FAIL_REASON.getName(), errMsg)
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
                 .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
                 .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
         thirdPartyPositionDao.update(update.buildUpdate());
     }
+
+    public List<HrThirdPartyPositionDO> getAuditPositionData() {
+        Query query = new Query.QueryBuilder()
+                .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), PositionSync.binding.getValue())
+                .buildQuery();
+        return getSimpleDatas(query);
+    }
+
 
     /**
      * 隐藏的内部第三方职位dao，

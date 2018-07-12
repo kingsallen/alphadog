@@ -14,6 +14,8 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -50,8 +52,9 @@ public class LiepinSocialTransferTesst {
     }
 
     @Test
+    @Rollback
     public void testSendSyncRequest() throws Exception {
-        Integer positionId = 19494081;
+        Integer positionId = 1923198;
         ThirdPartyPosition positionForm = new ThirdPartyPosition();
         //软件/互联网开发/系统集成
         List<String> list = new ArrayList<>();
@@ -93,6 +96,7 @@ public class LiepinSocialTransferTesst {
 
 
     @Test
+
     public void toThirdPartyPositionForm(){
         HrThirdPartyPositionDO hrThirdPartyPositionDO = new HrThirdPartyPositionDO();
         hrThirdPartyPositionDO.setFeature("福利特色,五险一金");

@@ -2,6 +2,7 @@ package com.moseeker.position.utils;
 
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.position.constants.position.liepin.LiepinPositionOperateConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +15,6 @@ import java.util.*;
  * @date 2018-05-28 13:33
  **/
 public class Md5Utils {
-
-    private static String SECRET_KEY = "8ba9496a47d33f6ea4d1b658697f723e";
 
     private static Logger logger = LoggerFactory.getLogger(Md5Utils.class);
 
@@ -36,7 +35,7 @@ public class Md5Utils {
             }
             paras.append(paramValue);
         }
-        paras.append(SECRET_KEY);
+        paras.append(LiepinPositionOperateConstant.liepinSecretKey);
         logger.info("==============paras:{}=============", paras.toString());
         return MD5Util.md5(paras.toString()).toLowerCase();
     }

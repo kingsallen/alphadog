@@ -19,13 +19,14 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.position.constants.position.LiePinPositionDegree;
-import com.moseeker.position.constants.position.LiepinPositionOperateUrl;
+import com.moseeker.position.constants.position.liepin.LiePinPositionDegree;
+import com.moseeker.position.constants.position.liepin.LiepinPositionOperateConstant;
 import com.moseeker.position.pojo.LiePinPositionVO;
-import com.moseeker.position.utils.HttpClientUtil;
-import com.moseeker.position.utils.Md5Utils;
+import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
+import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
+import com.moseeker.position.service.schedule.delay.PositionTaskQueueDaemonThread;
+import com.moseeker.position.utils.LiepinHttpClientUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -44,7 +45,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,6 +84,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     @Autowired
     private PositionEmailNotification emailNotification;
 
+    @Autowired
+    LiepinHttpClientUtil httpClientUtil;
 
     @Override
     public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
@@ -116,7 +118,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         // 获取城市code，多个城市用逗号隔开
         int positionId = moseekerJobPosition.getId();
         liePinPositionVO.setPositionId(positionId);
-        // 映射城市code
+        // 映射仟寻的城市code，此时还未转换成猎聘的citycode
         liePinPositionVO.setEjob_dq(mappingCityCode(positionId));
         liePinPositionVO.setEjob_privacyreq(null);
         liePinPositionVO.setEjob_salarydiscuss(positionForm.isSalaryDiscuss() ? "1" : "0");
@@ -198,374 +200,380 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void sendSyncRequest(TransferResult<LiePinPositionVO, LiePinPositionVO> result) throws TException {
-        LiePinPositionVO liePinPositionVO = result.getPositionWithAccount();
-        try {
+    public TwoParam<HrThirdPartyPositionDO, EmptyExtThirdPartyPosition> sendSyncRequest(TransferResult<LiePinPositionVO, EmptyExtThirdPartyPosition> result) throws TException {
 
+        LiePinPositionVO liePinPositionVO = result.getPositionWithAccount();
+
+        HrThirdPartyPositionDO hrThirdPartyPositionDO = result.getThirdPartyPositionDO();
+
+        // 当发布职位时多个城市时，如果每个新的城市都发布成功，才视为仟寻职位同步成功，否则视为同步失败
+        int successSyncNum;
+        // 发布职位时如果存在之前发布过但是下架的职位，需要将这类职位上架并修改
+        int successRePublishNum;
+        // 发布职位时如果存在之前发布过并且状态正常的职位，需要对职位同步修改
+        int editNum;
+
+        Integer channel = ChannelType.LIEPIN.getValue();
+        try {
             // 这个city是citycodes字符串，是要发布的城市
             String citys = liePinPositionVO.getEjob_dq();
+
             String[] cityCodesArr = citys.split("[,，]");
-            List<String> errCityCodeList = new ArrayList<>();
-
-            // 当出现token失效导致发布失败时，认为该职位在猎聘尚未发布，不在jobliepinmapping表中保存数据，默认鉴权成功
-            boolean flag = true;
-
-
-            if (cityCodesArr.length < 1) {
-                return;
-            }
-
-            Integer channel = 2;
-
-            // 获取猎聘的token
-            Integer publisher = liePinPositionVO.getPublisher();
-
-            // 获取第三方账号和hr账号关联表数据
-            HrThirdPartyAccountHrDO hrThirdDO = hrThirdPartyDao.getHrAccountInfo(publisher, channel);
-
-            if (hrThirdDO == null) {
-                logger.info("=================无第三方hr账号关联数据===============");
-                return;
-            }
-
-            int thirdAccountId = hrThirdDO.getThirdPartyAccountId();
 
             // 获取第三方账号token
-            HrThirdPartyAccountDO thirdPartyAccountDO = thirdPartyAccountDao.getAccountById(thirdAccountId);
-
-            if (thirdPartyAccountDO == null) {
-                logger.info("=================无第三方hr账号数据===============");
-                return;
-            }
-
+            HrThirdPartyAccountDO thirdPartyAccountDO = getThirdPartyAccount(liePinPositionVO.getPublisher(), channel);
             String liePinToken = thirdPartyAccountDO.getExt2();
-
             String liePinUserIdStr = thirdPartyAccountDO.getExt();
-
             if (StringUtils.isNullOrEmpty(liePinToken) || StringUtils.isNullOrEmpty(liePinUserIdStr)) {
-                logger.info("=================账号未绑定猎聘===============");
-                return;
+                logger.info("=================账号未绑定猎聘, thirdPartyAccountDO:{}===============", thirdPartyAccountDO);
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_PWD_ERROR);
             }
+            int liePinUserId = Integer.parseInt(liePinUserIdStr);
 
-            Integer liePinUserId = Integer.parseInt(liePinUserIdStr);
-
-            int thirdPartAccountId = thirdPartyAccountDO.getId();
-
-            HrThirdPartyPositionDO hrThirdPartyPositionDO = result.getThirdPartyPositionDO();
-            hrThirdPartyPositionDO.setThirdPartyAccountId(thirdPartAccountId);
-
-            // 当发布职位时多个城市时，如果每个新的城市都发布成功，才视为仟寻职位同步成功，否则视为同步失败
             int cityNum = cityCodesArr.length;
-            int successSyncNum = 0;
-            int successRePublishNum = 0;
-            int editNum = 0;
             Integer positionId = liePinPositionVO.getPositionId();
             List<String> cityCodesList = Arrays.asList(cityCodesArr);
-            List<Integer> cityCodesIntList = cityCodesList.stream().map(cityCode -> Integer.parseInt(cityCode)).collect(Collectors.toList());
+            List<Integer> cityCodesIntList = cityCodesList.stream().map(Integer::parseInt).collect(Collectors.toList());
 
             // 查出所有本次编辑城市职位jobpostionmapping表数据
-            List<JobPositionLiepinMappingDO> liepinMappingDOList = liepinMappingDao.getMappingDataByTitleAndUserId(liePinPositionVO.getEjob_title(), liePinUserId, cityCodesIntList, positionId);
+            List<JobPositionLiepinMappingDO> liepinMappingDOList =
+                    liepinMappingDao.getMappingDataByTitleAndUserId(liePinPositionVO.getEjob_title(), liePinUserId, cityCodesIntList, positionId);
 
-            List<String> newCityCodeList = liepinMappingDOList.stream().map(liepinMapping -> String.valueOf(liepinMapping.getCityCode())).collect(Collectors.toList());
-
-            // 通过猎聘userid和仟寻jobid查出所有的mapping表职位数据
-            List<JobPositionLiepinMappingDO> allLiepinMappingDOList = liepinMappingDao.getMappingDataByPidAndUserId(liePinUserId, positionId);
-
-            // 获取需要下架的职位id
-            List<String> downShelfIds = getDownShelfIds(newCityCodeList, allLiepinMappingDOList, liePinPositionVO.getEjob_title());
+            // 获取本次职位发布中数据库中没有发布过的职位city
+            List<String> syncCityList = getSyncCityList(liepinMappingDOList, cityCodesList);
 
             // 获取本次职位发布中已存在且状态为0的职位，需要执行先上架后编辑操作
-            List<String> republishCity = new ArrayList<>();
-            Map<String, Object> repubCityIdCodeMap = new HashMap<>();
-            for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
-                // 该title下的职位处于下架、删除状态，用于重新发布到猎聘
-                if (mappingDO.getState() != 1) {
-                    republishCity.add(String.valueOf(mappingDO.getCityCode()));
-                    repubCityIdCodeMap.put(String.valueOf(mappingDO.getCityCode()), mappingDO.getId());
-                }
-            }
+            List<JobPositionLiepinMappingDO> republishCityList = getRepublishCityList(liepinMappingDOList, cityCodesList);
 
             // 获取本次职位发布中已存在且状态为1的职位，需要执行编辑操作
-            List<String> editCity = new ArrayList<>();
-            Map<String, Object> editCityIdCodeMap = new HashMap<>();
-            for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
-                if (mappingDO.getState() == 1 && cityCodesList.contains(String.valueOf(mappingDO.getCityCode()))) {
-                    editCity.add(String.valueOf(mappingDO.getCityCode()));
-                    editCityIdCodeMap.put(String.valueOf(mappingDO.getCityCode()), mappingDO.getId());
-                }
-            }
+            List<JobPositionLiepinMappingDO> editCityList = getEditCityList(liepinMappingDOList, cityCodesList);
 
-            List<String> cityCodesListDb = new ArrayList<>();
-            // 获取本次职位发布中的所有数据库中的职位
-            for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
-                cityCodesListDb.add(String.valueOf(mappingDO.getCityCode()));
-            }
+            // 发布职位时，如果之前未发布过，就发布新的职位，title在此步骤中截取
+            successSyncNum = receiverHandler.syncNewPosition(syncCityList, liePinPositionVO, liePinUserId, liePinToken);
 
+            // 发布职位时如果是已经存在的职位，但是状态为0，则执行先上架后修改
+            successRePublishNum = updateExistPosition(republishCityList, liePinToken, positionId, liePinPositionVO);
 
-            String errorMsg = "";
-            StringBuilder republishIds = new StringBuilder();
-            for (String cityCode : cityCodesList) {
-                // 只要有相同title和城市的职位，就不发布
-                if (liepinMappingDOList.size() > 0) {
-                    // 如果存在已同步记录信息，需要判断下是否要是否是新的地区或者title
-                    if (cityCodesListDb.contains(cityCode)) {
-                        // 状态不为1的城市中如果包括本次发布城市
-                        if (republishCity.contains(cityCode)) {
-                            republishIds.append(repubCityIdCodeMap.get(cityCode)).append(",");
-                        }
-                        continue;
-                    }
-                }
-
-                String liepinCityCode = getValidLiepinDictCode(cityCode);
-
-                // 生成职位发布到猎聘时需要的id,插入一条mapping数据
-                JobPositionLiepinMappingDO jobPositionLiepinMappingDO = new JobPositionLiepinMappingDO();
-                jobPositionLiepinMappingDO.setPositionId(positionId);
-                jobPositionLiepinMappingDO.setCityCode(Integer.parseInt(cityCode));
-                jobPositionLiepinMappingDO.setJobTitle(liePinPositionVO.getEjob_title());
-                jobPositionLiepinMappingDO.setLiepinUserId(liePinUserId);
-                jobPositionLiepinMappingDO = liepinMappingDao.addData(jobPositionLiepinMappingDO);
-
-                liePinPositionVO.setEjob_extRefid(jobPositionLiepinMappingDO.getId() + "");
-                liePinPositionVO.setEjob_dq(liepinCityCode);
-
-                String httpResultJson = null;
-                try {
-
-                    httpResultJson = sendSyncRequestToLiepin(liePinPositionVO, liePinToken);
-                    String thirdPositionId = "";
-                    byte state = 0;
-                    try {
-                        JSONObject httpResult = JSONObject.parseObject(httpResultJson);
-                        logger.info("==============httpResult:{}===============", httpResult);
-
-                        if (null != httpResult && httpResult.getIntValue("code") == 0) {
-                            String data = httpResult.getString("data");
-                            thirdPositionId = data.substring(1, data.length() - 1);
-                            state = 1;
-                            successSyncNum++;
-                        } else if (null != httpResult) {
-                            if (httpResult.getIntValue("code") == 1007) {
-                                //token失效
-                                errorMsg = "会员名、用户名或密码错误，请重新绑定账号";
-                            }else{
-                                errorMsg = httpResult.getString("message");
-                            }
-                            flag = false;
-                        } else {
-                            flag = false;
-                            errorMsg = "http请求失败";
-                            errCityCodeList.add(cityCode);
-                        }
-                    } catch (Exception e) {
-                        flag = false;
-                        logger.error(e.getMessage(), e);
-                        emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, liePinPositionVO, e, null);
-                    }
-
-                    // 如果同步失败，将mapping记录删除
-                    int id = jobPositionLiepinMappingDO.getId();
-                    if (!flag) {
-                        liepinMappingDao.deleteData(jobPositionLiepinMappingDO);
-                        emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, null, httpResultJson);
-                    } else {
-                        // 更改数据库mapping的状态
-                        liepinMappingDao.updateJobInfoById(id, StringUtils.isNullOrEmpty(thirdPositionId) ? null : Integer.parseInt(thirdPositionId), state, errorMsg);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    errCityCodeList.add(cityCode);
-                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, liePinPositionVO, e, null);
-                    continue;
-                }
-
-            }
-
-
-            try {
-                // 发布职位时如果是已经存在的职位，但是状态为0，则执行先上架后修改
-                successRePublishNum = updateExistPosition(republishIds, liePinToken, positionId, liePinPositionVO);
-
-                // 编辑修改职位
-                editNum = editExistPosition(positionId, editCity, editCityIdCodeMap, liePinPositionVO, liePinToken);
-
-                // 下架
-                downShelfPosition(positionId, downShelfIds, liePinToken, liePinPositionVO);
-
-
-            }catch (BIZException e){
-                errorMsg = e.getMessage();
-                emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, null);
-            } catch (Exception e1) {
-                logger.error(e1.getMessage(), e1);
-                emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, liePinPositionVO, e1, null);
-            }
+            // 编辑修改职位
+            editNum = editExistPosition(editCityList, liePinPositionVO, liePinToken);
+            // 将职位同步状态设置为2，待审核
+            hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
 
             logger.info("============cityNum:{},successRePublishNum:{},successSyncNum:{},editNum:{}==============", cityNum, successRePublishNum, successSyncNum, editNum);
-            if (successSyncNum + successRePublishNum + editNum == cityNum) {
-                hrThirdPartyPositionDO.setIsSynchronization(1);
-                hrThirdPartyPositionDO.setSyncTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-            } else {
-                if (StringUtils.isNullOrEmpty(errorMsg)) {
-                    hrThirdPartyPositionDO.setIsSynchronization(4);
-                    hrThirdPartyPositionDO.setSyncFailReason("http请求失败，城市code:" + errCityCodeList.toString());
-                } else {
-                    hrThirdPartyPositionDO.setIsSynchronization(3);
-                    hrThirdPartyPositionDO.setSyncFailReason(errorMsg);
-                }
-            }
-            hrThirdPartyPositionDO.setPositionId(positionId);
-            hrThirdPartyPositionDO.setOccupation(liePinPositionVO.getEjob_jobtitle());
-            hrThirdPartyPositionDO.setChannel(2);
-            TwoParam<HrThirdPartyPositionDO, HrThirdPartyPositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, null);
-            thirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
-
+        } catch (BIZException e) {
+            hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
+            hrThirdPartyPositionDO.setSyncFailReason(e.getMessage());
+            logger.warn(e.getMessage(), e);
+            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, null);
         } catch (Exception e) {
+            hrThirdPartyPositionDO.setIsSynchronization(PositionSync.bindingError.getValue());
+            hrThirdPartyPositionDO.setSyncFailReason("后台异常");
             logger.error(e.getMessage(), e);
             emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, liePinPositionVO, e, null);
         }
 
+        hrThirdPartyPositionDO.setPositionId(liePinPositionVO.getPositionId());
+        hrThirdPartyPositionDO.setOccupation(liePinPositionVO.getEjob_jobtitle());
+        hrThirdPartyPositionDO.setChannel(2);
+        TwoParam<HrThirdPartyPositionDO, EmptyExtThirdPartyPosition> twoParam = new TwoParam<>(hrThirdPartyPositionDO, EmptyExtThirdPartyPosition.EMPTY);
+        twoParam = thirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
+        hrThirdPartyPositionDO = twoParam.getR1();
+        logger.info("====================hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
+
+        return twoParam;
     }
 
-    private List<String> getDownShelfIds( List<String> newCityCodeList, List<JobPositionLiepinMappingDO> allLiepinMappingDOList, String title) {
-        List<String> downShelfId = new ArrayList<>();
-        for (JobPositionLiepinMappingDO mappingDO : allLiepinMappingDOList) {
-            // 如果当前编辑城市中不包括数据库的城市，并且该城市状态为1，需要执行下架
-            if (!newCityCodeList.contains(String.valueOf(mappingDO.getCityCode()))){
-                if(mappingDO.getState() == 1) {
-                    downShelfId.add(String.valueOf(mappingDO.getId()));
-                }
-            } else {
-                // 如果当前编辑城市中包括数据库的城市，但是title不相同，并且状态为1，需要执行下架
-                if(!mappingDO.getJobTitle().equals(title) && mappingDO.getState() == 1){
-                    downShelfId.add(String.valueOf(mappingDO.getId()));
+    /**
+     * 获取需要同步的cityCodesList
+     *
+     * @param liepinMappingDOList job_position_mapping 集合
+     * @param cityCodesList       cityCode 集合
+     * @return List<String> cityCodes
+     * @author cjm
+     * @date 2018/7/5
+     */
+    private List<String> getSyncCityList(List<JobPositionLiepinMappingDO> liepinMappingDOList, List<String> cityCodesList) {
+
+        List<String> syncCityList = new ArrayList<>();
+
+        if (liepinMappingDOList.size() > 0) {
+            // 获取本次职位发布中的所有数据库中的职位
+            List<String> cityCodesListDb = liepinMappingDOList.stream().map(jobPositionLiepinMappingDO -> String.valueOf(jobPositionLiepinMappingDO.getCityCode()))
+                    .collect(Collectors.toList());
+            for (String cityCode : cityCodesList) {
+                // 如果存在已同步记录信息，需要判断下是否要是否是新的地区或者title
+                if (!cityCodesListDb.contains(cityCode)) {
+                    syncCityList.add(cityCode);
                 }
             }
+            return syncCityList;
         }
-        return downShelfId;
+        return cityCodesList;
+
     }
 
-    private int editExistPosition(int positionId, List<String> editCity, Map<String, Object> editCityIdCodeMap, LiePinPositionVO liePinPositionVO, String liePinToken) throws Exception {
-        if (editCity.size() > 0) {
+    /**
+     * 获取需要编辑的job_position_mapping DO 实体
+     *
+     * @param liepinMappingDOList job_position_mapping 集合
+     * @param cityCodesList       cityCode 集合
+     * @return List<JobPositionLiepinMappingDO> job_position_mapping DO 实体
+     * @author cjm
+     * @date 2018/7/5
+     */
+    private List<JobPositionLiepinMappingDO> getEditCityList(List<JobPositionLiepinMappingDO> liepinMappingDOList, List<String> cityCodesList) {
+        List<JobPositionLiepinMappingDO> editCityList = new ArrayList<>();
+        for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
+            if (mappingDO.getState() == 1 && cityCodesList.contains(String.valueOf(mappingDO.getCityCode()))) {
+                editCityList.add(mappingDO);
+            }
+        }
+        return editCityList;
+    }
 
-            for (String citycode : editCity) {
-                String mappingId = String.valueOf(editCityIdCodeMap.get(citycode));
-                String editResponse = "";
+    /**
+     * 获取需要重新发布的job_position_mapping DO 实体
+     *
+     * @param liepinMappingDOList job_position_mapping 集合
+     * @param cityCodesList       cityCode 集合
+     * @return List<JobPositionLiepinMappingDO> job_position_mapping DO 实体
+     * @author cjm
+     * @date 2018/7/5
+     */
+    private List<JobPositionLiepinMappingDO> getRepublishCityList(List<JobPositionLiepinMappingDO> liepinMappingDOList, List<String> cityCodesList) {
+        List<JobPositionLiepinMappingDO> republishCityList = new ArrayList<>();
+        for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
+            // 该title下的职位处于下架、删除状态，用于重新发布到猎聘
+            if (mappingDO.getState() == 0 && cityCodesList.contains(String.valueOf(mappingDO.getCityCode()))) {
+                republishCityList.add(mappingDO);
+            }
+        }
+        return republishCityList;
+    }
+
+    /**
+     * 插入一条新的jobpositionmapping数据，用来获取主键id
+     *
+     * @param liePinPositionVO 猎聘职位实体
+     * @param cityCode         仟寻cityCode
+     * @param liePinUserId     hr在猎聘的id
+     * @author cjm
+     * @date 2018/7/2
+     */
+    public JobPositionLiepinMappingDO getNewJobPositionLiepinMapping(LiePinPositionVO liePinPositionVO, String cityCode, int liePinUserId) {
+        JobPositionLiepinMappingDO jobPositionLiepinMappingDO = new JobPositionLiepinMappingDO();
+        jobPositionLiepinMappingDO.setPositionId(liePinPositionVO.getPositionId());
+        jobPositionLiepinMappingDO.setCityCode(Integer.parseInt(cityCode));
+        jobPositionLiepinMappingDO.setJobTitle(liePinPositionVO.getEjob_title());
+        jobPositionLiepinMappingDO.setLiepinUserId(liePinUserId);
+        jobPositionLiepinMappingDO.setState((byte) 0);
+        return liepinMappingDao.addData(jobPositionLiepinMappingDO);
+    }
+
+    private HrThirdPartyAccountDO getThirdPartyAccount(Integer publisher, Integer channel) {
+        // 获取第三方账号和hr账号关联表数据
+        HrThirdPartyAccountHrDO hrThirdDO = hrThirdPartyDao.getHrAccountInfo(publisher, channel);
+
+//        if (hrThirdDO == null) {
+//            logger.info("=================无第三方hr账号关联数据===============");
+//            return null;
+//        }
+        int thirdAccountId = hrThirdDO.getThirdPartyAccountId();
+
+        return thirdPartyAccountDao.getAccountById(thirdAccountId);
+
+    }
+
+    /**
+     * 获取猎聘职位审核状态
+     *
+     * @param jobPositionMappingId job_position_mapping表主键
+     * @param liePinToken          hr在猎聘绑定后的token
+     * @return 返回职位信息
+     * @author cjm
+     * @date 2018/7/2
+     */
+    public JSONObject getPositionAuditState(int jobPositionMappingId, String liePinToken) throws Exception {
+        JSONObject liePinJsonObject = new JSONObject();
+        liePinJsonObject.put("ejob_extRefids", jobPositionMappingId);
+        String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionGet);
+        logger.info("=======================获取职位信息结果httpResultJson:{}", httpResultJson);
+        JSONObject httpResult = httpClientUtil.requireValidResult(httpResultJson);
+        JSONObject positionInfo = httpResult.getJSONObject("data");
+        if (positionInfo == null) {
+            emailNotification.sendRefreshSyncStateFailEmail("mappingId:" + jobPositionMappingId + "</br>" + "httpResultJson:" + httpResultJson, null);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_RESPONSE_NULL);
+        }
+        return positionInfo.getJSONObject("data");
+    }
+
+    /**
+     * 编辑数据库中已经存在的职位
+     *
+     * @param editCityList     编辑城市的job_position_mapping集合
+     * @param liePinPositionVO 猎聘职位实体
+     * @param liePinToken      hr在猎聘绑定后的token
+     * @return 返回职位编辑成功的数量
+     * @author cjm
+     * @date 2018/7/3
+     */
+    private int editExistPosition(List<JobPositionLiepinMappingDO> editCityList, LiePinPositionVO liePinPositionVO, String liePinToken) throws Exception {
+        if (editCityList.size() > 0) {
+
+            for (JobPositionLiepinMappingDO mappingDO : editCityList) {
                 try {
-                    String liepinCityCode = getValidLiepinDictCode(citycode);
-                    liePinPositionVO.setEjob_extRefid(mappingId);
-                    liePinPositionVO.setEjob_dq(liepinCityCode);
-                    editResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(liePinPositionVO), liePinToken, LiepinPositionOperateUrl.liepinPositionEdit);
-                    logger.info("==================editResponse:{}==================", editResponse);
-
-                    receiverHandler.requireValidResult(editResponse, positionId, ChannelType.LIEPIN.getValue());
+                    editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
                 } catch (BIZException e) {
-                    e.printStackTrace();
-                    logger.info("============同步已存在的城市，修改该城市的职位信息时未操作成功，message:{}===========", e.getMessage());
-                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, editResponse);
+                    logger.warn("============同步已存在的城市，修改该城市的职位信息时未操作成功，message:{}===========", e.getMessage());
                     throw e;
                 }
             }
-            return editCity.size();
+            return editCityList.size();
         }
         return 0;
     }
-
-    private void downShelfPosition(int positionId, List<String> downShelfId, String liePinToken, LiePinPositionVO liePinPositionVO) throws Exception {
-        logger.info("=================需要下架的职位downShelfId:{}=================", downShelfId);
-        List<Integer> downShelfIntList = new ArrayList<>();
-        if (downShelfId.size() > 0) {
-            StringBuilder ids = new StringBuilder();
-            for (String id : downShelfId) {
-                ids.append(id).append(",");
-                downShelfIntList.add(Integer.parseInt(id));
-            }
-            if(ids.length() > 0){
-                String downShelfResponse = "";
-                try {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("ejob_extRefids", ids.substring(0, ids.length() - 1));
-                    downShelfResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(jsonObject), liePinToken, LiepinPositionOperateUrl.liepinPositionEnd);
-                    logger.info("==================downShelfResponse:{}==================", downShelfResponse);
-                    receiverHandler.requireValidResult(downShelfResponse, positionId, ChannelType.LIEPIN.getValue());
-                    liepinMappingDao.updateState(downShelfIntList, (byte) 0);
-                } catch (BIZException e) {
-                    e.printStackTrace();
-                    logger.error("============职位下架失败，message:{}===========", e.getMessage());
-                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, downShelfResponse);
-                    throw e;
-                }
-            }
-        }
-    }
-
 
     /**
      * 发布职位时如果是已经存在的职位，但是状态为0，则执行先上架后修改
      *
-     * @param
-     * @return
+     * @return 返回上架并更新成功的职位个数
      * @author cjm
      * @date 2018/6/22
      */
-    public int updateExistPosition(StringBuilder republishIds, String liePinToken, Integer positionId, LiePinPositionVO liePinPositionVO) throws Exception {
+    private int updateExistPosition(List<JobPositionLiepinMappingDO> republishCitys, String liePinToken, Integer positionId, LiePinPositionVO liePinPositionVO) throws Exception {
+
+        List<String> republishIdList = republishCitys.stream().map(republishCity -> String.valueOf(republishCity.getId())).collect(Collectors.toList());
+
+        String republishIds = String.join(",", republishIdList);
+
+        List<Integer> republishIdIntList;
         // 更新上架后的状态
-        if (republishIds.length() > 0) {
-            List<Integer> republishIdList = new ArrayList<>();
-            // 上架后返回此次上架职位的数量
-            try{
-                republishIdList = upshelfJobPosition(republishIds, liePinToken, positionId);
-            }catch (Exception e){
-                logger.info(e.getMessage(), e);
-                emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, null);
-            }
+        if (republishCitys.size() > 0) {
+            try {
+                // 上架后返回此次上架职位的数量
+                republishIdIntList = upshelfJobPosition(republishIds, liePinToken, positionId);
 
-            logger.info("===========上架后返回此次上架职位的数量republishIdList:{}============", republishIdList);
-            // 上架后向猎聘发送修改职位
-            for (Integer republishId : republishIdList) {
-                String editResponse = "";
-                try {
-                    logger.info("===========上架后向猎聘发送修改职位republishId:{}============", republishId);
-                    liePinPositionVO.setEjob_extRefid(String.valueOf(republishId));
+                logger.info("===========上架后返回此次上架职位的数量republishIdList:{}============", republishIdList);
 
-                    editResponse = receiverHandler.sendRequest2LiePin((JSONObject) JSONObject.toJSON(liePinPositionVO), liePinToken, LiepinPositionOperateUrl.liepinPositionEdit);
-                    logger.info("==================editResponse:{}==================", editResponse);
+                // 上架后向猎聘发送修改职位
+                for (JobPositionLiepinMappingDO mappingDO : republishCitys) {
 
-                    receiverHandler.requireValidResult(editResponse, positionId, ChannelType.LIEPIN.getValue());
-                } catch (BIZException e) {
-                    e.printStackTrace();
-                    logger.info("============同步已存在的城市，修改该城市的职位信息时未操作成功，message:{}===========", e.getMessage());
-                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, editResponse);
-                    throw e;
+                    liePinPositionVO.setEjob_extRefid(String.valueOf(mappingDO.getId()));
+
+                    editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
                 }
+            } catch (BIZException e) {
+                logger.warn("============同步已存在的城市，修改该城市的职位信息时未操作成功，message:{}===========", e.getMessage());
+                throw e;
             }
-            return republishIdList.size();
+            return republishIdIntList.size();
         }
         return 0;
     }
 
-    private String sendSyncRequestToLiepin(LiePinPositionVO liePinPositionVO, String liePinToken) throws Exception {
-        // 构造请求数据
-        JSONObject liePinJsonObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
-        String t = DateUtils.dateToPattern(new Date(), "yyyyMMdd");
-        liePinJsonObject.put("t", t);
-        String sign = Md5Utils.getMD5SortKey(Md5Utils.mapToList(liePinJsonObject), liePinJsonObject);
-        liePinJsonObject.put("sign", sign);
-        logger.info("=============liePinJsonObject:{}=============", liePinJsonObject);
-        //设置请求头
-        Map<String, String> headers = new HashMap<>();
-        headers.put("channel", "qianxun_online");
-        headers.put("token", liePinToken);
+    private List<Integer> upshelfJobPosition(String republishIds, String liePinToken, Integer positionId) throws Exception {
+        byte state = 1;
+        JSONObject liePinJsonObject = new JSONObject();
+        // 去掉末尾的逗号
+        liePinJsonObject.put("ejob_extRefids", republishIds);
 
-        return HttpClientUtil.sentHttpPostRequest(LiepinPositionOperateUrl.liepinPositionSync, headers, liePinJsonObject);
+        String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionRepub);
+
+        httpClientUtil.requireValidResult(httpResultJson);
+
+        List<Integer> republishIdList = getRepublishList(republishIds);
+
+        liepinMappingDao.updateStateAndJobId(republishIdList, state, positionId);
+
+        return republishIdList;
+    }
+
+    /**
+     * 编辑单个职位信息
+     *
+     * @param liePinToken 猎聘生成的hr账号token
+     * @param mappingDO   job_position_mapping表记录实体
+     * @author cjm
+     * @date 2018/6/10
+     */
+    public void editSinglePosition(LiePinPositionVO liePinPositionVO, String liePinToken, JobPositionLiepinMappingDO mappingDO) throws Exception {
+        // 截取 tilte
+        requireValidTitle(liePinPositionVO);
+        String id = mappingDO.getId() + "";
+        try {
+            // 由于在程序走到向猎聘发送修改请求时能确认数据库中职位状态是发布状态，所以如果hr在猎聘网站上将职位下架的话，仟寻的操作是需要先将职位上架
+            confirmPositionState(id, liePinToken);
+
+            // 猎聘修改职位api必填字段
+            liePinPositionVO.setEjob_extRefid(id);
+
+            String liepinCityCode = getValidLiepinDictCode(mappingDO.getCityCode() + "");
+
+            liePinPositionVO.setEjob_dq(liepinCityCode);
+
+            JSONObject liePinObject = (JSONObject) JSONObject.toJSON(liePinPositionVO);
+
+            String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinObject, liePinToken, LiepinPositionOperateConstant.liepinPositionEdit);
+
+            httpClientUtil.requireValidResult(httpResultJson);
+
+            liepinMappingDao.updateState(Integer.parseInt(id), (byte) 2);
+
+        } catch (Exception e) {
+            liepinMappingDao.updateErrMsg(Integer.parseInt(id), e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * 猎聘职位title长度限制为143，如果传来的职位长度大于此值，则截取
+     *
+     * @param liePinPositionVO 猎聘职位vo对象
+     * @author cjm
+     * @date 2018/7/9
+     */
+    public void requireValidTitle(LiePinPositionVO liePinPositionVO) {
+        String title = liePinPositionVO.getEjob_title();
+        logger.info("====================title长度:{}", title.length());
+        if (title.length() > 143) {
+            title = title.substring(0, 143);
+            liePinPositionVO.setEjob_title(title);
+        }
+    }
+
+    /**
+     * 由于在程序走到向猎聘发送修改请求时能确认数据库中职位状态是发布状态，所以如果hr在猎聘网站上将职位下架的话，仟寻的操作是需要先将职位上架
+     *
+     * @param liePinToken 猎聘生成的hr账号token
+     * @param mappingDOId job_position_mapping表主键id
+     * @author cjm
+     * @date 2018/7/4
+     */
+    private void confirmPositionState(String mappingDOId, String liePinToken) throws Exception {
+        // 获取猎聘职位信息
+        JSONObject liepinPositionInfo = getPositionAuditState(Integer.parseInt(mappingDOId), liePinToken);
+
+        if (liepinPositionInfo == null) {
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.LIEPIN_REQUEST_RESPONSE_NULL);
+        }
+
+        if (!"PUBLISHED".equals(liepinPositionInfo.getString("ejob_status"))) {
+
+            JSONObject liePinJsonObject = new JSONObject();
+            // 去掉末尾的逗号
+            liePinJsonObject.put("ejob_extRefids", mappingDOId);
+
+            String httpResultJson = httpClientUtil.sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateConstant.liepinPositionRepub);
+
+            httpClientUtil.requireValidResult(httpResultJson);
+        }
     }
 
     /**
      * 通过仟寻citycode获取猎聘citycode
      *
-     * @param
-     * @return
+     * @param cityCode 仟寻cityCode
+     * @return 返回猎聘的cityCode
      * @author cjm
      * @date 2018/6/21
      */
@@ -596,25 +604,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         }
     }
 
-
-    public List<Integer> upshelfJobPosition(StringBuilder republishIds, String liePinToken, Integer positionId) throws Exception {
-        byte state = 1;
-        JSONObject liePinJsonObject = new JSONObject();
-        // 去掉末尾的逗号
-        liePinJsonObject.put("ejob_extRefids", republishIds.substring(0, republishIds.length() - 1));
-
-        String httpResultJson = receiverHandler.sendRequest2LiePin(liePinJsonObject, liePinToken, LiepinPositionOperateUrl.liepinPositionRepub);
-
-        receiverHandler.requireValidResult(httpResultJson, positionId, ChannelType.LIEPIN.getValue());
-
-        List<Integer> republishIdList = getRepublishList(republishIds.toString());
-
-        liepinMappingDao.updateStateAndJobId(republishIdList, state, positionId);
-
-        return republishIdList;
-    }
-
-
     private List<Integer> getRepublishList(String republishIds) {
         String[] ids = republishIds.split(",");
         List<Integer> list = new ArrayList<>();
@@ -629,8 +618,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     /**
      * 将前端传来的职能组合成以逗号隔开的格式
      *
-     * @param
-     * @return
+     * @param occupationList 职能code集合
+     * @return 返回以逗号隔开的职能字符串
      * @author cjm
      * @date 2018/6/19
      */
@@ -640,9 +629,9 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         // 获取所有猎聘社招职能
         List<DictLiepinOccupationDO> allSocialOccupation = liepinOccupationDao.getAllSocialOccupation();
 
-        List<String> allSocialCode = allSocialOccupation.stream().map(socialOccupation -> socialOccupation.getOtherCode()).collect(Collectors.toList());
+        List<String> allSocialCode = allSocialOccupation.stream().map(DictLiepinOccupationDO::getOtherCode).collect(Collectors.toList());
 
-        List<String> moseekerCodeList = new ArrayList<>();
+        List<String> moseekerCodeList;
         int index = 0;
 
         for (String moseekerCode : occupationList) {
@@ -675,13 +664,11 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     /**
      * 映射部门名字，本是由第三方页面手动填入，若为空，使用仟寻职位部门
      *
-     * @param
-     * @return
      * @author cjm
      * @date 2018/6/11
      */
     private String getDepartmentName(ThirdPartyPosition positionForm, JobPositionDO moseekerJobPosition) {
-        String departmentName = null;
+        String departmentName;
         if (StringUtils.isNotNullOrEmpty(positionForm.getDepartmentName())) {
             departmentName = positionForm.getDepartmentName();
         } else {
@@ -734,6 +721,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         }
         liePinPositionVO.setDetail_language_yueyu(yueyu);
         liePinPositionVO.setDetail_language_other(1);
+        // 猎聘数据库语言长度限制为79，所以这里同样限制长度
         if (language.length() > 79) {
             language = language.substring(0, 79);
         }
@@ -754,7 +742,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
         if (features == null || features.size() < 1) {
             List<HrCompanyFeature> hrCompanyFeatureList = featureDao.getFeatureListByCompanyId(positionForm.getCompanyId());
-            features = hrCompanyFeatureList.stream().map(hrCompanyFeature -> hrCompanyFeature.getFeature()).collect(Collectors.toList());
+            features = hrCompanyFeatureList.stream().map(HrCompanyFeature::getFeature).collect(Collectors.toList());
         }
         int index = 0;
 
@@ -771,7 +759,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
                 break;
             }
         }
-        if(tags.length() < 1){
+        if (tags.length() < 1) {
             return "";
         }
         return tags.substring(0, tags.length() - 1);
@@ -780,8 +768,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     /**
      * 过滤掉中文特殊字符，否则猎聘收不到特殊字符导致验签失败
      *
-     * @param
-     * @return
+     * @param str 本来是要过滤 □ 类型的特殊字符，但是后来发现特殊字符验签也能成功了，应该是猎聘将特殊字符的过滤去掉了，目前这个方法只做非空判断
+     * @return 返回过滤后的字符串
      * @author cjm
      * @date 2018/6/22
      */
