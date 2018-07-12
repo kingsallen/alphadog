@@ -30,6 +30,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.ExceptionFactory;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -51,6 +52,7 @@ import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
@@ -335,10 +337,16 @@ public class ProfileProcessBS {
                                         pvs.getApplier_name(), companyId,
                                         progressStatus, pvs.getPosition_name(),
                                         pvs.getId(), TemplateMs.TOSEEKER);
-                                sendTemplate(pvs.getRecommender_user_id(),
-                                        pvs.getApplier_name(), companyId,
-                                        progressStatus, pvs.getPosition_name(),
-                                        pvs.getId(), TemplateMs.TORECOM);
+                                if(employeeEntity.isEmployee(pvs.getRecommender_user_id(),companyId)) {
+                                    sendTemplate(pvs.getRecommender_user_id(),
+                                            pvs.getApplier_name(), companyId,
+                                            progressStatus, pvs.getPosition_name(),
+                                            pvs.getId(), TemplateMs.TORECOM);
+                                    sendTemplate(pvs.getRecommender_user_id(),
+                                            pvs.getApplier_name(), companyId,
+                                            progressStatus, pvs.getPosition_name(),
+                                            pvs.getId(), TemplateMs.TORECOMSTATUS);
+                                }
                             }
                         });
                     } else {
@@ -389,28 +397,10 @@ public class ProfileProcessBS {
             return ;
         }
         String signature = "";
-        int wechatId = 0;
-        try {
-            Response wechat = companyService.getWechat(companyId, 0);
-            if (wechat.getStatus() == 0 && msInfo!=null) {
-                Map<String, Object> wechatData = JSON.parseObject(wechat
-                        .getData());
-                signature = String.valueOf(wechatData.get("signature"));
-                wechatId = (Integer)wechatData.get("id");
-                Query query = new Query.QueryBuilder().where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.getName(), wechatId)
-                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.getName(), msInfo.getConfig_id())
-                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE.getName(), "0")
-                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.STATUS.getName(), "0")
-                        .buildQuery();
-                HrWxNoticeMessageDO noticeMessageDO = noticeMessageDao.getData(query);
-                if(noticeMessageDO != null){
-                    logger.info("模板开关关闭");
-                    return ;
-                }
-            }
-        } catch (TException e1) {
-            log.error(e1.getMessage(), e1);
+        if(!isNoticeMessage(companyId, msInfo.getConfig_id(), signature)){
+            return;
         }
+
         Map<String, MessageTplDataCol> data = new HashMap<String, MessageTplDataCol>();
 
         if (msInfo != null) {
@@ -463,6 +453,33 @@ public class ProfileProcessBS {
                 log.error(e.getMessage(), e);
             }
         }
+    }
+
+    private boolean isNoticeMessage(int companyId, int config_id, String signature){
+        int wechatId = 0;
+        try {
+            Response wechat = companyService.getWechat(companyId, 0);
+            if (wechat.getStatus() == 0 && config_id>0) {
+                Map<String, Object> wechatData = JSON.parseObject(wechat
+                        .getData());
+                signature = String.valueOf(wechatData.get("signature"));
+                wechatId = (Integer)wechatData.get("id");
+                Query query = new Query.QueryBuilder().where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.getName(), wechatId)
+                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.getName(), config_id)
+                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE.getName(), "0")
+                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.STATUS.getName(), "0")
+                        .buildQuery();
+                HrWxNoticeMessageDO noticeMessageDO = noticeMessageDao.getData(query);
+                if(noticeMessageDO != null){
+                    logger.info("模板开关关闭");
+                    return false;
+                }
+            }
+        } catch (TException e1) {
+            log.error(e1.getMessage(), e1);
+            return false;
+        }
+        return true;
     }
 
     private List<Integer> convertList(String params) {
