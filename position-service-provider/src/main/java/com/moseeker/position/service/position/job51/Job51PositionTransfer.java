@@ -17,6 +17,7 @@ import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.ExperienceChangeUtil;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
+import com.moseeker.position.service.position.base.sync.PositionTransferHelper;
 import com.moseeker.position.service.position.job51.pojo.Position51;
 import com.moseeker.position.service.position.job51.pojo.Position51Form;
 import com.moseeker.position.service.position.job51.pojo.Position51WithAccount;
@@ -39,6 +40,8 @@ import java.util.stream.Collectors;
 @Service
 public class Job51PositionTransfer extends AbstractPositionTransfer<Position51Form, Position51WithAccount, Position51, EmptyExtThirdPartyPosition> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private static final int TITLE_LIMT = 50;
 
     @Autowired
     private ThirdpartyAccountCompanyAddressDao addressDao;
@@ -72,7 +75,11 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<Position51Fo
     @Override
     protected Position51 createAndInitPositionInfo(Position51Form positionForm, JobPositionDO positionDB) throws Exception {
         Position51 position = new Position51();
-        position.setTitle(positionDB.getTitle());
+        if(positionForm.isLimitTitle()) {
+            position.setTitle(PositionTransferHelper.limitTitle(positionDB.getTitle(), TITLE_LIMT));
+        } else{
+            position.setTitle(positionDB.getTitle());
+        }
 
         setOccupation(positionForm, position);
 
