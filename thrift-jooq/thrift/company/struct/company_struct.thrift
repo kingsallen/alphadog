@@ -112,3 +112,13 @@ struct HrCompanyFeatureDO {
     6: optional  i32    disable
 }
 
+struct HrCompanyWechatDO {
+    1: optional  i32    companyId,
+    2: optional  i32    wechatId,
+    3: optional  string signature,
+    4: optional  string accessToken,
+    5: optional  string templateId,
+    6: optional  string topcolor,
+    7: optional  i32    employeeCount
+}
+
