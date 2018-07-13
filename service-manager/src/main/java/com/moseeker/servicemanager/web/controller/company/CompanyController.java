@@ -801,4 +801,13 @@ public class CompanyController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/api/company/award", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCompanyAward(HttpServletRequest request) throws Exception {
+        List<HrCompanyWechatDO> result = companyServices.getCompanyWechatList();
+        String str=JSON.toJSONString(result,serializeConfig);
+        return ResponseLogNotification.success(request,
+                ResponseUtils.successWithoutStringify(str));
+    }
 }

@@ -82,6 +82,8 @@ public class CompanyServices {
 
         public com.moseeker.thrift.gen.common.struct.Response updateWechatThenm(int status, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
+        public java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO> getCompanyWechatList() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
     }
 
     public interface AsyncIface {
@@ -155,6 +157,8 @@ public class CompanyServices {
         public void findSubAccountNum(int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
         public void updateWechatThenm(int status, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+        public void getCompanyWechatList(org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>> resultHandler) throws org.apache.thrift.TException;
 
     }
 
@@ -1099,6 +1103,31 @@ public class CompanyServices {
                 throw result.e;
             }
             throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "updateWechatThenm failed: unknown result");
+        }
+
+        public java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO> getCompanyWechatList() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+        {
+            send_getCompanyWechatList();
+            return recv_getCompanyWechatList();
+        }
+
+        public void send_getCompanyWechatList() throws org.apache.thrift.TException
+        {
+            getCompanyWechatList_args args = new getCompanyWechatList_args();
+            sendBase("getCompanyWechatList", args);
+        }
+
+        public java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO> recv_getCompanyWechatList() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+        {
+            getCompanyWechatList_result result = new getCompanyWechatList_result();
+            receiveBase(result, "getCompanyWechatList");
+            if (result.isSetSuccess()) {
+                return result.success;
+            }
+            if (result.e != null) {
+                throw result.e;
+            }
+            throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getCompanyWechatList failed: unknown result");
         }
 
     }
@@ -2332,6 +2361,35 @@ public class CompanyServices {
             }
         }
 
+        public void getCompanyWechatList(org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>> resultHandler) throws org.apache.thrift.TException {
+            checkReady();
+            getCompanyWechatList_call method_call = new getCompanyWechatList_call(resultHandler, this, ___protocolFactory, ___transport);
+            this.___currentMethod = method_call;
+            ___manager.call(method_call);
+        }
+
+        public static class getCompanyWechatList_call extends org.apache.thrift.async.TAsyncMethodCall<java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>> {
+            public getCompanyWechatList_call(org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+                super(client, protocolFactory, transport, resultHandler, false);
+            }
+
+            public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+                prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getCompanyWechatList", org.apache.thrift.protocol.TMessageType.CALL, 0));
+                getCompanyWechatList_args args = new getCompanyWechatList_args();
+                args.write(prot);
+                prot.writeMessageEnd();
+            }
+
+            public java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO> getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+                    throw new java.lang.IllegalStateException("Method call not finished!");
+                }
+                org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+                org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+                return (new Client(prot)).recv_getCompanyWechatList();
+            }
+        }
+
     }
 
     public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -2380,6 +2438,7 @@ public class CompanyServices {
             processMap.put("updateHrCompanyConfStatus", new updateHrCompanyConfStatus());
             processMap.put("findSubAccountNum", new findSubAccountNum());
             processMap.put("updateWechatThenm", new updateWechatThenm());
+            processMap.put("getCompanyWechatList", new getCompanyWechatList());
             return processMap;
         }
 
@@ -3201,6 +3260,30 @@ public class CompanyServices {
             }
         }
 
+        public static class getCompanyWechatList<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getCompanyWechatList_args> {
+            public getCompanyWechatList() {
+                super("getCompanyWechatList");
+            }
+
+            public getCompanyWechatList_args getEmptyArgsInstance() {
+                return new getCompanyWechatList_args();
+            }
+
+            protected boolean isOneway() {
+                return false;
+            }
+
+            public getCompanyWechatList_result getResult(I iface, getCompanyWechatList_args args) throws org.apache.thrift.TException {
+                getCompanyWechatList_result result = new getCompanyWechatList_result();
+                try {
+                    result.success = iface.getCompanyWechatList();
+                } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+                    result.e = e;
+                }
+                return result;
+            }
+        }
+
     }
 
     public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
@@ -3249,6 +3332,7 @@ public class CompanyServices {
             processMap.put("updateHrCompanyConfStatus", new updateHrCompanyConfStatus());
             processMap.put("findSubAccountNum", new findSubAccountNum());
             processMap.put("updateWechatThenm", new updateWechatThenm());
+            processMap.put("getCompanyWechatList", new getCompanyWechatList());
             return processMap;
         }
 
@@ -5502,6 +5586,71 @@ public class CompanyServices {
 
             public void start(I iface, updateWechatThenm_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
                 iface.updateWechatThenm(args.status, args.companyId,resultHandler);
+            }
+        }
+
+        public static class getCompanyWechatList<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getCompanyWechatList_args, java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>> {
+            public getCompanyWechatList() {
+                super("getCompanyWechatList");
+            }
+
+            public getCompanyWechatList_args getEmptyArgsInstance() {
+                return new getCompanyWechatList_args();
+            }
+
+            public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+                final org.apache.thrift.AsyncProcessFunction fcall = this;
+                return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>>() {
+                    public void onComplete(java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO> o) {
+                        getCompanyWechatList_result result = new getCompanyWechatList_result();
+                        result.success = o;
+                        try {
+                            fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+                        } catch (org.apache.thrift.transport.TTransportException e) {
+                            _LOGGER.error("TTransportException writing to internal frame buffer", e);
+                            fb.close();
+                        } catch (java.lang.Exception e) {
+                            _LOGGER.error("Exception writing to internal frame buffer", e);
+                            onError(e);
+                        }
+                    }
+                    public void onError(java.lang.Exception e) {
+                        byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+                        org.apache.thrift.TSerializable msg;
+                        getCompanyWechatList_result result = new getCompanyWechatList_result();
+                        if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+                            result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+                            result.setEIsSet(true);
+                            msg = result;
+                        } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+                            _LOGGER.error("TTransportException inside handler", e);
+                            fb.close();
+                            return;
+                        } else if (e instanceof org.apache.thrift.TApplicationException) {
+                            _LOGGER.error("TApplicationException inside handler", e);
+                            msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+                            msg = (org.apache.thrift.TApplicationException)e;
+                        } else {
+                            _LOGGER.error("Exception inside handler", e);
+                            msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+                            msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+                        }
+                        try {
+                            fcall.sendResponse(fb,msg,msgType,seqid);
+                        } catch (java.lang.Exception ex) {
+                            _LOGGER.error("Exception writing to internal frame buffer", ex);
+                            fb.close();
+                        }
+                    }
+                };
+            }
+
+            protected boolean isOneway() {
+                return false;
+            }
+
+            public void start(I iface, getCompanyWechatList_args args, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>> resultHandler) throws org.apache.thrift.TException {
+                iface.getCompanyWechatList(resultHandler);
             }
         }
 
@@ -37436,6 +37585,778 @@ public class CompanyServices {
                 if (incoming.get(0)) {
                     struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                     struct.success.read(iprot);
+                    struct.setSuccessIsSet(true);
+                }
+                if (incoming.get(1)) {
+                    struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                    struct.e.read(iprot);
+                    struct.setEIsSet(true);
+                }
+            }
+        }
+
+        private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+            return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+        }
+    }
+
+    public static class getCompanyWechatList_args implements org.apache.thrift.TBase<getCompanyWechatList_args, getCompanyWechatList_args._Fields>, java.io.Serializable, Cloneable, Comparable<getCompanyWechatList_args>   {
+        private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getCompanyWechatList_args");
+
+
+        private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getCompanyWechatList_argsStandardSchemeFactory();
+        private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getCompanyWechatList_argsTupleSchemeFactory();
+
+
+        /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+        public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+            ;
+
+            private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+            static {
+                for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+                    byName.put(field.getFieldName(), field);
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, or null if its not found.
+             */
+            public static _Fields findByThriftId(int fieldId) {
+                switch(fieldId) {
+                    default:
+                        return null;
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, throwing an exception
+             * if it is not found.
+             */
+            public static _Fields findByThriftIdOrThrow(int fieldId) {
+                _Fields fields = findByThriftId(fieldId);
+                if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+                return fields;
+            }
+
+            /**
+             * Find the _Fields constant that matches name, or null if its not found.
+             */
+            public static _Fields findByName(java.lang.String name) {
+                return byName.get(name);
+            }
+
+            private final short _thriftId;
+            private final java.lang.String _fieldName;
+
+            _Fields(short thriftId, java.lang.String fieldName) {
+                _thriftId = thriftId;
+                _fieldName = fieldName;
+            }
+
+            public short getThriftFieldId() {
+                return _thriftId;
+            }
+
+            public java.lang.String getFieldName() {
+                return _fieldName;
+            }
+        }
+        public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+        static {
+            java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+            metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+            org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyWechatList_args.class, metaDataMap);
+        }
+
+        public getCompanyWechatList_args() {
+        }
+
+        /**
+         * Performs a deep copy on <i>other</i>.
+         */
+        public getCompanyWechatList_args(getCompanyWechatList_args other) {
+        }
+
+        public getCompanyWechatList_args deepCopy() {
+            return new getCompanyWechatList_args(this);
+        }
+
+        @Override
+        public void clear() {
+        }
+
+        public void setFieldValue(_Fields field, java.lang.Object value) {
+            switch (field) {
+            }
+        }
+
+        public java.lang.Object getFieldValue(_Fields field) {
+            switch (field) {
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+        public boolean isSet(_Fields field) {
+            if (field == null) {
+                throw new java.lang.IllegalArgumentException();
+            }
+
+            switch (field) {
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        @Override
+        public boolean equals(java.lang.Object that) {
+            if (that == null)
+                return false;
+            if (that instanceof getCompanyWechatList_args)
+                return this.equals((getCompanyWechatList_args)that);
+            return false;
+        }
+
+        public boolean equals(getCompanyWechatList_args that) {
+            if (that == null)
+                return false;
+            if (this == that)
+                return true;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashCode = 1;
+
+            return hashCode;
+        }
+
+        @Override
+        public int compareTo(getCompanyWechatList_args other) {
+            if (!getClass().equals(other.getClass())) {
+                return getClass().getName().compareTo(other.getClass().getName());
+            }
+
+            int lastComparison = 0;
+
+            return 0;
+        }
+
+        public _Fields fieldForId(int fieldId) {
+            return _Fields.findByThriftId(fieldId);
+        }
+
+        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+            scheme(iprot).read(iprot, this);
+        }
+
+        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+            scheme(oprot).write(oprot, this);
+        }
+
+        @Override
+        public java.lang.String toString() {
+            java.lang.StringBuilder sb = new java.lang.StringBuilder("getCompanyWechatList_args(");
+            boolean first = true;
+
+            sb.append(")");
+            return sb.toString();
+        }
+
+        public void validate() throws org.apache.thrift.TException {
+            // check for required fields
+            // check for sub-struct validity
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+            try {
+                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private static class getCompanyWechatList_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getCompanyWechatList_argsStandardScheme getScheme() {
+                return new getCompanyWechatList_argsStandardScheme();
+            }
+        }
+
+        private static class getCompanyWechatList_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getCompanyWechatList_args> {
+
+            public void read(org.apache.thrift.protocol.TProtocol iprot, getCompanyWechatList_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TField schemeField;
+                iprot.readStructBegin();
+                while (true)
+                {
+                    schemeField = iprot.readFieldBegin();
+                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    switch (schemeField.id) {
+                        default:
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+
+                // check for required fields of primitive type, which can't be checked in the validate method
+                struct.validate();
+            }
+
+            public void write(org.apache.thrift.protocol.TProtocol oprot, getCompanyWechatList_args struct) throws org.apache.thrift.TException {
+                struct.validate();
+
+                oprot.writeStructBegin(STRUCT_DESC);
+                oprot.writeFieldStop();
+                oprot.writeStructEnd();
+            }
+
+        }
+
+        private static class getCompanyWechatList_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getCompanyWechatList_argsTupleScheme getScheme() {
+                return new getCompanyWechatList_argsTupleScheme();
+            }
+        }
+
+        private static class getCompanyWechatList_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getCompanyWechatList_args> {
+
+            @Override
+            public void write(org.apache.thrift.protocol.TProtocol prot, getCompanyWechatList_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+            }
+
+            @Override
+            public void read(org.apache.thrift.protocol.TProtocol prot, getCompanyWechatList_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+            }
+        }
+
+        private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+            return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+        }
+    }
+
+    public static class getCompanyWechatList_result implements org.apache.thrift.TBase<getCompanyWechatList_result, getCompanyWechatList_result._Fields>, java.io.Serializable, Cloneable, Comparable<getCompanyWechatList_result>   {
+        private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getCompanyWechatList_result");
+
+        private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
+        private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+        private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getCompanyWechatList_resultStandardSchemeFactory();
+        private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getCompanyWechatList_resultTupleSchemeFactory();
+
+        public java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO> success; // required
+        public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+        /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+        public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+            SUCCESS((short)0, "success"),
+            E((short)1, "e");
+
+            private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+            static {
+                for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+                    byName.put(field.getFieldName(), field);
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, or null if its not found.
+             */
+            public static _Fields findByThriftId(int fieldId) {
+                switch(fieldId) {
+                    case 0: // SUCCESS
+                        return SUCCESS;
+                    case 1: // E
+                        return E;
+                    default:
+                        return null;
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, throwing an exception
+             * if it is not found.
+             */
+            public static _Fields findByThriftIdOrThrow(int fieldId) {
+                _Fields fields = findByThriftId(fieldId);
+                if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+                return fields;
+            }
+
+            /**
+             * Find the _Fields constant that matches name, or null if its not found.
+             */
+            public static _Fields findByName(java.lang.String name) {
+                return byName.get(name);
+            }
+
+            private final short _thriftId;
+            private final java.lang.String _fieldName;
+
+            _Fields(short thriftId, java.lang.String fieldName) {
+                _thriftId = thriftId;
+                _fieldName = fieldName;
+            }
+
+            public short getThriftFieldId() {
+                return _thriftId;
+            }
+
+            public java.lang.String getFieldName() {
+                return _fieldName;
+            }
+        }
+
+        // isset id assignments
+        public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+        static {
+            java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+            tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
+                            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO.class))));
+            tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+            metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+            org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompanyWechatList_result.class, metaDataMap);
+        }
+
+        public getCompanyWechatList_result() {
+        }
+
+        public getCompanyWechatList_result(
+                java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO> success,
+                com.moseeker.thrift.gen.common.struct.BIZException e)
+        {
+            this();
+            this.success = success;
+            this.e = e;
+        }
+
+        /**
+         * Performs a deep copy on <i>other</i>.
+         */
+        public getCompanyWechatList_result(getCompanyWechatList_result other) {
+            if (other.isSetSuccess()) {
+                java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO> __this__success = new java.util.ArrayList<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>(other.success.size());
+                for (com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO other_element : other.success) {
+                    __this__success.add(new com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO(other_element));
+                }
+                this.success = __this__success;
+            }
+            if (other.isSetE()) {
+                this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+            }
+        }
+
+        public getCompanyWechatList_result deepCopy() {
+            return new getCompanyWechatList_result(this);
+        }
+
+        @Override
+        public void clear() {
+            this.success = null;
+            this.e = null;
+        }
+
+        public int getSuccessSize() {
+            return (this.success == null) ? 0 : this.success.size();
+        }
+
+        public java.util.Iterator<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO> getSuccessIterator() {
+            return (this.success == null) ? null : this.success.iterator();
+        }
+
+        public void addToSuccess(com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO elem) {
+            if (this.success == null) {
+                this.success = new java.util.ArrayList<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>();
+            }
+            this.success.add(elem);
+        }
+
+        public java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO> getSuccess() {
+            return this.success;
+        }
+
+        public getCompanyWechatList_result setSuccess(java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO> success) {
+            this.success = success;
+            return this;
+        }
+
+        public void unsetSuccess() {
+            this.success = null;
+        }
+
+        /** Returns true if field success is set (has been assigned a value) and false otherwise */
+        public boolean isSetSuccess() {
+            return this.success != null;
+        }
+
+        public void setSuccessIsSet(boolean value) {
+            if (!value) {
+                this.success = null;
+            }
+        }
+
+        public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+            return this.e;
+        }
+
+        public getCompanyWechatList_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+            this.e = e;
+            return this;
+        }
+
+        public void unsetE() {
+            this.e = null;
+        }
+
+        /** Returns true if field e is set (has been assigned a value) and false otherwise */
+        public boolean isSetE() {
+            return this.e != null;
+        }
+
+        public void setEIsSet(boolean value) {
+            if (!value) {
+                this.e = null;
+            }
+        }
+
+        public void setFieldValue(_Fields field, java.lang.Object value) {
+            switch (field) {
+                case SUCCESS:
+                    if (value == null) {
+                        unsetSuccess();
+                    } else {
+                        setSuccess((java.util.List<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>)value);
+                    }
+                    break;
+
+                case E:
+                    if (value == null) {
+                        unsetE();
+                    } else {
+                        setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+                    }
+                    break;
+
+            }
+        }
+
+        public java.lang.Object getFieldValue(_Fields field) {
+            switch (field) {
+                case SUCCESS:
+                    return getSuccess();
+
+                case E:
+                    return getE();
+
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+        public boolean isSet(_Fields field) {
+            if (field == null) {
+                throw new java.lang.IllegalArgumentException();
+            }
+
+            switch (field) {
+                case SUCCESS:
+                    return isSetSuccess();
+                case E:
+                    return isSetE();
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        @Override
+        public boolean equals(java.lang.Object that) {
+            if (that == null)
+                return false;
+            if (that instanceof getCompanyWechatList_result)
+                return this.equals((getCompanyWechatList_result)that);
+            return false;
+        }
+
+        public boolean equals(getCompanyWechatList_result that) {
+            if (that == null)
+                return false;
+            if (this == that)
+                return true;
+
+            boolean this_present_success = true && this.isSetSuccess();
+            boolean that_present_success = true && that.isSetSuccess();
+            if (this_present_success || that_present_success) {
+                if (!(this_present_success && that_present_success))
+                    return false;
+                if (!this.success.equals(that.success))
+                    return false;
+            }
+
+            boolean this_present_e = true && this.isSetE();
+            boolean that_present_e = true && that.isSetE();
+            if (this_present_e || that_present_e) {
+                if (!(this_present_e && that_present_e))
+                    return false;
+                if (!this.e.equals(that.e))
+                    return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashCode = 1;
+
+            hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+            if (isSetSuccess())
+                hashCode = hashCode * 8191 + success.hashCode();
+
+            hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+            if (isSetE())
+                hashCode = hashCode * 8191 + e.hashCode();
+
+            return hashCode;
+        }
+
+        @Override
+        public int compareTo(getCompanyWechatList_result other) {
+            if (!getClass().equals(other.getClass())) {
+                return getClass().getName().compareTo(other.getClass().getName());
+            }
+
+            int lastComparison = 0;
+
+            lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetSuccess()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetE()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            return 0;
+        }
+
+        public _Fields fieldForId(int fieldId) {
+            return _Fields.findByThriftId(fieldId);
+        }
+
+        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+            scheme(iprot).read(iprot, this);
+        }
+
+        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+            scheme(oprot).write(oprot, this);
+        }
+
+        @Override
+        public java.lang.String toString() {
+            java.lang.StringBuilder sb = new java.lang.StringBuilder("getCompanyWechatList_result(");
+            boolean first = true;
+
+            sb.append("success:");
+            if (this.success == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.success);
+            }
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("e:");
+            if (this.e == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.e);
+            }
+            first = false;
+            sb.append(")");
+            return sb.toString();
+        }
+
+        public void validate() throws org.apache.thrift.TException {
+            // check for required fields
+            // check for sub-struct validity
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+            try {
+                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private static class getCompanyWechatList_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getCompanyWechatList_resultStandardScheme getScheme() {
+                return new getCompanyWechatList_resultStandardScheme();
+            }
+        }
+
+        private static class getCompanyWechatList_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getCompanyWechatList_result> {
+
+            public void read(org.apache.thrift.protocol.TProtocol iprot, getCompanyWechatList_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TField schemeField;
+                iprot.readStructBegin();
+                while (true)
+                {
+                    schemeField = iprot.readFieldBegin();
+                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    switch (schemeField.id) {
+                        case 0: // SUCCESS
+                            if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                                {
+                                    org.apache.thrift.protocol.TList _list56 = iprot.readListBegin();
+                                    struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>(_list56.size);
+                                    com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO _elem57;
+                                    for (int _i58 = 0; _i58 < _list56.size; ++_i58)
+                                    {
+                                        _elem57 = new com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO();
+                                        _elem57.read(iprot);
+                                        struct.success.add(_elem57);
+                                    }
+                                    iprot.readListEnd();
+                                }
+                                struct.setSuccessIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 1: // E
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                                struct.e.read(iprot);
+                                struct.setEIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        default:
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+
+                // check for required fields of primitive type, which can't be checked in the validate method
+                struct.validate();
+            }
+
+            public void write(org.apache.thrift.protocol.TProtocol oprot, getCompanyWechatList_result struct) throws org.apache.thrift.TException {
+                struct.validate();
+
+                oprot.writeStructBegin(STRUCT_DESC);
+                if (struct.success != null) {
+                    oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+                    {
+                        oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
+                        for (com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO _iter59 : struct.success)
+                        {
+                            _iter59.write(oprot);
+                        }
+                        oprot.writeListEnd();
+                    }
+                    oprot.writeFieldEnd();
+                }
+                if (struct.e != null) {
+                    oprot.writeFieldBegin(E_FIELD_DESC);
+                    struct.e.write(oprot);
+                    oprot.writeFieldEnd();
+                }
+                oprot.writeFieldStop();
+                oprot.writeStructEnd();
+            }
+
+        }
+
+        private static class getCompanyWechatList_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getCompanyWechatList_resultTupleScheme getScheme() {
+                return new getCompanyWechatList_resultTupleScheme();
+            }
+        }
+
+        private static class getCompanyWechatList_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getCompanyWechatList_result> {
+
+            @Override
+            public void write(org.apache.thrift.protocol.TProtocol prot, getCompanyWechatList_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet optionals = new java.util.BitSet();
+                if (struct.isSetSuccess()) {
+                    optionals.set(0);
+                }
+                if (struct.isSetE()) {
+                    optionals.set(1);
+                }
+                oprot.writeBitSet(optionals, 2);
+                if (struct.isSetSuccess()) {
+                    {
+                        oprot.writeI32(struct.success.size());
+                        for (com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO _iter60 : struct.success)
+                        {
+                            _iter60.write(oprot);
+                        }
+                    }
+                }
+                if (struct.isSetE()) {
+                    struct.e.write(oprot);
+                }
+            }
+
+            @Override
+            public void read(org.apache.thrift.protocol.TProtocol prot, getCompanyWechatList_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet incoming = iprot.readBitSet(2);
+                if (incoming.get(0)) {
+                    {
+                        org.apache.thrift.protocol.TList _list61 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+                        struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO>(_list61.size);
+                        com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO _elem62;
+                        for (int _i63 = 0; _i63 < _list61.size; ++_i63)
+                        {
+                            _elem62 = new com.moseeker.thrift.gen.company.struct.HrCompanyWechatDO();
+                            _elem62.read(iprot);
+                            struct.success.add(_elem62);
+                        }
+                    }
                     struct.setSuccessIsSet(true);
                 }
                 if (incoming.get(1)) {

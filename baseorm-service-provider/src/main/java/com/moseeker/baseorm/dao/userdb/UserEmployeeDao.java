@@ -10,22 +10,16 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.Select;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 
+import java.util.*;
 import org.joda.time.DateTimeFieldType;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Record3;
-import org.jooq.Result;
-import org.jooq.SelectField;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
@@ -137,5 +131,27 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return list;
     }
 
+
+    public List<UserEmployeeDO> getUserEmployeeForidList(Set<Integer> idList) {
+        List<UserEmployeeRecord> record = create.selectFrom(table).where(UserEmployee.USER_EMPLOYEE.ID.in(idList)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).
+                and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).fetch();
+        return BeanUtils.DBToStruct(UserEmployeeDO.class, record);
+    }
+
+
+    public Map<Integer, Integer> getEmployeeNum(List<Integer> idList) {
+        Result<Record2<Integer, Integer>> result = create.select(UserEmployee.USER_EMPLOYEE.COMPANY_ID, DSL.count(UserEmployee.USER_EMPLOYEE.ID))
+                .from(table).where(UserEmployee.USER_EMPLOYEE.ID.in(idList)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).
+                and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+                .fetch();
+        if(!result.isEmpty()){
+            Map<Integer, Integer> params = new HashMap<>();
+            for(Record2<Integer, Integer> record2 : result){
+                params.put(record2.value1(), record2.value2());
+            }
+            return params;
+        }
+        return new HashMap<>();
+    }
 
 }
