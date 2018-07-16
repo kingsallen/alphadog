@@ -286,7 +286,7 @@ public class LiePinReceiverHandler {
                 if (!isCityChange) {
                     for (JobPositionLiepinMappingDO mappingDO : liepinMappingDOList) {
                         // 修改
-                        if (mappingDO.getState() == 1) {
+                        if (mappingDO.getState() != 0) {
                             liepinSocialPositionTransfer.editSinglePosition(liePinPositionVO, liePinToken, mappingDO);
                             // 将职位同步状态设置为2，待审核
                             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.binding.getValue());
@@ -592,11 +592,11 @@ public class LiePinReceiverHandler {
                 } catch (BIZException e) {
                     log.info("=============下架猎聘职位失败：requestIds:{},失败信息:msg:{}=================", requestIds.toString(), e.getMessage());
                     liepinMappingDao.updateErrMsgBatch(requestIds, e.getMessage());
-                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, null, e, "【调用api猎聘api处理职位下架失败】positionid:" + requestIds.toString());
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, null, e, "【调用api猎聘api处理职位下架失败】mappingId:" + requestIds.toString());
                 } catch (Exception e1) {
                     log.error(e1.getMessage(), e1);
                     liepinMappingDao.updateErrMsgBatch(requestIds, "后台异常");
-                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, null, e1, "【调用api猎聘api处理职位下架失败】positionid:" + requestIds.toString());
+                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, null, e1, "【调用api猎聘api处理职位下架失败】mappingId:" + requestIds.toString());
                 }
 
             }

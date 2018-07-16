@@ -30,6 +30,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.ExceptionFactory;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -51,6 +52,7 @@ import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
@@ -338,10 +340,17 @@ public class ProfileProcessBS {
                                         pvs.getApplier_name(), companyId,
                                         progressStatus, pvs.getPosition_name(),
                                         pvs.getId(), TemplateMs.TOSEEKER);
-                                sendTemplate(pvs.getRecommender_user_id(),
-                                        pvs.getApplier_name(), companyId,
-                                        progressStatus, pvs.getPosition_name(),
-                                        pvs.getId(), TemplateMs.TORECOM);
+                                if(employeeEntity.isEmployee(pvs.getRecommender_user_id(),companyId)) {
+                                    sendTemplate(pvs.getRecommender_user_id(),
+                                            pvs.getApplier_name(), companyId,
+                                            progressStatus, pvs.getPosition_name(),
+                                            pvs.getId(), TemplateMs.TORECOM);
+                                    //因为发给推荐者的消息模板有两种类型，数据不相同，所以不能用同一段代码处理
+                                    sendTemplateReferral(pvs.getRecommender_user_id(),
+                                            pvs.getApplier_name(), companyId,
+                                            progressStatus, pvs.getPosition_name(),
+                                            pvs.getId(), TemplateMs.TORECOMSTATUS);
+                                }
                             }
                         });
                     } else {
@@ -392,32 +401,18 @@ public class ProfileProcessBS {
             return ;
         }
         String signature = "";
-        int wechatId = 0;
+        Response wechat = null;
         try {
-            Response wechat = companyService.getWechat(companyId, 0);
-            if (wechat.getStatus() == 0 && msInfo!=null) {
-                Map<String, Object> wechatData = JSON.parseObject(wechat
-                        .getData());
-                signature = String.valueOf(wechatData.get("signature"));
-                wechatId = (Integer)wechatData.get("id");
-                Query query = new Query.QueryBuilder().where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.getName(), wechatId)
-                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.getName(), msInfo.getConfig_id())
-                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE.getName(), "0")
-                        .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.STATUS.getName(), "0")
-                        .buildQuery();
-                HrWxNoticeMessageDO noticeMessageDO = noticeMessageDao.getData(query);
-                if(noticeMessageDO != null){
-                    logger.info("模板开关关闭");
-                    return ;
-                }
-            }
-        } catch (TException e1) {
-            log.error(e1.getMessage(), e1);
+            wechat = companyService.getWechat(companyId, 0);
+        } catch (TException e) {
+            log.error(e.getMessage(), e);
         }
-        Map<String, MessageTplDataCol> data = new HashMap<String, MessageTplDataCol>();
-
+        if (wechat.getStatus() == 0) {
+            Map<String, Object> wechatData = JSON.parseObject(wechat
+                    .getData());
+            signature = String.valueOf(wechatData.get("signature"));
+        }
         if (msInfo != null) {
-            String color = "#173177";
             String companyName = "";
             try {
             	Query query = new Query.QueryBuilder().where("id", companyId).buildQuery();
@@ -428,31 +423,10 @@ public class ProfileProcessBS {
             } catch (Exception e2) {
                 log.error(e2.getMessage(), e2);
             }
-            MessageTplDataCol firstMs = new MessageTplDataCol();
-            firstMs.setColor(color);
-            firstMs.setValue(msInfo.getResult());
-            data.put("first", firstMs);
-            MessageTplDataCol keyOneMs = new MessageTplDataCol();
-            keyOneMs.setColor(color);
-            keyOneMs.setValue(companyName);
-            data.put("keyword1", keyOneMs);
-            MessageTplDataCol keyTwoMs = new MessageTplDataCol();
-            keyTwoMs.setColor(color);
-            keyTwoMs.setValue(positionName);
-            data.put("keyword2", keyTwoMs);
-            MessageTplDataCol keyThreeMs = new MessageTplDataCol();
-            keyThreeMs.setColor(color);
-            keyThreeMs.setValue(msInfo.getStatusDesc());
-            data.put("keyword3", keyThreeMs);
-            MessageTplDataCol remarkMs = new MessageTplDataCol();
-            remarkMs.setColor(color);
-            remarkMs.setValue(msInfo.getRemark());
-            data.put("remark", remarkMs);
             MessageTemplateNoticeStruct templateNoticeStruct = new MessageTemplateNoticeStruct();
+            this.handerTemplate(msInfo, companyName, positionName, msInfo.getStatusDesc(), templateNoticeStruct);
             templateNoticeStruct.setCompany_id(companyId);
-            templateNoticeStruct.setData(data);
             templateNoticeStruct.setUser_id(userId);
-            templateNoticeStruct.setSys_template_id(msInfo.getConfig_id());
             String url = MessageFormat.format(
                     msInfo.getUrl(),
                     ConfigPropertiesUtil.getInstance().get("platform.url",
@@ -468,6 +442,88 @@ public class ProfileProcessBS {
                 log.error(e.getMessage(), e);
             }
         }
+    }
+
+    /**
+     * 发送消息模板
+     * @throws TException
+     */
+    @CounterIface
+    public void sendTemplateReferral(int userId, String userName, int companyId,
+                             int status, String positionName, int applicationId, TemplateMs tm)  {
+        if (StringUtils.isNullOrEmpty(positionName)) {
+            return;
+        }
+        MsInfo msInfo = tm.processStatus(status, userName);
+        logger.info("msInfo: {}", msInfo);
+        if(msInfo == null){
+            return ;
+        }
+        //如果模板消息有跳转链接，屏蔽部分解除
+//        String signature = "";
+//        Response wechat = null;
+//        try {
+//            wechat = companyService.getWechat(companyId, 0);
+//        } catch (TException e) {
+//            log.error(e.getMessage(), e);
+//        }
+//        if (wechat.getStatus() == 0) {
+//            Map<String, Object> wechatData = JSON.parseObject(wechat
+//                    .getData());
+//            signature = String.valueOf(wechatData.get("signature"));
+//        }
+
+        if (msInfo != null) {
+            String dateStr = DateUtils.dateToNormalDate(new Date());
+            MessageTemplateNoticeStruct templateNoticeStruct = new MessageTemplateNoticeStruct();
+            this.handerTemplate(msInfo, userName, positionName, dateStr, templateNoticeStruct);
+            templateNoticeStruct.setCompany_id(companyId);
+            templateNoticeStruct.setUser_id(userId);
+//            String url = MessageFormat.format(
+//                    msInfo.getUrl(),
+//                    ConfigPropertiesUtil.getInstance().get("platform.url",
+//                            String.class), signature,
+//                    String.valueOf(applicationId));
+//            url = url +"&send_time=" + new Date().getTime();
+//            templateNoticeStruct.setUrl(url);
+            try {
+                mqService.messageTemplateNotice(templateNoticeStruct);
+            } catch (TException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    /*
+    拼装模板消息数据
+     */
+    private void handerTemplate(MsInfo msInfo, String keyword1, String keyword2, String keyword3,
+                                MessageTemplateNoticeStruct templateNoticeStruct){
+        Map<String, MessageTplDataCol> data = new HashMap<String, MessageTplDataCol>();
+        String dateStr = DateUtils.dateToNormalDate(new Date());
+        String color = "#173177";
+        MessageTplDataCol firstMs = new MessageTplDataCol();
+        firstMs.setColor(color);
+        firstMs.setValue(msInfo.getResult());
+        data.put("first", firstMs);
+        MessageTplDataCol keyOneMs = new MessageTplDataCol();
+        keyOneMs.setColor(color);
+        keyOneMs.setValue(keyword1);
+        data.put("keyword1", keyOneMs);
+        MessageTplDataCol keyTwoMs = new MessageTplDataCol();
+        keyTwoMs.setColor(color);
+        keyTwoMs.setValue(keyword2);
+        data.put("keyword2", keyTwoMs);
+        MessageTplDataCol keyThreeMs = new MessageTplDataCol();
+        keyThreeMs.setColor(color);
+        keyThreeMs.setValue(keyword3);
+        data.put("keyword3", keyThreeMs);
+        MessageTplDataCol remarkMs = new MessageTplDataCol();
+        remarkMs.setColor(color);
+        remarkMs.setValue(msInfo.getRemark());
+        data.put("remark", remarkMs);
+        templateNoticeStruct.setData(data);
+        templateNoticeStruct.setSys_template_id(msInfo.getConfig_id());
     }
 
     private List<Integer> convertList(String params) {

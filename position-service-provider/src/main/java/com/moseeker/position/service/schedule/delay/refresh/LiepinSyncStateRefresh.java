@@ -2,7 +2,9 @@ package com.moseeker.position.service.schedule.delay.refresh;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
@@ -13,6 +15,7 @@ import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,12 +57,15 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
     private JobPositionCityDao jobPositionCityDao;
 
     @Autowired
+    private JobPositionDao jobPositionDao;
+
+    @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
     @Override
     public void refresh(PositionSyncStateRefreshBean refreshBean) {
 
-        logger.info("========================职位状态刷新开始");
+        logger.info("========================职位状态刷新开始refreshBean:{}", refreshBean);
         // 使用第三方职位id刷新职位状态
         short isSynchronization = 2;
         int hrThirdPartyPositionId = refreshBean.getHrThirdPartyPositionId();
@@ -67,18 +73,29 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
         logger.info("=========================hrThirdPartyPositionDO{}", hrThirdPartyPositionDO);
         if (hrThirdPartyPositionDO == null) {
             logger.info("=========================无第三方职位信息hrThirdPartyPositionId:{}", hrThirdPartyPositionId);
-            emailNotification.sendRefreshSyncStateFailEmail("无第三方职位信息,refreshBean:" + refreshBean, null);
             return;
         }
         // 获取第三方账号id
         int thirdAccountId = hrThirdPartyPositionDO.getThirdPartyAccountId();
         // 获取职位job_position.id
         int positionId = hrThirdPartyPositionDO.getPositionId();
+        // 获取job_position
+        JobPositionDO jobPositionDO = jobPositionDao.getJobPositionByPid(positionId);
+
+        if(jobPositionDO == null){
+            hrThirdPartyPositionDao.updateBindState(positionId, thirdAccountId, getChannelType().getValue(), 0);
+            return;
+        }
+        double candidateSource = jobPositionDO.getCandidateSource();
+
+        if(candidateSource == 1){
+            // 不处理校招职位
+            return;
+        }
         // 向猎聘发请求的id list，只获取状态为2(审核中)的职位
         List<Integer> requestIds = getRequestIds(positionId);
         if (requestIds == null || requestIds.size() == 0) {
             logger.info("=========================没有需要审核的mappingid, positionId:{}", positionId);
-            emailNotification.sendRefreshSyncStateFailEmail("没有需要审核的mappingid,refreshBean:" + refreshBean, null);
             return;
         }
 
@@ -86,8 +103,9 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
             // true表示已经过期
             boolean isExpired = confirmNoExpired(hrThirdPartyPositionDO);
             if(isExpired){
-                logger.info("====================审核超过24小时，同步失败");
+                logger.info("====================审核超过24小时，同步失败hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
                 hrThirdPartyPositionDao.updateErrmsg(ERRMSG, positionId, getChannelType().getValue(), PositionSync.failed.getValue());
+                liepinMappingDao.updateState(requestIds, (byte) 1);
                 return;
             }
 
@@ -116,16 +134,17 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
                 }
                 if (LiepinPositionAuditState.PASS.getValue().equals(audit)) {
                     // 修改同步状态和mapping表state
-                    logger.info("======================审核通过");
+                    logger.info("======================审核通过hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
                     hrThirdPartyPositionDao.updateBindState(positionId, thirdAccountId, getChannelType().getValue(), PositionSync.bound.getValue());
                     liepinMappingDao.updateState(requestId, (byte) 1);
                 } else if (LiepinPositionAuditState.NOTPASS.getValue().equals(audit)) {
                     // 修改同步状态为3，设置失败原因
-                    logger.info("======================审核不通过");
+                    logger.info("======================审核不通过hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
                     hrThirdPartyPositionDao.updateErrmsg(ERRMSG, positionId, getChannelType().getValue(), PositionSync.failed.getValue());
+                    liepinMappingDao.updateState(requestId, (byte) 1);
                 } else if (LiepinPositionAuditState.WAITCHECK.getValue().equals(audit)) {
                     // 再次加入队列中，继续等待审核
-                    logger.info("======================等待审核");
+                    logger.info("======================等待审核hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
                     isNeedRefresh = true;
                 }
             }

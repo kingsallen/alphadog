@@ -71,7 +71,6 @@ public class PositionTaskQueueDaemonThread {
 
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                break;
             }
         }
     }
@@ -82,6 +81,7 @@ public class PositionTaskQueueDaemonThread {
      * @date  2018/7/9
      */
     private void getHistoryData() {
+        logger.info("=========================将历史数据再次放入队列中");
         List<HrThirdPartyPositionDO> hrThirdPartyPositionDOS =  hrThirdPartyPositionDao.getAuditPositionData();
         if(hrThirdPartyPositionDOS == null){
             return;
@@ -91,9 +91,6 @@ public class PositionTaskQueueDaemonThread {
             if(hrThirdPartyPositionDO.getChannel() == ChannelType.LIEPIN.getValue()) {
                 refreshBean = new PositionSyncStateRefreshBean(hrThirdPartyPositionDO.getId(), hrThirdPartyPositionDO.getChannel());
                 put(LiepinSyncStateRefresh.TIMEOUT + random.nextInt(60 * 1000), refreshBean);
-            }else {
-                refreshBean = new PositionSyncStateRefreshBean(hrThirdPartyPositionDO.getId(), ChannelType.NONE.getValue());
-                put(DefaultSyncStateRefresh.TIMEOUT + random.nextInt(60 * 1000), refreshBean);
             }
         }
     }

@@ -115,7 +115,7 @@ public class LiepinHttpClientUtil {
         } else if (httpResult.getIntValue("code") != 0) {
             if (httpResult.getIntValue("code") == 1007) {
                 // token失效时，只会是因为hr在猎聘修改了用户名密码，因此提示如下，将文案提示与其他渠道保持一致
-                throw ExceptionUtils.getBizException("{'status':-1,'message':'会员名、用户名或密码错误，请重新绑定账号'}");
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_PWD_ERROR);
             }
             throw ExceptionUtils.getBizException("{'status':-1,'message':'" + httpResult.getString("message") + "'}");
         }

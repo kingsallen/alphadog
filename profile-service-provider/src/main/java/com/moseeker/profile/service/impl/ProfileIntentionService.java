@@ -430,13 +430,14 @@ public class ProfileIntentionService {
                     }
                 }
             }
+            if (selectedPositionRecords != null && selectedPositionRecords.size() > 0) {
+                intentionPositionDao.deleteRecords(selectedPositionRecords);
+            }
         }
         if (toBeAddIntentionPosition != null) {
             intentionPositionDao.addRecord(toBeAddIntentionPosition);
         }
-        if (selectedPositionRecords != null && selectedPositionRecords.size() > 0) {
-            intentionPositionDao.deleteRecords(selectedPositionRecords);
-        }
+
     }
 
     private void updateIntentionIndustry(Intention struct, int intentionId) {
@@ -505,13 +506,14 @@ public class ProfileIntentionService {
                     }
                 }
             }
+            if (selectedIndustryRecords != null && selectedIndustryRecords.size() > 0) {
+                intentionIndustryDao.deleteRecords(selectedIndustryRecords);
+            }
         }
         if (toBeAddIntentionIndustry != null) {
             intentionIndustryDao.addRecord(toBeAddIntentionIndustry);
         }
-        if (selectedIndustryRecords != null && selectedIndustryRecords.size() > 0) {
-            intentionIndustryDao.deleteRecords(selectedIndustryRecords);
-        }
+
     }
 
     /**
@@ -589,11 +591,12 @@ public class ProfileIntentionService {
                     }
                 }
             }
+            if (selectedCityRecords != null && selectedCityRecords.size() > 0) {
+                intentionCityDao.deleteRecords(selectedCityRecords);
+            }
         }
 
-        if (selectedCityRecords != null && selectedCityRecords.size() > 0) {
-            intentionCityDao.deleteRecords(selectedCityRecords);
-        }
+
     }
 
     private boolean isSameOfPositionRecord(Entry<String, Integer> entry,

@@ -91,7 +91,7 @@ public class LiepinSocialTransferTesst {
         HrThirdPartyPositionDO hrThirdPartyPositionDO = testToThirdPartyPosition(positionForm, liePinPositionVO);
         result.setPositionWithAccount(liePinPositionVO);
         result.setThirdPartyPositionDO(hrThirdPartyPositionDO);
-        liepinSocialPositionTransfer.sendSyncRequest(result);
+//        liepinSocialPositionTransfer.sendSyncRequest(result);
     }
 
 
