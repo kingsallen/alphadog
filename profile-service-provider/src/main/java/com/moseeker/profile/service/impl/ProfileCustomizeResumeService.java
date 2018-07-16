@@ -12,9 +12,11 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.Pagination;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.biz.ProfileUtils;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
 import com.moseeker.profile.exception.ProfileException;
@@ -43,12 +45,32 @@ public class ProfileCustomizeResumeService {
     @Autowired
     private ProfileProfileDao profileDao;
 
+    @Autowired
+    private ProfileUtils profileUtils;
+
     public CustomizeResume getResource(Query query) throws TException {
-        return dao.getData(query, CustomizeResume.class);
+        CustomizeResume data= dao.getData(query, CustomizeResume.class);
+        List<String> orderList=profileUtils.getConfigSysCvTplList();
+        if(!StringUtils.isEmptyList(orderList)){
+            String other=profileUtils.handlerSortOther(data.getOther(),orderList);
+            data.setOther(other);
+        }
+        return data;
     }
 
     public List<CustomizeResume> getResources(Query query) throws TException {
-        return dao.getDatas(query, CustomizeResume.class);
+        List<CustomizeResume> list= dao.getDatas(query, CustomizeResume.class);
+        if(!StringUtils.isEmptyList(list)){
+            List<String> orderList=profileUtils.getConfigSysCvTplList();
+            if(!StringUtils.isEmptyList(orderList)){
+                for(CustomizeResume data:list){
+                    String other=profileUtils.handlerSortOther(data.getOther(),orderList);
+                    data.setOther(other);
+                }
+            }
+
+        }
+        return list;
     }
 
     public Pagination getPagination(Query query) throws TException {

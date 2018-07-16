@@ -817,7 +817,7 @@ public class ProfileUtils {
 		}
 		return list;
 	}
-	private String handlerSortOther(String other,List<String> dataList){
+	public String handlerSortOther(String other,List<String> dataList){
 		Map<String,Object> result=new LinkedHashMap<>();
 		Map<String,Object> data=JSON.parseObject(other);
 		if(dataList!=null&&dataList.size()>0){
@@ -835,7 +835,7 @@ public class ProfileUtils {
 		return "";
 	}
 
-	private List<String> getConfigSysCvTplList(){
+	public List<String> getConfigSysCvTplList(){
 		Query query=new Query.QueryBuilder().where("disable",0).orderBy("priority", Order.ASC).buildQuery();
 		List<ConfigSysCvTplRecord> list=configSysCvTplDao.getRecords(query);
 		List<String> result=new LinkedList<>();
