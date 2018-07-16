@@ -832,7 +832,7 @@ public class ProfileUtils {
 		if(result!=null&&!result.isEmpty()){
 			return JSON.toJSONString(result);
 		}
-		return "";
+		return other;
 	}
 
 	public List<String> getConfigSysCvTplList(){
