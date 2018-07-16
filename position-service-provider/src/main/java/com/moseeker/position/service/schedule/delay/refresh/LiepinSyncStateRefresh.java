@@ -64,7 +64,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
     @Override
     public void refresh(PositionSyncStateRefreshBean refreshBean) {
 
-        logger.info("========================职位状态刷新开始");
+        logger.info("========================职位状态刷新开始refreshBean:{}", refreshBean);
         // 使用第三方职位id刷新职位状态
         short isSynchronization = 2;
         int hrThirdPartyPositionId = refreshBean.getHrThirdPartyPositionId();
@@ -103,7 +103,7 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
             // true表示已经过期
             boolean isExpired = confirmNoExpired(hrThirdPartyPositionDO);
             if(isExpired){
-                logger.info("====================审核超过24小时，同步失败");
+                logger.info("====================审核超过24小时，同步失败hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
                 hrThirdPartyPositionDao.updateErrmsg(ERRMSG, positionId, getChannelType().getValue(), PositionSync.failed.getValue());
                 liepinMappingDao.updateState(requestIds, (byte) 1);
                 return;
@@ -134,17 +134,17 @@ public class LiepinSyncStateRefresh extends AbstractSyncStateRefresh {
                 }
                 if (LiepinPositionAuditState.PASS.getValue().equals(audit)) {
                     // 修改同步状态和mapping表state
-                    logger.info("======================审核通过");
+                    logger.info("======================审核通过hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
                     hrThirdPartyPositionDao.updateBindState(positionId, thirdAccountId, getChannelType().getValue(), PositionSync.bound.getValue());
                     liepinMappingDao.updateState(requestId, (byte) 1);
                 } else if (LiepinPositionAuditState.NOTPASS.getValue().equals(audit)) {
                     // 修改同步状态为3，设置失败原因
-                    logger.info("======================审核不通过");
+                    logger.info("======================审核不通过hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
                     hrThirdPartyPositionDao.updateErrmsg(ERRMSG, positionId, getChannelType().getValue(), PositionSync.failed.getValue());
                     liepinMappingDao.updateState(requestId, (byte) 1);
                 } else if (LiepinPositionAuditState.WAITCHECK.getValue().equals(audit)) {
                     // 再次加入队列中，继续等待审核
-                    logger.info("======================等待审核");
+                    logger.info("======================等待审核hrThirdPartyPositionDO:{}", hrThirdPartyPositionDO);
                     isNeedRefresh = true;
                 }
             }
