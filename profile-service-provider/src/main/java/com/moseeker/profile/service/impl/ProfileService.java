@@ -1109,7 +1109,7 @@ public class ProfileService {
         long end = System.currentTimeMillis();
         logger.info("getProfileOther others time:{}", end-start);
 //        }
-        profileParseUtil.handerSortprofileOtherMap(otherMap);
+//        profileParseUtil.handerSortprofileOtherMap(otherMap);
         return otherMap;
     }
 
