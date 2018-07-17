@@ -395,9 +395,11 @@ public class EmployeeService {
             ValidateUtil vu = new ValidateUtil();
             if(StringUtils.isNotNullOrEmpty(conf.getText())){
                 vu.addSensitiveValidate("內推文案", conf.getText(), null, null);
+                vu.addStringLengthValidate("內推文案", conf.getText(), null, null, 0, 5001);
             }
             if(StringUtils.isNotNullOrEmpty(conf.getLink())){
                 vu.addRegExpressValidate("內推链接", conf.getLink(), "^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",null, null);
+                vu.addStringLengthValidate("內推链接", conf.getLink(), null, null, 0, 501);
             }
             vu.addIntTypeValidate("内推政策优先级", conf.getPriority(), null, null, 0,3);
             String message = vu.validate();
