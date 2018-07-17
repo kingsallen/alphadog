@@ -16,6 +16,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfileUtils;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
@@ -46,30 +47,19 @@ public class ProfileCustomizeResumeService {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileUtils profileUtils;
+    ProfileParseUtil profileParseUtil;
+
+
 
     public CustomizeResume getResource(Query query) throws TException {
         CustomizeResume data= dao.getData(query, CustomizeResume.class);
-        List<String> orderList=profileUtils.getConfigSysCvTplList();
-        if(!StringUtils.isEmptyList(orderList)){
-            String other=profileUtils.handlerSortOther(data.getOther(),orderList);
-            data.setOther(other);
-        }
+        profileParseUtil.handerSortCustomizeResumeOther(data);
         return data;
     }
 
     public List<CustomizeResume> getResources(Query query) throws TException {
         List<CustomizeResume> list= dao.getDatas(query, CustomizeResume.class);
-        if(!StringUtils.isEmptyList(list)){
-            List<String> orderList=profileUtils.getConfigSysCvTplList();
-            if(!StringUtils.isEmptyList(orderList)){
-                for(CustomizeResume data:list){
-                    String other=profileUtils.handlerSortOther(data.getOther(),orderList);
-                    data.setOther(other);
-                }
-            }
-
-        }
+        profileParseUtil.handerSortCustomizeResumeOtherList(list);
         return list;
     }
 

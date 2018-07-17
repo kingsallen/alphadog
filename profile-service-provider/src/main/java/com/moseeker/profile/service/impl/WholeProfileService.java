@@ -2,6 +2,7 @@ package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
@@ -11,6 +12,7 @@ import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysCvTplRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
@@ -184,6 +186,8 @@ public class WholeProfileService {
     @Autowired
     ProfileParseUtil profileParseUtil;
 
+
+
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
 
@@ -310,6 +314,7 @@ public class WholeProfileService {
             logger.debug("WholeProfileService getResource importRecordsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<ProfileOtherRecord> otherRecords = otherRecordsFuture.get();
+            profileParseUtil.handerSortOtherList(otherRecords);
             List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
 
             logger.info("WholeProfileService getResource done : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
@@ -321,6 +326,9 @@ public class WholeProfileService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
     }
+
+
+
 
 
     @SuppressWarnings("unchecked")

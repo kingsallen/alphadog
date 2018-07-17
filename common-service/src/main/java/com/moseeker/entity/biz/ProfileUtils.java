@@ -34,8 +34,7 @@ import java.util.*;
 @Component
 public class ProfileUtils {
 	protected Logger logger = LoggerFactory.getLogger(ProfileUtils.class);
-	@Autowired
-	private ConfigSysCvTplDao configSysCvTplDao;
+
 
 	private final static int DEFAULT_FLAG=0;
 
@@ -794,12 +793,10 @@ public class ProfileUtils {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			if (profileRecord != null && records != null && records.size() > 0) {
-				List<String> orderList=this.getConfigSysCvTplList();
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("profile_id", record.getProfileId().intValue());
-					String otherData=handlerSortOther(record.getOther(),orderList);
-					map.put("other", otherData);
+					map.put("other", record.getOther());
 					if (record.getCreateTime() != null) {
 						map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
 					}
@@ -815,36 +812,6 @@ public class ProfileUtils {
 			// do nothing
 		}
 		return list;
-	}
-	public String handlerSortOther(String other,List<String> dataList){
-		Map<String,Object> result=new LinkedHashMap<>();
-		Map<String,Object> data=JSON.parseObject(other);
-		if(dataList!=null&&dataList.size()>0){
-			for(String field:dataList){
-				for(String key:data.keySet()){
-					if(field.equals(key)){
-						result.put(field,data.get(key));
-					}
-				}
-			}
-		}
-		if(result!=null&&!result.isEmpty()){
-			return JSON.toJSONString(result);
-		}
-		return other;
-	}
-
-	public List<String> getConfigSysCvTplList(){
-		Query query=new Query.QueryBuilder().where("disable",0).orderBy("priority", Order.ASC).buildQuery();
-		List<ConfigSysCvTplRecord> list=configSysCvTplDao.getRecords(query);
-		List<String> result=new LinkedList<>();
-		if(list!=null&&list.size()>0){
-			for(ConfigSysCvTplRecord record:list){
-				result.add(record.getFieldName());
-			}
-			return result;
-		}
-		return null;
 	}
 
 	public List<Map<String, Object>> buildImports(ProfileProfileRecord profileRecord,
