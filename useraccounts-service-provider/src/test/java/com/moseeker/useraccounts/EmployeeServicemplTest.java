@@ -27,6 +27,6 @@ public class EmployeeServicemplTest {
         HrCompanyReferralConfDO confDO = new HrCompanyReferralConfDO();
         confDO.setCompanyId(39978);
         confDO.setLink("link");
-
+        confDO.setPriority((byte)1);
 	}
 }
