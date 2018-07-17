@@ -78,6 +78,18 @@ public class ProfileParseUtil {
 
         }
     }
+
+    public void handerSortprofileOtherMap(Map<String,Object> resume){
+        if(resume!=null){
+            List<String> orderList=this.getConfigSysCvTplList();
+            String other=(String)resume.get("other");
+            if(StringUtils.isNotNullOrEmpty(other)){
+                String otherData=this.handlerSortOther(other,orderList);
+                resume.put("other",otherData);
+            }
+
+        }
+    }
     /*
     处理other
      */

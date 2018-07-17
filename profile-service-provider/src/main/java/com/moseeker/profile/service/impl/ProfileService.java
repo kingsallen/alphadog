@@ -50,6 +50,7 @@ import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.ProfileOtherEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.biz.CommonUtils;
+import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.pojo.profile.*;
 import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
 import com.moseeker.entity.pojo.resume.*;
@@ -162,6 +163,9 @@ public class ProfileService {
 
     @Autowired
     private ProfileMailUtil profileMailUtil;
+
+    @Autowired
+    private ProfileParseUtil profileParseUtil;
 
     @Autowired
     private List<IResumeParser> resumeParsers;
@@ -796,7 +800,7 @@ public class ProfileService {
         long end = System.currentTimeMillis();
         logger.info("getProfileOther others time:{}", end-start);
 //        }
-
+        profileParseUtil.handerSortprofileOtherMap(otherMap);
         return otherMap;
     }
 
