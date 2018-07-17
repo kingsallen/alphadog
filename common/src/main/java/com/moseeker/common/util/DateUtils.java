@@ -369,4 +369,18 @@ public class DateUtils {
         return date;
     }
 
+    public static String appendTime(Object startTime, Object endTime, Object endUntilNow ){
+        String start = "";
+        if (startTime != null) {
+            start = ((String)startTime).substring(0, 7).replace("-", ".");
+        }
+        String end = "";
+        if (endTime == null || 1 == (int) endUntilNow) {
+            end = "至今";
+        } else {
+            end = ((String)endTime).substring(0, 7).replace("-", ".");
+        }
+        String time = start + " - " + end;
+        return  time;
+    }
 }
