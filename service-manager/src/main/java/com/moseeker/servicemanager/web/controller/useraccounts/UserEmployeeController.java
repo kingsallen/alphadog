@@ -2,6 +2,8 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -13,22 +15,21 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
-import com.moseeker.thrift.gen.employee.struct.BindType;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.EmployeeResponse;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by eddie on 2017/3/7.
@@ -40,6 +41,12 @@ public class UserEmployeeController {
     UserEmployeeService.Iface service = ServiceManager.SERVICEMANAGER.getService(UserEmployeeService.Iface.class);
 
     EmployeeService.Iface employeeService =  ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
+
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public UserEmployeeController(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
 
     @RequestMapping(value = "/user/employee", method = RequestMethod.DELETE)
     @ResponseBody
@@ -262,4 +269,66 @@ public class UserEmployeeController {
         }
     }
 
+
+    @RequestMapping(value="/v1.0/referral/conf", method = RequestMethod.POST)
+    public String updateReferralConf(HttpServletRequest request,  HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            HrCompanyReferralConfDO confDO = JSON.parseObject(JSON.toJSONString(params), HrCompanyReferralConfDO.class);
+            employeeService.upsertCompanyReferralConf(confDO);
+            return ResponseLogNotification.successJson(request, null);
+        } catch (BIZException e){
+            return ResponseLogNotification.failJson(request,e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value="/v1.0/referral/policy", method = RequestMethod.POST)
+    public String updateReferralPolicy(HttpServletRequest request,  HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int companyId = params.getInt("company_id", 0);
+            if (companyId == 0) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else if (userId == 0) {
+                return ResponseLogNotification.fail(request, "员工Id不能为空");
+            } else {
+                employeeService.updsertCompanyReferralPocily(companyId, userId);
+                return ResponseLogNotification.successJson(request, null);
+            }
+        } catch (BIZException e){
+            return ResponseLogNotification.failJson(request,e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value="/v1.0/referral/conf", method = RequestMethod.GET)
+    public String getReferralConf(HttpServletRequest request,  HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("company_id", 0);
+            if (companyId == 0) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            }else {
+                HrCompanyReferralConfDO confDO = employeeService.getCompanyReferralConf(companyId);
+
+                String str=JSON.toJSONString(confDO,serializeConfig);
+                return ResponseLogNotification.success(request,
+                        ResponseUtils.successWithoutStringify(str));
+            }
+        } catch (BIZException e){
+            return ResponseLogNotification.failJson(request,e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

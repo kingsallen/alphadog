@@ -18,7 +18,9 @@ public enum ExceptionCategory {
     EMAIL_REPETITION(42015, "员工邮箱信息重复"),
     CUSTOM_FIELD_REPETITION(42016, "员工姓名和自定义字段信息重复"),
     REFERRAL_CONF_DATA_EMPTY(42017, "公司內推政策保存数据为空！"),
+    REFERRAL_POLICY_UPDATE_FIALED(42018, "员工想要了解内推政策点击次数更新失败！"),
     COMPANY_DATA_EMPTY(90010, "公司信息不存在！"),
+    PROGRAM_PARAM_NOTEXIST(90015, "参数不正确！"),
     PROGRAM_EXCEPTION(99999, "发生异常，请稍候再试！");
 
 

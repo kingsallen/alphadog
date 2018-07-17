@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeReferralPolicyDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
@@ -27,6 +28,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeReferralPolicyDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
@@ -89,7 +91,12 @@ public class EmployeeService {
     private HrCompanyReferralConfDao referralConfDao;
 
     @Autowired
+    private UserEmployeeReferralPolicyDao policyDao;
+
+    @Autowired
     private UserUserDao userDao;
+
+
 
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
         log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
@@ -415,13 +422,37 @@ public class EmployeeService {
     }
 
     public void upsertReferralPolicy(int companyId, int userId) throws CommonException{
-        if(companyId > 0){
-            Query query=new Query.QueryBuilder().where(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.COMPANY_ID.getName(), companyId)
-                    .buildQuery();
-            HrCompanyReferralConfDO confDO = referralConfDao.getData(query);
+        if(userId > 0){
+            if(employeeEntity.isEmployee(userId, companyId)){
+                UserEmployeeDO employeeDO = employeeDao.getEmployeeByUserId(userId);
+                retryUpdateReferralPolicyCount(employeeDO, 0);
 
+            }
+            throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
         }
-        throw  ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
+        throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_PARAM_NOTEXIST);
+    }
+
+    private void retryUpdateReferralPolicyCount(UserEmployeeDO employeeDO, int index) throws CommonException {
+        if (index >= Constant.RETRY_UPPER_LIMIT) {
+            throw ExceptionFactory.buildException(ExceptionCategory.REFERRAL_POLICY_UPDATE_FIALED);
+        }
+        index++;
+        int count = 0;
+        UserEmployeeReferralPolicyDO policyDO = policyDao.getEmployeeReferralPolicyDOByEmployeeId(employeeDO.getId());
+        if(policyDO == null){
+            policyDO = new UserEmployeeReferralPolicyDO();
+            policyDO.setCount(1);
+            policyDO.setEmployeeId(employeeDO.getId());
+            policyDao.addData(policyDO);
+            count = policyDO.getId();
+        }else{
+            count = policyDao.updateReferralPolicyByEmployeeIdAndCount(employeeDO.getId(),policyDO.getCount());
+        }
+
+        if (count == 0) {
+            retryUpdateReferralPolicyCount(employeeDO, index);
+        }
     }
 
 }

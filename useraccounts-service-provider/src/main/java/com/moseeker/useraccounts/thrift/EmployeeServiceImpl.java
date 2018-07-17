@@ -226,7 +226,14 @@ public class EmployeeServiceImpl implements Iface {
 
     @Override
     public void updsertCompanyReferralPocily(int companyId, int userId) throws BIZException, TException {
-
+        try {
+            service.upsertReferralPolicy(companyId, userId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
 
