@@ -14,10 +14,7 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -25,6 +22,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
@@ -54,6 +52,7 @@ import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -61,6 +60,7 @@ import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -100,6 +100,9 @@ public class ProfileProcessBS {
 
     @Autowired
     private UserHrAccountDao userHraccountDao;
+
+    @Autowired
+    private UserWxUserDao wxUserDao;
 
     @Autowired
     private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
@@ -476,6 +479,16 @@ public class ProfileProcessBS {
         if (msInfo != null) {
             String dateStr = DateUtils.dateToNormalDate(new Date());
             MessageTemplateNoticeStruct templateNoticeStruct = new MessageTemplateNoticeStruct();
+            if(StringUtils.isNullOrEmpty(userName)){
+                UserWxUserRecord wxUserDO = null;
+                try {
+                    wxUserDO = wxUserDao.getWXUserByUserId(userId);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    logger.error(e.getMessage(),e);
+                }
+                userName = wxUserDO.getNickname();
+            }
             this.handerTemplate(msInfo, userName, positionName, dateStr, templateNoticeStruct);
             templateNoticeStruct.setCompany_id(companyId);
             templateNoticeStruct.setUser_id(userId);

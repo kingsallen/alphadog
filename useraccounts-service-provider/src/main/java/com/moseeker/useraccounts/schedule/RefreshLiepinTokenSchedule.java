@@ -53,7 +53,7 @@ public class RefreshLiepinTokenSchedule {
      * @date  2018/7/9
      */
 //    @Scheduled(cron="0 0 0 1,15 * ?")
-    @Scheduled(cron="0 0,5,10,15,20,25,30,35,40,45,50,55 * * * ? ")
+//    @Scheduled(cron="0 0,5,10,15,20,25,30,35,40,45,50,55 * * * ? ")
     public void refreshLiepinToken() {
         long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.LIEPIN_TOKEN_REFRESH.toString(), "");
         if (check>1) {
