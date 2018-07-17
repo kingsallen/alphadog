@@ -22,6 +22,7 @@ import com.moseeker.baseorm.db.userdb.tables.pojos.UserWxUser;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.entity.EmployeeEntity;
 import org.jooq.Configuration;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -106,6 +107,8 @@ public class ApplicationRepository {
         return wxUserJOOQDao;
     }
 
+    @Autowired
+    private EmployeeEntity entity;
     /**
      * 查找申请投递的职位名称
      * @param applicationIdList 申请编号
@@ -428,7 +431,7 @@ public class ApplicationRepository {
 
 
     public boolean isUserEmployee(int companyId, int userId){
-        return employeeJOOQDao.isCompanyEmployee(companyId, userId);
+        return entity.isEmployee(userId, companyId);
     }
 
     public List<UserWxUser> getUserWxUserByUserIdList(List<Integer> userIdList){
