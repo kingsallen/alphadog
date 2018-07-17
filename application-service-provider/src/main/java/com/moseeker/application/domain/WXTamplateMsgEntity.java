@@ -10,9 +10,11 @@ import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxNoticeMessage;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechat;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserWxUser;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,6 +105,7 @@ public class WXTamplateMsgEntity {
         Map<Integer, Integer> recomIdMap = applicationRepository.getRecoms(applicationIdList);
         List<Integer> applierIdList = applierIdMap.entrySet().stream().map(m -> m.getValue()).collect(Collectors.toList());
         List<UserUser> userDOList = applicationRepository.getUserListByIdList(applierIdList);
+        List<UserWxUser> wxUserDOList = applicationRepository.getUserWxUserByUserIdList(applierIdList);
         logger.info("WXTamplateMsgEntity initData applicationIdList:{}", applicationIdList);
 
         List<CVCheckedWXMsgPojo> msgPojoList = applicationIdList.stream().map(appId -> {
@@ -178,7 +181,15 @@ public class WXTamplateMsgEntity {
                 int userId = applierIdMap.get(appId);
                 for(UserUser user : userDOList){
                     if(user.getId().intValue() == userId){
-                        pojo.setUserName(user.getName());
+                        if(StringUtils.isNotNullOrEmpty(user.getName())) {
+                            pojo.setUserName(user.getName());
+                        }else{
+                            for(UserWxUser wxUser :wxUserDOList){
+                                if(wxUser.getSysuserId().intValue() == userId){
+                                    pojo.setUserName(wxUser.getNickname());
+                                }
+                            }
+                        }
                     }
                 }
             }

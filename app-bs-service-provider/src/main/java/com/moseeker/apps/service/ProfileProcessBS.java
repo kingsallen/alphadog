@@ -22,6 +22,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
@@ -59,6 +60,7 @@ import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -478,8 +480,14 @@ public class ProfileProcessBS {
             String dateStr = DateUtils.dateToNormalDate(new Date());
             MessageTemplateNoticeStruct templateNoticeStruct = new MessageTemplateNoticeStruct();
             if(StringUtils.isNullOrEmpty(userName)){
-                UserWxUserDO userDO = wxUserDao.getWXUserById(userId);
-                userName = userDO.getNickname();
+                UserWxUserRecord wxUserDO = null;
+                try {
+                    wxUserDO = wxUserDao.getWXUserByUserId(userId);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    logger.error(e.getMessage(),e);
+                }
+                userName = wxUserDO.getNickname();
             }
             this.handerTemplate(msInfo, userName, positionName, dateStr, templateNoticeStruct);
             templateNoticeStruct.setCompany_id(companyId);
