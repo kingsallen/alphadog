@@ -14,10 +14,7 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -54,6 +51,7 @@ import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -100,6 +98,9 @@ public class ProfileProcessBS {
 
     @Autowired
     private UserHrAccountDao userHraccountDao;
+
+    @Autowired
+    private UserWxUserDao wxUserDao;
 
     @Autowired
     private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
@@ -476,6 +477,10 @@ public class ProfileProcessBS {
         if (msInfo != null) {
             String dateStr = DateUtils.dateToNormalDate(new Date());
             MessageTemplateNoticeStruct templateNoticeStruct = new MessageTemplateNoticeStruct();
+            if(StringUtils.isNullOrEmpty(userName)){
+                UserWxUserDO userDO = wxUserDao.getWXUserById(userId);
+                userName = userDO.getNickname();
+            }
             this.handerTemplate(msInfo, userName, positionName, dateStr, templateNoticeStruct);
             templateNoticeStruct.setCompany_id(companyId);
             templateNoticeStruct.setUser_id(userId);
