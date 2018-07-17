@@ -17,6 +17,7 @@ public enum ExceptionCategory {
     ORDER_ERROR(42014, "排序条件设置错误"),
     EMAIL_REPETITION(42015, "员工邮箱信息重复"),
     CUSTOM_FIELD_REPETITION(42016, "员工姓名和自定义字段信息重复"),
+    REFERRAL_CONF_DATA_EMPTY(42017, "公司內推政策保存数据为空！"),
     COMPANY_DATA_EMPTY(90010, "公司信息不存在！"),
     PROGRAM_EXCEPTION(99999, "发生异常，请稍候再试！");
 

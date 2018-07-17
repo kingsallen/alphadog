@@ -2,7 +2,9 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import java.time.LocalDate;
@@ -197,4 +199,35 @@ public class EmployeeServiceImpl implements Iface {
     public Result setCacheEmployeeCustomInfo(int userId, int companyId, String customValues) throws TException {
         return service.setCacheEmployeeCustomInfo(userId, companyId, customValues);
     }
+
+    @Override
+    public void upsertCompanyReferralConf(HrCompanyReferralConfDO conf) throws BIZException, TException {
+        try {
+             service.upsertCompanyReferralConf(conf);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public HrCompanyReferralConfDO getCompanyReferralConf(int companyId) throws BIZException, TException {
+        try {
+            return service.getCompanyReferralConf(companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public void updsertCompanyReferralPocily(int companyId, int userId) throws BIZException, TException {
+
+    }
+
+
 }

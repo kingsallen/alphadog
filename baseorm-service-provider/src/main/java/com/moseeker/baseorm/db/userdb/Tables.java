@@ -5,6 +5,10 @@ package com.moseeker.baseorm.db.userdb;
 
 
 import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
+import com.moseeker.baseorm.db.userdb.tables.ConsistencyBusiness;
+import com.moseeker.baseorm.db.userdb.tables.ConsistencyBusinessType;
+import com.moseeker.baseorm.db.userdb.tables.ConsistencyMessage;
+import com.moseeker.baseorm.db.userdb.tables.ConsistencyMessageType;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
@@ -13,6 +17,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
@@ -46,6 +51,26 @@ public class Tables {
      * VIEW
      */
     public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
+
+    /**
+     * 消息业务表
+     */
+    public static final ConsistencyBusiness CONSISTENCY_BUSINESS = com.moseeker.baseorm.db.userdb.tables.ConsistencyBusiness.CONSISTENCY_BUSINESS;
+
+    /**
+     * 消息业务类型表
+     */
+    public static final ConsistencyBusinessType CONSISTENCY_BUSINESS_TYPE = com.moseeker.baseorm.db.userdb.tables.ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE;
+
+    /**
+     * 消息表
+     */
+    public static final ConsistencyMessage CONSISTENCY_MESSAGE = com.moseeker.baseorm.db.userdb.tables.ConsistencyMessage.CONSISTENCY_MESSAGE;
+
+    /**
+     * 消息类型表
+     */
+    public static final ConsistencyMessageType CONSISTENCY_MESSAGE_TYPE = com.moseeker.baseorm.db.userdb.tables.ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE;
 
     /**
      * 阿里用户信息表
@@ -86,6 +111,11 @@ public class Tables {
      * The table <code>userdb.user_employee_points_record_company_rel</code>.
      */
     public static final UserEmployeePointsRecordCompanyRel USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL;
+
+    /**
+     * 员工想要了解内推政策点击次数表
+     */
+    public static final UserEmployeeReferralPolicy USER_EMPLOYEE_REFERRAL_POLICY = com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY;
 
     /**
      * 用户职位收藏

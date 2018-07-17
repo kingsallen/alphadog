@@ -3,13 +3,11 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
-import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
-import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
@@ -18,12 +16,14 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.UserWxEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -84,6 +84,9 @@ public class EmployeeService {
 
     @Autowired
     private HrWxWechatDao wxWechatDao;
+
+    @Autowired
+    private HrCompanyReferralConfDao referralConfDao;
 
     @Autowired
     private UserUserDao userDao;
@@ -378,6 +381,47 @@ public class EmployeeService {
         }
         log.info("setCacheEmployeeCustomInfo response: {}", response);
         return response;
+    }
+
+    public int upsertCompanyReferralConf(HrCompanyReferralConfDO conf) throws CommonException{
+        if(conf != null){
+            ValidateUtil vu = new ValidateUtil();
+            if(StringUtils.isNotNullOrEmpty(conf.getText())){
+                vu.addSensitiveValidate("內推文案", conf.getText(), null, null);
+            }
+            if(StringUtils.isNotNullOrEmpty(conf.getLink())){
+                vu.addRegExpressValidate("內推链接", conf.getLink(), "^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",null, null);
+            }
+            vu.addIntTypeValidate("内推政策优先级", conf.getPriority(), null, null, 0,3);
+            String message = vu.validate();
+            if(StringUtils.isNullOrEmpty(message)){
+                return referralConfDao.upsertHrCompanyReferralConf(conf);
+            }else{
+                throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(),
+                        ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", message));
+            }
+        }
+        throw ExceptionFactory.buildException(ExceptionCategory.REFERRAL_CONF_DATA_EMPTY);
+    }
+
+    public HrCompanyReferralConfDO getCompanyReferralConf(int companyId) throws CommonException{
+        if(companyId > 0){
+            Query query=new Query.QueryBuilder().where(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.COMPANY_ID.getName(), companyId)
+                    .buildQuery();
+            HrCompanyReferralConfDO confDO = referralConfDao.getData(query);
+            return confDO;
+        }
+        throw  ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
+    }
+
+    public void upsertReferralPolicy(int companyId, int userId) throws CommonException{
+        if(companyId > 0){
+            Query query=new Query.QueryBuilder().where(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.COMPANY_ID.getName(), companyId)
+                    .buildQuery();
+            HrCompanyReferralConfDO confDO = referralConfDao.getData(query);
+
+        }
+        throw  ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
     }
 
 }

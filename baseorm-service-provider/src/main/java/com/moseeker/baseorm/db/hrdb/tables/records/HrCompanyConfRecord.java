@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1799637767;
+    private static final long serialVersionUID = 1079024687;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -366,14 +366,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c 端简 导入开关 0：未开启，1：开启
+     * Setter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c端简历导入开关 0：未开启，1：开启
      */
     public void setVeryeastSwitch(Byte value) {
         set(24, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c 端简 导入开关 0：未开启，1：开启
+     * Getter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c端简历导入开关 0：未开启，1：开启
      */
     public Byte getVeryeastSwitch() {
         return (Byte) get(24);

@@ -17,6 +17,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
@@ -88,7 +89,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1599558644;
+    private static final long serialVersionUID = 119033669;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -159,6 +160,11 @@ public class Hrdb extends SchemaImpl {
      * 公司福利特色
      */
     public final HrCompanyFeature HR_COMPANY_FEATURE = com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature.HR_COMPANY_FEATURE;
+
+    /**
+     * 公司内推配置表
+     */
+    public final HrCompanyReferralConf HR_COMPANY_REFERRAL_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF;
 
     /**
      * 部门员工配置表
@@ -356,7 +362,7 @@ public class Hrdb extends SchemaImpl {
     public final HrWxImageReply HR_WX_IMAGE_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply.HR_WX_IMAGE_REPLY;
 
     /**
-     * 微信模块表
+     * The table <code>hrdb.hr_wx_module</code>.
      */
     public final HrWxModule HR_WX_MODULE = com.moseeker.baseorm.db.hrdb.tables.HrWxModule.HR_WX_MODULE;
 
@@ -428,6 +434,7 @@ public class Hrdb extends SchemaImpl {
             HrCompanyCs.HR_COMPANY_CS,
             HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO,
             HrCompanyFeature.HR_COMPANY_FEATURE,
+            HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF,
             HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
             HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS,
             HrEmployeePosition.HR_EMPLOYEE_POSITION,
