@@ -420,6 +420,7 @@ public class DeliveryEmailProducer {
                 emailInfo.setWorks(works);
             }
         }
+        emailInfo.setBasicInfo(basic);
         return emailInfo;
     }
 
