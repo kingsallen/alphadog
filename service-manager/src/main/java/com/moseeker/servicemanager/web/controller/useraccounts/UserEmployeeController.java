@@ -320,11 +320,8 @@ public class UserEmployeeController {
             if (companyId == 0) {
                 return ResponseLogNotification.fail(request, "公司Id不能为空");
             }else {
-                HrCompanyReferralConfDO confDO = employeeService.getCompanyReferralConf(companyId);
-
-                String str=JSON.toJSONString(confDO,serializeConfig);
-                return ResponseLogNotification.success(request,
-                        ResponseUtils.successWithoutStringify(str));
+                Response confDO = employeeService.getCompanyReferralConf(companyId);
+                return ResponseLogNotification.success(request,confDO);
             }
         } catch (BIZException e){
             return ResponseLogNotification.fail(request,e.getMessage());

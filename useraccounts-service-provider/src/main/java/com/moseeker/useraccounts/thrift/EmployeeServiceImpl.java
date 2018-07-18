@@ -1,8 +1,13 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
 import com.moseeker.thrift.gen.employee.struct.*;
@@ -35,6 +40,12 @@ public class EmployeeServiceImpl implements Iface {
     private EmployeeBindByEmail employeeBindByEmail;
 
 	Logger logger = LoggerFactory.getLogger(EmployeeServiceImpl.class);
+
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public EmployeeServiceImpl(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
 
 	/* 
 	 * 获取用户员工信息
@@ -213,9 +224,11 @@ public class EmployeeServiceImpl implements Iface {
     }
 
     @Override
-    public HrCompanyReferralConfDO getCompanyReferralConf(int companyId) throws BIZException, TException {
+    public Response getCompanyReferralConf(int companyId) throws BIZException, TException {
         try {
-            return service.getCompanyReferralConf(companyId);
+            HrCompanyReferralConfDO confDO = service.getCompanyReferralConf(companyId);
+            String result= JSON.toJSONString(confDO,serializeConfig);
+            return ResponseUtils.successWithoutStringify(result);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

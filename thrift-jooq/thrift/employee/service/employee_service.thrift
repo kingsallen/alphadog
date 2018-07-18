@@ -44,7 +44,7 @@ service EmployeeService {
     //插入更新公司内推政策数据
     void upsertCompanyReferralConf(1:hr_company_referral_conf_struct.HrCompanyReferralConfDO conf)throws (1: common_struct.BIZException e)
     //获取公司内推配置信息
-    hr_company_referral_conf_struct.HrCompanyReferralConfDO getCompanyReferralConf(1:i32 companyId)throws (1: common_struct.BIZException e)
+    common_struct.Response getCompanyReferralConf(1:i32 companyId)throws (1: common_struct.BIZException e)
     //插入更新员工点击想要了解内推政策按钮次数
     void updsertCompanyReferralPocily(1:i32 companyId, 2:i32 userId)throws (1: common_struct.BIZException e)
 }
