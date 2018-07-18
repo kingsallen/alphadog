@@ -136,7 +136,7 @@ public class ProfileOtherEntity {
         Map<String, Object> otherMap = new HashMap<>();
         List<ConfigSysCvTplDO> tplDOList = cvTplDao.findAll();
         //组装所需要的数据结构
-        List<Map<String, Object>> otherList = new LinkedList<>();
+        List<Map<String, Object>> otherList = new ArrayList<>();
         Set<Map.Entry<String, Object>> entries = parentValues.entrySet();
         String photo = "";
         for(Map.Entry<String, Object> entry : entries){
@@ -162,6 +162,15 @@ public class ProfileOtherEntity {
                         Map<String,Object> map=new HashMap<>();
                         map.put("key",tplDO.getFieldTitle());
                         map.put("value",parentValues.get(key));
+                        otherList.add(map);
+                        break;
+                    }
+                }else if(parentValues.get(key) instanceof Map){
+                    if(fieldName.equals(key)){
+                        Map<String, Object> params = (Map<String, Object>)parentValues.get(key);
+                        Map<String,Object> map=new HashMap<>();
+                        map.put("key",tplDO.getFieldTitle());
+                        map.put("value",params.get("name"));
                         otherList.add(map);
                         break;
                     }
