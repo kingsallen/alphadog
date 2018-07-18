@@ -385,6 +385,7 @@ public class UserEmployeeServiceImpl {
                 if (sorts.get(contributionDetail.getUserId()) != null) {
                     contributionDetail.setRank(sorts.get(contributionDetail.getUserId()));
                 }
+                list.add(contributionDetail);
             }
             paginationUtil.setList(list);
         }

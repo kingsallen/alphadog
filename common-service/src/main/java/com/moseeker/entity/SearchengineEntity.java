@@ -530,7 +530,7 @@ public class SearchengineEntity {
         if (client == null) {
             return new HashMap<>();
         } else {
-            
+
             QueryBuilder employeeIdListQueryBuild = QueryBuilders.termsQuery("id", employeeIdList);
 
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
