@@ -165,6 +165,15 @@ public class ProfileOtherEntity {
                         otherList.add(map);
                         break;
                     }
+                }else if(parentValues.get(key) instanceof Map){
+                    if(fieldName.equals(key)){
+                        Map<String, Object> params = (Map<String, Object>)parentValues.get(key);
+                        Map<String,Object> map=new HashMap<>();
+                        map.put("key",tplDO.getFieldTitle());
+                        map.put("value",params.get("name"));
+                        otherList.add(map);
+                        break;
+                    }
                 }
 
             }
