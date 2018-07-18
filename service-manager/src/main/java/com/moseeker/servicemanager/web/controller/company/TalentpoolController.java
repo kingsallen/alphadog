@@ -1279,7 +1279,7 @@ public class TalentpoolController {
     public String getCommentList(HttpServletRequest request) throws Exception {
         try {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId=Integer.parseInt((String)params.get("company_id"));
+            int companyId=(Integer)params.get("company_id");
             List<Integer> userIdList= (List<Integer>) params.get("user_ids");
             Response result=service.getCompanyCommentByUserIdList(companyId,userIdList);
             return ResponseLogNotification.success(request, result);
