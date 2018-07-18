@@ -1,6 +1,7 @@
 package com.moseeker.entity;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.constant.EmployeeActivedState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
@@ -14,12 +15,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.userdb.tables.*;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
-import com.moseeker.baseorm.db.userdb.tables.UserUser;
-import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
-import com.moseeker.baseorm.db.userdb.tables.pojos.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -48,8 +43,6 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.joda.time.DateTime;
-import org.jooq.Record2;
-import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -669,20 +662,46 @@ public class EmployeeEntity {
      * @param companyId
      * @return
      */
-    public List<UserEmployeeDO> getUserEmployeeDOList(Integer companyId) {
+    public List<UserEmployeeDO> getActiveEmployeeDOList(Integer companyId) {
         List<UserEmployeeDO> userEmployeeDOS = new ArrayList<>();
         if (companyId != 0) {
             // 首先通过CompanyId 查询到该公司集团下所有的公司ID
-            List<Integer> companyIds = getCompanyIds(companyId);
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            queryBuilder.select(UserEmployee.USER_EMPLOYEE.ID.getName())
-                    .select(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName())
-                    .select(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName());
-            Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
-            queryBuilder.where(condition).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
+            Query.QueryBuilder queryBuilder = buildFindEmployeeQuery(companyId);
             userEmployeeDOS = employeeDao.getDatas(queryBuilder.buildQuery());
         }
         return userEmployeeDOS;
+    }
+
+    /**
+     * 分页获取有效员工数据
+     * @param companyIdList 公司集合
+     * @param pageNum 页码
+     * @param pageSize 每页数量
+     * @return 员工集合
+     */
+    public List<UserEmployeeDO> getActiveEmployeeDOList(List<Integer> companyIdList, int pageNum, int pageSize) {
+        List<UserEmployeeDO> userEmployeeDOS = new ArrayList<>();
+        if (companyIdList != null && companyIdList.size() > 0) {
+            // 首先通过CompanyId 查询到该公司集团下所有的公司ID
+            Query.QueryBuilder queryBuilder = buildFindActiveEmployeeQuery(companyIdList);
+            queryBuilder.setPageNum(pageNum);
+            queryBuilder.setPageSize(pageSize);
+            userEmployeeDOS = employeeDao.getDatas(queryBuilder.buildQuery());
+        }
+        return userEmployeeDOS;
+    }
+
+    /**
+     * 查找指定公司下的有效员工数量
+     * @param companyIdList 公司编号集合
+     * @return 有效员工数量
+     */
+    public int countActiveEmployeeByCompanyIds(List<Integer> companyIdList) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIdList, ValueOp.IN))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), EmployeeActivedState.Actived.getState())
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
+        return employeeDao.getCount(queryBuilder.buildQuery());
     }
 
     /**
@@ -971,6 +990,31 @@ public class EmployeeEntity {
         int result = employeeDao.updateData(userEmployeeDO);
         searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()));
         return result;
+    }
+
+    private Query.QueryBuilder buildFindEmployeeQuery(int companyId) {
+        // 首先通过CompanyId 查询到该公司集团下所有的公司ID
+        List<Integer> companyIds = getCompanyIds(companyId);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.select(UserEmployee.USER_EMPLOYEE.ID.getName())
+                .select(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName())
+                .select(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName());
+        Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
+        queryBuilder.where(condition).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
+        return queryBuilder;
+    }
+
+    private Query.QueryBuilder buildFindActiveEmployeeQuery(List<Integer> companyIdList) {
+        // 首先通过CompanyId 查询到该公司集团下所有的公司ID
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.select(UserEmployee.USER_EMPLOYEE.ID.getName())
+                .select(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName())
+                .select(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName());
+        Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIdList, ValueOp.IN);
+        queryBuilder.where(condition).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue())
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActivedState.Actived.getState())
+                .and(new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), 0, ValueOp.NEQ));
+        return queryBuilder;
     }
 
     /**

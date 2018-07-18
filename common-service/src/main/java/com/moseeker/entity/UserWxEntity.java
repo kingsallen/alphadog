@@ -198,7 +198,7 @@ public class UserWxEntity {
     /*
      获取user_wx_user
      */
-    private List<UserWxUserRecord> getUserWxUserData(List<Integer> userIdList){
+    public List<UserWxUserRecord> getUserWxUserData(List<Integer> userIdList){
         Query query=new Query.QueryBuilder().where(new Condition("sysuser_id",userIdList.toArray(),ValueOp.IN)).buildQuery();
         List<UserWxUserRecord> list=userWxUserDao.getRecords(query);
         return list;
