@@ -199,7 +199,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public TwoParam<HrThirdPartyPositionDO, EmptyExtThirdPartyPosition> sendSyncRequest(TransferResult<LiePinPositionVO, EmptyExtThirdPartyPosition> result) throws TException {
 
         LiePinPositionVO liePinPositionVO = result.getPositionWithAccount();

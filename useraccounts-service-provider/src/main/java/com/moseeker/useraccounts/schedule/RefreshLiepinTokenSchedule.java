@@ -2,8 +2,8 @@ package com.moseeker.useraccounts.schedule;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.common.constants.BindingStatus;
-import com.moseeker.common.constants.ChannelType;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -41,6 +42,9 @@ public class RefreshLiepinTokenSchedule {
     @Autowired
     private EmailNotification emailNotification;
 
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
     static List<String> emailList = new ArrayList<>();
 
     /**
@@ -50,6 +54,13 @@ public class RefreshLiepinTokenSchedule {
      */
     @Scheduled(cron="0 0 0 1,15 * ?")
     public void refreshLiepinToken() {
+        long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.LIEPIN_TOKEN_REFRESH.toString(), "");
+        if (check>1) {
+            //绑定中
+            logger.info("已经开始刷新");
+            return;
+        }
+        redisClient.expire(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.LIEPIN_TOKEN_REFRESH.toString(), "", RefreshConstant.REFRESH_THIRD_PARTY_TOKEN_TIMEOUT);
         try {
             List<HrThirdPartyAccountDO> successRequest = new ArrayList<>();
             Map<Integer, String> failRequest = new HashMap<>();
@@ -113,6 +124,7 @@ public class RefreshLiepinTokenSchedule {
                 }
                 emailNotification.sendCustomEmail(emailList, faileRequestContent.toString(), faileRequestSubject);
             }
+            redisClient.del(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.LIEPIN_TOKEN_REFRESH.toString(),"");
         }catch (Exception e){
             e.printStackTrace();
             emailNotification.sendCustomEmail(emailList, "token刷新失败", "token刷新失败");
