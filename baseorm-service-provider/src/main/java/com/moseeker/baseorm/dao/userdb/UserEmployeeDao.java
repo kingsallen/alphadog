@@ -6,7 +6,6 @@ import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import java.util.*;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -14,6 +13,8 @@ import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+
+import java.util.*;
 
 @Repository
 public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
@@ -155,5 +156,4 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return employeeDO;
 
     }
-
 }

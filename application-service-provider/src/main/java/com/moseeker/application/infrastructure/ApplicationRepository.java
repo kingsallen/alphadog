@@ -1,15 +1,13 @@
 package com.moseeker.application.infrastructure;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.application.domain.ApplicationBatchEntity;
+import com.moseeker.application.domain.ApplicationEntity;
 import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.domain.component.state.ApplicationStateRoute;
-import com.moseeker.application.domain.ApplicationEntity;
 import com.moseeker.application.domain.constant.ApplicationRefuseState;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.baseorm.config.HRAccountType;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxNoticeMessage;

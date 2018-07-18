@@ -14,7 +14,7 @@ struct HRChatRoomVO {
 }
 
 struct HRChatRoomsVO {
-    1:  optional i32 pageNo,                //页码
+    1:  optional i32 pageNum,                //页码
     2:  optional i32 pageSize,              //每页显示的数量
     3:  optional i32 totalPage,             //页数
     4:  optional i32 totalRow,              //聊天室总数
@@ -41,7 +41,7 @@ struct UserChatRoomVO {
 }
 
 struct UserChatRoomsVO {
-    1:  optional i32 pageNo,                //页码
+    1:  optional i32 pageNum,                //页码
     2:  optional i32 pageSize,              //每页显示的数量
     3:  optional i32 totalPage,             //页数
     4:  optional i32 totalRow,              //聊天室总数
@@ -74,7 +74,7 @@ struct ChatHistory {
 }
 
 struct ChatsVO {
-    1:  optional i32 pageNo,                //页码
+    1:  optional i32 pageNum,                //页码
     2:  optional i32 pageSize,              //每页显示的数量
     3:  optional i32 totalPage,             //页数
     4:  optional i32 totalRow,              //聊天室总数

@@ -36,6 +36,13 @@ import java.util.Map;
 public class LiePinUserAccountBindHandler implements IBindRequest {
 
     private Logger logger = LoggerFactory.getLogger(LiePinUserAccountBindHandler.class);
+
+    private static final String CHANNEL;
+
+    static{
+        CHANNEL = EmailNotification.getConfig("liepin_position_api_channel");
+    }
+
     @Autowired
     EmailNotification emailNotification;
 
@@ -44,44 +51,57 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
     @Override
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         try {
-
-            String username = hrThirdPartyAccount.getUsername();
-
-            String passwordHex = hrThirdPartyAccount.getPassword();
-
-            String password = decryPwd(passwordHex);
-
-            String resultJson = sendRequest2Liepin(username, password);
-
-            if (StringUtils.isNullOrEmpty(resultJson)) {
-                logger.info("================用户绑定时http请求结果为空=================");
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "用户绑定时http请求结果为空");
-            }
-            JSONObject result = JSONObject.parseObject(resultJson);
-
-            // 请求结果处理
-            if ("0".equals(String.valueOf(result.get("code")))) {
-                JSONObject userInfo = JSONObject.parseObject(result.getString("data"));
-                String userId = userInfo.getString("usere_id");
-                String token = userInfo.getString("token");
-                hrThirdPartyAccount.setExt(userId);
-                hrThirdPartyAccount.setExt2(token);
-                hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
-            } else {
-                throw new BIZException(Integer.parseInt(String.valueOf(result.get("code"))), String.valueOf(result.get("message")));
-            }
+            hrThirdPartyAccount = bindAdaptor(hrThirdPartyAccount, extras);
         } catch (BIZException e) {
-            logger.info("=================errormsg:{},username:{}===================", e.getMessage(), hrThirdPartyAccount.getUsername());
-            hrThirdPartyAccount.setBinding((short) BindingStatus.ERROR.getValue());
+            logger.warn("=================errormsg:{},username:{}===================", e.getMessage(), hrThirdPartyAccount.getUsername());
+            hrThirdPartyAccount.setBinding((short) BindingStatus.INFOWRONG.getValue());
             hrThirdPartyAccount.setErrorMessage(e.getMessage());
         } catch (Exception e) {
             emailNotification.sendCustomEmail(emailNotification.getRefreshMails(), e.getMessage() + "</br>用户账号:"
                     + hrThirdPartyAccount.getUsername(), bindEmailSubject);
             hrThirdPartyAccount.setBinding((short) BindingStatus.ERROR.getValue());
-            hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_TIMEOUT_MSG);
+            hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_EXP_MSG);
             logger.error(e.getMessage(), e);
         }
         return hrThirdPartyAccount;
+    }
+
+    /**
+     * 此方法是为了将绑定业务提出，单纯的绑定操作，绑定成功返回第三方账号对象，绑定失败就抛异常
+     * @param hrThirdPartyAccount 第三方账号
+     * @param extras 额外数据，猎聘渠道没用到
+     * @author  cjm
+     * @date  2018/7/9
+     * @return HrThirdPartyAccountDO
+     */
+    public HrThirdPartyAccountDO bindAdaptor(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
+        String username = hrThirdPartyAccount.getUsername();
+
+        String passwordHex = hrThirdPartyAccount.getPassword();
+
+        String password = decryPwd(passwordHex);
+
+        String resultJson = sendRequest2Liepin(username, password);
+
+        if (StringUtils.isNullOrEmpty(resultJson)) {
+            logger.info("================用户绑定时http请求结果为空=================");
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "用户绑定时http请求结果为空");
+        }
+        logger.info("=========================bindResultJson:{}", resultJson);
+        JSONObject result = JSONObject.parseObject(resultJson);
+
+        // 请求结果处理
+        if ("0".equals(String.valueOf(result.get("code")))) {
+            JSONObject userInfo = JSONObject.parseObject(result.getString("data"));
+            String userId = userInfo.getString("usere_id");
+            String token = userInfo.getString("token");
+            hrThirdPartyAccount.setExt(userId);
+            hrThirdPartyAccount.setExt2(token);
+            hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
+            return hrThirdPartyAccount;
+        } else {
+            throw new BIZException(result.getInteger("code"), result.getString("message"));
+        }
     }
 
     /**
@@ -92,12 +112,20 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
      * @author cjm
      * @date 2018/6/15
      */
-    private String decryPwd(String passwordHex) throws Exception {
+    public String decryPwd(String passwordHex) throws Exception {
         byte[] target = AESUtils.decrypt(passwordHex);
         return new String(target, "UTF-8").trim();
     }
 
-    public String sendRequest2Liepin(String username, String password) throws Exception {
+    /**
+     *
+     * @param   username  用户名
+     * @param   password  密码
+     * @author  cjm
+     * @date  2018/7/9
+     * @return 返回请求结果，请求成功时，猎聘返回的是一个json字符串
+     */
+    private String sendRequest2Liepin(String username, String password) throws Exception {
 
         // 构造请求数据
         Map<String, String> requestMap = new HashMap<>();
@@ -112,7 +140,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
 
         //设置请求头
         Map<String, String> headers = new HashMap<>();
-        headers.put("channel", "qianxun_online");
+        headers.put("channel", CHANNEL);
 
         //发送请求
         return HttpClientUtil.sentHttpPostRequest(UserAccountConstant.liepinUserBindUrl, headers, requestMap);
