@@ -2,24 +2,19 @@ package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.common.struct.Select;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-
-import java.util.*;
-import org.joda.time.DateTimeFieldType;
-import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.util.*;
 
 @Repository
 public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
@@ -154,4 +149,11 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return new HashMap<>();
     }
 
+    public UserEmployeeDO getEmployeeByUserId(int userId){
+        UserEmployeeDO employeeDO = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
+                .fetchOneInto(UserEmployeeDO.class);
+        return employeeDO;
+
+    }
 }

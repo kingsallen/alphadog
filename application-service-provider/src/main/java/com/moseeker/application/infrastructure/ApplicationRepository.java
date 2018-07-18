@@ -1,15 +1,13 @@
 package com.moseeker.application.infrastructure;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.application.domain.ApplicationBatchEntity;
+import com.moseeker.application.domain.ApplicationEntity;
 import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.domain.component.state.ApplicationStateRoute;
-import com.moseeker.application.domain.ApplicationEntity;
 import com.moseeker.application.domain.constant.ApplicationRefuseState;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.baseorm.config.HRAccountType;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxNoticeMessage;
@@ -18,6 +16,7 @@ import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserWxUser;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
@@ -52,6 +51,7 @@ public class ApplicationRepository {
     private UserUserJOOQDao userJOOQDao;
     private HrWxNoticeMessageJOOQDao noticeMessageJOOQDao;
     private UserEmployeeJOOQDao employeeJOOQDao;
+    private UserWxUserJOOQDao wxUserJOOQDao;
 
     /**
      * es数据模板，tableName: 表名， user_id: 用户id
@@ -76,6 +76,7 @@ public class ApplicationRepository {
         noticeMessageJOOQDao = new HrWxNoticeMessageJOOQDao(configuration);
         userJOOQDao = new UserUserJOOQDao(configuration);
         employeeJOOQDao = new UserEmployeeJOOQDao(configuration);
+        wxUserJOOQDao = new UserWxUserJOOQDao(configuration);
     }
 
     public JobApplicationJOOQDao getJobApplicationDao() {
@@ -97,6 +98,10 @@ public class ApplicationRepository {
 
     public JobPositionJOOQDao getPositionJOOQDao() {
         return positionJOOQDao;
+    }
+
+    public UserWxUserJOOQDao getWxUserJOOQDao() {
+        return wxUserJOOQDao;
     }
 
     /**
@@ -422,5 +427,9 @@ public class ApplicationRepository {
 
     public boolean isUserEmployee(int companyId, int userId){
         return employeeJOOQDao.isCompanyEmployee(companyId, userId);
+    }
+
+    public List<UserWxUser> getUserWxUserByUserIdList(List<Integer> userIdList){
+        return wxUserJOOQDao.getWxUserByUserIdList(userIdList);
     }
 }
