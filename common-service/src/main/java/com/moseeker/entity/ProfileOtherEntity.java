@@ -154,6 +154,7 @@ public class ProfileOtherEntity {
             long end = System.currentTimeMillis();
         }
         otherMap.put("photo", photo);
+        parentValues.remove("IDphoto");
         for(ConfigSysCvTplDO tplDO : tplDOList) {
             String fieldName=tplDO.getFieldName();
             for(String key:parentValues.keySet()){
