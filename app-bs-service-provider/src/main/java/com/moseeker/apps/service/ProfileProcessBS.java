@@ -346,6 +346,7 @@ public class ProfileProcessBS {
                                             pvs.getId(), TemplateMs.TORECOM);
                                     //因为发给推荐者的消息模板有两种类型，数据不相同，所以不能用同一段代码处理
                                     sendTemplateReferral(pvs.getRecommender_user_id(),
+                                            pvs.getApplier_id(),
                                             pvs.getApplier_name(), companyId,
                                             progressStatus, pvs.getPosition_name(),
                                             pvs.getId(), TemplateMs.TORECOMSTATUS);
@@ -446,7 +447,7 @@ public class ProfileProcessBS {
      * @throws TException
      */
     @CounterIface
-    public void sendTemplateReferral(int userId, String userName, int companyId,
+    public void sendTemplateReferral(int recomId, int applierId, String userName, int companyId,
                              int status, String positionName, int applicationId, TemplateMs tm)  {
         if (StringUtils.isNullOrEmpty(positionName)) {
             return;
@@ -476,7 +477,7 @@ public class ProfileProcessBS {
             if(StringUtils.isNullOrEmpty(userName)){
                 UserWxUserRecord wxUserDO = null;
                 try {
-                    wxUserDO = wxUserDao.getWXUserByUserId(userId);
+                    wxUserDO = wxUserDao.getWXUserByUserId(applierId);
                 } catch (SQLException e) {
                     e.printStackTrace();
                     logger.error(e.getMessage(),e);
@@ -485,7 +486,7 @@ public class ProfileProcessBS {
             }
             this.handerTemplate(msInfo, userName, positionName, dateStr, templateNoticeStruct);
             templateNoticeStruct.setCompany_id(companyId);
-            templateNoticeStruct.setUser_id(userId);
+            templateNoticeStruct.setUser_id(recomId);
 //            String url = MessageFormat.format(
 //                    msInfo.getUrl(),
 //                    ConfigPropertiesUtil.getInstance().get("platform.url",

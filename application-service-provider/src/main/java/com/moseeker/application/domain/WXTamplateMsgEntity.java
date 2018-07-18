@@ -159,7 +159,7 @@ public class WXTamplateMsgEntity {
                     for(HrWxWechat wechat : companySignatures){
                         if(wechat.getCompanyId().intValue() == company.getId().intValue()){
                             pojo.setSignature(wechat.getSignature());
-                            if(StringUtils.isEmptyList(noticeReferralList)){
+                            if(!StringUtils.isEmptyList(noticeReferralList)){
                                 for(HrWxNoticeMessage noticeMessage : noticeReferralList){
                                     if(noticeMessage.getWechatId().intValue() == wechat.getId().intValue()
                                             && noticeMessage.getStatus() == 0){
