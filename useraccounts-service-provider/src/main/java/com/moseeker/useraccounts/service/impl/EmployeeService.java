@@ -401,13 +401,13 @@ public class EmployeeService {
                 vu.addRegExpressValidate("內推链接", conf.getLink(), "^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",null, null);
                 vu.addStringLengthValidate("內推链接", conf.getLink(), null, null, 0, 501);
             }
-            vu.addIntTypeValidate("内推政策优先级", conf.getPriority(), null, null, 0,3);
+            vu.addIntTypeValidate("内推政策优先级", (int)conf.getPriority(), null, null, 0,3);
             String message = vu.validate();
             if(StringUtils.isNullOrEmpty(message)){
                 return referralConfDao.upsertHrCompanyReferralConf(conf);
             }else{
                 throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(),
-                        ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", message));
+                        ExceptionCategory.ADD_REDERRALPOLICY_PARAMETER.getMsg().replace("{MESSAGE}", message));
             }
         }
         throw ExceptionFactory.buildException(ExceptionCategory.REFERRAL_CONF_DATA_EMPTY);
@@ -428,7 +428,7 @@ public class EmployeeService {
             if(employeeEntity.isEmployee(userId, companyId)){
                 UserEmployeeDO employeeDO = employeeDao.getEmployeeByUserId(userId);
                 retryUpdateReferralPolicyCount(employeeDO, 0);
-
+                return;
             }
             throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
         }

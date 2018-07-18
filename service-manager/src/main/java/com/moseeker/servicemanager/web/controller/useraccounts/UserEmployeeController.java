@@ -271,6 +271,7 @@ public class UserEmployeeController {
 
 
     @RequestMapping(value="/v1.0/referral/conf", method = RequestMethod.POST)
+    @ResponseBody
     public String updateReferralConf(HttpServletRequest request,  HttpServletResponse response) {
         try {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
@@ -278,7 +279,7 @@ public class UserEmployeeController {
             employeeService.upsertCompanyReferralConf(confDO);
             return ResponseLogNotification.successJson(request, null);
         } catch (BIZException e){
-            return ResponseLogNotification.failJson(request,e);
+            return ResponseLogNotification.fail(request,e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(),e);
@@ -287,6 +288,7 @@ public class UserEmployeeController {
     }
 
     @RequestMapping(value="/v1.0/referral/policy", method = RequestMethod.POST)
+    @ResponseBody
     public String updateReferralPolicy(HttpServletRequest request,  HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
@@ -301,7 +303,7 @@ public class UserEmployeeController {
                 return ResponseLogNotification.successJson(request, null);
             }
         } catch (BIZException e){
-            return ResponseLogNotification.failJson(request,e);
+            return ResponseLogNotification.fail(request,e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(),e);
@@ -310,6 +312,7 @@ public class UserEmployeeController {
     }
 
     @RequestMapping(value="/v1.0/referral/conf", method = RequestMethod.GET)
+    @ResponseBody
     public String getReferralConf(HttpServletRequest request,  HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
@@ -324,7 +327,7 @@ public class UserEmployeeController {
                         ResponseUtils.successWithoutStringify(str));
             }
         } catch (BIZException e){
-            return ResponseLogNotification.failJson(request,e);
+            return ResponseLogNotification.fail(request,e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(),e);
