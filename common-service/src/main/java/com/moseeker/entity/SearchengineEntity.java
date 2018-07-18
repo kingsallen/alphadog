@@ -530,8 +530,9 @@ public class SearchengineEntity {
         if (client == null) {
             return new HashMap<>();
         } else {
-
+            
             QueryBuilder employeeIdListQueryBuild = QueryBuilders.termsQuery("id", employeeIdList);
+
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
                     .setQuery(employeeIdListQueryBuild);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
@@ -570,13 +571,12 @@ public class SearchengineEntity {
                             employeeAwardsList.get(i).getTimeSpan(), companyIdListQueryBuild));
                 }
             }
-
-
             return employeeAwardsList.stream().collect(Collectors.toMap(EmployeeAwards::getId, EmployeeAwards::getSort));
         }
     }
 
-    private int getSort(TransportClient client, int employeeId, int award, long lastUpdateTime, String timeSpan, QueryBuilder companyIdListQueryBuild) {
+    private int getSort(TransportClient client, int employeeId, int award, long lastUpdateTime, String timeSpan,
+                        QueryBuilder companyIdListQueryBuild) {
         QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
 
