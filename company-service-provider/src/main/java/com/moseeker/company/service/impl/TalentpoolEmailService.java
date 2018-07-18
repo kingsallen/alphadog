@@ -1852,12 +1852,13 @@ public class TalentpoolEmailService {
         if(!StringUtils.isEmptyMap(basicData)){
             basicInfo.setPosition((String)basicData.getOrDefault("position_name",""));
             basicInfo.setBirth((String)basicData.getOrDefault("birth",""));
-            basicInfo.setDegree((String)basicData.getOrDefault("degreeName",""));
         }
         if(!StringUtils.isEmptyList(eduList)){
             Map<String,Object> education=eduList.get(0);
             basicInfo.setDegree(DegreeConvertUtil.intToEnum.get(education.get("degree")));
             basicInfo.setMajor((String)education.getOrDefault("major_name",""));
+            basicInfo.setCollege((String)education.getOrDefault("college_name",""));
+
         }
         //==========================================
         //==========================================
