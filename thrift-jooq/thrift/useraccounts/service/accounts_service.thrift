@@ -210,7 +210,7 @@ service UserCenterService {
     //查询用户的只为收藏记录
     list<useraccounts_struct.FavPositionForm> getFavPositions(1: i32 userId);
     //查询推荐记录
-    useraccounts_struct.RecommendationVO getRecommendation(1: i32 userId, 2:i8 type, 3: i32 pageNo, 4: i32 pageSize);
+    useraccounts_struct.RecommendationVO getRecommendation(1: i32 userId, 2:i8 type, 3: i32 pageNum, 4: i32 pageSize);
 }
 
 //user thirdparty user 服务
@@ -241,4 +241,6 @@ service UserEmployeeService {
     common_struct.Response getValidateUserEmployee(1: i32 company_id,2: string email,3: i32 pageNum,4: i32 pageSize) throws (1:common_struct.BIZException e);
 
     common_struct.Response getPastUserEmployee(1: i32 company_id) throws (1:common_struct.BIZException e);
+
+    useraccounts_struct.Pagination getContributions(1: i32 companyId, 2: i32 pageNum, 3: i32 pageSize) throws (1:common_struct.BIZException e);
 }

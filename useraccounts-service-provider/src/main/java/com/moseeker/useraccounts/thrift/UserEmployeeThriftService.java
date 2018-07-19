@@ -3,7 +3,9 @@ package com.moseeker.useraccounts.thrift;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.PaginationUtil;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -12,22 +14,23 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
+import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -157,6 +160,31 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Pagination getContributions(int companyId, int pageNum, int pageSize) throws BIZException, TException {
+        try {
+            PaginationUtil<ContributionDetail> paginationUtil = employeeService.getContributions(companyId, pageNum, pageSize);
+            Pagination pagination = new Pagination();
+            pagination.setPageSize(paginationUtil.getPageSize());
+            pagination.setPageNum(paginationUtil.getPageNum());
+            pagination.setTotalRow(paginationUtil.getTotalRow());
+            if (paginationUtil.getList() != null && paginationUtil.getList().size() > 0) {
+                List<EmployeeReferralContribution> list = paginationUtil.getList()
+                        .stream()
+                        .map(detail -> {
+                            EmployeeReferralContribution employeeReferralContribution = new EmployeeReferralContribution();
+                            BeanUtils.copyProperties(detail, employeeReferralContribution);
+                            return employeeReferralContribution;
+                        })
+                        .collect(Collectors.toList());
+                pagination.setDetails(list);
+            }
+            return pagination;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
         }
     }
 }

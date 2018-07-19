@@ -800,7 +800,7 @@ public class UserHrAccountService {
      * @return
      */
     private Query.QueryBuilder getQueryBuilder(Query.QueryBuilder queryBuilder, String keyWord, Integer companyId) throws CommonException {
-        List<UserEmployeeDO> userEmployeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
+        List<UserEmployeeDO> userEmployeeDOList = employeeEntity.getActiveEmployeeDOList(companyId);
         List<Integer> sysIdsTemp = userEmployeeDOList.stream().filter(userEmployeeDO -> userEmployeeDO.getSysuserId() > 0)
                 .map(userEmployeeDO -> userEmployeeDO.getSysuserId()).collect(Collectors.toList());
         Condition sysuserId = new Condition(UserUser.USER_USER.ID.getName(), sysIdsTemp, ValueOp.IN);

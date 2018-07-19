@@ -2,19 +2,24 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.PaginationUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.ApplyTypeAwardFrom;
+import com.moseeker.servicemanager.web.controller.useraccounts.vo.ContributionDetail;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
-import com.moseeker.thrift.gen.employee.struct.BindType;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.EmployeeResponse;
 import com.moseeker.thrift.gen.employee.struct.Result;
@@ -28,7 +33,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by eddie on 2017/3/7.
@@ -40,6 +47,12 @@ public class UserEmployeeController {
     UserEmployeeService.Iface service = ServiceManager.SERVICEMANAGER.getService(UserEmployeeService.Iface.class);
 
     EmployeeService.Iface employeeService =  ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
+
+    private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
+
+    public UserEmployeeController(){
+        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
 
     @RequestMapping(value = "/user/employee", method = RequestMethod.DELETE)
     @ResponseBody
@@ -256,10 +269,116 @@ public class UserEmployeeController {
         } catch (BIZException e){
             return ResponseLogNotification.failJson(request,e);
         } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+    获取最近转发人员
+     */
+    @RequestMapping(value="/v1.0/employee/rank", method = RequestMethod.GET)
+    @ResponseBody
+    public String getContribution(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("company_id", 0);
+            int pageSize = params.getInt("page_size", 0);
+            int pageNo = params.getInt("page_no", 0);
+
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addIntTypeValidate("公司", companyId, null, null, 1,
+                    null);
+            if (org.apache.commons.lang.StringUtils.isNotBlank(validateUtil.validate())) {
+                return ResponseLogNotification.failJson(request, validateUtil.getResult());
+
+            } else {
+                PaginationUtil<ContributionDetail> result = new PaginationUtil<>();
+                com.moseeker.thrift.gen.useraccounts.struct.Pagination pagination = service.getContributions(companyId,
+                        pageNo, pageSize);
+
+                result.setPageNum(pagination.getPageNum());
+                result.setPageSize(pagination.getPageSize());
+                result.setTotalRow(pagination.getTotalRow());
+
+                //数据转换
+                if (pagination.getDetails() != null && pagination.getDetails().size() > 0) {
+                    List<ContributionDetail> contributionDetails = pagination.getDetails()
+                            .stream()
+                            .map(employeeReferralContribution -> {
+                                ContributionDetail contributionDetail = new ContributionDetail();
+                                org.springframework.beans.BeanUtils.copyProperties(employeeReferralContribution,
+                                        contributionDetail);
+                                return contributionDetail;
+                            }).collect(Collectors.toList());
+                    result.setList(contributionDetails);
+                }
+                return ResponseLogNotification.successJson(request, result);
+            }
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value="/v1.0/referral/conf", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateReferralConf(HttpServletRequest request,  HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            HrCompanyReferralConfDO confDO = JSON.parseObject(JSON.toJSONString(params), HrCompanyReferralConfDO.class);
+            employeeService.upsertCompanyReferralConf(confDO);
+            return ResponseLogNotification.successJson(request, null);
+        } catch (BIZException e){
+            return ResponseLogNotification.fail(request,e.getMessage());
+        } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
 
+    @RequestMapping(value="/v1.0/referral/policy", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateReferralPolicy(HttpServletRequest request,  HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int companyId = params.getInt("company_id", 0);
+            if (companyId == 0) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else if (userId == 0) {
+                return ResponseLogNotification.fail(request, "员工Id不能为空");
+            } else {
+                employeeService.updsertCompanyReferralPocily(companyId, userId);
+                return ResponseLogNotification.successJson(request, null);
+            }
+        } catch (BIZException e){
+            return ResponseLogNotification.fail(request,e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value="/v1.0/referral/conf", method = RequestMethod.GET)
+    @ResponseBody
+    public String getReferralConf(HttpServletRequest request,  HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("company_id", 0);
+            if (companyId == 0) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            }else {
+                Response confDO = employeeService.getCompanyReferralConf(companyId);
+                return ResponseLogNotification.success(request,confDO);
+            }
+        } catch (BIZException e){
+            return ResponseLogNotification.fail(request,e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }
