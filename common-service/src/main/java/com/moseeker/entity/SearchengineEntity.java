@@ -611,7 +611,7 @@ public class SearchengineEntity {
 
         QueryBuilder updateTime = QueryBuilders
                 .rangeQuery("awards." + timeSpan + ".last_update_time")
-                .to(Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()))
+                .to(Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toString())
                 .includeUpper(true);
 
         ((BoolQueryBuilder) query).must(updateTime);
