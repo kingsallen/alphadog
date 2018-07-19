@@ -609,9 +609,15 @@ public class SearchengineEntity {
                 .includeLower(true);
         ((BoolQueryBuilder) query).must(awardQuery);
 
+        logger.info("timespan:{}", Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toString());
+        logger.info("timespan:{}", Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()));
+
+        LocalDateTime localDateTime = Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        logger.info("localdatetime:{}", localDateTime);
+        logger.info("localdatetime:{}", localDateTime.toString());
         QueryBuilder updateTime = QueryBuilders
                 .rangeQuery("awards." + timeSpan + ".last_update_time")
-                .to(Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toString())
+                .to(localDateTime.toString())
                 .includeUpper(true);
 
         ((BoolQueryBuilder) query).must(updateTime);
