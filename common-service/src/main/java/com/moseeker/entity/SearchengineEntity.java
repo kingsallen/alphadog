@@ -574,6 +574,7 @@ public class SearchengineEntity {
                             LocalDateTime.parse(jsonObject.getString("last_update_time"))
                                     .atZone(ZoneId.systemDefault()).toInstant()
                                     .toEpochMilli());
+                    logger.info("getCurrentMonthList - employeeAwards:{}", employeeAwards);
                     employeeAwardsList.add(employeeAwards);
                 }
             }
@@ -587,6 +588,7 @@ public class SearchengineEntity {
                     employeeAwardsList.get(i).setSort(getSort(client, employeeAwardsList.get(i).getId(),
                             employeeAwardsList.get(i).getAward(), employeeAwardsList.get(i).getLastUpdateTime(),
                             employeeAwardsList.get(i).getTimeSpan(), companyIdListQueryBuild));
+                    logger.info("getCurrentMonthList - add sort employeeAwards:{}", employeeAwardsList.get(i));
                 }
             }
             return employeeAwardsList.stream().collect(Collectors.toMap(EmployeeAwards::getId, EmployeeAwards::getSort));
