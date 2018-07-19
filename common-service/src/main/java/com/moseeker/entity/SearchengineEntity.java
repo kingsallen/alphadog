@@ -548,12 +548,13 @@ public class SearchengineEntity {
 
                 EmployeeAwards employeeAwards = new EmployeeAwards();
                 employeeAwards.setId(jsonObject.getInteger("id"));
-                if (jsonObject.getJSONObject("awards") != null && jsonObject.getJSONObject("awards").getJSONObject("timespan") != null) {
-                    JSONObject timeSpanAward = jsonObject.getJSONObject("awards").getJSONObject("timespan");
+                if (jsonObject.getJSONObject("awards") != null && jsonObject.getJSONObject("awards").getJSONObject(timeSpan) != null) {
+                    JSONObject timeSpanAward = jsonObject.getJSONObject("awards").getJSONObject(timeSpan);
                     employeeAwards.setAward(timeSpanAward.getInteger("award"));
                     employeeAwards.setTimeSpan(timeSpan);
                     employeeAwards.setLastUpdateTime(
-                            LocalDateTime.parse(jsonObject.getString("last_update_time"))
+                            LocalDateTime.parse(jsonObject.getJSONObject("awards").getJSONObject(timeSpan)
+                                    .getString("last_update_time"))
                                     .atZone(ZoneId.systemDefault()).toInstant()
                                     .toEpochMilli());
                     employeeAwardsList.add(employeeAwards);
