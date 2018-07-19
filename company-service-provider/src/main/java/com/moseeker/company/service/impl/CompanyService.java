@@ -892,7 +892,8 @@ public class CompanyService {
         //获取本月有积分增加的员工列表
         List<UserEmployeeDO> employeeDOList = employeeEntity.getUserEmployeeByIdList(employeeIdList);
         if(!StringUtils.isEmptyList(employeeDOList)) {
-            List<Integer> companyIdList = employeeDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
+            List<Integer> companyList = employeeDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
+            List<Integer> companyIdList = hrGroupCompanyRelDao.getGroupCompanyRelDoByCompanyIds(companyList);
             //获取本月有积分增加员工对应公司认证员工数量 公司编号 = 认证员工数量
             Map<Integer, Integer> companyEmployeeMap = employeeEntity.getEmployeeNum(companyIdList);
             //获取对应公众号信息
@@ -1154,6 +1155,7 @@ public class CompanyService {
     private List<HrCompanyWechatDO> handerCompanyWechatInfo(List<Integer> companyIds, List<HrWxWechatDO> wechatDOList,
                                                             List<HrWxTemplateMessageDO> messageDOList, Map<Integer, Integer> params){
         if(!StringUtils.isEmptyList(companyIds) && params!=null){
+            logger.info("===============params:{}",params);
             List<HrCompanyWechatDO> companyWechatDOList = new ArrayList<>();
             for(Integer companyId: companyIds){
                 HrCompanyWechatDO companyWechatDO = new HrCompanyWechatDO();
@@ -1180,7 +1182,9 @@ public class CompanyService {
                         }
                     }
                 }
-                companyWechatDO.setEmployeeCount(params.get(companyId));
+                if(params.get(companyId)!=null) {
+                    companyWechatDO.setEmployeeCount(params.get(companyId));
+                }
                 companyWechatDOList.add(companyWechatDO);
             }
             return companyWechatDOList;
