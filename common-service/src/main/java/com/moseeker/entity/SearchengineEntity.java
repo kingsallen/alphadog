@@ -605,8 +605,7 @@ public class SearchengineEntity {
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
 
         QueryBuilder awardQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".award")
-                .from(award)
-                .includeLower(true);
+                .gte(award);
         ((BoolQueryBuilder) query).must(awardQuery);
 
         logger.info("timespan:{}", Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toString());
@@ -616,9 +615,7 @@ public class SearchengineEntity {
         logger.info("localdatetime:{}", localDateTime);
         logger.info("localdatetime:{}", localDateTime.toString());
         QueryBuilder updateTime = QueryBuilders
-                .rangeQuery("awards." + timeSpan + ".last_update_time")
-                .to(localDateTime.toString())
-                .includeUpper(true);
+                .rangeQuery("awards." + timeSpan + ".last_update_time").lte(localDateTime.toString());
 
         ((BoolQueryBuilder) query).must(updateTime);
 
