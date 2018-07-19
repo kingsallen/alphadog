@@ -879,6 +879,7 @@ public class CompanyService {
     public List<HrCompanyWechatDO> getCompanyInfoByTemplateRank(){
         String timeStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         timeStr = timeStr+"-01 00:00:00";
+        logger.info("===============time:{}",timeStr);
         Date date = null;
         try {
             date = DateUtils.shortTimeToDate(timeStr);
