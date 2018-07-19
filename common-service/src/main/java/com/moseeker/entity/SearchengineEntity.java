@@ -601,35 +601,37 @@ public class SearchengineEntity {
 
     private int getSort(TransportClient client, int employeeId, int award, long lastUpdateTime, String timeSpan,
                         QueryBuilder companyIdListQueryBuild) {
-        QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
-        QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
+        if (award > 0) {
+            QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
+            QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
 
-        QueryBuilder awardQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".award")
-                .gt(award);
-        ((BoolQueryBuilder) query).must(awardQuery);
+            QueryBuilder awardQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".award")
+                    .gt(award);
+            ((BoolQueryBuilder) query).must(awardQuery);
 
-        logger.info("timespan:{}", Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toString());
-        logger.info("timespan:{}", Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()));
+            logger.info("timespan:{}", Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toString());
+            logger.info("timespan:{}", Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()));
 
-        ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
+            ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
 
-        QueryBuilder exceptCurrentEmployeeQuery = QueryBuilders
-                .termQuery("id", employeeId);
-        ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
+            QueryBuilder exceptCurrentEmployeeQuery = QueryBuilders
+                    .termQuery("id", employeeId);
+            ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
 
-        if (employeeId == 884200) {
-            logger.info("getSort query:{}", query.toString());
-        }
-        try {
-            SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
-                    .setQuery(query).setSize(0).execute().get();
             if (employeeId == 884200) {
-                logger.info("getSort sortResponse:{}", sortResponse);
+                logger.info("getSort query:{}", query.toString());
             }
-            return (int)sortResponse.getHits().getTotalHits();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return 0;
+            try {
+                SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
+                        .setQuery(query).setSize(0).execute().get();
+                if (employeeId == 884200) {
+                    logger.info("getSort sortResponse:{}", sortResponse);
+                }
+                return (int)sortResponse.getHits().getTotalHits()+1;
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
         }
+        return 0;
     }
 }
