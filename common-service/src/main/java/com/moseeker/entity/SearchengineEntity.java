@@ -635,6 +635,9 @@ public class SearchengineEntity {
         try {
             SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
                     .setQuery(query).setSize(0).execute().get();
+            if (employeeId == 884200) {
+                logger.info("getSort sortResponse:{}", sortResponse);
+            }
             return (int)sortResponse.getHits().getTotalHits();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
