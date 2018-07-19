@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -20,6 +21,7 @@ import com.moseeker.entity.*;
 import com.moseeker.entity.pojo.profile.info.Internship;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
@@ -72,6 +74,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     private SearchengineEntity searchengineEntity;
+
+    @Autowired
+    private HrWxWechatDao wechatDao;
 
     private ThreadPool threadPool = ThreadPool.Instance;
 
@@ -294,15 +299,17 @@ public class UserEmployeeServiceImpl {
         List<UserEmployeeDO> employeeDOS = employeeEntity.getActiveEmployeeDOList(companyIdList, pageNum, pageSize);
 
         if (employeeDOS != null && employeeDOS.size() > 0) {
-            Map<Integer, Integer> userEmployeeMap = employeeDOS
-                    .stream()
-                    .collect(Collectors.toMap(UserEmployeeDO::getSysuserId, UserEmployeeDO::getId));
-            List<Integer> employeeIdList = employeeDOS
-                    .stream()
-                    .map(UserEmployeeDO::getId).collect(Collectors.toList());
-            List<Integer> userIdList = employeeDOS
-                    .stream()
-                    .map(UserEmployeeDO::getSysuserId).collect(Collectors.toList());
+
+            //用户与员工关系
+            Map<Integer, Integer> userEmployeeMap = new HashMap<>();
+            List<Integer> employeeIdList = new ArrayList<>();
+            List<Integer> userIdList = new ArrayList<>();
+            for (UserEmployeeDO employeeDO: employeeDOS) {
+                userEmployeeMap.put(employeeDO.getSysuserId(), employeeDO.getId());
+                employeeIdList.add(employeeDO.getId());
+                userIdList.add(employeeDO.getSysuserId());
+
+            }
 
             LocalDateTime today = LocalDateTime.now();
             LocalDateTime lastFriday = today.with(DayOfWeek.MONDAY).plusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
@@ -324,11 +331,15 @@ public class UserEmployeeServiceImpl {
             Future<Map<Integer, Integer>> sortsFuture = threadPool.startTast(() ->
                     searchengineEntity.getCurrentMonthList(employeeIdList, companyIdList));
 
+            Future<List<HrWxWechatDO>> wechatsFuture = threadPool.startTast(() ->
+                    wechatDao.getHrWxWechatByCompanyIds(companyIdList));
+
             Map<Integer,Integer> forwardCount = new HashMap<>();
             Map<Integer, Integer> applyCount = new HashMap<>();
             Map<Integer, Integer> awardsCount = new HashMap<>();
             List<UserWxUserRecord> wxUserRecords = new ArrayList<>();
             Map<Integer, Integer> sorts = new HashMap<>();
+            List<HrWxWechatDO> wechatDOList = new ArrayList<>();
 
             try {
                 forwardCount = forwardCountFuture.get();
@@ -355,12 +366,36 @@ public class UserEmployeeServiceImpl {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
+            try {
+                wechatDOList = wechatsFuture.get();
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
 
-            Map<Integer, UserWxUserRecord> wxUserMap;
+            Map<Integer, Integer> userWechatMap = new HashMap<>();          //用户->员工->公众号
+            if (wechatDOList != null && wechatDOList.size() > 0) {
+                for (UserEmployeeDO employeeDO: employeeDOS) {
+                    Optional<HrWxWechatDO> wechatDOOptional = wechatDOList
+                            .stream()
+                            .filter(hrWxWechatDO -> hrWxWechatDO.getCompanyId() == employeeDO.getCompanyId())
+                            .findAny();
+                    if (wechatDOOptional.isPresent()) {
+                        userWechatMap.put(employeeDO.getSysuserId(), wechatDOOptional.get().getId());
+                    }
+                }
+            }
+
+            final Map<Integer, UserWxUserRecord> wxUserMap = new HashMap<>();
             if (wxUserRecords != null && wxUserRecords.size() > 0) {
-                wxUserMap = wxUserRecords.stream().collect(Collectors.toMap(wxUser -> wxUser.getSysuserId(), wxUser -> wxUser));
-            } else {
-                wxUserMap = new HashMap<>();
+
+                wxUserRecords.forEach(userWxUserRecord -> {
+                    if (userWechatMap.get(userWxUserRecord.getSysuserId()) != null) {
+                        if (userWxUserRecord.getWechatId().equals(userWechatMap.get(userWxUserRecord.getSysuserId()))) {
+                            wxUserMap.put(userWxUserRecord.getSysuserId(), userWxUserRecord);
+                        }
+
+                    }
+                });
             }
 
             List<ContributionDetail> list = new ArrayList<>();
