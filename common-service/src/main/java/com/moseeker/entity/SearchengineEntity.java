@@ -628,6 +628,9 @@ public class SearchengineEntity {
                 .termQuery("id", employeeId);
         ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
 
+        if (employeeId == 884200) {
+            logger.info("getSort query:{}", query.toString());
+        }
 
         try {
             SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
