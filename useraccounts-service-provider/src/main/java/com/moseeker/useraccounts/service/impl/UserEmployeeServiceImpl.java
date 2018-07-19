@@ -395,6 +395,7 @@ public class UserEmployeeServiceImpl {
                         }
 
                     }
+                    wxUserMap.putIfAbsent(userWxUserRecord.getSysuserId(), userWxUserRecord);
                 });
             }
 
