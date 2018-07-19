@@ -574,7 +574,8 @@ public class SearchengineEntity {
                     employeeAwards.setAward(timeSpanAward.getInteger("award"));
                     employeeAwards.setTimeSpan(timeSpan);
                     employeeAwards.setLastUpdateTime(
-                            LocalDateTime.parse(jsonObject.getString("last_update_time"))
+                            LocalDateTime.parse(jsonObject.getJSONObject("awards").getJSONObject(timeSpan)
+                                    .getString("last_update_time"))
                                     .atZone(ZoneId.systemDefault()).toInstant()
                                     .toEpochMilli());
                     logger.info("getCurrentMonthList - employeeAwards:{}", employeeAwards);
