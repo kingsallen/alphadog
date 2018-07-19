@@ -553,6 +553,7 @@ public class SearchengineEntity {
 
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
                     .setQuery(employeeIdListQueryBuild);
+            logger.info("getCurrentMonthList searchRequestBuilder:{}", searchRequestBuilder.toString());
             SearchResponse response = searchRequestBuilder.execute().actionGet();
 
             LocalDateTime localDateTime = LocalDateTime.now();
@@ -560,6 +561,7 @@ public class SearchengineEntity {
                     (localDateTime.getMonthValue() < 10 ?
                             ("0"+localDateTime.getMonthValue()) : localDateTime.getMonthValue());
 
+            logger.info("getCurrentMonthList response:{}", response);
             List<EmployeeAwards> employeeAwardsList = new ArrayList<>();
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
