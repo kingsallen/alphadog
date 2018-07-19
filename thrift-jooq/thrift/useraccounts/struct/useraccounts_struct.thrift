@@ -486,3 +486,21 @@ struct ThirdPartyAccountInfo{
     9: optional i32 company_id,
     10: optional list<ThirdPartyAccountHrInfo> hrs
 }
+//员工一周的转发分享数据
+struct EmployeeReferralContribution {
+    1: optional i32 userId,
+    2: optional i32 company_id,
+    3: optional string openid,
+    4: optional i32 point,
+    5: optional i32 rank,
+    6: optional i32 forwardCount,
+    7: optional i32 deliverCount,
+}
+
+//分页信息
+struct Pagination {
+    1: optional i32 pageNum,
+    2: optional i32 pageSize,
+    3: optional i32 totalRow,
+    4: optional list<EmployeeReferralContribution> details, 
+}

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 
-    private static final long serialVersionUID = -1148452003;
+    private static final long serialVersionUID = 1128543888;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_hr_chat</code>
@@ -62,9 +62,9 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     public final TableField<HrWxHrChatRecord, Integer> CHATLIST_ID = createField("chatlist_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "wx_hr_chat_list.id");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容
+     * The column <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容,job类型：职位ID
      */
-    public final TableField<HrWxHrChatRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "聊天内容");
+    public final TableField<HrWxHrChatRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB, this, "聊天内容,job类型：职位ID");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.pid</code>. hr_position.id
