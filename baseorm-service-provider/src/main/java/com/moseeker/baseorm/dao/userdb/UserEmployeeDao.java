@@ -143,6 +143,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
             Result<Record2<Integer, Integer>> result = create.select(UserEmployee.USER_EMPLOYEE.COMPANY_ID, DSL.count(UserEmployee.USER_EMPLOYEE.ID))
                     .from(table).where(UserEmployee.USER_EMPLOYEE.ID.in(idList)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0)).
                             and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
+                    .groupBy(UserEmployee.USER_EMPLOYEE.COMPANY_ID)
                     .fetch();
             if (!result.isEmpty()) {
                 Map<Integer, Integer> params = new HashMap<>();
