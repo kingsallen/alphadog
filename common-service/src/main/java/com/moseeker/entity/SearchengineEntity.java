@@ -605,19 +605,11 @@ public class SearchengineEntity {
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
 
         QueryBuilder awardQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".award")
-                .gte(award);
+                .gt(award);
         ((BoolQueryBuilder) query).must(awardQuery);
 
         logger.info("timespan:{}", Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toString());
         logger.info("timespan:{}", Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()));
-
-        LocalDateTime localDateTime = Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toLocalDateTime();
-        logger.info("localdatetime:{}", localDateTime);
-        logger.info("localdatetime:{}", localDateTime.toString());
-        QueryBuilder updateTime = QueryBuilders
-                .rangeQuery("awards." + timeSpan + ".last_update_time").lte(localDateTime.toString());
-
-        ((BoolQueryBuilder) query).must(updateTime);
 
         ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
 
@@ -628,7 +620,6 @@ public class SearchengineEntity {
         if (employeeId == 884200) {
             logger.info("getSort query:{}", query.toString());
         }
-
         try {
             SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
                     .setQuery(query).setSize(0).execute().get();
