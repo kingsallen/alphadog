@@ -8,6 +8,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -29,12 +30,20 @@ public class HrGroupCompanyRelDao extends JooqCrudImpl<HrGroupCompanyRelDO, HrGr
         super(table, hrGroupCompanyRelDOClass);
     }
 
-    public List<HrGroupCompanyRelDO> getGroupCompanyRelDoByCompanyIds(List<Integer> companyIdList){
+    public List<Integer> getGroupCompanyRelDoByCompanyIds(List<Integer> companyIdList){
         if(!StringUtils.isEmptyList(companyIdList)){
             List<HrGroupCompanyRelDO> relDOList = create.selectFrom(HrGroupCompanyRel.HR_GROUP_COMPANY_REL)
                     .where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.COMPANY_ID.in(companyIdList))
                     .fetchInto(HrGroupCompanyRelDO.class);
+            if(!StringUtils.isEmptyList(relDOList)){
+                List<Integer> relIdList = relDOList.stream().map(m -> m.getGroupId()).collect(Collectors.toList());
+                List<HrGroupCompanyRelDO> relList = create.selectFrom(HrGroupCompanyRel.HR_GROUP_COMPANY_REL)
+                        .where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.GROUP_ID.in(relIdList))
+                        .fetchInto(HrGroupCompanyRelDO.class);
+                List<Integer> companyIds = relList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
+                return companyIds;
+            }
         }
-        return new ArrayList<>();
+        return companyIdList;
     }
 }
