@@ -5,6 +5,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.jooq.Record;
 import org.jooq.Record2;
@@ -128,23 +129,29 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
 
 
     public List<UserEmployeeDO> getUserEmployeeForidList(Set<Integer> idList) {
-        List<UserEmployeeRecord> record = create.selectFrom(table).where(UserEmployee.USER_EMPLOYEE.ID.in(idList)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).
-                and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).fetch();
-        return BeanUtils.DBToStruct(UserEmployeeDO.class, record);
+        if(idList != null && idList.size()>0) {
+            List<UserEmployeeRecord> record = create.selectFrom(table).where(UserEmployee.USER_EMPLOYEE.ID.in(idList)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0)).
+                    and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0)).fetch();
+            return BeanUtils.DBToStruct(UserEmployeeDO.class, record);
+        }
+        return new ArrayList<>();
     }
 
 
     public Map<Integer, Integer> getEmployeeNum(List<Integer> idList) {
-        Result<Record2<Integer, Integer>> result = create.select(UserEmployee.USER_EMPLOYEE.COMPANY_ID, DSL.count(UserEmployee.USER_EMPLOYEE.ID))
-                .from(table).where(UserEmployee.USER_EMPLOYEE.ID.in(idList)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).
-                and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
-                .fetch();
-        if(!result.isEmpty()){
-            Map<Integer, Integer> params = new HashMap<>();
-            for(Record2<Integer, Integer> record2 : result){
-                params.put(record2.value1(), record2.value2());
+        if(!StringUtils.isEmptyList(idList)) {
+            Result<Record2<Integer, Integer>> result = create.select(UserEmployee.USER_EMPLOYEE.COMPANY_ID, DSL.count(UserEmployee.USER_EMPLOYEE.ID))
+                    .from(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(idList)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0)).
+                            and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
+                    .groupBy(UserEmployee.USER_EMPLOYEE.COMPANY_ID)
+                    .fetch();
+            if (!result.isEmpty()) {
+                Map<Integer, Integer> params = new HashMap<>();
+                for (Record2<Integer, Integer> record2 : result) {
+                    params.put(record2.value1(), record2.value2());
+                }
+                return params;
             }
-            return params;
         }
         return new HashMap<>();
     }

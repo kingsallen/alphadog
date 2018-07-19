@@ -879,6 +879,7 @@ public class CompanyService {
     public List<HrCompanyWechatDO> getCompanyInfoByTemplateRank(){
         String timeStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         timeStr = timeStr+"-01 00:00:00";
+        logger.info("===============time:{}",timeStr);
         Date date = null;
         try {
             date = DateUtils.shortTimeToDate(timeStr);
@@ -890,20 +891,28 @@ public class CompanyService {
         Set<Integer> employeeIdList = employeePointsMap.keySet();
         //获取本月有积分增加的员工列表
         List<UserEmployeeDO> employeeDOList = employeeEntity.getUserEmployeeByIdList(employeeIdList);
-        List<Integer> companyIdList = employeeDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
-        //获取本月有积分增加员工对应公司认证员工数量 公司编号 = 认证员工数量
-        Map<Integer, Integer> companyEmployeeMap = employeeEntity.getEmployeeNum(companyIdList);
-        //获取对应公众号信息
-        List<HrWxWechatDO> wechatDOList = wechatDao.getHrWxWechatByCompanyIds(companyIdList);
-        List<Integer> wechatIdList = wechatDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
-        List<HrWxTemplateMessageDO> messageDOList = messageDao
-                .getHrWxTemplateMessageDOByWechatIds(wechatIdList, Constant.AWARD_RANKING);
-        //筛选出来排名通知消息模板为开的公众号开关
-        List<HrWxNoticeMessageDO> noticeList = noticeDao.getHrWxNoticeMessageDOByWechatIds(wechatIdList, Constant.AWARD_RANKING);
-        wechatIdList = noticeList.stream().map(m -> m.getWechatId()).collect(Collectors.toList());
-        wechatDOList = wechatDao.getHrWxWechatByIds(wechatIdList);
-        companyIdList = wechatDOList.stream().map(m ->m.getCompanyId()).collect(Collectors.toList());
-        return  handerCompanyWechatInfo(companyIdList, wechatDOList, messageDOList, companyEmployeeMap);
+        if(!StringUtils.isEmptyList(employeeDOList)) {
+            List<Integer> companyList = employeeDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
+            List<Integer> companyIdList = hrGroupCompanyRelDao.getGroupCompanyRelDoByCompanyIds(companyList);
+            //获取本月有积分增加员工对应公司认证员工数量 公司编号 = 认证员工数量
+            Map<Integer, Integer> companyEmployeeMap = employeeEntity.getEmployeeNum(companyIdList);
+            //获取对应公众号信息
+            List<HrWxWechatDO> wechatDOList = wechatDao.getHrWxWechatByCompanyIds(companyIdList);
+            if(!StringUtils.isEmptyList(wechatDOList)) {
+                List<Integer> wechatIdList = wechatDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
+                List<HrWxTemplateMessageDO> messageDOList = messageDao
+                        .getHrWxTemplateMessageDOByWechatIds(wechatIdList, Constant.AWARD_RANKING);
+                //筛选出来排名通知消息模板为开的公众号开关
+                List<HrWxNoticeMessageDO> noticeList = noticeDao.getHrWxNoticeMessageDOByWechatIds(wechatIdList, Constant.AWARD_RANKING);
+                if(!StringUtils.isEmptyList(noticeList)) {
+                    wechatIdList = noticeList.stream().map(m -> m.getWechatId()).collect(Collectors.toList());
+                    wechatDOList = wechatDao.getHrWxWechatByIds(wechatIdList);
+                    companyIdList = wechatDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
+                    return handerCompanyWechatInfo(companyIdList, wechatDOList, messageDOList, companyEmployeeMap);
+                }
+            }
+        }
+        return new ArrayList<>();
     }
 
     /**
@@ -1146,6 +1155,7 @@ public class CompanyService {
     private List<HrCompanyWechatDO> handerCompanyWechatInfo(List<Integer> companyIds, List<HrWxWechatDO> wechatDOList,
                                                             List<HrWxTemplateMessageDO> messageDOList, Map<Integer, Integer> params){
         if(!StringUtils.isEmptyList(companyIds) && params!=null){
+            logger.info("===============params:{}",params);
             List<HrCompanyWechatDO> companyWechatDOList = new ArrayList<>();
             for(Integer companyId: companyIds){
                 HrCompanyWechatDO companyWechatDO = new HrCompanyWechatDO();
@@ -1172,7 +1182,9 @@ public class CompanyService {
                         }
                     }
                 }
-                companyWechatDO.setEmployeeCount(params.get(companyId));
+                if(params.get(companyId)!=null) {
+                    companyWechatDO.setEmployeeCount(params.get(companyId));
+                }
                 companyWechatDOList.add(companyWechatDO);
             }
             return companyWechatDOList;

@@ -31,6 +31,7 @@ public class UserEmployeePointsRecordCompanyRelDao extends JooqCrudImpl<UserEmpl
     }
 
     public Map<Integer, Integer> handerEmployeeAwards(Date date){
+        logger.info("=============date:{}",date);
         Result<Record2<Long, BigDecimal>> result = create.select(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID, DSL.sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD))
                 .from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
                 .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.lt(new Timestamp(date.getTime())))
