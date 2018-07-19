@@ -489,7 +489,7 @@ struct ThirdPartyAccountInfo{
 //员工一周的转发分享数据
 struct EmployeeReferralContribution {
     1: optional i32 userId,
-    2: optional i32 company_id,
+    2: optional i32 companyId,
     3: optional string openid,
     4: optional i32 point,
     5: optional i32 rank,

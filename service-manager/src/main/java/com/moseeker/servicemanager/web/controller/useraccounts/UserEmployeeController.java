@@ -313,7 +313,7 @@ public class UserEmployeeController {
                             }).collect(Collectors.toList());
                     result.setList(contributionDetails);
                 }
-                return ResponseLogNotification.successJson(request, result);
+                return com.moseeker.servicemanager.web.controller.Result.success(result).toJson();
             }
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
