@@ -379,7 +379,7 @@ public class ProfileProcessBS {
             }
 
 
-            return ResponseUtils.success("操作成功");
+            return ResponseUtils.success(dataResult);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
