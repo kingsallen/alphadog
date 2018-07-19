@@ -45,19 +45,16 @@ public class BusinessUtil {
 		if(preRecruitOrder == 3 && recruitOrder == 4) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CVCHECKED);
 			result.setReward(recruitOrderCVChecked);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 4 && recruitOrder == 7) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CVPASSED);
 			result.setReward(recruitOrderCVPassedReward);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 7 && recruitOrder == 10) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_OFFERED);
 			result.setReward(recruitOrderOfferedReward);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 10 && recruitOrder == 12) {
@@ -116,11 +113,11 @@ public class BusinessUtil {
 			result.setReward(0);
 			result.setStatus(0);
 		}
-		if(preRecruitOrder == 13 && recruitOrder == 4) {
-			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CANCELILLEGAL);
-			result.setReward(0);
-			result.setStatus(0);
-		}
+//		if(preRecruitOrder == 13 && recruitOrder == 4) {
+//			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CANCELILLEGAL);
+//			result.setReward(0);
+//			result.setStatus(0);
+//		}
 		if(preRecruitOrder == 13 && recruitOrder == 7) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CANCELILLEGAL);
 			result.setReward(0);
@@ -140,6 +137,17 @@ public class BusinessUtil {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CANCELILLEGAL);
 			result.setReward(0);
 			result.setStatus(0);
+		}
+		if(preRecruitOrder==3 && recruitOrder==7){
+			result.setStatus(0);
+			result.setReward(recruitOrderCVPassedReward);
+			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CVPASSED);
+		}
+
+		if(preRecruitOrder==7 && recruitOrder==12){
+			result.setStatus(0);
+			result.setReward(recruitOrderHiredReward);
+			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_HIRED);
 		}
 		return result;
 	}
