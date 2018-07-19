@@ -1154,6 +1154,7 @@ public class CompanyService {
     private List<HrCompanyWechatDO> handerCompanyWechatInfo(List<Integer> companyIds, List<HrWxWechatDO> wechatDOList,
                                                             List<HrWxTemplateMessageDO> messageDOList, Map<Integer, Integer> params){
         if(!StringUtils.isEmptyList(companyIds) && params!=null){
+            logger.info("===============params:{}",params);
             List<HrCompanyWechatDO> companyWechatDOList = new ArrayList<>();
             for(Integer companyId: companyIds){
                 HrCompanyWechatDO companyWechatDO = new HrCompanyWechatDO();
@@ -1180,7 +1181,9 @@ public class CompanyService {
                         }
                     }
                 }
-                companyWechatDO.setEmployeeCount(params.get(companyId));
+                if(params.get(companyId)!=null) {
+                    companyWechatDO.setEmployeeCount(params.get(companyId));
+                }
                 companyWechatDOList.add(companyWechatDO);
             }
             return companyWechatDOList;
