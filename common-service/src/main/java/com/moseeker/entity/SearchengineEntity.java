@@ -582,23 +582,14 @@ public class SearchengineEntity {
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
 
         QueryBuilder awardQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".award")
-                .from(award)
-                .includeLower(true);
+                .gt(award);
         ((BoolQueryBuilder) query).must(awardQuery);
-
-        QueryBuilder updateTime = QueryBuilders
-                .rangeQuery("awards." + timeSpan + ".last_update_time")
-                .to(Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()))
-                .includeUpper(true);
-
-        ((BoolQueryBuilder) query).must(updateTime);
 
         ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
 
         QueryBuilder exceptCurrentEmployeeQuery = QueryBuilders
                 .termQuery("id", employeeId);
         ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
-
 
         try {
             SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
