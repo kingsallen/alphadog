@@ -312,7 +312,7 @@ public class UserEmployeeServiceImpl {
             }
 
             LocalDateTime today = LocalDateTime.now();
-            LocalDateTime lastFriday = today.with(DayOfWeek.MONDAY).plusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
+            LocalDateTime lastFriday = today.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
             LocalDateTime currentFriday = today.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
 
             //查找转发数量
@@ -375,9 +375,6 @@ public class UserEmployeeServiceImpl {
             Map<Integer, Integer> userWechatMap = new HashMap<>();          //用户->员工->公众号
             if (wechatDOList != null && wechatDOList.size() > 0) {
                 for (UserEmployeeDO employeeDO: employeeDOS) {
-                    if (employeeDO.getSysuserId() == 2113423) {
-                        System.out.println(employeeDO);
-                    }
                     Optional<HrWxWechatDO> wechatDOOptional = wechatDOList
                             .stream()
                             .filter(hrWxWechatDO -> hrWxWechatDO.getCompanyId() == employeeDO.getCompanyId())
@@ -392,9 +389,6 @@ public class UserEmployeeServiceImpl {
             if (wxUserRecords != null && wxUserRecords.size() > 0) {
 
                 wxUserRecords.forEach(userWxUserRecord -> {
-                    if (userWxUserRecord.getId() == 2113423) {
-                        System.out.println(userWxUserRecord);
-                    }
                     if (userWechatMap.get(userWxUserRecord.getSysuserId()) != null) {
                         if (userWxUserRecord.getWechatId().equals(userWechatMap.get(userWxUserRecord.getSysuserId()))) {
                             wxUserMap.put(userWxUserRecord.getSysuserId(), userWxUserRecord);
