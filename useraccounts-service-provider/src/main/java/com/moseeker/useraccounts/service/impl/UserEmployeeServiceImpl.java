@@ -412,8 +412,8 @@ public class UserEmployeeServiceImpl {
                 if (applyCount.get(contributionDetail.getUserId()) != null) {
                     contributionDetail.setDeliverCount(applyCount.get(contributionDetail.getUserId()));
                 }
-                if (awardsCount.get(userEmployeeMap.get(userEmployeeDO.getId())) != null) {
-                    contributionDetail.setPoint(awardsCount.get(userEmployeeMap.get(userEmployeeDO.getId())));
+                if (awardsCount.get(userEmployeeDO.getId()) != null) {
+                    contributionDetail.setPoint(awardsCount.get(userEmployeeDO.getId()));
                 }
                 if (wxUserMap.get(contributionDetail.getUserId()) != null) {
                     contributionDetail.setOpenid(wxUserMap.get(contributionDetail.getUserId()).getOpenid());
