@@ -412,14 +412,14 @@ public class UserEmployeeServiceImpl {
                 if (applyCount.get(contributionDetail.getUserId()) != null) {
                     contributionDetail.setDeliverCount(applyCount.get(contributionDetail.getUserId()));
                 }
-                if (awardsCount.get(userEmployeeMap.get(contributionDetail.getUserId())) != null) {
-                    contributionDetail.setPoint(awardsCount.get(userEmployeeMap.get(contributionDetail.getUserId())));
+                if (awardsCount.get(userEmployeeMap.get(userEmployeeDO.getId())) != null) {
+                    contributionDetail.setPoint(awardsCount.get(userEmployeeMap.get(userEmployeeDO.getId())));
                 }
                 if (wxUserMap.get(contributionDetail.getUserId()) != null) {
                     contributionDetail.setOpenid(wxUserMap.get(contributionDetail.getUserId()).getOpenid());
                 }
-                if (sorts.get(contributionDetail.getUserId()) != null) {
-                    contributionDetail.setRank(sorts.get(contributionDetail.getUserId()));
+                if (sorts.get(userEmployeeDO.getId()) != null) {
+                    contributionDetail.setRank(sorts.get(userEmployeeDO.getId()));
                 }
                 list.add(contributionDetail);
             }

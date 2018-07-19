@@ -67,6 +67,7 @@ public class UserEmployeePointsRecordDao extends JooqCrudImpl<UserEmployeePoints
 				.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.in(employeeIdList))
 				.and(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.gt(new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
 				.and(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.le(new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
+				.groupBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID)
 				.fetch();
 	}
 }

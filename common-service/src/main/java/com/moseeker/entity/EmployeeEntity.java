@@ -707,7 +707,7 @@ public class EmployeeEntity {
     public int countActiveEmployeeByCompanyIds(List<Integer> companyIdList) {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIdList, ValueOp.IN))
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), EmployeeActivedState.Actived.getState())
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActivedState.Actived.getState())
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
         return employeeDao.getCount(queryBuilder.buildQuery());
     }
