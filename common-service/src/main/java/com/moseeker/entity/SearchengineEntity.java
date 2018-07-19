@@ -570,7 +570,7 @@ public class SearchengineEntity {
                 employeeAwards.setId(jsonObject.getInteger("id"));
                 logger.info("id:{},  awards:{}, timespan:{}", jsonObject.get("id"), jsonObject.get("awards"), timeSpan);
                 if (jsonObject.getJSONObject("awards") != null && jsonObject.getJSONObject("awards").getJSONObject(timeSpan) != null) {
-                    JSONObject timeSpanAward = jsonObject.getJSONObject("awards").getJSONObject("timespan");
+                    JSONObject timeSpanAward = jsonObject.getJSONObject("awards").getJSONObject(timeSpan);
                     employeeAwards.setAward(timeSpanAward.getInteger("award"));
                     employeeAwards.setTimeSpan(timeSpan);
                     employeeAwards.setLastUpdateTime(
