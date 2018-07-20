@@ -552,7 +552,7 @@ public class SearchengineEntity {
             QueryBuilder employeeIdListQueryBuild = QueryBuilders.termsQuery("id", employeeIdList);
 
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
-                    .setQuery(employeeIdListQueryBuild);
+                    .setQuery(employeeIdListQueryBuild).setFrom(0).setSize(employeeIdList.size());
             logger.info("getCurrentMonthList searchRequestBuilder:{}", searchRequestBuilder.toString());
             SearchResponse response = searchRequestBuilder.execute().actionGet();
 
