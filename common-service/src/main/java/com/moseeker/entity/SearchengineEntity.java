@@ -592,7 +592,7 @@ public class SearchengineEntity {
                     employeeAwardsList.get(i).setSort(getSort(client, employeeAwardsList.get(i).getId(),
                             employeeAwardsList.get(i).getAward(), employeeAwardsList.get(i).getLastUpdateTime(),
                             employeeAwardsList.get(i).getTimeSpan(), companyIdListQueryBuild));
-                    logger.info("getCurrentMonthList - add sort employeeAwards:{}", employeeAwardsList.get(i));
+                    logger.info("getCurrentMonthList - add sort employeeAwards:{}", JSONObject.toJSONString(employeeAwardsList.get(i)));
                 }
             }
             return employeeAwardsList.stream().collect(Collectors.toMap(EmployeeAwards::getId, EmployeeAwards::getSort));
@@ -618,13 +618,13 @@ public class SearchengineEntity {
                     .termQuery("id", employeeId);
             ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
 
-            if (employeeId == 884200) {
+            if (employeeId == 880965) {
                 logger.info("getSort query:{}", query.toString());
             }
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
                         .setQuery(query).setSize(0).execute().get();
-                if (employeeId == 884200) {
+                if (employeeId == 880965) {
                     logger.info("getSort sortResponse:{}", sortResponse);
                 }
                 return (int)sortResponse.getHits().getTotalHits()+1;
