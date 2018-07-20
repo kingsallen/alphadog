@@ -249,7 +249,7 @@ public class ProfileProcessBS {
                     }
                 }
                 if (recruitOrder == progressStatus) {
-                    return ResponseUtils.success("操作成功");
+                    return ResponseUtils.success(dataResult);
                 }
                 //  对所有的
                 if (processStatus || progressStatus == 13 || progressStatus == 99) {
