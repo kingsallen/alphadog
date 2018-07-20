@@ -219,6 +219,7 @@ public class ProfileProcessBS {
     @CounterIface
     public Response processProfile(int companyId, int progressStatus, List<Integer> appIds, int accountId) throws Exception {
         logger.info("ProfileProcessBS processProfile companyId:{}, progressStatus:{}, appIds:{}, accountId:{}", companyId, progressStatus, appIds, accountId);
+        Map<String,String> dataResult=new HashMap<>();
         try {
             if (appIds == null || appIds.size() == 0) {
                 return ResponseUtils
@@ -248,7 +249,7 @@ public class ProfileProcessBS {
                     }
                 }
                 if (recruitOrder == progressStatus) {
-                    return ResponseUtils.success("操作成功");
+                    return ResponseUtils.success(dataResult);
                 }
                 //  对所有的
                 if (processStatus || progressStatus == 13 || progressStatus == 99) {
@@ -264,8 +265,22 @@ public class ProfileProcessBS {
                         List<HrOperationRecordDO> turnToCVCheckeds = new ArrayList<>();
                         RewardsToBeAddBean reward = null;
                         HrOperationRecordDO turnToCVChecked = null;
+                        /*
+                          1,由于后需要发消息模板，所以要过滤出来不和规范的申请内容，所以创建一个list用来存放可以处理的申请的记录
+                          2,为了不让调用方产生迷惑，所以记录调用成功的job_application.id和不符合招聘进度流程的的job_application.id，返回给调用端，用来提示为何有一些操作失败
+
+                        */
+                        List<ProcessValidationStruct> dataList=new ArrayList<>();
+                        List<Integer> errorList=new ArrayList<>();
+                        List<Integer> successList=new ArrayList<>();
                         for (ProcessValidationStruct record : list) {
                             RecruitmentResult result1 = BusinessUtil.excuteRecruitRewardOperation(record.getRecruit_order(), progressStatus, recruitProcesses);
+                            if(result1.getStatus()==1){
+                                //将传递数据状态不合规范的申请id记录下来
+                                errorList.add(record.getId());
+                                logger.warn("传递数据状态不合规范，具体数据是======appid===="+record.getId()+"====当前状态==="+record.getRecruit_order()+"====操作状态==="+progressStatus);
+                                continue;
+                            }
                             logger.info("ProfileProcessBS processProfile result1:{}", JSON.toJSONString(result1));
                             reward = new RewardsToBeAddBean();
                             reward.setAccount_id(accountId);
@@ -289,7 +304,13 @@ public class ProfileProcessBS {
                             }
                             rewardsToBeAdd.add(reward);
                             recommenderIds.add(record.getRecommender_user_id());
+                            dataList.add(record);
+                            successList.add(record.getId());
                         }
+                        //由于后面要发消息模板，所以只处理那些被处理的数据
+                        list=dataList;
+
+                        //============================================
                         logger.info("ProfileProcessBS processProfile rewardsToBeAdd:{}", rewardsToBeAdd);
                         //注意在获取employyee时，weChatIds已经不用，此处没有修改thrift的代码，所以还在
                         Query.QueryBuilder query = new Query.QueryBuilder();
@@ -313,6 +334,11 @@ public class ProfileProcessBS {
                         this.updateRecruitState(progressStatus, list,
                                 turnToCVCheckeds, employeesToBeUpdates, result,
                                 rewardsToBeAdd);
+                        //注意这是结果返回值的插入，提示调用方调用成功的有哪些，调用失败的有哪些，========这部分代码是新增的
+
+                        dataResult.put("success_data",JSON.toJSONString(successList));
+                        dataResult.put("error_data",JSON.toJSONString(errorList));
+                        //========================================================
                         JSONObject jsb = JSONObject.parseObject(ms);
                         jsb.put("application_id", list
                                 .stream()
@@ -351,7 +377,9 @@ public class ProfileProcessBS {
                 return ResponseUtils
                         .fail("{\"status\":2201, \"message\":\"参数错误\"}");
             }
-            return ResponseUtils.success("操作成功");
+
+
+            return ResponseUtils.success(dataResult);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
