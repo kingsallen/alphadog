@@ -445,11 +445,7 @@ public class EmployeeService {
         int count = 0;
         UserEmployeeReferralPolicyDO policyDO = policyDao.getEmployeeReferralPolicyDOByEmployeeId(employeeDO.getId());
         if(policyDO == null){
-            policyDO = new UserEmployeeReferralPolicyDO();
-            policyDO.setCount(1);
-            policyDO.setEmployeeId(employeeDO.getId());
-            policyDao.addData(policyDO);
-            count = policyDO.getId();
+            count = policyDao.upsertCompanyReferralConfCount(employeeDO.getId());
         }else{
             count = policyDao.updateReferralPolicyByEmployeeIdAndCount(employeeDO.getId(),policyDO.getCount());
         }
