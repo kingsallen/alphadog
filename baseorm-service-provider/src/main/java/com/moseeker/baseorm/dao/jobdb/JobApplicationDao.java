@@ -176,7 +176,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
         return resultVO;
     }
 
-	public Result<Record2<Integer,Integer>> countEmployeeForward(List<Integer> userIdList, LocalDateTime lastFriday, LocalDateTime currentFriday) {
+	public Result<Record2<Integer,Integer>> countEmployeeApply(List<Integer> userIdList, LocalDateTime lastFriday, LocalDateTime currentFriday) {
 		return create.select(
 					JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
 					count(JobApplication.JOB_APPLICATION.ID).as("count")
@@ -188,7 +188,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 								.toEpochMilli())))
 				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.le(
 						new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
-				.groupBy(JobApplication.JOB_APPLICATION.APPLIER_ID)
+				.groupBy(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID)
 				.fetch();
 	}
 }
