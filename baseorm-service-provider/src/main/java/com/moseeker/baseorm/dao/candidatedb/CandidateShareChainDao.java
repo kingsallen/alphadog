@@ -72,7 +72,8 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                 .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID
                         .notEqual(CandidateShareChain.CANDIDATE_SHARE_CHAIN.RECOM_USER_ID))
                 .groupBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID,
-                        CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID)
+                        CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID,
+                        CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID)
                 .having(count().gt(1))
                 .fetch();
     }
