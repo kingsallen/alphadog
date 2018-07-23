@@ -57,7 +57,7 @@ public class ReferralEntity {
                 });
             }
 
-            return result.stream().collect(Collectors.toMap(Record2::value1, Record2::value2));
+            return employeeForward;
         } else {
             return new HashMap<>();
         }
