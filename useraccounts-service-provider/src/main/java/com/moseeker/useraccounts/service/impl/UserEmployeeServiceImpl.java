@@ -312,8 +312,11 @@ public class UserEmployeeServiceImpl {
             }
 
             LocalDateTime today = LocalDateTime.now();
-            LocalDateTime lastFriday = today.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
-            LocalDateTime currentFriday = today.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
+            /*LocalDateTime lastFriday = today.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
+            LocalDateTime currentFriday = today.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);*/
+
+            LocalDateTime lastFriday = LocalDateTime.of(2018, 7, 13, 17, 0);
+            LocalDateTime currentFriday = LocalDateTime.of(2018, 7, 20, 17, 0);
 
             //查找转发数量
             Future<Map<Integer,Integer>> forwardCountFuture = threadPool.startTast(() ->
