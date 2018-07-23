@@ -831,6 +831,7 @@ public class SearchengineService {
     }
 
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
+        logger.info("queryAwardRankingInWx companyIds:{}, timespan:{}, employeeId:{}", companyIds, timespan, employeeId);
         // 保证插入有序，使用linkedhashMap˚
         Map<Integer, JSONObject> data = new LinkedHashMap<>();
         TransportClient searchClient =null;
@@ -851,6 +852,7 @@ public class SearchengineService {
                     data.put(jsonObject.getIntValue("id"), obj);
                 }
             }
+            logger.info("queryAwardRankingInWx data.size:{}", data.size());
             // 当前用户在 >= 20 名，显示返回前20条，小于22条返回前20+用户前一名+用户排名+用户后一名，未上榜返回前20条
             List<JSONObject> allRankingList = new ArrayList<>(data.values());
             List<JSONObject> resultList = new ArrayList<>(23);
@@ -888,7 +890,9 @@ public class SearchengineService {
                     }
                 }
             }
+            logger.info("queryAwardRankingInWx resultList.size:{}", resultList.size());
             data = resultList.stream().collect(Collectors.toMap(k -> TypeUtils.castToInt(k.remove("employee_id")), v -> v, (oldKey, newKey) -> newKey));
+            logger.info("queryAwardRankingInWx data:{}", data);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

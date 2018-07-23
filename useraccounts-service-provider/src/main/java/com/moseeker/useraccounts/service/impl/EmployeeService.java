@@ -315,6 +315,8 @@ public class EmployeeService {
     }
 
     public List<EmployeeAward> awardRanking(int employeeId, int companyId, String timespan) {
+
+        log.info("awardRanking employeeId：{}， companyId：{}， timespan：{}", employeeId, companyId, timespan);
         List<EmployeeAward> response = new ArrayList<>();
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("id", employeeId);
