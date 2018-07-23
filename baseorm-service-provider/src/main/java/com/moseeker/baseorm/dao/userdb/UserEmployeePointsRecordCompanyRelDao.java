@@ -32,15 +32,16 @@ public class UserEmployeePointsRecordCompanyRelDao extends JooqCrudImpl<UserEmpl
 
     public Map<Integer, Integer> handerEmployeeAwards(Date date){
         logger.info("=============date:{}",date);
-        Result<Record2<Long, BigDecimal>> result = create.select(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID, DSL.sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD))
+        Result<Record2<Long, Integer>> result = create.select(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID, DSL.count(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID))
                 .from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
                 .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.lt(new Timestamp(date.getTime())))
+                .and(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD.gt(0))
                 .groupBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID)
                 .fetch();
         if(!result.isEmpty()){
             Map<Integer, Integer> params = new HashMap<>();
-            for (Record2<Long, BigDecimal> record : result) {
-                params.put(Integer.valueOf(record.value1().toString()), Integer.valueOf(record.value2().toString()));
+            for (Record2<Long, Integer> record : result) {
+                params.put(Integer.valueOf(record.value1().toString()),record.value2());
             }
             return params;
         }
