@@ -838,6 +838,7 @@ public class SearchengineService {
             searchClient =searchUtil.getEsClient();
                     // 查找所有员工的积分排行
             SearchResponse response = getSearchRequestBuilder(searchClient, companyIds, null, "0", 20, 1, timespan).execute().actionGet();
+            logger.info("queryAwardRankingInWx response:{}", response);
             int index = 1;
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
