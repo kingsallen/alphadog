@@ -43,13 +43,16 @@ public class ReferralEntity {
             Map<Integer, Integer> employeeForward = result
                     .stream()
                     .collect(Collectors.toMap(Record2::value1, Record2::value2));
+
+            //重复推荐数量
             Result<Record2<Integer, Integer>> repeatRecommand = shareChainDao.countRepeatRecommend(userIdList,
                     lastFriday, currentFriday);
             if (repeatRecommand != null && repeatRecommand.size() > 0) {
                 repeatRecommand.forEach(integerIntegerRecord2 -> {
                     if (employeeForward.get(integerIntegerRecord2.value1()) != null) {
                         employeeForward.put(integerIntegerRecord2.value1(),
-                                employeeForward.get(integerIntegerRecord2.value1()) - integerIntegerRecord2.value2());
+                                employeeForward.get(integerIntegerRecord2.value1())
+                                        - integerIntegerRecord2.value2() + 1);
                     }
                 });
             }

@@ -41,7 +41,7 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                                                                   LocalDateTime currentFriday) {
         return create.select(
                     CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID,
-                    count(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID).as("count")
+                    count().as("count")
                 )
                 .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.in(userIdList))
@@ -60,7 +60,7 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                                                                  LocalDateTime currentFriday) {
         return create.select(
                 CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID,
-                count(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID).as("count")
+                count()
         )
                 .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.in(userIdList))
@@ -73,6 +73,7 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                         .notEqual(CandidateShareChain.CANDIDATE_SHARE_CHAIN.RECOM_USER_ID))
                 .groupBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.RECOM_USER_ID,
                         CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID)
+                .having(count().gt(1))
                 .fetch();
     }
 
