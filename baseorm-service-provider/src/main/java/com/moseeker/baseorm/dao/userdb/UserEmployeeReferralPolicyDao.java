@@ -40,4 +40,14 @@ public class UserEmployeeReferralPolicyDao extends JooqCrudImpl<UserEmployeeRefe
         return result;
     }
 
+    public int upsertCompanyReferralConfCount(int employeeId){
+        int result = create.insertInto(UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY, UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY.EMPLOYEE_ID,
+                UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY.COUNT)
+                .values(employeeId,1)
+                .onDuplicateKeyIgnore()
+                .execute();
+        return result;
+
+    }
+
 }
