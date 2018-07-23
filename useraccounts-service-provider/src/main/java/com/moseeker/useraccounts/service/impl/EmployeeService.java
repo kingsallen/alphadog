@@ -327,7 +327,7 @@ public class EmployeeService {
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         try {
             Response result = searchService.queryAwardRankingInWx(companyIds, timespan, employeeId);
-            log.info("awardRanking:", result);
+            log.info("awardRanking:{}", result);
             if (result.getStatus() == 0){
 
                 // 解析数据
