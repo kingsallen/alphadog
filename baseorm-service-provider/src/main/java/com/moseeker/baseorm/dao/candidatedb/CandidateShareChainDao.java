@@ -71,8 +71,7 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                         new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
                 .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID
                         .notEqual(CandidateShareChain.CANDIDATE_SHARE_CHAIN.RECOM_USER_ID))
-                .groupBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.RECOM_USER_ID,
-                        CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID,
+                .groupBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID,
                         CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID)
                 .having(count().gt(1))
                 .fetch();
