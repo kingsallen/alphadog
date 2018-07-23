@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import org.jooq.Record2;
+import org.jooq.Record4;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,22 @@ public class ReferralEntity {
                 currentFriday);
 
         if (result != null && result.size() > 0) {
+
+
+            Map<Integer, Integer> employeeForward = result
+                    .stream()
+                    .collect(Collectors.toMap(Record2::value1, Record2::value2));
+            Result<Record2<Integer, Integer>> repeatRecommand = shareChainDao.countRepeatRecommend(userIdList,
+                    lastFriday, currentFriday);
+            if (repeatRecommand != null && repeatRecommand.size() > 0) {
+                repeatRecommand.forEach(integerIntegerRecord2 -> {
+                    if (employeeForward.get(integerIntegerRecord2.value1()) != null) {
+                        employeeForward.put(integerIntegerRecord2.value1(),
+                                employeeForward.get(integerIntegerRecord2.value1()) - integerIntegerRecord2.value2());
+                    }
+                });
+            }
+
             return result.stream().collect(Collectors.toMap(Record2::value1, Record2::value2));
         } else {
             return new HashMap<>();
