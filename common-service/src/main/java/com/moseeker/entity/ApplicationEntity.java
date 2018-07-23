@@ -27,7 +27,7 @@ public class ApplicationEntity {
     public Map<Integer,Integer> countEmployeeApply(List<Integer> userIdList, LocalDateTime lastFriday,
                                                    LocalDateTime currentFriday) {
 
-        Result<Record2<Integer, Integer>> result = applicationDao.countEmployeeForward(userIdList, lastFriday,
+        Result<Record2<Integer, Integer>> result = applicationDao.countEmployeeApply(userIdList, lastFriday,
                 currentFriday);
 
         if (result != null && result.size() > 0) {
