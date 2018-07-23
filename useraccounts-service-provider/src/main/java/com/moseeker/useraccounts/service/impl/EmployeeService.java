@@ -426,7 +426,7 @@ public class EmployeeService {
     public void upsertReferralPolicy(int companyId, int userId) throws CommonException{
         if(userId > 0){
             if(employeeEntity.isEmployee(userId, companyId)){
-                UserEmployeeDO employeeDO = employeeDao.getEmployeeByUserId(userId);
+                UserEmployeeDO employeeDO = employeeDao.getEmployeeByUserId(userId, companyId);
                 retryUpdateReferralPolicyCount(employeeDO, 0);
                 return;
             }

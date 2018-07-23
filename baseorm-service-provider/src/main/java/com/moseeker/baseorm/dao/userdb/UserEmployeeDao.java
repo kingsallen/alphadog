@@ -156,9 +156,10 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return new HashMap<>();
     }
 
-    public UserEmployeeDO getEmployeeByUserId(int userId){
+    public UserEmployeeDO getEmployeeByUserId(int userId, int companyId){
         UserEmployeeDO employeeDO = create.selectFrom(UserEmployee.USER_EMPLOYEE)
                 .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
                 .fetchOneInto(UserEmployeeDO.class);
         return employeeDO;
 
