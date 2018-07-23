@@ -730,7 +730,6 @@ public class SearchengineService {
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
         }
-        logger.info(searchRequestBuilder.toString());
         return searchRequestBuilder;
     }
 
