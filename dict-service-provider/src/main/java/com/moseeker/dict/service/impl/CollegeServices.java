@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.dictdb.DictCollegeDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.RedisException;
@@ -12,10 +13,11 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.struct.College;
+import com.moseeker.thrift.gen.dict.struct.CollegeBasic;
+import com.moseeker.thrift.gen.dict.struct.CollegeProvince;
 import java.util.*;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
-import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,60 +34,20 @@ public class CollegeServices {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-    protected College DBToStruct(Record r) {
-        College c = new College();
-        c.setCollege_code((Integer) r.getValue("college_code"));
-        c.setCollge_name((String)r.getValue("college_name"));
-        c.setCollge_logo((String)r.getValue("college_logo"));
-        c.setProvince_code((Integer) r.getValue("province_code"));
-        c.setProvince_name((String)r.getValue("province_name"));
-        return c;
-    }
-
-    protected List<College> DBsToStructs(List<Record> records) {
-        List structs = new ArrayList<>();
-        if(records != null && records.size() > 0) {
-            for(Record r : records) {
-                structs.add(DBToStruct(r));
-            }
-        }
-        return structs;
-    }
-
     @CounterIface
     public Response getResources(CommonQuery query) throws TException {
-        String cachKey = genCachKey(query);
         String cachedResult = null;
         Response result = null;
-        String patternString = "DICT_COLLEGE";
-        int appid = 0; // query.appid
         try {
-            cachedResult = redisClient.get(appid, patternString, cachKey, () -> {
-                String r = null;
-                try {
-                    List joinedResult = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
-                    List<College> structs = DBsToStructs(joinedResult);
-                    Collection transformed = transformData(structs);
-                    r = JSON.toJSONString(ResponseUtils.success(transformed));
-                } catch (Exception e) {
-                    logger.error("getResources error", e);
-                    ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-                }
-                return r;
-            });
-            result = JSON.parseObject(cachedResult, Response.class);
-
-        } catch(RedisException e){
-        		WarnService.notify(e);
-        } catch(Exception e) {
-            e.printStackTrace();
-            List joinedResult = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
-            List<College> structs = DBsToStructs(joinedResult);
-            result = ResponseUtils.success(transformData(structs));
+            List<College> collegeList = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
+            Collection transformed = transformData(collegeList);
+            cachedResult = JSON.toJSONString(ResponseUtils.success(transformed));
+        } catch (Exception e) {
+            logger.error("getResources error", e);
+            ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
-
+        result = JSON.parseObject(cachedResult, Response.class);
         return result;
-
     }
 
     @CounterIface
@@ -94,12 +56,11 @@ public class CollegeServices {
         Response result = null;
         int appid = 0; // query.appid
         try {
-            cachedResult = redisClient.get(appid, KeyIdentifier.DICT_COLLEGE_COUNTRY, cachKey, () -> {
+            cachedResult = redisClient.get(appid, KeyIdentifier.DICT_COLLEGE_COUNTRY.toString(), Constant.CHINA_CODE, () -> {
                 String r = null;
                 try {
-                    List joinedResult = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
-                    List<College> structs = DBsToStructs(joinedResult);
-                    Collection transformed = transformData(structs);
+                    List<CollegeProvince> joinedResult = this.dao.getCollegeByDomestic();
+                    Collection transformed = transformDataProvince(joinedResult);
                     r = JSON.toJSONString(ResponseUtils.success(transformed));
                 } catch (Exception e) {
                     logger.error("getResources error", e);
@@ -113,13 +74,46 @@ public class CollegeServices {
             WarnService.notify(e);
         } catch(Exception e) {
             e.printStackTrace();
-            List joinedResult = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
-            List<College> structs = DBsToStructs(joinedResult);
-            result = ResponseUtils.success(transformData(structs));
+            List<CollegeProvince> joinedResult = this.dao.getCollegeByDomestic();
+            result = ResponseUtils.success(transformDataProvince(joinedResult));
         }
-
         return result;
+    }
 
+    @CounterIface
+    public Response getCollegeByAbroad(int countryCode) throws TException {
+        String cachedResult = null;
+        Response result = null;
+        int appid = 0; // query.appid
+        try {
+            cachedResult = redisClient.get(appid, KeyIdentifier.DICT_COLLEGE_COUNTRY.toString(), String.valueOf(countryCode), () -> {
+                String r = null;
+                try {
+                    List<CollegeBasic> joinedResult = this.dao.getCollegeByAbroad(countryCode);
+                    r = JSON.toJSONString(ResponseUtils.success(joinedResult));
+                } catch (Exception e) {
+                    logger.error("getResources error", e);
+                    ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+                }
+                return r;
+            });
+            result = JSON.parseObject(cachedResult, Response.class);
+
+        } catch(RedisException e){
+            WarnService.notify(e);
+        } catch(Exception e) {
+            e.printStackTrace();
+            List<CollegeBasic> joinedResult = this.dao.getCollegeByAbroad(countryCode);
+            result = ResponseUtils.success(joinedResult);
+        }
+        return result;
+    }
+
+
+    private Collection transformDataProvince(List<CollegeProvince> s) {
+        DictCollegeProvinceHashMap dictCollege = new DictCollegeProvinceHashMap(s);
+        Collection hm = dictCollege.getList();
+        return hm;
     }
 
     private Collection transformData(List<College> s) {
@@ -132,6 +126,43 @@ public class CollegeServices {
         return "all";
     }
 
+}
+
+class DictCollegeProvinceHashMap {
+
+    private HashMap hm;
+
+    public DictCollegeProvinceHashMap(List<CollegeProvince> colleges) {
+        hm = new HashMap();
+        for(CollegeProvince college: colleges) {
+            put(hm, college);
+        }
+    }
+
+    public HashMap getHashMap(){
+        return this.hm;
+    }
+
+    public Collection getList() {
+        return this.hm.values();
+    }
+
+    static void put(HashMap hm, CollegeProvince c) {
+        int provinceCode = c.getProvince_code();
+        if(!hm.containsKey(provinceCode)) {
+            Map m = new HashMap();
+            m.put("code", c.getProvince_code());
+            m.put("name", c.getProvince_name());
+            m.put("children", new ArrayList());
+            hm.put(provinceCode, m);
+        }
+        List collegesInProvince = (List)(((Map)(hm.get(provinceCode))).get("children"));
+        Map collegeInfo = new HashMap();
+        collegeInfo.put("code", c.getCollege_code());
+        collegeInfo.put("name", c.getCollege_name());
+        collegeInfo.put("logo", c.getCollege_logo());
+        collegesInProvince.add(collegeInfo);
+    }
 }
 
 class DictCollegeHashMap {
@@ -154,20 +185,20 @@ class DictCollegeHashMap {
     }
 
     static void put(HashMap hm, College c) {
-        int provinceCode = c.getProvince_code();
-        if(!hm.containsKey(provinceCode)) {
+        int countryCode = c.getCountry_code();
+        if(!hm.containsKey(countryCode)) {
             Map m = new HashMap();
-            m.put("code", c.getProvince_code());
-            m.put("name", c.getProvince_name());
+            m.put("code", c.getCountry_code());
+            m.put("name", c.getCountry_name());
+            m.put("ename", c.getCountry_ename());
             m.put("children", new ArrayList());
-            hm.put(provinceCode, m);
+            hm.put(countryCode, m);
         }
-        List collegesInProvince = (List)(((Map)(hm.get(provinceCode))).get("children"));
+        List collegesInProvince = (List)(((Map)(hm.get(countryCode))).get("children"));
         Map collegeInfo = new HashMap();
         collegeInfo.put("code", c.getCollege_code());
-        collegeInfo.put("name", c.getCollge_name());
-        collegeInfo.put("logo", c.getCollge_logo());
+        collegeInfo.put("name", c.getCollege_name());
+        collegeInfo.put("logo", c.getCollege_logo());
         collegesInProvince.add(collegeInfo);
     }
 }
-

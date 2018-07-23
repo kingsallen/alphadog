@@ -15,7 +15,6 @@ service CollegeServices {
     common_struct.Response getResources(1:common_struct.CommonQuery query);
     common_struct.Response getCollegeByDomestic();
     common_struct.Response getCollegeByAbroad(1:i32 countryCode);
-    common_struct.Response getCollegeByHKAomenTaiwan();
 }
 
 /*

@@ -21,22 +21,17 @@ public class CollegeServicesImpl implements Iface {
     
     @Override
     public Response getResources(CommonQuery query) throws TException {
-    		return service.getResources(query);
+        return service.getResources(query);
     }
 
     @Override
     public Response getCollegeByDomestic() throws TException {
-        return null;
+        return service.getCollegeByDomestic();
     }
 
     @Override
     public Response getCollegeByAbroad(int countryCode) throws TException {
-        return null;
-    }
-
-    @Override
-    public Response getCollegeByHKAomenTaiwan() throws TException {
-        return null;
+        return service.getCollegeByAbroad(countryCode);
     }
 
 }
