@@ -6,6 +6,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -76,6 +77,40 @@ public class CollegeServices {
 
         } catch(RedisException e){
         		WarnService.notify(e);
+        } catch(Exception e) {
+            e.printStackTrace();
+            List joinedResult = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
+            List<College> structs = DBsToStructs(joinedResult);
+            result = ResponseUtils.success(transformData(structs));
+        }
+
+        return result;
+
+    }
+
+    @CounterIface
+    public Response getCollegeByDomestic() throws TException {
+        String cachedResult = null;
+        Response result = null;
+        int appid = 0; // query.appid
+        try {
+            cachedResult = redisClient.get(appid, KeyIdentifier.DICT_COLLEGE_COUNTRY, cachKey, () -> {
+                String r = null;
+                try {
+                    List joinedResult = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
+                    List<College> structs = DBsToStructs(joinedResult);
+                    Collection transformed = transformData(structs);
+                    r = JSON.toJSONString(ResponseUtils.success(transformed));
+                } catch (Exception e) {
+                    logger.error("getResources error", e);
+                    ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+                }
+                return r;
+            });
+            result = JSON.parseObject(cachedResult, Response.class);
+
+        } catch(RedisException e){
+            WarnService.notify(e);
         } catch(Exception e) {
             e.printStackTrace();
             List joinedResult = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
