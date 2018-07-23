@@ -5,11 +5,9 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChainRecord;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
-import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -42,8 +40,8 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
     public Result<Record2<Integer, Integer>> countEmployeeForward(List<Integer> userIdList, LocalDateTime lastFriday,
                                                                   LocalDateTime currentFriday) {
         return create.select(
-                CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID,
-                count(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID).as("count")
+                    CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID,
+                    count(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID).as("count")
                 )
                 .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.in(userIdList))
@@ -52,10 +50,30 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                         .toEpochMilli())))
                 .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.le(
                         new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
-                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.notIn(userIdList))
-                .groupBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID,
-                        CandidateShareChain.CANDIDATE_SHARE_CHAIN.RECOM_USER_ID,
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID
+                        .notEqual(CandidateShareChain.CANDIDATE_SHARE_CHAIN.RECOM_USER_ID))
+                .groupBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID)
+                .fetch();
+    }
+
+    public Result<Record2<Integer,Integer>> countRepeatRecommend(List<Integer> userIdList, LocalDateTime lastFriday,
+                                                                 LocalDateTime currentFriday) {
+        return create.select(
+                CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID,
+                count(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID).as("count")
+        )
+                .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.in(userIdList))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.gt(
+                        new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant()
+                                .toEpochMilli())))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.le(
+                        new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID
+                        .notEqual(CandidateShareChain.CANDIDATE_SHARE_CHAIN.RECOM_USER_ID))
+                .groupBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.RECOM_USER_ID,
                         CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID)
                 .fetch();
     }
+
 }
