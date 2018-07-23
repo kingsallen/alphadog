@@ -859,6 +859,7 @@ public class SearchengineService {
                 // 默认查询前20条
                 resultList = allRankingList.subList(0, allRankingList.size() >= 20 ? 20 : allRankingList.size());
                 SearchResponse hitEmployee = getSearchRequestBuilder(searchClient, companyIds, employeeId, "0", 0, 0, timespan).execute().actionGet();
+                logger.info("queryAwardRankingInWx hitEmployee:{}", hitEmployee);
                 if (hitEmployee != null && hitEmployee.getHits().getHits().length > 0) {
                     JSONObject employeeJson = JSONObject.parseObject(hitEmployee.getHits().getHits()[0].getSourceAsString()).getJSONObject("awards");
                     if (employeeJson.containsKey(timespan) && employeeJson.getJSONObject(timespan).getIntValue("award") > 0 && employeeJson.getJSONObject(timespan).getString("last_update_time") != null) {
