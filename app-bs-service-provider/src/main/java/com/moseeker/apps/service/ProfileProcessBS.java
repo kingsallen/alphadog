@@ -367,7 +367,9 @@ public class ProfileProcessBS {
                                         pvs.getApplier_name(), companyId,
                                         progressStatus, pvs.getPosition_name(),
                                         pvs.getId(), TemplateMs.TOSEEKER);
+                                logger.info("=============isEmployee:{}",employeeEntity.isEmployee(pvs.getRecommender_user_id(),companyId));
                                 if(employeeEntity.isEmployee(pvs.getRecommender_user_id(),companyId)) {
+                                    logger.info("=============position_name:{}",pvs.getPosition_name());
                                     sendTemplate(pvs.getRecommender_user_id(),
                                             pvs.getApplier_name(), companyId,
                                             progressStatus, pvs.getPosition_name(),
