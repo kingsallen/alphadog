@@ -44,7 +44,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
     generator() {
         database() {
 //            inputSchema("configdb")
-            inputSchema("dictdb")
+            inputSchema("profiledb")
 //            includes("hr_third_party_position")
 
             name("org.jooq.util.mysql.MySQLDatabase")
@@ -60,7 +60,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             daos true
         }
         target() {
-            packageName('com.moseeker.baseorm.db.dictdb')
+            packageName('com.moseeker.baseorm.db.profiledb')
             directory('src/main/java')
         }
     }

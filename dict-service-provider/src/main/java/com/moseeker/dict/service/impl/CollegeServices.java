@@ -18,6 +18,8 @@ import com.moseeker.thrift.gen.dict.struct.CollegeProvince;
 import java.util.*;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +108,7 @@ public class CollegeServices {
             List<CollegeBasic> joinedResult = this.dao.getCollegeByAbroad(countryCode);
             result = ResponseUtils.success(joinedResult);
         }
+
         return result;
     }
 

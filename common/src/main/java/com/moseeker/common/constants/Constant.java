@@ -257,4 +257,7 @@ public final class Constant {
     public static final Integer[] TALENTPOOL_EMAIL_SWITCH_ID = {69,70,71,72,73};
 
     public static final String COMPANY_LOGO_URL ="/hr/common/images/default-company-logo.jpg";
+
+
+    public static final int HKAMTW = 861;
 }
