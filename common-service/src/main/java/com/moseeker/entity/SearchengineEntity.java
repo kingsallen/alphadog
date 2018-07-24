@@ -532,6 +532,8 @@ public class SearchengineEntity {
         } else {
 
             QueryBuilder employeeIdListQueryBuild = QueryBuilders.termsQuery("id", employeeIdList);
+            QueryBuilder activeEmployeeCondition = QueryBuilders.termsQuery("activation", 0);
+            ((BoolQueryBuilder) employeeIdListQueryBuild).must(activeEmployeeCondition);
 
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
                     .setQuery(employeeIdListQueryBuild).setFrom(0).setSize(employeeIdList.size());
