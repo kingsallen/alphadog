@@ -406,7 +406,7 @@ public class EmployeeService {
             if(StringUtils.isNullOrEmpty(message)){
                 return referralConfDao.upsertHrCompanyReferralConf(conf);
             }else{
-                throw ExceptionFactory.buildException(42013, message);
+                throw ExceptionFactory.buildException(90014, message);
             }
         }
         throw ExceptionFactory.buildException(ExceptionCategory.REFERRAL_CONF_DATA_EMPTY);
