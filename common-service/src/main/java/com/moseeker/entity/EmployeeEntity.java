@@ -1046,4 +1046,17 @@ public class EmployeeEntity {
     public List<UserEmployeeDO> getUserEmployeeByIdList(Set<Integer> idList){
         return employeeDao.getUserEmployeeForidList(idList);
     }
+
+    public UserEmployeeDO getActiveEmployeeDOByUserId(int userId) {
+        if (userId > 0) {
+            // 首先通过CompanyId 查询到该公司集团下所有的公司ID
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), userId)
+                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActivedState.Actived.getState())
+                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
+            return employeeDao.getData(queryBuilder.buildQuery());
+        } else {
+            return null;
+        }
+    }
 }
