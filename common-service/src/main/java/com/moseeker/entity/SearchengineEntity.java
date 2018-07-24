@@ -621,16 +621,13 @@ public class SearchengineEntity {
             if (employeeId == 880965) {
                 logger.info("getSort query:{}", query.toString());
             }
-            QueryBuilder activeEmployeeCondition = QueryBuilders.termsQuery("activation", "0");
-            ((BoolQueryBuilder) query).must(activeEmployeeCondition);
-
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
                         .setQuery(query).setSize(0).execute().get();
                 if (employeeId == 880965) {
                     logger.info("getSort sortResponse:{}", sortResponse);
                 }
-                return (int)sortResponse.getHits().getTotalHits();
+                return (int)sortResponse.getHits().getTotalHits()+1;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
