@@ -136,7 +136,8 @@ public class EmployeeEntity {
         List<Integer> companyIds = getCompanyIds(companyId);
         companyIds.add(companyId);
         query.where(new Condition("company_id", companyIds, ValueOp.IN)).and("sysuser_id", String.valueOf(userId))
-                .and("disable", "0");
+                .and("disable", "0")
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), "0");
         return employeeDao.getData(query.buildQuery());
     }
 
