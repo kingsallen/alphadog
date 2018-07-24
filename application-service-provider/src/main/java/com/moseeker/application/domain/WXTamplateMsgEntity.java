@@ -49,7 +49,8 @@ public class WXTamplateMsgEntity {
 
     public void sendMsg() {
         //发给求职者的模板消息
-        List<CVCheckedWXMsgPojo> msgPojoList = initData().getMsgPojoList();
+        WxMsgPojo wxMsgPojo = initData();
+        List<CVCheckedWXMsgPojo> msgPojoList = wxMsgPojo.getMsgPojoList();
         if (msgPojoList != null) {
             for(CVCheckedWXMsgPojo pojo : msgPojoList){
                 if(pojo.isSendStatus()) {
@@ -68,9 +69,10 @@ public class WXTamplateMsgEntity {
         }
 
         //发给推荐者的模板消息
-        List<ReferralWxMsgPojo> wxMsgPojoList = initData().getWxMsgPojoList();
+        List<ReferralWxMsgPojo> wxMsgPojoList = wxMsgPojo.getWxMsgPojoList();
         if (!StringUtils.isEmptyList(wxMsgPojoList)) {
             for(ReferralWxMsgPojo pojo : wxMsgPojoList){
+                logger.info("pojo ====================== {}",pojo);
                 if(pojo!= null && pojo.isSendStatus()) {
                     ReferralWXMsgNotice.ReferralWXMsgNoticeBuild builder = new ReferralWXMsgNotice.ReferralWXMsgNoticeBuild(redisClient);
                     ReferralWXMsgNotice notice = builder
