@@ -71,9 +71,9 @@ public class CollegeController {
     @ResponseBody
     public String getCollegeByAborad(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String parameterLevel = request.getParameter("country_code");
-            int country_code = parameterLevel == null ? 0 : Integer.parseInt(parameterLevel);
-            Response result = collegeServices.getCollegeByAbroad(country_code);
+            String parameterLevel = request.getParameter("country_id");
+            int country_id = parameterLevel == null ? 0 : Integer.parseInt(parameterLevel);
+            Response result = collegeServices.getCollegeByAbroad(country_id);
             return ResponseLogNotification.success(request, result);
 
         } catch (Exception e) {
