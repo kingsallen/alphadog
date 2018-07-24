@@ -621,7 +621,7 @@ public class SearchengineEntity {
             if (employeeId == 880965) {
                 logger.info("getSort query:{}", query.toString());
             }
-            QueryBuilder activeEmployeeCondition = QueryBuilders.termsQuery("activation", 0);
+            QueryBuilder activeEmployeeCondition = QueryBuilders.termsQuery("activation", "0");
             ((BoolQueryBuilder) query).must(activeEmployeeCondition);
 
             try {
