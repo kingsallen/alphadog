@@ -394,25 +394,7 @@ public class EmployeeService {
 
     public int upsertCompanyReferralConf(HrCompanyReferralConfDO conf) throws CommonException{
         if(conf != null){
-            ValidateUtil vu = new ValidateUtil();
-            if(StringUtils.isNotNullOrEmpty(conf.getText())){
-                log.info("===============text:{}",conf.getText());
-                vu.addSensitiveValidate("內推文案", conf.getText(), null, "文章中不能含有敏感词");
-                vu.addStringLengthValidate("內推文案", conf.getText(), null, "文章的长度过长", 0, 5001);
-            }
-            if(StringUtils.isNotNullOrEmpty(conf.getLink())){
-                log.info("===============text:{}",conf.getLink());
-                vu.addRegExpressValidate("內推链接", conf.getLink(), "^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",null, "请输入正确的链接");
-                vu.addStringLengthValidate("內推链接", conf.getLink(), null, "链接长度过长", 0, 501);
-            }
-            vu.addIntTypeValidate("内推政策优先级", (int)conf.getPriority(), null, null, 0,3);
-            String message = vu.validate();
-            log.info("===============message:{}",message);
-            if(StringUtils.isNullOrEmpty(message)){
-                return referralConfDao.upsertHrCompanyReferralConf(conf);
-            }else{
-                throw ExceptionFactory.buildException(90014, message);
-            }
+           return referralConfDao.upsertHrCompanyReferralConf(conf);
         }
         throw ExceptionFactory.buildException(ExceptionCategory.REFERRAL_CONF_DATA_EMPTY);
     }

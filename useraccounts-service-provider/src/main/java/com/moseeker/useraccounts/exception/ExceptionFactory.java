@@ -18,18 +18,4 @@ public class ExceptionFactory extends com.moseeker.common.exception.ExceptionFac
         }
         return buildException(exceptionCategory.getCode(), exceptionCategory.getMsg());
     }
-
-    private static HashMap<Integer, CommonException> exceptionHashMap = new HashMap<>();  //异常消息池
-
-    public static CommonException buildException(int code, String message) {
-        if(exceptionHashMap.containsKey(code) && code != Category.VALIDATE_FAILED.getCode()) {
-            return exceptionHashMap.get(code);
-        } else {
-            CommonException bizException = new CommonException();
-            bizException.setCode(code);
-            bizException.setMessage(message);
-            addException(bizException);
-            return exceptionHashMap.get(code);
-        }
-    }
 }
