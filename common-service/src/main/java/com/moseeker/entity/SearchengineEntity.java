@@ -592,6 +592,9 @@ public class SearchengineEntity {
                     .termQuery("id", employeeId);
             ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
 
+            QueryBuilder activeEmployeeCondition = QueryBuilders.termQuery("activation", "0");
+            ((BoolQueryBuilder) query).must(activeEmployeeCondition);
+
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
                         .setQuery(query).setSize(0).execute().get();
