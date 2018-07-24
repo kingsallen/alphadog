@@ -627,7 +627,7 @@ public class SearchengineEntity {
                 if (employeeId == 880965) {
                     logger.info("getSort sortResponse:{}", sortResponse);
                 }
-                return (int)sortResponse.getHits().getTotalHits()+1;
+                return (int)sortResponse.getHits().getTotalHits();
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
