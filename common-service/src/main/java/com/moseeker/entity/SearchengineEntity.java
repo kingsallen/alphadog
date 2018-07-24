@@ -618,13 +618,13 @@ public class SearchengineEntity {
                     .termQuery("id", employeeId);
             ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
 
-            if (employeeId == 880965) {
+            if (employeeId == 884206) {
                 logger.info("getSort query:{}", query.toString());
             }
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
                         .setQuery(query).setSize(0).execute().get();
-                if (employeeId == 880965) {
+                if (employeeId == 884206) {
                     logger.info("getSort sortResponse:{}", sortResponse);
                 }
                 return (int)sortResponse.getHits().getTotalHits()+1;
