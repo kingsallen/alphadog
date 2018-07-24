@@ -394,12 +394,12 @@ public class EmployeeService {
         if(conf != null){
             ValidateUtil vu = new ValidateUtil();
             if(StringUtils.isNotNullOrEmpty(conf.getText())){
-                vu.addSensitiveValidate("內推文案", conf.getText(), null, null);
-                vu.addStringLengthValidate("內推文案", conf.getText(), null, null, 0, 5001);
+                vu.addSensitiveValidate("內推文案", conf.getText(), null, "文章中不能含有敏感词");
+                vu.addStringLengthValidate("內推文案", conf.getText(), null, "文章的长度过长", 0, 5001);
             }
             if(StringUtils.isNotNullOrEmpty(conf.getLink())){
-                vu.addRegExpressValidate("內推链接", conf.getLink(), "^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",null, null);
-                vu.addStringLengthValidate("內推链接", conf.getLink(), null, null, 0, 501);
+                vu.addRegExpressValidate("內推链接", conf.getLink(), "^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",null, "请输入正确的链接");
+                vu.addStringLengthValidate("內推链接", conf.getLink(), null, "链接长度过长", 0, 501);
             }
             vu.addIntTypeValidate("内推政策优先级", (int)conf.getPriority(), null, null, 0,3);
             String message = vu.validate();
