@@ -471,7 +471,7 @@ public class UserCenterBizTools {
                 List<Integer> companyIdList = employeeEntity.getCompanyIds(employeeDO.getCompanyId());
                 return positionDao.listPositionIdByCompanyIdList(companyIdList);
             }
-
+            return null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return null;
