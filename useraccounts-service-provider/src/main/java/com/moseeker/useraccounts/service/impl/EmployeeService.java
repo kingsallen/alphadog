@@ -392,23 +392,7 @@ public class EmployeeService {
 
     public int upsertCompanyReferralConf(HrCompanyReferralConfDO conf) throws CommonException{
         if(conf != null){
-            ValidateUtil vu = new ValidateUtil();
-            if(StringUtils.isNotNullOrEmpty(conf.getText())){
-                vu.addSensitiveValidate("內推文案", conf.getText(), null, null);
-                vu.addStringLengthValidate("內推文案", conf.getText(), null, null, 0, 5001);
-            }
-            if(StringUtils.isNotNullOrEmpty(conf.getLink())){
-                vu.addRegExpressValidate("內推链接", conf.getLink(), "^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",null, null);
-                vu.addStringLengthValidate("內推链接", conf.getLink(), null, null, 0, 501);
-            }
-            vu.addIntTypeValidate("内推政策优先级", (int)conf.getPriority(), null, null, 0,3);
-            String message = vu.validate();
-            if(StringUtils.isNullOrEmpty(message)){
-                return referralConfDao.upsertHrCompanyReferralConf(conf);
-            }else{
-                throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(),
-                        ExceptionCategory.ADD_REDERRALPOLICY_PARAMETER.getMsg().replace("{MESSAGE}", message));
-            }
+           return referralConfDao.upsertHrCompanyReferralConf(conf);
         }
         throw ExceptionFactory.buildException(ExceptionCategory.REFERRAL_CONF_DATA_EMPTY);
     }
@@ -426,7 +410,7 @@ public class EmployeeService {
     public void upsertReferralPolicy(int companyId, int userId) throws CommonException{
         if(userId > 0){
             if(employeeEntity.isEmployee(userId, companyId)){
-                UserEmployeeDO employeeDO = employeeDao.getEmployeeByUserId(userId);
+                UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, companyId);
                 retryUpdateReferralPolicyCount(employeeDO, 0);
                 return;
             }
@@ -443,11 +427,7 @@ public class EmployeeService {
         int count = 0;
         UserEmployeeReferralPolicyDO policyDO = policyDao.getEmployeeReferralPolicyDOByEmployeeId(employeeDO.getId());
         if(policyDO == null){
-            policyDO = new UserEmployeeReferralPolicyDO();
-            policyDO.setCount(1);
-            policyDO.setEmployeeId(employeeDO.getId());
-            policyDao.addData(policyDO);
-            count = policyDO.getId();
+            count = policyDao.upsertCompanyReferralConfCount(employeeDO.getId());
         }else{
             count = policyDao.updateReferralPolicyByEmployeeIdAndCount(employeeDO.getId(),policyDO.getCount());
         }
