@@ -532,8 +532,6 @@ public class SearchengineEntity {
         } else {
 
             QueryBuilder employeeIdListQueryBuild = QueryBuilders.termsQuery("id", employeeIdList);
-            QueryBuilder activeEmployeeCondition = QueryBuilders.termsQuery("activation", 0);
-            ((BoolQueryBuilder) employeeIdListQueryBuild).must(activeEmployeeCondition);
 
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
                     .setQuery(employeeIdListQueryBuild).setFrom(0).setSize(employeeIdList.size());
@@ -593,6 +591,9 @@ public class SearchengineEntity {
             QueryBuilder exceptCurrentEmployeeQuery = QueryBuilders
                     .termQuery("id", employeeId);
             ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
+
+            QueryBuilder activeEmployeeCondition = QueryBuilders.termsQuery("activation", 0);
+            ((BoolQueryBuilder) query).must(activeEmployeeCondition);
 
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
