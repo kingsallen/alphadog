@@ -34,7 +34,7 @@ public class UserEmployeePointsRecordCompanyRelDao extends JooqCrudImpl<UserEmpl
         logger.info("=============date:{}",date);
         Result<Record2<Long, Integer>> result = create.select(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID, DSL.count(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID))
                 .from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
-                .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.lt(new Timestamp(date.getTime())))
+                .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.ge(new Timestamp(date.getTime())))
                 .and(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD.gt(0))
                 .groupBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID)
                 .fetch();
