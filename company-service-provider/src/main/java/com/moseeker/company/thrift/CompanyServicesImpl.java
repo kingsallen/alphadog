@@ -542,7 +542,7 @@ public class CompanyServicesImpl implements Iface {
     }
 
     @Override
-    public Response getCompanyWechatList() throws BIZException, TException {
+    public Response getCompanyWechatList(int companyId) throws BIZException, TException {
         try {
             List<HrCompanyWechatDO> infoList = service.getCompanyInfoByTemplateRank(companyId);
             String result= JSON.toJSONString(infoList,serializeConfig);
