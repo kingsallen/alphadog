@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = -1577649899;
+    private static final long serialVersionUID = -1479272337;
 
     /**
      * Setter for <code>userdb.user_user.id</code>. 主key
@@ -44,14 +44,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     }
 
     /**
-     * Setter for <code>userdb.user_user.country_code</code>. 国家代码，用于支持国际短信
+     * Setter for <code>userdb.user_user.country_code</code>. 国家代码，用 于支持国际短信
      */
     public void setCountryCode(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.country_code</code>. 国家代码，用于支持国际短信
+     * Getter for <code>userdb.user_user.country_code</code>. 国家代码，用 于支持国际短信
      */
     public String getCountryCode() {
         return (String) get(1);

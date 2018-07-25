@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.jobdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
@@ -12,6 +13,8 @@ import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -22,6 +25,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.jooq.impl.DSL.count;
 
 /**
  * 封装申请表基本操作
@@ -171,4 +176,19 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
         return resultVO;
     }
 
+	public Result<Record2<Integer,Integer>> countEmployeeApply(List<Integer> userIdList, LocalDateTime lastFriday, LocalDateTime currentFriday) {
+		return create.select(
+					JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
+					count(JobApplication.JOB_APPLICATION.ID).as("count")
+				)
+				.from(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.in(userIdList))
+				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.gt(
+						new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant()
+								.toEpochMilli())))
+				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.le(
+						new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
+				.groupBy(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID)
+				.fetch();
+	}
 }

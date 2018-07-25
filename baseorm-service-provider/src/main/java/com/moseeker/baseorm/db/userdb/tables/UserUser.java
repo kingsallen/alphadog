@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUser extends TableImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = -535988890;
+    private static final long serialVersionUID = -1367102710;
 
     /**
      * The reference instance of <code>userdb.user_user</code>
@@ -57,9 +57,9 @@ public class UserUser extends TableImpl<UserUserRecord> {
     public final TableField<UserUserRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
     /**
-     * The column <code>userdb.user_user.country_code</code>. 国家代码，用于支持国际短信
+     * The column <code>userdb.user_user.country_code</code>. 国家代码，用 于支持国际短信
      */
-    public final TableField<UserUserRecord, String> COUNTRY_CODE = createField("country_code", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("86", org.jooq.impl.SQLDataType.VARCHAR)), this, "国家代码，用于支持国际短信");
+    public final TableField<UserUserRecord, String> COUNTRY_CODE = createField("country_code", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("86", org.jooq.impl.SQLDataType.VARCHAR)), this, "国家代码，用 于支持国际短信");
 
     /**
      * The column <code>userdb.user_user.username</code>. 用户名，目前存放已验证手机号或者unionid
