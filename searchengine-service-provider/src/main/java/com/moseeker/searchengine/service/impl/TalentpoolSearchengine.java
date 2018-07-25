@@ -63,6 +63,7 @@ public class TalentpoolSearchengine {
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleData(response, "users");
+            this.handlerResultData(result,params);
             return result;
         } catch (Exception e) {
             logger.info(e.getMessage()+"=================",e);
@@ -71,6 +72,39 @@ public class TalentpoolSearchengine {
             }
         }
         return result;
+    }
+
+    private void handlerResultData( Map<String, Object> result,Map<String, String> params){
+        if(!StringUtils.isEmptyMap(result)){
+            int totalNum=(int)((long)result.get("totalNum"));
+            if(totalNum>0){
+                List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("users");
+                if(!StringUtils.isEmptyList(list)){
+                    for(Map<String,Object> map:list){
+                        Map<String,Object> user= (Map<String, Object>) map.get("user");
+                        if(!StringUtils.isEmptyMap(user)){
+                            List<Map<String,Object>> commentList= (List<Map<String, Object>>) user.get("talentpool_comment");
+                            if(!StringUtils.isEmptyList(commentList)){
+                                String companyId=params.get("company_id");
+                                if(StringUtils.isNotNullOrEmpty(companyId)){
+                                    for(Map<String,Object> comment:commentList){
+                                        int id= (int) comment.get("company_id");
+                                        if(id==Integer.parseInt(companyId)){
+                                            int count=(int)((int)comment.get("count"));
+                                            user.put("remark_count",count);
+                                            break;
+                                        }
+                                    }
+                                }
+
+
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
     }
     @CounterIface
     public List<Integer> getTalentUserList(Map<String, String> params){
