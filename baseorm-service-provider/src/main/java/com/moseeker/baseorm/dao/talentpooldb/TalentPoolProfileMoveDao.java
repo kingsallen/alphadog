@@ -99,7 +99,7 @@ public class TalentPoolProfileMoveDao extends JooqCrudImpl<TalentPoolProfileMove
     public int updateRecordWithPositiveLock(TalentpoolProfileMoveRecord record) {
         return create.update(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE)
                 .set(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.CRAWL_NUM, record.getCrawlNum() + 1)
-                .set(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.CURRENT_EMAIL_NUM, record.getCrawlNum())
+                .set(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.CURRENT_EMAIL_NUM, record.getCurrentEmailNum())
                 .set(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.STATUS, record.getStatus())
                 .where(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.ID.eq(record.getId()))
                 .and(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.CRAWL_NUM.eq(record.getCrawlNum()))

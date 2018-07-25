@@ -2,6 +2,7 @@ package com.moseeker.company.utils;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.bean.ValidateTalentBean;
 import com.moseeker.entity.TalentPoolEntity;
@@ -42,7 +43,9 @@ public class ValidateTalent {
         }
         // todo 新增，通过简历搬家收藏的人才不能取消收藏
         List<ProfileProfileDO> profileProfileDOS = profileProfileDao.getProfileByUidList(userIdList);
-        userIdList = profileProfileDOS.stream().filter(profileProfileDO -> !"10000000000000000000000000000".equals(profileProfileDO.getOrigin()))
+        userIdList = profileProfileDOS.stream().filter(profileProfileDO ->
+                (!ChannelType.MVHOUSEJOB51.getOrigin("").equals(profileProfileDO.getOrigin())
+                        && !ChannelType.MVHOUSEZHILIAN.getOrigin("").equals(profileProfileDO.getOrigin())))
                 .map(ProfileProfileDO::getUserId).collect(Collectors.toSet());
 
         unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);

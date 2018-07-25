@@ -42,7 +42,7 @@ public class ProfileMoveReceiver {
     public void receiveEmailNum(Message message) {
         String json = "";
         try{
-            logger.info("==============================rabbitmq开始消费，message:{}", message);
+            logger.info("==============================接受邮件总数rabbitmq开始消费，message:{}", message);
             json=new String(message.getBody(), "UTF-8");
             Response response = JSONObject.parseObject(json, Response.class);
             if(response.getStatus() == 0){

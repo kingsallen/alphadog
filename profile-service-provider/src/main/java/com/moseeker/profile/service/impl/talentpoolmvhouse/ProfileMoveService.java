@@ -35,11 +35,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -97,6 +97,7 @@ public class ProfileMoveService {
      * @author cjm
      * @date 2018/7/18
      */
+    @Transactional
     public Response moveHouseLogin(ProfileMoveForm form) throws BIZException {
         logger.info("====================form:{}", form);
         int hrId = form.getHr_id();
@@ -120,7 +121,7 @@ public class ProfileMoveService {
         // 映射简历搬家参数
         MvHouseVO mvHouseVO = createLoginParams(userHrAccountDO, hrThirdPartyAccountDO, record, form);
 
-        sender.sendMqRequest(mvHouseVO, ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_RESQUET, ProfileMoveConstant.PROFILE_MOVE_EXCHANGE_NAME);
+        sender.sendMqRequest(mvHouseVO, ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_REQUEST, ProfileMoveConstant.PROFILE_MOVE_EXCHANGE_NAME);
 
         logger.info("推送RabbitMQ成功");
 

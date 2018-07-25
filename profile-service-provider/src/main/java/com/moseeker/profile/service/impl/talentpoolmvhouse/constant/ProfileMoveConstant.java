@@ -17,9 +17,9 @@ public class ProfileMoveConstant {
     /**
      * 简历搬家用户登录队列路由key
      */
-    public final static String PROFILE_MOVE_ROUTING_KEY_RESQUET="mvhouse.request.#";
+    public final static String PROFILE_MOVE_ROUTING_KEY_REQUEST="mvhouse.request";
     /**
      * 简历搬家用户登录队列路由key
      */
-    public final static String PROFILE_MOVE_ROUTING_KEY_RESPONSE="mvhouse.response.#";
+    public final static String PROFILE_MOVE_ROUTING_KEY_RESPONSE="mvhouse.response";
 }

@@ -98,14 +98,14 @@ public class AppConfig {
     }
 
     @Bean
-    public Queue paramQueue() {
+    public Queue mvHouseQueue() {
         // 简历搬家队列
         return new Queue(ProfileMoveConstant.PROFILE_MOVE_QUEUE, true, false, false);
     }
     @Bean
-    public List<Binding> bindingParamQueue() {
+    public List<Binding> bindingMvHouseQueue() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(paramQueue()).to(exchange()).with(ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_RESPONSE));
+            add(BindingBuilder.bind(mvHouseQueue()).to(exchange()).with(ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_RESPONSE));
         }};
     }
 }

@@ -224,7 +224,7 @@ public enum ChannelType {
             }
             return result;
         }
-    },MVHOUSE(29, "mvHouse", "简历搬家", "mvHouse"){
+    },MVHOUSEJOB51(29, "mvHouse", "简历搬家（前程无忧）", "mvHouse"){
         @Override
         public String getOrigin(String origin) {
             String result;
@@ -232,6 +232,17 @@ public enum ChannelType {
                 result = "10000000000000000000000000000";
             } else {
                 result = getResult(origin, 29);
+            }
+            return result;
+        }
+    },MVHOUSEZHILIAN(30, "mvHouse", "简历搬家（智联）", "mvHouse"){
+        @Override
+        public String getOrigin(String origin) {
+            String result;
+            if (StringUtils.isNullOrEmpty(origin)) {
+                result = "100000000000000000000000000000";
+            } else {
+                result = getResult(origin, 30);
             }
             return result;
         }

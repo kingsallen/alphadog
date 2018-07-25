@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMove extends TableImpl<TalentpoolProfileMoveRecord> {
 
-    private static final long serialVersionUID = 1765387712;
+    private static final long serialVersionUID = -1917882053;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_move</code>
@@ -71,6 +71,11 @@ public class TalentpoolProfileMove extends TableImpl<TalentpoolProfileMoveRecord
      * The column <code>talentpooldb.talentpool_profile_move.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin 目前仅显示前程无忧,智联招聘2个渠道
      */
     public final TableField<TalentpoolProfileMoveRecord, Byte> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "1=51job,2=猎聘,3=智联,4=linkedin 目前仅显示前程无忧,智联招聘2个渠道");
+
+    /**
+     * The column <code>talentpooldb.talentpool_profile_move.company_name</code>. 简历搬家爬取的公司名称
+     */
+    public final TableField<TalentpoolProfileMoveRecord, String> COMPANY_NAME = createField("company_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "简历搬家爬取的公司名称");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_move.crawl_type</code>. 简历类型 1.主动投递简历  2.已下载简历
