@@ -56,9 +56,6 @@ public class WholeProfileServicesImpl implements Iface {
     @Override
     public Response postResource(String profile, int userId) throws TException {
         try {
-
-
-
             Response res= service.postResource(profile, userId);
 
             return res;

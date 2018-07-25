@@ -76,7 +76,8 @@ public class DictCollegeDao extends JooqCrudImpl<DictCollegeDO, DictCollegeRecor
     @SuppressWarnings("unchecked")
     public List<CollegeBasic> getCollegeByAbroad(int countryCode) {
         return create.select(DictCollege.DICT_COLLEGE.CODE,
-                DictCollege.DICT_COLLEGE.NAME)
+                DictCollege.DICT_COLLEGE.NAME,
+                DictCollege.DICT_COLLEGE.LOGO)
                 .from(DictCollege.DICT_COLLEGE)
                 .where(DictCollege.DICT_COLLEGE.COUNTRY_CODE.eq(countryCode))
                 .fetchInto(CollegeBasic.class);

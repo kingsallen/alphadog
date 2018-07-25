@@ -40,7 +40,8 @@ struct CollegeProvince {
 
 struct CollegeBasic{
     1: optional i32 code,
-    2: optional string name
+    2: optional string name,
+    3: optional string logo
 }
 
 /*
