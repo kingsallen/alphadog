@@ -734,7 +734,20 @@ public class TalentpoolSearchengine {
         if(queryNest!=null){
             ((BoolQueryBuilder) query).filter(queryNest);
         }
+        this.queryTalentComment(params,query);
         return query;
+    }
+    /*
+     查询是否有备注
+     */
+    private void queryTalentComment(Map<String,String> params, QueryBuilder query){
+        if(!StringUtils.isEmptyMap(params)){
+            String isComment=params.get("comment");
+            if(StringUtils.isNotNullOrEmpty(isComment)&&"1".equals(isComment)){
+                String companyId=params.get("company_id");
+                searchUtil.handleTerm(companyId,query,"user.talentpool_comment.company_id");
+            }
+        }
     }
     private void handlerSortOrder(Map<String,String> params,SearchRequestBuilder builder){
         String publisherIds=params.get("publisher");
