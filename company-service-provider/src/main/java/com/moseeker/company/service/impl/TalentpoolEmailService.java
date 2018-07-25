@@ -1860,7 +1860,7 @@ public class TalentpoolEmailService {
 
         }
         if(!StringUtils.isEmptyMap(works)){
-            basicInfo.setPosition((String)works.getOrDefault("position_name",""));
+            basicInfo.setPosition((String)works.getOrDefault("job_name",""));
         }
         //==========================================
         //==========================================
