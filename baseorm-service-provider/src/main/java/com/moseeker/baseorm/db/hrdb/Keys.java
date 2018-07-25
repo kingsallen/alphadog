@@ -228,6 +228,7 @@ public class Keys {
     public static final UniqueKey<HrCompanyEmailInfoRecord> KEY_HR_COMPANY_EMAIL_INFO_HR_COMPANY_EMAIL_INFO_COMPANY_ID_PK = UniqueKeys0.KEY_HR_COMPANY_EMAIL_INFO_HR_COMPANY_EMAIL_INFO_COMPANY_ID_PK;
     public static final UniqueKey<HrCompanyFeatureRecord> KEY_HR_COMPANY_FEATURE_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_FEATURE_PRIMARY;
     public static final UniqueKey<HrCompanyReferralConfRecord> KEY_HR_COMPANY_REFERRAL_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_REFERRAL_CONF_PRIMARY;
+    public static final UniqueKey<HrCompanyReferralConfRecord> KEY_HR_COMPANY_REFERRAL_CONF_HR_COMPANY_REFERRAL_CONF_COMPANY_ID_PK = UniqueKeys0.KEY_HR_COMPANY_REFERRAL_CONF_HR_COMPANY_REFERRAL_CONF_COMPANY_ID_PK;
     public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY;
     public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY;
     public static final UniqueKey<HrEmployeePositionRecord> KEY_HR_EMPLOYEE_POSITION_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_POSITION_PRIMARY;
@@ -366,6 +367,7 @@ public class Keys {
         public static final UniqueKey<HrCompanyEmailInfoRecord> KEY_HR_COMPANY_EMAIL_INFO_HR_COMPANY_EMAIL_INFO_COMPANY_ID_PK = createUniqueKey(HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO, "KEY_hr_company_email_info_hr_company_email_info_company_id_pk", HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO.COMPANY_ID);
         public static final UniqueKey<HrCompanyFeatureRecord> KEY_HR_COMPANY_FEATURE_PRIMARY = createUniqueKey(HrCompanyFeature.HR_COMPANY_FEATURE, "KEY_hr_company_feature_PRIMARY", HrCompanyFeature.HR_COMPANY_FEATURE.ID);
         public static final UniqueKey<HrCompanyReferralConfRecord> KEY_HR_COMPANY_REFERRAL_CONF_PRIMARY = createUniqueKey(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF, "KEY_hr_company_referral_conf_PRIMARY", HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.ID);
+        public static final UniqueKey<HrCompanyReferralConfRecord> KEY_HR_COMPANY_REFERRAL_CONF_HR_COMPANY_REFERRAL_CONF_COMPANY_ID_PK = createUniqueKey(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF, "KEY_hr_company_referral_conf_hr_company_referral_conf_company_id_pk", HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.COMPANY_ID);
         public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = createUniqueKey(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, "KEY_hr_employee_cert_conf_PRIMARY", HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
         public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = createUniqueKey(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, "KEY_hr_employee_custom_fields_PRIMARY", HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);
         public static final UniqueKey<HrEmployeePositionRecord> KEY_HR_EMPLOYEE_POSITION_PRIMARY = createUniqueKey(HrEmployeePosition.HR_EMPLOYEE_POSITION, "KEY_hr_employee_position_PRIMARY", HrEmployeePosition.HR_EMPLOYEE_POSITION.ID);

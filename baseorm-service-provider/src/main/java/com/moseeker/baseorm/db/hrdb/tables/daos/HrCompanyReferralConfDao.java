@@ -73,6 +73,13 @@ public class HrCompanyReferralConfDao extends DAOImpl<HrCompanyReferralConfRecor
     }
 
     /**
+     * Fetch a unique record that has <code>company_id = value</code>
+     */
+    public com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyReferralConf fetchOneByCompanyId(Integer value) {
+        return fetchOne(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.COMPANY_ID, value);
+    }
+
+    /**
      * Fetch records that have <code>link IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyReferralConf> fetchByLink(String... values) {
