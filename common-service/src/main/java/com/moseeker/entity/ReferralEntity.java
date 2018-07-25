@@ -31,11 +31,19 @@ public class ReferralEntity {
     UserEmployeePointsRecordDao pointsRecordDao;
 
 
-    public Map<Integer, Integer> countEmployeeForward(List<Integer> userIdList, LocalDateTime lastFriday,
+    /**
+     * 计算给定时间内的员工内推带来的转发次数
+     * @param userIdList 用户编号
+     * @param positionIdList 职位编号
+     * @param lastFriday 开始时间 (大于开始时间)
+     * @param currentFriday 结束时间 （小于等于结束时间）
+     * @return 员工与转发次数的关系
+     */
+    public Map<Integer, Integer> countEmployeeForward(List<Integer> userIdList, List<Integer> positionIdList, LocalDateTime lastFriday,
                                                       LocalDateTime currentFriday) {
 
-        Result<Record2<Integer, Integer>> result = shareChainDao.countEmployeeForward(userIdList, lastFriday,
-                currentFriday);
+        Result<Record2<Integer, Integer>> result = shareChainDao.countEmployeeForward(userIdList, positionIdList,
+                lastFriday, currentFriday);
 
         if (result != null && result.size() > 0) {
 
@@ -46,7 +54,7 @@ public class ReferralEntity {
 
             //重复推荐数量
             Result<Record2<Integer, Integer>> repeatRecommand = shareChainDao.countRepeatRecommend(userIdList,
-                    lastFriday, currentFriday);
+                    positionIdList, lastFriday, currentFriday);
             if (repeatRecommand != null && repeatRecommand.size() > 0) {
                 repeatRecommand.forEach(integerIntegerRecord2 -> {
                     if (employeeForward.get(integerIntegerRecord2.value1()) != null) {
