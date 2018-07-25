@@ -17,6 +17,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
@@ -26,6 +27,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackupChendi_180625;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
@@ -47,6 +49,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeam_20180118Chendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
@@ -63,6 +66,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat_20180127chendi;
 
 import javax.annotation.Generated;
 
@@ -131,7 +135,7 @@ public class Tables {
     public static final HrCompanyConf HR_COMPANY_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf.HR_COMPANY_CONF;
 
     /**
-     * 邮件额度每天使用日志
+     * 公司和CS匹配表
      */
     public static final HrCompanyCs HR_COMPANY_CS = com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs.HR_COMPANY_CS;
 
@@ -144,6 +148,11 @@ public class Tables {
      * 公司福利特色
      */
     public static final HrCompanyFeature HR_COMPANY_FEATURE = com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature.HR_COMPANY_FEATURE;
+
+    /**
+     * 公司内推配置表
+     */
+    public static final HrCompanyReferralConf HR_COMPANY_REFERRAL_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF;
 
     /**
      * 部门员工配置表
@@ -189,6 +198,11 @@ public class Tables {
      * 红包记录表
      */
     public static final HrHbItems HR_HB_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrHbItems.HR_HB_ITEMS;
+
+    /**
+     * The table <code>hrdb.hr_hb_items_backup_chendi_180625</code>.
+     */
+    public static final HrHbItemsBackupChendi_180625 HR_HB_ITEMS_BACKUP_CHENDI_180625 = com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackupChendi_180625.HR_HB_ITEMS_BACKUP_CHENDI_180625;
 
     /**
      * 红包配置和职位绑定表
@@ -291,6 +305,11 @@ public class Tables {
     public static final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
 
     /**
+     * The table <code>hrdb.hr_team_20180118_chendi</code>.
+     */
+    public static final HrTeam_20180118Chendi HR_TEAM_20180118_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeam_20180118Chendi.HR_TEAM_20180118_CHENDI;
+
+    /**
      * 团队成员信息
      */
     public static final HrTeamMember HR_TEAM_MEMBER = com.moseeker.baseorm.db.hrdb.tables.HrTeamMember.HR_TEAM_MEMBER;
@@ -331,7 +350,7 @@ public class Tables {
     public static final HrWxHrChatList HR_WX_HR_CHAT_LIST = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList.HR_WX_HR_CHAT_LIST;
 
     /**
-     * The table <code>hrdb.hr_wx_hr_chat_voice</code>.
+     * 语音聊天的语音信息
      */
     public static final HrWxHrChatVoice HR_WX_HR_CHAT_VOICE = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE;
 
@@ -371,8 +390,12 @@ public class Tables {
     public static final HrWxWechat HR_WX_WECHAT = com.moseeker.baseorm.db.hrdb.tables.HrWxWechat.HR_WX_WECHAT;
 
     /**
+     * The table <code>hrdb.hr_wx_wechat_20180127chendi</code>.
+     */
+    public static final HrWxWechat_20180127chendi HR_WX_WECHAT_20180127CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrWxWechat_20180127chendi.HR_WX_WECHAT_20180127CHENDI;
+
+    /**
      * 微信消息通知同步状态
      */
     public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
-
 }

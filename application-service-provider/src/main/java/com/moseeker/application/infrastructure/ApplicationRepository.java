@@ -1,11 +1,10 @@
 package com.moseeker.application.infrastructure;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.application.domain.ApplicationBatchEntity;
+import com.moseeker.application.domain.ApplicationEntity;
 import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.domain.component.state.ApplicationStateRoute;
-import com.moseeker.application.domain.ApplicationEntity;
 import com.moseeker.application.domain.constant.ApplicationRefuseState;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.baseorm.config.HRAccountType;
@@ -16,11 +15,15 @@ import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechat;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserWxUser;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.entity.EmployeeEntity;
 import org.jooq.Configuration;
 import org.jooq.Record2;
+import org.jooq.Record3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +49,10 @@ public class ApplicationRepository {
     private HrOperationJOOQDao hrOperationJOOQDao;
     private HrCompanyJOOQDao companyJOOQDao;
     private WechatJOOQDao wechatJOOQDao;
+    private UserUserJOOQDao userJOOQDao;
     private HrWxNoticeMessageJOOQDao noticeMessageJOOQDao;
+    private UserEmployeeJOOQDao employeeJOOQDao;
+    private UserWxUserJOOQDao wxUserJOOQDao;
 
     /**
      * es数据模板，tableName: 表名， user_id: 用户id
@@ -69,6 +75,9 @@ public class ApplicationRepository {
         companyJOOQDao = new HrCompanyJOOQDao(configuration);
         wechatJOOQDao = new WechatJOOQDao(configuration);
         noticeMessageJOOQDao = new HrWxNoticeMessageJOOQDao(configuration);
+        userJOOQDao = new UserUserJOOQDao(configuration);
+        employeeJOOQDao = new UserEmployeeJOOQDao(configuration);
+        wxUserJOOQDao = new UserWxUserJOOQDao(configuration);
     }
 
     public JobApplicationJOOQDao getJobApplicationDao() {
@@ -79,10 +88,25 @@ public class ApplicationRepository {
         return userHrAccountDao;
     }
 
+
+    public UserUserJOOQDao getUserJOOQDao() {
+        return userJOOQDao;
+    }
+
+    public UserEmployeeJOOQDao getEmployeeJOOQDao(){
+        return employeeJOOQDao;
+    }
+
     public JobPositionJOOQDao getPositionJOOQDao() {
         return positionJOOQDao;
     }
 
+    public UserWxUserJOOQDao getWxUserJOOQDao() {
+        return wxUserJOOQDao;
+    }
+
+    @Autowired
+    private EmployeeEntity entity;
     /**
      * 查找申请投递的职位名称
      * @param applicationIdList 申请编号
@@ -171,10 +195,26 @@ public class ApplicationRepository {
      */
     public Map<Integer,Integer> getAppliers(List<Integer> applicationIdList) {
         Map<Integer,Integer> result = new HashMap<>();
-        List<Record2<Integer,Integer>> list = jobApplicationDao.fetchApplierIdListByIdList(applicationIdList);
+        List<Record3<Integer,Integer,Integer>> list = jobApplicationDao.fetchApplierIdAndRecomIdListByIdList(applicationIdList);
         if (list != null) {
             list.forEach(record -> {
                 result.put(record.value1(), record.value2());
+            });
+        }
+        return result;
+    }
+
+    /**
+     * 查找申请人编号
+     * @param applicationIdList 申请编号
+     * @return 申请人编号
+     */
+    public Map<Integer,Integer> getRecoms(List<Integer> applicationIdList) {
+        Map<Integer,Integer> result = new HashMap<>();
+        List<Record3<Integer,Integer,Integer>> list = jobApplicationDao.fetchApplierIdAndRecomIdListByIdList(applicationIdList);
+        if (list != null) {
+            list.forEach(record -> {
+                result.put(record.value1(), record.value3());
             });
         }
         return result;
@@ -381,5 +421,18 @@ public class ApplicationRepository {
         }
 
         return state;
+    }
+
+    public List<UserUser> getUserListByIdList(List<Integer> idList){
+        return  userJOOQDao.fetchUserByID(idList);
+    }
+
+
+    public boolean isUserEmployee(int companyId, int userId){
+        return entity.isEmployee(userId, companyId);
+    }
+
+    public List<UserWxUser> getUserWxUserByUserIdList(List<Integer> userIdList){
+        return wxUserJOOQDao.getWxUserByUserIdList(userIdList);
     }
 }

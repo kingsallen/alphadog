@@ -15,6 +15,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
@@ -24,6 +25,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +71,9 @@ public class UserCenterBizTools {
 
     @Autowired
     private UserCollectPositionDao collectPositionDao;
+
+    @Autowired
+    EmployeeEntity employeeEntity;
 
     /**
      * 查找用户的申请记录
@@ -461,7 +466,12 @@ public class UserCenterBizTools {
      */
     public List<Integer> listPositionIdByUserId(int userId) {
         try {
-            return positionDao.listPositionIdByUserId(userId);
+            UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
+            if (employeeDO != null) {
+                List<Integer> companyIdList = employeeEntity.getCompanyIds(employeeDO.getCompanyId());
+                return positionDao.listPositionIdByCompanyIdList(companyIdList);
+            }
+            return null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return null;
