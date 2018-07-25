@@ -31,6 +31,7 @@ public class HrGroupCompanyRelDao extends JooqCrudImpl<HrGroupCompanyRelDO, HrGr
     }
 
     public List<Integer> getGroupCompanyRelDoByCompanyIds(List<Integer> companyIdList){
+
         if(!StringUtils.isEmptyList(companyIdList)){
             List<HrGroupCompanyRelDO> relDOList = create.selectFrom(HrGroupCompanyRel.HR_GROUP_COMPANY_REL)
                     .where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.COMPANY_ID.in(companyIdList))
@@ -40,8 +41,8 @@ public class HrGroupCompanyRelDao extends JooqCrudImpl<HrGroupCompanyRelDO, HrGr
                 List<HrGroupCompanyRelDO> relList = create.selectFrom(HrGroupCompanyRel.HR_GROUP_COMPANY_REL)
                         .where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.GROUP_ID.in(relIdList))
                         .fetchInto(HrGroupCompanyRelDO.class);
-                List<Integer> companyIds = relList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
-                return companyIds;
+
+                companyIdList.addAll(relList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList()));
             }
         }
         return companyIdList;
