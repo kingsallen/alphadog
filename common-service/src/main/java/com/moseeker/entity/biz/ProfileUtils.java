@@ -536,7 +536,7 @@ public class ProfileUtils {
                         if(collegeMap == null){
                             collegeMap = collegeDao.getCollegeMap();
                         }
-                        if(collegeMap.get(record.getCollegeName()) != null){
+                        if(collegeMap.get(record.getCollegeName()) != null && record.getCountryId() == 0){
                             DictCollegeDO collegeDO = collegeMap.get(record.getCollegeName());
                             record.setCollegeCode(collegeDO.getCode());
                             record.setCollegeLogo(collegeDO.getLogo());
