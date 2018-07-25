@@ -678,5 +678,21 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 .where(JobPosition.JOB_POSITION.ID.eq(positionId))
                 .fetchOneInto(JobPositionDO.class);
     }
-   
+
+
+    /**
+     * 根据公司编号查找公司下所有的职位编号
+     * @param companyIdList 公司编号集合
+     * @return 职位编号集合
+     */
+    public Result<Record1<Integer>> getPositionIdListByCompanyIdList(List<Integer> companyIdList) {
+        if (companyIdList != null && companyIdList.size() > 0) {
+            return create.select(JobPosition.JOB_POSITION.ID)
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyIdList))
+                    .fetch();
+        } else {
+            return null;
+        }
+    }
 }
