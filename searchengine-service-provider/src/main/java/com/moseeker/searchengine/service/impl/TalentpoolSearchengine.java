@@ -770,8 +770,8 @@ public class TalentpoolSearchengine {
      */
     private void queryTalentComment(Map<String,String> params, QueryBuilder query){
         if(!StringUtils.isEmptyMap(params)){
-            String isComment=params.get("comment");
-            if(StringUtils.isNotNullOrEmpty(isComment)&&"1".equals(isComment)){
+            String remark=params.get("remark");
+            if(StringUtils.isNotNullOrEmpty(remark)&&"1".equals(remark)){
                 String companyId=params.get("company_id");
                 searchUtil.handleTerm(companyId,query,"user.talentpool_comment.company_id");
             }
