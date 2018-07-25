@@ -520,17 +520,12 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         this.updateRecords(records);
     }
 
-    public List<Integer> listPositionIdByUserId(int userId) {
+    public List<Integer> listPositionIdByCompanyIdList(List<Integer> companyIdList) {
         List<Integer> list = new ArrayList<>();
-        UserEmployeeRecord employeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
-                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(userId)
-                        .and(UserEmployee.USER_EMPLOYEE.DISABLE.equal((byte) 0))
-                        .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.equal((byte) 0)))
-                .fetchOne();
-        if (employeeRecord != null) {
+        if (companyIdList != null && companyIdList.size() > 0) {
             Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
                     .from(JobPosition.JOB_POSITION)
-                    .where(JobPosition.JOB_POSITION.COMPANY_ID.equal(employeeRecord.getCompanyId()))
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyIdList))
                     .fetch();
             if (result != null && result.size() > 0) {
                 result.forEach(record -> {

@@ -136,7 +136,8 @@ public class EmployeeEntity {
         List<Integer> companyIds = getCompanyIds(companyId);
         companyIds.add(companyId);
         query.where(new Condition("company_id", companyIds, ValueOp.IN)).and("sysuser_id", String.valueOf(userId))
-                .and("disable", "0");
+                .and("disable", "0")
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), "0");
         return employeeDao.getData(query.buildQuery());
     }
 
@@ -1044,5 +1045,18 @@ public class EmployeeEntity {
 
     public List<UserEmployeeDO> getUserEmployeeByIdList(Set<Integer> idList){
         return employeeDao.getUserEmployeeForidList(idList);
+    }
+
+    public UserEmployeeDO getActiveEmployeeDOByUserId(int userId) {
+        if (userId > 0) {
+            // 首先通过CompanyId 查询到该公司集团下所有的公司ID
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), userId)
+                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActivedState.Actived.getState())
+                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
+            return employeeDao.getData(queryBuilder.buildQuery());
+        } else {
+            return null;
+        }
     }
 }
