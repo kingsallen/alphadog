@@ -806,7 +806,12 @@ public class CompanyController {
     @ResponseBody
     public String getCompanyAward(HttpServletRequest request) throws Exception {
         try {
-            Response confDO  = companyServices.getCompanyWechatList();
+            Map<String, Object> data = parseRequestParam(request);
+            String companyId=(String)data.get("company_id");
+            if(StringUtils.isNullOrEmpty(companyId)){
+               companyId = "0";
+            }
+            Response confDO  = companyServices.getCompanyWechatList(Integer.parseInt(companyId));
             return ResponseLogNotification.success(request,confDO);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
