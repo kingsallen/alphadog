@@ -67,7 +67,7 @@ public class CollegeController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/api/dict/college/abroad", method = RequestMethod.GET)
+    @RequestMapping(value = "/dict/college/abroad", method = RequestMethod.GET)
     @ResponseBody
     public String getCollegeByAborad(HttpServletRequest request, HttpServletResponse response) {
         try {
