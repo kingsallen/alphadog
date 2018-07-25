@@ -1,22 +1,26 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.profile.form.ProfileMoveForm;
 import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.talentpool.service.ProfileMoveThriftService;
+import com.moseeker.thrift.gen.talentpool.struct.ProfileMoveForm;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+
 /**
  * 简历搬家controller
  *
@@ -29,6 +33,8 @@ public class ProfileMoveController {
 
     private static Logger logger = LoggerFactory.getLogger(ProfileMoveController.class);
 
+    private ProfileMoveThriftService.Iface profileMoveService = ServiceManager.SERVICEMANAGER.getService(ProfileMoveThriftService.Iface.class);
+
     /**
      * 简历搬家用户登录
      * @author  cjm
@@ -36,15 +42,18 @@ public class ProfileMoveController {
      */
     @RequestMapping(value = "/profile/move/user/login", method = RequestMethod.POST)
     @ResponseBody
-    public String userLogin(HttpServletRequest request, HttpServletResponse response) {
+    public String userLogin(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            Integer hrId = params.getInt("hr_id");
-            Integer companyId = params.getInt("company_id");
-            Integer channel = params.getInt("channel");
-            Integer crawlType = params.getInt("crawl_type");
-            String startDate = params.getString("start_date");
-            String endDate = params.getString("end_date");
+            Object obj = params.get("profile_move_vo");
+            ProfileMoveForm form = JSONObject.parseObject(JSON.toJSONString(obj), ProfileMoveForm.class);
+            Integer hrId = form.getHr_id();
+            Integer companyId = form.getCompany_id();
+            Integer channel = form.getChannel();
+            Integer crawlType = form.getCrawl_type();
+            String startDate = form.getStart_date();
+            String endDate = form.getEnd_date();
+
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addIntTypeValidate("hrId", hrId, null, null, 1, Integer.MAX_VALUE);
             validateUtil.addRequiredValidate("hrId", hrId, null, null);
@@ -62,10 +71,8 @@ public class ProfileMoveController {
             String message = validateUtil.validate();
 
             if (StringUtils.isBlank(message)) {
-                ProfileMoveForm form = new ProfileMoveForm();
-                BeanUtils.copyProperties(params, form);
                 // 用户登录，增加简历搬家操作表
-                return null;
+                return ResponseLogNotification.success(request, profileMoveService.moveHouseLogin(form));
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
@@ -82,7 +89,7 @@ public class ProfileMoveController {
      */
     @RequestMapping(value = "/profile/move/getOperationList", method = RequestMethod.GET)
     @ResponseBody
-    public String getMyHouseList(HttpServletRequest request, HttpServletResponse response){
+    public String getMoveOperationList(HttpServletRequest request){
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer pageNum = params.getInt("page_number");
@@ -100,7 +107,7 @@ public class ProfileMoveController {
 
             if (StringUtils.isBlank(message)) {
                 // 分页查询
-                return null;
+                return ResponseLogNotification.success(request, profileMoveService.getMoveOperationList(hrId, pageNum, pageSize));
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
@@ -115,14 +122,18 @@ public class ProfileMoveController {
      * @author  cjm
      * @date  2018/7/18
      */
-    @RequestMapping(value = "/profile/move", method = RequestMethod.POST)
+    @RequestMapping(value = "/profile/mvhouse", method = RequestMethod.POST)
     @ResponseBody
-    public String profileMove(HttpServletRequest request, HttpServletResponse response){
+    public String profileMove(HttpServletRequest request){
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            String profile = params.getString("profile");
-            Integer operationId = params.getInt("operation_id");
-            Integer currentEmailNum = params.getInt("current_email_num");
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+
+            Map<String,Object> profile= (Map<String, Object>) params.get("profile");
+
+            logger.info("service-manager-----params:{}", params);
+            logger.info("service-manager-----profile:{}", profile);
+            Integer operationId = (int)params.get("operation_id");
+            Integer currentEmailNum = (int)params.get("current_email_num");
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addIntTypeValidate("简历搬家操作主键id", operationId, null, null, 1, Integer.MAX_VALUE);
             validateUtil.addRequiredValidate("简历搬家操作主键id", operationId, null, null);
@@ -131,10 +142,10 @@ public class ProfileMoveController {
             validateUtil.addRequiredValidate("简历json串", profile, null, null);
 
             String message = validateUtil.validate();
-
+            logger.info("profile:{}", profile);
             if (StringUtils.isBlank(message)) {
                 // 简历合并、入库
-                return null;
+                return ResponseLogNotification.success(request, profileMoveService.moveHouse(JSON.toJSONString(profile), operationId, currentEmailNum));
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
@@ -144,30 +155,4 @@ public class ProfileMoveController {
         }
     }
 
-    @RequestMapping(value = "/profile/move/choose", method = RequestMethod.POST)
-    @ResponseBody
-    public String chooseCompany(HttpServletRequest request, HttpServletResponse response){
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            String companyName = params.getString("company_name");
-            Integer hrId = params.getInt("hr_id");
-            ValidateUtil validateUtil = new ValidateUtil();
-            validateUtil.addIntTypeValidate("hrId", hrId, null, null, 1, Integer.MAX_VALUE);
-            validateUtil.addRequiredValidate("hrId", hrId, null, null);
-            validateUtil.addStringLengthValidate("简历搬家选择公司名称", companyName, null, null, 0, 100);
-            validateUtil.addRequiredValidate("简历搬家选择公司名称", companyName, null, null);
-
-            String message = validateUtil.validate();
-
-            if (StringUtils.isBlank(message)) {
-                // 选择公司名称
-                return null;
-            } else {
-                return ResponseLogNotification.fail(request, message);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
 }

@@ -1350,8 +1350,8 @@ public class WholeProfileService {
     /*
       保存上传简历
       */
-    @Transactional
-    private int saveNewProfile(Map<String, Object> resume,Map<String, Object> map) throws TException {
+    @Transactional(rollbackFor = Exception.class)
+    protected int saveNewProfile(Map<String, Object> resume,Map<String, Object> map) throws TException {
         UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
         logger.info("talentpool upload new  user:{}", user1);
         user1.setSource((byte) UserSource.TALENT_UPLOAD.getValue());
@@ -1377,8 +1377,8 @@ public class WholeProfileService {
     /*
      更新上传简历
      */
-    @Transactional
-    private Response upsertProfile(Map<String, Object> resume,UserUserRecord userRecord,int userId,int newUserId){
+    @Transactional(rollbackFor = Exception.class)
+    protected Response upsertProfile(Map<String, Object> resume,UserUserRecord userRecord,int userId,int newUserId){
 
         ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
         if (profileRecord == null) {

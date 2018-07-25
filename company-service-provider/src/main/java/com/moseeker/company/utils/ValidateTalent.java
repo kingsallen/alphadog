@@ -1,13 +1,16 @@
 package com.moseeker.company.utils;
 
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.bean.ValidateTalentBean;
 import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by zztaiwll on 17/12/29.
@@ -16,6 +19,8 @@ import java.util.*;
 public class ValidateTalent {
     @Autowired
     private TalentPoolEntity talentPoolEntity;
+    @Autowired
+    private ProfileProfileDao profileProfileDao;
     /*
     处理批量传输的人才，获取其中有效的和无效的
     */
@@ -35,6 +40,11 @@ public class ValidateTalent {
             List<JobApplicationRecord> list=talentPoolEntity.getJobApplicationByCompanyIdAndApplierId(userIdList,companyId);
             applierIdList=this.getIdListByApplicationList(list);
         }
+        // todo 新增，通过简历搬家收藏的人才不能取消收藏
+        List<ProfileProfileDO> profileProfileDOS = profileProfileDao.getProfileByUidList(userIdList);
+        userIdList = profileProfileDOS.stream().filter(profileProfileDO -> !"10000000000000000000000000000".equals(profileProfileDO.getOrigin()))
+                .map(ProfileProfileDO::getUserId).collect(Collectors.toSet());
+
         unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);
         bean.setUnUseUserIdSet(unUsedApplierIdList);
         bean.setUserIdSet(applierIdList);

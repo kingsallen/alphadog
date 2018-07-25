@@ -224,6 +224,17 @@ public enum ChannelType {
             }
             return result;
         }
+    },MVHOUSE(29, "mvHouse", "简历搬家", "mvHouse"){
+        @Override
+        public String getOrigin(String origin) {
+            String result;
+            if (StringUtils.isNullOrEmpty(origin)) {
+                result = "10000000000000000000000000000";
+            } else {
+                result = getResult(origin, 29);
+            }
+            return result;
+        }
     };
 
     ChannelType(int value, String name, String alias, String retriveName) {
