@@ -876,7 +876,7 @@ public class CompanyService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
 
-    public List<HrCompanyWechatDO> getCompanyInfoByTemplateRank(){
+    public List<HrCompanyWechatDO> getCompanyInfoByTemplateRank(int companyId){
         String timeStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         timeStr = timeStr+"-01 00:00:00";
         logger.info("===============time:{}",timeStr);
@@ -908,7 +908,7 @@ public class CompanyService {
                     wechatIdList = noticeList.stream().map(m -> m.getWechatId()).collect(Collectors.toList());
                     wechatDOList = wechatDao.getHrWxWechatByIds(wechatIdList);
                     companyIdList = wechatDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
-                    return handerCompanyWechatInfo(companyIdList, wechatDOList, messageDOList, companyEmployeeMap);
+                    return handerCompanyWechatInfo(companyId, companyIdList, wechatDOList, messageDOList, companyEmployeeMap);
                 }
             }
         }
@@ -1152,12 +1152,15 @@ public class CompanyService {
         return 0;
     }
 
-    private List<HrCompanyWechatDO> handerCompanyWechatInfo(List<Integer> companyIds, List<HrWxWechatDO> wechatDOList,
+    private List<HrCompanyWechatDO> handerCompanyWechatInfo(int companyid, List<Integer> companyIds, List<HrWxWechatDO> wechatDOList,
                                                             List<HrWxTemplateMessageDO> messageDOList, Map<Integer, Integer> params){
         if(!StringUtils.isEmptyList(companyIds) && params!=null){
             logger.info("===============params:{}",params);
             List<HrCompanyWechatDO> companyWechatDOList = new ArrayList<>();
             for(Integer companyId: companyIds){
+                if(companyid != 0 && companyid != companyId){
+                    continue;
+                }
                 HrCompanyWechatDO companyWechatDO = new HrCompanyWechatDO();
                 companyWechatDO.setCompanyId(companyId);
                 int wechatId = 0;

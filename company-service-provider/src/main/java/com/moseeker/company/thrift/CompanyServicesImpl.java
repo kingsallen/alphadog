@@ -544,7 +544,7 @@ public class CompanyServicesImpl implements Iface {
     @Override
     public Response getCompanyWechatList() throws BIZException, TException {
         try {
-            List<HrCompanyWechatDO> infoList = service.getCompanyInfoByTemplateRank();
+            List<HrCompanyWechatDO> infoList = service.getCompanyInfoByTemplateRank(companyId);
             String result= JSON.toJSONString(infoList,serializeConfig);
             return ResponseUtils.successWithoutStringify(result);
         } catch (CommonException e) {
