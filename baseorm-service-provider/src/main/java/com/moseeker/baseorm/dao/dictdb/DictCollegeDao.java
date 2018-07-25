@@ -5,14 +5,18 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
 import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCollegeRecord;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import com.moseeker.thrift.gen.dict.struct.College;
 import com.moseeker.thrift.gen.dict.struct.CollegeBasic;
 import com.moseeker.thrift.gen.dict.struct.CollegeProvince;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -90,5 +94,17 @@ public class DictCollegeDao extends JooqCrudImpl<DictCollegeDO, DictCollegeRecor
 
     public DictCollegeDO getCollegeByID(int code) {
         return getData(new Query.QueryBuilder().where("code", code).buildQuery());
+    }
+
+    public Map<String, DictCollegeDO> getCollegeMap(){
+        List<DictCollegeDO> collegeDOList = create.selectFrom(DictCollege.DICT_COLLEGE)
+                .fetchInto(DictCollegeDO.class);
+        Map<String, DictCollegeDO> params = new HashMap<>();
+        if(!StringUtils.isEmptyList(collegeDOList)){
+            for(DictCollegeDO college : collegeDOList){
+                params.put(college.getName(),college);
+            }
+        }
+        return params;
     }
 }
