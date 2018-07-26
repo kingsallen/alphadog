@@ -210,15 +210,15 @@ public class ProfileMoveService {
         }
         int companyId = record.getCompanyId();
         // 简历合并
-        Future<Response> combineFuture = pool.startTast(() -> wholeProfileService.combinationProfile(profile, companyId));
-        Response combineResponse = combineFuture.get(60, TimeUnit.SECONDS);
-        logger.info("===========================简历搬家combineResponse:{}", combineResponse);
-        if (combineResponse.getStatus() == 0) {
-            String resume = combineResponse.getData();
-            UserUserDO user = getUserInfoByMobile(resume);
+//        Future<Response> combineFuture = pool.startTast(() -> wholeProfileService.combinationProfile(profile, companyId));
+//        Response combineResponse = combineFuture.get(60, TimeUnit.SECONDS);
+//        logger.info("===========================简历搬家combineResponse:{}", combineResponse);
+//        if (combineResponse.getStatus() == 0) {
+//            String resume = combineResponse.getData();
+            UserUserDO user = getUserInfoByMobile(profile);// resume
             // 简历入库
             Future<Response> preserveFuture =
-                    pool.startTast(() -> wholeProfileService.preserveProfile(resume, null, record.getHrId(), record.getCompanyId(), user.getId()));
+                    pool.startTast(() -> wholeProfileService.preserveProfile(profile, null, record.getHrId(), record.getCompanyId(), user.getId()));//resume
             Response preserveResponse = preserveFuture.get(60, TimeUnit.SECONDS);
             logger.info("===========================简历搬家preserveResponse:{}", preserveResponse);
             if (preserveResponse.getStatus() == 0) {
@@ -231,8 +231,8 @@ public class ProfileMoveService {
                 return ResponseUtils.success(new HashMap<>(1 >> 4));
             }
             return preserveResponse;
-        }
-        return combineResponse;
+//        }
+//        return combineResponse;
     }
 
     /**
