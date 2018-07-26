@@ -66,4 +66,6 @@ public class ConfigSysPointsConfTplDao extends JooqCrudImpl<ConfigSysPointsConfT
 		}
 		return list;
 	}
+
+
 }
