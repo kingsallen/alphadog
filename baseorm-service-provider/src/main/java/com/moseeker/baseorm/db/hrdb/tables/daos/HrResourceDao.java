@@ -108,6 +108,13 @@ public class HrResourceDao extends DAOImpl<HrResourceRecord, com.moseeker.baseor
     }
 
     /**
+     * Fetch records that have <code>cover IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrResource> fetchByCover(String... values) {
+        return fetch(HrResource.HR_RESOURCE.COVER, values);
+    }
+
+    /**
      * Fetch records that have <code>create_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrResource> fetchByCreateTime(Timestamp... values) {
@@ -119,12 +126,5 @@ public class HrResourceDao extends DAOImpl<HrResourceRecord, com.moseeker.baseor
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrResource> fetchByUpdateTime(Timestamp... values) {
         return fetch(HrResource.HR_RESOURCE.UPDATE_TIME, values);
-    }
-
-    /**
-     * Fetch records that have <code>cover IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrResource> fetchByCover(String... values) {
-        return fetch(HrResource.HR_RESOURCE.COVER, values);
     }
 }

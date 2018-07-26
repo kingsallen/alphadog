@@ -18,40 +18,38 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.EsClientInstance;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.pojo.searchengine.EmployeeAwards;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-import java.net.UnknownHostException;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.net.InetAddress;
+
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -542,5 +540,87 @@ public class SearchengineEntity {
                 jsonObject.put(employeePointsRecordPojo.getTimespan(), a);
             }
         }
+    }
+
+    public Map<Integer,Integer> getCurrentMonthList(List<Integer> employeeIdList, List<Integer> companyIdList) {
+
+        TransportClient client =this.getTransportClient();
+        if (client == null) {
+            return new HashMap<>();
+        } else {
+
+            QueryBuilder employeeIdListQueryBuild = QueryBuilders.termsQuery("id", employeeIdList);
+
+            SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
+                    .setQuery(employeeIdListQueryBuild).setFrom(0).setSize(employeeIdList.size());
+            SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+            LocalDateTime localDateTime = LocalDateTime.now();
+            String timeSpan = localDateTime.getYear() + "-" +
+                    (localDateTime.getMonthValue() < 10 ?
+                            ("0"+localDateTime.getMonthValue()) : localDateTime.getMonthValue());
+
+            List<EmployeeAwards> employeeAwardsList = new ArrayList<>();
+            for (SearchHit searchHit : response.getHits().getHits()) {
+                JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+
+                EmployeeAwards employeeAwards = new EmployeeAwards();
+                employeeAwards.setId(jsonObject.getInteger("id"));
+                if (jsonObject.getJSONObject("awards") != null && jsonObject.getJSONObject("awards").getJSONObject(timeSpan) != null) {
+                    JSONObject timeSpanAward = jsonObject.getJSONObject("awards").getJSONObject(timeSpan);
+                    employeeAwards.setAward(timeSpanAward.getInteger("award"));
+                    employeeAwards.setTimeSpan(timeSpan);
+                    employeeAwards.setLastUpdateTime(
+                            LocalDateTime.parse(jsonObject.getJSONObject("awards").getJSONObject(timeSpan)
+                                    .getString("last_update_time"))
+                                    .atZone(ZoneId.systemDefault()).toInstant()
+                                    .toEpochMilli());
+                    employeeAwardsList.add(employeeAwards);
+                }
+            }
+
+
+            if (employeeAwardsList != null && employeeAwardsList.size() > 0) {
+
+                QueryBuilder companyIdListQueryBuild = QueryBuilders.termsQuery("company_id", companyIdList);
+
+                for (int i =0; i< employeeAwardsList.size(); i++) {
+                    employeeAwardsList.get(i).setSort(getSort(client, employeeAwardsList.get(i).getId(),
+                            employeeAwardsList.get(i).getAward(), employeeAwardsList.get(i).getLastUpdateTime(),
+                            employeeAwardsList.get(i).getTimeSpan(), companyIdListQueryBuild));
+                }
+            }
+            return employeeAwardsList.stream().collect(Collectors.toMap(EmployeeAwards::getId, EmployeeAwards::getSort));
+        }
+    }
+
+    private int getSort(TransportClient client, int employeeId, int award, long lastUpdateTime, String timeSpan,
+                        QueryBuilder companyIdListQueryBuild) {
+        if (award > 0) {
+            QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
+            QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
+
+            QueryBuilder awardQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".award")
+                    .gt(award);
+            ((BoolQueryBuilder) query).must(awardQuery);
+
+            ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
+
+            QueryBuilder exceptCurrentEmployeeQuery = QueryBuilders
+                    .termQuery("id", employeeId);
+            ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
+
+            QueryBuilder activeEmployeeCondition = QueryBuilders.termQuery("activation", "0");
+            ((BoolQueryBuilder) query).must(activeEmployeeCondition);
+
+            try {
+                SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
+                        .setQuery(query).setSize(0).execute().get();
+                return (int)sortResponse.getHits().getTotalHits()+1;
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return 0;
     }
 }

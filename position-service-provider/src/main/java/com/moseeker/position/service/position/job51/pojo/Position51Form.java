@@ -16,6 +16,7 @@ public class Position51Form {
     private int addressId; 
     private String addressName;
     private boolean internship;
+    private boolean limitTitle;
 
     public boolean isInternship() {
         return internship;
@@ -119,5 +120,13 @@ public class Position51Form {
 
     public void setAddressName(String addressName) {
         this.addressName = addressName;
+    }
+
+    public boolean isLimitTitle() {
+        return limitTitle;
+    }
+
+    public void setLimitTitle(boolean limitTitle) {
+        this.limitTitle = limitTitle;
     }
 }

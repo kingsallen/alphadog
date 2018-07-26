@@ -452,7 +452,7 @@ public class ChatServiceTest {
     //@Test
     public void listHRChatRoom() throws Exception {
         HRChatRoomsVO chatRoomsVO = chatService.listHRChatRoom(3,1, 10);
-        assertEquals(1, chatRoomsVO.getPageNo());
+        assertEquals(1, chatRoomsVO.getPageNum());
         assertEquals(10, chatRoomsVO.getPageSize());
         assertEquals(1, chatRoomsVO.getTotalPage());
         assertEquals(3, chatRoomsVO.getTotalRow());
@@ -469,7 +469,7 @@ public class ChatServiceTest {
     //@Test
     public void listUserChatRoom() throws Exception {
         UserChatRoomsVO userChatRoomsVO = chatService.listUserChatRoom(1, 1, 10);
-        assertEquals(1, userChatRoomsVO.getPageNo());
+        assertEquals(1, userChatRoomsVO.getPageNum());
         assertEquals(10, userChatRoomsVO.getPageSize());
         assertEquals(1, userChatRoomsVO.getTotalPage());
         assertEquals(3, userChatRoomsVO.getTotalRow());
@@ -486,7 +486,7 @@ public class ChatServiceTest {
     //@Test
     public void listChatLogs() throws Exception {
         ChatsVO chatsVO = chatService.listChatLogs(1, 1, 10);
-        assertEquals(1, chatsVO.getPageNo());
+        assertEquals(1, chatsVO.getPageNum());
         assertEquals(10, chatsVO.getPageSize());
         assertEquals(1, chatsVO.getTotalPage());
         assertEquals(3, chatsVO.getTotalRow());

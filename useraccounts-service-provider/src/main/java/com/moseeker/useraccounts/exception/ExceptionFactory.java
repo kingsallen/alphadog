@@ -1,8 +1,10 @@
 package com.moseeker.useraccounts.exception;
 
+import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.ParamIllegalException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import java.util.HashMap;
 
 /**
  * 异常类的简单工厂

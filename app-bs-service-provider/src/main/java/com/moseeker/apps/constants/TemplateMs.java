@@ -53,7 +53,7 @@ public enum TemplateMs {
 		public MsInfo processStatus(int status, Object ...args) {
 			MsInfo mi = null;
 			switch (status) {
-				case 12:
+			    case 12:
 			        mi = new MsInfo(60,"{0}m/app/employee/recommends?wechat_signature={1}&from_template_message=60", MessageFormat.format("您好，您推荐的{0}已入职", args), "已入职", "感谢您对公司人才招聘的贡献，欢迎继续推荐");
 			        break;
 				case 13:
@@ -62,7 +62,26 @@ public enum TemplateMs {
 			}
 			return mi;
 		}
-	};
+	},
+
+    TORECOMSTATUS("推荐者2") {
+        @Override
+        public MsInfo processStatus(int status, Object ...args) {
+            MsInfo mi = null;
+            switch (status) {
+                case 4:
+                    mi = new MsInfo(75,"{0}m/app/employee/recommends?wechat_signature={1}&from_template_message=75", MessageFormat.format("您好，您推荐的候选人简历已被查看", args), "日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！");
+                    break;
+                case 7:
+                    mi = new MsInfo(76,"{0}m/app/employee/recommends?wechat_signature={1}&from_template_message=76",MessageFormat.format("您好，您推荐的候选人简历已通过初审", args), "日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！");
+                    break;
+                case 10:
+                    mi = new MsInfo(77,"{0}m/app/employee/recommends?wechat_signature={1}&from_template_message=77", MessageFormat.format("您好，您推荐的候选人简历已通过面试", args), "日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！");
+                    break;
+            }
+            return mi;
+        }
+    };
 
 	private String type;
 	

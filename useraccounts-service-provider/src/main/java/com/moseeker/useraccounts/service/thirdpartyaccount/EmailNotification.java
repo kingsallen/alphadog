@@ -34,12 +34,15 @@ public class EmailNotification {
 
     static List<String> refreshMails = new ArrayList<>();
 
+    static String emailLevel;
+
     static String br = "<br/>";
 
     static {
         mails = getEmails("account_sync.email");
         devMails = getEmails("account_sync.email.dev");
         refreshMails = getEmails("account_bind.email");
+        emailLevel = getConfig("user_account.email.level");
     }
 
     public static String getConfig(String key) {
@@ -255,7 +258,7 @@ public class EmailNotification {
             return;
         }
         try {
-
+            emailSubject = "【" + emailLevel + "】" + emailSubject;
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails);
             emailBuilder.setContent(emailContent);
             emailBuilder.setSubject(emailSubject);
