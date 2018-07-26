@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount implements Serializable {
 
-    private static final long serialVersionUID = 908136737;
+    private static final long serialVersionUID = -2100296031;
 
     private Integer   id;
     private Short     channel;
@@ -39,7 +39,8 @@ public class HrThirdPartyAccount implements Serializable {
     private String    errorMessage;
     private String    ext;
     private Byte      syncRequireCompany;
-    private Byte      syncRequireDepartment;
+    private Byte      syn​cRequireDepartment;
+    private String    ext2;
 
     public HrThirdPartyAccount() {}
 
@@ -58,7 +59,8 @@ public class HrThirdPartyAccount implements Serializable {
         this.errorMessage = value.errorMessage;
         this.ext = value.ext;
         this.syncRequireCompany = value.syncRequireCompany;
-        this.syncRequireDepartment = value.syncRequireDepartment;
+        this.syn​cRequireDepartment = value.syn​cRequireDepartment;
+        this.ext2 = value.ext2;
     }
 
     public HrThirdPartyAccount(
@@ -76,7 +78,8 @@ public class HrThirdPartyAccount implements Serializable {
         String    errorMessage,
         String    ext,
         Byte      syncRequireCompany,
-        Byte      syncRequireDepartment
+        Byte      syn​cRequireDepartment,
+        String    ext2
     ) {
         this.id = id;
         this.channel = channel;
@@ -92,7 +95,8 @@ public class HrThirdPartyAccount implements Serializable {
         this.errorMessage = errorMessage;
         this.ext = ext;
         this.syncRequireCompany = syncRequireCompany;
-        this.syncRequireDepartment = syncRequireDepartment;
+        this.syn​cRequireDepartment = syn​cRequireDepartment;
+        this.ext2 = ext2;
     }
 
     public Integer getId() {
@@ -207,12 +211,20 @@ public class HrThirdPartyAccount implements Serializable {
         this.syncRequireCompany = syncRequireCompany;
     }
 
-    public Byte getSyncRequireDepartment() {
-        return this.syncRequireDepartment;
+    public Byte getSyn​cRequireDepartment() {
+        return this.syn​cRequireDepartment;
     }
 
-    public void setSyncRequireDepartment(Byte syncRequireDepartment) {
-        this.syncRequireDepartment = syncRequireDepartment;
+    public void setSyn​cRequireDepartment(Byte syn​cRequireDepartment) {
+        this.syn​cRequireDepartment = syn​cRequireDepartment;
+    }
+
+    public String getExt2() {
+        return this.ext2;
+    }
+
+    public void setExt2(String ext2) {
+        this.ext2 = ext2;
     }
 
     @Override
@@ -233,7 +245,8 @@ public class HrThirdPartyAccount implements Serializable {
         sb.append(", ").append(errorMessage);
         sb.append(", ").append(ext);
         sb.append(", ").append(syncRequireCompany);
-        sb.append(", ").append(syncRequireDepartment);
+        sb.append(", ").append(syn​cRequireDepartment);
+        sb.append(", ").append(ext2);
 
         sb.append(")");
         return sb.toString();

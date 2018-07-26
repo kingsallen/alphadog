@@ -54,7 +54,6 @@ import java.util.stream.Collectors;
  * @author wjf
  */
 @Service
-@Transactional
 public class PositionBS {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 

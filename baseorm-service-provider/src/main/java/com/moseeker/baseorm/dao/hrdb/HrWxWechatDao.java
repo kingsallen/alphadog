@@ -42,4 +42,18 @@ public class HrWxWechatDao extends JooqCrudImpl<HrWxWechatDO, HrWxWechatRecord> 
                 .where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.eq(companyId))
                 .fetch();
     }
+
+    public List<HrWxWechatDO> getHrWxWechatByCompanyIds(List<Integer> companyIdList){
+        List<HrWxWechatDO> result = create.selectFrom(HrWxWechat.HR_WX_WECHAT)
+                .where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.in(companyIdList))
+                .fetchInto(HrWxWechatDO.class);
+        return result;
+    }
+
+    public List<HrWxWechatDO> getHrWxWechatByIds(List<Integer> idList){
+        List<HrWxWechatDO> result = create.selectFrom(HrWxWechat.HR_WX_WECHAT)
+                .where(HrWxWechat.HR_WX_WECHAT.ID.in(idList))
+                .fetchInto(HrWxWechatDO.class);
+        return result;
+    }
 }

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany extends TableImpl<HrCompanyRecord> {
 
-    private static final long serialVersionUID = -36910845;
+    private static final long serialVersionUID = 266146622;
 
     /**
      * The reference instance of <code>hrdb.hr_company</code>
@@ -57,9 +57,9 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
     public final TableField<HrCompanyRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>hrdb.hr_company.type</code>. 公司区分(其它:2,免费用户:1,企业用户:0)
+     * The column <code>hrdb.hr_company.type</code>. 公司区分(测试用:2,免费用户:1,企业用户:0)
      */
-    public final TableField<HrCompanyRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "公司区分(其它:2,免费用户:1,企业用户:0)");
+    public final TableField<HrCompanyRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "公司区分(测试用:2,免费用户:1,企业用户:0)");
 
     /**
      * The column <code>hrdb.hr_company.name</code>. 公司注册名称
@@ -84,7 +84,7 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
     /**
      * The column <code>hrdb.hr_company.property</code>. 公司性质 0:未填写 1:外商独资 3:国企 4:合资 5:民营公司 6:事业单位 7:上市公司 8:政府机关/非盈利机构 10:代表处 11:股份制企业 12:创业公司 13:其它
      */
-    public final TableField<HrCompanyRecord, Byte> PROPERTY = createField("property", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "公司性质 0:未填写 1:外商独资 3:国企 4:合资 5:民营公司 6:事业单位 7:上市公司 8:政府机关/非盈利机构 10:代表处 11:股份制企业 12:创业公司 13:其它");
+    public final TableField<HrCompanyRecord, Byte> PROPERTY = createField("property", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "公司性质 0:未填写 1:外商独资 3:国企 4:合资 5:民营公司 6:事业单位 7:上市公司 8:政府机关/非盈利机构 10:代表处 11:股份制企业 12:创业公司 13:其它");
 
     /**
      * The column <code>hrdb.hr_company.industry</code>. 所属行业

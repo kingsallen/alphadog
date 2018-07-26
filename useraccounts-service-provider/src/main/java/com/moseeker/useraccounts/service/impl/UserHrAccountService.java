@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.config.HRAccountActivationType;
@@ -799,7 +800,7 @@ public class UserHrAccountService {
      * @return
      */
     private Query.QueryBuilder getQueryBuilder(Query.QueryBuilder queryBuilder, String keyWord, Integer companyId) throws CommonException {
-        List<UserEmployeeDO> userEmployeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
+        List<UserEmployeeDO> userEmployeeDOList = employeeEntity.getActiveEmployeeDOList(companyId);
         List<Integer> sysIdsTemp = userEmployeeDOList.stream().filter(userEmployeeDO -> userEmployeeDO.getSysuserId() > 0)
                 .map(userEmployeeDO -> userEmployeeDO.getSysuserId()).collect(Collectors.toList());
         Condition sysuserId = new Condition(UserUser.USER_USER.ID.getName(), sysIdsTemp, ValueOp.IN);
@@ -871,7 +872,11 @@ public class UserHrAccountService {
             queryBuilder.groupBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
             // 查询
             List<Map<String, Object>> result = userEmployeeDao.getMaps(queryBuilder.buildQuery());
+            int unCount=0;
             if (!StringUtils.isEmptyList(result)) {
+                logger.info("=======================");
+                logger.info(JSON.toJSONString(result));
+                logger.info("=======================");
                 for (Map<String, Object> map : result) {
                     if (map.get("activation") != null) {
                         if ((Byte) map.get("activation") == 0) {
@@ -880,10 +885,12 @@ public class UserHrAccountService {
                                 || (Byte) map.get("activation") == 2
                                 || (Byte) map.get("activation") == 3
                                 || (Byte) map.get("activation") == 4) {
-                            userEmployeeNumStatistic.setUnregcount(userEmployeeNumStatistic.getUnregcount() + (Integer) map.get("activation_count"));
+                            unCount+=(Integer) map.get("activation_count");
+//                            userEmployeeNumStatistic.setUnregcount(userEmployeeNumStatistic.getUnregcount() + (Integer) map.get("activation_count"));
                         }
                     }
                 }
+                userEmployeeNumStatistic.setUnregcount(unCount);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

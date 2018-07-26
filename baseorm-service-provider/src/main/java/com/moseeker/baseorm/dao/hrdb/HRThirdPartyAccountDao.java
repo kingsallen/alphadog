@@ -5,15 +5,19 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountHrRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.query.*;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -23,11 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 第三方帐号数据访问层

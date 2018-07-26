@@ -142,6 +142,7 @@ public class ConstantlyMailConsumer {
 					mail.send();
 				} catch (Exception e) {
 					e.printStackTrace();
+					logger.error("redisMsg: "+ redisMsg +e.getMessage(),e);
 				}
 			});
 		}
