@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,7 +146,10 @@ public abstract class EmployeeBinder {
         Result response = new Result();
         int employeeId;
         if (useremployee.getId() == 0) {
+            log.info("doneBind now:{}", new DateTime().toString("YYYY-MM-dd HH:mm:ss"));
             employeeId = employeeDao.addData(useremployee).getId();
+            UserEmployeeDO temp = employeeDao.getEmployee(new Query.QueryBuilder().where("id", employeeId).buildQuery());
+            log.info("doneBind persist employee:{}", temp);
             useremployee.setId(employeeId);
         } else {
             employeeDao.updateData(useremployee);
