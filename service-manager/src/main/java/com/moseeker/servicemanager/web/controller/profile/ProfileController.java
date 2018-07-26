@@ -374,6 +374,7 @@ public class ProfileController {
                 String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
                 logger.info("/profile/parser MultipartFile file :{}",file.getOriginalFilename());
                 Response res = service.resumeProfile(uid, file.getOriginalFilename(), data);
+                logger.info("profileParser ===============：{}",res);
                 return ResponseLogNotification.success(request, res);
             } else {
                 return null;
