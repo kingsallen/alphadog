@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyAccountRecord> implements Record16<Integer, Short, String, String, Short, Integer, Integer, Timestamp, Timestamp, Timestamp, Integer, String, String, Byte, Byte, String> {
 
-    private static final long serialVersionUID = 1211113936;
+    private static final long serialVersionUID = -2030262200;
 
     /**
      * Setter for <code>hrdb.hr_third_party_account.id</code>. 编号
@@ -229,16 +229,16 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_account.syn​c_require_department</code>. 智联同步时页面是否需要选择部门名称，0 不需要，1 需要
+     * Setter for <code>hrdb.hr_third_party_account.sync_require_department</code>. 智联同步时页面是否需要选择部门名称，0 不需要，1 需要
      */
-    public void setSyn​cRequireDepartment(Byte value) {
+    public void setSyncRequireDepartment(Byte value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_account.syn​c_require_department</code>. 智联同步时页面是否需要选择部门名称，0 不需要，1 需要
+     * Getter for <code>hrdb.hr_third_party_account.sync_require_department</code>. 智联同步时页面是否需要选择部门名称，0 不需要，1 需要
      */
-    public Byte getSyn​cRequireDepartment() {
+    public Byte getSyncRequireDepartment() {
         return (Byte) get(14);
     }
 
@@ -405,7 +405,7 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
      */
     @Override
     public Field<Byte> field15() {
-        return HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYN​C_REQUIRE_DEPARTMENT;
+        return HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYNC_REQUIRE_DEPARTMENT;
     }
 
     /**
@@ -533,7 +533,7 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
      */
     @Override
     public Byte value15() {
-        return getSyn​cRequireDepartment();
+        return getSyncRequireDepartment();
     }
 
     /**
@@ -675,7 +675,7 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
      */
     @Override
     public HrThirdPartyAccountRecord value15(Byte value) {
-        setSyn​cRequireDepartment(value);
+        setSyncRequireDepartment(value);
         return this;
     }
 
@@ -726,7 +726,7 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
     /**
      * Create a detached, initialised HrThirdPartyAccountRecord
      */
-    public HrThirdPartyAccountRecord(Integer id, Short channel, String username, String password, Short binding, Integer companyId, Integer remainNum, Timestamp syncTime, Timestamp updateTime, Timestamp createTime, Integer remainProfileNum, String errorMessage, String ext, Byte syncRequireCompany, Byte syn​cRequireDepartment, String ext2) {
+    public HrThirdPartyAccountRecord(Integer id, Short channel, String username, String password, Short binding, Integer companyId, Integer remainNum, Timestamp syncTime, Timestamp updateTime, Timestamp createTime, Integer remainProfileNum, String errorMessage, String ext, Byte syncRequireCompany, Byte syncRequireDepartment, String ext2) {
         super(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT);
 
         set(0, id);
@@ -743,7 +743,7 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
         set(11, errorMessage);
         set(12, ext);
         set(13, syncRequireCompany);
-        set(14, syn​cRequireDepartment);
+        set(14, syncRequireDepartment);
         set(15, ext2);
     }
 }
