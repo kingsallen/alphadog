@@ -766,16 +766,26 @@ public class TalentpoolSearchengine {
         return query;
     }
     /*
-     查询是否有备注
+     处理备注的情况
      */
     private void queryTalentComment(Map<String,String> params, QueryBuilder query){
         if(!StringUtils.isEmptyMap(params)){
             String remark=params.get("remark");
+            String companyId=params.get("company_id");
+            //处理在这家公司下有备注的情况
             if(StringUtils.isNotNullOrEmpty(remark)&&"1".equals(remark)){
-                String companyId=params.get("company_id");
                 searchUtil.handleTerm(companyId,query,"user.talentpool_comment.company_id");
+            }else if(StringUtils.isNotNullOrEmpty(remark)&&"0".equals(remark)){
+                this.handlerNoComment(query,companyId);
             }
         }
+    }
+    /*
+     处理在这家公司下无备注的条件查询
+     */
+    private void handlerNoComment(QueryBuilder query,String companyId){
+        QueryBuilder filter1 = QueryBuilders.matchQuery("user.talentpool_comment.company_id",companyId);
+        ((BoolQueryBuilder) query).mustNot(filter1);
     }
     private void handlerSortOrder(Map<String,String> params,SearchRequestBuilder builder){
         String publisherIds=params.get("publisher");
