@@ -170,6 +170,7 @@ public class ProfileEducationService {
                 if (college != null) {
                     education.setCollege_name(college.getName());
                     education.setCollege_logo(college.getLogo());
+                    education.setCountry_id(college.getCountry_code());
                 } else {
                     throw ProfileException.PROFILE_DICT_COLLEGE_NOTEXIST;
                 }
@@ -208,6 +209,7 @@ public class ProfileEducationService {
                 if (college != null) {
                     education.setCollege_name(college.getName());
                     education.setCollege_logo(college.getLogo());
+                    education.setCountry_id(college.getCountry_code());
                 } else {
                     throw ProfileException.PROFILE_DICT_COLLEGE_NOTEXIST;
                 }
