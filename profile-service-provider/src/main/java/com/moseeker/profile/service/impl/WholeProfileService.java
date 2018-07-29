@@ -2,6 +2,7 @@ package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
@@ -11,6 +12,7 @@ import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysCvTplRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
@@ -51,6 +53,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.*;
@@ -183,6 +186,8 @@ public class WholeProfileService {
     @Autowired
     ProfileParseUtil profileParseUtil;
 
+
+
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
 
@@ -309,6 +314,7 @@ public class WholeProfileService {
             logger.debug("WholeProfileService getResource importRecordsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<ProfileOtherRecord> otherRecords = otherRecordsFuture.get();
+            profileParseUtil.handerSortOtherList(otherRecords);
             List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
 
             logger.info("WholeProfileService getResource done : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
@@ -320,6 +326,10 @@ public class WholeProfileService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
     }
+
+
+
+
 
     @SuppressWarnings("unchecked")
     @Transactional
@@ -904,6 +914,9 @@ public class WholeProfileService {
                 collegeCodes.add(record.getCollegeCode());
             });
             List<DictCollegeDO> collegeRecords = collegeDao.getCollegesByIDs(collegeCodes);
+            List<Integer> parentCodes = new ArrayList<>();
+            parentCodes.add(Constant.DICT_CONSTANT_DEGREE_USER);
+            List<DictConstantRecord> constantDOS = constantDao.getCitiesByParentCodes(parentCodes);
             records.forEach(record -> {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("id", record.getId().intValue());
@@ -925,6 +938,14 @@ public class WholeProfileService {
                 map.put("major_name", record.getMajorName());
                 map.put("major_code", record.getMajorCode());
                 map.put("degree", record.getDegree().intValue());
+                if(!StringUtils.isEmptyList(constantDOS)){
+                    for(DictConstantRecord record1 : constantDOS) {
+                        if (record.getDegree().intValue() == record1.getCode()){
+                            map.put("degree_name", record1.getName());
+                            break;
+                        }
+                    }
+                }
                 if (record.getStart() != null) {
                     map.put("start_date", DateUtils.dateToNormalDate(record.getStart()));
                 }
