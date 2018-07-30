@@ -97,7 +97,7 @@ public class ProfileMoveService {
      * @author cjm
      * @date 2018/7/18
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Response moveHouseLogin(ProfileMoveForm form) throws BIZException {
         logger.info("====================form:{}", form);
         int hrId = form.getHr_id();
@@ -130,9 +130,10 @@ public class ProfileMoveService {
 
     /**
      * 检验起始、结束日期格式是否正确
-     * @param   form 页面填写数据
-     * @author  cjm
-     * @date  2018/7/25
+     *
+     * @param form 页面填写数据
+     * @author cjm
+     * @date 2018/7/25
      */
     private void requireValidDateFormat(ProfileMoveForm form) throws BIZException {
         String startDate = form.getStart_date();
@@ -208,31 +209,22 @@ public class ProfileMoveService {
         if (record == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_MOVE_DATA_NOT_EXIST);
         }
-        int companyId = record.getCompanyId();
-        // 简历合并
-//        Future<Response> combineFuture = pool.startTast(() -> wholeProfileService.combinationProfile(profile, companyId));
-//        Response combineResponse = combineFuture.get(60, TimeUnit.SECONDS);
-//        logger.info("===========================简历搬家combineResponse:{}", combineResponse);
-//        if (combineResponse.getStatus() == 0) {
-//            String resume = combineResponse.getData();
-            UserUserDO user = getUserInfoByMobile(profile);// resume
-            // 简历入库
-            Future<Response> preserveFuture =
-                    pool.startTast(() -> wholeProfileService.preserveProfile(profile, null, record.getHrId(), record.getCompanyId(), user.getId()));//resume
-            Response preserveResponse = preserveFuture.get(60, TimeUnit.SECONDS);
-            logger.info("===========================简历搬家preserveResponse:{}", preserveResponse);
-            if (preserveResponse.getStatus() == 0) {
-                // 邮件总数不为空、总邮件数等于当前邮件数，当前操作记录还未成功时，修改操作状态为已完成
-                if (null != record.getTotalEmailNum() && currentEmailNum == record.getTotalEmailNum() && record.getStatus() != ProfileMoveStateEnum.SUCCESS.getValue()) {
-                    // 如果当前邮件数等于邮件总数
-                    record.setStatus(ProfileMoveStateEnum.SUCCESS.getValue());
-                }
-                updateProfileMove(record, currentEmailNum, 1);
-                return ResponseUtils.success(new HashMap<>(1 >> 4));
+//        UserUserDO user = getUserInfoByMobile(profile);
+        // 简历入库//resume
+        Future<Response> preserveFuture =
+                pool.startTast(() -> wholeProfileService.preserveProfile(profile, null, record.getHrId(), record.getCompanyId(), 0));
+        Response preserveResponse = preserveFuture.get(60, TimeUnit.SECONDS);
+        logger.info("===========================简历搬家preserveResponse:{}", preserveResponse);
+        if (preserveResponse.getStatus() == 0) {
+            // 邮件总数不为空、总邮件数等于当前邮件数，当前操作记录还未成功时，修改操作状态为已完成
+            if (null != record.getTotalEmailNum() && currentEmailNum == record.getTotalEmailNum() && record.getStatus() != ProfileMoveStateEnum.SUCCESS.getValue()) {
+                // 如果当前邮件数等于邮件总数
+                record.setStatus(ProfileMoveStateEnum.SUCCESS.getValue());
             }
-            return preserveResponse;
-//        }
-//        return combineResponse;
+            updateProfileMove(record, currentEmailNum, 1);
+            return ResponseUtils.success(new HashMap<>(1 >> 4));
+        }
+        return preserveResponse;
     }
 
     /**
