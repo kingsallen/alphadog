@@ -1688,7 +1688,7 @@ public class TalentPoolEntity {
 
 
     /*
-     实时更新到redis
+     实时更新到redis,等着改成注解处理
      */
     public void realTimeUpdate(List<Integer> userIdList){
 
@@ -1719,6 +1719,13 @@ public class TalentPoolEntity {
         Map<String,Object> result=new HashMap<>();
         result.put("tableName","talentpool_upload_del");
         result.put("user_id",userIdList);
+        client.lpush(Constant.APPID_ALPHADOG,
+                "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+    }
+    public void realTimeUpdateComment(Integer userId){
+        Map<String,Object> result=new HashMap<>();
+        result.put("tableName","talentpool_comment");
+        result.put("user_id",userId);
         client.lpush(Constant.APPID_ALPHADOG,
                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
     }

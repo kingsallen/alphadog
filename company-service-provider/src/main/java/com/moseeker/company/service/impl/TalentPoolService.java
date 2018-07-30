@@ -607,7 +607,6 @@ public class TalentPoolService {
       @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-    @Transactional
     public Response addTalentComment(int hrId,int companyId,int userId,String content)throws TException{
 
         if(StringUtils.isNullOrEmpty(content)){
@@ -637,6 +636,7 @@ public class TalentPoolService {
         List<Map<String,Object>> list=new ArrayList<>();
         list.add(map);
         list=this.handlerHrCommentData(list);
+        talentPoolEntity.realTimeUpdateComment(userId);
         return ResponseUtils.success(list);
     }
 
@@ -738,7 +738,6 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
-    @Transactional
     public Response delTalentComment(int hrId,int companyId,int comId)throws TException{
         int count=talentPoolEntity.getUserHrCommentCount(comId,hrId);
         if(count==0){
@@ -748,9 +747,16 @@ public class TalentPoolService {
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
+        Query query=new Query.QueryBuilder().where("id",comId).buildQuery();
+        TalentpoolCommentRecord record1= talentpoolCommentDao.getRecord(query);
+
         TalentpoolCommentRecord record=new TalentpoolCommentRecord();
         record.setId(comId);
         talentpoolCommentDao.deleteRecord(record);
+        if(record1!=null){
+            int userId=record1.getUserId();
+            talentPoolEntity.realTimeUpdateComment(userId);
+        }
         return ResponseUtils.success("");
     }
 
