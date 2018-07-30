@@ -1726,6 +1726,7 @@ public class TalentPoolEntity {
         Map<String,Object> result=new HashMap<>();
         result.put("tableName","talentpool_comment");
         result.put("user_id",userId);
+        logger.info(JSON.toJSONString(result));
         client.lpush(Constant.APPID_ALPHADOG,
                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
     }
