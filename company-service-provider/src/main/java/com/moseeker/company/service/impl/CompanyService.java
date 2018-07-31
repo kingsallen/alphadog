@@ -1,23 +1,14 @@
 package com.moseeker.company.service.impl;
 
-import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.hrdb.tables.*;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
-import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.*;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyFeatureRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
@@ -27,11 +18,9 @@ import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.CompanyType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
@@ -51,29 +40,26 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.*;
-import com.moseeker.thrift.gen.company.struct.HrCompanyConf;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
-
+import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.SmsType;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.stream.Collectors;
 
 @Service
 public class CompanyService {

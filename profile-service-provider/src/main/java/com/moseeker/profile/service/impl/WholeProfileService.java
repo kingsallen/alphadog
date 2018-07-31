@@ -53,7 +53,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.*;
@@ -914,6 +914,7 @@ public class WholeProfileService {
                 collegeCodes.add(record.getCollegeCode());
             });
             List<DictCollegeDO> collegeRecords = collegeDao.getCollegesByIDs(collegeCodes);
+            List<DictCountryDO> countryDOList = countryDao.getAll();
             List<Integer> parentCodes = new ArrayList<>();
             parentCodes.add(Constant.DICT_CONSTANT_DEGREE_USER);
             List<DictConstantRecord> constantDOS = constantDao.getCitiesByParentCodes(parentCodes);
@@ -931,6 +932,19 @@ public class WholeProfileService {
                                 && !StringUtils.isNullOrEmpty(collegeRecord.getLogo())) {
                             map.put("college_logo", collegeRecord.getLogo());
                             map.put("college_name", collegeRecord.getName());
+                            break;
+                        }
+                    }
+                }
+                if(!StringUtils.isEmptyList(countryDOList)){
+                    for(DictCountryDO country : countryDOList){
+                        if(record.getCountryId().intValue() == country.getId()){
+                            map.put("country_id", record.getCountryId().intValue());
+                            map.put("country_name", country.getName());
+                            break;
+                        }else if(record.getCountryId().intValue() == Constant.HKAMTW){
+                            map.put("country_id", record.getCountryId().intValue());
+                            map.put("country_name", "港澳台地区");
                             break;
                         }
                     }
