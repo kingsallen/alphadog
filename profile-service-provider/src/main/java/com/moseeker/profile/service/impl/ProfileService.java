@@ -773,11 +773,11 @@ public class ProfileService {
             for(Integer positionId : positionIds){
                 if(positionCustomConfigMap.containsKey(positionId)){
                     JSONArray otherCvTplMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)));
-                    if(otherCvTplMap.size()>0){
+                    if(otherCvTplMap != null && otherCvTplMap.size()>0){
                         for(int i=0;i<otherCvTplMap.size();i++){
                             JSONObject apJson = otherCvTplMap.getJSONObject(i);
                             List<Map<String, Object>> fieldList = (List<Map<String, Object>>)apJson.get("fields");
-                            if(fieldList.size()>0){
+                            if(!StringUtils.isEmptyList(fieldList)){
                                 for(Map<String, Object> obj : fieldList){
                                     if(obj.get("parent_id") != null && ((int)obj.get("parent_id")) == 0){
                                         if(obj.get("field_name") != null ) {

@@ -150,7 +150,8 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		}
 
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(JobApplication.JOB_APPLICATION.DISABLE.getName(), 0).and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), record.getApplierId())
+        queryBuilder.where(JobApplication.JOB_APPLICATION.DISABLE.getName(), 0)
+				.and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), record.getApplierId())
         .and(JobApplication.JOB_APPLICATION.POSITION_ID.getName(), record.getPositionId());
         JobApplicationDO applicationDO = getData(queryBuilder.buildQuery());
 		resultVO.setApplicationId(applicationDO.getId());
@@ -176,13 +177,23 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
         return resultVO;
     }
 
-	public Result<Record2<Integer,Integer>> countEmployeeApply(List<Integer> userIdList, LocalDateTime lastFriday, LocalDateTime currentFriday) {
+	/**
+	 * 计算给定时间内的员工转发带来的投递次数
+	 * @param userIdList 员工编号集合
+	 * @param positionIdList 职位编号集合
+	 * @param lastFriday 开始时间 （大于开始时间）
+	 * @param currentFriday 结束时间 （小于等于结束时间）
+	 * @return 投递次数
+	 */
+	public Result<Record2<Integer,Integer>> countEmployeeApply(List<Integer> userIdList, List<Integer> positionIdList,
+															   LocalDateTime lastFriday, LocalDateTime currentFriday) {
 		return create.select(
 					JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
 					count(JobApplication.JOB_APPLICATION.ID).as("count")
 				)
 				.from(JobApplication.JOB_APPLICATION)
 				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.in(userIdList))
+				.and(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIdList))
 				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.gt(
 						new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant()
 								.toEpochMilli())))

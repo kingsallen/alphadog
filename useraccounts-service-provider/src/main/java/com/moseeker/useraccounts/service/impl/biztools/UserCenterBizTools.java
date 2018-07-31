@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserCollectPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.query.Condition;
@@ -157,6 +158,7 @@ public class UserCenterBizTools {
                 Query.QueryBuilder qu = new Query.QueryBuilder();
                 qu.select("id").select("app_id").select("repost_user_id")
                         .select("click_time").select("recom_time").select("is_recom")
+                        .select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID.getName())
                         .select("presentee_user_id").select("position_id");
                 qu.where("post_user_id", userId).and(new Condition("position_id", positionIdList, ValueOp.IN));
                 qu.groupBy("presentee_user_id").groupBy("position_id");
