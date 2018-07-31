@@ -539,9 +539,7 @@ public class CompanyService {
         HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
 
         ValidateUtil vu = new ValidateUtil();
-        vu.addIntTypeValidate("公司编号", comanyId, null, null, 1, 1000000);
         vu.addIntTypeValidate("导入类型", type, null, "不能为空", 0, 10);
-        vu.addIntTypeValidate("HR账号", hraccountId, null, null, 1, 1000000);
         String errorMessage = vu.validate();
         if (!StringUtils.isNullOrEmpty(errorMessage)) {
             throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(), ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
