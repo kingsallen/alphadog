@@ -148,6 +148,7 @@ public abstract class EmployeeBinder {
             employeeId = employeeDao.addData(useremployee).getId();
             useremployee.setId(employeeId);
         } else {
+//            useremployee.setUpdateTime(null);
             employeeDao.updateData(useremployee);
             employeeId = useremployee.getId();
         }
