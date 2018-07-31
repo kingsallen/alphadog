@@ -232,6 +232,7 @@ public final class Constant {
     public static final int FANS_RECOM_POSITION=59;
     public static final int EMPLOYEE_RECOM_POSITION=57;
     public static final int POSITION_SYNC_VERIFY_INFO=66;
+    public static final int AWARD_RANKING=78;
 
     public static final int PAGE_SIZE=20;
     public static final int PAGE_=20;

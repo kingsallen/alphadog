@@ -1834,7 +1834,7 @@ public class TalentpoolEmailService {
         List<Map<String,Object>> worksList=(List<Map<String,Object>>)profiles.get("works");
         List<Map<String,Object>> projectExpList=(List<Map<String,Object>>)profiles.get("projectexps");
         info.setEduExps(this.handlerTalentEducationInfoData(educationsList));
-        info.setBasicInfo(this.handlerTalentBasicInfoData(basic,educationsList,otherDataList));
+        info.setBasicInfo(this.handlerTalentBasicInfoData(basic,educationsList,otherDataList,recentJob));
         info.setIntention(this.handlerTalentIntentionInfoData(intentionList));
         info.setWorkExps(this.handlerTalentWorkExpInfoData(recentJob,expJob));
         info.setLanguages(this.handlerLanguagesInfoData(languagesList));
@@ -1844,20 +1844,23 @@ public class TalentpoolEmailService {
         info.setWorks(this.handlerTalentWorksInfo(worksList));
     }
 
-    private TalentBasicInfo handlerTalentBasicInfoData(Map<String,Object> basicData,List<Map<String,Object>> eduList,List<Map<String,Object>> otherDataList){
+    private TalentBasicInfo handlerTalentBasicInfoData(Map<String,Object> basicData,List<Map<String,Object>> eduList,List<Map<String,Object>> otherDataList,Map<String,Object>works){
         if(StringUtils.isEmptyMap(basicData)&&StringUtils.isEmptyList(eduList)){
             return null;
         }
         TalentBasicInfo basicInfo=new TalentBasicInfo();
         if(!StringUtils.isEmptyMap(basicData)){
-            basicInfo.setPosition((String)basicData.getOrDefault("position_name",""));
             basicInfo.setBirth((String)basicData.getOrDefault("birth",""));
-            basicInfo.setDegree((String)basicData.getOrDefault("degreeName",""));
         }
         if(!StringUtils.isEmptyList(eduList)){
             Map<String,Object> education=eduList.get(0);
-            basicInfo.setDegree(DegreeConvertUtil.intToEnum.get(education.get("degree")));
+            basicInfo.setDegree((String)education.get("degree_name"));
             basicInfo.setMajor((String)education.getOrDefault("major_name",""));
+            basicInfo.setCollege((String)education.getOrDefault("college_name",""));
+
+        }
+        if(!StringUtils.isEmptyMap(works)){
+            basicInfo.setPosition((String)works.getOrDefault("job_name",""));
         }
         //==========================================
         //==========================================

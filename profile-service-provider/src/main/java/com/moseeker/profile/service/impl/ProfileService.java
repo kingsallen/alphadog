@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
+import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
@@ -49,7 +50,9 @@ import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.ProfileOtherEntity;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.biz.CommonUtils;
+import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.pojo.profile.*;
+import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.resumesdk.iface.IResumeParser;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
@@ -59,7 +62,6 @@ import com.moseeker.profile.utils.ProfileMailUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
@@ -74,14 +76,12 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import com.moseeker.thrift.gen.profile.struct.UserProfile;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
-import com.moseeker.thrift.gen.profile.struct.UserProfile;
-import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
@@ -90,12 +90,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 @CounterIface
@@ -144,6 +138,9 @@ public class ProfileService {
     private ProfileOtherDao profileOtherDao;
 
     @Autowired
+    private ConfigSysCvTplDao confTplDao;
+
+    @Autowired
     private LogResumeDao resumeDao;
 
     @Autowired
@@ -166,6 +163,9 @@ public class ProfileService {
 
     @Autowired
     private ProfileMailUtil profileMailUtil;
+
+    @Autowired
+    private ProfileParseUtil profileParseUtil;
 
     @Autowired
     private List<IResumeParser> resumeParsers;
@@ -773,11 +773,11 @@ public class ProfileService {
             for(Integer positionId : positionIds){
                 if(positionCustomConfigMap.containsKey(positionId)){
                     JSONArray otherCvTplMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)));
-                    if(otherCvTplMap.size()>0){
+                    if(otherCvTplMap != null && otherCvTplMap.size()>0){
                         for(int i=0;i<otherCvTplMap.size();i++){
                             JSONObject apJson = otherCvTplMap.getJSONObject(i);
                             List<Map<String, Object>> fieldList = (List<Map<String, Object>>)apJson.get("fields");
-                            if(fieldList.size()>0){
+                            if(!StringUtils.isEmptyList(fieldList)){
                                 for(Map<String, Object> obj : fieldList){
                                     if(obj.get("parent_id") != null && ((int)obj.get("parent_id")) == 0){
                                         if(obj.get("field_name") != null ) {
@@ -800,7 +800,7 @@ public class ProfileService {
         long end = System.currentTimeMillis();
         logger.info("getProfileOther others time:{}", end-start);
 //        }
-
+//        profileParseUtil.handerSortprofileOtherMap(otherMap);
         return otherMap;
     }
 
@@ -943,16 +943,6 @@ public class ProfileService {
             ResponseUtils.fail(1, "解析失败");
         }
         return ResponseUtils.success(result);
-    }
-
-    private HrCompanyDO selectSuperCompany(int companyId){
-        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
-        HrCompanyDO companyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
-        if(companyDO != null && companyDO.getParentId() != 0){
-            companyDO = selectSuperCompany(companyDO.getParentId());
-        }
-        return companyDO;
     }
 
     public List<UserProfile> fetchUserProfile(List<Integer> userIdList) {

@@ -6,6 +6,9 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRec
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import org.jooq.Record2;
@@ -51,5 +54,20 @@ public class UserEmployeePointsRecordDao extends JooqCrudImpl<UserEmployeePoints
 			}
 		}
 		return points;
+	}
+
+	public Result<Record2<Long,BigDecimal>> countEmployeeAwards(List<Integer> employeeIdList, LocalDateTime lastFriday,
+																LocalDateTime currentFriday) {
+		return create
+				.select(
+						UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID,
+						sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD)
+				)
+				.from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
+				.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.in(employeeIdList))
+				.and(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.gt(new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
+				.and(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.le(new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
+				.groupBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID)
+				.fetch();
 	}
 }
