@@ -39,7 +39,6 @@ public class ProfileUtils {
 
 
 	private final static int DEFAULT_FLAG=0;
-	private static Map<String, DictCollegeDO>  collegeMap = null;
 
 	@Autowired
     private DictCollegeDao collegeDao;
@@ -511,7 +510,7 @@ public class ProfileUtils {
 		return record;
 	}
 
-	public List<ProfileEducationRecord> mapToEducationRecords(List<Map<String, Object>> educations) {
+	public List<ProfileEducationRecord> mapToEducationRecords(List<Map<String, Object>> educations, ProfileExtParam extParam) {
 	    logger.info("prfile resume educations:{}",educations);
 		List<ProfileEducationRecord> educationRecords = new ArrayList<>();
 		if (educations != null && educations.size() > 0) {
@@ -537,11 +536,9 @@ public class ProfileUtils {
 						record.setEndUntilNow((byte)0);
 					}
 					if(record.getCollegeName() != null){
-                        if(collegeMap == null){
-                            collegeMap = collegeDao.getCollegeMap();
-                        }
-                        if(collegeMap.get(record.getCollegeName()) != null && record.getCountryId() == 0){
-                            DictCollegeDO collegeDO = collegeMap.get(record.getCollegeName());
+
+                        if(extParam.getCollegeMap().get(record.getCollegeName()) != null && record.getCountryId() == 0){
+                            DictCollegeDO collegeDO = extParam.getCollegeMap().get(record.getCollegeName());
                             record.setCollegeCode(collegeDO.getCode());
                             record.setCollegeLogo(collegeDO.getLogo());
                             record.setCountryId(collegeDO.getCountry_code());
