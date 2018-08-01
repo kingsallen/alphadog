@@ -142,7 +142,7 @@ public class ProfileServicesImplTest {
 
             }
             System.out.println(JSON.toJSONString(educationList));
-            List<ProfileEducationRecord> result=profileUtils.mapToEducationRecords(mapList);
+//            List<ProfileEducationRecord> result=profileUtils.mapToEducationRecords(mapList);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

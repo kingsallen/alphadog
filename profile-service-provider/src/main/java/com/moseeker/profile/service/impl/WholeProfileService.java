@@ -413,7 +413,7 @@ public class WholeProfileService {
             List<ProfileEducationRecord> educationRecords = null;
             try {
                 educationRecords = profileUtils
-                        .mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
+                        .mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"), extParam);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
