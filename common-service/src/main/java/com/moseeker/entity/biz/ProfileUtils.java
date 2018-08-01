@@ -536,8 +536,7 @@ public class ProfileUtils {
 						record.setEndUntilNow((byte)0);
 					}
 					if(record.getCollegeName() != null){
-
-                        if(extParam.getCollegeMap().get(record.getCollegeName()) != null && record.getCountryId() == 0){
+                        if(extParam.getCollegeMap().get(record.getCollegeName()) != null && record.getCountryId() == null ){
                             DictCollegeDO collegeDO = extParam.getCollegeMap().get(record.getCollegeName());
                             record.setCollegeCode(collegeDO.getCode());
                             record.setCollegeLogo(collegeDO.getLogo());
