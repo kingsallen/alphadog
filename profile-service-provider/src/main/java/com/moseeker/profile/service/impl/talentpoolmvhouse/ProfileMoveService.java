@@ -8,14 +8,11 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMoveRecord;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.config.Sender;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveConstant;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveStateEnum;
@@ -27,7 +24,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.talentpool.struct.ProfileMoveForm;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -62,8 +58,6 @@ public class ProfileMoveService {
 
     private final Sender sender;
 
-    private final UserUserDao userUserDao;
-
     private final TalentPoolProfileMoveDao profileMoveDao;
 
     private final UserHrAccountDao userHrAccountDao;
@@ -77,11 +71,10 @@ public class ProfileMoveService {
     private static final int TRY_TIMES = 3;
 
     @Autowired
-    public ProfileMoveService(Sender sender, UserUserDao userUserDao, TalentPoolProfileMoveDao profileMoveDao,
+    public ProfileMoveService(Sender sender, TalentPoolProfileMoveDao profileMoveDao,
                               UserHrAccountDao userHrAccountDao, HRThirdPartyAccountDao hrThirdPartyAccountDao,
                               WholeProfileService wholeProfileService) {
         this.sender = sender;
-        this.userUserDao = userUserDao;
         this.profileMoveDao = profileMoveDao;
         this.userHrAccountDao = userHrAccountDao;
         this.hrThirdPartyAccountDao = hrThirdPartyAccountDao;
@@ -212,7 +205,7 @@ public class ProfileMoveService {
 //        UserUserDO user = getUserInfoByMobile(profile);
         // 简历入库//resume
         Future<Response> preserveFuture =
-                pool.startTast(() -> wholeProfileService.preserveProfile(profile, null, record.getHrId(), record.getCompanyId(), 0));
+                pool.startTast(() -> wholeProfileService.preserveProfile(profile, null, record.getHrId(), record.getCompanyId(), 0, UserSource.MV_HOUSE.getValue()));
         Response preserveResponse = preserveFuture.get(60, TimeUnit.SECONDS);
         logger.info("===========================简历搬家preserveResponse:{}", preserveResponse);
         if (preserveResponse.getStatus() == 0) {
@@ -244,41 +237,6 @@ public class ProfileMoveService {
         if (row == 0) {
             updateProfileMove(record, currentEmailNum, ++retryTimes);
         }
-    }
-
-    /**
-     * 通过手机号获取用户id，如果传来的简历手机号在库里能查得到，就认为是同一份简历
-     *
-     * @param resume 简历json串
-     * @return UserUserDO
-     * @author cjm
-     * @date 2018/7/19
-     */
-    private UserUserDO getUserInfoByMobile(String resume) throws BIZException {
-        JSONObject resumeObj = JSONObject.parseObject(resume);
-
-        JSONObject jsonObject = resumeObj.getJSONObject("user");
-        String mobile = jsonObject.getString("mobile");
-        String countryCode = "86";
-        logger.info("ProfileMoveService profileMove mobile:{}", mobile);
-        if (StringUtils.isNullOrEmpty(mobile)) {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
-        } else {
-            String[] mobileArray = mobile.split("-");
-            if (mobileArray.length > 1) {
-                jsonObject.put("countryCode", mobileArray[0]);
-                jsonObject.put("mobile", mobileArray[1]);
-                countryCode = mobileArray[0];
-                mobile = mobileArray[1];
-            }
-        }
-        Query findRetrieveUserQU = new Query.QueryBuilder().where("mobile", mobile).and("country_code", countryCode).and("source", UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
-        UserUserDO user = userUserDao.getData(findRetrieveUserQU);
-        logger.info("ProfileBS retrieveProfile user:{}", user);
-        if (user == null) {
-            user = new UserUserDO();
-        }
-        return user;
     }
 
     /**
