@@ -537,7 +537,8 @@ public class ProfileUtils {
 					}
 					if(record.getCollegeName() != null){
 					    logger.info("collegeMap============:{}",extParam.getCollegeMap());
-                        if(extParam.getCollegeMap().get(record.getCollegeName()) != null && record.getCountryId() == 0 && extParam.getCollegeMap() != null){
+					    logger.info("record ======:{}",record);
+                        if(extParam.getCollegeMap() != null && extParam.getCollegeMap().get(record.getCollegeName()) != null && record.getCountryId().intValue() == 0){
                             DictCollegeDO collegeDO = extParam.getCollegeMap().get(record.getCollegeName());
                             record.setCollegeCode(collegeDO.getCode());
                             record.setCollegeLogo(collegeDO.getLogo());
