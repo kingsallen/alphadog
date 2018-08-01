@@ -19,13 +19,14 @@ import java.util.List;
 import java.util.Map;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 /**
  * @author xxx
  *         DictCollegeDao 实现类 （groovy 生成）
  *         2017-03-21
  */
-@Repository
+@Service
 public class DictCollegeDao extends JooqCrudImpl<DictCollegeDO, DictCollegeRecord> {
 
     public DictCollegeDao() {
