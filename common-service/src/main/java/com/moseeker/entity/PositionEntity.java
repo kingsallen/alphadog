@@ -17,6 +17,9 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -198,4 +201,12 @@ public class PositionEntity {
         return list;
     }
 
+    public List<Integer> getPositionIdList(List<Integer> companyIdList) {
+        Result<Record1<Integer>> result = positionDao.getPositionIdListByCompanyIdList(companyIdList);
+        if (result != null) {
+            return result.stream().map(Record1::value1).collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
+    }
 }

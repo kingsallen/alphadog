@@ -37,7 +37,9 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         this.deleteData(p);
     }
 
-    public Result<Record2<Integer, Integer>> countEmployeeForward(List<Integer> userIdList, LocalDateTime lastFriday,
+    public Result<Record2<Integer, Integer>> countEmployeeForward(List<Integer> userIdList,
+                                                                  List<Integer> positionIdList,
+                                                                  LocalDateTime lastFriday,
                                                                   LocalDateTime currentFriday) {
         return create.select(
                     CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID,
@@ -45,6 +47,7 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                 )
                 .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.in(userIdList))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID.in(positionIdList))
                 .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.gt(
                         new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant()
                         .toEpochMilli())))
@@ -56,7 +59,8 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                 .fetch();
     }
 
-    public Result<Record2<Integer,Integer>> countRepeatRecommend(List<Integer> userIdList, LocalDateTime lastFriday,
+    public Result<Record2<Integer,Integer>> countRepeatRecommend(List<Integer> userIdList, List<Integer> positionIdList,
+                                                                 LocalDateTime lastFriday,
                                                                  LocalDateTime currentFriday) {
 
         return create.select(
@@ -65,6 +69,7 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         )
                 .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.in(userIdList))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID.in(positionIdList))
                 .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.gt(
                         new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant()
                                 .toEpochMilli())))

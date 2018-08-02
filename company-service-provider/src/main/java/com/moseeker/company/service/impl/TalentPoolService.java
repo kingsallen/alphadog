@@ -1728,6 +1728,8 @@ public class TalentPoolService {
                     if(StringUtils.isNotNullOrEmpty(result.get(userId))){
                         String comments=result.get(userId)+";"+content;
                         result.put(userId,comments);
+                    }else{
+                        result.put(userId,content);
                     }
                 }
             }
