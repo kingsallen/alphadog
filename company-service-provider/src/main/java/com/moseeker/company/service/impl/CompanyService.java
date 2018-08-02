@@ -489,8 +489,8 @@ public class CompanyService {
     public Response addImporterMonitor(Integer comanyId, Integer hraccountId, Integer type, String file, Integer status, String message, String fileName) throws Exception {
         Response response = new Response();
         ValidateUtil vu = new ValidateUtil();
-        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
-        vu.addIntTypeValidate("公司编号", comanyId, "不能为空", null, 1, 1000000);
+        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, null);
+        vu.addIntTypeValidate("公司编号", comanyId, "不能为空", null, 1, null);
         vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
         vu.addIntTypeValidate("导入状态", status, "不能为空", null, 0, 100);
         vu.addRequiredStringValidate("导入文件的绝对路径", file, "不能为空", null);
@@ -539,9 +539,9 @@ public class CompanyService {
         HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
 
         ValidateUtil vu = new ValidateUtil();
-        vu.addIntTypeValidate("公司编号", comanyId, null, null, 1, 1000000);
+        vu.addIntTypeValidate("公司编号", comanyId, null, null, 1, null);
         vu.addIntTypeValidate("导入类型", type, null, "不能为空", 0, 10);
-        vu.addIntTypeValidate("HR账号", hraccountId, null, null, 1, 1000000);
+        vu.addIntTypeValidate("HR账号", hraccountId, null, null, 1, null);
         String errorMessage = vu.validate();
         if (!StringUtils.isNullOrEmpty(errorMessage)) {
             throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(), ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
