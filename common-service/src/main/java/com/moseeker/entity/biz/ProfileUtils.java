@@ -2,11 +2,14 @@ package com.moseeker.entity.biz;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
+import com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysCvTpl;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysCvTplRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
@@ -16,12 +19,14 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.Pagination;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ProfileAttributeLengthLimit;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -29,6 +34,7 @@ import java.util.*;
 @Component
 public class ProfileUtils {
 	protected Logger logger = LoggerFactory.getLogger(ProfileUtils.class);
+
 
 	private final static int DEFAULT_FLAG=0;
 
@@ -404,7 +410,6 @@ public class ProfileUtils {
 										ProfileIntentionCityRecord.class);
 								if (cityRecord != null && ((cityRecord.getCityCode() != null&& cityRecord.getCityCode().intValue() != 0)|| StringUtils.isNotBlank(cityRecord.getCityName()))) {
 									record.getCities().add(cityRecord);
-									break;
 								}
 							}
 						}

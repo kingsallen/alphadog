@@ -1645,6 +1645,7 @@ public class TalentPoolService {
         return ResponseUtils.fail(1, result);
     }
 
+    @CounterIface
     public Response getTalentCountByPositionFilter(int hr_id, int company_id, int position_id) throws TException {
         HrCompanyDO companyDO = talentPoolEntity.getCompanyDOByCompanyIdAndParentId(company_id);
         if(companyDO == null){
@@ -1694,6 +1695,45 @@ public class TalentPoolService {
 
         }
         return ResponseUtils.success("");
+    }
+    @CounterIface
+    public Map<Integer,String> getUserComment(int companyId,List<Integer> userIdList){
+        Map<Integer,String> result=new HashMap<>();
+        List<TalentpoolCommentRecord> commentList=this.getTalentpoolCommentList(companyId,userIdList);
+        if(!StringUtils.isEmptyList(commentList)){
+            result=this.handlerCommentData(commentList);
+        }
+        return result;
+    }
+    /*
+     根据公司id和user_id列表获取人才备注
+     */
+    private List<TalentpoolCommentRecord> getTalentpoolCommentList(int companyId,List<Integer> userIdList){
+        Query query=new Query.QueryBuilder().where(new Condition("user_id",userIdList.toArray(),ValueOp.IN)).and("company_id",companyId).buildQuery();
+        List<TalentpoolCommentRecord> list=talentpoolCommentDao.getRecords(query);
+        return list;
+    }
+    /*
+    处理人才备注信息
+     */
+    private Map<Integer,String> handlerCommentData(List<TalentpoolCommentRecord> dataList){
+        Map<Integer,String> result=new HashMap<>();
+        if(!StringUtils.isEmptyList(dataList)){
+            for(TalentpoolCommentRecord data:dataList){
+                int userId=data.getUserId();
+                String content=data.getContent();
+                if(StringUtils.isEmptyMap(result)){
+                    result.put(userId,content);
+                }else{
+                    if(StringUtils.isNotNullOrEmpty(result.get(userId))){
+                        String comments=result.get(userId)+";"+content;
+                        result.put(userId,comments);
+                    }
+                }
+            }
+        }
+
+        return result;
     }
     //处理批量操作的结果
     private Map<String,Object> handlerBatchTalentResult( Set<Integer> unUseList,Set<Integer>unApplierIdList,Set<Integer> idList ,int companyd){

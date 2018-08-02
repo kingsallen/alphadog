@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
@@ -23,6 +24,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
@@ -50,6 +52,7 @@ import java.util.stream.Collectors;
  * Created by eddie on 2017/3/9.
  */
 @Service
+@CounterIface
 public class UserEmployeeServiceImpl {
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -77,6 +80,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     private HrWxWechatDao wechatDao;
+
+    @Autowired
+    PositionEntity positionEntity;
 
     private ThreadPool threadPool = ThreadPool.Instance;
 
@@ -297,6 +303,7 @@ public class UserEmployeeServiceImpl {
         paginationUtil.setPageSize(pageSize);
 
         List<UserEmployeeDO> employeeDOS = employeeEntity.getActiveEmployeeDOList(companyIdList, pageNum, pageSize);
+        List<Integer> positionIdList = positionEntity.getPositionIdList(companyIdList);
 
         if (employeeDOS != null && employeeDOS.size() > 0) {
 
@@ -317,10 +324,10 @@ public class UserEmployeeServiceImpl {
 
             //查找转发数量
             Future<Map<Integer,Integer>> forwardCountFuture = threadPool.startTast(() ->
-                    referralEntity.countEmployeeForward(userIdList, lastFriday, currentFriday));
+                    referralEntity.countEmployeeForward(userIdList, positionIdList, lastFriday, currentFriday));
             //查找申请数量
             Future<Map<Integer, Integer>> applyCountFuture = threadPool.startTast(() ->
-                    applicationEntity.countEmployeeApply(userIdList, lastFriday, currentFriday));
+                    applicationEntity.countEmployeeApply(userIdList, positionIdList, lastFriday, currentFriday));
             //查找积分数量
             Future<Map<Integer, Integer>> awardsCountFuture = threadPool.startTast(() ->
                     referralEntity.countEmployeeAwards(employeeIdList, lastFriday, currentFriday));

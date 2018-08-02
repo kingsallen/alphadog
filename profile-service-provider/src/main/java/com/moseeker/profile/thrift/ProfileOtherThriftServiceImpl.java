@@ -14,6 +14,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
 import com.moseeker.profile.service.ProfileOtherService;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
 import com.moseeker.profile.service.impl.ProfileService;
