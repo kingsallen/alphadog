@@ -152,6 +152,7 @@ public abstract class EmployeeBinder {
             log.info("doneBind persist employee:{}", temp);
             useremployee.setId(employeeId);
         } else {
+            useremployee.setUpdateTime(null);
             employeeDao.updateData(useremployee);
             employeeId = useremployee.getId();
         }

@@ -26,7 +26,7 @@ public class CollegeController {
 
 	CollegeServices.Iface collegeServices = ServiceManager.SERVICEMANAGER.getService(CollegeServices.Iface.class);
 
-	@RequestMapping(value = "/dict/college", method = RequestMethod.GET)
+	@RequestMapping(value = "/dict/college/all", method = RequestMethod.GET)
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -43,4 +43,43 @@ public class CollegeController {
 		}
 	}
 
+    /**
+     * 获取
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/dict/college", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCollegeByDomestic(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // GET方法 通用参数解析并赋值
+            Response result = collegeServices.getCollegeByDomestic();
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 根绝国家code获取国家对应的学校信息
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/dict/college/abroad", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCollegeByAborad(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String parameterLevel = request.getParameter("country_id");
+            int country_id = parameterLevel == null ? 0 : Integer.parseInt(parameterLevel);
+            Response result = collegeServices.getCollegeByAbroad(country_id);
+            return ResponseLogNotification.success(request, result);
+
+        } catch (Exception e) {
+
+            return ResponseLogNotification.fail(request, e.getMessage());
+
+        }
+    }
 }

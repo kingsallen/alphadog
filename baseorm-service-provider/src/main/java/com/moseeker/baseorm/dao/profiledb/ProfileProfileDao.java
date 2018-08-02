@@ -1107,15 +1107,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         applierIds.remove(Integer.valueOf(0));
         recommenderIds.remove(Integer.valueOf(0));
 
-        ProfileDownloadService downloadService = new ProfileDownloadService(downloadApi, password, new HashSet<>());
-
-        if (dl_url_required && applierIds.size() > 0) {
-            //异步下载用户的简历
-            downloadService = new ProfileDownloadService(downloadApi, password, applierIds);
-            downloadService.startDownload();
-        }
-
-
         logger.info("getResourceByApplication:==============:positionIds:{}", positionIds);
         logger.info("getResourceByApplication:==============:applicationIds:{}", applicationIds);
         logger.info("getResourceByApplication:==============:applierIds:{}", applierIds);
@@ -1517,24 +1508,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             Integer recommenderId = (Integer) entry.getValue().get("recommender_user_id");
             Integer applierId = (Integer) entry.getValue().get("applier_id");
 
-
-            int count = 0;
-            while (count < 300 * 10 && downloadService.getUserProfileUrls().size() > 0 && !downloadService.isFinished()) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                count++;
-            }
-
-            if (dl_url_required) {
-                if (applierId != null && applierId.intValue() > 0) {
-                    map.put("download_url", downloadService.getUserProfileUrls().get(applierId.intValue()));
-                } else {
-                    map.put("download_url", "");
-                }
-            }
 
             //job_number and title from jobdb.job_position
             if (!filterTable(filter, "job_position")) {
