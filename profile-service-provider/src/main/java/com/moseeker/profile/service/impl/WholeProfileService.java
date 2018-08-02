@@ -1175,7 +1175,7 @@ public class WholeProfileService {
             handleResumeMap(resume);
             return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
-        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, UserSource.TALENT_UPLOAD.getValue(),1);
         if(userRecord==null){
             this.handlerWorkExpData(resume);
             handleResumeMap(resume);
@@ -1249,7 +1249,7 @@ public class WholeProfileService {
     /*
      保存上传的简历
      */
-    public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId,int source) throws TException {
+    public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId,int source, int upload) throws TException {
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
@@ -1266,7 +1266,7 @@ public class WholeProfileService {
 //        if(mobile.length()!=11){
 //            return ResponseUtils.fail(1,"手机号必须为11位");
 //        }
-        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, source,upload);
         int newUerId=0;
         if(userRecord!=null){
             newUerId=userRecord.getId();
@@ -1294,7 +1294,7 @@ public class WholeProfileService {
         }
 
         //此处应该考虑账号合并导致的问题
-        talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName);
+        talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName,upload);
         Set<Integer> userIdList=new HashSet<>();
         userIdList.add(newUerId);
         talentPoolEntity.realTimeUpload(userIdList,1);

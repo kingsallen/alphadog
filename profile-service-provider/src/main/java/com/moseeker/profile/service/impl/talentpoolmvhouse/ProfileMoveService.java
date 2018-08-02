@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -202,10 +203,12 @@ public class ProfileMoveService {
         if (record == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_MOVE_DATA_NOT_EXIST);
         }
+        Map<String, Object> resume = JSON.parseObject(profile);
+        List<Map<String, Object>> workexps = (List<Map<String, Object>>) resume.get("workexps");
 //        UserUserDO user = getUserInfoByMobile(profile);
         // 简历入库//resume
         Future<Response> preserveFuture =
-                pool.startTast(() -> wholeProfileService.preserveProfile(profile, null, record.getHrId(), record.getCompanyId(), 0, UserSource.MV_HOUSE.getValue()));
+                pool.startTast(() -> wholeProfileService.preserveProfile(profile, null, record.getHrId(), record.getCompanyId(), 0, UserSource.MV_HOUSE.getValue(), 0));
         Response preserveResponse = preserveFuture.get(60, TimeUnit.SECONDS);
         logger.info("===========================简历搬家preserveResponse:{}", preserveResponse);
         if (preserveResponse.getStatus() == 0) {

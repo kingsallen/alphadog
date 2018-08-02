@@ -35,6 +35,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -930,7 +931,7 @@ public class ProfileService {
             String phone = resumeObj.getResult().getPhone();
             int userId = 0;
             if (StringUtils.isNotNullOrEmpty(phone)) {
-                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId);
+                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId, UserSource.TALENT_UPLOAD.getValue(),1);
                 if (userRecord != null) {
                     userId = userRecord.getId();
                 }
