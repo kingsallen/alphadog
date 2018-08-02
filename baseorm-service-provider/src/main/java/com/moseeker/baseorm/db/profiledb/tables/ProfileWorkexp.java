@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 
-    private static final long serialVersionUID = -1650034388;
+    private static final long serialVersionUID = 701869266;
 
     /**
      * The reference instance of <code>profiledb.profile_workexp</code>
@@ -113,9 +113,9 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
     public final TableField<ProfileWorkexpRecord, String> POSITION_NAME = createField("position_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职能字典名称");
 
     /**
-     * The column <code>profiledb.profile_workexp.description</code>. 职位描述
+     * The column <code>profiledb.profile_workexp.description</code>. 工作描述
      */
-    public final TableField<ProfileWorkexpRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(5000).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职位描述");
+    public final TableField<ProfileWorkexpRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "工作描述");
 
     /**
      * The column <code>profiledb.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职 3:实习

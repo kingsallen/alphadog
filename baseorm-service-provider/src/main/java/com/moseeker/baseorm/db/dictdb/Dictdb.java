@@ -50,7 +50,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -916090383;
+    private static final long serialVersionUID = -29098833;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -113,7 +113,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
     public final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
