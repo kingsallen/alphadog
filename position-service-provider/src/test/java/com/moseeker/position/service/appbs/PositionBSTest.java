@@ -21,7 +21,15 @@ public class PositionBSTest {
 
     @Test
     public void test() throws Exception {
-        String json="{\"appid\":4,\"channels\":[\"{\\\"companyId\\\":904,\\\"occupation\\\":[\\\"21\\\",\\\"3010000\\\",\\\"115\\\"],\\\"companyName\\\":\\\"寻仟信息科技(上海)有限公司\\\",\\\"count\\\":1,\\\"channel\\\":3,\\\"addressName\\\":\\\"上海市徐汇区乐山路33号1号楼\\\",\\\"salaryBottom\\\":10,\\\"salaryTop\\\":20}\"],\"channelsIterator\":[\"{\\\"companyId\\\":904,\\\"occupation\\\":[\\\"21\\\",\\\"3010000\\\",\\\"115\\\"],\\\"companyName\\\":\\\"寻仟信息科技(上海)有限公司\\\",\\\"count\\\":1,\\\"channel\\\":3,\\\"addressName\\\":\\\"上海市徐汇区乐山路33号1号楼\\\",\\\"salaryBottom\\\":10,\\\"salaryTop\\\":20}\"],\"channelsSize\":1,\"positionId\":1020935,\"requestType\":1,\"setAppid\":true,\"setChannels\":true,\"setPositionId\":true,\"setRequestType\":true}\n";
+        String json="{\n" +
+                "  \"appid\": 0,\n" +
+                "  \"channels\": [\n" +
+                "    \"{\\\"departmentName\\\":\\\"\\\",\\\"companyId\\\":39978,\\\"limitTitle\\\":true,\\\"occupation\\\":[[\\\"2200\\\",\\\"2221\\\"]],\\\"companyName\\\":\\\"寻仟信息科技(上海)有限公司\\\",\\\"channel\\\":1,\\\"addressName\\\":{\\\"address\\\":\\\"上海\\\",\\\"city\\\":\\\"上海市\\\"},\\\"salaryBottom\\\":8,\\\"salaryTop\\\":10,\\\"addressId\\\":0,\\\"internship\\\":false}\"\n" +
+                "  ],\n" +
+                "  \"channelsSize\": 1,\n" +
+                "  \"positionId\": 19495726,\n" +
+                "  \"requestType\": 2,\n" +
+                "}";
         ThirdPartyPositionForm form= JSON.toJavaObject(JSON.parseObject(json),ThirdPartyPositionForm.class);
         positionBS.syncPositionToThirdParty(form);
 

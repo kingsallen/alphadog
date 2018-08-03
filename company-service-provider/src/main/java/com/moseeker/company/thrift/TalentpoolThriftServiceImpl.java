@@ -556,9 +556,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response sendResumeEmail(Map<String, String> params, List<Integer> userIdList, List<Integer> idList, int companyId, int hrId, int flag) throws BIZException, TException {
+    public Response sendResumeEmail(Map<String, String> params, List<Integer> userIdList, List<Integer> idList, int companyId, int hrId, int flag,List<String> emailList) throws BIZException, TException {
         try{
-            int result=talentpoolEmailService.talentPoolSendResumeEmail(idList,params,userIdList,companyId,hrId,flag);
+            int result=talentpoolEmailService.talentPoolSendResumeEmail(idList,params,userIdList,companyId,hrId,flag,emailList);
             if(result<0){
                 return  ResponseUtils.fail(TalentEmailEnum.intToEnum.get(result));
             }
@@ -702,5 +702,16 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             param.add(id);
         }
         return param;
+    }
+
+    @Override
+    public Response getCompanyCommentByUserIdList( int companyId,List<Integer> userIdList) throws TException {
+        try{
+            Map<Integer,String> result=talentPoolService.getUserComment(companyId,userIdList);
+            return ResponseUtils.success(result);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
     }
 }

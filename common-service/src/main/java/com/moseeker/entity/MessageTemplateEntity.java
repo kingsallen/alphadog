@@ -105,7 +105,8 @@ public class MessageTemplateEntity {
             int recomId=this.addCampaignRecomPositionlist(params.getCompanyId(),params.getPositionIds());
             url=url.replace("{recomPushId}",recomId+"").replace("recom_code",MDString);
         }
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId());
+        url = url+"&from_template_message="+params.getTemplateId()+"&send_time=" + new Date().getTime();
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getType(),params.getCompanyId(),DO.getId());
         if(colMap==null||colMap.isEmpty()){
             this.handlerRecomLog(params,MDString,0);
             return null;
@@ -114,6 +115,7 @@ public class MessageTemplateEntity {
         this.handlerRecomLog(params,MDString,1);
         return messageTemplateNoticeStruct;
     }
+
     /*
       添加日志
      */

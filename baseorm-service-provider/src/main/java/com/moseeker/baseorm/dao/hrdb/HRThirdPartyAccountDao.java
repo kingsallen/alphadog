@@ -9,23 +9,24 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.query.*;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
+import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 第三方帐号数据访问层
@@ -232,6 +233,86 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         return hrThirdPartyAccountDOS == null ? new ArrayList<>() : hrThirdPartyAccountDOS;
     }
 
-
+    /**
+     * 通过hrid获取猎聘的第三方账号token和账号id, 该方法目前只有一个获取猎聘职位信息接口用到
+     * @param
+     * @author  cjm
+     * @date  2018/6/1
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public Result getThirdPartyAccountTokenByHrId(int hrId, int channel){
+        return create.select(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT,HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID)
+                .from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                .join(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
+                .on(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID))
+                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(hrId))
+                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short)channel))
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte)1))
+                .fetch();
+    }
     private FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
+
+    /**
+     * 获取同一渠道的第三方账号信息
+     * @param
+     * @author  cjm
+     * @date  2018/6/1
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<HrThirdPartyAccountDO> getBoundThirdPartyAccountDO(int channel){
+        Query query = new Query.QueryBuilder()
+                .where(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.getName(), (short)channel))
+                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), BindingStatus.BOUND.getValue()))
+                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2.getName(), "", ValueOp.NEQ))
+                .buildQuery();
+        return getDatas(query);
+    }
+
+    /**
+     * 获取同一渠道的为绑定的第三方账号信息
+     * @param
+     * @author  cjm
+     * @date  2018/6/1
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<HrThirdPartyAccountDO> getUnBindThirdPartyAccountDO(int channel){
+        return create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short)channel))
+                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.eq((short)BindingStatus.BOUND.getValue()))
+                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2.eq(""))
+                .fetchInto(HrThirdPartyAccountDO.class);
+    }
+
+    public int updateBindToken(String liepinToken, Integer liepinUserId, Integer hrThirdAccountId) {
+        return create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                .set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT, String.valueOf(liepinUserId))
+                .set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2, liepinToken)
+                .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(hrThirdAccountId))
+                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short)2))
+                .execute();
+    }
+
+    /**
+     * 获取需要刷新token的账号信息
+     * @param
+     * @author  cjm
+     * @date  2018/6/15
+     * @return
+     */
+    public List<HrThirdPartyAccountDO> getRefreshAccounts(int channel, int bindState) {
+        return create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short)channel))
+                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.eq((short)bindState))
+                .fetchInto(HrThirdPartyAccountDO.class);
+    }
+
+//    public void updateBindState(int hrAccountId, int state) {
+//        create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+//                .set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING, (short)state)
+//                .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(hrAccountId))
+//                .execute();
+//    }
 }

@@ -14,7 +14,7 @@ struct HRChatRoomVO {
 }
 
 struct HRChatRoomsVO {
-    1:  optional i32 pageNo,                //页码
+    1:  optional i32 pageNum,                //页码
     2:  optional i32 pageSize,              //每页显示的数量
     3:  optional i32 totalPage,             //页数
     4:  optional i32 totalRow,              //聊天室总数
@@ -41,7 +41,7 @@ struct UserChatRoomVO {
 }
 
 struct UserChatRoomsVO {
-    1:  optional i32 pageNo,                //页码
+    1:  optional i32 pageNum,                //页码
     2:  optional i32 pageSize,              //每页显示的数量
     3:  optional i32 totalPage,             //页数
     4:  optional i32 totalRow,              //聊天室总数
@@ -74,7 +74,7 @@ struct ChatHistory {
 }
 
 struct ChatsVO {
-    1:  optional i32 pageNo,                //页码
+    1:  optional i32 pageNum,                //页码
     2:  optional i32 pageSize,              //每页显示的数量
     3:  optional i32 totalPage,             //页数
     4:  optional i32 totalRow,              //聊天室总数
@@ -102,7 +102,9 @@ struct PositionVO {
     4:  optional string city,               //职位的发布地区
     5:  optional i32 salaryTop,             //薪资上限
     6:  optional i32 salaryBottom,          //薪资下限
-    7:  optional string updateTime          //职位修改时间
+    7:  optional string updateTime,          //职位修改时间
+    8:  optional i32 status,          //职位状态
+    9:  optional string team          //部门
 }
 
 struct ResultOfSaveRoomVO {

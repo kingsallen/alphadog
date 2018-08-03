@@ -81,37 +81,37 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new JobPositionDOTupleSchemeFactory();
 
     public int id; // optional
-    public java.lang.String jobnumber; // optional
+    public String jobnumber; // optional
     public int companyId; // optional
-    public java.lang.String title; // optional
-    public java.lang.String province; // optional
-    public java.lang.String city; // optional
-    public java.lang.String department; // optional
+    public String title; // optional
+    public String province; // optional
+    public String city; // optional
+    public String department; // optional
     public int lJobid; // optional
-    public java.lang.String publishDate; // optional
-    public java.lang.String stopDate; // optional
-    public java.lang.String accountabilities; // optional
-    public java.lang.String experience; // optional
-    public java.lang.String requirement; // optional
-    public java.lang.String salary; // optional
-    public java.lang.String language; // optional
+    public String publishDate; // optional
+    public String stopDate; // optional
+    public String accountabilities; // optional
+    public String experience; // optional
+    public String requirement; // optional
+    public String salary; // optional
+    public String language; // optional
     public int jobGrade; // optional
     public double status; // optional
     public int visitnum; // optional
-    public java.lang.String lastvisit; // optional
+    public String lastvisit; // optional
     public int sourceId; // optional
-    public java.lang.String updateTime; // optional
-    public java.lang.String businessGroup; // optional
+    public String updateTime; // optional
+    public String businessGroup; // optional
     public double employmentType; // optional
-    public java.lang.String hrEmail; // optional
-    public java.lang.String benefits; // optional
+    public String hrEmail; // optional
+    public String benefits; // optional
     public double degree; // optional
-    public java.lang.String feature; // optional
+    public String feature; // optional
     public byte emailNotice; // optional
     public double candidateSource; // optional
-    public java.lang.String occupation; // optional
+    public String occupation; // optional
     public int isRecom; // optional
-    public java.lang.String industry; // optional
+    public String industry; // optional
     public int hongbaoConfigId; // optional
     public int hongbaoConfigRecomId; // optional
     public int hongbaoConfigAppId; // optional
@@ -119,7 +119,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
     public double lPostingtargetid; // optional
     public double priority; // optional
     public double shareTplId; // optional
-    public java.lang.String district; // optional
+    public String district; // optional
     public double count; // optional
     public double salaryTop; // optional
     public double salaryBottom; // optional
@@ -133,10 +133,10 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
     public byte hbStatus; // optional
     public int childCompanyId; // optional
     public byte age; // optional
-    public java.lang.String majorRequired; // optional
-    public java.lang.String workAddress; // optional
-    public java.lang.String keyword; // optional
-    public java.lang.String reportingTo; // optional
+    public String majorRequired; // optional
+    public String workAddress; // optional
+    public String keyword; // optional
+    public String reportingTo; // optional
     public byte isHiring; // optional
     public byte underlings; // optional
     public byte languageRequired; // optional
@@ -214,7 +214,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         TEAM_ID((short)64, "teamId"),
         PROFILE_CC_MAIL_ENABLED((short)65, "profile_cc_mail_enabled");
 
-        private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+        private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
         static {
             for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -368,21 +368,21 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
          */
         public static _Fields findByThriftIdOrThrow(int fieldId) {
             _Fields fields = findByThriftId(fieldId);
-            if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+            if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
             return fields;
         }
 
         /**
          * Find the _Fields constant that matches name, or null if its not found.
          */
-        public static _Fields findByName(java.lang.String name) {
+        public static _Fields findByName(String name) {
             return byName.get(name);
         }
 
         private final short _thriftId;
-        private final java.lang.String _fieldName;
+        private final String _fieldName;
 
-        _Fields(short thriftId, java.lang.String fieldName) {
+        _Fields(short thriftId, String fieldName) {
             _thriftId = thriftId;
             _fieldName = fieldName;
         }
@@ -391,7 +391,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
             return _thriftId;
         }
 
-        public java.lang.String getFieldName() {
+        public String getFieldName() {
             return _fieldName;
         }
     }
@@ -837,11 +837,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ID_ISSET_ID, value);
     }
 
-    public java.lang.String getJobnumber() {
+    public String getJobnumber() {
         return this.jobnumber;
     }
 
-    public JobPositionDO setJobnumber(java.lang.String jobnumber) {
+    public JobPositionDO setJobnumber(String jobnumber) {
         this.jobnumber = jobnumber;
         return this;
     }
@@ -884,11 +884,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
     }
 
-    public java.lang.String getTitle() {
+    public String getTitle() {
         return this.title;
     }
 
-    public JobPositionDO setTitle(java.lang.String title) {
+    public JobPositionDO setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -908,11 +908,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getProvince() {
+    public String getProvince() {
         return this.province;
     }
 
-    public JobPositionDO setProvince(java.lang.String province) {
+    public JobPositionDO setProvince(String province) {
         this.province = province;
         return this;
     }
@@ -932,11 +932,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getCity() {
+    public String getCity() {
         return this.city;
     }
 
-    public JobPositionDO setCity(java.lang.String city) {
+    public JobPositionDO setCity(String city) {
         this.city = city;
         return this;
     }
@@ -956,11 +956,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getDepartment() {
+    public String getDepartment() {
         return this.department;
     }
 
-    public JobPositionDO setDepartment(java.lang.String department) {
+    public JobPositionDO setDepartment(String department) {
         this.department = department;
         return this;
     }
@@ -1003,11 +1003,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __LJOBID_ISSET_ID, value);
     }
 
-    public java.lang.String getPublishDate() {
+    public String getPublishDate() {
         return this.publishDate;
     }
 
-    public JobPositionDO setPublishDate(java.lang.String publishDate) {
+    public JobPositionDO setPublishDate(String publishDate) {
         this.publishDate = publishDate;
         return this;
     }
@@ -1027,11 +1027,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getStopDate() {
+    public String getStopDate() {
         return this.stopDate;
     }
 
-    public JobPositionDO setStopDate(java.lang.String stopDate) {
+    public JobPositionDO setStopDate(String stopDate) {
         this.stopDate = stopDate;
         return this;
     }
@@ -1051,11 +1051,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getAccountabilities() {
+    public String getAccountabilities() {
         return this.accountabilities;
     }
 
-    public JobPositionDO setAccountabilities(java.lang.String accountabilities) {
+    public JobPositionDO setAccountabilities(String accountabilities) {
         this.accountabilities = accountabilities;
         return this;
     }
@@ -1075,11 +1075,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getExperience() {
+    public String getExperience() {
         return this.experience;
     }
 
-    public JobPositionDO setExperience(java.lang.String experience) {
+    public JobPositionDO setExperience(String experience) {
         this.experience = experience;
         return this;
     }
@@ -1099,11 +1099,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getRequirement() {
+    public String getRequirement() {
         return this.requirement;
     }
 
-    public JobPositionDO setRequirement(java.lang.String requirement) {
+    public JobPositionDO setRequirement(String requirement) {
         this.requirement = requirement;
         return this;
     }
@@ -1123,11 +1123,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getSalary() {
+    public String getSalary() {
         return this.salary;
     }
 
-    public JobPositionDO setSalary(java.lang.String salary) {
+    public JobPositionDO setSalary(String salary) {
         this.salary = salary;
         return this;
     }
@@ -1147,11 +1147,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getLanguage() {
+    public String getLanguage() {
         return this.language;
     }
 
-    public JobPositionDO setLanguage(java.lang.String language) {
+    public JobPositionDO setLanguage(String language) {
         this.language = language;
         return this;
     }
@@ -1240,11 +1240,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __VISITNUM_ISSET_ID, value);
     }
 
-    public java.lang.String getLastvisit() {
+    public String getLastvisit() {
         return this.lastvisit;
     }
 
-    public JobPositionDO setLastvisit(java.lang.String lastvisit) {
+    public JobPositionDO setLastvisit(String lastvisit) {
         this.lastvisit = lastvisit;
         return this;
     }
@@ -1287,11 +1287,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __SOURCEID_ISSET_ID, value);
     }
 
-    public java.lang.String getUpdateTime() {
+    public String getUpdateTime() {
         return this.updateTime;
     }
 
-    public JobPositionDO setUpdateTime(java.lang.String updateTime) {
+    public JobPositionDO setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
         return this;
     }
@@ -1311,11 +1311,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getBusinessGroup() {
+    public String getBusinessGroup() {
         return this.businessGroup;
     }
 
-    public JobPositionDO setBusinessGroup(java.lang.String businessGroup) {
+    public JobPositionDO setBusinessGroup(String businessGroup) {
         this.businessGroup = businessGroup;
         return this;
     }
@@ -1358,11 +1358,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __EMPLOYMENTTYPE_ISSET_ID, value);
     }
 
-    public java.lang.String getHrEmail() {
+    public String getHrEmail() {
         return this.hrEmail;
     }
 
-    public JobPositionDO setHrEmail(java.lang.String hrEmail) {
+    public JobPositionDO setHrEmail(String hrEmail) {
         this.hrEmail = hrEmail;
         return this;
     }
@@ -1382,11 +1382,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getBenefits() {
+    public String getBenefits() {
         return this.benefits;
     }
 
-    public JobPositionDO setBenefits(java.lang.String benefits) {
+    public JobPositionDO setBenefits(String benefits) {
         this.benefits = benefits;
         return this;
     }
@@ -1429,11 +1429,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __DEGREE_ISSET_ID, value);
     }
 
-    public java.lang.String getFeature() {
+    public String getFeature() {
         return this.feature;
     }
 
-    public JobPositionDO setFeature(java.lang.String feature) {
+    public JobPositionDO setFeature(String feature) {
         this.feature = feature;
         return this;
     }
@@ -1499,11 +1499,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __CANDIDATESOURCE_ISSET_ID, value);
     }
 
-    public java.lang.String getOccupation() {
+    public String getOccupation() {
         return this.occupation;
     }
 
-    public JobPositionDO setOccupation(java.lang.String occupation) {
+    public JobPositionDO setOccupation(String occupation) {
         this.occupation = occupation;
         return this;
     }
@@ -1546,11 +1546,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ISRECOM_ISSET_ID, value);
     }
 
-    public java.lang.String getIndustry() {
+    public String getIndustry() {
         return this.industry;
     }
 
-    public JobPositionDO setIndustry(java.lang.String industry) {
+    public JobPositionDO setIndustry(String industry) {
         this.industry = industry;
         return this;
     }
@@ -1731,11 +1731,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __SHARETPLID_ISSET_ID, value);
     }
 
-    public java.lang.String getDistrict() {
+    public String getDistrict() {
         return this.district;
     }
 
-    public JobPositionDO setDistrict(java.lang.String district) {
+    public JobPositionDO setDistrict(String district) {
         this.district = district;
         return this;
     }
@@ -2054,11 +2054,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __AGE_ISSET_ID, value);
     }
 
-    public java.lang.String getMajorRequired() {
+    public String getMajorRequired() {
         return this.majorRequired;
     }
 
-    public JobPositionDO setMajorRequired(java.lang.String majorRequired) {
+    public JobPositionDO setMajorRequired(String majorRequired) {
         this.majorRequired = majorRequired;
         return this;
     }
@@ -2078,11 +2078,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getWorkAddress() {
+    public String getWorkAddress() {
         return this.workAddress;
     }
 
-    public JobPositionDO setWorkAddress(java.lang.String workAddress) {
+    public JobPositionDO setWorkAddress(String workAddress) {
         this.workAddress = workAddress;
         return this;
     }
@@ -2102,11 +2102,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getKeyword() {
+    public String getKeyword() {
         return this.keyword;
     }
 
-    public JobPositionDO setKeyword(java.lang.String keyword) {
+    public JobPositionDO setKeyword(String keyword) {
         this.keyword = keyword;
         return this;
     }
@@ -2126,11 +2126,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    public java.lang.String getReportingTo() {
+    public String getReportingTo() {
         return this.reportingTo;
     }
 
-    public JobPositionDO setReportingTo(java.lang.String reportingTo) {
+    public JobPositionDO setReportingTo(String reportingTo) {
         this.reportingTo = reportingTo;
         return this;
     }
@@ -2334,13 +2334,13 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PROFILE_CC_MAIL_ENABLED_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
         switch (field) {
             case ID:
                 if (value == null) {
                     unsetId();
                 } else {
-                    setId((java.lang.Integer)value);
+                    setId((Integer)value);
                 }
                 break;
 
@@ -2348,7 +2348,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetJobnumber();
                 } else {
-                    setJobnumber((java.lang.String)value);
+                    setJobnumber((String)value);
                 }
                 break;
 
@@ -2356,7 +2356,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetCompanyId();
                 } else {
-                    setCompanyId((java.lang.Integer)value);
+                    setCompanyId((Integer)value);
                 }
                 break;
 
@@ -2364,7 +2364,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetTitle();
                 } else {
-                    setTitle((java.lang.String)value);
+                    setTitle((String)value);
                 }
                 break;
 
@@ -2372,7 +2372,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetProvince();
                 } else {
-                    setProvince((java.lang.String)value);
+                    setProvince((String)value);
                 }
                 break;
 
@@ -2380,7 +2380,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetCity();
                 } else {
-                    setCity((java.lang.String)value);
+                    setCity((String)value);
                 }
                 break;
 
@@ -2388,7 +2388,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetDepartment();
                 } else {
-                    setDepartment((java.lang.String)value);
+                    setDepartment((String)value);
                 }
                 break;
 
@@ -2396,7 +2396,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetLJobid();
                 } else {
-                    setLJobid((java.lang.Integer)value);
+                    setLJobid((Integer)value);
                 }
                 break;
 
@@ -2404,7 +2404,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetPublishDate();
                 } else {
-                    setPublishDate((java.lang.String)value);
+                    setPublishDate((String)value);
                 }
                 break;
 
@@ -2412,7 +2412,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetStopDate();
                 } else {
-                    setStopDate((java.lang.String)value);
+                    setStopDate((String)value);
                 }
                 break;
 
@@ -2420,7 +2420,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetAccountabilities();
                 } else {
-                    setAccountabilities((java.lang.String)value);
+                    setAccountabilities((String)value);
                 }
                 break;
 
@@ -2428,7 +2428,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetExperience();
                 } else {
-                    setExperience((java.lang.String)value);
+                    setExperience((String)value);
                 }
                 break;
 
@@ -2436,7 +2436,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetRequirement();
                 } else {
-                    setRequirement((java.lang.String)value);
+                    setRequirement((String)value);
                 }
                 break;
 
@@ -2444,7 +2444,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetSalary();
                 } else {
-                    setSalary((java.lang.String)value);
+                    setSalary((String)value);
                 }
                 break;
 
@@ -2452,7 +2452,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetLanguage();
                 } else {
-                    setLanguage((java.lang.String)value);
+                    setLanguage((String)value);
                 }
                 break;
 
@@ -2460,7 +2460,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetJobGrade();
                 } else {
-                    setJobGrade((java.lang.Integer)value);
+                    setJobGrade((Integer)value);
                 }
                 break;
 
@@ -2468,7 +2468,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetStatus();
                 } else {
-                    setStatus((java.lang.Double)value);
+                    setStatus((Double)value);
                 }
                 break;
 
@@ -2476,7 +2476,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetVisitnum();
                 } else {
-                    setVisitnum((java.lang.Integer)value);
+                    setVisitnum((Integer)value);
                 }
                 break;
 
@@ -2484,7 +2484,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetLastvisit();
                 } else {
-                    setLastvisit((java.lang.String)value);
+                    setLastvisit((String)value);
                 }
                 break;
 
@@ -2492,7 +2492,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetSourceId();
                 } else {
-                    setSourceId((java.lang.Integer)value);
+                    setSourceId((Integer)value);
                 }
                 break;
 
@@ -2500,7 +2500,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetUpdateTime();
                 } else {
-                    setUpdateTime((java.lang.String)value);
+                    setUpdateTime((String)value);
                 }
                 break;
 
@@ -2508,7 +2508,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetBusinessGroup();
                 } else {
-                    setBusinessGroup((java.lang.String)value);
+                    setBusinessGroup((String)value);
                 }
                 break;
 
@@ -2516,7 +2516,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetEmploymentType();
                 } else {
-                    setEmploymentType((java.lang.Double)value);
+                    setEmploymentType((Double)value);
                 }
                 break;
 
@@ -2524,7 +2524,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetHrEmail();
                 } else {
-                    setHrEmail((java.lang.String)value);
+                    setHrEmail((String)value);
                 }
                 break;
 
@@ -2532,7 +2532,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetBenefits();
                 } else {
-                    setBenefits((java.lang.String)value);
+                    setBenefits((String)value);
                 }
                 break;
 
@@ -2540,7 +2540,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetDegree();
                 } else {
-                    setDegree((java.lang.Double)value);
+                    setDegree((Double)value);
                 }
                 break;
 
@@ -2548,7 +2548,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetFeature();
                 } else {
-                    setFeature((java.lang.String)value);
+                    setFeature((String)value);
                 }
                 break;
 
@@ -2556,7 +2556,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetEmailNotice();
                 } else {
-                    setEmailNotice((java.lang.Byte)value);
+                    setEmailNotice((Byte)value);
                 }
                 break;
 
@@ -2564,7 +2564,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetCandidateSource();
                 } else {
-                    setCandidateSource((java.lang.Double)value);
+                    setCandidateSource((Double)value);
                 }
                 break;
 
@@ -2572,7 +2572,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetOccupation();
                 } else {
-                    setOccupation((java.lang.String)value);
+                    setOccupation((String)value);
                 }
                 break;
 
@@ -2580,7 +2580,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetIsRecom();
                 } else {
-                    setIsRecom((java.lang.Integer)value);
+                    setIsRecom((Integer)value);
                 }
                 break;
 
@@ -2588,7 +2588,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetIndustry();
                 } else {
-                    setIndustry((java.lang.String)value);
+                    setIndustry((String)value);
                 }
                 break;
 
@@ -2596,7 +2596,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetHongbaoConfigId();
                 } else {
-                    setHongbaoConfigId((java.lang.Integer)value);
+                    setHongbaoConfigId((Integer)value);
                 }
                 break;
 
@@ -2604,7 +2604,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetHongbaoConfigRecomId();
                 } else {
-                    setHongbaoConfigRecomId((java.lang.Integer)value);
+                    setHongbaoConfigRecomId((Integer)value);
                 }
                 break;
 
@@ -2612,7 +2612,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetHongbaoConfigAppId();
                 } else {
-                    setHongbaoConfigAppId((java.lang.Integer)value);
+                    setHongbaoConfigAppId((Integer)value);
                 }
                 break;
 
@@ -2620,7 +2620,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetEmailResumeConf();
                 } else {
-                    setEmailResumeConf((java.lang.Double)value);
+                    setEmailResumeConf((Double)value);
                 }
                 break;
 
@@ -2628,7 +2628,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetLPostingtargetid();
                 } else {
-                    setLPostingtargetid((java.lang.Double)value);
+                    setLPostingtargetid((Double)value);
                 }
                 break;
 
@@ -2636,7 +2636,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetPriority();
                 } else {
-                    setPriority((java.lang.Double)value);
+                    setPriority((Double)value);
                 }
                 break;
 
@@ -2644,7 +2644,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetShareTplId();
                 } else {
-                    setShareTplId((java.lang.Double)value);
+                    setShareTplId((Double)value);
                 }
                 break;
 
@@ -2652,7 +2652,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetDistrict();
                 } else {
-                    setDistrict((java.lang.String)value);
+                    setDistrict((String)value);
                 }
                 break;
 
@@ -2660,7 +2660,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetCount();
                 } else {
-                    setCount((java.lang.Double)value);
+                    setCount((Double)value);
                 }
                 break;
 
@@ -2668,7 +2668,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetSalaryTop();
                 } else {
-                    setSalaryTop((java.lang.Double)value);
+                    setSalaryTop((Double)value);
                 }
                 break;
 
@@ -2676,7 +2676,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetSalaryBottom();
                 } else {
-                    setSalaryBottom((java.lang.Double)value);
+                    setSalaryBottom((Double)value);
                 }
                 break;
 
@@ -2684,7 +2684,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetExperienceAbove();
                 } else {
-                    setExperienceAbove((java.lang.Byte)value);
+                    setExperienceAbove((Byte)value);
                 }
                 break;
 
@@ -2692,7 +2692,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetDegreeAbove();
                 } else {
-                    setDegreeAbove((java.lang.Byte)value);
+                    setDegreeAbove((Byte)value);
                 }
                 break;
 
@@ -2700,7 +2700,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetManagementExperience();
                 } else {
-                    setManagementExperience((java.lang.Double)value);
+                    setManagementExperience((Double)value);
                 }
                 break;
 
@@ -2708,7 +2708,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetGender();
                 } else {
-                    setGender((java.lang.Double)value);
+                    setGender((Double)value);
                 }
                 break;
 
@@ -2716,7 +2716,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetPublisher();
                 } else {
-                    setPublisher((java.lang.Integer)value);
+                    setPublisher((Integer)value);
                 }
                 break;
 
@@ -2724,7 +2724,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetAppCvConfigId();
                 } else {
-                    setAppCvConfigId((java.lang.Integer)value);
+                    setAppCvConfigId((Integer)value);
                 }
                 break;
 
@@ -2732,7 +2732,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetSource();
                 } else {
-                    setSource((java.lang.Double)value);
+                    setSource((Double)value);
                 }
                 break;
 
@@ -2740,7 +2740,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetHbStatus();
                 } else {
-                    setHbStatus((java.lang.Byte)value);
+                    setHbStatus((Byte)value);
                 }
                 break;
 
@@ -2748,7 +2748,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetChildCompanyId();
                 } else {
-                    setChildCompanyId((java.lang.Integer)value);
+                    setChildCompanyId((Integer)value);
                 }
                 break;
 
@@ -2756,7 +2756,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetAge();
                 } else {
-                    setAge((java.lang.Byte)value);
+                    setAge((Byte)value);
                 }
                 break;
 
@@ -2764,7 +2764,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetMajorRequired();
                 } else {
-                    setMajorRequired((java.lang.String)value);
+                    setMajorRequired((String)value);
                 }
                 break;
 
@@ -2772,7 +2772,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetWorkAddress();
                 } else {
-                    setWorkAddress((java.lang.String)value);
+                    setWorkAddress((String)value);
                 }
                 break;
 
@@ -2780,7 +2780,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetKeyword();
                 } else {
-                    setKeyword((java.lang.String)value);
+                    setKeyword((String)value);
                 }
                 break;
 
@@ -2788,7 +2788,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetReportingTo();
                 } else {
-                    setReportingTo((java.lang.String)value);
+                    setReportingTo((String)value);
                 }
                 break;
 
@@ -2796,7 +2796,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetIsHiring();
                 } else {
-                    setIsHiring((java.lang.Byte)value);
+                    setIsHiring((Byte)value);
                 }
                 break;
 
@@ -2804,7 +2804,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetUnderlings();
                 } else {
-                    setUnderlings((java.lang.Byte)value);
+                    setUnderlings((Byte)value);
                 }
                 break;
 
@@ -2812,7 +2812,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetLanguageRequired();
                 } else {
-                    setLanguageRequired((java.lang.Byte)value);
+                    setLanguageRequired((Byte)value);
                 }
                 break;
 
@@ -2820,7 +2820,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetTargetIndustry();
                 } else {
-                    setTargetIndustry((java.lang.Byte)value);
+                    setTargetIndustry((Byte)value);
                 }
                 break;
 
@@ -2828,7 +2828,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetCurrentStatus();
                 } else {
-                    setCurrentStatus((java.lang.Byte)value);
+                    setCurrentStatus((Byte)value);
                 }
                 break;
 
@@ -2836,7 +2836,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetPositionCode();
                 } else {
-                    setPositionCode((java.lang.Integer)value);
+                    setPositionCode((Integer)value);
                 }
                 break;
 
@@ -2844,7 +2844,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetTeamId();
                 } else {
-                    setTeamId((java.lang.Integer)value);
+                    setTeamId((Integer)value);
                 }
                 break;
 
@@ -2852,14 +2852,14 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 if (value == null) {
                     unsetProfile_cc_mail_enabled();
                 } else {
-                    setProfile_cc_mail_enabled((java.lang.Byte)value);
+                    setProfile_cc_mail_enabled((Byte)value);
                 }
                 break;
 
         }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
         switch (field) {
             case ID:
                 return getId();
@@ -3057,13 +3057,13 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return getProfile_cc_mail_enabled();
 
         }
-        throw new java.lang.IllegalStateException();
+        throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
         if (field == null) {
-            throw new java.lang.IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
 
         switch (field) {
@@ -3198,11 +3198,11 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
             case PROFILE_CC_MAIL_ENABLED:
                 return isSetProfile_cc_mail_enabled();
         }
-        throw new java.lang.IllegalStateException();
+        throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
         if (that == null)
             return false;
         if (that instanceof JobPositionDO)
@@ -4079,7 +4079,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
 
         int lastComparison = 0;
 
-        lastComparison = java.lang.Boolean.valueOf(isSetId()).compareTo(other.isSetId());
+        lastComparison = Boolean.valueOf(isSetId()).compareTo(other.isSetId());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4089,7 +4089,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetJobnumber()).compareTo(other.isSetJobnumber());
+        lastComparison = Boolean.valueOf(isSetJobnumber()).compareTo(other.isSetJobnumber());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4099,7 +4099,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+        lastComparison = Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4109,7 +4109,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetTitle()).compareTo(other.isSetTitle());
+        lastComparison = Boolean.valueOf(isSetTitle()).compareTo(other.isSetTitle());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4119,7 +4119,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetProvince()).compareTo(other.isSetProvince());
+        lastComparison = Boolean.valueOf(isSetProvince()).compareTo(other.isSetProvince());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4129,7 +4129,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetCity()).compareTo(other.isSetCity());
+        lastComparison = Boolean.valueOf(isSetCity()).compareTo(other.isSetCity());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4139,7 +4139,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetDepartment()).compareTo(other.isSetDepartment());
+        lastComparison = Boolean.valueOf(isSetDepartment()).compareTo(other.isSetDepartment());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4149,7 +4149,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetLJobid()).compareTo(other.isSetLJobid());
+        lastComparison = Boolean.valueOf(isSetLJobid()).compareTo(other.isSetLJobid());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4159,7 +4159,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetPublishDate()).compareTo(other.isSetPublishDate());
+        lastComparison = Boolean.valueOf(isSetPublishDate()).compareTo(other.isSetPublishDate());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4169,7 +4169,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetStopDate()).compareTo(other.isSetStopDate());
+        lastComparison = Boolean.valueOf(isSetStopDate()).compareTo(other.isSetStopDate());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4179,7 +4179,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetAccountabilities()).compareTo(other.isSetAccountabilities());
+        lastComparison = Boolean.valueOf(isSetAccountabilities()).compareTo(other.isSetAccountabilities());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4189,7 +4189,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetExperience()).compareTo(other.isSetExperience());
+        lastComparison = Boolean.valueOf(isSetExperience()).compareTo(other.isSetExperience());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4199,7 +4199,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetRequirement()).compareTo(other.isSetRequirement());
+        lastComparison = Boolean.valueOf(isSetRequirement()).compareTo(other.isSetRequirement());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4209,7 +4209,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetSalary()).compareTo(other.isSetSalary());
+        lastComparison = Boolean.valueOf(isSetSalary()).compareTo(other.isSetSalary());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4219,7 +4219,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetLanguage()).compareTo(other.isSetLanguage());
+        lastComparison = Boolean.valueOf(isSetLanguage()).compareTo(other.isSetLanguage());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4229,7 +4229,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetJobGrade()).compareTo(other.isSetJobGrade());
+        lastComparison = Boolean.valueOf(isSetJobGrade()).compareTo(other.isSetJobGrade());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4239,7 +4239,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetStatus()).compareTo(other.isSetStatus());
+        lastComparison = Boolean.valueOf(isSetStatus()).compareTo(other.isSetStatus());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4249,7 +4249,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetVisitnum()).compareTo(other.isSetVisitnum());
+        lastComparison = Boolean.valueOf(isSetVisitnum()).compareTo(other.isSetVisitnum());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4259,7 +4259,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetLastvisit()).compareTo(other.isSetLastvisit());
+        lastComparison = Boolean.valueOf(isSetLastvisit()).compareTo(other.isSetLastvisit());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4269,7 +4269,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetSourceId()).compareTo(other.isSetSourceId());
+        lastComparison = Boolean.valueOf(isSetSourceId()).compareTo(other.isSetSourceId());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4279,7 +4279,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetUpdateTime()).compareTo(other.isSetUpdateTime());
+        lastComparison = Boolean.valueOf(isSetUpdateTime()).compareTo(other.isSetUpdateTime());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4289,7 +4289,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetBusinessGroup()).compareTo(other.isSetBusinessGroup());
+        lastComparison = Boolean.valueOf(isSetBusinessGroup()).compareTo(other.isSetBusinessGroup());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4299,7 +4299,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetEmploymentType()).compareTo(other.isSetEmploymentType());
+        lastComparison = Boolean.valueOf(isSetEmploymentType()).compareTo(other.isSetEmploymentType());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4309,7 +4309,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetHrEmail()).compareTo(other.isSetHrEmail());
+        lastComparison = Boolean.valueOf(isSetHrEmail()).compareTo(other.isSetHrEmail());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4319,7 +4319,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetBenefits()).compareTo(other.isSetBenefits());
+        lastComparison = Boolean.valueOf(isSetBenefits()).compareTo(other.isSetBenefits());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4329,7 +4329,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetDegree()).compareTo(other.isSetDegree());
+        lastComparison = Boolean.valueOf(isSetDegree()).compareTo(other.isSetDegree());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4339,7 +4339,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetFeature()).compareTo(other.isSetFeature());
+        lastComparison = Boolean.valueOf(isSetFeature()).compareTo(other.isSetFeature());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4349,7 +4349,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetEmailNotice()).compareTo(other.isSetEmailNotice());
+        lastComparison = Boolean.valueOf(isSetEmailNotice()).compareTo(other.isSetEmailNotice());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4359,7 +4359,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetCandidateSource()).compareTo(other.isSetCandidateSource());
+        lastComparison = Boolean.valueOf(isSetCandidateSource()).compareTo(other.isSetCandidateSource());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4369,7 +4369,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetOccupation()).compareTo(other.isSetOccupation());
+        lastComparison = Boolean.valueOf(isSetOccupation()).compareTo(other.isSetOccupation());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4379,7 +4379,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetIsRecom()).compareTo(other.isSetIsRecom());
+        lastComparison = Boolean.valueOf(isSetIsRecom()).compareTo(other.isSetIsRecom());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4389,7 +4389,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetIndustry()).compareTo(other.isSetIndustry());
+        lastComparison = Boolean.valueOf(isSetIndustry()).compareTo(other.isSetIndustry());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4399,7 +4399,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetHongbaoConfigId()).compareTo(other.isSetHongbaoConfigId());
+        lastComparison = Boolean.valueOf(isSetHongbaoConfigId()).compareTo(other.isSetHongbaoConfigId());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4409,7 +4409,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetHongbaoConfigRecomId()).compareTo(other.isSetHongbaoConfigRecomId());
+        lastComparison = Boolean.valueOf(isSetHongbaoConfigRecomId()).compareTo(other.isSetHongbaoConfigRecomId());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4419,7 +4419,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetHongbaoConfigAppId()).compareTo(other.isSetHongbaoConfigAppId());
+        lastComparison = Boolean.valueOf(isSetHongbaoConfigAppId()).compareTo(other.isSetHongbaoConfigAppId());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4429,7 +4429,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetEmailResumeConf()).compareTo(other.isSetEmailResumeConf());
+        lastComparison = Boolean.valueOf(isSetEmailResumeConf()).compareTo(other.isSetEmailResumeConf());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4439,7 +4439,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetLPostingtargetid()).compareTo(other.isSetLPostingtargetid());
+        lastComparison = Boolean.valueOf(isSetLPostingtargetid()).compareTo(other.isSetLPostingtargetid());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4449,7 +4449,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetPriority()).compareTo(other.isSetPriority());
+        lastComparison = Boolean.valueOf(isSetPriority()).compareTo(other.isSetPriority());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4459,7 +4459,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetShareTplId()).compareTo(other.isSetShareTplId());
+        lastComparison = Boolean.valueOf(isSetShareTplId()).compareTo(other.isSetShareTplId());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4469,7 +4469,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetDistrict()).compareTo(other.isSetDistrict());
+        lastComparison = Boolean.valueOf(isSetDistrict()).compareTo(other.isSetDistrict());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4479,7 +4479,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetCount()).compareTo(other.isSetCount());
+        lastComparison = Boolean.valueOf(isSetCount()).compareTo(other.isSetCount());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4489,7 +4489,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetSalaryTop()).compareTo(other.isSetSalaryTop());
+        lastComparison = Boolean.valueOf(isSetSalaryTop()).compareTo(other.isSetSalaryTop());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4499,7 +4499,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetSalaryBottom()).compareTo(other.isSetSalaryBottom());
+        lastComparison = Boolean.valueOf(isSetSalaryBottom()).compareTo(other.isSetSalaryBottom());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4509,7 +4509,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetExperienceAbove()).compareTo(other.isSetExperienceAbove());
+        lastComparison = Boolean.valueOf(isSetExperienceAbove()).compareTo(other.isSetExperienceAbove());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4519,7 +4519,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetDegreeAbove()).compareTo(other.isSetDegreeAbove());
+        lastComparison = Boolean.valueOf(isSetDegreeAbove()).compareTo(other.isSetDegreeAbove());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4529,7 +4529,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetManagementExperience()).compareTo(other.isSetManagementExperience());
+        lastComparison = Boolean.valueOf(isSetManagementExperience()).compareTo(other.isSetManagementExperience());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4539,7 +4539,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetGender()).compareTo(other.isSetGender());
+        lastComparison = Boolean.valueOf(isSetGender()).compareTo(other.isSetGender());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4549,7 +4549,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetPublisher()).compareTo(other.isSetPublisher());
+        lastComparison = Boolean.valueOf(isSetPublisher()).compareTo(other.isSetPublisher());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4559,7 +4559,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetAppCvConfigId()).compareTo(other.isSetAppCvConfigId());
+        lastComparison = Boolean.valueOf(isSetAppCvConfigId()).compareTo(other.isSetAppCvConfigId());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4569,7 +4569,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetSource()).compareTo(other.isSetSource());
+        lastComparison = Boolean.valueOf(isSetSource()).compareTo(other.isSetSource());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4579,7 +4579,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetHbStatus()).compareTo(other.isSetHbStatus());
+        lastComparison = Boolean.valueOf(isSetHbStatus()).compareTo(other.isSetHbStatus());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4589,7 +4589,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetChildCompanyId()).compareTo(other.isSetChildCompanyId());
+        lastComparison = Boolean.valueOf(isSetChildCompanyId()).compareTo(other.isSetChildCompanyId());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4599,7 +4599,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetAge()).compareTo(other.isSetAge());
+        lastComparison = Boolean.valueOf(isSetAge()).compareTo(other.isSetAge());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4609,7 +4609,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetMajorRequired()).compareTo(other.isSetMajorRequired());
+        lastComparison = Boolean.valueOf(isSetMajorRequired()).compareTo(other.isSetMajorRequired());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4619,7 +4619,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetWorkAddress()).compareTo(other.isSetWorkAddress());
+        lastComparison = Boolean.valueOf(isSetWorkAddress()).compareTo(other.isSetWorkAddress());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4629,7 +4629,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetKeyword()).compareTo(other.isSetKeyword());
+        lastComparison = Boolean.valueOf(isSetKeyword()).compareTo(other.isSetKeyword());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4639,7 +4639,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetReportingTo()).compareTo(other.isSetReportingTo());
+        lastComparison = Boolean.valueOf(isSetReportingTo()).compareTo(other.isSetReportingTo());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4649,7 +4649,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetIsHiring()).compareTo(other.isSetIsHiring());
+        lastComparison = Boolean.valueOf(isSetIsHiring()).compareTo(other.isSetIsHiring());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4659,7 +4659,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetUnderlings()).compareTo(other.isSetUnderlings());
+        lastComparison = Boolean.valueOf(isSetUnderlings()).compareTo(other.isSetUnderlings());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4669,7 +4669,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetLanguageRequired()).compareTo(other.isSetLanguageRequired());
+        lastComparison = Boolean.valueOf(isSetLanguageRequired()).compareTo(other.isSetLanguageRequired());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4679,7 +4679,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetTargetIndustry()).compareTo(other.isSetTargetIndustry());
+        lastComparison = Boolean.valueOf(isSetTargetIndustry()).compareTo(other.isSetTargetIndustry());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4689,7 +4689,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetCurrentStatus()).compareTo(other.isSetCurrentStatus());
+        lastComparison = Boolean.valueOf(isSetCurrentStatus()).compareTo(other.isSetCurrentStatus());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4699,7 +4699,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetPositionCode()).compareTo(other.isSetPositionCode());
+        lastComparison = Boolean.valueOf(isSetPositionCode()).compareTo(other.isSetPositionCode());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4709,7 +4709,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetTeamId()).compareTo(other.isSetTeamId());
+        lastComparison = Boolean.valueOf(isSetTeamId()).compareTo(other.isSetTeamId());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4719,7 +4719,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
                 return lastComparison;
             }
         }
-        lastComparison = java.lang.Boolean.valueOf(isSetProfile_cc_mail_enabled()).compareTo(other.isSetProfile_cc_mail_enabled());
+        lastComparison = Boolean.valueOf(isSetProfile_cc_mail_enabled()).compareTo(other.isSetProfile_cc_mail_enabled());
         if (lastComparison != 0) {
             return lastComparison;
         }
@@ -4745,8 +4745,8 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
     }
 
     @Override
-    public java.lang.String toString() {
-        java.lang.StringBuilder sb = new java.lang.StringBuilder("JobPositionDO(");
+    public String toString() {
+        StringBuilder sb = new StringBuilder("JobPositionDO(");
         boolean first = true;
 
         if (isSetId()) {
@@ -5255,7 +5255,7 @@ public class JobPositionDO implements org.apache.thrift.TBase<JobPositionDO, Job
         }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
         try {
             // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
             __isset_bitfield = 0;

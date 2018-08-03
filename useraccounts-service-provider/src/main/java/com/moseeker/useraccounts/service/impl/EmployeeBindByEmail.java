@@ -126,6 +126,10 @@ public class EmployeeBindByEmail extends EmployeeBinder{
         return response;
     }
 
+    public static void main(String[] args) {
+
+    }
+
     public Result emailActivation(String activationCode) throws TException {
         log.info("emailActivation param: activationCode={}", activationCode);
         Result response = new Result();

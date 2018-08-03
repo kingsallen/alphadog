@@ -62,7 +62,10 @@ public class Mail {
 			    try {
 			        transport.connect(serverConfig.getHost(), serverConfig.getPort(), serverConfig.getUsername(), serverConfig.getPassword());
 			        transport.sendMessage(this.message, this.message.getAllRecipients());
-			    } finally {
+                    logger.info("send email success from:"+message.getFrom() +" to:"+message.getAllRecipients()+" topic:"+message.getSubject());
+			    } catch (Exception e) {
+			        logger.error("from:"+message.getFrom() +" to:"+message.getAllRecipients()+" topic:"+message.getSubject()+e.getMessage(),e);
+                } finally{
 			        transport.close();
 			        logger.info("from:"+message.getFrom() +" to:"+message.getAllRecipients()+" topic:"+message.getSubject());
 			    }

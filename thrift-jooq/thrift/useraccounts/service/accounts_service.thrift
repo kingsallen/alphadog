@@ -180,6 +180,16 @@ service UserHrAccountService {
 
     //设置HR聊天是否托管给智能招聘助手
     user_hr_account_struct.UserHrAccountDO switchChatLeaveToMobot(1:i32 accountId,2:i8 leaveToMobot) throws (1: common_struct.BIZException e);
+
+    //获取已经在猎聘绑定的hr第三方账号信息，主要是为了提供猎聘token
+    common_struct.Response getThirdPartyAccountDO(1:i32 channel) throws (1: common_struct.BIZException e);
+
+    //在仟寻绑定hr第三方账号信息，未在猎聘通过api绑定账号，获取此类账号信息
+    list<hr_third_party_account_struct.HrThirdPartyAccountDO> getUnBindThirdPartyAccountDO(1:i32 channel) throws (1: common_struct.BIZException e);
+
+    //将第三方账号绑定返回的信息入库
+    string bindLiepinUserAccount(1:string liepinToken, 2:i32 liepinUserId, 3:i32 hrThirdAccountId) throws (1: common_struct.BIZException e);
+
 }
 
 
@@ -200,7 +210,7 @@ service UserCenterService {
     //查询用户的只为收藏记录
     list<useraccounts_struct.FavPositionForm> getFavPositions(1: i32 userId);
     //查询推荐记录
-    useraccounts_struct.RecommendationVO getRecommendation(1: i32 userId, 2:i8 type, 3: i32 pageNo, 4: i32 pageSize);
+    useraccounts_struct.RecommendationVO getRecommendation(1: i32 userId, 2:i8 type, 3: i32 pageNum, 4: i32 pageSize);
 }
 
 //user thirdparty user 服务
@@ -231,4 +241,6 @@ service UserEmployeeService {
     common_struct.Response getValidateUserEmployee(1: i32 company_id,2: string email,3: i32 pageNum,4: i32 pageSize) throws (1:common_struct.BIZException e);
 
     common_struct.Response getPastUserEmployee(1: i32 company_id) throws (1:common_struct.BIZException e);
+
+    useraccounts_struct.Pagination getContributions(1: i32 companyId, 2: i32 pageNum, 3: i32 pageSize) throws (1:common_struct.BIZException e);
 }

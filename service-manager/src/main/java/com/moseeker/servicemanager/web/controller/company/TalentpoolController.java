@@ -1194,7 +1194,17 @@ public class TalentpoolController {
             }
             List<Integer> idList=( List<Integer>)params.get("employee");
             List<Integer> userIdList=( List<Integer>)params.get("user_ids");
-            Response result=service.sendResumeEmail(condition,userIdList,idList,companyId,hrId,flag);
+            List<String>  emailList=(List<String>)params.get("emails");
+            if(StringUtils.isEmptyList(userIdList)&&StringUtils.isEmptyList(emailList)){
+                return ResponseLogNotification.fail(request,"接收邮件的人不能为空");
+            }
+            if(StringUtils.isEmptyList(userIdList)){
+                userIdList=new ArrayList<>();
+            }
+            if(StringUtils.isEmptyList(emailList)){
+                emailList=new ArrayList<>();
+            }
+            Response result=service.sendResumeEmail(condition,userIdList,idList,companyId,hrId,flag,emailList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
@@ -1254,6 +1264,24 @@ public class TalentpoolController {
             int hrId=(int)params.get("hr_id");
             int positionId=(int)params.get("position_id");
             Response result=service.sendPositionInviteEmail(hrId,positionId,companyId);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+      职位邀请投递
+     */
+    @RequestMapping(value = "/api/talent/comment/list", method = RequestMethod.POST)
+    @ResponseBody
+    public String getCommentList(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId=(Integer)params.get("company_id");
+            List<Integer> userIdList= (List<Integer>) params.get("user_ids");
+            Response result=service.getCompanyCommentByUserIdList(companyId,userIdList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);

@@ -2,20 +2,21 @@ package com.moseeker.position.service.position.base.sync;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
+import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.position.service.fundationbs.PositionQxService;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -23,21 +24,36 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * 第三方职位同步抽象类
+ * @param <Form>    前台或者ats端同步请求的表单数据
+ * @param <R>       推送给第三方的职位结构包含账号信息和职位信息
+ * @param <Info>    R中的职位信息（其实可以省略掉）
+ * @param <ExtP>    持久化到数据库中的第三方职位的额外表对象，
+ *                  例如Jobsdb:HrThirdPartyPositionDO + ThirdpartyJobsDBPositionDO是一个完整的第三方职位
+ *                  ThirdpartyJobsDBPositionDO就是额外表对象。
+ *                  如果HrThirdPartyPositionDO中的字段可以满足需要持久化的数据，定义{@link EmptyExtThirdPartyPosition}即可
+ *
+ * @author pyb
+ */
 public abstract class AbstractPositionTransfer<Form, R, Info, ExtP> {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
     protected FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
+
+    ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
     @Autowired
     private JobPositionCityDao jobPositionCityDao;
@@ -53,6 +69,9 @@ public abstract class AbstractPositionTransfer<Form, R, Info, ExtP> {
 
     @Autowired
     private PositionQxService positionQxService;
+
+    @Autowired
+    private HRThirdPartyPositionDao thirdPartyPositionDao;
 
     /**
      * 将仟寻职位转成第卅方职位
@@ -113,6 +132,31 @@ public abstract class AbstractPositionTransfer<Form, R, Info, ExtP> {
         return Arrays.asList(JSON.toJSONString(r));
     }
 
+    /**
+     * 额外判断是否使用当前转换策略
+     * @param positionDB
+     * @return
+     */
+    public boolean extTransferCheck (JobPositionDO positionDB){
+        return true;
+    }
+
+    /**
+     * 发送请求，并处理结果，默认是发送给爬虫端
+     * @param result
+     */
+    public TwoParam<HrThirdPartyPositionDO,ExtP> sendSyncRequest(TransferResult<R,ExtP> result) throws TException {
+        String syncData = JSON.toJSONString(result.getPositionWithAccount());
+        // 提交到chaos处理
+        logger.info("chaosService.synchronizePosition:{}", syncData);
+        chaosService.synchronizePosition(toChaosJson(result.getPositionWithAccount()));
+
+        // 回写数据到第三方职位表表
+        TwoParam<HrThirdPartyPositionDO,ExtP> fullThirdPartyPosition = new TwoParam<>(result.getThirdPartyPositionDO(),result.getExtPosition());
+        logger.info("write back to thirdpartyposition:{}", JSON.toJSONString(fullThirdPartyPosition));
+        return thirdPartyPositionDao.upsertThirdPartyPosition(fullThirdPartyPosition);
+
+    }
 
     /**
      * ========================抽象方法，让每个渠道去实现自己的逻辑========================

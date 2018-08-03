@@ -1,6 +1,7 @@
 package com.moseeker.position.service.position.job51;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
@@ -16,11 +17,12 @@ import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.ExperienceChangeUtil;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
+import com.moseeker.position.service.position.base.sync.PositionTransferHelper;
 import com.moseeker.position.service.position.job51.pojo.Position51;
+import com.moseeker.position.service.position.job51.pojo.Position51Form;
 import com.moseeker.position.service.position.job51.pojo.Position51WithAccount;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.common.constants.WorkType;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
@@ -32,13 +34,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPosition, Position51WithAccount, Position51, EmptyExtThirdPartyPosition> {
+public class Job51PositionTransfer extends AbstractPositionTransfer<Position51Form, Position51WithAccount, Position51, EmptyExtThirdPartyPosition> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private static final int TITLE_LIMT = 50;
 
     @Autowired
     private ThirdpartyAccountCompanyAddressDao addressDao;
@@ -47,7 +50,7 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
     private Dict51OccupationDao dict51OccupationDao;
 
     @Override
-    public Position51WithAccount changeToThirdPartyPosition(ThirdPartyPosition positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
+    public Position51WithAccount changeToThirdPartyPosition(Position51Form positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
         Position51WithAccount positionWithAccount = createAndInitAccountInfo(positionForm, positionDB, account);
 
         Position51 position = createAndInitPositionInfo(positionForm, positionDB);
@@ -57,7 +60,7 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
     }
 
     @Override
-    protected Position51WithAccount createAndInitAccountInfo(ThirdPartyPosition positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) {
+    protected Position51WithAccount createAndInitAccountInfo(Position51Form positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) {
         Position51WithAccount positionWithAccount = new Position51WithAccount();
         positionWithAccount.setUser_name(account.getUsername());
         positionWithAccount.setPassword(account.getPassword());
@@ -70,9 +73,13 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
     }
 
     @Override
-    protected Position51 createAndInitPositionInfo(ThirdPartyPosition positionForm, JobPositionDO positionDB) throws Exception {
+    protected Position51 createAndInitPositionInfo(Position51Form positionForm, JobPositionDO positionDB) throws Exception {
         Position51 position = new Position51();
-        position.setTitle(positionDB.getTitle());
+        if(positionForm.isLimitTitle()) {
+            position.setTitle(PositionTransferHelper.limitTitle(positionDB.getTitle(), TITLE_LIMT));
+        } else{
+            position.setTitle(positionDB.getTitle());
+        }
 
         setOccupation(positionForm, position);
 
@@ -92,6 +99,7 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
         int salaryTop = getSalaryTop(positionForm.getSalaryTop());
         position.setSalary_high(String.valueOf(salaryTop));
 
+        position.setDepartment(positionForm.getDepartmentName());   //ATS会传部门，页面端不需要
 
         //职位详情
         String description = getDescription(positionDB.getAccountabilities(), positionDB.getRequirement());
@@ -107,25 +115,36 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
 
         setAddress(position, positionForm);
 
+        position.setInternship(positionForm.isInternship());
+
         return position;
     }
 
-    protected void setOccupation(ThirdPartyPosition positionForm, Position51 position) {
-        List<String> list = new ArrayList<>();
+    public void setOccupation(Position51Form positionForm, Position51 position) {
+        List<List<String>> list = new ArrayList<>();
+        List<List<String>> occupationList = positionForm.getOccupation().stream()
+                .filter(StringUtils::isNotNullOrEmpty)
+                .map(o->JSON.parseArray(o).toJavaList(String.class))
+                .collect(Collectors.toList());
+
+        List<String> codes = new ArrayList<>();
+        occupationList.forEach(codes::addAll);
 
         Query query = new Query.QueryBuilder().
-                where(new Condition("code_other", positionForm.getOccupation(), ValueOp.IN))
+                where(new Condition("code_other", codes, ValueOp.IN))
                 .and(new Condition("code_other", 0, ValueOp.NEQ)).buildQuery();
 
-        List<Dict51jobOccupationDO> occupations = dict51OccupationDao.getDatas(query);
+        List<Dict51jobOccupationDO> dbOccupations = dict51OccupationDao.getDatas(query);
 
         if (positionForm.getOccupation() != null) {
-            for (String id : positionForm.getOccupation()) {
-                for (Dict51jobOccupationDO occupation : occupations) {
-                    if (id.equals(occupation.getCodeOther() + "")) {
-                        list.add(occupation.getName());
-                    }
+            for (List<String> occupations : occupationList) {
+                List<String> sonList = new ArrayList<>();
+                for (int i=0;i<occupations.size();i++) {
+                    String code = occupations.get(i);
+                    Optional<Dict51jobOccupationDO> optional = dbOccupations.stream().filter(o->o.getCodeOther().equals(code)).findFirst();
+                    optional.ifPresent(dict51jobOccupationDO -> sonList.add(dict51jobOccupationDO.getName()));
                 }
+                list.add(sonList);
             }
         }
         position.setOccupation(list);
@@ -138,7 +157,7 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
      * @param position
      * @param form
      */
-    public void setAddress(Position51 position, ThirdPartyPosition form) {
+    public void setAddress(Position51 position, Position51Form form) {
         ThirdpartyAccountCompanyAddress address = new ThirdpartyAccountCompanyAddress();
         if (form.getAddressId() == 0) {
             //这个对于json的判断很粗糙，但是我不想使用try catch来控制流程，暂时先这么写
@@ -182,12 +201,12 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
     }
 
     @Override
-    public Class<ThirdPartyPosition> getFormClass() {
-        return ThirdPartyPosition.class;
+    public Class<Position51Form> getFormClass() {
+        return Position51Form.class;
     }
 
     @Override
-    public HrThirdPartyPositionDO toThirdPartyPosition(ThirdPartyPosition position, Position51WithAccount pwa) {
+    public HrThirdPartyPositionDO toThirdPartyPosition(Position51Form position, Position51WithAccount pwa) {
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
 
         Position51 p = pwa.getPosition_info();
@@ -202,8 +221,16 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
 
 
         //将最后一个职能的Code存到数据库
-        if (!position.getOccupation().isEmpty() && position.getOccupation().size() > 0) {
-            data.setOccupation(position.getOccupation().get(position.getOccupation().size() - 1));
+        if (!StringUtils.isEmptyList(position.getOccupation())) {
+            List<String> occupation = position.getOccupation().stream().filter(StringUtils::isNotNullOrEmpty).map(o->{
+                if(o.startsWith("[")){
+                    JSONArray array = JSON.parseArray(o);
+                    return array.getString(array.size()-1);
+                }else{
+                    return o;
+                }
+            }).collect(Collectors.toList());
+            data.setOccupation(String.join(",",occupation));
         }
         data.setCompanyName(position.getCompanyName());
         data.setCompanyId(position.getCompanyId());
@@ -217,12 +244,13 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
 
         data.setAddressName(position.getAddressName());
 
+        data.setInternship(position.isInternship());
         logger.info("回写到第三方职位对象:{}", data);
         return data;
     }
 
     @Override
-    public EmptyExtThirdPartyPosition toExtThirdPartyPosition(ThirdPartyPosition position, Position51WithAccount position51WithAccount) {
+    public EmptyExtThirdPartyPosition toExtThirdPartyPosition(Position51Form position, Position51WithAccount position51WithAccount) {
         return EmptyExtThirdPartyPosition.EMPTY;
     }
 
@@ -233,7 +261,12 @@ public class Job51PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
 
     @Override
     public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
-        return JSONObject.parseObject(JSON.toJSONString(thirdPartyPosition));
+        JSONObject positionForm = JSONObject.parseObject(JSON.toJSONString(thirdPartyPosition));
+        String occupation = positionForm.getString("occupation");
+        if(StringUtils.isNotNullOrEmpty(occupation)){
+            positionForm.put("occupation", Arrays.asList(occupation.split(",")));
+        }
+        return positionForm;
     }
 
 }

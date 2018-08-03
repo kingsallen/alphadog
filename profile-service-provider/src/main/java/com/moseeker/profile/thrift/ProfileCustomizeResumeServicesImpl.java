@@ -5,6 +5,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.Pagination;
+import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.profile.service.impl.ProfileCustomizeResumeService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -28,7 +29,6 @@ public class ProfileCustomizeResumeServicesImpl implements Iface {
 
     @Autowired
     private ProfileCustomizeResumeService service;
-
 
     @Override
     public Response getResources(CommonQuery query) throws TException {

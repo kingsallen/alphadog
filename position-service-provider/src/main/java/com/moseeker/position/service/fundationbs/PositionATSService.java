@@ -85,7 +85,7 @@ public class PositionATSService {
             channelTypePojo.setCode(p.getChannel().getValue());
             channelTypePojo.setText(p.getChannel().getAlias());
             return channelTypePojo;
-        }).collect(Collectors.toList());
+        }).distinct().collect(Collectors.toList());
     }
 
     /**

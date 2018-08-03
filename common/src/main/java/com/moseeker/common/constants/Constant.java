@@ -215,7 +215,7 @@ public final class Constant {
     public static final int TEMPLATES_SWITCH_APPLY_NOTICE_TPL = 29; //申请成功时 的消息通知ID
     public static final int TEMPLATES_SWITCH_NEW_RESUME_TPL = 41; //认证员工转发之后后有人投递简历 的消息通知ID
 
-    public static final String RESUME_INFORM_HR = "resume-delivery-to-hr-email"; //简历投递给HR发邮件没有附件模板
+    public static final String RESUME_INFORM_HR = "resume-detail"; //简历投递给HR发邮件没有附件模板
     public static final String ANNEX_RESUME_INFORM_HR = "annex-resume-delivery-to-hr-email";
     public static final String MISMATCH_NOTIFICATION = "mismatch-notification";//简历投递不匹配发送邮件
     public static final String DELIVERY_SUCCESS = "delivery-success";//简历投递
@@ -232,6 +232,7 @@ public final class Constant {
     public static final int FANS_RECOM_POSITION=59;
     public static final int EMPLOYEE_RECOM_POSITION=57;
     public static final int POSITION_SYNC_VERIFY_INFO=66;
+    public static final int AWARD_RANKING=78;
 
     public static final int PAGE_SIZE=20;
     public static final int PAGE_=20;
@@ -253,4 +254,6 @@ public final class Constant {
     public static final int RETRY_UPPER_LIMIT = 3;
     //
     public static final Integer[] TALENTPOOL_EMAIL_SWITCH_ID = {69,70,71,72,73};
+
+    public static final String COMPANY_LOGO_URL ="/hr/common/images/default-company-logo.jpg";
 }

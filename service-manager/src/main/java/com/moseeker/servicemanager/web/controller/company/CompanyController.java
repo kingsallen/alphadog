@@ -637,6 +637,23 @@ public class CompanyController {
         }
     }
 
+    @RequestMapping(value = "/api/account/limit", method = RequestMethod.GET)
+    @ResponseBody
+    public String findSubAccountNum(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            String company_id=String.valueOf(data.get("company_id"));
+            if(StringUtils.isNullOrEmpty(company_id)){
+                ResponseLogNotification.fail(request,"公司编号不可以为空");
+            }
+            Response result = companyServices.findSubAccountNum(Integer.parseInt(company_id));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     /**
      *
      * @param request
@@ -779,6 +796,23 @@ public class CompanyController {
             List<Integer> dataList=ParamUtils.convertIntList(ids);
             Response res= companyServices.getCompanyFeatureIdList(dataList);
             return  ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/company/award", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCompanyAward(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            String companyId=(String)data.get("company_id");
+            if(StringUtils.isNullOrEmpty(companyId)){
+               companyId = "0";
+            }
+            Response confDO  = companyServices.getCompanyWechatList(Integer.parseInt(companyId));
+            return ResponseLogNotification.success(request,confDO);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());

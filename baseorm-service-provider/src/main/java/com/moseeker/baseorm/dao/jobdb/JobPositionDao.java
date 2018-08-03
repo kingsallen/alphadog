@@ -194,11 +194,9 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             per_page = page_size > 0 ? page_size : per_page;
             record.limit((page - 1) * per_page, per_page);
             List<Record> positionDetailsList = record.fetch();
-            logger.info("positionDetailsList.get(0) salaryTop:{}, salaryBottom", positionDetailsList.get(0).get("salaryTop"), positionDetailsList.get(0).get("salaryBottom"));
 
             logger.info("hotPositionDetailsList positionDetails sql:{}", record.getSQL());
             positionDetails = record.fetchInto(PositionDetails.class);
-            logger.info("positionDetails.get(0) salaryTop:{}, salaryBottom", positionDetails.get(0).getSalaryTop(), positionDetails.get(0).getSalaryBottom());
             logger.info("hotPositionDetailsList positionDetails:{}", positionDetails);
             if (positionDetails != null && positionDetails.size() > 0) {
                 // 查询职位图片信息
@@ -522,17 +520,12 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         this.updateRecords(records);
     }
 
-    public List<Integer> listPositionIdByUserId(int userId) {
+    public List<Integer> listPositionIdByCompanyIdList(List<Integer> companyIdList) {
         List<Integer> list = new ArrayList<>();
-        UserEmployeeRecord employeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
-                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(userId)
-                        .and(UserEmployee.USER_EMPLOYEE.DISABLE.equal((byte) 0))
-                        .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.equal((byte) 0)))
-                .fetchOne();
-        if (employeeRecord != null) {
+        if (companyIdList != null && companyIdList.size() > 0) {
             Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
                     .from(JobPosition.JOB_POSITION)
-                    .where(JobPosition.JOB_POSITION.COMPANY_ID.equal(employeeRecord.getCompanyId()))
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyIdList))
                     .fetch();
             if (result != null && result.size() > 0) {
                 result.forEach(record -> {
@@ -664,5 +657,42 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                     .map(record1 -> record1.value1()).collect(Collectors.toList());
         }
         return null;
+    }
+
+    public JobPositionDO getJobPositionById(int positionId) {
+        Query query = new Query.QueryBuilder()
+                .where(JobPosition.JOB_POSITION.ID.getName(), positionId)
+                .buildQuery();
+        return getData(query);
+    }
+
+    /** 
+     * 
+     * @param
+     * @author  cjm
+     * @date  2018/6/20 
+     * @return   
+     */ 
+    public JobPositionDO getJobPositionByPid(int positionId){
+        return create.selectFrom(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.eq(positionId))
+                .fetchOneInto(JobPositionDO.class);
+    }
+
+
+    /**
+     * 根据公司编号查找公司下所有的职位编号
+     * @param companyIdList 公司编号集合
+     * @return 职位编号集合
+     */
+    public Result<Record1<Integer>> getPositionIdListByCompanyIdList(List<Integer> companyIdList) {
+        if (companyIdList != null && companyIdList.size() > 0) {
+            return create.select(JobPosition.JOB_POSITION.ID)
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyIdList))
+                    .fetch();
+        } else {
+            return null;
+        }
     }
 }

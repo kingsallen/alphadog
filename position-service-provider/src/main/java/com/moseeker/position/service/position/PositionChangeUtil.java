@@ -3,14 +3,20 @@ package com.moseeker.position.service.position;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
+import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.JsonToMap;
 import com.moseeker.common.util.StructSerializer;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
+import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
+import com.moseeker.position.service.schedule.delay.PositionTaskQueueDaemonThread;
+import com.moseeker.position.service.schedule.delay.refresh.AbstractSyncStateRefresh;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * 职位转换
@@ -32,6 +39,11 @@ public class PositionChangeUtil {
 
     @Autowired
     List<AbstractPositionTransfer> transferList;
+
+    @Autowired
+    private PositionTaskQueueDaemonThread delayQueueThread;
+
+    private Random random = new Random();
 
     /**
      * 将仟寻职位转成第卅方职位
@@ -52,7 +64,7 @@ public class PositionChangeUtil {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"change To ThirdPartyPosition no matched channelType");
         }
 
-        AbstractPositionTransfer transfer=transferSimpleFactory(channelType);
+        AbstractPositionTransfer transfer=transferSimpleFactory(channelType,positionDB);
 
         AbstractPositionTransfer.TransferResult result=transfer.changeToThirdPartyPosition(jsonForm,positionDB,account);
         logger.info("changeToThirdPartyPosition result:{}",result);
@@ -95,14 +107,34 @@ public class PositionChangeUtil {
         }
     }
 
-    public AbstractPositionTransfer transferSimpleFactory(ChannelType channelType) throws BIZException {
+    public <R,ExtP> void sendRequest(int channel, AbstractPositionTransfer.TransferResult<R,ExtP> transferResult, JobPositionDO moseekerJobPosition) throws TException {
+        ChannelType channelType = ChannelType.instaceFromInteger(channel);
+
+        AbstractPositionTransfer transfer=transferSimpleFactory(channelType,moseekerJobPosition);
+
+        TwoParam<HrThirdPartyPositionDO,ExtP> result=transfer.sendSyncRequest(transferResult);
+
+        // 过期时间加上一个随机数，减少大量职位在同一时间内操作时的服务器压力
+        if(channel == ChannelType.LIEPIN.getValue()){
+            PositionSyncStateRefreshBean refreshBean = new PositionSyncStateRefreshBean(result.getR1().getId(), channel);
+            delayQueueThread.put(random.nextInt(5 * 1000), refreshBean);
+            logger.info("========================refreshBean:{},放入LiepinSyncStateRefresh", refreshBean);
+        }
+    }
+
+    public AbstractPositionTransfer transferSimpleFactory(ChannelType channelType,JobPositionDO position) throws BIZException {
         for(AbstractPositionTransfer transfer:transferList){
-            if(channelType==transfer.getChannel()){
+            if(channelType==transfer.getChannel()
+                    && (position == null || transfer.extTransferCheck(position))){
                 return transfer;
             }
         }
         logger.error("no matched AbstractPositionTransfer {}",channelType);
         throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"no matched AbstractPositionTransfer");
+    }
+
+    public AbstractPositionTransfer transferSimpleFactory(ChannelType channelType) throws BIZException {
+        return transferSimpleFactory(channelType, null);
     }
 
     public static Map<String,Object> objectToMap(Object object){

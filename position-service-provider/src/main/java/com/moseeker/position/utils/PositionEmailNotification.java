@@ -2,16 +2,16 @@ package com.moseeker.position.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.iface.IChannelType;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.StructSerializer;
+import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,12 +27,18 @@ public class PositionEmailNotification {
 
     static List<String> devMails = new ArrayList<>();
 
+    public static List<String> liepinDevmails = new ArrayList<>();
+
+    public static List<String> liepinProdMails = new ArrayList<>();
+
     static String br = "<br/>";
 
     static String emailLevel = getConfigString("chaos.email.level");
 
     static {
         devMails = getEmails("position_sync.email.dev");
+        liepinDevmails = getEmails("position_liepin_operation_dev.email");
+        liepinProdMails = getEmails("position_liepin_operation.email");
     }
 
     private static String getConfigString(String key) {
@@ -352,5 +358,113 @@ public class PositionEmailNotification {
         return sb.toString();
     }
 
+
+    /**
+     * 发送猎聘同步失败邮件
+     * @param mails 需要发送的邮箱地址
+     * @param liePinPositionVO 职位同步时的职位vo
+     * @param syncException 异常信息
+     * @param ext 额外补充信息
+     * @author  cjm
+     * @date  2018/6/22
+     */
+    public void sendSyncLiepinFailEmail(List<String> mails, LiePinPositionVO liePinPositionVO, Exception syncException, String ext){
+            if (mails == null || mails.size() == 0) {
+                logger.warn("没有配置同步邮箱地址!");
+                return;
+            }
+
+            try {
+
+                Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
+
+                String titleBuilder = "【"+ emailLevel +"】【职位同步失败】";
+
+                StringBuilder messageBuilder = new StringBuilder();
+                if(liePinPositionVO!=null) {
+                    messageBuilder.append("【传送的json】：").append(JSON.toJSONString(liePinPositionVO)).append(br);
+                }
+
+                if(syncException != null){
+                    messageBuilder.append("【失败信息】:").append(getExceptionAllinformation(syncException)).append(br);
+                }
+
+                if(StringUtils.isNotNullOrEmpty(ext)){
+                    messageBuilder.append("【其他信息】:").append(ext);
+                }
+
+                emailBuilder.setSubject(titleBuilder);
+                emailBuilder.setContent(messageBuilder.toString());
+                if (mails.size() > 1) {
+                    emailBuilder.addCCList(mails.subList(1, mails.size()));
+                }
+                Email email = emailBuilder.build();
+                email.send(3, new Email.EmailListener() {
+                    @Override
+                    public void success() {
+                        logger.info("email send messageDelivered");
+                    }
+
+                    @Override
+                    public void failed(Exception e) {
+                        logger.error("发送同步职位到猎聘失败的邮件发生错误：{}", e.getMessage());
+                    }
+                });
+            } catch (Exception e) {
+                logger.error("发送同步职位到猎聘失败的邮件发生错误：{}", e.getMessage());
+            }
+    }
+
+    /**
+     * 发送猎聘同步失败邮件
+     * @param message 失败业务信息
+     * @param syncException 异常信息
+     * @author  cjm
+     * @date  2018/6/22
+     */
+    public void sendRefreshSyncStateFailEmail(String message, Exception syncException){
+        List<String> mails=devMails;
+        if (mails == null || mails.size() == 0) {
+            logger.warn("没有配置同步邮箱地址!");
+            return;
+        }
+
+        try {
+
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
+
+            String titleBuilder = "【"+ emailLevel +"】【职位同步状态刷新失败：AbstractSyncStateRefresh】";
+
+            StringBuilder messageBuilder = new StringBuilder();
+
+            if(syncException != null){
+                messageBuilder.append("【失败信息】:").append(getExceptionAllinformation(syncException)).append(br);
+            }
+
+            if(StringUtils.isNotNullOrEmpty(message)){
+                messageBuilder.append("【其他信息】:").append(message);
+            }
+
+            emailBuilder.setSubject(titleBuilder);
+            emailBuilder.setContent(messageBuilder.toString());
+            if (mails.size() > 1) {
+                emailBuilder.addCCList(mails.subList(1, mails.size()));
+            }
+            Email email = emailBuilder.build();
+            email.send(3, new Email.EmailListener() {
+                @Override
+                public void success() {
+                    logger.info("email send messageDelivered");
+                }
+
+                @Override
+                public void failed(Exception e) {
+                    logger.error("发送刷新职位同步状态失败的邮件发生错误：{}", e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            logger.error("发送刷新职位同步状态失败的邮件发生错误：{}", e.getMessage());
+        }
+    }
 
 }

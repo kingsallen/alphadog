@@ -3,27 +3,45 @@ package com.moseeker.entity;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.ParserConfig;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ProfileOtherCareerType;
+import com.moseeker.common.constants.ProfileOtherIdentityType;
+import com.moseeker.common.constants.ProfileOtherSchoolType;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
+import com.moseeker.entity.pojo.profile.info.Internship;
+import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
+import com.moseeker.entity.pojo.profile.info.SchoolWork;
 import com.moseeker.entity.pojo.resume.ResumeObj;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.sql.Timestamp;
 
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
+import java.util.stream.Collectors;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -69,6 +87,17 @@ public class ProfileEntity {
     public ProfilePojo parseProfile(String profileParameter) {
         Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8(profileParameter)));
         return ProfilePojo.parseProfile(paramMap, profileParseUtil.initParseProfileParam());
+    }
+
+    /**
+     * 为了不影响重构，提出一个方法封装原方法
+     * @param
+     * @author  cjm
+     * @date  2018/6/26
+     * @return
+     */
+    public ResumeObj profileParserAdaptor(String fileName, String file) throws TException, IOException {
+       return profileParser(fileName, file);
     }
 
     /**
@@ -496,53 +525,7 @@ public class ProfileEntity {
         completenessImpl.reCalculateProfileCompleteness(profileId);
     }
 
-    @Autowired
-    private ProfileAttachmentDao attachmentDao;
 
-    @Autowired
-    private ProfileWorksDao worksDao;
-
-    @Autowired
-    private ProfileEducationDao educationDao;
-
-    @Autowired
-    private ProfileIntentionDao intentionDao;
-
-    @Autowired
-    private ProfileLanguageDao languageDao;
-
-    @Autowired
-    private ProfileOtherDao otherDao;
-
-    @Autowired
-    private ProfileBasicDao profileBasicDao;
-
-    @Autowired
-    private ProfileProfileDao profileDao;
-
-    @Autowired
-    private ProfileImportDao profileImportDao;
-
-    @Autowired
-    private ProfileProjectexpDao projectExpDao;
-
-    @Autowired
-    private ProfileSkillDao skillDao;
-
-    @Autowired
-    private ProfileWorkexpDao workExpDao;
-
-    @Autowired
-    private ProfileCompletenessImpl completenessImpl;
-
-    @Autowired
-    private UserUserDao userDao;
-
-    @Autowired
-    private ProfileCredentialsDao credentialsDao;
-
-    @Autowired
-    private ProfileAwardsDao awardsDao;
 
     public void updateProfile(ProfilePojo profilePojo, ProfileProfileDO profileProfileDO) {
         int profileId = profileProfileDO.getId();
@@ -604,4 +587,52 @@ public class ProfileEntity {
         }
         return userProfileList;
     }
+
+    @Autowired
+    private ProfileAttachmentDao attachmentDao;
+
+    @Autowired
+    private ProfileWorksDao worksDao;
+
+    @Autowired
+    private ProfileEducationDao educationDao;
+
+    @Autowired
+    private ProfileIntentionDao intentionDao;
+
+    @Autowired
+    private ProfileLanguageDao languageDao;
+
+    @Autowired
+    private ProfileOtherDao otherDao;
+
+    @Autowired
+    private ProfileBasicDao profileBasicDao;
+
+    @Autowired
+    private ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileImportDao profileImportDao;
+
+    @Autowired
+    private ProfileProjectexpDao projectExpDao;
+
+    @Autowired
+    private ProfileSkillDao skillDao;
+
+    @Autowired
+    private ProfileWorkexpDao workExpDao;
+
+    @Autowired
+    private ProfileCompletenessImpl completenessImpl;
+
+    @Autowired
+    private UserUserDao userDao;
+
+    @Autowired
+    private ProfileCredentialsDao credentialsDao;
+
+    @Autowired
+    private ProfileAwardsDao awardsDao;
 }

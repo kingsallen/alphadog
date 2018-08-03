@@ -7,6 +7,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import static com.moseeker.entity.exception.HRException.MOBILE_EXIST;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class HREntity {
                 .and(new Condition(UserHrAccount.USER_HR_ACCOUNT.DISABLE.getName(), AbleFlag.ENABLE.getValue()));
         int count = hrAccountDao.getCount(queryBuilder.buildQuery());
         if (count > 0) {
-            throw USER_UPDATEMOBILE_SAMEMOBILE;
+            throw MOBILE_EXIST;
         }
         int retryCount = 0;
         while (retryCount < 3) {

@@ -1,5 +1,7 @@
 namespace java com.moseeker.thrift.gen.employee.struct
 
+typedef string Timestamp
+
 struct Employee {
     1: optional i32 id,
     2: optional string employeeId,
@@ -159,3 +161,8 @@ struct RewardVOPageVO{
     4:optional i32 totalPoints; // 积分总数
     5:optional list<RewardVO> data,
 }
+
+
+
+
+

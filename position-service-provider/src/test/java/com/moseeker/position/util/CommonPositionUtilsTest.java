@@ -22,8 +22,8 @@ public class CommonPositionUtilsTest {
 	//获取单个position对应的city
 	@Test
 	public void getJobPositionCityTest(){
-		String cityName=commonPositionUtils.handlerCity(127364);
-		System.out.println(cityName);
+//		String cityName=commonPositionUtils.handlerCity(127364);
+//		System.out.println(cityName);
 	}
 	/*
 	1009831, 1009833, 1009834, 1009837, 1009822, 1009821, 1009746, 1009503, 1009502, 1009501

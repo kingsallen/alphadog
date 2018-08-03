@@ -14,8 +14,10 @@ import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.*;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyFeatureRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
@@ -26,11 +28,13 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.CompanyType;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -58,6 +62,9 @@ import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.SmsType;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -83,6 +90,12 @@ public class CompanyService {
     protected HrWxWechatDao wechatDao;
 
     @Autowired
+    protected HrWxTemplateMessageDao messageDao;
+
+    @Autowired
+    protected HrWxNoticeMessageDao noticeDao;
+
+    @Autowired
     HrGroupCompanyRelDao hrGroupCompanyRelDao;
 
     @Autowired
@@ -93,6 +106,10 @@ public class CompanyService {
 
     @Autowired
     HrEmployeeCertConfDao hrEmployeeCertConfDao;
+
+
+    @Autowired
+    HrSuperaccountApplyDao superaccountApplyDao;
 
     @Autowired
     UserEmployeeDao userEmployeeDao;
@@ -472,8 +489,8 @@ public class CompanyService {
     public Response addImporterMonitor(Integer comanyId, Integer hraccountId, Integer type, String file, Integer status, String message, String fileName) throws Exception {
         Response response = new Response();
         ValidateUtil vu = new ValidateUtil();
-        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
-        vu.addIntTypeValidate("公司编号", comanyId, "不能为空", null, 1, 1000000);
+        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, null);
+        vu.addIntTypeValidate("公司编号", comanyId, "不能为空", null, 1, null);
         vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
         vu.addIntTypeValidate("导入状态", status, "不能为空", null, 0, 100);
         vu.addRequiredStringValidate("导入文件的绝对路径", file, "不能为空", null);
@@ -522,9 +539,9 @@ public class CompanyService {
         HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
 
         ValidateUtil vu = new ValidateUtil();
-        vu.addIntTypeValidate("公司编号", comanyId, null, null, 1, 1000000);
+        vu.addIntTypeValidate("公司编号", comanyId, null, null, 1, null);
         vu.addIntTypeValidate("导入类型", type, null, "不能为空", 0, 10);
-        vu.addIntTypeValidate("HR账号", hraccountId, null, null, 1, 1000000);
+        vu.addIntTypeValidate("HR账号", hraccountId, null, null, 1, null);
         String errorMessage = vu.validate();
         if (!StringUtils.isNullOrEmpty(errorMessage)) {
             throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(), ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
@@ -839,6 +856,65 @@ public class CompanyService {
         return ResponseUtils.success("");
     }
 
+    public Response findSubAccountNum(int companyId){
+        HrSuperaccountApplyDO superaccountApply = superaccountApplyDao.getByCompanyId(companyId);
+        Map<String, Object> params = new HashMap<>();
+        if(superaccountApply != null) {
+            params.put("account_limit", superaccountApply.getAccountLimit());
+        }
+        return ResponseUtils.success(params);
+    }
+
+    @Transactional
+    public Response upsertWechatTheme(int companyId, int status){
+        HrWxWechatDO wechatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
+        if(wechatDO != null){
+            wechatDO.setShowCustomTheme(status);
+            wechatDao.updateData(wechatDO);
+            return  ResponseUtils.success("");
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+    }
+
+    public List<HrCompanyWechatDO> getCompanyInfoByTemplateRank(int companyId){
+        String timeStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        timeStr = timeStr+"-01 00:00:00";
+        logger.info("===============time:{}",timeStr);
+        Date date = null;
+        try {
+            date = DateUtils.shortTimeToDate(timeStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //获取本月有积分增加的员工map 员工编号 = 积分增加只
+        Map<Integer, Integer> employeePointsMap = employeeEntity.getEmployeeAwardSum(date);
+        Set<Integer> employeeIdList = employeePointsMap.keySet();
+        //获取本月有积分增加的员工列表
+        List<UserEmployeeDO> employeeDOList = employeeEntity.getUserEmployeeByIdList(employeeIdList);
+        if(!StringUtils.isEmptyList(employeeDOList)) {
+            List<Integer> companyList = employeeDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
+            List<Integer> companyIdList = hrGroupCompanyRelDao.getGroupCompanyRelDoByCompanyIds(companyList);
+            //获取本月有积分增加员工对应公司认证员工数量 公司编号 = 认证员工数量
+            Map<Integer, Integer> companyEmployeeMap = employeeEntity.getEmployeeNum(companyIdList);
+            //获取对应公众号信息
+            List<HrWxWechatDO> wechatDOList = wechatDao.getHrWxWechatByCompanyIds(companyIdList);
+            if(!StringUtils.isEmptyList(wechatDOList)) {
+                List<Integer> wechatIdList = wechatDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
+                List<HrWxTemplateMessageDO> messageDOList = messageDao
+                        .getHrWxTemplateMessageDOByWechatIds(wechatIdList, Constant.AWARD_RANKING);
+                //筛选出来排名通知消息模板为开的公众号开关
+                List<HrWxNoticeMessageDO> noticeList = noticeDao.getHrWxNoticeMessageDOByWechatIds(wechatIdList, Constant.AWARD_RANKING);
+                if(!StringUtils.isEmptyList(noticeList)) {
+                    wechatIdList = noticeList.stream().map(m -> m.getWechatId()).collect(Collectors.toList());
+                    wechatDOList = wechatDao.getHrWxWechatByIds(wechatIdList);
+                    companyIdList = wechatDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
+                    return handerCompanyWechatInfo(companyId, companyIdList, wechatDOList, messageDOList, companyEmployeeMap);
+                }
+            }
+        }
+        return new ArrayList<>();
+    }
+
     /**
      * hr注册时添加hr和公司数据，完成公司积分设置
      * @param companyName   公司名称
@@ -1074,5 +1150,48 @@ public class CompanyService {
         }
 
         return 0;
+    }
+
+    private List<HrCompanyWechatDO> handerCompanyWechatInfo(int companyid, List<Integer> companyIds, List<HrWxWechatDO> wechatDOList,
+                                                            List<HrWxTemplateMessageDO> messageDOList, Map<Integer, Integer> params){
+        if(!StringUtils.isEmptyList(companyIds) && params!=null){
+            logger.info("===============params:{}",params);
+            List<HrCompanyWechatDO> companyWechatDOList = new ArrayList<>();
+            for(Integer companyId: companyIds){
+                if(companyid != 0 && companyid != companyId){
+                    continue;
+                }
+                HrCompanyWechatDO companyWechatDO = new HrCompanyWechatDO();
+                companyWechatDO.setCompanyId(companyId);
+                int wechatId = 0;
+                if(!StringUtils.isEmptyList(wechatDOList)){
+                    for(HrWxWechatDO wechatDO : wechatDOList){
+                        if(wechatDO.getCompanyId() == companyId) {
+                            wechatId = wechatDO.getId();
+                            companyWechatDO.setAccessToken(wechatDO.getAccessToken());
+                            companyWechatDO.setSignature(wechatDO.getSignature());
+                            companyWechatDO.setWechatId(wechatId);
+                        }
+                    }
+                }
+                if(wechatId == 0){
+                    continue;
+                }
+                if(!StringUtils.isEmptyList(messageDOList)){
+                    for(HrWxTemplateMessageDO messageDO : messageDOList){
+                        if(messageDO.getWechatId() == wechatId){
+                            companyWechatDO.setTemplateId(messageDO.getWxTemplateId());
+                            companyWechatDO.setTopcolor(messageDO.getTopcolor());
+                        }
+                    }
+                }
+                if(params.get(companyId)!=null) {
+                    companyWechatDO.setEmployeeCount(params.get(companyId));
+                }
+                companyWechatDOList.add(companyWechatDO);
+            }
+            return companyWechatDOList;
+        }
+        return new ArrayList<>();
     }
 }

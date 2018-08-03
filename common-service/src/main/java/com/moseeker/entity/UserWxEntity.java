@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
@@ -198,7 +199,7 @@ public class UserWxEntity {
     /*
      获取user_wx_user
      */
-    private List<UserWxUserRecord> getUserWxUserData(List<Integer> userIdList){
+    public List<UserWxUserRecord> getUserWxUserData(List<Integer> userIdList){
         Query query=new Query.QueryBuilder().where(new Condition("sysuser_id",userIdList.toArray(),ValueOp.IN)).buildQuery();
         List<UserWxUserRecord> list=userWxUserDao.getRecords(query);
         return list;

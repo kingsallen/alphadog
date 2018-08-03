@@ -8,6 +8,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
@@ -24,6 +25,7 @@ import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import com.moseeker.thrift.gen.position.service.PositionATSServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
@@ -35,6 +37,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.tags.Param;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1078,5 +1081,24 @@ public class PositionController {
         }
     }
 
+
+    @RequestMapping(value = "/position/liepin/getPositionId", method = RequestMethod.POST)
+    @ResponseBody
+    public String getLiepinPositionIds( HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            String liepinUserId = String.valueOf(params.get("liepin_user_id"));
+            if(StringUtils.isNullOrEmpty(liepinUserId)){
+                return ResponseLogNotification.fail(request, "猎聘用户id不能为空");
+            }
+            Integer userId = Integer.parseInt(liepinUserId);
+            List<JobPositionLiepinMappingDO> liepinPositionIds = positonServices.getLiepinPositionIds(userId);
+
+            return ResponseLogNotification.successJson(request, JSONObject.toJSON(liepinPositionIds));
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
 }

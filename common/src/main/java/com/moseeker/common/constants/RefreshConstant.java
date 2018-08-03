@@ -14,4 +14,5 @@ public class RefreshConstant {
     public final static String VERY_EAST_REDIS_PARAM_KEY="VERY_EAST_PARAM";
 
     public final static int  REFRESH_THIRD_PARTY_PARAM_TIMEOUT=3000;
+    public final static int  REFRESH_THIRD_PARTY_TOKEN_TIMEOUT=600;
 }

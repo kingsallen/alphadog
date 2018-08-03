@@ -4,7 +4,6 @@
 package com.moseeker.baseorm.db.userdb;
 
 
-import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
@@ -13,6 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
@@ -50,17 +50,12 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1797637794;
+    private static final long serialVersionUID = 661529544;
 
     /**
      * The reference instance of <code>userdb</code>
      */
     public static final Userdb USERDB = new Userdb();
-
-    /**
-     * VIEW
-     */
-    public final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
 
     /**
      * 阿里用户信息表
@@ -103,6 +98,11 @@ public class Userdb extends SchemaImpl {
     public final UserEmployeePointsRecordCompanyRel USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL;
 
     /**
+     * 员工想要了解内推政策点击次数表
+     */
+    public final UserEmployeeReferralPolicy USER_EMPLOYEE_REFERRAL_POLICY = com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY;
+
+    /**
      * 用户职位收藏
      */
     public final UserFavPosition USER_FAV_POSITION = com.moseeker.baseorm.db.userdb.tables.UserFavPosition.USER_FAV_POSITION;
@@ -113,7 +113,7 @@ public class Userdb extends SchemaImpl {
     public final UserHrAccount USER_HR_ACCOUNT = com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT;
 
     /**
-     * 用户求职意向
+     * 用户求职意向-已弃用，老微信中的账号设置-》我的兴趣。
      */
     public final UserIntention USER_INTENTION = com.moseeker.baseorm.db.userdb.tables.UserIntention.USER_INTENTION;
 
@@ -187,7 +187,6 @@ public class Userdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
-            CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM,
             UserAliUser.USER_ALI_USER,
             UserBdUser.USER_BD_USER,
             UserCollectPosition.USER_COLLECT_POSITION,
@@ -196,6 +195,7 @@ public class Userdb extends SchemaImpl {
             UserEmployee.USER_EMPLOYEE,
             UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD,
             UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL,
+            UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY,
             UserFavPosition.USER_FAV_POSITION,
             UserHrAccount.USER_HR_ACCOUNT,
             UserIntention.USER_INTENTION,

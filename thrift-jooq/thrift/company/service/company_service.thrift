@@ -57,6 +57,9 @@ service CompanyServices {
     common_struct.Response getCompanyFeatureIdList(1:list<i32> dataList) throws (1: common_struct.BIZException e)
     common_struct.Response getWechatBySignature(1:string signature, 2:i32 companyId) throws (1: common_struct.BIZException e)
     common_struct.Response updateHrCompanyConfStatus(1:i32 status, 2:i32 companyId) throws (1: common_struct.BIZException e)
+    common_struct.Response findSubAccountNum(1:i32 companyId) throws (1: common_struct.BIZException e)
+    common_struct.Response updateWechatThenm(1:i32 status, 2:i32 companyId) throws (1: common_struct.BIZException e),
+    common_struct.Response getCompanyWechatList(1:i32 companyId)throws (1: common_struct.BIZException e)
 
 }
 
@@ -171,7 +174,10 @@ service TalentpoolServices {
 
     common_struct.Response sendInviteEmail(1: map<string,string> params ,2: list<i32> userIdList,3: list<i32> positionIdList,4: i32 companyId,5: i32 hrId,6: i32 flag,7: i32 positionFlag) throws (1: common_struct.BIZException e)
 
-    common_struct.Response sendResumeEmail(1: map<string,string> params ,2: list<i32> userIdList,3: list<i32> idList,4: i32 companyId,5: i32 hrId,6: i32 flag) throws (1: common_struct.BIZException e)
+    common_struct.Response sendResumeEmail(1: map<string,string> params ,2: list<i32> userIdList,3: list<i32> idList,4: i32 companyId,5: i32 hrId,6: i32 flag,7:list<string> emailList) throws (1: common_struct.BIZException e)
+
     common_struct.Response sendPositionInviteEmail( 1:i32 hrId,2: i32 positionId,3: i32 companyId) throws (1: common_struct.BIZException e)
+
+    common_struct.Response getCompanyCommentByUserIdList( 1:i32 companyId,2: list<i32> userIdList) throws (1: common_struct.BIZException e)
 
 }
