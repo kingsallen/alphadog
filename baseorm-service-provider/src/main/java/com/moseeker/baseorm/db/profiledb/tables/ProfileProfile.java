@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 
-    private static final long serialVersionUID = 1736857268;
+    private static final long serialVersionUID = 571551464;
 
     /**
      * The reference instance of <code>profiledb.profile_profile</code>
@@ -67,9 +67,9 @@ public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
     public final TableField<ProfileProfileRecord, Byte> LANG = createField("lang", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "profile语言 1:chinese 2:english");
 
     /**
-     * The column <code>profiledb.profile_profile.source</code>. Profile的创建来源, 0:未知, 或者mongo合并来的 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 153: 程序导入(和黄简历导入), 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣) 205: 支付宝回流 220 邮件上传简历附件
+     * The column <code>profiledb.profile_profile.source</code>. Profile的创建来源, 0:未知, 或者mongo合并来的 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 153: 程序导入(和黄简历导入), 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣) 205: 支付宝回流 220: 邮件上传简历附件
      */
-    public final TableField<ProfileProfileRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "Profile的创建来源, 0:未知, 或者mongo合并来的 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 153: 程序导入(和黄简历导入), 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣) 205: 支付宝回流 220 邮件上传简历附件");
+    public final TableField<ProfileProfileRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "Profile的创建来源, 0:未知, 或者mongo合并来的 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 153: 程序导入(和黄简历导入), 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣) 205: 支付宝回流 220: 邮件上传简历附件");
 
     /**
      * The column <code>profiledb.profile_profile.completeness</code>. Profile完整度
@@ -97,10 +97,13 @@ public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
     public final TableField<ProfileProfileRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
-     * The column <code>profiledb.profile_profile.origin</code>. 简历来源二进制数值,1表示维系企业端（正常），10表示微信企业端(我要投递)，100表示微信企业端(我感兴趣)，1000表示微信企业端(我感兴趣)，10000表示微信聚合端(正常)，
-100000表示微信聚合端(我要投递)，1000000表示微信聚合端(我感兴趣)，1000000表示微信企业端Email申请，100000000表示微信聚合端Email申请，1000000000表示微信企业端导入，
+     * The column <code>profiledb.profile_profile.origin</code>. 简历来源二进制数值,
+1表示维系企业端（正常），10表示微信企业端(我要投递)，100表示微信企业端(我感兴趣)，1000表示微信企业端(我感兴趣)，10000表示微信聚合端(正常)，
+100000表示微信聚合端(我要投递)，1000000表示微信聚合端(我感兴趣)，
+1000000表示微信企业端Email申请，100000000表示微信聚合端Email申请，1000000000表示微信企业端导入，
 10000000000表示微信聚合端导入，10000000000表示PC导入，100000000000表示PC(正常添加)，1000000000000表示PC(我要投递)，
-10000000000000表示PC(我感兴趣)，1000000000000000表示51job，10000000000000000表示智联，100000000000000000表示猎聘 1000000000000000000支付宝回流
+10000000000000表示PC(我感兴趣)，1000000000000000表示51job，10000000000000000表示智联，100000000000000000表示猎聘 
+1000000000000000000支付宝回流
 10000000000000000000 51上传，
 100000000000000000000 智联上传，
 1000000000000000000000 猎聘上传，
@@ -110,9 +113,8 @@ public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 10000000000000000000000000 JobsDB上传
 100000000000000000000000000 民航上传
 1000000000000000000000000000 应届生（上传）
-10000000000000000000000000000 简历搬家
      */
-    public final TableField<ProfileProfileRecord, String> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.VARCHAR.length(64).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "简历来源二进制数值,1表示维系企业端（正常），10表示微信企业端(我要投递)，100表示微信企业端(我感兴趣)，1000表示微信企业端(我感兴趣)，10000表示微信聚合端(正常)，\n100000表示微信聚合端(我要投递)，1000000表示微信聚合端(我感兴趣)，1000000表示微信企业端Email申请，100000000表示微信聚合端Email申请，1000000000表示微信企业端导入，\n10000000000表示微信聚合端导入，10000000000表示PC导入，100000000000表示PC(正常添加)，1000000000000表示PC(我要投递)，\n10000000000000表示PC(我感兴趣)，1000000000000000表示51job，10000000000000000表示智联，100000000000000000表示猎聘 1000000000000000000支付宝回流\n10000000000000000000 51上传，\n100000000000000000000 智联上传，\n1000000000000000000000 猎聘上传，\n10000000000000000000000 最佳东方上传，\n100000000000000000000000 一览英才上传\n1000000000000000000000000 简历上传\n10000000000000000000000000 JobsDB上传\n100000000000000000000000000 民航上传\n1000000000000000000000000000 应届生（上传）\r\n10000000000000000000000000000 简历搬家");
+    public final TableField<ProfileProfileRecord, String> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.VARCHAR.length(64).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "简历来源二进制数值,\r\n1表示维系企业端（正常），10表示微信企业端(我要投递)，100表示微信企业端(我感兴趣)，1000表示微信企业端(我感兴趣)，10000表示微信聚合端(正常)，\r\n100000表示微信聚合端(我要投递)，1000000表示微信聚合端(我感兴趣)，\r\n1000000表示微信企业端Email申请，100000000表示微信聚合端Email申请，1000000000表示微信企业端导入，\r\n10000000000表示微信聚合端导入，10000000000表示PC导入，100000000000表示PC(正常添加)，1000000000000表示PC(我要投递)，\r\n10000000000000表示PC(我感兴趣)，1000000000000000表示51job，10000000000000000表示智联，100000000000000000表示猎聘 \r\n1000000000000000000支付宝回流\r\n10000000000000000000 51上传，\r\n100000000000000000000 智联上传，\r\n1000000000000000000000 猎聘上传，\r\n10000000000000000000000 最佳东方上传，\r\n100000000000000000000000 一览英才上传\r\n1000000000000000000000000 简历上传\r\n10000000000000000000000000 JobsDB上传\r\n100000000000000000000000000 民航上传\r\n1000000000000000000000000000 应届生（上传）");
 
     /**
      * Create a <code>profiledb.profile_profile</code> table reference

@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpRecord> {
 
-    private static final long serialVersionUID = -391009500;
+    private static final long serialVersionUID = 345607140;
 
     /**
      * Setter for <code>profiledb.profile_workexp.id</code>. 主key
@@ -199,14 +199,14 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
     }
 
     /**
-     * Setter for <code>profiledb.profile_workexp.description</code>. 职位描述
+     * Setter for <code>profiledb.profile_workexp.description</code>. 工作描述
      */
     public void setDescription(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>profiledb.profile_workexp.description</code>. 职位描述
+     * Getter for <code>profiledb.profile_workexp.description</code>. 工作描述
      */
     public String getDescription() {
         return (String) get(12);
