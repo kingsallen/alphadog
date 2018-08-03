@@ -663,11 +663,8 @@ public class PositionService {
         Map<String, JobOccupationDO> jobOccupationMap = jobOccupationGroupDyName(companyId);
         // 公司下职位自定义字段
         Map<String, JobCustomRecord> jobCustomMap = jobCustomGroupByName(companyId);
-        // 数据库中该公司的职位列表
-        Map<Integer, JobPositionRecord> dbListMap = dbListGroupById(companyId);
         // 因为之前新增了不存在的福利特色，所以重新按照公司ID再查询一遍福利特色
         Map<String, HrCompanyFeature> featureMap = positionATSService.getCompanyFeatureGroupByName(companyId);
-        List<JobPositionRecord> dbOnlineList = getDBOnlineList(dbListMap);
 
         List<Integer> batchLiepinPositionDownShelf = new ArrayList<>();
 
@@ -678,6 +675,10 @@ public class PositionService {
         // 删除操作,删除除了data以外的数据库中的数据
         // 如果为true, 数据不能删除. 否则,允许删除, data中的数据根据fields_nohash中以外的字段, 判断data中的记录和数据库中已有记录的关系, 进行添加, 修改,删除
         if (!batchHandlerJobPosition.nodelete) {
+            // 数据库中该公司的职位列表
+            Map<Integer, JobPositionRecord> dbListMap = dbListGroupById(companyId);
+            List<JobPositionRecord> dbOnlineList = getDBOnlineList(dbListMap);
+
             if (!com.moseeker.common.util.StringUtils.isEmptyList(dbOnlineList)) {
                 // 不需要删除的数据
                 List<JobPositionRecord> noDeleJobPostionRecords = new ArrayList<>();
