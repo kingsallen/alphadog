@@ -323,10 +323,8 @@ public class UserEmployeeServiceImpl {
             logger.info("getContributions userEmployeeMap:{}", userEmployeeMap);
 
             LocalDateTime today = LocalDateTime.now();
-            /*LocalDateTime lastFriday = today.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
-            LocalDateTime currentFriday = today.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);*/
-            LocalDateTime lastFriday = LocalDateTime.now().withYear(2018).withMonth(8).withDayOfMonth(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
-            LocalDateTime currentFriday = today.withMonth(8).withDayOfMonth(10).withHour(17).withMinute(0).withSecond(0).withNano(0);
+            LocalDateTime lastFriday = today.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
+            LocalDateTime currentFriday = today.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
 
             logger.info("getContributions start date:{}", lastFriday.toString());
             logger.info("getContributions end date:{}", currentFriday.toString());
