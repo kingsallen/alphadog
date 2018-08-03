@@ -9,6 +9,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -382,6 +383,28 @@ public class ProfileController {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 将文本解析成用户与简历信息
+     * @param request http 请求
+     * @return 执行结果
+     * @throws Exception 异常信息
+     */
+    @RequestMapping(value = "v1/profile/parser", method = RequestMethod.POST)
+    @ResponseBody
+    public String parserText( HttpServletRequest request) throws Exception {
+        Params<String, Object> params = ParamUtils.parseequestParameter(request);
+        String profile = params.getString("profile");
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredStringValidate("简历", profile);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return ResponseLogNotification.fail(request, result);
+        } else {
+            int userId = service.parseText(profile);
+            return ResponseLogNotification.successJson(request, new HashMap<String,Integer>(){{put("user_id", userId);}});
         }
     }
 

@@ -427,4 +427,11 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
             return new ArrayList<>();
         }
     }
+
+    public UserUserDO getUnIdentifyUserByMobile(String mobile) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(UserUser.USER_USER.MOBILE.getName(), mobile)
+                .and(UserUser.USER_USER.SOURCE.getName(), 103);
+        return getData(queryBuilder.buildQuery());
+    }
 }
