@@ -11,9 +11,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
-import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
@@ -21,7 +19,6 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -694,5 +691,21 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         } else {
             return null;
         }
+    }
+
+    /**
+     * batchhandler的时候根据公司ID查询职位部分字段，只有部分字段，因为全字段可能量很大，导致mysql查询很慢
+     * @param companyId
+     * @param source
+     * @return
+     */
+    public List<JobPositionRecord> getDatasForBatchhandlerDelete(int companyId, int source){
+        return create.select(JobPosition.JOB_POSITION.ID,JobPosition.JOB_POSITION.SOURCE_ID,JobPosition.JOB_POSITION.JOBNUMBER
+                ,JobPosition.JOB_POSITION.SOURCE,JobPosition.JOB_POSITION.CANDIDATE_SOURCE,JobPosition.JOB_POSITION.STATUS
+                ,JobPosition.JOB_POSITION.COMPANY_ID)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq((short) source))
+                .fetchInto(JobPositionRecord.class);
     }
 }
