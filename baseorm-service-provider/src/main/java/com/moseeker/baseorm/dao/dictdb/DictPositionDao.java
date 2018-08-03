@@ -1,8 +1,11 @@
 package com.moseeker.baseorm.dao.dictdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -62,5 +65,18 @@ public class DictPositionDao extends JooqCrudImpl<DictPositionDO, DictPositionRe
             }
         }
         return record;
+    }
+
+    /**
+     * 根据职能名称查找只能数据
+     * @param positionNameList 只能名称列表
+     * @return 职能数据
+     */
+    public List<DictPositionDO> getByNameList(List<String> positionNameList) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder
+                .where(new com.moseeker.common.util.query.Condition(
+                        DictPosition.DICT_POSITION.NAME.getName(), positionNameList, ValueOp.IN));
+        return getDatas(queryBuilder.buildQuery());
     }
 }

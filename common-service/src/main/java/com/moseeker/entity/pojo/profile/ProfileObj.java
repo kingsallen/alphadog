@@ -5,7 +5,9 @@ import com.moseeker.entity.pojo.resume.ResumeObj;
 
 import java.util.List;
 
-
+/**
+ * todo 可以直接转成使用表的pojo替代自定义的各个部分的数据对象
+ */
 public class ProfileObj {
 
     private List<Projectexps> projectexps;

@@ -166,6 +166,19 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
+    public int parseText(String profile) throws BIZException, TException {
+        try {
+            return service.parseText(profile, 0);
+        } catch (CommonException e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
     public Response getResources(CommonQuery query) throws TException {
         try {
             return service.getResources(QueryConvert.commonQueryConvertToQuery(query));
