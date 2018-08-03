@@ -106,7 +106,7 @@ public class MessageTemplateEntity {
             url=url.replace("{recomPushId}",recomId+"").replace("recom_code",MDString);
         }
         url = url+"&from_template_message="+params.getTemplateId()+"&send_time=" + new Date().getTime();
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId());
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getType(),params.getCompanyId(),DO.getId());
         if(colMap==null||colMap.isEmpty()){
             this.handlerRecomLog(params,MDString,0);
             return null;
@@ -261,51 +261,15 @@ public class MessageTemplateEntity {
         String companyName=this.getCompanyName(companyId);
         if(type==2){
             jobName = this.getJobName(userId,companyId,0);
-            MessageTplDataCol first=new MessageTplDataCol();
-            first.setColor("#173177");
-            HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.FANS_RECOM_POSITION);
-            if(record != null && record.getStatus().byteValue()!=1){
-                return null;
-            }
-            if(record !=null&&StringUtils.isNotNullOrEmpty(record.getFirst())){
-                first.setValue(record.getFirst());
-            }else {
-                String text = "根据您的求职意愿，仟寻为您挑选了一些新机会。";
-                text.replace("仟寻", companyName);
-                first.setValue(text);
-            }
-            colMap.put("first",first);
-            MessageTplDataCol remark=new MessageTplDataCol();
-            remark.setColor("#173177");
-            if(record!=null&&StringUtils.isNotNullOrEmpty(record.getRemark())){
-                remark.setValue(record.getRemark());
-            }else {
-                remark.setValue("点击查看推荐职位。");
-            }
-            colMap.put("remark",remark);
+            String firstName="根据您的求职意愿，仟寻为您挑选了一些新机会。";
+            String remarkName="点击查看推荐职位";
+            colMap=this.handlerTemplateData(weChatId,firstName,remarkName,Constant.FANS_RECOM_POSITION);
         }
         if(type==3){
             jobName = this.getJobName(userId,companyId,1);
-            MessageTplDataCol first=new MessageTplDataCol();
-            first.setColor("#173177");
-            HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,Constant.EMPLOYEE_RECOM_POSITION);
-            if(record != null && record.getStatus().byteValue()!=1){
-                return null;
-            }
-            if(record !=null&&StringUtils.isNotNullOrEmpty(record.getFirst())){
-                first.setValue(record.getFirst());
-            }else {
-                first.setValue("以下职位虚位以待，赶快转发起来吧~");
-            }
-            colMap.put("first",first);
-            MessageTplDataCol remark=new MessageTplDataCol();
-            remark.setColor("#173177");
-            if(record!=null&&StringUtils.isNotNullOrEmpty(record.getRemark())){
-                remark.setValue(record.getRemark());
-            }else {
-                remark.setValue("点击查看推荐职位。");
-            }
-            colMap.put("remark",remark);
+            String firstName="以下职位虚位以待，赶快转发起来吧~ ";
+            String remarkName="点击查看推荐职位。";
+            colMap=this.handlerTemplateData(weChatId,firstName,remarkName,Constant.EMPLOYEE_RECOM_POSITION);
         }
         SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         MessageTplDataCol keyword1=new MessageTplDataCol();
