@@ -391,12 +391,15 @@ public class UserEmployeeServiceImpl {
             Map<Integer, Integer> userWechatMap = new HashMap<>();
             Map<Integer, String> userWechatTokenMap = new HashMap<>();   //用户->员工->公众号
             if (wechatDOList != null && wechatDOList.size() > 0) {
+                logger.info("wechatDOList =============={}",wechatDOList);
                 for (UserEmployeeDO employeeDO: employeeDOS) {
                     Optional<HrWxWechatDO> wechatDOOptional = wechatDOList
                             .stream()
                             .filter(hrWxWechatDO -> hrWxWechatDO.getCompanyId() == employeeDO.getCompanyId())
                             .findAny();
                     if (wechatDOOptional.isPresent()) {
+                        logger.info("wechatDOOptional =============={}",wechatDOOptional.get());
+                        logger.info("employeeDO =============={}",employeeDO);
                         userWechatMap.put(employeeDO.getSysuserId(), wechatDOOptional.get().getId());
                         userWechatTokenMap.put(employeeDO.getId(), wechatDOOptional.get().getAccessToken());
                     }
