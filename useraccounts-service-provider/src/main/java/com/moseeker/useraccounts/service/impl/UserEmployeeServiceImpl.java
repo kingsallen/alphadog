@@ -421,7 +421,7 @@ public class UserEmployeeServiceImpl {
             }
 
             logger.info("getContributions applyCountFuture:{}", applyCount);
-
+            logger.info("userWechatTokenMap =============={}",userWechatTokenMap);
             List<ContributionDetail> list = new ArrayList<>();
             for (UserEmployeeDO userEmployeeDO: employeeDOS) {
                 ContributionDetail contributionDetail = new ContributionDetail();
