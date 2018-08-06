@@ -387,6 +387,7 @@ public class UserEmployeeServiceImpl {
                 logger.error(e.getMessage(), e);
             }
 
+            String accessToken = "";
             Map<Integer, Integer> userWechatMap = new HashMap<>();          //用户->员工->公众号
             if (wechatDOList != null && wechatDOList.size() > 0) {
                 for (UserEmployeeDO employeeDO: employeeDOS) {
@@ -396,6 +397,7 @@ public class UserEmployeeServiceImpl {
                             .findAny();
                     if (wechatDOOptional.isPresent()) {
                         userWechatMap.put(employeeDO.getSysuserId(), wechatDOOptional.get().getId());
+                        accessToken = wechatDOOptional.get().getAccessToken();
                     }
                 }
             }
@@ -419,7 +421,7 @@ public class UserEmployeeServiceImpl {
             List<ContributionDetail> list = new ArrayList<>();
             for (UserEmployeeDO userEmployeeDO: employeeDOS) {
                 ContributionDetail contributionDetail = new ContributionDetail();
-
+                contributionDetail.setAccessToken(accessToken);
                 contributionDetail.setCompanyId(userEmployeeDO.getCompanyId());
                 contributionDetail.setUserId(userEmployeeDO.getSysuserId());
 
