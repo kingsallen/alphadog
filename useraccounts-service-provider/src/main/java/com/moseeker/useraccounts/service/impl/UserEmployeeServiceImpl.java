@@ -380,7 +380,8 @@ public class UserEmployeeServiceImpl {
             }
 
             String accessToken = "";
-            Map<Integer, Integer> userWechatMap = new HashMap<>();          //用户->员工->公众号
+            Map<Integer, Integer> userWechatMap = new HashMap<>();
+            Map<Integer, String> userWechatTokenMap = new HashMap<>();   //用户->员工->公众号
             if (wechatDOList != null && wechatDOList.size() > 0) {
                 for (UserEmployeeDO employeeDO: employeeDOS) {
                     Optional<HrWxWechatDO> wechatDOOptional = wechatDOList
@@ -389,7 +390,7 @@ public class UserEmployeeServiceImpl {
                             .findAny();
                     if (wechatDOOptional.isPresent()) {
                         userWechatMap.put(employeeDO.getSysuserId(), wechatDOOptional.get().getId());
-                        accessToken = wechatDOOptional.get().getAccessToken();
+                        userWechatTokenMap.put(employeeDO.getId(), wechatDOOptional.get().getAccessToken());
                     }
                 }
             }
@@ -411,7 +412,6 @@ public class UserEmployeeServiceImpl {
             List<ContributionDetail> list = new ArrayList<>();
             for (UserEmployeeDO userEmployeeDO: employeeDOS) {
                 ContributionDetail contributionDetail = new ContributionDetail();
-                contributionDetail.setAccessToken(accessToken);
                 contributionDetail.setCompanyId(userEmployeeDO.getCompanyId());
                 contributionDetail.setUserId(userEmployeeDO.getSysuserId());
 
@@ -429,6 +429,9 @@ public class UserEmployeeServiceImpl {
                 }
                 if (sorts.get(userEmployeeDO.getId()) != null) {
                     contributionDetail.setRank(sorts.get(userEmployeeDO.getId()));
+                }
+                if (userWechatTokenMap.get(userEmployeeDO.getId()) != null) {
+                    contributionDetail.setAccessToken(userWechatTokenMap.get(userEmployeeDO.getId()));
                 }
                 list.add(contributionDetail);
             }
