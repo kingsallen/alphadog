@@ -417,7 +417,7 @@ public class ChatDao {
 
         QueryUtil findHR = new QueryUtil();
         findHR.addSelectAttribute("id").addSelectAttribute("username").addSelectAttribute("wxuser_id")
-                .addSelectAttribute("company_id").addSelectAttribute("headimgurl");
+                .addSelectAttribute("company_id").addSelectAttribute("headimgurl").addSelectAttribute("mobile");
         findHR.addEqualFilter("id", hrId);
 
         UserHrAccountDO userHrAccountDO = userHrAccountDao.getData(findHR);
@@ -490,10 +490,7 @@ public class ChatDao {
      * @return 用户信息
      */
     public UserUserDO getUser(int userId) {
-        QueryUtil queryUtil = new QueryUtil();
-        queryUtil.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("nickname");
-        queryUtil.addEqualFilter("id", userId);
-        return userUserDao.getData(queryUtil);
+        return userUserDao.getUser(userId);
     }
 
     /**

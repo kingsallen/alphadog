@@ -144,7 +144,8 @@ struct UserHrAccountDO {
     18: optional Timestamp createTime,              // 创建时间
     19: optional Timestamp updateTime,              // 修改时间
     20: optional string headimgurl,                 // 头像url
-    21: optional i8 leaveToMobot                    // IM聊天开关，0：不开启，1：开启，2：开启+chatbot
+    21: optional i8 leaveToMobot,                   // IM聊天开关，0：不开启，1：开启，2：开启+chatbot
+    22: optional string remarkName	                //备注名
 }
 
 struct UserWxUserDO {
