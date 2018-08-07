@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogAiRecom extends TableImpl<LogAiRecomRecord> {
 
-    private static final long serialVersionUID = -1865316711;
+    private static final long serialVersionUID = 37888076;
 
     /**
      * The reference instance of <code>logdb.log_ai_recom</code>
@@ -95,6 +95,16 @@ type=4员工简历完善
     public final TableField<LogAiRecomRecord, String> ALGORITHM_NAME = createField("algorithm_name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
+     * The column <code>logdb.log_ai_recom.wx_id</code>.
+     */
+    public final TableField<LogAiRecomRecord, Integer> WX_ID = createField("wx_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>logdb.log_ai_recom.is_send</code>.
+     */
+    public final TableField<LogAiRecomRecord, Byte> IS_SEND = createField("is_send", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
      * Create a <code>logdb.log_ai_recom</code> table reference
      */
     public LogAiRecom() {
@@ -145,7 +155,7 @@ type=4员工简历完善
      */
     @Override
     public List<UniqueKey<LogAiRecomRecord>> getKeys() {
-        return Arrays.<UniqueKey<LogAiRecomRecord>>asList(Keys.KEY_LOG_AI_RECOM_PRIMARY, Keys.KEY_LOG_AI_RECOM_LOG_AI_RECOM_ID_UINDEX);
+        return Arrays.<UniqueKey<LogAiRecomRecord>>asList(Keys.KEY_LOG_AI_RECOM_PRIMARY);
     }
 
     /**
