@@ -673,6 +673,7 @@ public class ChatDao {
                 chatVO.setMsgType(hrWxHrChatDO.getMsgType());
                 chatVO.setPositionId(hrWxHrChatDO.getPid());
                 chatVO.setSpeaker(hrWxHrChatDO.getSpeaker());
+                chatVO.setCompoundContent(hrWxHrChatDO.getCompoundContent());
                 return chatFactory.outputHandle(chatVO);
             }).collect(Collectors.toList());
         } else {
