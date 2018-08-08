@@ -246,7 +246,7 @@ public class ChatDao {
         String idStr = StringUtils.converFromArrayToStr(hrIdArray);
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("id").addSelectAttribute("company_id").addSelectAttribute("username")
-                .addSelectAttribute("headimgurl").addSelectAttribute("wxuser_id");
+                .addSelectAttribute("headimgurl").addSelectAttribute("wxuser_id").addSelectAttribute("remark_name");
         queryUtil.addEqualFilter("id", idStr);
         List<UserHrAccountDO> userHrAccountDOList = null;
         userHrAccountDOList = userHrAccountDao.getDatas(queryUtil);
