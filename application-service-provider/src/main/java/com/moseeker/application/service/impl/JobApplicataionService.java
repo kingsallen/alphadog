@@ -1090,11 +1090,9 @@ public class JobApplicataionService {
      * @return 用户申请数据
      */
     private UserApplyCount getApplyCount(long userId, long companyId) {
-        /*String applicationCountCheck = redisClient.get(
+        String applicationCountCheck = redisClient.get(
                 Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
-                String.valueOf(userId), String.valueOf(companyId));*/
-        //todo test
-        String applicationCountCheck = null;
+                String.valueOf(userId), String.valueOf(companyId));
         return UserApplyCount.initFromRedis(applicationCountCheck);
     }
 
@@ -1137,13 +1135,12 @@ public class JobApplicataionService {
     private void addApplicationCountAtCompany(int userId, int companyId, UserApplyCount applyCount) {
 
         try {
-            //todo test
-            /*redisClient.set(Constant.APPID_ALPHADOG,
+            redisClient.set(Constant.APPID_ALPHADOG,
                     REDIS_KEY_APPLICATION_COUNT_CHECK,
                     String.valueOf(userId),
                     String.valueOf(companyId),
                     JSON.toJSONString(applyCount),
-                    (int) DateUtils.calcCurrMonthSurplusSeconds());*/
+                    (int) DateUtils.calcCurrMonthSurplusSeconds());
 
         } catch (RedisException e) {
             WarnService.notify(e);

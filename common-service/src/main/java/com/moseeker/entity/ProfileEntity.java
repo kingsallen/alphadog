@@ -87,28 +87,7 @@ public class ProfileEntity {
      * @return
      */
     public ResumeObj profileParserAdaptor(String fileName, String file) throws TException, IOException {
-        ResumeObj resumeObj = new ResumeObj();
-        Status status = new Status();
-
-        Result result = new Result();
-        result.setSurname("wjf");
-        result.setAge("18");
-        result.setBirthday("1987-07-15");
-        result.setCity("上海");
-        result.setEmail("wjf2255@gmail.com");
-        result.setName("wjf");
-        result.setGender("男");
-        result.setPhone("18017294712");
-
-        resumeObj.setResult(result);
-
-        status.setCode(200);
-        status.setMessage("success");
-        resumeObj.setStatus(status);
-
-        return resumeObj;
-
-       //return profileParser(fileName, file);
+       return profileParser(fileName, file);
     }
 
     /**
