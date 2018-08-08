@@ -1,10 +1,12 @@
 package com.moseeker.baseorm.dao.userdb;
 
+import com.moseeker.baseorm.constant.EmployeeActivedState;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.jooq.Record;
@@ -156,4 +158,18 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return new HashMap<>();
     }
 
+    /**
+     * 查找用户的员工信息
+     * @param userId 用户编号
+     * @return 员工信息
+     */
+    public UserEmployeeRecord getActiveEmployeeByUserId(int userId) {
+
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActivedState.Actived.getState()))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .limit(1)
+                .fetchOne();
+    }
 }

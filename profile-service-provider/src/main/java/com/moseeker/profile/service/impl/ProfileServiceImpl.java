@@ -10,6 +10,7 @@ import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,16 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
             profileProfileRecord.setUserId(userUserDO.getId());
             profileProfileRecord.setDisable((byte)(Constant.ENABLE));
             profileProfileRecord.setUuid(UUID.randomUUID().toString());
-            profileProfileRecord.setSource(220);
+            int source = 220;               //兼容简历上传  该接口最早给"邮件上传简历附件"使用
+            if (profilePojo.getProfileRecord() != null) {
+                if (profilePojo.getProfileRecord() .getSource() != null) {
+                    source = profilePojo.getProfileRecord().getSource();
+                }
+                if (StringUtils.isNotBlank(profilePojo.getProfileRecord().getOrigin())) {
+                    profileProfileRecord.setOrigin(profilePojo.getProfileRecord().getOrigin());
+                }
+            }
+            profileProfileRecord.setSource(source);
             profilePojo.setProfileRecord(profileProfileRecord);
             logger.info("开始保存的参数=====");
             int profileId= profileEntity.createProfile(profilePojo, userUserDO);

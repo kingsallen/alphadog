@@ -33,6 +33,7 @@ import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.EmployeeBinder;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -161,7 +162,7 @@ public class EmployeeService {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public EmployeeVerificationConfResponse getEmployeeVerificationConf(int companyId)
-            throws TException {
+            throws UserAccountException {
         log.info("getEmployeeVerificationConf param: companyId={}", companyId);
         Query.QueryBuilder query = new Query.QueryBuilder();
         EmployeeVerificationConfResponse response = new EmployeeVerificationConfResponse();
@@ -199,6 +200,14 @@ public class EmployeeService {
             log.error(e.getMessage(), e);
         }
         return response;
+    }
+
+    public EmployeeVerificationConfResponse getEmployeeVerificationConfByUserId(int userId) throws UserAccountException {
+        UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        if (employeeDO == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        return getEmployeeVerificationConf(employeeDO.getCompanyId());
     }
 
     public Result bind(BindingParams bindingParams) throws TException {
@@ -438,5 +447,4 @@ public class EmployeeService {
             retryUpdateReferralPolicyCount(employeeDO, index);
         }
     }
-
 }
