@@ -81,17 +81,22 @@ public class ProfileObjRepository {
             List<String> positionNameList = new ArrayList<>();
 
             intentions.forEach(intentions1 -> {
-                List<String> cityName = intentions1.getCities()
-                        .stream()
-                        .map(City::getCityName)
-                        .collect(Collectors.toList());
-                cityNameList.addAll(cityName);
+                if (intentions1.getCities() != null && intentions1.getCities().size() > 0) {
+                    List<String> cityName = intentions1.getCities()
+                            .stream()
+                            .map(City::getCityName)
+                            .collect(Collectors.toList());
+                    cityNameList.addAll(cityName);
+                }
 
-                List<String> positionNames = intentions1.getPositions()
-                        .stream()
-                        .map(Positions::getPositionName)
-                        .collect(Collectors.toList());
-                positionNameList.addAll(positionNames);
+                if (intentions1.getPositions() != null && intentions1.getPositions().size() > 0) {
+                    List<String> positionNames = intentions1.getPositions()
+                            .stream()
+                            .map(Positions::getPositionName)
+                            .collect(Collectors.toList());
+                    positionNameList.addAll(positionNames);
+                }
+
             });
 
             List<DictCityDO> cityDOList = dictCityDao.getByNameList(cityNameList);
@@ -142,9 +147,11 @@ public class ProfileObjRepository {
      * @param basic 基本信息
      */
     private void fillBasic(Basic basic) {
-        DictCityDO city = dictCityDao.getCityByNameOrEname(basic.getCityName());
-        if (city != null) {
-            basic.setCityCode(city.getCode());
+        if (basic != null && StringUtils.isNotBlank(basic.getCityName())) {
+            DictCityDO city = dictCityDao.getCityByNameOrEname(basic.getCityName());
+            if (city != null) {
+                basic.setCityCode(city.getCode());
+            }
         }
     }
 

@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserReferralRecordRecord extends UpdatableRecordImpl<UserReferralRecordRecord> implements Record6<Integer, Integer, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -2094013128;
+    private static final long serialVersionUID = -642108913;
 
     /**
      * Setter for <code>userdb.user_referral_record.id</code>. 主key
@@ -61,16 +61,16 @@ public class UserReferralRecordRecord extends UpdatableRecordImpl<UserReferralRe
     }
 
     /**
-     * Setter for <code>userdb.user_referral_record.referee_id</code>. 推荐人编号
+     * Setter for <code>userdb.user_referral_record.reference_id</code>. 推荐人编号
      */
-    public void setRefereeId(Integer value) {
+    public void setReferenceId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>userdb.user_referral_record.referee_id</code>. 推荐人编号
+     * Getter for <code>userdb.user_referral_record.reference_id</code>. 推荐人编号
      */
-    public Integer getRefereeId() {
+    public Integer getReferenceId() {
         return (Integer) get(2);
     }
 
@@ -169,7 +169,7 @@ public class UserReferralRecordRecord extends UpdatableRecordImpl<UserReferralRe
      */
     @Override
     public Field<Integer> field3() {
-        return UserReferralRecord.USER_REFERRAL_RECORD.REFEREE_ID;
+        return UserReferralRecord.USER_REFERRAL_RECORD.REFERENCE_ID;
     }
 
     /**
@@ -217,7 +217,7 @@ public class UserReferralRecordRecord extends UpdatableRecordImpl<UserReferralRe
      */
     @Override
     public Integer value3() {
-        return getRefereeId();
+        return getReferenceId();
     }
 
     /**
@@ -267,7 +267,7 @@ public class UserReferralRecordRecord extends UpdatableRecordImpl<UserReferralRe
      */
     @Override
     public UserReferralRecordRecord value3(Integer value) {
-        setRefereeId(value);
+        setReferenceId(value);
         return this;
     }
 
@@ -326,12 +326,12 @@ public class UserReferralRecordRecord extends UpdatableRecordImpl<UserReferralRe
     /**
      * Create a detached, initialised UserReferralRecordRecord
      */
-    public UserReferralRecordRecord(Integer id, Integer userId, Integer refereeId, Integer companyId, Timestamp createTime, Timestamp updateTime) {
+    public UserReferralRecordRecord(Integer id, Integer userId, Integer referenceId, Integer companyId, Timestamp createTime, Timestamp updateTime) {
         super(UserReferralRecord.USER_REFERRAL_RECORD);
 
         set(0, id);
         set(1, userId);
-        set(2, refereeId);
+        set(2, referenceId);
         set(3, companyId);
         set(4, createTime);
         set(5, updateTime);

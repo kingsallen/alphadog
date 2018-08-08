@@ -259,6 +259,6 @@ public final class Constant {
 
     public static final String COMPANY_LOGO_URL ="/hr/common/images/default-company-logo.jpg";
 
-
     public static final int HKAMTW = 861;
+    public static final int UPPER_LIMIT = 500;  //接口处理的数据量的上限
 }

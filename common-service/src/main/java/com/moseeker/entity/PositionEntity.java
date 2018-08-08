@@ -6,6 +6,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionHrCompanyFeatureDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -208,5 +209,25 @@ public class PositionEntity {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * 校验这些职位是否有效，并且是否属于这家公司
+     * @param companyId 公司编号
+     * @param positionIdList 职位编号
+     * @return true 职位有效，并且属于这家公司，反之false
+     */
+    public boolean validatePositions(int companyId, List<Integer> positionIdList) {
+        if (positionIdList != null && positionIdList.size() > 0) {
+            int count = positionDao.countLegal(companyId, positionIdList);
+            if (positionIdList.size() == count) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<JobPosition> getPositionInfoByIdList(List<Integer> positionIdList) {
+        return positionDao.getJobPositionByIdList(positionIdList);
     }
 }
