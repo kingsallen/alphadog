@@ -13,6 +13,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeForm;
 import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeUtil;
 import com.moseeker.servicemanager.web.controller.util.Params;
@@ -395,16 +396,19 @@ public class ProfileController {
     @RequestMapping(value = "v1/profile/parser", method = RequestMethod.POST)
     @ResponseBody
     public String parserText( HttpServletRequest request) throws Exception {
-        Params<String, Object> params = ParamUtils.parseequestParameter(request);
+        Params<String, Object> params = ParamUtils.parseRequestParam(request);
         String profile = params.getString("profile");
+        Integer referenceId = params.getInt("reference_id");
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredStringValidate("简历", profile);
+        validateUtil.addRequiredValidate("员工", referenceId);
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             return ResponseLogNotification.fail(request, result);
         } else {
-            int userId = service.parseText(profile);
-            return ResponseLogNotification.successJson(request, new HashMap<String,Integer>(){{put("user_id", userId);}});
+            int userId = service.parseText(profile, referenceId);
+            return Result.success(new HashMap<String,Integer>(){{put("user_id", userId);}}).toJson();
+            //return ResponseLogNotification.successJson(request, new HashMap<String,Integer>(){{put("user_id", userId);}});
         }
     }
 

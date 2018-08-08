@@ -14,19 +14,15 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Profile;
-
-import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.Map;
-
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ProfileServicesImpl implements Iface {
@@ -166,15 +162,12 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public int parseText(String profile) throws BIZException, TException {
+    public int parseText(String profile, int referenceId) throws BIZException, TException {
         try {
-            return service.parseText(profile, 0);
-        } catch (CommonException e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionConvertUtil.convertCommonException(e);
+            return service.parseText(profile, referenceId);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new SysBIZException();
+            throw ExceptionUtils.convertException(e);
         }
     }
 

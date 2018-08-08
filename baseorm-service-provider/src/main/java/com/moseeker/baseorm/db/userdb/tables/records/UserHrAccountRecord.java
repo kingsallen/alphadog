@@ -327,14 +327,22 @@ public class UserHrAccountRecord extends UpdatableRecordImpl<UserHrAccountRecord
     }
 
     /**
+<<<<<<< HEAD
      * Setter for <code>userdb.user_hr_account.remark_name</code>. 备注名，是由HR主账号设置的对外显示名称，暂时在微信端聊天时使用到，即C端用户看到的HR名称
+=======
+     * Setter for <code>userdb.user_hr_account.remark_name</code>. 备注名
+>>>>>>> 完成自测
      */
     public void setRemarkName(String value) {
         set(21, value);
     }
 
     /**
+<<<<<<< HEAD
      * Getter for <code>userdb.user_hr_account.remark_name</code>. 备注名，是由HR主账号设置的对外显示名称，暂时在微信端聊天时使用到，即C端用户看到的HR名称
+=======
+     * Getter for <code>userdb.user_hr_account.remark_name</code>. 备注名
+>>>>>>> 完成自测
      */
     public String getRemarkName() {
         return (String) get(21);

@@ -24,12 +24,15 @@ import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ProfileException;
+import com.moseeker.entity.pojo.resume.Result;
 import com.moseeker.entity.pojo.resume.ResumeObj;
+import com.moseeker.entity.pojo.resume.Status;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.sql.Timestamp;
 
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -66,10 +69,6 @@ public class ProfileEntity {
 
     @Autowired
     ProfileParseUtil profileParseUtil;
-
-    @Autowired
-
-
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
      * @param profileParameter 简历信息
@@ -88,7 +87,58 @@ public class ProfileEntity {
      * @return
      */
     public ResumeObj profileParserAdaptor(String fileName, String file) throws TException, IOException {
-       return profileParser(fileName, file);
+        ResumeObj resumeObj = new ResumeObj();
+        Status status = new Status();
+
+        Result result = new Result();
+        result.setSurname("wjf");
+        result.setAge("18");
+        result.setBirthday("1987-07-15");
+        result.setCity("上海");
+        result.setEmail("wjf2255@gmail.com");
+        result.setName("wjf");
+        result.setGender("男");
+        result.setPhone("18017294712");
+
+        resumeObj.setResult(result);
+
+        status.setCode(200);
+        status.setMessage("success");
+        resumeObj.setStatus(status);
+
+        return resumeObj;
+
+       //return profileParser(fileName, file);
+    }
+
+    /**
+     * 如果存在简历则合并，不存在则添加
+     * @param profilePojo 简历数据
+     * @param userId 用户编号
+     */
+    public void mergeProfile(ProfilePojo profilePojo, int userId) {
+
+        ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
+        if (profileDB != null) {
+            improveProfile(profilePojo.getProfileRecord(), profileDB);
+            improveBasic(profilePojo.getBasicRecord(), profileDB.getId());
+            improveAttachment(profilePojo.getAttachmentRecords(), profileDB.getId());
+            improveAwards(profilePojo.getAwardsRecords(), profileDB.getId());
+            improveCredentials(profilePojo.getCredentialsRecords(), profileDB.getId());
+            improveEducation(profilePojo.getEducationRecords(), profileDB.getId());
+            improveIntention(profilePojo.getIntentionRecords(), profileDB.getId());
+            improveLanguage(profilePojo.getLanguageRecords(), profileDB.getId());
+            improveOther(profilePojo.getOtherRecord(), profileDB.getId());
+            improveProjectexp(profilePojo.getProjectExps(), profileDB.getId());
+            improveSkill(profilePojo.getSkillRecords(), profileDB.getId());
+            improveWorkexp(profilePojo.getWorkexpRecords(), profileDB.getId());
+            improveWorks(profilePojo.getWorksRecords(), profileDB.getId());
+            completenessImpl.reCalculateProfileBasic(profileDB.getId());
+        } else {
+            storeProfile(profilePojo);
+        }
+
+
     }
 
     /**
@@ -516,8 +566,6 @@ public class ProfileEntity {
         completenessImpl.reCalculateProfileCompleteness(profileId);
     }
 
-
-
     public void updateProfile(ProfilePojo profilePojo, ProfileProfileDO profileProfileDO) {
         int profileId = profileProfileDO.getId();
         ProfileProfileRecord record = BeanUtils.structToDB(profileProfileDO, ProfileProfileRecord.class);
@@ -556,7 +604,13 @@ public class ProfileEntity {
      * @return 简历编号
      */
     public int storeProfile(ProfilePojo profilePojo) {
-        return 0;
+
+        return profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+                profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
+                profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
+                profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
+                profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
+                profilePojo.getUserRecord(), null);
     }
 
     /**
@@ -592,26 +646,39 @@ public class ProfileEntity {
      * 将用户信息持久化到数据库中
      * todo 应该要移到用户实体中
      * @param profilePojo 简历数据
-     * @param referee 推荐人
+     * @param reference 推荐人
+     * @param companyId 公司编号
+     * @param source
      * @return 用户编号
      */
     @Transactional
-    public int storeUser(ProfilePojo profilePojo, int referee) throws ProfileException {
+    public int storeUser(ProfilePojo profilePojo, int reference, int companyId, UserSource source) throws ProfileException {
 
-        UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployeeByUserId(referee);
+        UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployeeByUserId(reference);
         if (employeeRecord == null) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
         }
         //获取companyUser
         //Redis 同步锁
 
-        UserReferralRecordRecord referralRecordRecord = userReferralRecordDao.insertIfNotExist(referee,
-                employeeRecord.getCompanyId(), profilePojo.getUserRecord().getMobile());
+        UserReferralRecordRecord referralRecordRecord = userReferralRecordDao.insertIfNotExist(reference,
+                companyId, profilePojo.getUserRecord().getMobile());
         if (profilePojo.getUserRecord() != null) {
+            if (org.apache.commons.lang.StringUtils.isBlank(profilePojo.getUserRecord().getPassword())) {
+                profilePojo.getUserRecord().setPassword("");
+            }
             UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
+            short shortSource = 0;
+            if (source != null) {
+                shortSource = (short) source.getValue();
+            }
+            userUserRecord.setSource(shortSource);
+            referralRecordRecord.setUserId(userUserRecord.getId());
+            userReferralRecordDao.updateRecord(referralRecordRecord);
             return userUserRecord.getId();
+        } else {
+            throw ProfileException.PROFILE_USER_CREATE_FAILED;
         }
-        return 0;
     }
 
     @Autowired

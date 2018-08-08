@@ -23,11 +23,11 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserReferralRecord implements Serializable {
 
-    private static final long serialVersionUID = -2085807744;
+    private static final long serialVersionUID = -82252053;
 
     private Integer   id;
     private Integer   userId;
-    private Integer   refereeId;
+    private Integer   referenceId;
     private Integer   companyId;
     private Timestamp createTime;
     private Timestamp updateTime;
@@ -37,7 +37,7 @@ public class UserReferralRecord implements Serializable {
     public UserReferralRecord(UserReferralRecord value) {
         this.id = value.id;
         this.userId = value.userId;
-        this.refereeId = value.refereeId;
+        this.referenceId = value.referenceId;
         this.companyId = value.companyId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
@@ -46,14 +46,14 @@ public class UserReferralRecord implements Serializable {
     public UserReferralRecord(
         Integer   id,
         Integer   userId,
-        Integer   refereeId,
+        Integer   referenceId,
         Integer   companyId,
         Timestamp createTime,
         Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
-        this.refereeId = refereeId;
+        this.referenceId = referenceId;
         this.companyId = companyId;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -75,12 +75,12 @@ public class UserReferralRecord implements Serializable {
         this.userId = userId;
     }
 
-    public Integer getRefereeId() {
-        return this.refereeId;
+    public Integer getReferenceId() {
+        return this.referenceId;
     }
 
-    public void setRefereeId(Integer refereeId) {
-        this.refereeId = refereeId;
+    public void setReferenceId(Integer referenceId) {
+        this.referenceId = referenceId;
     }
 
     public Integer getCompanyId() {
@@ -113,7 +113,7 @@ public class UserReferralRecord implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(userId);
-        sb.append(", ").append(refereeId);
+        sb.append(", ").append(referenceId);
         sb.append(", ").append(companyId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);

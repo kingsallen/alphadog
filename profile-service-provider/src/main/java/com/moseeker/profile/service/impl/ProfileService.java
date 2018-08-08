@@ -21,6 +21,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -31,10 +32,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.entity.PositionEntity;
-import com.moseeker.entity.ProfileEntity;
-import com.moseeker.entity.ProfileOtherEntity;
-import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.entity.*;
 import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.profile.ProfileObj;
@@ -52,6 +50,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
@@ -126,6 +125,12 @@ public class ProfileService {
 
     @Autowired
     private ResumeEntity resumeEntity;
+
+    @Autowired
+    private UserAccountEntity userAccountEntity;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
 
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
@@ -880,7 +885,7 @@ public class ProfileService {
             String phone = resumeObj.getResult().getPhone();
             int userId = 0;
             if (StringUtils.isNotNullOrEmpty(phone)) {
-                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId);
+                UserUserRecord userRecord = userAccountEntity.getCompanyUser(phone, companyId);
                 if (userRecord != null) {
                     userId = userRecord.getId();
                 }
@@ -900,8 +905,19 @@ public class ProfileService {
         return profileEntity.fetchUserProfile(userIdList);
     }
 
-    public int parseText(String profile, int recommenderId) throws ProfileException {
+    /**
+     * 解析简历数据并产生公司下的虚拟用户以及简历数据
+     * @param profile 简历内容
+     * @param referenceId 推荐者的编号
+     * @return 用户编号
+     * @throws ProfileException
+     */
+    public int parseText(String profile, int referenceId) throws ProfileException {
 
+        UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(referenceId);
+        if (employeeDO == null) {
+            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
+        }
         logger.info("parseText ");
         File file;
         try {
@@ -923,31 +939,41 @@ public class ProfileService {
         ResumeObj resumeObj;
         try {
             resumeObj = profileEntity.profileParserAdaptor(file.getName(), data);
-            // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
-            validateParseLimit(resumeObj);
-            logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
-
-            ProfileObj profileObj=resumeEntity.handlerParseData(resumeObj,0,"文本解析，不存在附件");
-
-            resumeEntity.fillProfileObj(profileObj, resumeObj, 0, file.getName(), profile);
-
-
-            profileObj.setResumeObj(null);
-            JSONObject jsonObject = (JSONObject) JSON.toJSON(profileObj);
-            JSONObject profileProfile = createProfileData();
-            jsonObject.put("profile", profileProfile);
-
-            ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
-
-            int userId = profileEntity.storeUser(profilePojo, recommenderId);
-            profilePojo.getProfileRecord().setUserId(userId);
-            int profileId = profileEntity.storeProfile(profilePojo);
-            //todo 创建虚拟用户与简历并返回用户编号
-            return 0;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        } catch (TException | IOException e) {
+            throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
         }
-        return 0;
+        // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
+        validateParseLimit(resumeObj);
+        logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
+
+        ProfileObj profileObj=resumeEntity.handlerParseData(resumeObj,0,"文本解析，不存在附件");
+
+        if (profileObj.getUser() == null || org.apache.commons.lang.StringUtils.isBlank(profileObj.getUser().getMobile())) {
+            throw ProfileException.PROFILE_USER_NOTEXIST;
+        }
+
+        resumeEntity.fillProfileObj(profileObj, resumeObj, 0, file.getName(), profile);
+
+        profileObj.setResumeObj(null);
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(profileObj);
+        JSONObject profileProfile = createProfileData();
+        jsonObject.put("profile", profileProfile);
+
+        ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
+
+        UserUserRecord userRecord = userAccountEntity.getCompanyUser(
+                profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
+        int userId;
+        if (userRecord != null) {
+            userId = userRecord.getId();
+            profilePojo.setUserRecord(userRecord);
+        } else {
+            userId = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
+            profilePojo.getProfileRecord().setUserId(userId);
+        }
+
+        profileEntity.mergeProfile(profilePojo, userRecord.getId());
+        return userId;
     }
 
     /**

@@ -19,6 +19,7 @@ import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
@@ -694,5 +695,43 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         } else {
             return null;
         }
+    }
+
+    /**
+     * 计算合法再招并且是给定公司下的职位的数量
+     * @param companyId 公司编号
+     * @param positionIdList 职位编号集合
+     * @return 合法再招并且是给定公司下的职位的数量
+     */
+    public int countLegal(int companyId, List<Integer> positionIdList) {
+
+        return create
+                .selectCount()
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.STATUS.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .and(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+                .and(JobPosition.JOB_POSITION.ID.in(positionIdList))
+                .fetchOne()
+                .value1();
+    }
+
+    /**
+     * 根据职位编号查找职位信息
+     * @param positionIdList 职位编号集合
+     * @return 职位数据
+     */
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> getJobPositionByIdList(List<Integer> positionIdList) {
+
+
+        Result<JobPositionRecord> positionRecords = create.selectFrom(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.in(positionIdList))
+                .and(JobPosition.JOB_POSITION.STATUS.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .fetch();
+        if (positionRecords != null && positionRecords.size() > 0) {
+            return positionRecords.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition.class);
+        } else {
+            return new ArrayList<>();
+        }
+
     }
 }

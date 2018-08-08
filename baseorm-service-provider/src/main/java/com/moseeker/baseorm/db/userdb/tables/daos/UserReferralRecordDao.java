@@ -73,10 +73,10 @@ public class UserReferralRecordDao extends DAOImpl<UserReferralRecordRecord, com
     }
 
     /**
-     * Fetch records that have <code>referee_id IN (values)</code>
+     * Fetch records that have <code>reference_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserReferralRecord> fetchByRefereeId(Integer... values) {
-        return fetch(UserReferralRecord.USER_REFERRAL_RECORD.REFEREE_ID, values);
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserReferralRecord> fetchByReferenceId(Integer... values) {
+        return fetch(UserReferralRecord.USER_REFERRAL_RECORD.REFERENCE_ID, values);
     }
 
     /**
