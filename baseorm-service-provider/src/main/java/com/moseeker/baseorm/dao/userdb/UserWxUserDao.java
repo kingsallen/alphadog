@@ -3,9 +3,17 @@ package com.moseeker.baseorm.dao.userdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -39,6 +47,23 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
                 .where(UserWxUser.USER_WX_USER.ID.getName(),id)
                 .buildQuery();
         return getData(query);
+    }
+
+    /**
+     * 根据ID批量获取微信用户MAP数据,Key为ID，Value为微信用户数据
+     * @param ids   user_wx_user.id
+     * @return
+     */
+    public Map<Integer,UserWxUserDO> getWXUserMapByIds(List<Integer> ids) {
+        Query query=new Query.QueryBuilder()
+                .where(new Condition(UserWxUser.USER_WX_USER.ID.getName(),ids, ValueOp.IN))
+                .buildQuery();
+        List<UserWxUserDO> result = getDatas(query);
+        Map<Integer,UserWxUserDO> hrWxUserMap = new HashMap<>();
+        if(!StringUtils.isEmptyList(result)){
+            hrWxUserMap = result.stream().collect(Collectors.toMap(h->(int)h.getId(), h->h));
+        }
+        return hrWxUserMap;
     }
 
     /**

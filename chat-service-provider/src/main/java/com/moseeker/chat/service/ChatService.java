@@ -2,11 +2,12 @@ package com.moseeker.chat.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.hrdb.HrChatVoiceDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.config.HRAccountType;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
@@ -20,17 +21,14 @@ import com.moseeker.chat.constant.ChatVoiceConstant;
 import com.moseeker.chat.exception.VoiceErrorEnum;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.service.entity.ChatFactory;
-import com.moseeker.chat.utils.EmailSendUtil;
-import com.moseeker.chat.utils.Page;
-import com.moseeker.chat.utils.UpDownLoadUtil;
-import com.moseeker.chat.utils.VoiceFormConvertUtil;
+import com.moseeker.chat.utils.*;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChatMsgType;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.RespnoseUtil;
-import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.HttpClient;
@@ -43,6 +41,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import org.joda.time.DateTime;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -59,9 +58,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import static com.moseeker.chat.constant.ChatVoiceConstant.*;
-import static com.moseeker.chat.constant.ChatVoiceConstant.VOICE_CLEAR_TIMES;
 
 /**
  * Created by jack on 08/03/2017.
@@ -93,6 +92,9 @@ public class ChatService {
 
     @Autowired
     private ChatFactory chatFactory;
+
+    @Autowired
+    private UserWxUserDao wxUserDao;
 
     private ThreadPool pool = ThreadPool.Instance;
 
@@ -373,24 +375,33 @@ public class ChatService {
                     try {
                         List<UserHrAccountDO> hrAccountDOList = (List<UserHrAccountDO>) hrsFuture.get();
                         if (hrAccountDOList != null && hrAccountDOList.size() > 0) {
+                            List<Integer> wxUserIds = hrAccountDOList.stream()
+                                    .filter(h->h.getWxuserId()==0)
+                                    .map(h->h.getWxuserId())
+                                    .collect(Collectors.toList());
+
+                            Map<Integer,UserWxUserDO> hrWxUserMap = wxUserDao.getWXUserMapByIds(wxUserIds);
 
                             Optional<UserHrAccountDO> hrAccountDOOptional = hrAccountDOList.stream()
                                     .filter(hrAccountDO -> hrAccountDO.getId() == hrChatUnreadCountDO.getHrId()).findAny();
                             if (hrAccountDOOptional.isPresent()) {
-                                userChatRoomVO.setHrId(hrAccountDOOptional.get().getId());
-                                userChatRoomVO.setName(hrAccountDOOptional.get().getUsername());
-                                userChatRoomVO.setHeadImgUrl(hrAccountDOOptional.get().getHeadimgurl());
+                                UserHrAccountDO hrAccount = hrAccountDOOptional.get();
+
+                                String name = ChatHelper.hrChatName(hrAccount,hrWxUserMap.get(hrAccount.getWxuserId()));
+                                userChatRoomVO.setName(name);
+                                userChatRoomVO.setHrId(hrAccount.getId());
+                                userChatRoomVO.setHeadImgUrl(hrAccount.getHeadimgurl());
 
                                 //** 根据HR所属公司，匹配公司的名称和logo *//*
                                 Map<Integer, HrCompanyDO> companyDOMap = (Map<Integer, HrCompanyDO>) companyFuture.get();
                                 if (companyDOMap != null && companyDOMap.size() > 0) {
-                                    if (companyDOMap.containsKey(hrAccountDOOptional.get().getId()) && companyDOMap.get(hrAccountDOOptional.get().getId()).getId() > 0) {
-                                        userChatRoomVO.setCompanyLogo(companyDOMap.get(hrAccountDOOptional.get().getId()).getLogo());
+                                    if (companyDOMap.containsKey(hrAccount.getId()) && companyDOMap.get(hrAccount.getId()).getId() > 0) {
+                                        userChatRoomVO.setCompanyLogo(companyDOMap.get(hrAccount.getId()).getLogo());
                                         String companyName;
-                                        if (StringUtils.isNotNullOrEmpty(companyDOMap.get(hrAccountDOOptional.get().getId()).getAbbreviation())) {
-                                            companyName = companyDOMap.get(hrAccountDOOptional.get().getId()).getAbbreviation();
+                                        if (StringUtils.isNotNullOrEmpty(companyDOMap.get(hrAccount.getId()).getAbbreviation())) {
+                                            companyName = companyDOMap.get(hrAccount.getId()).getAbbreviation();
                                         } else {
-                                            companyName = companyDOMap.get(hrAccountDOOptional.get().getId()).getName();
+                                            companyName = companyDOMap.get(hrAccount.getId()).getName();
                                         }
                                         userChatRoomVO.setCompanyName(companyName);
                                     }
@@ -811,8 +822,12 @@ public class ChatService {
             HrCompanyDO hrCompanyDO = (HrCompanyDO) hrCompanyFuture.get();
             if (hrAccountDO != null) {
                 HrVO hrVO = new HrVO();
+
+                UserWxUserDO wxUser = wxUserDao.getWXUserById(hrAccountDO.getWxuserId());
+                String hrName = ChatHelper.hrChatName(hrAccountDO,wxUser);
+                hrVO.setHrName(hrName);
+
                 hrVO.setHrId(hrAccountDO.getId());
-                hrVO.setHrName(hrAccountDO.getUsername());
                 hrVO.setHrHeadImg(hrAccountDO.getHeadimgurl());
                 if (StringUtils.isNotNullOrEmpty(hrCompanyDO.getAbbreviation())) {
                     hrVO.setCompanyName(hrCompanyDO.getAbbreviation());
@@ -1067,7 +1082,9 @@ public class ChatService {
             if (hr != null) {
                 hrVO.setHrId(hr.getId());
                 hrVO.setHrHeadImg(hr.getHeadimgurl());
-                hrVO.setHrName(hr.getUsername());
+
+                UserWxUserDO wxUserDO = wxUserDao.getWXUserById(hr.getWxuserId());
+                hrVO.setHrName(ChatHelper.hrChatName(hr,wxUserDO));
             }
         }
         return hrVO;
