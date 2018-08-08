@@ -116,8 +116,6 @@ public class ProfileEntity {
         } else {
             storeProfile(profilePojo);
         }
-
-
     }
 
     /**
