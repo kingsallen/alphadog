@@ -417,7 +417,8 @@ public class ChatDao {
 
         QueryUtil findHR = new QueryUtil();
         findHR.addSelectAttribute("id").addSelectAttribute("username").addSelectAttribute("wxuser_id")
-                .addSelectAttribute("company_id").addSelectAttribute("headimgurl").addSelectAttribute("mobile");
+                .addSelectAttribute("company_id").addSelectAttribute("headimgurl").addSelectAttribute("mobile")
+                .addSelectAttribute("remark_name");
         findHR.addEqualFilter("id", hrId);
 
         UserHrAccountDO userHrAccountDO = userHrAccountDao.getData(findHR);
