@@ -1071,7 +1071,11 @@ public class JobApplicataionService {
                 tp.startTast(() -> {
                     logger.info("saveJobApplication updateApplyStatus applier_id:{}, position_id:{}",
                             resultVO.getApplierId(), resultVO.getPositionId());
-                    chatService.updateApplyStatus(resultVO.getApplierId(), resultVO.getPositionId());
+                    try {
+                        chatService.updateApplyStatus(resultVO.getApplierId(), resultVO.getPositionId());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
                     return 0;
                 });
             }
