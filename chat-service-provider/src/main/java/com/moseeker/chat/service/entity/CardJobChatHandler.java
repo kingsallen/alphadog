@@ -84,7 +84,7 @@ public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHan
             positionCard.setTeam(position.getDepartment());
 
         }
-        chat.setContent(JSON.toJSONString(positionCard, serializeConfig));
+        chat.setCompoundContent(JSON.toJSONString(positionCard, serializeConfig));
         return chat;
     }
 
