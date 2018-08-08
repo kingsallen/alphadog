@@ -550,6 +550,7 @@ public class ChatService {
             chatDO.setChatlistId(chat.getRoomId());
             chatDO.setOrigin(chat.getOrigin());
             chatDO.setMsgType(chat.getMsgType());
+            chatDO.setCompoundContent(chat.getCompoundContent());
             if(StringUtils.isNotNullOrEmpty(chat.getContent())){
                 chatDO.setContent(chat.getContent());
             }else{
@@ -973,6 +974,7 @@ public class ChatService {
                     }else{
                         chatVO.setSpeaker(speaker);
                     }
+                    String compoundContent = (String)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.COMPOUND_CONTENT);
                     chatVO.setAssetUrl(assetUrl);
                     chatVO.setCreateTime(createTime);
                     chatVO.setMsgType(msgType);
@@ -983,6 +985,9 @@ public class ChatService {
                     chatVO.setOrigin(origin);
                     chatVO.setId(id);
                     chatVO.setPositionId(positionId);
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(compoundContent)) {
+                        chatVO.setCompoundContent(compoundContent);
+                    }
                     chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
             }
