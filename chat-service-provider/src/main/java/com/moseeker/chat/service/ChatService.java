@@ -545,13 +545,14 @@ public class ChatService {
     public int saveChat(ChatVO chat) throws BIZException {
         try {
 
+            logger.info("saveChat chat:{}", JSON.toJSONString(chat));
             requiredValidChat(chat);
 
             HrWxHrChatListDO chatRoom = requiredNotNullChatRoom(chat.getRoomId());
 
             requiredNotNullHr(chatRoom.getHraccountId());
 
-            logger.info("saveChat chat:{}", JSON.toJSONString(chat));
+            
             HrWxHrChatDO chatDO = new HrWxHrChatDO();
             String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
 
