@@ -51,6 +51,12 @@ public enum ChatMsgType {
             return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
         }
     },
+    cards("cards") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
+    },
     CITYSELECT("citySelect") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
