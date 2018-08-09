@@ -261,7 +261,7 @@ public class JobApplicationController {
 	/**
 	 * 员工主动上传
 	 */
-	@RequestMapping(value = "/application/v1/application/proxy", method = RequestMethod.POST)
+	@RequestMapping(value = "/v1/application/proxy", method = RequestMethod.POST)
 	@ResponseBody
 	public String employeeProxyApply(@RequestBody EmployeeProxyApplyForm form) throws Exception {
 		if (form.getAppid() <= 0) {
