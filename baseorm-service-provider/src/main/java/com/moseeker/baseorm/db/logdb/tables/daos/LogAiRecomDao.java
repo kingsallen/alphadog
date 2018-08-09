@@ -113,4 +113,18 @@ public class LogAiRecomDao extends DAOImpl<LogAiRecomRecord, com.moseeker.baseor
     public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogAiRecom> fetchByAlgorithmName(String... values) {
         return fetch(LogAiRecom.LOG_AI_RECOM.ALGORITHM_NAME, values);
     }
+
+    /**
+     * Fetch records that have <code>wx_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogAiRecom> fetchByWxId(Integer... values) {
+        return fetch(LogAiRecom.LOG_AI_RECOM.WX_ID, values);
+    }
+
+    /**
+     * Fetch records that have <code>is_send IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogAiRecom> fetchByIsSend(Byte... values) {
+        return fetch(LogAiRecom.LOG_AI_RECOM.IS_SEND, values);
+    }
 }
