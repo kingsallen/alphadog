@@ -965,7 +965,7 @@ public class ProfileService {
 
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
 
-        logger.info("profileParser profilePojo :{}", JSON.toJSONString(profilePojo));
+        logger.info("profileParser profilePojo :{}", jsonObject.toJSONString());
 
         UserUserRecord userRecord = userAccountEntity.getCompanyUser(
                 profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
