@@ -329,11 +329,11 @@ public class CompanyController {
         }
     }
 
-    @RequestMapping(value = "/user/{id}/authentication", method = RequestMethod.GET)
+    @RequestMapping(value = "/company/{id}/authentication", method = RequestMethod.GET)
     @ResponseBody
     public String getAuthentication(@PathVariable Integer id) throws Exception {
 
-        EmployeeVerificationConfResponse authentication = employeeServices.getEmployeeVerificationConfByUserId(id);
+        EmployeeVerificationConfResponse authentication = employeeServices.getEmployeeVerificationConf(id);
         return Result.success(Authentication.clone(authentication)).toJson();
     }
 
