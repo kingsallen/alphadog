@@ -644,12 +644,13 @@ public class ProfileEntity {
             if (org.apache.commons.lang.StringUtils.isBlank(profilePojo.getUserRecord().getPassword())) {
                 profilePojo.getUserRecord().setPassword("");
             }
-            UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
             short shortSource = 0;
             if (source != null) {
                 shortSource = (short) source.getValue();
             }
-            userUserRecord.setSource(shortSource);
+            profilePojo.getUserRecord().setSource(shortSource);
+            UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
+
             referralRecordRecord.setUserId(userUserRecord.getId());
             userReferralRecordDao.updateRecord(referralRecordRecord);
             return userUserRecord.getId();
