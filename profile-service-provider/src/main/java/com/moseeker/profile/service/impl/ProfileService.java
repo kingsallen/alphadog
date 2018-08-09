@@ -968,8 +968,9 @@ public class ProfileService {
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
         } else {
-            userId = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
-            profilePojo.getProfileRecord().setUserId(userId);
+            userRecord = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
+            profilePojo.getProfileRecord().setUserId(userRecord.getId());
+            userId = userRecord.getId();
         }
 
         profileEntity.mergeProfile(profilePojo, userRecord.getId());
