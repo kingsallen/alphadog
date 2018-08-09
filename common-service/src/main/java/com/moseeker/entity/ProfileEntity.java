@@ -629,7 +629,7 @@ public class ProfileEntity {
      * @return 用户编号
      */
     @Transactional
-    public int storeUser(ProfilePojo profilePojo, int reference, int companyId, UserSource source) throws ProfileException {
+    public UserUserRecord storeUser(ProfilePojo profilePojo, int reference, int companyId, UserSource source) throws ProfileException {
 
 
         UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployeeByUserId(reference);
@@ -657,7 +657,7 @@ public class ProfileEntity {
 
             referralRecordRecord.setUserId(userUserRecord.getId());
             userReferralRecordDao.updateRecord(referralRecordRecord);
-            return userUserRecord.getId();
+            return userUserRecord;
         } else {
             throw ProfileException.PROFILE_USER_CREATE_FAILED;
         }
