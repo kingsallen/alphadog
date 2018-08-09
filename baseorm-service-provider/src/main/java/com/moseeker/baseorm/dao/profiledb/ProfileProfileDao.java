@@ -508,6 +508,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         if (profileRecord != null) {
             Timestamp now = new Timestamp(System.currentTimeMillis());
             profileRecord.setCreateTime(now);
+            logger.info("saveProfile profileRecord:{}", profileRecord);
             create.attach(profileRecord);
             profileRecord.insert();
 
