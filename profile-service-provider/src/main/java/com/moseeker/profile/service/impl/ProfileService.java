@@ -974,6 +974,7 @@ public class ProfileService {
             logger.info("profileParser user not null! userRecord:{}", userRecord);
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
+            profileEntity.mergeProfile(profilePojo, userRecord.getId());
         } else {
             logger.info("profileParser user is null");
             userRecord = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
@@ -982,8 +983,6 @@ public class ProfileService {
         }
 
         logger.info("profileParser userRecord :{}", userRecord);
-
-        profileEntity.mergeProfile(profilePojo, userRecord.getId());
         return userId;
     }
 

@@ -657,6 +657,11 @@ public class ProfileEntity {
 
             referralRecordRecord.setUserId(userUserRecord.getId());
             userReferralRecordDao.updateRecord(referralRecordRecord);
+
+
+            logger.info("mergeProfile userId:{}", userUserRecord.getId());
+            storeProfile(profilePojo);
+
             return userUserRecord;
         } else {
             throw ProfileException.PROFILE_USER_CREATE_FAILED;
