@@ -100,6 +100,7 @@ public class ChatService {
 
     private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "您好，我是{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
     private static String AUTO_CONTENT_WITH_HR_EXIST = "您好，我是{hrName}，{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
+    private static String AUTO_CONTENT_WITH_HR_EXIST_START = "您好，我是";
 
     /**
      * 聊天页面欢迎语
@@ -436,6 +437,7 @@ public class ChatService {
         int count = 0;
         Future<Integer> countFuture = pool.startTast(() -> chaoDao.countChatLog(roomId));
         Future chatFuture = pool.startTast(() -> chaoDao.listChatMsg(roomId, pageNo, pageSize));
+
         try {
             count = countFuture.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -450,7 +452,8 @@ public class ChatService {
             Result<Record> chatRecord = (Result<Record>) chatFuture.get();
             if (chatRecord != null && chatRecord.size() > 0) {
                 List<ChatVO> chatVOList = new ArrayList<>();
-                for (Record record : chatRecord) {
+                for (int i = 0; i < chatRecord.size(); i++) {
+                    Record record = chatRecord.get(i);
                     // 组装聊天记录
                     ChatVO chatVO = new ChatVO();
                     chatVO.setId(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.ID));
@@ -487,9 +490,13 @@ public class ChatService {
                         chatVO.setOrigin(ChatOrigin.Human.getValue());
                         chatVO.setOrigin_str(ChatOrigin.Human.getName());
                     }
-                    String compoundContent = (record.get(HrWxHrChat.HR_WX_HR_CHAT.COMPOUND_CONTENT));
-                    if (org.apache.commons.lang.StringUtils.isNotBlank(compoundContent)) {
-                        chatVO.setCompoundContent(compoundContent);
+
+                    if (pageNo == 1 && i == chatRecord.size() - 1 && chatVO.getContent().startsWith(AUTO_CONTENT_WITH_HR_EXIST_START)) {
+                        HrWxHrChatListDO chatRoom = chaoDao.getChatRoomById(roomId);
+                        ResultOfSaveRoomVO room = searchResult(chatRoom,0);
+                        String content  = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", room.getHr()
+                                .getHrName()).replace("{companyName}", room.getHr().getCompanyName());
+                        chatVO.setContent(content);
                     }
                     chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
@@ -549,14 +556,13 @@ public class ChatService {
     public int saveChat(ChatVO chat) throws BIZException {
         try {
 
-            logger.info("saveChat chat:{}", JSON.toJSONString(chat));
             requiredValidChat(chat);
 
             HrWxHrChatListDO chatRoom = requiredNotNullChatRoom(chat.getRoomId());
 
             requiredNotNullHr(chatRoom.getHraccountId());
 
-            
+            logger.info("saveChat chat:{}", JSON.toJSONString(chat));
             HrWxHrChatDO chatDO = new HrWxHrChatDO();
             String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
 
@@ -566,7 +572,6 @@ public class ChatService {
             chatDO.setChatlistId(chat.getRoomId());
             chatDO.setOrigin(chat.getOrigin());
             chatDO.setMsgType(chat.getMsgType());
-            chatDO.setCompoundContent(chat.getCompoundContent());
             if(StringUtils.isNotNullOrEmpty(chat.getContent())){
                 chatDO.setContent(chat.getContent());
             }else{
@@ -994,7 +999,6 @@ public class ChatService {
                     }else{
                         chatVO.setSpeaker(speaker);
                     }
-                    String compoundContent = (String)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.COMPOUND_CONTENT);
                     chatVO.setAssetUrl(assetUrl);
                     chatVO.setCreateTime(createTime);
                     chatVO.setMsgType(msgType);
@@ -1005,9 +1009,6 @@ public class ChatService {
                     chatVO.setOrigin(origin);
                     chatVO.setId(id);
                     chatVO.setPositionId(positionId);
-                    if (org.apache.commons.lang.StringUtils.isNotBlank(compoundContent)) {
-                        chatVO.setCompoundContent(compoundContent);
-                    }
                     chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
             }
