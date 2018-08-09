@@ -100,6 +100,7 @@ public class ChatService {
 
     private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "您好，我是{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
     private static String AUTO_CONTENT_WITH_HR_EXIST = "您好，我是{hrName}，{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
+    private static String AUTO_CONTENT_WITH_HR_EXIST_START = "您好，我是";
 
     /**
      * 聊天页面欢迎语
@@ -436,6 +437,7 @@ public class ChatService {
         int count = 0;
         Future<Integer> countFuture = pool.startTast(() -> chaoDao.countChatLog(roomId));
         Future chatFuture = pool.startTast(() -> chaoDao.listChatMsg(roomId, pageNo, pageSize));
+
         try {
             count = countFuture.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -450,7 +452,8 @@ public class ChatService {
             Result<Record> chatRecord = (Result<Record>) chatFuture.get();
             if (chatRecord != null && chatRecord.size() > 0) {
                 List<ChatVO> chatVOList = new ArrayList<>();
-                for (Record record : chatRecord) {
+                for (int i = 0; i < chatRecord.size(); i++) {
+                    Record record = chatRecord.get(i);
                     // 组装聊天记录
                     ChatVO chatVO = new ChatVO();
                     chatVO.setId(record.getValue(HrWxHrChat.HR_WX_HR_CHAT.ID));
@@ -486,6 +489,14 @@ public class ChatService {
                     } else {
                         chatVO.setOrigin(ChatOrigin.Human.getValue());
                         chatVO.setOrigin_str(ChatOrigin.Human.getName());
+                    }
+
+                    if (pageNo == 1 && i == chatRecord.size() - 1 && chatVO.getContent().startsWith(AUTO_CONTENT_WITH_HR_EXIST_START)) {
+                        HrWxHrChatListDO chatRoom = chaoDao.getChatRoomById(roomId);
+                        ResultOfSaveRoomVO room = searchResult(chatRoom,0);
+                        String content  = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", room.getHr()
+                                .getHrName()).replace("{companyName}", room.getHr().getCompanyName());
+                        chatVO.setContent(content);
                     }
                     chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
