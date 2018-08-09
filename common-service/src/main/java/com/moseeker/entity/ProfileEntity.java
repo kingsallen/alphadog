@@ -96,8 +96,9 @@ public class ProfileEntity {
      * @param userId 用户编号
      */
     public void mergeProfile(ProfilePojo profilePojo, int userId) {
-
+        logger.info("mergeProfile userId:{}", userId);
         ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
+        logger.info("mergeProfile profileDB:{}", profileDB);
         if (profileDB != null) {
             improveProfile(profilePojo.getProfileRecord(), profileDB);
             improveBasic(profilePojo.getBasicRecord(), profileDB.getId());
