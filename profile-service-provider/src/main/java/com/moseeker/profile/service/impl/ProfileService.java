@@ -967,13 +967,13 @@ public class ProfileService {
         if (userRecord != null) {
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
+            profileEntity.mergeProfile(profilePojo, userRecord.getId());
         } else {
             userRecord = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
         }
 
-        profileEntity.mergeProfile(profilePojo, userRecord.getId());
         return userId;
     }
 
