@@ -495,6 +495,7 @@ struct EmployeeReferralContribution {
     5: optional i32 rank,
     6: optional i32 forwardCount,
     7: optional i32 deliverCount,
+    8: optional string accessToken
 }
 
 //分页信息
