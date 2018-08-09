@@ -139,7 +139,8 @@ struct UserHrAccountDO {
 	17: optional string downloadToken,	//下载行业报告校验码
 	18: optional string createTime,	//创建时间
 	19: optional string updateTime,	//修改时间
-	20: optional string headimgurl	//头像 url
+	20: optional string headimgurl,	//头像 url
+	21: optional string remarkName	//备注名
 
 }
 
