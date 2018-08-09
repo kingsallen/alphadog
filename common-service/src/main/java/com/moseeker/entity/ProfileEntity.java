@@ -631,7 +631,6 @@ public class ProfileEntity {
     @Transactional
     public UserUserRecord storeUser(ProfilePojo profilePojo, int reference, int companyId, UserSource source) throws ProfileException {
 
-
         UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployeeByUserId(reference);
         if (employeeRecord == null) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;

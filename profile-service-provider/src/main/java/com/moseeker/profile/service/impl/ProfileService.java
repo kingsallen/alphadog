@@ -981,7 +981,7 @@ public class ProfileService {
             userId = userRecord.getId();
         }
 
-        logger.info("profileParser userRecord :{}", JSON.toJSONString(userRecord));
+        logger.info("profileParser userRecord :{}", userRecord);
 
         profileEntity.mergeProfile(profilePojo, userRecord.getId());
         return userId;
