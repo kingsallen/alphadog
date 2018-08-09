@@ -998,6 +998,7 @@ public class ProfileService {
         profileProfile.put("source", 221);                                      //员工主动上传
         profileProfile.put("origin", "10000000000000000000000000000");          //员工主动上传
         profileProfile.put("uuid", UUID.randomUUID().toString());               //员工主动上传
+        profileProfile.put("user_id", 0);
         return profileProfile;
     }
 
