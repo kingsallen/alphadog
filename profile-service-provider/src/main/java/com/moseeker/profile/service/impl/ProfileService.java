@@ -918,7 +918,7 @@ public class ProfileService {
         if (employeeDO == null) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
         }
-        logger.info("parseText ");
+        logger.info("parseText :{}", profile);
         File file;
         try {
             file = FileUtil.createFile("employee_proxy_apply.txt", profile);
