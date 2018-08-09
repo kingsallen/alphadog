@@ -631,6 +631,7 @@ public class ProfileEntity {
     @Transactional
     public int storeUser(ProfilePojo profilePojo, int reference, int companyId, UserSource source) throws ProfileException {
 
+
         UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployeeByUserId(reference);
         if (employeeRecord == null) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
@@ -640,16 +641,20 @@ public class ProfileEntity {
 
         UserReferralRecordRecord referralRecordRecord = userReferralRecordDao.insertIfNotExist(reference,
                 companyId, profilePojo.getUserRecord().getMobile());
+        logger.info("profileEntity storeUser referralRecordRecord:{}", referralRecordRecord);
         if (profilePojo.getUserRecord() != null) {
+
             if (org.apache.commons.lang.StringUtils.isBlank(profilePojo.getUserRecord().getPassword())) {
                 profilePojo.getUserRecord().setPassword("");
             }
-            UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
             short shortSource = 0;
             if (source != null) {
                 shortSource = (short) source.getValue();
             }
-            userUserRecord.setSource(shortSource);
+            profilePojo.getUserRecord().setSource(shortSource);
+            UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
+            logger.info("profileEntity storeUser userUserRecord:{}", userUserRecord);
+
             referralRecordRecord.setUserId(userUserRecord.getId());
             userReferralRecordDao.updateRecord(referralRecordRecord);
             return userUserRecord.getId();

@@ -971,9 +971,11 @@ public class ProfileService {
                 profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
         int userId;
         if (userRecord != null) {
+            logger.info("profileParser user not null! userRecord:{}", userRecord);
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
         } else {
+            logger.info("profileParser user is null");
             userId = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
             profilePojo.getProfileRecord().setUserId(userId);
         }
