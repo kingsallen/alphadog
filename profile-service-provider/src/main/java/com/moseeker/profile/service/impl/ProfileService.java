@@ -918,7 +918,7 @@ public class ProfileService {
         if (employeeDO == null) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
         }
-        logger.info("parseText ");
+        logger.info("parseText :{}", profile);
         File file;
         try {
             file = FileUtil.createFile("employee_proxy_apply.txt", profile);
@@ -948,11 +948,15 @@ public class ProfileService {
 
         ProfileObj profileObj=resumeEntity.handlerParseData(resumeObj,0,"文本解析，不存在附件");
 
+        logger.info("profileParser profileObj:{}", JSON.toJSONString(profileObj));
+
         if (profileObj.getUser() == null || org.apache.commons.lang.StringUtils.isBlank(profileObj.getUser().getMobile())) {
             throw ProfileException.PROFILE_USER_NOTEXIST;
         }
 
         resumeEntity.fillProfileObj(profileObj, resumeObj, 0, file.getName(), profile);
+
+        logger.info("profileParser fillProfileObj profileObj:{}", JSON.toJSONString(profileObj));
 
         profileObj.setResumeObj(null);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(profileObj);
@@ -960,6 +964,8 @@ public class ProfileService {
         jsonObject.put("profile", profileProfile);
 
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
+
+        logger.info("profileParser profilePojo :{}", jsonObject.toJSONString());
 
         UserUserRecord userRecord = userAccountEntity.getCompanyUser(
                 profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
@@ -971,6 +977,8 @@ public class ProfileService {
             userId = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
             profilePojo.getProfileRecord().setUserId(userId);
         }
+
+        logger.info("profileParser userRecord :{}", JSON.toJSONString(userRecord));
 
         profileEntity.mergeProfile(profilePojo, userRecord.getId());
         return userId;
