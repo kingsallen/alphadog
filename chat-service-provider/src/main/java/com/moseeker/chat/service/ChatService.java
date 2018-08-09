@@ -487,6 +487,10 @@ public class ChatService {
                         chatVO.setOrigin(ChatOrigin.Human.getValue());
                         chatVO.setOrigin_str(ChatOrigin.Human.getName());
                     }
+                    String compoundContent = (record.get(HrWxHrChat.HR_WX_HR_CHAT.COMPOUND_CONTENT));
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(compoundContent)) {
+                        chatVO.setCompoundContent(compoundContent);
+                    }
                     chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
                 //Lists.reverse(chatDOList);
