@@ -976,8 +976,9 @@ public class ProfileService {
             profilePojo.setUserRecord(userRecord);
         } else {
             logger.info("profileParser user is null");
-            userId = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
-            profilePojo.getProfileRecord().setUserId(userId);
+            userRecord = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
+            profilePojo.getProfileRecord().setUserId(userRecord.getId());
+            userId = userRecord.getId();
         }
 
         logger.info("profileParser userRecord :{}", JSON.toJSONString(userRecord));
