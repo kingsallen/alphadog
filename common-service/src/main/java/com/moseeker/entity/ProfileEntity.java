@@ -583,6 +583,8 @@ public class ProfileEntity {
      */
     public int storeProfile(ProfilePojo profilePojo) {
 
+        logger.info("ProfileEntity storeProfile source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
+                profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
         return profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
                 profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
@@ -642,6 +644,9 @@ public class ProfileEntity {
         UserReferralRecordRecord referralRecordRecord = userReferralRecordDao.insertIfNotExist(reference,
                 companyId, profilePojo.getUserRecord().getMobile());
         logger.info("profileEntity storeUser referralRecordRecord:{}", referralRecordRecord);
+
+        logger.info("ProfileEntity storeUser source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
+                profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
         if (profilePojo.getUserRecord() != null) {
 
             if (org.apache.commons.lang.StringUtils.isBlank(profilePojo.getUserRecord().getPassword())) {
@@ -662,6 +667,9 @@ public class ProfileEntity {
             logger.info("mergeProfile userId:{}", userUserRecord.getId());
             profilePojo.setUserRecord(userUserRecord);
             profilePojo.getProfileRecord().setUserId(userUserRecord.getId());
+
+            logger.info("ProfileEntity storeUser source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
+                    profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
             storeProfile(profilePojo);
 
             return userUserRecord;

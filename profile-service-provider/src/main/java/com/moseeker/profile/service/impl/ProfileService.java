@@ -977,6 +977,9 @@ public class ProfileService {
             profileEntity.mergeProfile(profilePojo, userRecord.getId());
         } else {
             logger.info("profileParser user is null");
+
+            logger.info("profileParser source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
+                    profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
             userRecord = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
