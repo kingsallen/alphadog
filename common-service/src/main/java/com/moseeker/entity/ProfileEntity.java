@@ -657,6 +657,7 @@ public class ProfileEntity {
 
             logger.info("mergeProfile userId:{}", userUserRecord.getId());
             profilePojo.setUserRecord(userUserRecord);
+            profilePojo.getProfileRecord().setUserId(userUserRecord.getId());
             storeProfile(profilePojo);
 
             return userUserRecord;
