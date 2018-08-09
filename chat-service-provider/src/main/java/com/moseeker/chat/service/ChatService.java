@@ -452,6 +452,10 @@ public class ChatService {
                     } else {
                         chatVO.setMsgType(msgType);
                     }
+                    String compoundContent = record.getValue(HrWxHrChat.HR_WX_HR_CHAT.COMPOUND_CONTENT);
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(compoundContent)) {
+                        chatVO.setCompoundContent(compoundContent);
+                    }
                     String picUrl = record.getValue(HrWxHrChat.HR_WX_HR_CHAT.PIC_URL);
                     String voiceUrl = record.getValue(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.LOCAL_URL);
                     if (ChatMsgType.VOICE.value().equals(msgType)) {
