@@ -709,4 +709,9 @@ public class UserHrAccountServiceImpl implements Iface {
             throw new SysBIZException();
         }
     }
+
+    @Override
+    public HRInfo getHR(int id) throws BIZException, TException {
+        return service.getHR(id);
+    }
 }
