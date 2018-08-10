@@ -511,7 +511,7 @@ struct HRInfo {
     1: optional i32 id,
     2: optional string name,
     3: optional string nickname,
-    4: optional string comany,
+    4: optional string company,
     5: optional string companyAbbreviation,
     6: optional string accountType,
     7: optional string mobile, 
