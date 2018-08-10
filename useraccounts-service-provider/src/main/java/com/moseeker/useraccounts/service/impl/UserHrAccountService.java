@@ -1879,6 +1879,6 @@ public class UserHrAccountService {
         hrInfo.setMobile(hrAccountDO.getMobile());
         hrInfo.setName(hrAccountDO.getUsername());
         hrInfo.setCompanyAbbreviation(hrCompanyDO.getAbbreviation());
-        hrInfo.setComany(hrCompanyDO.getName());
+        hrInfo.setCompany(hrCompanyDO.getName());
     }
 }
