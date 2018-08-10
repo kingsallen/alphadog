@@ -33,6 +33,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException AWARD_POSITION_ALREADY_DELETED = new UserAccountException(42024, "职位已经下架!");
     public static final UserAccountException AWARD_POINTS_CONF_LOST = new UserAccountException(42025, "积分配置确实!");
     public static final UserAccountException AWARD_EMPLOYEE_ELEGAL = new UserAccountException(42026, "员工信息不正确!");
+    public static final UserAccountException HRACCOUNT_NOT_EXIST = new UserAccountException(42027, "HR账号不存在!");
 
     private final int code;
 
