@@ -101,7 +101,7 @@ public class CardJobChatHandler implements IOutputChatHandler,IBeforeSaveChatHan
      */
     @Override
     public HrWxHrChatDO beforeSave(HrWxHrChatDO chat) {
-        PositionCard positionCard = JSON.parseObject(chat.getContent(),PositionCard.class);
+        PositionCard positionCard = JSON.parseObject(chat.getCompoundContent(),PositionCard.class);
         chat.setContent(String.valueOf(positionCard.getId()));
         return chat;
     }
