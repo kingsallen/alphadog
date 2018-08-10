@@ -1,6 +1,5 @@
 package com.moseeker.servicemanager.service.impl;
 
-import com.moseeker.commonservice.annotation.iface.ExceptionTransfer;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.service.HRService;
 import com.moseeker.servicemanager.service.vo.HRInfo;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
  * @Date: 2018/8/10
  */
 @Service
-@ExceptionTransfer
 public class HRServiceImpl implements HRService {
 
     UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
