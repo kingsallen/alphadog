@@ -28,7 +28,7 @@ public enum ChatMsgType {
     BUTTON_RADIO("button_radio") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && StringUtils.isNotBlank(chatVO.getBtnContent());
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
         }
     },
     VOICE("voice") {
