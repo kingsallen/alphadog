@@ -14,7 +14,7 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
   private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.I32, (short)1);
   private static final org.apache.thrift.protocol.TField NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("name", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField NICKNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("nickname", org.apache.thrift.protocol.TType.STRING, (short)3);
-  private static final org.apache.thrift.protocol.TField COMANY_FIELD_DESC = new org.apache.thrift.protocol.TField("comany", org.apache.thrift.protocol.TType.STRING, (short)4);
+  private static final org.apache.thrift.protocol.TField COMPANY_FIELD_DESC = new org.apache.thrift.protocol.TField("company", org.apache.thrift.protocol.TType.STRING, (short)4);
   private static final org.apache.thrift.protocol.TField COMPANY_ABBREVIATION_FIELD_DESC = new org.apache.thrift.protocol.TField("companyAbbreviation", org.apache.thrift.protocol.TType.STRING, (short)5);
   private static final org.apache.thrift.protocol.TField ACCOUNT_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("accountType", org.apache.thrift.protocol.TType.STRING, (short)6);
   private static final org.apache.thrift.protocol.TField MOBILE_FIELD_DESC = new org.apache.thrift.protocol.TField("mobile", org.apache.thrift.protocol.TType.STRING, (short)7);
@@ -27,7 +27,7 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
   public int id; // optional
   public java.lang.String name; // optional
   public java.lang.String nickname; // optional
-  public java.lang.String comany; // optional
+  public java.lang.String company; // optional
   public java.lang.String companyAbbreviation; // optional
   public java.lang.String accountType; // optional
   public java.lang.String mobile; // optional
@@ -39,7 +39,7 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
     ID((short)1, "id"),
     NAME((short)2, "name"),
     NICKNAME((short)3, "nickname"),
-    COMANY((short)4, "comany"),
+    COMPANY((short)4, "company"),
     COMPANY_ABBREVIATION((short)5, "companyAbbreviation"),
     ACCOUNT_TYPE((short)6, "accountType"),
     MOBILE((short)7, "mobile"),
@@ -65,8 +65,8 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
           return NAME;
         case 3: // NICKNAME
           return NICKNAME;
-        case 4: // COMANY
-          return COMANY;
+        case 4: // COMPANY
+          return COMPANY;
         case 5: // COMPANY_ABBREVIATION
           return COMPANY_ABBREVIATION;
         case 6: // ACCOUNT_TYPE
@@ -119,7 +119,7 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
   // isset id assignments
   private static final int __ID_ISSET_ID = 0;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID,_Fields.NAME,_Fields.NICKNAME,_Fields.COMANY,_Fields.COMPANY_ABBREVIATION,_Fields.ACCOUNT_TYPE,_Fields.MOBILE,_Fields.EMAIL,_Fields.HEAD_IMG};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.NAME,_Fields.NICKNAME,_Fields.COMPANY,_Fields.COMPANY_ABBREVIATION,_Fields.ACCOUNT_TYPE,_Fields.MOBILE,_Fields.EMAIL,_Fields.HEAD_IMG};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -129,7 +129,7 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.NICKNAME, new org.apache.thrift.meta_data.FieldMetaData("nickname", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.COMANY, new org.apache.thrift.meta_data.FieldMetaData("comany", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.COMPANY, new org.apache.thrift.meta_data.FieldMetaData("company", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.COMPANY_ABBREVIATION, new org.apache.thrift.meta_data.FieldMetaData("companyAbbreviation", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
@@ -160,8 +160,8 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
     if (other.isSetNickname()) {
       this.nickname = other.nickname;
     }
-    if (other.isSetComany()) {
-      this.comany = other.comany;
+    if (other.isSetCompany()) {
+      this.company = other.company;
     }
     if (other.isSetCompanyAbbreviation()) {
       this.companyAbbreviation = other.companyAbbreviation;
@@ -190,7 +190,7 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
     this.id = 0;
     this.name = null;
     this.nickname = null;
-    this.comany = null;
+    this.company = null;
     this.companyAbbreviation = null;
     this.accountType = null;
     this.mobile = null;
@@ -269,27 +269,27 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
     }
   }
 
-  public java.lang.String getComany() {
-    return this.comany;
+  public java.lang.String getCompany() {
+    return this.company;
   }
 
-  public HRInfo setComany(java.lang.String comany) {
-    this.comany = comany;
+  public HRInfo setCompany(java.lang.String company) {
+    this.company = company;
     return this;
   }
 
-  public void unsetComany() {
-    this.comany = null;
+  public void unsetCompany() {
+    this.company = null;
   }
 
-  /** Returns true if field comany is set (has been assigned a value) and false otherwise */
-  public boolean isSetComany() {
-    return this.comany != null;
+  /** Returns true if field company is set (has been assigned a value) and false otherwise */
+  public boolean isSetCompany() {
+    return this.company != null;
   }
 
-  public void setComanyIsSet(boolean value) {
+  public void setCompanyIsSet(boolean value) {
     if (!value) {
-      this.comany = null;
+      this.company = null;
     }
   }
 
@@ -439,11 +439,11 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
       }
       break;
 
-    case COMANY:
+    case COMPANY:
       if (value == null) {
-        unsetComany();
+        unsetCompany();
       } else {
-        setComany((java.lang.String)value);
+        setCompany((java.lang.String)value);
       }
       break;
 
@@ -501,8 +501,8 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
     case NICKNAME:
       return getNickname();
 
-    case COMANY:
-      return getComany();
+    case COMPANY:
+      return getCompany();
 
     case COMPANY_ABBREVIATION:
       return getCompanyAbbreviation();
@@ -536,8 +536,8 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
       return isSetName();
     case NICKNAME:
       return isSetNickname();
-    case COMANY:
-      return isSetComany();
+    case COMPANY:
+      return isSetCompany();
     case COMPANY_ABBREVIATION:
       return isSetCompanyAbbreviation();
     case ACCOUNT_TYPE:
@@ -594,12 +594,12 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
         return false;
     }
 
-    boolean this_present_comany = true && this.isSetComany();
-    boolean that_present_comany = true && that.isSetComany();
-    if (this_present_comany || that_present_comany) {
-      if (!(this_present_comany && that_present_comany))
+    boolean this_present_company = true && this.isSetCompany();
+    boolean that_present_company = true && that.isSetCompany();
+    if (this_present_company || that_present_company) {
+      if (!(this_present_company && that_present_company))
         return false;
-      if (!this.comany.equals(that.comany))
+      if (!this.company.equals(that.company))
         return false;
     }
 
@@ -667,9 +667,9 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
     if (isSetNickname())
       hashCode = hashCode * 8191 + nickname.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetComany()) ? 131071 : 524287);
-    if (isSetComany())
-      hashCode = hashCode * 8191 + comany.hashCode();
+    hashCode = hashCode * 8191 + ((isSetCompany()) ? 131071 : 524287);
+    if (isSetCompany())
+      hashCode = hashCode * 8191 + company.hashCode();
 
     hashCode = hashCode * 8191 + ((isSetCompanyAbbreviation()) ? 131071 : 524287);
     if (isSetCompanyAbbreviation())
@@ -732,12 +732,12 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetComany()).compareTo(other.isSetComany());
+    lastComparison = java.lang.Boolean.valueOf(isSetCompany()).compareTo(other.isSetCompany());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetComany()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.comany, other.comany);
+    if (isSetCompany()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.company, other.company);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -837,13 +837,13 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
       }
       first = false;
     }
-    if (isSetComany()) {
+    if (isSetCompany()) {
       if (!first) sb.append(", ");
-      sb.append("comany:");
-      if (this.comany == null) {
+      sb.append("company:");
+      if (this.company == null) {
         sb.append("null");
       } else {
-        sb.append(this.comany);
+        sb.append(this.company);
       }
       first = false;
     }
@@ -966,10 +966,10 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 4: // COMANY
+          case 4: // COMPANY
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.comany = iprot.readString();
-              struct.setComanyIsSet(true);
+              struct.company = iprot.readString();
+              struct.setCompanyIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -1048,10 +1048,10 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
           oprot.writeFieldEnd();
         }
       }
-      if (struct.comany != null) {
-        if (struct.isSetComany()) {
-          oprot.writeFieldBegin(COMANY_FIELD_DESC);
-          oprot.writeString(struct.comany);
+      if (struct.company != null) {
+        if (struct.isSetCompany()) {
+          oprot.writeFieldBegin(COMPANY_FIELD_DESC);
+          oprot.writeString(struct.company);
           oprot.writeFieldEnd();
         }
       }
@@ -1117,7 +1117,7 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
       if (struct.isSetNickname()) {
         optionals.set(2);
       }
-      if (struct.isSetComany()) {
+      if (struct.isSetCompany()) {
         optionals.set(3);
       }
       if (struct.isSetCompanyAbbreviation()) {
@@ -1145,8 +1145,8 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
       if (struct.isSetNickname()) {
         oprot.writeString(struct.nickname);
       }
-      if (struct.isSetComany()) {
-        oprot.writeString(struct.comany);
+      if (struct.isSetCompany()) {
+        oprot.writeString(struct.company);
       }
       if (struct.isSetCompanyAbbreviation()) {
         oprot.writeString(struct.companyAbbreviation);
@@ -1182,8 +1182,8 @@ public class HRInfo implements org.apache.thrift.TBase<HRInfo, HRInfo._Fields>, 
         struct.setNicknameIsSet(true);
       }
       if (incoming.get(3)) {
-        struct.comany = iprot.readString();
-        struct.setComanyIsSet(true);
+        struct.company = iprot.readString();
+        struct.setCompanyIsSet(true);
       }
       if (incoming.get(4)) {
         struct.companyAbbreviation = iprot.readString();
