@@ -1246,10 +1246,10 @@ public class UserHrAccountController {
         return ResponseLogNotification.failJson(request, "后台异常");
     }
 
-    /*@RequestMapping(value = "/hr/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/hr/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String getHR(@PathVariable int id) throws Exception {
         HRInfo hrInfo = hrService.getHR(id);
         return Result.success(hrInfo).toJson();
-    }*/
+    }
 }
