@@ -8,6 +8,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -1248,8 +1249,14 @@ public class UserHrAccountController {
 
     @RequestMapping(value = "/hr/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String getHR(@PathVariable int id) throws Exception {
-        HRInfo hrInfo = hrService.getHR(id);
-        return Result.success(hrInfo).toJson();
+    public String getHR(@PathVariable int id, HttpServletRequest request) throws Exception {
+        try {
+            HRInfo hrInfo = hrService.getHR(id);
+            return Result.success(hrInfo).toJson();
+        } catch (CommonException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, "后台异常");
+        }
     }
 }
