@@ -1253,7 +1253,7 @@ public class UserHrAccountController {
         try {
             HRInfo hrInfo = hrService.getHR(id);
             return Result.success(hrInfo).toJson();
-        } catch (CommonException e) {
+        } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.failJson(request, "后台异常");
