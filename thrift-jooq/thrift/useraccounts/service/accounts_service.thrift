@@ -189,6 +189,9 @@ service UserHrAccountService {
 
     //将第三方账号绑定返回的信息入库
     string bindLiepinUserAccount(1:string liepinToken, 2:i32 liepinUserId, 3:i32 hrThirdAccountId) throws (1: common_struct.BIZException e);
+   
+    //获取HR信息
+    useraccounts_struct.HRInfo getHR(1:i32 id) throws (1: common_struct.BIZException e);
 
 }
 
