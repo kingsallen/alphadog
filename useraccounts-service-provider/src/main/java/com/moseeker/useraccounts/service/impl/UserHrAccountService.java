@@ -1859,11 +1859,11 @@ public class UserHrAccountService {
     public HRInfo getHR(int id) throws UserAccountException {
         UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(id);
         if (hrAccountDO == null) {
-            throw UserAccountException.HRACCOUNT_EXIST;
+            throw UserAccountException.HRACCOUNT_NOT_EXIST;
         }
         HrCompanyDO hrCompanyDO = hrCompanyDao.getCompanyById(hrAccountDO.getCompanyId());
         if (hrAccountDO == null) {
-            throw UserAccountException.HRACCOUNT_EXIST;
+            throw UserAccountException.HRACCOUNT_NOT_EXIST;
         }
         HRInfo hrInfo = new HRInfo();
         packageHRInfo(hrInfo, hrAccountDO, hrCompanyDO);
