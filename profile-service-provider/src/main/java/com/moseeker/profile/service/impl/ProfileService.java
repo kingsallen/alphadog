@@ -951,7 +951,6 @@ public class ProfileService {
         if (profileObj.getUser() == null || org.apache.commons.lang.StringUtils.isBlank(profileObj.getUser().getMobile())) {
             throw ProfileException.PROFILE_USER_NOTEXIST;
         }
-
         resumeEntity.fillProfileObj(profileObj, resumeObj, 0, file.getName(), profile);
 
         profileObj.setResumeObj(null);
@@ -969,6 +968,7 @@ public class ProfileService {
             profilePojo.setUserRecord(userRecord);
             profileEntity.mergeProfile(profilePojo, userRecord.getId());
         } else {
+            resumeEntity.fillDefault(profilePojo);
             userRecord = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
